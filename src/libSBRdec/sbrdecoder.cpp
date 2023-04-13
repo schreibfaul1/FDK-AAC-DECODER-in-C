@@ -1046,7 +1046,7 @@ static SBRDEC_DRC_CHANNEL *sbrDecoder_drcGetChannel(
 }
 
 SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, INT ch,
-                                    UINT numBands, FIXP_DBL *pNextFact_mag,
+                                    UINT numBands, int32_t *pNextFact_mag,
                                     INT nextFact_exp,
                                     SHORT drcInterpolationScheme,
                                     UCHAR winSequence, USHORT *pBandTop) {
@@ -1064,7 +1064,7 @@ SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, INT ch,
   for (band = 0; band < (int)numBands; band += 1) {
     if (!((pNextFact_mag[band] == FL2FXCONST_DBL(0.5)) &&
           (nextFact_exp == 1)) &&
-        !((pNextFact_mag[band] == (FIXP_DBL)MAXVAL_DBL) &&
+        !((pNextFact_mag[band] == (int32_t)MAXVAL_DBL) &&
           (nextFact_exp == 0))) {
       isValidData = 1;
       break;

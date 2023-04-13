@@ -118,27 +118,27 @@ amm-info@iis.fraunhofer.de
 // #endif
 
 void scaleValues(FIXP_SGL *vector, INT len, INT scalefactor);
-void scaleValues(FIXP_DBL *vector, INT len, INT scalefactor);
-void scaleValues(FIXP_DBL *dst, const FIXP_DBL *src, INT len, INT scalefactor);
+void scaleValues(int32_t *vector, INT len, INT scalefactor);
+void scaleValues(int32_t *dst, const int32_t *src, INT len, INT scalefactor);
 #if (SAMPLE_BITS == 16)
-void scaleValues(FIXP_PCM *dst, const FIXP_DBL *src, INT len, INT scalefactor);
+void scaleValues(FIXP_PCM *dst, const int32_t *src, INT len, INT scalefactor);
 #endif
 void scaleValues(FIXP_SGL *dst, const FIXP_SGL *src, INT len, INT scalefactor);
-void scaleCplxValues(FIXP_DBL *r_dst, FIXP_DBL *i_dst, const FIXP_DBL *r_src,
-                     const FIXP_DBL *i_src, INT len, INT scalefactor);
-void scaleValuesWithFactor(FIXP_DBL *vector, FIXP_DBL factor, INT len,
+void scaleCplxValues(int32_t *r_dst, int32_t *i_dst, const int32_t *r_src,
+                     const int32_t *i_src, INT len, INT scalefactor);
+void scaleValuesWithFactor(int32_t *vector, int32_t factor, INT len,
                            INT scalefactor);
-void scaleValuesSaturate(FIXP_DBL *vector, INT len, INT scalefactor);
-void scaleValuesSaturate(FIXP_DBL *dst, const FIXP_DBL *src, INT len,
+void scaleValuesSaturate(int32_t *vector, INT len, INT scalefactor);
+void scaleValuesSaturate(int32_t *dst, const int32_t *src, INT len,
                          INT scalefactor);
-void scaleValuesSaturate(FIXP_SGL *dst, const FIXP_DBL *src, INT len,
+void scaleValuesSaturate(FIXP_SGL *dst, const int32_t *src, INT len,
                          INT scalefactor);
 void scaleValuesSaturate(FIXP_SGL *vector, INT len, INT scalefactor);
 void scaleValuesSaturate(FIXP_SGL *dst, const FIXP_SGL *src, INT len,
                          INT scalefactor);
 INT getScalefactorShort(const SHORT *vector, INT len);
 INT getScalefactorPCM(const INT_PCM *vector, INT len, INT stride);
-INT getScalefactor(const FIXP_DBL *vector, INT len);
+INT getScalefactor(const int32_t *vector, INT len);
 INT getScalefactor(const FIXP_SGL *vector, INT len);
 
 #ifndef FUNCTION_scaleValue
@@ -150,7 +150,7 @@ INT getScalefactor(const FIXP_SGL *vector, INT len);
  *
  */
 #define FUNCTION_scaleValue
-inline FIXP_DBL scaleValue(const FIXP_DBL value, /*!< Value */
+inline int32_t scaleValue(const int32_t value, /*!< Value */
                            INT scalefactor       /*!< Scalefactor */
 ) {
   if (scalefactor > 0)
@@ -178,7 +178,7 @@ inline FIXP_SGL scaleValue(const FIXP_SGL value, /*!< Value */
  *
  */
 #define FUNCTION_scaleValueSaturate
-inline FIXP_DBL scaleValueSaturate(const FIXP_DBL value,
+inline int32_t scaleValueSaturate(const int32_t value,
                                    INT scalefactor /* in range -31 ... +31 */
 ) {
   int headroom = fixnormz_D(
@@ -186,20 +186,20 @@ inline FIXP_DBL scaleValueSaturate(const FIXP_DBL value,
   if (scalefactor >= 0) {
     /* shift left: saturate in case of headroom less/equal scalefactor */
     if (headroom <= scalefactor) {
-      if (value > (FIXP_DBL)0)
-        return (FIXP_DBL)MAXVAL_DBL; /* 0x7FFF.FFFF */
+      if (value > (int32_t)0)
+        return (int32_t)MAXVAL_DBL; /* 0x7FFF.FFFF */
       else
-        return (FIXP_DBL)MINVAL_DBL + (FIXP_DBL)1; /* 0x8000.0001 */
+        return (int32_t)MINVAL_DBL + (int32_t)1; /* 0x8000.0001 */
     } else {
-      return fMax((value << scalefactor), (FIXP_DBL)MINVAL_DBL + (FIXP_DBL)1);
+      return fMax((value << scalefactor), (int32_t)MINVAL_DBL + (int32_t)1);
     }
   } else {
     scalefactor = -scalefactor;
     /* shift right: clear in case of 32-headroom greater/equal -scalefactor */
     if ((DFRACT_BITS - headroom) <= scalefactor) {
-      return (FIXP_DBL)0;
+      return (int32_t)0;
     } else {
-      return fMax((value >> scalefactor), (FIXP_DBL)MINVAL_DBL + (FIXP_DBL)1);
+      return fMax((value >> scalefactor), (int32_t)MINVAL_DBL + (int32_t)1);
     }
   }
 }
@@ -214,7 +214,7 @@ inline FIXP_DBL scaleValueSaturate(const FIXP_DBL value,
  *
  */
 #define FUNCTION_scaleValueInPlace
-inline void scaleValueInPlace(FIXP_DBL *value, /*!< Value */
+inline void scaleValueInPlace(int32_t *value, /*!< Value */
                               INT scalefactor  /*!< Scalefactor */
 ) {
   INT newscale;

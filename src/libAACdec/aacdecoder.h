@@ -238,9 +238,9 @@ struct AAC_DECODER_INSTANCE {
   CAacDecoderStaticChannelInfo
       *pAacDecoderStaticChannelInfo[(8)]; /*!< Persistent channel memory */
 
-  FIXP_DBL *workBufferCore1;
-  FIXP_DBL *workBufferCore2;
-  PCM_DEC *pTimeData2;
+  int32_t *workBufferCore1;
+  int32_t *workBufferCore2;
+  int32_t *pTimeData2;
   INT timeData2Size;
 
   CpePersistentData *cpeStaticData[(
@@ -316,7 +316,7 @@ This structure is allocated once for each CPE. */
                               library user */
   UCHAR limiterEnableCurr; /*!< The current limiter configuration.         */
 
-  FIXP_DBL extGain[1]; /*!< Gain that must be applied to the output signal. */
+  int32_t extGain[1]; /*!< Gain that must be applied to the output signal. */
   UINT extGainDelay;   /*!< Delay that must be accounted for extGain. */
 
   HANDLE_DRC_DECODER hUniDrcDecoder;
@@ -430,7 +430,7 @@ AAC_DECODER_ERROR CAacDecoder_Init(HANDLE_AACDECODER self,
   \return  error status
 */
 AAC_DECODER_ERROR CAacDecoder_DecodeFrame(
-    HANDLE_AACDECODER self, const UINT flags, PCM_DEC *pTimeData,
+    HANDLE_AACDECODER self, const UINT flags, int32_t *pTimeData,
     const INT timeDataSize, const int timeDataChannelOffset);
 
 /* Free config dependent AAC memory */

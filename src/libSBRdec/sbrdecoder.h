@@ -293,7 +293,7 @@ SBR_ERROR sbrDecoder_SetParam(HANDLE_SBRDECODER self, const SBRDEC_PARAM param,
  * \return  Error code.
  */
 SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, INT ch,
-                                    UINT numBands, FIXP_DBL *pNextFact_mag,
+                                    UINT numBands, int32_t *pNextFact_mag,
                                     INT nextFact_exp,
                                     SHORT drcInterpolationScheme,
                                     UCHAR winSequence, USHORT *pBandTop);

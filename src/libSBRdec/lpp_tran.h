@@ -189,11 +189,11 @@ typedef struct {
 /** whitening factors for different levels of whitening
     need to be initialized corresponding to crossover frequency */
 typedef struct {
-  FIXP_DBL off; /*!< bw factor for signal OFF */
-  FIXP_DBL transitionLevel;
-  FIXP_DBL lowLevel;  /*!< bw factor for signal LOW_LEVEL */
-  FIXP_DBL midLevel;  /*!< bw factor for signal MID_LEVEL */
-  FIXP_DBL highLevel; /*!< bw factor for signal HIGH_LEVEL */
+  int32_t off; /*!< bw factor for signal OFF */
+  int32_t transitionLevel;
+  int32_t lowLevel;  /*!< bw factor for signal LOW_LEVEL */
+  int32_t midLevel;  /*!< bw factor for signal MID_LEVEL */
+  int32_t highLevel; /*!< bw factor for signal HIGH_LEVEL */
 } WHITENING_FACTORS;
 
 /*! The transposer settings are calculated on a header reset and are shared by
@@ -217,26 +217,26 @@ typedef struct {
 
 typedef struct {
   TRANSPOSER_SETTINGS *pSettings; /*!< Common settings for both channels */
-  FIXP_DBL
+  int32_t
   bwVectorOld[MAX_NUM_PATCHES]; /*!< pole moving factors of past frame */
-  FIXP_DBL lpcFilterStatesRealLegSBR[LPC_ORDER + (3 * (4))][(
+  int32_t lpcFilterStatesRealLegSBR[LPC_ORDER + (3 * (4))][(
       32)]; /*!< pointer array to save filter states */
 
-  FIXP_DBL lpcFilterStatesImagLegSBR[LPC_ORDER + (3 * (4))][(
+  int32_t lpcFilterStatesImagLegSBR[LPC_ORDER + (3 * (4))][(
       32)]; /*!< pointer array to save filter states */
 
-  FIXP_DBL lpcFilterStatesRealHBE[LPC_ORDER + (3 * (4))][(
+  int32_t lpcFilterStatesRealHBE[LPC_ORDER + (3 * (4))][(
       64)]; /*!< pointer array to save filter states */
-  FIXP_DBL lpcFilterStatesImagHBE[LPC_ORDER + (3 * (4))][(
+  int32_t lpcFilterStatesImagHBE[LPC_ORDER + (3 * (4))][(
       64)]; /*!< pointer array to save filter states */
 } SBR_LPP_TRANS;
 
 typedef SBR_LPP_TRANS *HANDLE_SBR_LPP_TRANS;
 
 void lppTransposer(HANDLE_SBR_LPP_TRANS hLppTrans,
-                   QMF_SCALE_FACTOR *sbrScaleFactor, FIXP_DBL **qmfBufferReal,
+                   QMF_SCALE_FACTOR *sbrScaleFactor, int32_t **qmfBufferReal,
 
-                   FIXP_DBL *degreeAlias, FIXP_DBL **qmfBufferImag,
+                   int32_t *degreeAlias, int32_t **qmfBufferImag,
                    const int useLP, const int fPreWhitening,
                    const int v_k_master0, const int timeStep,
                    const int firstSlotOffset, const int lastSlotOffset,
@@ -247,9 +247,9 @@ void lppTransposerHBE(
     HANDLE_SBR_LPP_TRANS hLppTrans, /*!< Handle of lpp transposer  */
     HANDLE_HBE_TRANSPOSER hQmfTransposer,
     QMF_SCALE_FACTOR *sbrScaleFactor, /*!< Scaling factors */
-    FIXP_DBL **qmfBufferReal, /*!< Pointer to pointer to real part of subband
+    int32_t **qmfBufferReal, /*!< Pointer to pointer to real part of subband
                                  samples (source) */
-    FIXP_DBL **qmfBufferImag, /*!< Pointer to pointer to imaginary part of
+    int32_t **qmfBufferImag, /*!< Pointer to pointer to imaginary part of
                                  subband samples (source) */
     const int timeStep,       /*!< Time step of envelope */
     const int firstSlotOffs,  /*!< Start position in time */

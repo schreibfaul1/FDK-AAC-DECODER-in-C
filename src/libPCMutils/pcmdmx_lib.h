@@ -293,10 +293,10 @@ typedef enum {
                           channels.   */
 } DUAL_CHANNEL_MODE;
 
-#define DMX_PCM FIXP_DBL
-#define DMX_PCMF FIXP_DBL
+#define DMX_PCM int32_t
+#define DMX_PCMF int32_t
 #define DMX_PCM_BITS DFRACT_BITS
-#define FX_DMX2FX_PCM(x) FX_DBL2FX_PCM((FIXP_DBL)(x))
+#define FX_DMX2FX_PCM(x) FX_DBL2FX_PCM((int32_t)(x))
 
 /* ------------------------ *
  *     MODULES INTERFACE:   *

@@ -103,6 +103,7 @@ amm-info@iis.fraunhofer.de
 #ifndef STEREO_H
 #define STEREO_H
 
+#include <stdint.h>
 #include "../libSYS/machine_type.h"
 #include "../libFDK/FDK_bitstream.h"
 #include "../libFDK/common_fix.h"
@@ -116,7 +117,7 @@ amm-info@iis.fraunhofer.de
      * appropriately. */
 /* Prescaling via factor SF_FNA_COEFFS is done at compile-time but should only
  * be      */
-/* utilized if the coefficients are stored as FIXP_DBL. (cp. aac_rom.cpp/.h) */
+/* utilized if the coefficients are stored as int32_t. (cp. aac_rom.cpp/.h) */
 
 /* The NO_CPLX_PRED_BUGFIX-switch was introduced to enable decoding of
    conformance-streams in way that they are comparable to buggy
@@ -157,7 +158,7 @@ typedef struct {
 
   /* The following array and variable are needed for the case  when INF is
    * active */
-  FIXP_DBL store_dmx_re_prev[1024];
+  int32_t store_dmx_re_prev[1024];
   SHORT store_dmx_re_prev_e;
 
 } CJointStereoData;
@@ -169,9 +170,9 @@ typedef struct {
                                 flag of the left and right channel was different
                               */
 
-  FIXP_DBL *scratchBuffer; /* pointer to scratch buffer */
+  int32_t *scratchBuffer; /* pointer to scratch buffer */
 
-  FIXP_DBL
+  int32_t
   *spectralCoeffs[2]; /* spectral coefficients of this channel utilized by
                          complex stereo prediction */
   SHORT *specScale[2];

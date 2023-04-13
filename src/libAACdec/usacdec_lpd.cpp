@@ -118,15 +118,15 @@ amm-info@iis.fraunhofer.de
 #define SF_PITCH_TRACK 6
 #define SF_GAIN 3
 #define MIN_VAL FL2FXCONST_DBL(0.0f)
-#define MAX_VAL (FIXP_DBL) MAXVAL_DBL
+#define MAX_VAL (int32_t) MAXVAL_DBL
 
 #include "../libArithCoding/ac_arith_coder.h"
 
-void filtLP(const FIXP_DBL *syn, PCM_DEC *syn_out, FIXP_DBL *noise,
+void filtLP(const int32_t *syn, int32_t *syn_out, int32_t *noise,
             const FIXP_SGL *filt, const INT aacOutDataHeadroom, INT stop,
             int len) {
   INT i, j;
-  FIXP_DBL tmp;
+  int32_t tmp;
 
   FDK_ASSERT((aacOutDataHeadroom - 1) >= -(MDCT_OUTPUT_SCALE));
 
@@ -135,30 +135,30 @@ void filtLP(const FIXP_DBL *syn, PCM_DEC *syn_out, FIXP_DBL *noise,
     for (j = 1; j <= len; j++) {
       tmp += fMult((noise[i - j] >> 1) + (noise[i + j] >> 1), filt[j]);
     }
-    syn_out[i] = (PCM_DEC)(
+    syn_out[i] = (int32_t)(
         IMDCT_SCALE((syn[i] >> 1) - (tmp >> 1), aacOutDataHeadroom - 1));
   }
 }
 
 void bass_pf_1sf_delay(
-    FIXP_DBL *syn,   /* (i) : 12.8kHz synthesis to postfilter              */
+    int32_t *syn,   /* (i) : 12.8kHz synthesis to postfilter              */
     const INT *T_sf, /* (i) : Pitch period for all subframes (T_sf[16])    */
-    FIXP_DBL *pit_gain,
+    int32_t *pit_gain,
     const int frame_length, /* (i) : frame length (should be 768|1024) */
     const INT l_frame,
     const INT l_next,   /* (i) : look ahead for symmetric filtering           */
-    PCM_DEC *synth_out, /* (o) : filtered synthesis (with delay of 1 subfr)   */
+    int32_t *synth_out, /* (o) : filtered synthesis (with delay of 1 subfr)   */
     const INT aacOutDataHeadroom, /* (i) : headroom of the output time signal to
                                      prevent clipping */
-    FIXP_DBL mem_bpf[]) /* i/o : memory state [L_FILT+L_SUBFR]                */
+    int32_t mem_bpf[]) /* i/o : memory state [L_FILT+L_SUBFR]                */
 {
   INT i, sf, i_subfr, T, T2, lg;
 
-  FIXP_DBL tmp, ener, corr, gain;
-  FIXP_DBL *noise, *noise_in;
-  FIXP_DBL
+  int32_t tmp, ener, corr, gain;
+  int32_t *noise, *noise_in;
+  int32_t
   noise_buf[L_FILT + (2 * L_SUBFR)];  // L_FILT = 12, L_SUBFR = 64 => 140
-  const FIXP_DBL *x, *y;
+  const int32_t *x, *y;
 
   {
     noise = noise_buf + L_FILT;  // L_FILT = 12 delay of upsampling filter
@@ -176,21 +176,21 @@ void bass_pf_1sf_delay(
 
     /* Gain is in Q17.14 */
     /* If gain > 1 set to 1 */
-    if (gain > (FIXP_DBL)(1 << 14)) gain = (FIXP_DBL)(1 << 14);
+    if (gain > (int32_t)(1 << 14)) gain = (int32_t)(1 << 14);
 
     /* If gain < 0 set to 0 */
-    if (gain < (FIXP_DBL)0) gain = (FIXP_DBL)0;
+    if (gain < (int32_t)0) gain = (int32_t)0;
 
-    if (gain > (FIXP_DBL)0) {
+    if (gain > (int32_t)0) {
       /* pitch tracker: test pitch/2 to avoid continuous pitch doubling */
       /* Note: pitch is limited to PIT_MIN (34 = 376Hz) at the encoder  */
       T2 = T >> 1;
       x = &syn[i_subfr - L_EXTRA];
       y = &syn[i_subfr - T2 - L_EXTRA];
 
-      ener = (FIXP_DBL)0;
-      corr = (FIXP_DBL)0;
-      tmp = (FIXP_DBL)0;
+      ener = (int32_t)0;
+      corr = (int32_t)0;
+      tmp = (int32_t)0;
 
       int headroom_x = getScalefactor(x, L_SUBFR + L_EXTRA);
       int headroom_y = getScalefactor(y, L_SUBFR + L_EXTRA);
@@ -209,7 +209,7 @@ void bass_pf_1sf_delay(
       int exp_tmp = ((17 - headroom_y) << 1) + width_shift + 1;
 
       /* Add 0.01 to "ener". Adjust exponents */
-      FIXP_DBL point_zero_one = (FIXP_DBL)0x51eb851f; /* In Q-6.37 */
+      int32_t point_zero_one = (int32_t)0x51eb851f; /* In Q-6.37 */
       int diff;
       ener = fAddNorm(ener, exp_ener, point_zero_one, -6, &exp_ener);
       corr = fAddNorm(corr, exp_corr, point_zero_one, -6, &exp_corr);
@@ -220,7 +220,7 @@ void bass_pf_1sf_delay(
       s1 = CntLeadingZeros(ener) - 1;
       s2 = CntLeadingZeros(tmp) - 1;
 
-      FIXP_DBL ener_by_tmp = fMultDiv2(ener << s1, tmp << s2);
+      int32_t ener_by_tmp = fMultDiv2(ener << s1, tmp << s2);
       int ener_by_tmp_exp = (exp_ener - s1) + (exp_tmp - s2) + 1;
 
       if (ener_by_tmp_exp & 1) {
@@ -230,16 +230,16 @@ void bass_pf_1sf_delay(
 
       int temp_exp = 0;
 
-      FIXP_DBL temp1 = invSqrtNorm2(ener_by_tmp, &temp_exp);
+      int32_t temp1 = invSqrtNorm2(ener_by_tmp, &temp_exp);
 
       int temp1_exp = temp_exp - (ener_by_tmp_exp >> 1);
 
-      FIXP_DBL tmp_result = fMult(corr, temp1);
+      int32_t tmp_result = fMult(corr, temp1);
 
       int tmp_result_exp = exp_corr + temp1_exp;
 
       diff = tmp_result_exp - 0;
-      FIXP_DBL point95 = FL2FXCONST_DBL(0.95f);
+      int32_t point95 = FL2FXCONST_DBL(0.95f);
       if (diff >= 0) {
         diff = fMin(diff, 31);
         point95 = FL2FXCONST_DBL(0.95f) >> diff;
@@ -263,7 +263,7 @@ void bass_pf_1sf_delay(
 
       /* limit gain to avoid problem on burst */
       if (lg > 0) {
-        FIXP_DBL tmp1;
+        int32_t tmp1;
 
         /* max(lg) = 64 => scale with 6 bits minus 1 (fPow2Div2) */
 
@@ -271,8 +271,8 @@ void bass_pf_1sf_delay(
         s2 = getScalefactor(&syn[i_subfr + T], lg);
         INT s = fixMin(s1, s2);
 
-        tmp = (FIXP_DBL)0;
-        ener = (FIXP_DBL)0;
+        tmp = (int32_t)0;
+        ener = (int32_t)0;
         for (i = 0; i < lg; i++) {
           tmp += fPow2Div2(syn[i + i_subfr] << s1) >> (SF_PITCH_TRACK);
           ener += fPow2Div2(syn[i + i_subfr + T] << s2) >> (SF_PITCH_TRACK);
@@ -284,13 +284,13 @@ void bass_pf_1sf_delay(
            samples ener or tmp might overflow and become negative. For all sane
            cases we have enough headroom.
         */
-        if (ener <= (FIXP_DBL)0) {
-          ener = (FIXP_DBL)1;
+        if (ener <= (int32_t)0) {
+          ener = (int32_t)1;
         }
-        if (tmp <= (FIXP_DBL)0) {
-          tmp = (FIXP_DBL)1;
+        if (tmp <= (int32_t)0) {
+          tmp = (int32_t)1;
         }
-        FDK_ASSERT(ener > (FIXP_DBL)0);
+        FDK_ASSERT(ener > (int32_t)0);
 
         /* tmp = sqrt(tmp/ener) */
         int result_e = 0;
@@ -306,7 +306,7 @@ void bass_pf_1sf_delay(
 
         diff = result_e - gain_exp;
 
-        FIXP_DBL gain1 = gain;
+        int32_t gain1 = gain;
 
         if (diff >= 0) {
           diff = fMin(diff, 31);
@@ -360,14 +360,14 @@ void bass_pf_1sf_delay(
         }
       }
     } else {
-      FDKmemset(noise_in, (FIXP_DBL)0, L_SUBFR * sizeof(FIXP_DBL));
+      FDKmemset(noise_in, (int32_t)0, L_SUBFR * sizeof(int32_t));
     }
 
     {
-      FDKmemcpy(noise_buf, mem_bpf, (L_FILT + L_SUBFR) * sizeof(FIXP_DBL));
+      FDKmemcpy(noise_buf, mem_bpf, (L_FILT + L_SUBFR) * sizeof(int32_t));
 
       FDKmemcpy(mem_bpf, noise_buf + L_SUBFR,
-                (L_FILT + L_SUBFR) * sizeof(FIXP_DBL));
+                (L_FILT + L_SUBFR) * sizeof(int32_t));
     }
 
     /* substract from voiced speech low-pass filtered noise */
@@ -389,7 +389,7 @@ void bass_pf_1sf_delay(
     scaleValues(mem_bpf, (L_FILT + L_SUBFR), -1);
     /* Copy the rest of the signal (after the fac) */
     scaleValuesSaturate(
-        (PCM_DEC *)&synth_out[l_frame], (FIXP_DBL *)&syn[l_frame - L_SUBFR],
+        (int32_t *)&synth_out[l_frame], (int32_t *)&syn[l_frame - L_SUBFR],
         (frame_length - l_frame), MDCT_OUT_HEADROOM - aacOutDataHeadroom);
   }
 
@@ -418,15 +418,15 @@ void bass_pf_1sf_delay(
  */
 #define ALFDPOW2_SCALE 3
 /*static*/
-void CLpd_AdaptLowFreqDeemph(FIXP_DBL x[], int lg, FIXP_DBL alfd_gains[],
+void CLpd_AdaptLowFreqDeemph(int32_t x[], int lg, int32_t alfd_gains[],
                              INT s) {
   {
     int i, j, k, i_max;
-    FIXP_DBL max, fac;
+    int32_t max, fac;
     /* Note: This stack array saves temporary accumulation results to be used in
      * a second run */
     /*       The size should be limited to (1024/4)/8=32 */
-    FIXP_DBL tmp_pow2[32];
+    int32_t tmp_pow2[32];
 
     s = s * 2 + ALFDPOW2_SCALE;
     s = fMin(31, s);
@@ -437,15 +437,15 @@ void CLpd_AdaptLowFreqDeemph(FIXP_DBL x[], int lg, FIXP_DBL alfd_gains[],
     /* find spectral peak */
     max = FL2FX_DBL(0.01f) >> s;
     for (i = 0; i < i_max; i += k) {
-      FIXP_DBL tmp;
+      int32_t tmp;
 
-      tmp = FIXP_DBL(0);
-      FIXP_DBL *pX = &x[i];
+      tmp = int32_t(0);
+      int32_t *pX = &x[i];
 
       j = 8;
       do {
-        FIXP_DBL x0 = *pX++;
-        FIXP_DBL x1 = *pX++;
+        int32_t x0 = *pX++;
+        int32_t x1 = *pX++;
         x0 = fPow2Div2(x0);
         x1 = fPow2Div2(x1);
         tmp = tmp + (x0 >> (ALFDPOW2_SCALE - 1));
@@ -461,7 +461,7 @@ void CLpd_AdaptLowFreqDeemph(FIXP_DBL x[], int lg, FIXP_DBL alfd_gains[],
     /* deemphasis of all blocks below the peak */
     fac = FL2FX_DBL(0.1f) >> 1;
     for (i = 0; i < i_max; i += k) {
-      FIXP_DBL tmp;
+      int32_t tmp;
       INT shifti;
 
       tmp = tmp_pow2[i >> 3];
@@ -475,14 +475,14 @@ void CLpd_AdaptLowFreqDeemph(FIXP_DBL x[], int lg, FIXP_DBL alfd_gains[],
       {
         INT sd;
 
-        if (tmp != (FIXP_DBL)0) {
+        if (tmp != (int32_t)0) {
           tmp = fDivNorm(max, tmp, &sd);
           if (sd & 1) {
             sd++;
             tmp >>= 1;
           }
         } else {
-          tmp = (FIXP_DBL)MAXVAL_DBL;
+          tmp = (int32_t)MAXVAL_DBL;
           sd = 0;
         }
         tmp = invSqrtNorm2(tmp, &shifti);
@@ -491,12 +491,12 @@ void CLpd_AdaptLowFreqDeemph(FIXP_DBL x[], int lg, FIXP_DBL alfd_gains[],
       if (tmp > fac) {
         fac = tmp;
       }
-      FIXP_DBL *pX = &x[i];
+      int32_t *pX = &x[i];
 
       j = 8;
       do {
-        FIXP_DBL x0 = pX[0];
-        FIXP_DBL x1 = pX[1];
+        int32_t x0 = pX[0];
+        int32_t x1 = pX[1];
         x0 = fMultDiv2(x0, fac);
         x1 = fMultDiv2(x1, fac);
         x0 = x0 << 2;
@@ -539,15 +539,15 @@ void CLpd_AdaptLowFreqDeemph(FIXP_DBL x[], int lg, FIXP_DBL alfd_gains[],
 #define LPC2MDCT_GAIN_SAVE (4)
 #define LPC2MDCT_APPLY_NSHAPE (8)
 
-void lpc2mdctAndNoiseShaping(FIXP_DBL *r, SHORT *pScale, const INT lg,
+void lpc2mdctAndNoiseShaping(int32_t *r, SHORT *pScale, const INT lg,
                              const INT fdns_npts, const FIXP_LPC *A1,
                              const INT A1_exp, const FIXP_LPC *A2,
                              const INT A2_exp) {
-  FIXP_DBL *tmp2 = NULL;
-  FIXP_DBL rr_minus_one;
+  int32_t *tmp2 = NULL;
+  int32_t rr_minus_one;
   int i, k, s, step;
 
-  C_AALLOC_SCRATCH_START(tmp1, FIXP_DBL, FDNS_NPTS * 8)
+  C_AALLOC_SCRATCH_START(tmp1, int32_t, FDNS_NPTS * 8)
 
   {
     tmp2 = tmp1 + fdns_npts * 4;
@@ -556,7 +556,7 @@ void lpc2mdctAndNoiseShaping(FIXP_DBL *r, SHORT *pScale, const INT lg,
 
     /* ODFT. E_LPC_a_weight() for A1 and A2 vectors is included into the loop
      * below. */
-    FIXP_DBL f = FL2FXCONST_DBL(0.92f);
+    int32_t f = FL2FXCONST_DBL(0.92f);
 
     const FIXP_STP *SinTab;
     int k_step;
@@ -580,7 +580,7 @@ void lpc2mdctAndNoiseShaping(FIXP_DBL *r, SHORT *pScale, const INT lg,
 
     for (i = 0, k = k_step; i < M_LP_FILTER_ORDER; i++, k += k_step) {
       FIXP_STP cs = SinTab[k];
-      FIXP_DBL wA1, wA2;
+      int32_t wA1, wA2;
 
       wA1 = fMult(A1[i], f);
       wA2 = fMult(A2[i], f);
@@ -602,18 +602,18 @@ void lpc2mdctAndNoiseShaping(FIXP_DBL *r, SHORT *pScale, const INT lg,
     int A2_exp_fix = fMax(3, A2_exp + 2);
 
     /* Set 1.0 in the proper format */
-    tmp1[0] = (FIXP_DBL)(INT)((ULONG)0x80000000 >> A1_exp_fix);
-    tmp2[0] = (FIXP_DBL)(INT)((ULONG)0x80000000 >> A2_exp_fix);
+    tmp1[0] = (int32_t)(INT)((ULONG)0x80000000 >> A1_exp_fix);
+    tmp2[0] = (int32_t)(INT)((ULONG)0x80000000 >> A2_exp_fix);
 
-    tmp1[1] = tmp2[1] = (FIXP_DBL)0;
+    tmp1[1] = tmp2[1] = (int32_t)0;
 
     /* Clear the resto of the array */
     FDKmemclear(
         tmp1 + 2 * (M_LP_FILTER_ORDER + 1),
-        2 * (fdns_npts * 2 - (M_LP_FILTER_ORDER + 1)) * sizeof(FIXP_DBL));
+        2 * (fdns_npts * 2 - (M_LP_FILTER_ORDER + 1)) * sizeof(int32_t));
     FDKmemclear(
         tmp2 + 2 * (M_LP_FILTER_ORDER + 1),
-        2 * (fdns_npts * 2 - (M_LP_FILTER_ORDER + 1)) * sizeof(FIXP_DBL));
+        2 * (fdns_npts * 2 - (M_LP_FILTER_ORDER + 1)) * sizeof(int32_t));
 
     /* Guarantee 2 bits of headroom for FFT */
     scaleValues(&tmp1[2], (2 * M_LP_FILTER_ORDER), (A1_exp - A1_exp_fix));
@@ -640,15 +640,15 @@ void lpc2mdctAndNoiseShaping(FIXP_DBL *r, SHORT *pScale, const INT lg,
 
   /* Get amplitude and apply gains */
   step = lg / fdns_npts;
-  rr_minus_one = (FIXP_DBL)0;
+  rr_minus_one = (int32_t)0;
 
   for (k = 0; k < fdns_npts; k++) {
-    FIXP_DBL g1, g2, inv_g1_g2, a, b;
+    int32_t g1, g2, inv_g1_g2, a, b;
     INT inv_g1_g2_e;
     int g_e, shift;
 
     {
-      FIXP_DBL real, imag;
+      int32_t real, imag;
       int si1, si2, sInput;
 
       real = tmp1[k * 2];
@@ -681,18 +681,18 @@ void lpc2mdctAndNoiseShaping(FIXP_DBL *r, SHORT *pScale, const INT lg,
 
     /* end of lpc2mdct() */
 
-    FDK_ASSERT(g1 >= (FIXP_DBL)0);
-    FDK_ASSERT(g2 >= (FIXP_DBL)0);
+    FDK_ASSERT(g1 >= (int32_t)0);
+    FDK_ASSERT(g2 >= (int32_t)0);
 
     /* mdct_IntNoiseShaping() */
     {
       /* inv_g1_g2 * 2^inv_g1_g2_e = 1/(g1+g2) */
       inv_g1_g2 = (g1 >> 1) + (g2 >> 1);
-      if (inv_g1_g2 != (FIXP_DBL)0) {
+      if (inv_g1_g2 != (int32_t)0) {
         inv_g1_g2 = fDivNorm(FL2FXCONST_DBL(0.5f), inv_g1_g2, &inv_g1_g2_e);
         inv_g1_g2_e = inv_g1_g2_e - g_e;
       } else {
-        inv_g1_g2 = (FIXP_DBL)MAXVAL_DBL;
+        inv_g1_g2 = (int32_t)MAXVAL_DBL;
         inv_g1_g2_e = 0;
       }
 
@@ -711,7 +711,7 @@ void lpc2mdctAndNoiseShaping(FIXP_DBL *r, SHORT *pScale, const INT lg,
       }
 
       for (i = k * step; i < (k + 1) * step; i++) {
-        FIXP_DBL tmp;
+        int32_t tmp;
 
         /* rr[i] = 2*a*r[i] + b*rr[i-1] */
         tmp = fMult(a, r[i]);
@@ -726,7 +726,7 @@ void lpc2mdctAndNoiseShaping(FIXP_DBL *r, SHORT *pScale, const INT lg,
   /* end of mdct_IntNoiseShaping() */
   { *pScale += NSHAPE_SCALE; }
 
-  C_AALLOC_SCRATCH_END(tmp1, FIXP_DBL, FDNS_NPTS * 8)
+  C_AALLOC_SCRATCH_END(tmp1, int32_t, FDNS_NPTS * 8)
 }
 
 /**
@@ -737,18 +737,18 @@ void lpc2mdctAndNoiseShaping(FIXP_DBL *r, SHORT *pScale, const INT lg,
  * \param rms_e pointer to exponent of energy value.
  * \return mantissa of energy value.
  */
-static FIXP_DBL calcEnergy(const FIXP_DBL *r, const SHORT rs, const INT lg,
+static int32_t calcEnergy(const int32_t *r, const SHORT rs, const INT lg,
                            INT *rms_e) {
   int headroom = getScalefactor(r, lg);
 
-  FIXP_DBL rms_m = 0;
+  int32_t rms_m = 0;
 
   /* Calculate number of growth bits due to addition */
-  INT shift = (INT)(fNormz((FIXP_DBL)lg));
+  INT shift = (INT)(fNormz((int32_t)lg));
   shift = 31 - shift;
 
   /* Generate 1e-2 in Q-6.37 */
-  const FIXP_DBL value0_01 = 0x51eb851e;
+  const int32_t value0_01 = 0x51eb851e;
   const INT value0_01_exp = -6;
 
   /* Find the exponent of the resulting energy value */
@@ -789,10 +789,10 @@ static FIXP_DBL calcEnergy(const FIXP_DBL *r, const SHORT rs, const INT lg,
  * \param IGF_bgn the IGF start index.
  */
 static void calcTCXGain(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                        FIXP_DBL *r, FIXP_DBL rms_m, INT rms_e, const INT frame,
+                        int32_t *r, int32_t rms_m, INT rms_e, const INT frame,
                         const INT lg) {
-  if ((rms_m != (FIXP_DBL)0)) {
-    FIXP_DBL tcx_gain_m;
+  if ((rms_m != (int32_t)0)) {
+    int32_t tcx_gain_m;
     INT tcx_gain_e;
 
     CLpd_DecodeGain(&tcx_gain_m, &tcx_gain_e,
@@ -806,13 +806,13 @@ static void calcTCXGain(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     }
 
     {
-      FIXP_DBL fx_lg;
+      int32_t fx_lg;
       INT fx_lg_e, s;
       INT inv_e;
 
       /* lg = fx_lg * 2^fx_lg_e */
-      s = fNorm((FIXP_DBL)lg);
-      fx_lg = (FIXP_DBL)lg << s;
+      s = fNorm((int32_t)lg);
+      fx_lg = (int32_t)lg << s;
       fx_lg_e = DFRACT_BITS - 1 - s;
       /* 1/sqrt(rms) */
       rms_m = invSqrtNorm2(rms_m, &inv_e);
@@ -867,14 +867,14 @@ static void calcTCXGain(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
 /* static */
 void CLpd_FdnsDecode(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                      CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-                     FIXP_DBL r[], const INT lg, const INT frame, SHORT *pScale,
+                     int32_t r[], const INT lg, const INT frame, SHORT *pScale,
                      const FIXP_LPC A1[M_LP_FILTER_ORDER], const INT A1_exp,
                      const FIXP_LPC A2[M_LP_FILTER_ORDER], const INT A2_exp,
-                     FIXP_DBL pAlfdGains[LFAC / 4], const INT fdns_npts) {
+                     int32_t pAlfdGains[LFAC / 4], const INT fdns_npts) {
   /* Weight LPC coefficients using Rm values */
   CLpd_AdaptLowFreqDeemph(r, lg, pAlfdGains, *pScale);
 
-  FIXP_DBL rms_m = (FIXP_DBL)0;
+  int32_t rms_m = (int32_t)0;
   INT rms_e = 0;
   {
     /* Calculate Energy */
@@ -892,17 +892,17 @@ void CLpd_FdnsDecode(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
 /**
  * find pitch for TCX20 (time domain) concealment.
  */
-static int find_mpitch(FIXP_DBL xri[], int lg) {
-  FIXP_DBL max, pitch;
+static int find_mpitch(int32_t xri[], int lg) {
+  int32_t max, pitch;
   INT pitch_e;
   int i, n;
 
-  max = (FIXP_DBL)0;
+  max = (int32_t)0;
   n = 2;
 
   /* find maximum below 400Hz */
   for (i = 2; i < (lg >> 4); i += 2) {
-    FIXP_DBL tmp = fPow2Div2(xri[i]) + fPow2Div2(xri[i + 1]);
+    int32_t tmp = fPow2Div2(xri[i]) + fPow2Div2(xri[i + 1]);
     if (tmp > max) {
       max = tmp;
       n = i;
@@ -910,15 +910,15 @@ static int find_mpitch(FIXP_DBL xri[], int lg) {
   }
 
   // pitch = ((float)lg<<1)/(float)n;
-  pitch = fDivNorm((FIXP_DBL)lg << 1, (FIXP_DBL)n, &pitch_e);
+  pitch = fDivNorm((int32_t)lg << 1, (int32_t)n, &pitch_e);
   pitch >>= fixMax(0, DFRACT_BITS - 1 - pitch_e - 16);
 
   /* find pitch multiple under 20ms */
-  if (pitch >= (FIXP_DBL)((256 << 16) - 1)) { /*231.0f*/
+  if (pitch >= (int32_t)((256 << 16) - 1)) { /*231.0f*/
     n = 256;
   } else {
-    FIXP_DBL mpitch = pitch;
-    while (mpitch < (FIXP_DBL)(255 << 16)) {
+    int32_t mpitch = pitch;
+    while (mpitch < (int32_t)(255 << 16)) {
       mpitch += pitch;
     }
     n = (int)(mpitch - pitch) >> 16;
@@ -946,7 +946,7 @@ static void CLpd_TcxDecode(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo, UINT flags,
     int mod, int last_mod, int frame, int frameOk) {
-  FIXP_DBL *pAlfd_gains = pAacDecoderStaticChannelInfo->last_alfd_gains;
+  int32_t *pAlfd_gains = pAacDecoderStaticChannelInfo->last_alfd_gains;
   ULONG *pSeed = &pAacDecoderStaticChannelInfo->nfRandomSeed;
   int lg = (pAacDecoderChannelInfo->granuleLength == 128)
                ? lg_table_ccfl[0][mod + 0]
@@ -956,8 +956,8 @@ static void CLpd_TcxDecode(
 
   /* Obtain r[] vector by combining the quant[] and noise[] vectors */
   {
-    FIXP_DBL noise_level;
-    FIXP_DBL *coeffs =
+    int32_t noise_level;
+    int32_t *coeffs =
         SPEC_TCX(pAacDecoderChannelInfo->pSpectralCoefficient, frame,
                  pAacDecoderChannelInfo->granuleLength, isFullBandLpd);
     int scale = pAacDecoderChannelInfo->specScale[frame];
@@ -977,10 +977,10 @@ static void CLpd_TcxDecode(
     }
 
     noise_level =
-        (FIXP_DBL)((LONG)FL2FXCONST_DBL(0.0625f) * (8 - tcx_noise_factor));
+        (int32_t)((LONG)FL2FXCONST_DBL(0.0625f) * (8 - tcx_noise_factor));
     noise_level = scaleValue(noise_level, -scale);
 
-    const FIXP_DBL neg_noise_level = -noise_level;
+    const int32_t neg_noise_level = -noise_level;
 
     {
       nfBgn = lg / 6;
@@ -1064,7 +1064,7 @@ static AAC_DECODER_ERROR CLpd_TCX_Read(
     int first_tcx_flag, int frame, UINT flags) {
   AAC_DECODER_ERROR errorAAC = AAC_DEC_OK;
   ARITH_CODING_ERROR error = ARITH_CODER_OK;
-  FIXP_DBL *pSpec;
+  int32_t *pSpec;
   int arith_reset_flag = 0;
   int isFullBandLpd = 0;
 
@@ -1189,7 +1189,7 @@ static void CLpd_Reset(
   pAacDecoderStaticChannelInfo->old_bpf_control_info = 0;
   for (i = 0; i < SYN_SFD; i++) {
     pAacDecoderStaticChannelInfo->old_T_pf[i] = 64;
-    pAacDecoderStaticChannelInfo->old_gain_pf[i] = (FIXP_DBL)0;
+    pAacDecoderStaticChannelInfo->old_gain_pf[i] = (int32_t)0;
   }
 
   /* Reset ACELP memory */
@@ -1557,7 +1557,7 @@ void CLpdChannelStream_Decode(
 
 AAC_DECODER_ERROR CLpd_RenderTimeSignal(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo, PCM_DEC *pTimeData,
+    CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t *pTimeData,
     INT lFrame, SamplingRateInfo *pSamplingRateInfo, UINT frameOk,
     const INT aacOutDataHeadroom, UINT flags, UINT strmFlags) {
   UCHAR *mod = pAacDecoderChannelInfo->data.usac.mod;
@@ -1582,13 +1582,13 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
    synthesis samples are handled by the IMDCT overlap.
    */
 
-  FIXP_DBL *synth_buf =
+  int32_t *synth_buf =
       pAacDecoderChannelInfo->pComStaticData->pWorkBufferCore1->synth_buf;
-  FIXP_DBL *synth = synth_buf + PIT_MAX_MAX - BPF_DELAY;
+  int32_t *synth = synth_buf + PIT_MAX_MAX - BPF_DELAY;
   UCHAR last_lpd_mode, last_last_lpd_mode, last_lpc_lost, last_frame_lost;
 
   INT pitch[NB_SUBFR_SUPERFR + SYN_SFD];
-  FIXP_DBL pit_gain[NB_SUBFR_SUPERFR + SYN_SFD];
+  int32_t pit_gain[NB_SUBFR_SUPERFR + SYN_SFD];
 
   const int *lg_table;
   int lg_table_offset = 0;
@@ -1625,7 +1625,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
   }
 
   if (!frameOk) {
-    FIXP_DBL old_tcx_gain;
+    int32_t old_tcx_gain;
     FIXP_SGL old_stab;
     SCHAR old_tcx_gain_e;
     int nLostSf;
@@ -1736,12 +1736,12 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
     }
     if (mod[k] == 0 || mod[k] == 4) {
       /* ACELP or TCX time domain concealment */
-      FIXP_DBL *acelp_out;
+      int32_t *acelp_out;
 
       /* FAC management */
       if ((last_lpd_mode != 0) && (last_lpd_mode != 4)) /* TCX TD concealment */
       {
-        FIXP_DBL *pFacData = NULL;
+        int32_t *pFacData = NULL;
 
         if (frameOk && !last_frame_lost) {
           pFacData = pAacDecoderChannelInfo->data.usac.fac_data[k];
@@ -1762,7 +1762,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
 
         FDKmemcpy(
             synth + nrSamples, pAacDecoderStaticChannelInfo->IMdct.overlap.time,
-            pAacDecoderStaticChannelInfo->IMdct.ov_offset * sizeof(FIXP_DBL));
+            pAacDecoderStaticChannelInfo->IMdct.ov_offset * sizeof(int32_t));
         {
           FIXP_LPC *lp_prev =
               pAacDecoderChannelInfo->data.usac
@@ -1871,13 +1871,13 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
       /* FAC management */
       if ((last_lpd_mode == 0) || (last_lpd_mode == 4)) /* TCX TD concealment */
       {
-        C_AALLOC_SCRATCH_START(fac_buf, FIXP_DBL, 1024 / 8);
+        C_AALLOC_SCRATCH_START(fac_buf, int32_t, 1024 / 8);
 
         /* pAacDecoderChannelInfo->data.usac.fac_data[k] == NULL means no FAC
          * data available. */
         if (last_frame_lost == 1 ||
             pAacDecoderChannelInfo->data.usac.fac_data[k] == NULL) {
-          FDKmemclear(fac_buf, 1024 / 8 * sizeof(FIXP_DBL));
+          FDKmemclear(fac_buf, 1024 / 8 * sizeof(int32_t));
           pAacDecoderChannelInfo->data.usac.fac_data[k] = fac_buf;
           pAacDecoderChannelInfo->data.usac.fac_data_e[k] = 0;
         }
@@ -1912,7 +1912,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
             pit_gain[(k * nbSubfr) + synSfd] =
                 pit_gain[(k * nbSubfr) + synSfd - 1];
 
-        C_AALLOC_SCRATCH_END(fac_buf, FIXP_DBL, 1024 / 8);
+        C_AALLOC_SCRATCH_END(fac_buf, int32_t, 1024 / 8);
       } else {
         int tl = lg;
         int fl = lDiv;
@@ -1977,10 +1977,10 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
   if (!(pAacDecoderChannelInfo->data.usac.bpf_control_info)) {
     if (mod[0] != 0 && (pAacDecoderStaticChannelInfo->old_bpf_control_info)) {
       for (int i = 2; i < nbSubfrSuperfr; i++)
-        pit_gain[synSfd + i] = (FIXP_DBL)0;
+        pit_gain[synSfd + i] = (int32_t)0;
     } else {
       for (int i = 0; i < nbSubfrSuperfr; i++)
-        pit_gain[synSfd + i] = (FIXP_DBL)0;
+        pit_gain[synSfd + i] = (int32_t)0;
     }
   }
 
@@ -2005,14 +2005,14 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
 
     FDK_ASSERT(lookahead == copySamp - BPF_DELAY);
 
-    FIXP_DBL *p2_synth = synth + BPF_DELAY;
+    int32_t *p2_synth = synth + BPF_DELAY;
 
     /* recalculate pitch gain to allow postfilering on FAC area */
     for (int i = 0; i < nbSubfrSuperfr; i++) {
       int T = pitch[i];
-      FIXP_DBL gain = pit_gain[i];
+      int32_t gain = pit_gain[i];
 
-      if (gain > (FIXP_DBL)0) {
+      if (gain > (int32_t)0) {
         gain = get_gain(&p2_synth[i * L_SUBFR], &p2_synth[(i * L_SUBFR) - T],
                         L_SUBFR);
         pit_gain[i] = gain;

@@ -115,16 +115,16 @@ amm-info@iis.fraunhofer.de
 #if !defined(FUNCTION_autoCorr2nd_real)
 INT autoCorr2nd_real(
     ACORR_COEFS *ac,          /*!< Pointer to autocorrelation coeffs */
-    const FIXP_DBL *reBuffer, /*!< Pointer to to real part of input samples */
+    const int32_t *reBuffer, /*!< Pointer to to real part of input samples */
     const int len             /*!< Number input samples */
 ) {
   int j, autoCorrScaling, mScale;
 
-  FIXP_DBL accu1, accu2, accu3, accu4, accu5;
+  int32_t accu1, accu2, accu3, accu4, accu5;
 
-  const FIXP_DBL *pReBuf;
+  const int32_t *pReBuf;
 
-  const FIXP_DBL *realBuf = reBuffer;
+  const int32_t *realBuf = reBuffer;
 
   /*
     r11r,r22r
@@ -186,18 +186,18 @@ INT autoCorr2nd_real(
 #if !defined(FUNCTION_autoCorr2nd_cplx)
 INT autoCorr2nd_cplx(
     ACORR_COEFS *ac,          /*!< Pointer to autocorrelation coeffs */
-    const FIXP_DBL *reBuffer, /*!< Pointer to real part of input samples */
-    const FIXP_DBL *imBuffer, /*!< Pointer to imag part of input samples */
+    const int32_t *reBuffer, /*!< Pointer to real part of input samples */
+    const int32_t *imBuffer, /*!< Pointer to imag part of input samples */
     const int len /*!< Number of input samples (should be smaller than 128) */
 ) {
   int j, autoCorrScaling, mScale, len_scale;
 
-  FIXP_DBL accu0, accu1, accu2, accu3, accu4, accu5, accu6, accu7, accu8;
+  int32_t accu0, accu1, accu2, accu3, accu4, accu5, accu6, accu7, accu8;
 
-  const FIXP_DBL *pReBuf, *pImBuf;
+  const int32_t *pReBuf, *pImBuf;
 
-  const FIXP_DBL *realBuf = reBuffer;
-  const FIXP_DBL *imagBuf = imBuffer;
+  const int32_t *realBuf = reBuffer;
+  const int32_t *imagBuf = imBuffer;
 
   (len > 64) ? (len_scale = 6) : (len_scale = 5);
   /*
@@ -269,15 +269,15 @@ INT autoCorr2nd_cplx(
   autoCorrScaling = mScale - 1 - len_scale; /* -1 because of fMultDiv2*/
 
   /* Scale to common scale factor */
-  ac->r00r = (FIXP_DBL)accu0 << mScale;
-  ac->r11r = (FIXP_DBL)accu1 << mScale;
-  ac->r22r = (FIXP_DBL)accu2 << mScale;
-  ac->r01r = (FIXP_DBL)accu3 << mScale;
-  ac->r12r = (FIXP_DBL)accu4 << mScale;
-  ac->r01i = (FIXP_DBL)accu5 << mScale;
-  ac->r12i = (FIXP_DBL)accu6 << mScale;
-  ac->r02r = (FIXP_DBL)accu7 << mScale;
-  ac->r02i = (FIXP_DBL)accu8 << mScale;
+  ac->r00r = (int32_t)accu0 << mScale;
+  ac->r11r = (int32_t)accu1 << mScale;
+  ac->r22r = (int32_t)accu2 << mScale;
+  ac->r01r = (int32_t)accu3 << mScale;
+  ac->r12r = (int32_t)accu4 << mScale;
+  ac->r01i = (int32_t)accu5 << mScale;
+  ac->r12i = (int32_t)accu6 << mScale;
+  ac->r02r = (int32_t)accu7 << mScale;
+  ac->r02i = (int32_t)accu8 << mScale;
 
   ac->det =
       (fMultDiv2(ac->r11r, ac->r22r) >> 1) -

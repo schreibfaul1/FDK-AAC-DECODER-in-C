@@ -179,9 +179,9 @@ H_ALLOC_MEM(Ram_SbrDecChannel, SBR_CHANNEL)
 H_ALLOC_MEM(Ram_SbrDecoder, struct SBR_DECODER_INSTANCE)
 
 H_ALLOC_MEM(Ram_sbr_QmfStatesSynthesis, FIXP_QSS)
-H_ALLOC_MEM(Ram_sbr_OverlapBuffer, FIXP_DBL)
+H_ALLOC_MEM(Ram_sbr_OverlapBuffer, int32_t)
 
-H_ALLOC_MEM(Ram_sbr_HBEOverlapBuffer, FIXP_DBL)
+H_ALLOC_MEM(Ram_sbr_HBEOverlapBuffer, int32_t)
 
 H_ALLOC_MEM(Ram_ps_dec, PS_DEC)
 

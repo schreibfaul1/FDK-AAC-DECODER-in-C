@@ -112,9 +112,9 @@ amm-info@iis.fraunhofer.de
 
 #define SPEC_FAC(ptr, i, gl) ((ptr) + ((i) * (gl)))
 
-FIXP_DBL *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                              UCHAR mod[NB_DIV], int *pState) {
-  FIXP_DBL *ptr;
+  int32_t *ptr;
   int i;
   int k = 0;
   int max_windows = 8;
@@ -142,9 +142,9 @@ FIXP_DBL *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
   return ptr;
 }
 
-int CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_DBL *pFac, SCHAR *pFacScale,
+int CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, int32_t *pFac, SCHAR *pFacScale,
                   int length, int use_gain, int frame) {
-  FIXP_DBL fac_gain;
+  int32_t fac_gain;
   int fac_gain_e = 0;
 
   if (use_gain) {
@@ -183,12 +183,12 @@ int CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_DBL *pFac, SCHAR *pFacScale,
  * \param x input/output vector, where the synthesis filter is applied in place.
  */
 static void Syn_filt_zero(const FIXP_LPC a[], const INT a_exp, INT length,
-                          FIXP_DBL x[]) {
+                          int32_t x[]) {
   int i, j;
-  FIXP_DBL L_tmp;
+  int32_t L_tmp;
 
   for (i = 0; i < length; i++) {
-    L_tmp = (FIXP_DBL)0;
+    L_tmp = (int32_t)0;
 
     for (j = 0; j < fMin(i, M_LP_FILTER_ORDER); j++) {
       L_tmp -= fMultDiv2(a[j], x[i - (j + 1)]) >> (LP_FILTER_SCALE - 1);
@@ -202,13 +202,13 @@ static void Syn_filt_zero(const FIXP_LPC a[], const INT a_exp, INT length,
 /* Table is also correct for coreCoderFrameLength = 768. Factor 3/4 is canceled
    out: gainFac = 0.5 * sqrt(fac_length/lFrame)
 */
-static const FIXP_DBL gainFac[4] = {0x40000000, 0x2d413ccd, 0x20000000,
+static const int32_t gainFac[4] = {0x40000000, 0x2d413ccd, 0x20000000,
                                     0x16a09e66};
 
-void CFac_ApplyGains(FIXP_DBL fac_data[LFAC], const INT fac_length,
-                     const FIXP_DBL tcx_gain, const FIXP_DBL alfd_gains[],
+void CFac_ApplyGains(int32_t fac_data[LFAC], const INT fac_length,
+                     const int32_t tcx_gain, const int32_t alfd_gains[],
                      const INT mod) {
-  FIXP_DBL facFactor;
+  int32_t facFactor;
   int i;
 
   FDK_ASSERT((fac_length == 128) || (fac_length == 96));
@@ -229,13 +229,13 @@ void CFac_ApplyGains(FIXP_DBL fac_data[LFAC], const INT fac_length,
   }
 }
 
-static void CFac_CalcFacSignal(FIXP_DBL *pOut, FIXP_DBL *pFac,
+static void CFac_CalcFacSignal(int32_t *pOut, int32_t *pFac,
                                const int fac_scale, const int fac_length,
                                const FIXP_LPC A[M_LP_FILTER_ORDER],
                                const INT A_exp, const int fAddZir,
                                const int isFdFac) {
   FIXP_LPC wA[M_LP_FILTER_ORDER];
-  FIXP_DBL tf_gain = (FIXP_DBL)0;
+  int32_t tf_gain = (int32_t)0;
   int wlength;
   int scale = fac_scale;
 
@@ -246,7 +246,7 @@ static void CFac_CalcFacSignal(FIXP_DBL *pOut, FIXP_DBL *pFac,
    */
   dct_IV(pFac, fac_length, &scale);
   /* dct_IV scale = log2(fac_length). "- 7" is a factor of 2/128 */
-  if (tf_gain != (FIXP_DBL)0) { /* non-radix 2 transform gain */
+  if (tf_gain != (int32_t)0) { /* non-radix 2 transform gain */
     int i;
 
     for (i = 0; i < fac_length; i++) {
@@ -261,7 +261,7 @@ static void CFac_CalcFacSignal(FIXP_DBL *pOut, FIXP_DBL *pFac,
   /* We need the output of the IIR filter to be longer than "fac_length".
   For this reason we run it with zero input appended to the end of the input
   sequence, i.e. we generate its ZIR and extend the output signal.*/
-  FDKmemclear(pOut + fac_length, fac_length * sizeof(FIXP_DBL));
+  FDKmemclear(pOut + fac_length, fac_length * sizeof(int32_t));
   wlength = 2 * fac_length;
 
   /* 5) Apply weighted synthesis filter to FAC data, including optional Zir (5.
@@ -269,12 +269,12 @@ static void CFac_CalcFacSignal(FIXP_DBL *pOut, FIXP_DBL *pFac,
   Syn_filt_zero(wA, A_exp, wlength, pOut);
 }
 
-INT CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *pFac,
+INT CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac,
                         const int fac_scale, FIXP_LPC *A, INT A_exp,
                         INT nrOutSamples, const INT fac_length,
                         const INT isFdFac, UCHAR prevWindowShape) {
-  FIXP_DBL *pOvl;
-  FIXP_DBL *pOut0;
+  int32_t *pOvl;
+  int32_t *pOut0;
   const FIXP_WTP *pWindow;
   int i, fl, nrSamples = 0;
 
@@ -310,13 +310,13 @@ INT CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *pFac,
   }
   if (hMdct->prevPrevAliasSymmetry == 0) {
     for (i = 0; i < hMdct->prev_nr; i++) {
-      FIXP_DBL x = -(*pOvl--);
+      int32_t x = -(*pOvl--);
       *pOut0 = IMDCT_SCALE_DBL(x);
       pOut0++;
     }
   } else {
     for (i = 0; i < hMdct->prev_nr; i++) {
-      FIXP_DBL x = (*pOvl--);
+      int32_t x = (*pOvl--);
       *pOut0 = IMDCT_SCALE_DBL(x);
       pOut0++;
     }
@@ -331,7 +331,7 @@ INT CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *pFac,
                          isFdFac);
     } else {
       /* Clear buffer because of the overlap and ADD! */
-      FDKmemclear(pOut0, fac_length * sizeof(FIXP_DBL));
+      FDKmemclear(pOut0, fac_length * sizeof(int32_t));
     }
   }
 
@@ -339,7 +339,7 @@ INT CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *pFac,
 
   if (hMdct->prevPrevAliasSymmetry == 0) {
     for (; i < fl / 2; i++) {
-      FIXP_DBL x0;
+      int32_t x0;
 
       /* Overlap Add */
       x0 = -fMult(*pOvl--, pWindow[i].v.re);
@@ -349,7 +349,7 @@ INT CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *pFac,
     }
   } else {
     for (; i < fl / 2; i++) {
-      FIXP_DBL x0;
+      int32_t x0;
 
       /* Overlap Add */
       x0 = fMult(*pOvl--, pWindow[i].v.re);
@@ -360,7 +360,7 @@ INT CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *pFac,
   }
   if (hMdct->pFacZir !=
       0) { /* this should only happen for ACELP -> TCX20 -> ACELP transition */
-    FIXP_DBL *pOut = pOut0 - fl / 2; /* fl/2 == fac_length */
+    int32_t *pOut = pOut0 - fl / 2; /* fl/2 == fac_length */
     for (i = 0; i < fl / 2; i++) {
       pOut[i] = fAddSaturate(pOut[i], IMDCT_SCALE_DBL(hMdct->pFacZir[i]));
     }
@@ -375,25 +375,25 @@ INT CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *pFac,
   return nrSamples;
 }
 
-INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *_pSpec,
+INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
                         const SHORT spec_scale[], const int nSpec,
-                        FIXP_DBL *pFac, const int fac_scale,
+                        int32_t *pFac, const int fac_scale,
                         const INT fac_length, INT noOutSamples, const INT tl,
                         const FIXP_WTP *wrs, const INT fr, FIXP_LPC A[16],
                         INT A_exp, CAcelpStaticMem *acelp_mem,
-                        const FIXP_DBL gain, const int last_frame_lost,
+                        const int32_t gain, const int last_frame_lost,
                         const int isFdFac, const UCHAR last_lpd_mode,
                         const int k, int currAliasingSymmetry) {
-  FIXP_DBL *pCurr, *pOvl, *pSpec;
+  int32_t *pCurr, *pOvl, *pSpec;
   const FIXP_WTP *pWindow;
   const FIXP_WTB *FacWindowZir_conceal;
   UCHAR doFacZirConceal = 0;
   int doDeemph = 1;
   const FIXP_WTB *FacWindowZir, *FacWindowSynth;
-  FIXP_DBL *pOut0 = output, *pOut1;
+  int32_t *pOut0 = output, *pOut1;
   int w, i, fl, nl, nr, f_len, nrSamples = 0, s = 0, scale, total_gain_e;
-  FIXP_DBL *pF, *pFAC_and_FAC_ZIR = NULL;
-  FIXP_DBL total_gain = gain;
+  int32_t *pF, *pFAC_and_FAC_ZIR = NULL;
+  int32_t total_gain = gain;
 
   FDK_ASSERT(fac_length <= 1024 / (4 * 2));
   switch (fac_length) {
@@ -458,7 +458,7 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *_pSpec,
   {
     pFAC_and_FAC_ZIR = CLpd_ACELP_GetFreeExcMem(acelp_mem, 2 * fac_length);
     {
-      const FIXP_DBL *pTmp1, *pTmp2;
+      const int32_t *pTmp1, *pTmp2;
 
       doFacZirConceal |= ((last_frame_lost != 0) && (k == 0));
       doDeemph &= (last_lpd_mode != 4);
@@ -467,7 +467,7 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *_pSpec,
            Use ZIR with a modified ZIR window to preserve some more energy.
            Dont use FAC, which contains wrong information for concealed frame
            Dont use last ACELP samples, but double ZIR, instead (afterwards) */
-        FDKmemclear(pFAC_and_FAC_ZIR, 2 * fac_length * sizeof(FIXP_DBL));
+        FDKmemclear(pFAC_and_FAC_ZIR, 2 * fac_length * sizeof(int32_t));
         FacWindowSynth = (FIXP_WTB *)pFAC_and_FAC_ZIR;
         FacWindowZir = FacWindowZir_conceal;
       } else {
@@ -489,7 +489,7 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *_pSpec,
         }
 
         for (i = 0, w = 0; i < fac_length; i++) {
-          FIXP_DBL x;
+          int32_t x;
           /* Div2 is compensated by table scaling */
           x = fMultDiv2(pTmp2[i], FacWindowZir[w]);
           x += fMultDiv2(pTmp1[-i - 1], FacWindowSynth[w]);
@@ -523,15 +523,15 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *_pSpec,
   if (currAliasingSymmetry == 0) {
     dct_IV(pSpec, tl, &scale);
   } else {
-    FIXP_DBL _tmp[1024 + ALIGNMENT_DEFAULT / sizeof(FIXP_DBL)];
-    FIXP_DBL *tmp = (FIXP_DBL *)ALIGN_PTR(_tmp);
+    int32_t _tmp[1024 + ALIGNMENT_DEFAULT / sizeof(int32_t)];
+    int32_t *tmp = (int32_t *)ALIGN_PTR(_tmp);
     C_ALLOC_ALIGNED_REGISTER(tmp, sizeof(_tmp));
     dst_III(pSpec, tmp, tl, &scale);
     C_ALLOC_ALIGNED_UNREGISTER(tmp);
   }
 
   /* Optional scaling of time domain - no yet windowed - of current spectrum */
-  if (total_gain != (FIXP_DBL)0) {
+  if (total_gain != (int32_t)0) {
     for (i = 0; i < tl; i++) {
       pSpec[i] = fMult(pSpec[i], total_gain);
     }
@@ -543,7 +543,7 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *_pSpec,
   pCurr = pSpec + tl - fl / 2;
 
   for (i = 0; i < fl / 2; i++) {
-    FIXP_DBL x1;
+    int32_t x1;
 
     /* FAC signal is already on pOut1, because of that the += operator. */
     x1 = fMult(*pCurr++, pWindow[i].v.re);
@@ -573,7 +573,7 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *_pSpec,
 
   pCurr = pSpec + tl - fl / 2 - 1;
   for (i = 0; i < nl; i++) {
-    FIXP_DBL x = -(*pCurr--);
+    int32_t x = -(*pCurr--);
     /* 5) (item 4) Synthesis filter Zir component, FAC ZIR (another one). */
     if (i < f_len) {
       x = fAddSaturate(x, *pF++);
@@ -622,7 +622,7 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *_pSpec,
     /* Optional scaling of time domain - no yet windowed - of current spectrum
      */
     /* and de-scale current spectrum signal (time domain, no yet windowed) */
-    if (total_gain != (FIXP_DBL)0) {
+    if (total_gain != (int32_t)0) {
       for (i = 0; i < tl; i++) {
         pSpec[i] = fMult(pSpec[i], total_gain);
       }
@@ -642,7 +642,7 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *_pSpec,
 
     /* NR output samples 0 .. NR. -overlap[TL/2..TL/2-NR] */
     for (i = 0; i < hMdct->prev_nr; i++) {
-      FIXP_DBL x = -(*pOvl--);
+      int32_t x = -(*pOvl--);
       *pOut0 = IMDCT_SCALE_DBL(x);
       pOut0++;
     }
@@ -664,7 +664,7 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *_pSpec,
     pCurr = pSpec + tl - fl / 2;
     if (currAliasingSymmetry == 0) {
       for (i = 0; i < fl / 2; i++) {
-        FIXP_DBL x0, x1;
+        int32_t x0, x1;
 
         cplxMultDiv2(&x1, &x0, *pCurr++, -*pOvl--, pWindow_prev[i]);
         *pOut0 = IMDCT_SCALE_DBL_LSH1(x0);
@@ -676,7 +676,7 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *_pSpec,
       if (hMdct->prevPrevAliasSymmetry == 0) {
         /* Jump DST II -> DST IV for the second window */
         for (i = 0; i < fl / 2; i++) {
-          FIXP_DBL x0, x1;
+          int32_t x0, x1;
 
           cplxMultDiv2(&x1, &x0, *pCurr++, -*pOvl--, pWindow_prev[i]);
           *pOut0 = IMDCT_SCALE_DBL_LSH1(x0);
@@ -687,7 +687,7 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *_pSpec,
       } else {
         /* Jump DST IV -> DST IV from the second window on */
         for (i = 0; i < fl / 2; i++) {
-          FIXP_DBL x0, x1;
+          int32_t x0, x1;
 
           cplxMultDiv2(&x1, &x0, *pCurr++, *pOvl--, pWindow_prev[i]);
           *pOut0 = IMDCT_SCALE_DBL_LSH1(x0);
@@ -700,7 +700,7 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *_pSpec,
 
     if (hMdct->pFacZir != 0) {
       /* add FAC ZIR of previous ACELP -> mdct transition */
-      FIXP_DBL *pOut = pOut0 - fl / 2;
+      int32_t *pOut = pOut0 - fl / 2;
       FDK_ASSERT(fl / 2 <= 128);
       for (i = 0; i < fl / 2; i++) {
         pOut[i] = fAddSaturate(pOut[i], IMDCT_SCALE_DBL(hMdct->pFacZir[i]));
@@ -713,7 +713,7 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *_pSpec,
     pOut1 += (fl / 2) + 1;
     pCurr = pSpec + tl - fl / 2 - 1;
     for (i = 0; i < nl; i++) {
-      FIXP_DBL x = -(*pCurr--);
+      int32_t x = -(*pCurr--);
       *pOut1 = IMDCT_SCALE_DBL(x);
       pOut1++;
     }

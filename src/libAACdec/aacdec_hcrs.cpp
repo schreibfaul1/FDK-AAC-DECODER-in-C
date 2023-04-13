@@ -101,6 +101,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdint.h>
 #include "aacdec_hcrs.h"
 
 #include "aacdec_hcr.h"
@@ -577,7 +578,7 @@ UINT Hcr_State_BODY_ONLY(HANDLE_FDK_BITSTREAM bs, void *ptr) {
   UINT *pSegmentBitfield;
   UINT *pCodewordBitfield;
   UINT segmentOffset;
-  FIXP_DBL *pResultBase;
+  int32_t *pResultBase;
   UINT *iNode;
   USHORT *iResultPointer;
   UINT codewordOffset;
@@ -646,7 +647,7 @@ UINT Hcr_State_BODY_ONLY(HANDLE_FDK_BITSTREAM bs, void *ptr) {
       for (dimCntr = pCbDimension[pCodebook[codewordOffset]]; dimCntr != 0;
            dimCntr--) {
         pResultBase[iQSC++] =
-            (FIXP_DBL)*pQuantVal++; /* write out 2 or 4 lines into
+            (int32_t)*pQuantVal++; /* write out 2 or 4 lines into
                                        spectrum; no Sign bits
                                        available in this state */
       }
@@ -712,7 +713,7 @@ UINT Hcr_State_BODY_SIGN__BODY(HANDLE_FDK_BITSTREAM bs, void *ptr) {
   UCHAR *pCodebook;
   UINT *iNode;
   UCHAR *pCntSign;
-  FIXP_DBL *pResultBase;
+  int32_t *pResultBase;
   USHORT *iResultPointer;
   UINT codewordOffset;
 
@@ -787,7 +788,7 @@ UINT Hcr_State_BODY_SIGN__BODY(HANDLE_FDK_BITSTREAM bs, void *ptr) {
       for (dimCntr = pCbDimension[pCodebook[codewordOffset]]; dimCntr != 0;
            dimCntr--) {
         pResultBase[iQSC++] =
-            (FIXP_DBL)*pQuantVal; /* write quant. spec. coef. into spectrum */
+            (int32_t)*pQuantVal; /* write quant. spec. coef. into spectrum */
         if (*pQuantVal++ != 0) {
           cntSign += 1;
         }
@@ -859,7 +860,7 @@ UINT Hcr_State_BODY_SIGN__SIGN(HANDLE_FDK_BITSTREAM bs, void *ptr) {
   UINT segmentOffset;
 
   UCHAR *pCntSign;
-  FIXP_DBL *pResultBase;
+  int32_t *pResultBase;
   USHORT *iResultPointer;
   UINT codewordOffset;
 
@@ -895,7 +896,7 @@ UINT Hcr_State_BODY_SIGN__SIGN(HANDLE_FDK_BITSTREAM bs, void *ptr) {
 
     /* search for a line (which was decoded in previous state) which is not
      * zero. [This value will get a sign] */
-    while (pResultBase[iQSC] == (FIXP_DBL)0) {
+    while (pResultBase[iQSC] == (int32_t)0) {
       if (++iQSC >= 1024) { /* points to current value different from zero */
         return BODY_SIGN__SIGN;
       }
@@ -964,7 +965,7 @@ UINT Hcr_State_BODY_SIGN_ESC__BODY(HANDLE_FDK_BITSTREAM bs, void *ptr) {
 
   UINT *iNode;
   UCHAR *pCntSign;
-  FIXP_DBL *pResultBase;
+  int32_t *pResultBase;
   USHORT *iResultPointer;
   UINT codewordOffset;
 
@@ -1038,7 +1039,7 @@ UINT Hcr_State_BODY_SIGN_ESC__BODY(HANDLE_FDK_BITSTREAM bs, void *ptr) {
 
       for (dimCntr = DIMENSION_OF_ESCAPE_CODEBOOK; dimCntr != 0; dimCntr--) {
         pResultBase[iQSC++] =
-            (FIXP_DBL)*pQuantVal; /* write quant. spec. coef. into spectrum */
+            (int32_t)*pQuantVal; /* write quant. spec. coef. into spectrum */
         if (*pQuantVal++ != 0) {
           cntSign += 1;
         }
@@ -1127,7 +1128,7 @@ UINT Hcr_State_BODY_SIGN_ESC__SIGN(HANDLE_FDK_BITSTREAM bs, void *ptr) {
 
   UINT *iNode;
   UCHAR *pCntSign;
-  FIXP_DBL *pResultBase;
+  int32_t *pResultBase;
   USHORT *iResultPointer;
   UINT *pEscapeSequenceInfo;
   UINT codewordOffset;
@@ -1172,7 +1173,7 @@ UINT Hcr_State_BODY_SIGN_ESC__SIGN(HANDLE_FDK_BITSTREAM bs, void *ptr) {
 
     /* get a quantized spectral value (which was decoded in previous state)
      * which is not zero. [This value will get a sign] */
-    while (pResultBase[iQSC] == (FIXP_DBL)0) {
+    while (pResultBase[iQSC] == (int32_t)0) {
       if (++iQSC >= 1024) {
         return BODY_SIGN_ESC__SIGN;
       }
@@ -1206,14 +1207,14 @@ UINT Hcr_State_BODY_SIGN_ESC__SIGN(HANDLE_FDK_BITSTREAM bs, void *ptr) {
       /* step 1 */
       /* test first value if escape sequence follows */
       flagA = 0; /* for first possible escape sequence */
-      if (fixp_abs(pResultBase[iQSC++]) == (FIXP_DBL)ESCAPE_VALUE) {
+      if (fixp_abs(pResultBase[iQSC++]) == (int32_t)ESCAPE_VALUE) {
         flagA = 1;
       }
 
       /* step 2 */
       /* test second value if escape sequence follows */
       flagB = 0; /* for second possible escape sequence */
-      if (fixp_abs(pResultBase[iQSC]) == (FIXP_DBL)ESCAPE_VALUE) {
+      if (fixp_abs(pResultBase[iQSC]) == (int32_t)ESCAPE_VALUE) {
         flagB = 1;
       }
 
@@ -1405,7 +1406,7 @@ UINT Hcr_State_BODY_SIGN_ESC__ESC_WORD(HANDLE_FDK_BITSTREAM bs, void *ptr) {
   UINT *pCodewordBitfield;
   UINT segmentOffset;
 
-  FIXP_DBL *pResultBase;
+  int32_t *pResultBase;
   USHORT *iResultPointer;
   UINT *pEscapeSequenceInfo;
   UINT codewordOffset;
@@ -1480,7 +1481,7 @@ UINT Hcr_State_BODY_SIGN_ESC__ESC_WORD(HANDLE_FDK_BITSTREAM bs, void *ptr) {
       /* step 0 */
       /* derive sign */
       iQSC = iResultPointer[codewordOffset];
-      sign = (pResultBase[iQSC] >= (FIXP_DBL)0)
+      sign = (pResultBase[iQSC] >= (int32_t)0)
                  ? 1
                  : -1; /* get sign of escape value 16 */
 
@@ -1493,7 +1494,7 @@ UINT Hcr_State_BODY_SIGN_ESC__ESC_WORD(HANDLE_FDK_BITSTREAM bs, void *ptr) {
       /* step 2 */
       /* calculate escape value */
       pResultBase[iQSC] =
-          (FIXP_DBL)(sign * (((INT)1 << escapePrefixUp) + (INT)escapeWord));
+          (int32_t)(sign * (((INT)1 << escapePrefixUp) + (INT)escapeWord));
 
       /* get both flags from sideinfo (flags are not shifted to the
        * lsb-position) */

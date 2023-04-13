@@ -118,7 +118,7 @@ amm-info@iis.fraunhofer.de
 
 /* #define LPC_TNS_LOWER_PRECISION */
 
-typedef FIXP_DBL FIXP_LPC_TNS;
+typedef int32_t FIXP_LPC_TNS;
 #define FX_DBL2FX_LPC_TNS(x) (x)
 #define FX_DBL2FXCONST_LPC_TNS(x) (x)
 #define FX_LPC_TNS2FX_DBL(x) (x)
@@ -126,7 +126,7 @@ typedef FIXP_DBL FIXP_LPC_TNS;
 #define MAXVAL_LPC_TNS MAXVAL_DBL
 
 typedef FIXP_SGL FIXP_LPC;
-#define FX_DBL2FX_LPC(x) FX_DBL2FX_SGL((FIXP_DBL)(x))
+#define FX_DBL2FX_LPC(x) FX_DBL2FX_SGL((int32_t)(x))
 #define FX_DBL2FXCONST_LPC(x) FX_DBL2FXCONST_SGL(x)
 #define FX_LPC2FX_DBL(x) FX_SGL2FX_DBL(x)
 #define FL2FXCONST_LPC(val) FL2FXCONST_SGL(val)
@@ -143,9 +143,9 @@ typedef FIXP_SGL FIXP_LPC;
  * \param filtState Pointer to state buffer of size order
  * \param filtStateIndex pointer to state index storage
  */
-void CLpc_Analysis(FIXP_DBL signal[], const int signal_size,
+void CLpc_Analysis(int32_t signal[], const int signal_size,
                    const FIXP_LPC lpcCoeff_m[], const int lpcCoeff_e,
-                   const int order, FIXP_DBL *filtState, int *filtStateIndex);
+                   const int order, int32_t *filtState, int *filtStateIndex);
 
 /**
  * \brief Synthesize signal fom residual through LPC synthesis, using LP
@@ -160,13 +160,13 @@ void CLpc_Analysis(FIXP_DBL signal[], const int signal_size,
  * \param state state buffer of size LPC_MAX_ORDER
  * \param pStateIndex pointer to state index storage
  */
-void CLpc_Synthesis(FIXP_DBL *signal, const int signal_size, const int signal_e,
+void CLpc_Synthesis(int32_t *signal, const int signal_size, const int signal_e,
                     const int inc, const FIXP_LPC_TNS *lpcCoeff_m,
-                    const int lpcCoeff_e, const int order, FIXP_DBL *state,
+                    const int lpcCoeff_e, const int order, int32_t *state,
                     int *pStateIndex);
-void CLpc_Synthesis(FIXP_DBL *signal, const int signal_size, const int signal_e,
+void CLpc_Synthesis(int32_t *signal, const int signal_size, const int signal_e,
                     const int inc, const FIXP_LPC coeff[], const int coeff_e,
-                    const int order, FIXP_DBL *filtState, int *pStateIndex);
+                    const int order, int32_t *filtState, int *pStateIndex);
 
 /**
  * \brief Synthesize signal fom residual through LPC synthesis, using ParCor
@@ -182,23 +182,23 @@ void CLpc_Synthesis(FIXP_DBL *signal, const int signal_size, const int signal_e,
  * \param order the LPC filter order (size of coeff)
  * \param state state buffer of size LPC_MAX_ORDER
  */
-void CLpc_SynthesisLattice(FIXP_DBL *signal, const int signal_size,
+void CLpc_SynthesisLattice(int32_t *signal, const int signal_size,
                            const int signal_e, const int signal_e_out,
                            const int inc, const FIXP_SGL *coeff,
-                           const int order, FIXP_DBL *state);
+                           const int order, int32_t *state);
 
-void CLpc_SynthesisLattice(FIXP_DBL *RESTRICT signal, const int signal_size,
+void CLpc_SynthesisLattice(int32_t *RESTRICT signal, const int signal_size,
                            const int signal_e, const int signal_e_out,
-                           const int inc, const FIXP_DBL *RESTRICT coeff,
-                           const int order, FIXP_DBL *RESTRICT state);
+                           const int inc, const int32_t *RESTRICT coeff,
+                           const int order, int32_t *RESTRICT state);
 
 /**
  * \brief
  */
 INT CLpc_ParcorToLpc(const FIXP_LPC_TNS reflCoeff[], FIXP_LPC_TNS LpcCoeff[],
-                     INT numOfCoeff, FIXP_DBL workBuffer[]);
+                     INT numOfCoeff, int32_t workBuffer[]);
 INT CLpc_ParcorToLpc(const FIXP_LPC reflCoeff[], FIXP_LPC LpcCoeff[],
-                     const int numOfCoeff, FIXP_DBL workBuffer[]);
+                     const int numOfCoeff, int32_t workBuffer[]);
 
 /**
  * \brief Calculate ParCor (Partial autoCorrelation, reflection) coefficients
@@ -211,8 +211,8 @@ INT CLpc_ParcorToLpc(const FIXP_LPC reflCoeff[], FIXP_LPC LpcCoeff[],
  * \param pPredictionGain_m prediction gain mantissa
  * \param pPredictionGain_e prediction gain exponent
  */
-void CLpc_AutoToParcor(FIXP_DBL acorr[], const int acorr_e,
+void CLpc_AutoToParcor(int32_t acorr[], const int acorr_e,
                        FIXP_LPC reflCoeff[], const int order,
-                       FIXP_DBL *pPredictionGain_m, INT *pPredictionGain_e);
+                       int32_t *pPredictionGain_m, INT *pPredictionGain_e);
 
 #endif /* FDK_LPC_H */

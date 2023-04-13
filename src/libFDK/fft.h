@@ -114,7 +114,7 @@ amm-info@iis.fraunhofer.de
  * \param scalefactor Pointer to an INT, which contains the current scale of the
  * input data, which is updated according to the FFT scale.
  */
-void fft(int length, FIXP_DBL *pInput, INT *scalefactor);
+void fft(int length, int32_t *pInput, INT *scalefactor);
 
 /**
  * \brief Perform an inplace complex valued IFFT of length 2^n
@@ -125,7 +125,7 @@ void fft(int length, FIXP_DBL *pInput, INT *scalefactor);
  * \param scalefactor Pointer to an INT, which contains the current scale of the
  * input data, which is updated according to the IFFT scale.
  */
-void ifft(int length, FIXP_DBL *pInput, INT *scalefactor);
+void ifft(int length, int32_t *pInput, INT *scalefactor);
 
 /*
  * Frequently used and fixed short length FFTs.
@@ -139,8 +139,8 @@ void ifft(int length, FIXP_DBL *pInput, INT *scalefactor);
  * bit scale headroom. The values are interleaved, real/imag pairs.
  */
 LNK_SECTION_CODE_L1
-static FDK_FORCEINLINE void fft_4(FIXP_DBL *x) {
-  FIXP_DBL a00, a10, a20, a30, tmp0, tmp1;
+static FDK_FORCEINLINE void fft_4(int32_t *x) {
+  int32_t a00, a10, a20, a30, tmp0, tmp1;
 
   a00 = (x[0] + x[4]) >> 1; /* Re A + Re B */
   a10 = (x[2] + x[6]) >> 1; /* Re C + Re D */
@@ -168,11 +168,11 @@ static FDK_FORCEINLINE void fft_4(FIXP_DBL *x) {
 
 #ifndef FUNCTION_fft_8
 LNK_SECTION_CODE_L1
-static FDK_FORCEINLINE void fft_8(FIXP_DBL *x) {
+static FDK_FORCEINLINE void fft_8(int32_t *x) {
   FIXP_SPK w_PiFOURTH = {{FIXP_SGL(0x5A82), FIXP_SGL(0x5A82)}};
 
-  FIXP_DBL a00, a10, a20, a30;
-  FIXP_DBL y[16];
+  int32_t a00, a10, a20, a30;
+  int32_t y[16];
 
   a00 = (x[0] + x[8]) >> 1;
   a10 = x[4] + x[12];
@@ -214,7 +214,7 @@ static FDK_FORCEINLINE void fft_8(FIXP_DBL *x) {
   y[11] = a20 - a10;
   y[15] = a20 + a10;
 
-  FIXP_DBL vr, vi, ur, ui;
+  int32_t vr, vi, ur, ui;
 
   ur = y[0] >> 1;
   ui = y[1] >> 1;

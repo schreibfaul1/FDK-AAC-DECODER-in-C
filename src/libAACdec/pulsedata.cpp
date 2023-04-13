@@ -146,7 +146,7 @@ void CPulseData_Apply(
     CPulseData *PulseData, /*!< pointer to pulse data side info */
     const short
         *pScaleFactorBandOffsets, /*!< pointer to scalefactor band offsets */
-    FIXP_DBL *coef)               /*!< pointer to spectrum */
+    int32_t *coef)               /*!< pointer to spectrum */
 {
   int i, k;
 
@@ -155,10 +155,10 @@ void CPulseData_Apply(
 
     for (i = 0; i <= PulseData->NumberPulse; i++) {
       k += PulseData->PulseOffset[i];
-      if (coef[k] > (FIXP_DBL)0)
-        coef[k] += (FIXP_DBL)(int)PulseData->PulseAmp[i];
+      if (coef[k] > (int32_t)0)
+        coef[k] += (int32_t)(int)PulseData->PulseAmp[i];
       else
-        coef[k] -= (FIXP_DBL)(int)PulseData->PulseAmp[i];
+        coef[k] -= (int32_t)(int)PulseData->PulseAmp[i];
     }
   }
 }

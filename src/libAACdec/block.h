@@ -103,6 +103,7 @@ amm-info@iis.fraunhofer.de
 #ifndef BLOCK_H
 #define BLOCK_H
 
+#include <stdint.h>
 #include "../libFDK/common_fix.h"
 
 #include "channelinfo.h"
@@ -218,8 +219,8 @@ void ApplyTools(CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
  */
 void CBlock_FrequencyToTime(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo, PCM_DEC outSamples[],
-    const SHORT frameLen, const int frameOk, FIXP_DBL *pWorkBuffer1,
+    CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t outSamples[],
+    const SHORT frameLen, const int frameOk, int32_t *pWorkBuffer1,
     const INT aacOutDataHeadroom, UINT elFlags, INT elCh);
 
 /**
@@ -227,7 +228,7 @@ void CBlock_FrequencyToTime(
  */
 void CBlock_FrequencyToTimeLowDelay(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo, PCM_DEC outSamples[],
+    CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t outSamples[],
     const short frameLen);
 
 AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
@@ -244,8 +245,8 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
  * \return the exponent of the result (mantissa) stored into *pValue.
  */
 FDK_INLINE
-int EvaluatePower43(FIXP_DBL *pValue, UINT lsb) {
-  FIXP_DBL value;
+int EvaluatePower43(int32_t *pValue, UINT lsb) {
+  int32_t value;
   UINT freeBits;
   UINT exponent;
 
@@ -256,7 +257,7 @@ int EvaluatePower43(FIXP_DBL *pValue, UINT lsb) {
 
   UINT x = (((int)value << freeBits) >> 19);
   UINT tableIndex = (x & 0x0FFF) >> 4;
-  FIXP_DBL invQVal;
+  int32_t invQVal;
 
   x = x & 0x0F;
 
@@ -264,7 +265,7 @@ int EvaluatePower43(FIXP_DBL *pValue, UINT lsb) {
   UINT r1 = (LONG)InverseQuantTable[tableIndex + 1];
   USHORT nx = 16 - x;
   UINT temp = (r0)*nx + (r1)*x;
-  invQVal = (FIXP_DBL)temp;
+  invQVal = (int32_t)temp;
 
   FDK_ASSERT(lsb < 4);
   *pValue = fMultDiv2(invQVal, MantissaTable[lsb][exponent]);
@@ -274,14 +275,14 @@ int EvaluatePower43(FIXP_DBL *pValue, UINT lsb) {
 }
 
 /* Recalculate gain */
-FIXP_DBL get_gain(const FIXP_DBL *x, const FIXP_DBL *y, int n);
+int32_t get_gain(const int32_t *x, const int32_t *y, int n);
 
 /**
  * \brief determine the required shift scale for the given quantized value and
  * scale (factor % 4) value.
  */
-FDK_INLINE int GetScaleFromValue(FIXP_DBL value, unsigned int lsb) {
-  if (value != (FIXP_DBL)0) {
+FDK_INLINE int GetScaleFromValue(int32_t value, unsigned int lsb) {
+  if (value != (int32_t)0) {
     int scale = EvaluatePower43(&value, lsb);
     return CntLeadingZeros(value) - scale - 2;
   } else

@@ -115,17 +115,17 @@ extern "C" {
 
 struct TDLimiter {
   unsigned int attack;
-  FIXP_DBL attackConst, releaseConst;
+  int32_t attackConst, releaseConst;
   unsigned int attackMs, releaseMs, maxAttackMs;
-  FIXP_DBL threshold;
+  int32_t threshold;
   unsigned int channels, maxChannels;
   UINT sampleRate, maxSampleRate;
-  FIXP_DBL cor, max;
-  FIXP_DBL* maxBuf;
-  FIXP_DBL* delayBuf;
+  int32_t cor, max;
+  int32_t* maxBuf;
+  int32_t* delayBuf;
   unsigned int maxBufIdx, delayBufIdx;
-  FIXP_DBL smoothState0;
-  FIXP_DBL minGain;
+  int32_t smoothState0;
+  int32_t minGain;
   INT scaling;
 };
 
@@ -148,7 +148,7 @@ typedef struct TDLimiter* TDLimiterPtr;
 #define FIXP_DBL2PCM_LIM(x) (x)
 #define PCM_LIM2FIXP_DBL(x) (x)
 #define PCM_LIM_BITS 32
-#define FIXP_PCM_LIM FIXP_DBL
+#define FIXP_PCM_LIM int32_t
 
 #define SAMPLE_BITS_LIM DFRACT_BITS
 
@@ -236,7 +236,7 @@ TDLIMITER_ERROR pcmLimiter_GetLibInfo(LIB_INFO* info);
  * returns:       limiter handle                                               *
  ******************************************************************************/
 TDLimiterPtr pcmLimiter_Create(unsigned int maxAttackMs, unsigned int releaseMs,
-                               FIXP_DBL threshold, unsigned int maxChannels,
+                               int32_t threshold, unsigned int maxChannels,
                                UINT maxSampleRate);
 
 /******************************************************************************
@@ -246,7 +246,7 @@ TDLimiterPtr pcmLimiter_Create(unsigned int maxAttackMs, unsigned int releaseMs,
  * returns:    error code                                                      *
  ******************************************************************************/
 TDLIMITER_ERROR pcmLimiter_SetThreshold(TDLimiterPtr limiter,
-                                        FIXP_DBL threshold);
+                                        int32_t threshold);
 
 /******************************************************************************
  * pcmLimiter_Apply                                                            *
@@ -259,7 +259,7 @@ TDLIMITER_ERROR pcmLimiter_SetThreshold(TDLimiterPtr limiter,
  * returns:    error code                                                      *
  ******************************************************************************/
 TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
-                                 INT_PCM* samplesOut, FIXP_DBL* pGainPerSample,
+                                 INT_PCM* samplesOut, int32_t* pGainPerSample,
                                  const INT scaling, const UINT nSamples);
 
 #endif /* #ifndef LIMITER_H */

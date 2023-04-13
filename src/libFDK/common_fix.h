@@ -103,10 +103,8 @@ amm-info@iis.fraunhofer.de
 #ifndef COMMON_FIX_H
 #define COMMON_FIX_H
 
+#include <stdint.h>
 #include "../libSYS/machine_type.h"
-
-
-
 #include "FDK_archdef.h"
 
 
@@ -123,10 +121,10 @@ amm-info@iis.fraunhofer.de
 /* Fixpoint equivalent type fot PCM audio time domain data. */
 #if defined(SAMPLE_BITS)
 #if (SAMPLE_BITS == DFRACT_BITS)
-#define FIXP_PCM FIXP_DBL
+#define FIXP_PCM int32_t
 #define MAXVAL_FIXP_PCM MAXVAL_DBL__vsclgbu8wtk
 #define MINVAL_FIXP_PCM MINVAL_DBL
-#define FX_PCM2FX_DBL(x) ((FIXP_DBL)(x))
+#define FX_PCM2FX_DBL(x) ((int32_t)(x))
 #define FX_DBL2FX_PCM(x) ((INT_PCM)(x))
 #elif (SAMPLE_BITS == FRACT_BITS)
 #define FIXP_PCM FIXP_SGL
@@ -146,7 +144,7 @@ amm-info@iis.fraunhofer.de
 #define MAX_SHIFT_SGL \
   (FRACT_BITS - 1) /* maximum possible shift for FIXP_SGL values */
 #define MAX_SHIFT_DBL \
-  (DFRACT_BITS - 1) /* maximum possible shift for FIXP_DBL values */
+  (DFRACT_BITS - 1) /* maximum possible shift for int32_t values */
 
 /* Scale factor from/to float/fixpoint values. DO NOT USE THESE VALUES AS
  * SATURATION LIMITS !! */
@@ -175,7 +173,7 @@ amm-info@iis.fraunhofer.de
 #define shouldBeUnion union /* unions are possible */
 
 typedef SHORT FIXP_SGL;
-typedef LONG FIXP_DBL;
+
 
 /* macros for compile-time conversion of constant float values to fixedpoint */
 #define FL2FXCONST_SPC FL2FXCONST_DBL
@@ -196,7 +194,7 @@ typedef LONG FIXP_DBL;
                  : (SHORT)((double)(val) * (double)(FRACT_FIX_SCALE)-0.5)))
 
 #define FL2FXCONST_DBL(val)                                                  \
-  (FIXP_DBL)(                                                                \
+  (int32_t)(                                                                \
       ((val) >= 0)                                                           \
           ? ((((double)(val) * (DFRACT_FIX_SCALE) + 0.5) >=                  \
               (double)(MAXVAL_DBL))                                          \
@@ -220,10 +218,10 @@ typedef LONG FIXP_DBL;
 /* macros for runtime conversion of fixedpoint values to other fixedpoint. NO
  * ROUNDING!!! */
 #define FX_ACC2FX_SGL(val) ((FIXP_SGL)((val) >> (ACCU_BITS - FRACT_BITS)))
-#define FX_ACC2FX_DBL(val) ((FIXP_DBL)((val) >> (ACCU_BITS - DFRACT_BITS)))
+#define FX_ACC2FX_DBL(val) ((int32_t)((val) >> (ACCU_BITS - DFRACT_BITS)))
 #define FX_SGL2FX_ACC(val) ((FIXP_ACC)((LONG)(val) << (ACCU_BITS - FRACT_BITS)))
 #define FX_SGL2FX_DBL(val) \
-  ((FIXP_DBL)((LONG)(val) << (DFRACT_BITS - FRACT_BITS)))
+  ((int32_t)((LONG)(val) << (DFRACT_BITS - FRACT_BITS)))
 #define FX_DBL2FX_SGL(val) ((FIXP_SGL)((val) >> (DFRACT_BITS - FRACT_BITS)))
 
 /* ############################################################# */
@@ -279,7 +277,7 @@ FDK_INLINE LONG fMultBitExact(LONG a, SHORT b) {
  */
 #include "abs.h"
 
-FDK_INLINE FIXP_DBL fAbs(FIXP_DBL x) { return fixabs_D(x); }
+FDK_INLINE int32_t fAbs(int32_t x) { return fixabs_D(x); }
 FDK_INLINE FIXP_SGL fAbs(FIXP_SGL x) { return fixabs_S(x); }
 
 #if !defined(__LP64__)
@@ -296,9 +294,9 @@ FDK_INLINE INT fNormz(INT64 x) {
   if (clz == 32) clz += fixnormz_D((INT)x);
   return clz;
 }
-FDK_INLINE INT fNormz(FIXP_DBL x) { return fixnormz_D(x); }
+FDK_INLINE INT fNormz(int32_t x) { return fixnormz_D(x); }
 FDK_INLINE INT fNormz(FIXP_SGL x) { return fixnormz_S(x); }
-FDK_INLINE INT fNorm(FIXP_DBL x) { return fixnorm_D(x); }
+FDK_INLINE INT fNorm(int32_t x) { return fixnorm_D(x); }
 FDK_INLINE INT fNorm(FIXP_SGL x) { return fixnorm_S(x); }
 
   /* ********************************************************************************
@@ -318,94 +316,94 @@ FDK_INLINE INT fNorm(FIXP_SGL x) { return fixnorm_S(x); }
 #include "fixmadd.h"
 
 /* y = (x+0.5*a*b) */
-FDK_INLINE FIXP_DBL fMultAddDiv2(FIXP_DBL x, FIXP_DBL a, FIXP_DBL b) {
+FDK_INLINE int32_t fMultAddDiv2(int32_t x, int32_t a, int32_t b) {
   return fixmadddiv2_DD(x, a, b);
 }
-FDK_INLINE FIXP_DBL fMultAddDiv2(FIXP_DBL x, FIXP_SGL a, FIXP_DBL b) {
+FDK_INLINE int32_t fMultAddDiv2(int32_t x, FIXP_SGL a, int32_t b) {
   return fixmadddiv2_SD(x, a, b);
 }
-FDK_INLINE FIXP_DBL fMultAddDiv2(FIXP_DBL x, FIXP_DBL a, FIXP_SGL b) {
+FDK_INLINE int32_t fMultAddDiv2(int32_t x, int32_t a, FIXP_SGL b) {
   return fixmadddiv2_DS(x, a, b);
 }
-FDK_INLINE FIXP_DBL fMultAddDiv2(FIXP_DBL x, FIXP_SGL a, FIXP_SGL b) {
+FDK_INLINE int32_t fMultAddDiv2(int32_t x, FIXP_SGL a, FIXP_SGL b) {
   return fixmadddiv2_SS(x, a, b);
 }
 
-FDK_INLINE FIXP_DBL fPow2AddDiv2(FIXP_DBL x, FIXP_DBL a) {
+FDK_INLINE int32_t fPow2AddDiv2(int32_t x, int32_t a) {
   return fixpadddiv2_D(x, a);
 }
-FDK_INLINE FIXP_DBL fPow2AddDiv2(FIXP_DBL x, FIXP_SGL a) {
+FDK_INLINE int32_t fPow2AddDiv2(int32_t x, FIXP_SGL a) {
   return fixpadddiv2_S(x, a);
 }
 
 /* y = 2*(x+0.5*a*b) = (2x+a*b) */
-FDK_INLINE FIXP_DBL fMultAdd(FIXP_DBL x, FIXP_DBL a, FIXP_DBL b) {
+FDK_INLINE int32_t fMultAdd(int32_t x, int32_t a, int32_t b) {
   return fixmadd_DD(x, a, b);
 }
-inline FIXP_DBL fMultAdd(FIXP_DBL x, FIXP_SGL a, FIXP_DBL b) {
+inline int32_t fMultAdd(int32_t x, FIXP_SGL a, int32_t b) {
   return fixmadd_SD(x, a, b);
 }
-inline FIXP_DBL fMultAdd(FIXP_DBL x, FIXP_DBL a, FIXP_SGL b) {
+inline int32_t fMultAdd(int32_t x, int32_t a, FIXP_SGL b) {
   return fixmadd_DS(x, a, b);
 }
-inline FIXP_DBL fMultAdd(FIXP_DBL x, FIXP_SGL a, FIXP_SGL b) {
+inline int32_t fMultAdd(int32_t x, FIXP_SGL a, FIXP_SGL b) {
   return fixmadd_SS(x, a, b);
 }
 
-inline FIXP_DBL fPow2Add(FIXP_DBL x, FIXP_DBL a) { return fixpadd_D(x, a); }
-inline FIXP_DBL fPow2Add(FIXP_DBL x, FIXP_SGL a) { return fixpadd_S(x, a); }
+inline int32_t fPow2Add(int32_t x, int32_t a) { return fixpadd_D(x, a); }
+inline int32_t fPow2Add(int32_t x, FIXP_SGL a) { return fixpadd_S(x, a); }
 
 /* y = (x-0.5*a*b) */
-inline FIXP_DBL fMultSubDiv2(FIXP_DBL x, FIXP_DBL a, FIXP_DBL b) {
+inline int32_t fMultSubDiv2(int32_t x, int32_t a, int32_t b) {
   return fixmsubdiv2_DD(x, a, b);
 }
-inline FIXP_DBL fMultSubDiv2(FIXP_DBL x, FIXP_SGL a, FIXP_DBL b) {
+inline int32_t fMultSubDiv2(int32_t x, FIXP_SGL a, int32_t b) {
   return fixmsubdiv2_SD(x, a, b);
 }
-inline FIXP_DBL fMultSubDiv2(FIXP_DBL x, FIXP_DBL a, FIXP_SGL b) {
+inline int32_t fMultSubDiv2(int32_t x, int32_t a, FIXP_SGL b) {
   return fixmsubdiv2_DS(x, a, b);
 }
-inline FIXP_DBL fMultSubDiv2(FIXP_DBL x, FIXP_SGL a, FIXP_SGL b) {
+inline int32_t fMultSubDiv2(int32_t x, FIXP_SGL a, FIXP_SGL b) {
   return fixmsubdiv2_SS(x, a, b);
 }
 
 /* y = 2*(x-0.5*a*b) = (2*x-a*b) */
-FDK_INLINE FIXP_DBL fMultSub(FIXP_DBL x, FIXP_DBL a, FIXP_DBL b) {
+FDK_INLINE int32_t fMultSub(int32_t x, int32_t a, int32_t b) {
   return fixmsub_DD(x, a, b);
 }
-inline FIXP_DBL fMultSub(FIXP_DBL x, FIXP_SGL a, FIXP_DBL b) {
+inline int32_t fMultSub(int32_t x, FIXP_SGL a, int32_t b) {
   return fixmsub_SD(x, a, b);
 }
-inline FIXP_DBL fMultSub(FIXP_DBL x, FIXP_DBL a, FIXP_SGL b) {
+inline int32_t fMultSub(int32_t x, int32_t a, FIXP_SGL b) {
   return fixmsub_DS(x, a, b);
 }
-inline FIXP_DBL fMultSub(FIXP_DBL x, FIXP_SGL a, FIXP_SGL b) {
+inline int32_t fMultSub(int32_t x, FIXP_SGL a, FIXP_SGL b) {
   return fixmsub_SS(x, a, b);
 }
 
-FDK_INLINE FIXP_DBL fMultAddDiv2BitExact(FIXP_DBL x, FIXP_DBL a, FIXP_DBL b) {
+FDK_INLINE int32_t fMultAddDiv2BitExact(int32_t x, int32_t a, int32_t b) {
   return fixmadddiv2BitExact_DD(x, a, b);
 }
-FDK_INLINE FIXP_DBL fMultAddDiv2BitExact(FIXP_DBL x, FIXP_SGL a, FIXP_DBL b) {
+FDK_INLINE int32_t fMultAddDiv2BitExact(int32_t x, FIXP_SGL a, int32_t b) {
   return fixmadddiv2BitExact_SD(x, a, b);
 }
-FDK_INLINE FIXP_DBL fMultAddDiv2BitExact(FIXP_DBL x, FIXP_DBL a, FIXP_SGL b) {
+FDK_INLINE int32_t fMultAddDiv2BitExact(int32_t x, int32_t a, FIXP_SGL b) {
   return fixmadddiv2BitExact_DS(x, a, b);
 }
-FDK_INLINE FIXP_DBL fMultSubDiv2BitExact(FIXP_DBL x, FIXP_DBL a, FIXP_DBL b) {
+FDK_INLINE int32_t fMultSubDiv2BitExact(int32_t x, int32_t a, int32_t b) {
   return fixmsubdiv2BitExact_DD(x, a, b);
 }
-FDK_INLINE FIXP_DBL fMultSubDiv2BitExact(FIXP_DBL x, FIXP_SGL a, FIXP_DBL b) {
+FDK_INLINE int32_t fMultSubDiv2BitExact(int32_t x, FIXP_SGL a, int32_t b) {
   return fixmsubdiv2BitExact_SD(x, a, b);
 }
-FDK_INLINE FIXP_DBL fMultSubDiv2BitExact(FIXP_DBL x, FIXP_DBL a, FIXP_SGL b) {
+FDK_INLINE int32_t fMultSubDiv2BitExact(int32_t x, int32_t a, FIXP_SGL b) {
   return fixmsubdiv2BitExact_DS(x, a, b);
 }
 
 #include "fixminmax.h"
 
-FDK_INLINE FIXP_DBL fMin(FIXP_DBL a, FIXP_DBL b) { return fixmin_D(a, b); }
-FDK_INLINE FIXP_DBL fMax(FIXP_DBL a, FIXP_DBL b) { return fixmax_D(a, b); }
+FDK_INLINE int32_t fMin(int32_t a, int32_t b) { return fixmin_D(a, b); }
+FDK_INLINE int32_t fMax(int32_t a, int32_t b) { return fixmax_D(a, b); }
 
 FDK_INLINE FIXP_SGL fMin(FIXP_SGL a, FIXP_SGL b) { return fixmin_S(a, b); }
 FDK_INLINE FIXP_SGL fMax(FIXP_SGL a, FIXP_SGL b) { return fixmax_S(a, b); }
@@ -440,8 +438,8 @@ FIXP_SPK;
 typedef shouldBeUnion {
   /* vector representation for arithmetic */
   struct {
-    FIXP_DBL re;
-    FIXP_DBL im;
+    int32_t re;
+    int32_t im;
   } v;
   /* word representation for memory move */
   INT64 w;

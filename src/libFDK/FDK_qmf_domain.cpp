@@ -101,6 +101,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdint.h>
 #include "FDK_qmf_domain.h"
 #include "common_fix.h"
 
@@ -110,15 +111,15 @@ amm-info@iis.fraunhofer.de
 #define WORKBUFFER6_TAG 7
 #define WORKBUFFER7_TAG 8
 
-C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore1, FIXP_DBL, QMF_WB_SECTION_SIZE, SECT_DATA_L1, WORKBUFFER1_TAG)
-C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore3, FIXP_DBL, QMF_WB_SECTION_SIZE, SECT_DATA_L2, WORKBUFFER3_TAG)
-C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore4, FIXP_DBL, QMF_WB_SECTION_SIZE, SECT_DATA_L2, WORKBUFFER4_TAG)
-C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore6, FIXP_DBL, QMF_WB_SECTION_SIZE, SECT_DATA_L2, WORKBUFFER6_TAG)
-C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore7, FIXP_DBL, QMF_WB_SECTION_SIZE, SECT_DATA_L2, WORKBUFFER7_TAG)
+C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore1, int32_t, QMF_WB_SECTION_SIZE, SECT_DATA_L1, WORKBUFFER1_TAG)
+C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore3, int32_t, QMF_WB_SECTION_SIZE, SECT_DATA_L2, WORKBUFFER3_TAG)
+C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore4, int32_t, QMF_WB_SECTION_SIZE, SECT_DATA_L2, WORKBUFFER4_TAG)
+C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore6, int32_t, QMF_WB_SECTION_SIZE, SECT_DATA_L2, WORKBUFFER6_TAG)
+C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore7, int32_t, QMF_WB_SECTION_SIZE, SECT_DATA_L2, WORKBUFFER7_TAG)
 
 /*! Analysis states buffer. <br>
 	Dimension: #((8) + (1))                                                   */
-C_AALLOC_MEM2(AnaQmfStates, FIXP_DBL, 10 * QMF_DOMAIN_MAX_ANALYSIS_QMF_BANDS, ((8) + (1)))
+C_AALLOC_MEM2(AnaQmfStates, int32_t, 10 * QMF_DOMAIN_MAX_ANALYSIS_QMF_BANDS, ((8) + (1)))
 
 /*! Synthesis states buffer. <br>
 	Dimension: #((8) + (1))                                                  */
@@ -126,50 +127,50 @@ C_AALLOC_MEM2(SynQmfStates, FIXP_QSS, 9 * QMF_DOMAIN_MAX_SYNTHESIS_QMF_BANDS, ((
 
 /*! Pointer to real qmf data for each time slot. <br>
 	Dimension: #((8) + (1))                                                   */
-C_ALLOC_MEM2(QmfSlotsReal, FIXP_DBL *, QMF_DOMAIN_MAX_TIMESLOTS + QMF_DOMAIN_MAX_OV_TIMESLOTS, ((8) + (1)))
+C_ALLOC_MEM2(QmfSlotsReal, int32_t *, QMF_DOMAIN_MAX_TIMESLOTS + QMF_DOMAIN_MAX_OV_TIMESLOTS, ((8) + (1)))
 
 /*! Pointer to imaginary qmf data for each time slot. <br>
 	Dimension: #((8) + (1))                                                   */
-C_ALLOC_MEM2(QmfSlotsImag, FIXP_DBL *, QMF_DOMAIN_MAX_TIMESLOTS + QMF_DOMAIN_MAX_OV_TIMESLOTS, ((8) + (1)))
+C_ALLOC_MEM2(QmfSlotsImag, int32_t *, QMF_DOMAIN_MAX_TIMESLOTS + QMF_DOMAIN_MAX_OV_TIMESLOTS, ((8) + (1)))
 
 /*! QMF overlap buffer. <br>
 	Dimension: #((8) + (1))                                                   */
-C_AALLOC_MEM2(QmfOverlapBuffer, FIXP_DBL, 2 * QMF_DOMAIN_MAX_OV_TIMESLOTS * QMF_DOMAIN_MAX_QMF_PROC_BANDS, ((8) + (1)))
+C_AALLOC_MEM2(QmfOverlapBuffer, int32_t, 2 * QMF_DOMAIN_MAX_OV_TIMESLOTS * QMF_DOMAIN_MAX_QMF_PROC_BANDS, ((8) + (1)))
 
 /*! Analysis states buffer. <br>
 	Dimension: #((8) + (1))                                                   */
-C_AALLOC_MEM2(AnaQmfStates16, FIXP_DBL, 10 * QMF_DOMAIN_ANALYSIS_QMF_BANDS_16, ((8) + (1)))
+C_AALLOC_MEM2(AnaQmfStates16, int32_t, 10 * QMF_DOMAIN_ANALYSIS_QMF_BANDS_16, ((8) + (1)))
 /*! Analysis states buffer. <br>
 	Dimension: #((8) + (1))                                                   */
-C_AALLOC_MEM2(AnaQmfStates24, FIXP_DBL, 10 * QMF_DOMAIN_ANALYSIS_QMF_BANDS_24, ((8) + (1)))
+C_AALLOC_MEM2(AnaQmfStates24, int32_t, 10 * QMF_DOMAIN_ANALYSIS_QMF_BANDS_24, ((8) + (1)))
 
 /*! Analysis states buffer. <br>
 	Dimension: #((8) + (1))                                                   */
-C_AALLOC_MEM2(AnaQmfStates32, FIXP_DBL, 10 * QMF_DOMAIN_ANALYSIS_QMF_BANDS_32, ((8) + (1)))
+C_AALLOC_MEM2(AnaQmfStates32, int32_t, 10 * QMF_DOMAIN_ANALYSIS_QMF_BANDS_32, ((8) + (1)))
 
 /*! Pointer to real qmf data for each time slot. <br>
 	Dimension: #((8) + (1))                                                   */
-C_ALLOC_MEM2(QmfSlotsReal16, FIXP_DBL *, QMF_DOMAIN_TIMESLOTS_16 + QMF_DOMAIN_OV_TIMESLOTS_16, ((8) + (1)))
+C_ALLOC_MEM2(QmfSlotsReal16, int32_t *, QMF_DOMAIN_TIMESLOTS_16 + QMF_DOMAIN_OV_TIMESLOTS_16, ((8) + (1)))
 
 /*! Pointer to real qmf data for each time slot. <br>
 	Dimension: #((8) + (1))                                                   */
-C_ALLOC_MEM2(QmfSlotsReal32, FIXP_DBL *, QMF_DOMAIN_TIMESLOTS_32 + QMF_DOMAIN_OV_TIMESLOTS_32, ((8) + (1)))
+C_ALLOC_MEM2(QmfSlotsReal32, int32_t *, QMF_DOMAIN_TIMESLOTS_32 + QMF_DOMAIN_OV_TIMESLOTS_32, ((8) + (1)))
 
 /*! Pointer to imaginary qmf data for each time slot. <br>
 	Dimension: #((8) + (1))                                                   */
-C_ALLOC_MEM2(QmfSlotsImag16, FIXP_DBL *, QMF_DOMAIN_TIMESLOTS_16 + QMF_DOMAIN_OV_TIMESLOTS_16, ((8) + (1)))
+C_ALLOC_MEM2(QmfSlotsImag16, int32_t *, QMF_DOMAIN_TIMESLOTS_16 + QMF_DOMAIN_OV_TIMESLOTS_16, ((8) + (1)))
 
 /*! Pointer to imaginary qmf data for each time slot. <br>
 	Dimension: #((8) + (1))                                                   */
-C_ALLOC_MEM2(QmfSlotsImag32, FIXP_DBL *, QMF_DOMAIN_TIMESLOTS_32 + QMF_DOMAIN_OV_TIMESLOTS_32, ((8) + (1)))
+C_ALLOC_MEM2(QmfSlotsImag32, int32_t *, QMF_DOMAIN_TIMESLOTS_32 + QMF_DOMAIN_OV_TIMESLOTS_32, ((8) + (1)))
 
 /*! QMF overlap buffer. <br>
 	Dimension: #((8) + (1))                                                   */
-C_AALLOC_MEM2(QmfOverlapBuffer16, FIXP_DBL, 2 * QMF_DOMAIN_OV_TIMESLOTS_16 * QMF_DOMAIN_MAX_QMF_PROC_BANDS, ((8) + (1)))
+C_AALLOC_MEM2(QmfOverlapBuffer16, int32_t, 2 * QMF_DOMAIN_OV_TIMESLOTS_16 * QMF_DOMAIN_MAX_QMF_PROC_BANDS, ((8) + (1)))
 
 /*! QMF overlap buffer. <br>
 	Dimension: #((8) + (1))                                                   */
-C_AALLOC_MEM2(QmfOverlapBuffer32, FIXP_DBL, 2 * QMF_DOMAIN_OV_TIMESLOTS_32 * QMF_DOMAIN_MAX_QMF_PROC_BANDS, ((8) + (1)))
+C_AALLOC_MEM2(QmfOverlapBuffer32, int32_t, 2 * QMF_DOMAIN_OV_TIMESLOTS_32 * QMF_DOMAIN_MAX_QMF_PROC_BANDS, ((8) + (1)))
 
 static int FDK_QmfDomain_FreePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
 	int err = 0;
@@ -340,7 +341,7 @@ QMF_DOMAIN_ERROR FDK_QmfDomain_ClearPersistentMemory(HANDLE_FDK_QMF_DOMAIN hqd) 
 		size = gc->nQmfOvTimeSlots * gc->nQmfProcBands * CMPLX_MOD;
 		for(ch = 0; ch < gc->nInputChannels; ch++) {
 			if(hqd->QmfDomainIn[ch].pOverlapBuffer) {
-				FDKmemclear(hqd->QmfDomainIn[ch].pOverlapBuffer, size * sizeof(FIXP_DBL));
+				FDKmemclear(hqd->QmfDomainIn[ch].pOverlapBuffer, size * sizeof(int32_t));
 			}
 		}
 		if(FDK_QmfDomain_InitFilterBank(hqd, 0)) { err = QMF_DOMAIN_INIT_ERROR; }
@@ -372,11 +373,11 @@ QMF_DOMAIN_ERROR FDK_QmfDomain_ClearPersistentMemory(HANDLE_FDK_QMF_DOMAIN hqd) 
 
 	address to workbuffer
 */
-static FIXP_DBL *FDK_getWorkBuffer(FIXP_DBL **pWorkBuffer, USHORT workBufferOffset, USHORT workBufferSectSize,
+static int32_t *FDK_getWorkBuffer(int32_t **pWorkBuffer, USHORT workBufferOffset, USHORT workBufferSectSize,
 								   USHORT memSize) {
 	int       idx1;
 	int       idx2;
-	FIXP_DBL *pwb;
+	int32_t *pwb;
 
 	/* a section must be a multiple of the number of processing bands (currently
 	 * always 64) */
@@ -401,7 +402,7 @@ static FIXP_DBL *FDK_getWorkBuffer(FIXP_DBL **pWorkBuffer, USHORT workBufferOffs
 	return pwb;
 }
 
-static int FDK_QmfDomain_FeedWorkBuffer(HANDLE_FDK_QMF_DOMAIN qd, int ch, FIXP_DBL **pWorkBuffer,
+static int FDK_QmfDomain_FeedWorkBuffer(HANDLE_FDK_QMF_DOMAIN qd, int ch, int32_t **pWorkBuffer,
 										USHORT workBufferOffset, USHORT workBufferSectSize, int size) {
 	int err = 0;
 	int mem_needed;
@@ -437,14 +438,14 @@ int FDK_QmfDomain_InitFilterBank(HANDLE_FDK_QMF_DOMAIN qd, UINT extra_flags) {
 	}
 	for(ch = 0; ch < gc->nInputChannels; ch++) {
 		/* distribute memory to slots array */
-		FIXP_DBL *ptrOv = qd->QmfDomainIn[ch].pOverlapBuffer; /* persistent memory for overlap */
+		int32_t *ptrOv = qd->QmfDomainIn[ch].pOverlapBuffer; /* persistent memory for overlap */
 		if((ptrOv == NULL) && (gc->nQmfOvTimeSlots != 0)) {
 			err = 1;
 			return err;
 		}
 		/* This assumes the workbuffer defined for ch0 is the big one being used to
 		 * hold one full frame of QMF data. */
-		FIXP_DBL **ptr = qd->QmfDomainIn[fMin(ch, fMax((INT)gc->nQmfProcChannels - 1, 0))]
+		int32_t **ptr = qd->QmfDomainIn[fMin(ch, fMax((INT)gc->nQmfProcChannels - 1, 0))]
 							 .pWorkBuffer; /* non-persistent workbuffer */
 		USHORT workBufferOffset = qd->QmfDomainIn[fMin(ch, fMax((INT)gc->nQmfProcChannels - 1, 0))].workBufferOffset;
 		USHORT workBufferSectSize =
@@ -477,14 +478,14 @@ int FDK_QmfDomain_InitFilterBank(HANDLE_FDK_QMF_DOMAIN qd, UINT extra_flags) {
 	}
 
 	for(ch = 0; ch < gc->nOutputChannels; ch++) {
-		FIXP_DBL outGain_m = qd->QmfDomainOut[ch].fb.outGain_m;
+		int32_t outGain_m = qd->QmfDomainOut[ch].fb.outGain_m;
 		int      outGain_e = qd->QmfDomainOut[ch].fb.outGain_e;
 		int      outScale = qmfGetOutScalefactor(&qd->QmfDomainOut[ch].fb);
 		err |= qmfInitSynthesisFilterBank(&qd->QmfDomainOut[ch].fb, qd->QmfDomainOut[ch].pSynQmfStates, noCols,
 										  (qd->QmfDomainOut[ch].fb.lsb == 0) ? lsb : qd->QmfDomainOut[ch].fb.lsb,
 										  (qd->QmfDomainOut[ch].fb.usb == 0) ? usb : qd->QmfDomainOut[ch].fb.usb,
 										  gc->nBandsSynthesis, gc->flags | extra_flags);
-		if(outGain_m != (FIXP_DBL)0) { qmfChangeOutGain(&qd->QmfDomainOut[ch].fb, outGain_m, outGain_e); }
+		if(outGain_m != (int32_t)0) { qmfChangeOutGain(&qd->QmfDomainOut[ch].fb, outGain_m, outGain_e); }
 		if(outScale) { qmfChangeOutScalefactor(&qd->QmfDomainOut[ch].fb, outScale); }
 	}
 
@@ -498,19 +499,19 @@ void FDK_QmfDomain_SaveOverlap(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int offset) {
 	int                      ovSlots = gc->nQmfOvTimeSlots;
 	int                      nCols = gc->nQmfTimeSlots;
 	int                      nProcBands = gc->nQmfProcBands;
-	FIXP_DBL               **qmfReal = qd_ch->hQmfSlotsReal;
-	FIXP_DBL               **qmfImag = qd_ch->hQmfSlotsImag;
+	int32_t               **qmfReal = qd_ch->hQmfSlotsReal;
+	int32_t               **qmfImag = qd_ch->hQmfSlotsImag;
 	QMF_SCALE_FACTOR        *pScaling = &qd_ch->scaling;
 
 	/* for high part it would be enough to save only used part of overlap area */
 	if(qmfImag != NULL) {
 		for(ts = offset; ts < ovSlots; ts++) {
-			FDKmemcpy(qmfReal[ts], qmfReal[nCols + ts], sizeof(FIXP_DBL) * nProcBands);
-			FDKmemcpy(qmfImag[ts], qmfImag[nCols + ts], sizeof(FIXP_DBL) * nProcBands);
+			FDKmemcpy(qmfReal[ts], qmfReal[nCols + ts], sizeof(int32_t) * nProcBands);
+			FDKmemcpy(qmfImag[ts], qmfImag[nCols + ts], sizeof(int32_t) * nProcBands);
 		}
 	}
 	else {
-		for(ts = 0; ts < ovSlots; ts++) { FDKmemcpy(qmfReal[ts], qmfReal[nCols + ts], sizeof(FIXP_DBL) * nProcBands); }
+		for(ts = 0; ts < ovSlots; ts++) { FDKmemcpy(qmfReal[ts], qmfReal[nCols + ts], sizeof(int32_t) * nProcBands); }
 	}
 	pScaling->ov_lb_scale = pScaling->lb_scale;
 }
@@ -520,12 +521,12 @@ void FDK_QmfDomain_SaveOverlap(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int offset) {
 #define EXP2SCALE(e) (15 - (e))
 
 void FDK_QmfDomain_GetSlot(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int ts, const int start_band,
-						   const int stop_band, FIXP_DBL *pQmfOutReal, FIXP_DBL *pQmfOutImag, const int exp_out) {
+						   const int stop_band, int32_t *pQmfOutReal, int32_t *pQmfOutImag, const int exp_out) {
 	FDK_ASSERT(qd_ch != NULL);
 	FDK_ASSERT(pQmfOutReal != NULL);
 	HANDLE_FDK_QMF_DOMAIN_GC gc = qd_ch->pGlobalConf;
-	const FIXP_DBL          *real = qd_ch->hQmfSlotsReal[ts];
-	const FIXP_DBL          *imag = qd_ch->hQmfSlotsImag[ts];
+	const int32_t          *real = qd_ch->hQmfSlotsReal[ts];
+	const int32_t          *imag = qd_ch->hQmfSlotsImag[ts];
 	const int                ovSlots = gc->nQmfOvTimeSlots;
 	const int                exp_lb = SCALE2EXP((ts < ovSlots) ? qd_ch->scaling.ov_lb_scale : qd_ch->scaling.lb_scale);
 	const int                exp_hb = SCALE2EXP(qd_ch->scaling.hb_scale);
@@ -554,7 +555,7 @@ void FDK_QmfDomain_GetSlot(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int ts, c
 	if(pQmfOutImag == NULL) {
 		for(; b < fMin(lsb, stop_band); b++) { pQmfOutReal[b] = scaleValueSaturate(real[b], lb_sf); }
 		for(; b < fMin(usb, stop_band); b++) { pQmfOutReal[b] = scaleValueSaturate(real[b], hb_sf); }
-		for(; b < stop_band; b++) { pQmfOutReal[b] = (FIXP_DBL)0; }
+		for(; b < stop_band; b++) { pQmfOutReal[b] = (int32_t)0; }
 	}
 	else {
 		FDK_ASSERT(imag != NULL);
@@ -567,19 +568,19 @@ void FDK_QmfDomain_GetSlot(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int ts, c
 			pQmfOutImag[b] = scaleValueSaturate(imag[b], hb_sf);
 		}
 		for(; b < stop_band; b++) {
-			pQmfOutReal[b] = (FIXP_DBL)0;
-			pQmfOutImag[b] = (FIXP_DBL)0;
+			pQmfOutReal[b] = (int32_t)0;
+			pQmfOutImag[b] = (int32_t)0;
 		}
 	}
 }
 
-void FDK_QmfDomain_GetWorkBuffer(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int ts, FIXP_DBL **ppQmfReal,
-								 FIXP_DBL **ppQmfImag) {
+void FDK_QmfDomain_GetWorkBuffer(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int ts, int32_t **ppQmfReal,
+								 int32_t **ppQmfImag) {
 	FDK_ASSERT(qd_ch != NULL);
 	FDK_ASSERT(ppQmfReal != NULL);
 	FDK_ASSERT(ppQmfImag != NULL);
 	const int  bands = qd_ch->workBuf_nBands;
-	FIXP_DBL **pWorkBuf = qd_ch->pWorkBuffer;
+	int32_t **pWorkBuf = qd_ch->pWorkBuffer;
 	USHORT     workBufferOffset = qd_ch->workBufferOffset;
 	USHORT     workBufferSectSize = qd_ch->workBufferSectSize;
 
@@ -595,7 +596,7 @@ void FDK_QmfDomain_GetWorkBuffer(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int
 void FDK_QmfDomain_WorkBuffer2ProcChannel(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch) {
 	FDK_ASSERT(qd_ch != NULL);
 	HANDLE_FDK_QMF_DOMAIN_GC gc = qd_ch->pGlobalConf;
-	FIXP_DBL               **pWorkBuf = qd_ch->pWorkBuffer;
+	int32_t               **pWorkBuf = qd_ch->pWorkBuffer;
 	USHORT                   workBufferOffset = qd_ch->workBufferOffset;
 	USHORT                   workBufferSectSize = qd_ch->workBufferSectSize;
 
@@ -612,22 +613,22 @@ void FDK_QmfDomain_WorkBuffer2ProcChannel(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch) 
 		for(ts = 0; ts < slots; ts++) {
 			FDKmemcpy(qd_ch->hQmfSlotsReal[gc->nQmfOvTimeSlots + ts],
 					  FDK_getWorkBuffer(pWorkBuf, workBufferOffset, workBufferSectSize, bands),
-					  sizeof(FIXP_DBL) * bands);  // parkBuf_to_anaMatrix
+					  sizeof(int32_t) * bands);  // parkBuf_to_anaMatrix
 			workBufferOffset += bands;
 			FDKmemcpy(qd_ch->hQmfSlotsImag[gc->nQmfOvTimeSlots + ts],
 					  FDK_getWorkBuffer(pWorkBuf, workBufferOffset, workBufferSectSize, bands),
-					  sizeof(FIXP_DBL) * bands);
+					  sizeof(int32_t) * bands);
 			workBufferOffset += bands;
 		}
 	}
 }
 
-void FDK_QmfDomain_QmfData2HBE(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, FIXP_DBL **ppQmfReal, FIXP_DBL **ppQmfImag) {
+void FDK_QmfDomain_QmfData2HBE(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int32_t **ppQmfReal, int32_t **ppQmfImag) {
 	FDK_ASSERT(qd_ch != NULL);
 	FDK_ASSERT(ppQmfReal != NULL);
 	FDK_ASSERT(ppQmfImag != NULL);
 	HANDLE_FDK_QMF_DOMAIN_GC gc = qd_ch->pGlobalConf;
-	FIXP_DBL               **pWorkBuf = qd_ch->pWorkBuffer;
+	int32_t               **pWorkBuf = qd_ch->pWorkBuffer;
 	USHORT                   workBufferOffset = qd_ch->workBufferOffset;
 	USHORT                   workBufferSectSize = qd_ch->workBufferSectSize;
 
@@ -640,17 +641,17 @@ void FDK_QmfDomain_QmfData2HBE(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, FIXP_DBL **ppQmfR
 		FDK_ASSERT(bands <= 64);
 		for(ts = 0; ts < slots; ts++) {
 			/* copy current data of processing channel */
-			FIXP_DBL tmp[64];  // one slot
+			int32_t tmp[64];  // one slot
 			/* real */
 			FDKmemcpy(tmp, qd_ch->hQmfSlotsReal[gc->nQmfOvTimeSlots + ts],
-					  sizeof(FIXP_DBL) * bands);  // anaMatrix_to_tmp
+					  sizeof(int32_t) * bands);  // anaMatrix_to_tmp
 			FDKmemcpy(qd_ch->hQmfSlotsReal[gc->nQmfOvTimeSlots + ts], ppQmfReal[ts],
-					  sizeof(FIXP_DBL) * bands);                      // HBE_to_anaMatrix
-			FDKmemcpy(ppQmfReal[ts], tmp, sizeof(FIXP_DBL) * bands);  // tmp_to_HBE
+					  sizeof(int32_t) * bands);                      // HBE_to_anaMatrix
+			FDKmemcpy(ppQmfReal[ts], tmp, sizeof(int32_t) * bands);  // tmp_to_HBE
 			/* imag */
-			FDKmemcpy(tmp, qd_ch->hQmfSlotsImag[gc->nQmfOvTimeSlots + ts], sizeof(FIXP_DBL) * bands);
-			FDKmemcpy(qd_ch->hQmfSlotsImag[gc->nQmfOvTimeSlots + ts], ppQmfImag[ts], sizeof(FIXP_DBL) * bands);
-			FDKmemcpy(ppQmfImag[ts], tmp, sizeof(FIXP_DBL) * bands);
+			FDKmemcpy(tmp, qd_ch->hQmfSlotsImag[gc->nQmfOvTimeSlots + ts], sizeof(int32_t) * bands);
+			FDKmemcpy(qd_ch->hQmfSlotsImag[gc->nQmfOvTimeSlots + ts], ppQmfImag[ts], sizeof(int32_t) * bands);
+			FDKmemcpy(ppQmfImag[ts], tmp, sizeof(int32_t) * bands);
 		}
 	}
 	else {  // right channel (parkBuf)
@@ -661,14 +662,14 @@ void FDK_QmfDomain_QmfData2HBE(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, FIXP_DBL **ppQmfR
 		for(ts = 0; ts < slots; ts++) {
 			/* copy HBE QMF data buffer to processing channel */
 			FDKmemcpy(qd_ch->hQmfSlotsReal[gc->nQmfOvTimeSlots + ts], ppQmfReal[ts],
-					  sizeof(FIXP_DBL) * bands);  // HBE_to_anaMatrix
-			FDKmemcpy(qd_ch->hQmfSlotsImag[gc->nQmfOvTimeSlots + ts], ppQmfImag[ts], sizeof(FIXP_DBL) * bands);
+					  sizeof(int32_t) * bands);  // HBE_to_anaMatrix
+			FDKmemcpy(qd_ch->hQmfSlotsImag[gc->nQmfOvTimeSlots + ts], ppQmfImag[ts], sizeof(int32_t) * bands);
 			/* copy parked new QMF data to HBE QMF data buffer */
 			FDKmemcpy(ppQmfReal[ts], FDK_getWorkBuffer(pWorkBuf, workBufferOffset, workBufferSectSize, bands),
-					  sizeof(FIXP_DBL) * bands);  // parkBuf_to_HBE
+					  sizeof(int32_t) * bands);  // parkBuf_to_HBE
 			workBufferOffset += bands;
 			FDKmemcpy(ppQmfImag[ts], FDK_getWorkBuffer(pWorkBuf, workBufferOffset, workBufferSectSize, bands),
-					  sizeof(FIXP_DBL) * bands);
+					  sizeof(int32_t) * bands);
 			workBufferOffset += bands;
 		}
 	}
@@ -715,7 +716,7 @@ QMF_DOMAIN_ERROR FDK_QmfDomain_Configure(HANDLE_FDK_QMF_DOMAIN hqd) {
 	int              i, size_main, size, size_temp = 0;
 
 	HANDLE_FDK_QMF_DOMAIN_GC hgc = &hqd->globalConf;
-	FIXP_DBL               **pWorkBuffer = hgc->pWorkBuffer;
+	int32_t               **pWorkBuffer = hgc->pWorkBuffer;
 
 	int hasChanged = 0;
 
@@ -861,7 +862,7 @@ bail:
 }
 
 static void FDK_QmfDomain_FreeWorkBuffer(HANDLE_FDK_QMF_DOMAIN hqd) {
-	FIXP_DBL **pWorkBuffer = hqd->globalConf.pWorkBuffer;
+	int32_t **pWorkBuffer = hqd->globalConf.pWorkBuffer;
 
 	if(pWorkBuffer[0]) FreeQmfWorkBufferCore6(&pWorkBuffer[0]);
 	if(pWorkBuffer[1]) FreeQmfWorkBufferCore1(&pWorkBuffer[1]);

@@ -108,8 +108,8 @@ amm-info@iis.fraunhofer.de
 /* ELD uses different overlap which is twice the frame size: */
 #define OverlapBufferSize (768)
 
-typedef FIXP_DBL SPECTRUM[1024];
-typedef FIXP_DBL* SPECTRAL_PTR;
+typedef int32_t SPECTRUM[1024];
+typedef int32_t* SPECTRAL_PTR;
 
 #define SPEC_LONG(ptr) (ptr)
 #define SPEC(ptr, w, gl) ((ptr) + ((w) * (gl)))

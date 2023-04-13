@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdint.h>
 #include "stereo.h"
 
 #include "aac_rom.h"
@@ -352,7 +353,7 @@ int CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
 }
 
 static void CJointStereo_filterAndAdd(
-    FIXP_DBL *in, int len, int windowLen, const FIXP_FILT *coeff, FIXP_DBL *out,
+    int32_t *in, int len, int windowLen, const FIXP_FILT *coeff, int32_t *out,
     UCHAR isCurrent /* output values with even index get a
                        positve addon (=1) or a negative addon
                        (=0) */
@@ -375,49 +376,49 @@ static void CJointStereo_filterAndAdd(
     */
 
     for (i = 0; i < 3; i++) {
-      out[0] -= (FIXP_DBL)fMultDiv2(coeff[i], in[indices_1[i]]) >> SR_FNA_OUT;
+      out[0] -= (int32_t)fMultDiv2(coeff[i], in[indices_1[i]]) >> SR_FNA_OUT;
       out[0] +=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[indices_1[5 - i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[indices_1[5 - i]]) >> SR_FNA_OUT;
     }
 
     for (i = 0; i < 3; i++) {
-      out[1] -= (FIXP_DBL)fMultDiv2(coeff[i], in[indices_2[i]]) >> SR_FNA_OUT;
+      out[1] -= (int32_t)fMultDiv2(coeff[i], in[indices_2[i]]) >> SR_FNA_OUT;
       out[1] +=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[indices_2[5 - i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[indices_2[5 - i]]) >> SR_FNA_OUT;
     }
 
     for (i = 0; i < 3; i++) {
-      out[2] -= (FIXP_DBL)fMultDiv2(coeff[i], in[indices_3[i]]) >> SR_FNA_OUT;
+      out[2] -= (int32_t)fMultDiv2(coeff[i], in[indices_3[i]]) >> SR_FNA_OUT;
       out[2] +=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[indices_3[5 - i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[indices_3[5 - i]]) >> SR_FNA_OUT;
     }
 
     for (j = 3; j < (len - 3); j++) {
       for (i = 0; i < 3; i++) {
-        out[j] -= (FIXP_DBL)fMultDiv2(coeff[i], in[j - 3 + i]) >> SR_FNA_OUT;
-        out[j] += (FIXP_DBL)fMultDiv2(coeff[i], in[j + 3 - i]) >> SR_FNA_OUT;
+        out[j] -= (int32_t)fMultDiv2(coeff[i], in[j - 3 + i]) >> SR_FNA_OUT;
+        out[j] += (int32_t)fMultDiv2(coeff[i], in[j + 3 - i]) >> SR_FNA_OUT;
       }
     }
 
     for (i = 0; i < 3; i++) {
       out[len - 3] -=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[len - subtr_1[i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_1[i]]) >> SR_FNA_OUT;
       out[len - 3] +=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[len - subtr_1[5 - i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_1[5 - i]]) >> SR_FNA_OUT;
     }
 
     for (i = 0; i < 3; i++) {
       out[len - 2] -=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[len - subtr_2[i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_2[i]]) >> SR_FNA_OUT;
       out[len - 2] +=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[len - subtr_2[5 - i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_2[5 - i]]) >> SR_FNA_OUT;
     }
 
     for (i = 0; i < 3; i++) {
       out[len - 1] -=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[len - subtr_3[i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_3[i]]) >> SR_FNA_OUT;
       out[len - 1] +=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[len - subtr_3[5 - i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_3[5 - i]]) >> SR_FNA_OUT;
     }
 
   } else {
@@ -427,84 +428,84 @@ static void CJointStereo_filterAndAdd(
     */
 
     for (i = 0; i < 3; i++) {
-      out[0] -= (FIXP_DBL)fMultDiv2(coeff[i], in[indices_1[i]] >> SR_FNA_OUT);
+      out[0] -= (int32_t)fMultDiv2(coeff[i], in[indices_1[i]] >> SR_FNA_OUT);
       out[0] -=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[indices_1[5 - i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[indices_1[5 - i]] >> SR_FNA_OUT);
     }
-    out[0] -= (FIXP_DBL)fMultDiv2(coeff[3], in[0] >> SR_FNA_OUT);
+    out[0] -= (int32_t)fMultDiv2(coeff[3], in[0] >> SR_FNA_OUT);
 
     for (i = 0; i < 3; i++) {
-      out[1] += (FIXP_DBL)fMultDiv2(coeff[i], in[indices_2[i]] >> SR_FNA_OUT);
+      out[1] += (int32_t)fMultDiv2(coeff[i], in[indices_2[i]] >> SR_FNA_OUT);
       out[1] +=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[indices_2[5 - i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[indices_2[5 - i]] >> SR_FNA_OUT);
     }
-    out[1] += (FIXP_DBL)fMultDiv2(coeff[3], in[1] >> SR_FNA_OUT);
+    out[1] += (int32_t)fMultDiv2(coeff[3], in[1] >> SR_FNA_OUT);
 
     for (i = 0; i < 3; i++) {
-      out[2] -= (FIXP_DBL)fMultDiv2(coeff[i], in[indices_3[i]] >> SR_FNA_OUT);
+      out[2] -= (int32_t)fMultDiv2(coeff[i], in[indices_3[i]] >> SR_FNA_OUT);
       out[2] -=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[indices_3[5 - i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[indices_3[5 - i]] >> SR_FNA_OUT);
     }
-    out[2] -= (FIXP_DBL)fMultDiv2(coeff[3], in[2] >> SR_FNA_OUT);
+    out[2] -= (int32_t)fMultDiv2(coeff[3], in[2] >> SR_FNA_OUT);
 
     for (j = 3; j < (len - 4); j++) {
       for (i = 0; i < 3; i++) {
-        out[j] += (FIXP_DBL)fMultDiv2(coeff[i], in[j - 3 + i] >> SR_FNA_OUT);
-        out[j] += (FIXP_DBL)fMultDiv2(coeff[i], in[j + 3 - i] >> SR_FNA_OUT);
+        out[j] += (int32_t)fMultDiv2(coeff[i], in[j - 3 + i] >> SR_FNA_OUT);
+        out[j] += (int32_t)fMultDiv2(coeff[i], in[j + 3 - i] >> SR_FNA_OUT);
       }
-      out[j] += (FIXP_DBL)fMultDiv2(coeff[3], in[j] >> SR_FNA_OUT);
+      out[j] += (int32_t)fMultDiv2(coeff[3], in[j] >> SR_FNA_OUT);
 
       j++;
 
       for (i = 0; i < 3; i++) {
-        out[j] -= (FIXP_DBL)fMultDiv2(coeff[i], in[j - 3 + i] >> SR_FNA_OUT);
-        out[j] -= (FIXP_DBL)fMultDiv2(coeff[i], in[j + 3 - i] >> SR_FNA_OUT);
+        out[j] -= (int32_t)fMultDiv2(coeff[i], in[j - 3 + i] >> SR_FNA_OUT);
+        out[j] -= (int32_t)fMultDiv2(coeff[i], in[j + 3 - i] >> SR_FNA_OUT);
       }
-      out[j] -= (FIXP_DBL)fMultDiv2(coeff[3], in[j] >> SR_FNA_OUT);
+      out[j] -= (int32_t)fMultDiv2(coeff[3], in[j] >> SR_FNA_OUT);
     }
 
     for (i = 0; i < 3; i++) {
       out[len - 3] +=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[len - subtr_1[i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_1[i]] >> SR_FNA_OUT);
       out[len - 3] +=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[len - subtr_1[5 - i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_1[5 - i]] >> SR_FNA_OUT);
     }
-    out[len - 3] += (FIXP_DBL)fMultDiv2(coeff[3], in[len - 3] >> SR_FNA_OUT);
+    out[len - 3] += (int32_t)fMultDiv2(coeff[3], in[len - 3] >> SR_FNA_OUT);
 
     for (i = 0; i < 3; i++) {
       out[len - 2] -=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[len - subtr_2[i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_2[i]] >> SR_FNA_OUT);
       out[len - 2] -=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[len - subtr_2[5 - i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_2[5 - i]] >> SR_FNA_OUT);
     }
-    out[len - 2] -= (FIXP_DBL)fMultDiv2(coeff[3], in[len - 2] >> SR_FNA_OUT);
+    out[len - 2] -= (int32_t)fMultDiv2(coeff[3], in[len - 2] >> SR_FNA_OUT);
 
     for (i = 0; i < 3; i++) {
       out[len - 1] +=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[len - subtr_3[i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_3[i]] >> SR_FNA_OUT);
       out[len - 1] +=
-          (FIXP_DBL)fMultDiv2(coeff[i], in[len - subtr_3[5 - i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_3[5 - i]] >> SR_FNA_OUT);
     }
-    out[len - 1] += (FIXP_DBL)fMultDiv2(coeff[3], in[len - 1] >> SR_FNA_OUT);
+    out[len - 1] += (int32_t)fMultDiv2(coeff[3], in[len - 1] >> SR_FNA_OUT);
   }
 }
 
-static inline void CJointStereo_GenerateMSOutput(FIXP_DBL *pSpecLCurrBand,
-                                                 FIXP_DBL *pSpecRCurrBand,
+static inline void CJointStereo_GenerateMSOutput(int32_t *pSpecLCurrBand,
+                                                 int32_t *pSpecRCurrBand,
                                                  UINT leftScale,
                                                  UINT rightScale,
                                                  UINT nSfbBands) {
   unsigned int i;
 
-  FIXP_DBL leftCoefficient0;
-  FIXP_DBL leftCoefficient1;
-  FIXP_DBL leftCoefficient2;
-  FIXP_DBL leftCoefficient3;
+  int32_t leftCoefficient0;
+  int32_t leftCoefficient1;
+  int32_t leftCoefficient2;
+  int32_t leftCoefficient3;
 
-  FIXP_DBL rightCoefficient0;
-  FIXP_DBL rightCoefficient1;
-  FIXP_DBL rightCoefficient2;
-  FIXP_DBL rightCoefficient3;
+  int32_t rightCoefficient0;
+  int32_t rightCoefficient1;
+  int32_t rightCoefficient2;
+  int32_t rightCoefficient3;
 
   for (i = nSfbBands; i > 0; i -= 4) {
     leftCoefficient0 = pSpecLCurrBand[i - 4];
@@ -543,12 +544,12 @@ static inline void CJointStereo_GenerateMSOutput(FIXP_DBL *pSpecLCurrBand,
 void CJointStereo_ApplyMS(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[2],
-    FIXP_DBL *spectrumL, FIXP_DBL *spectrumR, SHORT *SFBleftScale,
+    int32_t *spectrumL, int32_t *spectrumR, SHORT *SFBleftScale,
     SHORT *SFBrightScale, SHORT *specScaleL, SHORT *specScaleR,
     const SHORT *pScaleFactorBandOffsets, const UCHAR *pWindowGroupLength,
     const int windowGroups, const int max_sfb_ste_outside,
     const int scaleFactorBandsTransmittedL,
-    const int scaleFactorBandsTransmittedR, FIXP_DBL *store_dmx_re_prev,
+    const int scaleFactorBandsTransmittedR, int32_t *store_dmx_re_prev,
     SHORT *store_dmx_re_prev_e, const int mainband_flag) {
   int window, group, band;
   UCHAR groupMask;
@@ -568,10 +569,10 @@ void CJointStereo_ApplyMS(
     CJointStereoPersistentData *pJointStereoPersistentData =
         &pAacDecoderStaticChannelInfo[L]
              ->pCpeStaticData->jointStereoPersistentData;
-    FIXP_DBL *const staticSpectralCoeffsL =
+    int32_t *const staticSpectralCoeffsL =
         pAacDecoderStaticChannelInfo[L]
             ->pCpeStaticData->jointStereoPersistentData.spectralCoeffs[L];
-    FIXP_DBL *const staticSpectralCoeffsR =
+    int32_t *const staticSpectralCoeffsR =
         pAacDecoderStaticChannelInfo[L]
             ->pCpeStaticData->jointStereoPersistentData.spectralCoeffs[R];
     SHORT *const staticSpecScaleL =
@@ -581,10 +582,10 @@ void CJointStereo_ApplyMS(
         pAacDecoderStaticChannelInfo[L]
             ->pCpeStaticData->jointStereoPersistentData.specScale[R];
 
-    FIXP_DBL *dmx_re =
+    int32_t *dmx_re =
         pAacDecoderStaticChannelInfo[L]
             ->pCpeStaticData->jointStereoPersistentData.scratchBuffer;
-    FIXP_DBL *dmx_re_prev =
+    int32_t *dmx_re_prev =
         pAacDecoderStaticChannelInfo[L]
             ->pCpeStaticData->jointStereoPersistentData.scratchBuffer +
         1024;
@@ -605,7 +606,7 @@ void CJointStereo_ApplyMS(
     /* 0. preparations */
 
     /* 0.0. get scratch buffer for downmix MDST */
-    C_AALLOC_SCRATCH_START(dmx_im, FIXP_DBL, 1024);
+    C_AALLOC_SCRATCH_START(dmx_im, int32_t, 1024);
 
     /* 0.1. window lengths */
 
@@ -755,7 +756,7 @@ void CJointStereo_ApplyMS(
       for (groupwin = 0; groupwin < pWindowGroupLength[group];
            groupwin++, window++) {
         /* initialize the MDST with zeros */
-        FDKmemclear(&dmx_im[windowLen * window], windowLen * sizeof(FIXP_DBL));
+        FDKmemclear(&dmx_im[windowLen * window], windowLen * sizeof(int32_t));
 
         /* 1. calculate the previous downmix MDCT. We do this once just for the
          * Main band. */
@@ -800,7 +801,7 @@ void CJointStereo_ApplyMS(
               if (pAacDecoderStaticChannelInfo[L]
                       ->pCpeStaticData->jointStereoPersistentData
                       .clearSpectralCoeffs == 1) {
-                FDKmemclear(dmx_re_prev, windowLen * sizeof(FIXP_DBL));
+                FDKmemclear(dmx_re_prev, windowLen * sizeof(int32_t));
                 dmx_re_prev_e = 0;
               } else {
                 if (cplxPredictionData->pred_dir == 0) {
@@ -826,7 +827,7 @@ void CJointStereo_ApplyMS(
               "dmx_re_prev" (original or computed). This is necessary because we
               have to apply MS over the separate IGF tiles. */
               FDKmemcpy(store_dmx_re_prev, &dmx_re_prev[0],
-                        windowLen * sizeof(FIXP_DBL));
+                        windowLen * sizeof(int32_t));
 
               /* Particular exponent of the computed/original "dmx_re_prev" must
                * be kept for the tile MS calculations if necessary.*/
@@ -863,7 +864,7 @@ void CJointStereo_ApplyMS(
             } else {
               if (mainband_flag == 0) {
                 FDKmemcpy(dmx_re_prev, store_dmx_re_prev,
-                          windowLen * sizeof(FIXP_DBL));
+                          windowLen * sizeof(int32_t));
               }
               specScaleL[0] = dmx_re_prev_e;
               specScaleR[0] = dmx_re_prev_e;
@@ -941,7 +942,7 @@ void CJointStereo_ApplyMS(
         /* Clean until the end */
         for (int i = pScaleFactorBandOffsets[max_sfb_ste_outside];
              i < windowLen; i++) {
-          dmx_re[windowLen * window + i] = (FIXP_DBL)0;
+          dmx_re[windowLen * window + i] = (int32_t)0;
         }
 
         /* 3. calculate MDST-portion corresponding to the current frame. */
@@ -991,7 +992,7 @@ void CJointStereo_ApplyMS(
         /* 4. upmix process */
         LONG pred_dir = cplxPredictionData->pred_dir ? -1 : 1;
         /* 0.1 in Q-3.34 */
-        const FIXP_DBL pointOne = 0x66666666; /* 0.8 */
+        const int32_t pointOne = 0x66666666; /* 0.8 */
         /* Shift value for the downmix */
         const INT shift_dmx = SF_FNA_COEFFS + 1;
 
@@ -1011,8 +1012,8 @@ void CJointStereo_ApplyMS(
 
             /* Multiply alpha by 0.1 with maximum precision */
             FDK_ASSERT(val >= 0);
-            FIXP_DBL alpha_re_tmp = fMult((FIXP_SGL)(tempRe << val), pointOne);
-            FIXP_DBL alpha_im_tmp = fMult((FIXP_SGL)(tempIm << val), pointOne);
+            int32_t alpha_re_tmp = fMult((FIXP_SGL)(tempRe << val), pointOne);
+            int32_t alpha_im_tmp = fMult((FIXP_SGL)(tempIm << val), pointOne);
 
             /* Calculate alpha exponent */
             /* (Q-3.34 * Q15.0) shifted left by "val" */
@@ -1020,13 +1021,13 @@ void CJointStereo_ApplyMS(
 
             int help3_shift = alpha_re_exp + 1;
 
-            FIXP_DBL *p2CoeffL = &(
+            int32_t *p2CoeffL = &(
                 spectrumL[windowLen * window + pScaleFactorBandOffsets[band]]);
-            FIXP_DBL *p2CoeffR = &(
+            int32_t *p2CoeffR = &(
                 spectrumR[windowLen * window + pScaleFactorBandOffsets[band]]);
-            FIXP_DBL *p2dmxIm =
+            int32_t *p2dmxIm =
                 &(dmx_im[windowLen * window + pScaleFactorBandOffsets[band]]);
-            FIXP_DBL *p2dmxRe =
+            int32_t *p2dmxRe =
                 &(dmx_re[windowLen * window + pScaleFactorBandOffsets[band]]);
 
             for (int i = pScaleFactorBandOffsets[band];
@@ -1043,17 +1044,17 @@ void CJointStereo_ApplyMS(
                 specL[i] =   + (specL[i] + side);
                 specR[i] = -/+ (specL[i] - side);
               */
-              FIXP_DBL side, left, right;
+              int32_t side, left, right;
 
               side = fMultAddDiv2(fMultDiv2(alpha_re_tmp, *p2dmxRe++),
                                   alpha_im_tmp, (*p2dmxIm++) << shift_dmx);
               side = ((*p2CoeffR) >> 2) -
-                     (FIXP_DBL)SATURATE_SHIFT(side, -(help3_shift - 2),
+                     (int32_t)SATURATE_SHIFT(side, -(help3_shift - 2),
                                               DFRACT_BITS - 2);
 
               left = ((*p2CoeffL) >> 2) + side;
               right = ((*p2CoeffL) >> 2) - side;
-              right = (FIXP_DBL)((LONG)right * pred_dir);
+              right = (int32_t)((LONG)right * pred_dir);
 
               *p2CoeffL++ = SATURATE_LEFT_SHIFT_ALT(left, 2, DFRACT_BITS);
               *p2CoeffR++ = SATURATE_LEFT_SHIFT_ALT(right, 2, DFRACT_BITS);
@@ -1067,7 +1068,7 @@ void CJointStereo_ApplyMS(
     } /* for ( window = 0, group = 0; group < windowGroups; group++ ) */
 
     /* free scratch buffer */
-    C_AALLOC_SCRATCH_END(dmx_im, FIXP_DBL, 1024);
+    C_AALLOC_SCRATCH_END(dmx_im, int32_t, 1024);
 
   } else {
     /* MS stereo */
@@ -1077,7 +1078,7 @@ void CJointStereo_ApplyMS(
 
       for (int groupwin = 0; groupwin < pWindowGroupLength[group];
            groupwin++, window++) {
-        FIXP_DBL *leftSpectrum, *rightSpectrum;
+        int32_t *leftSpectrum, *rightSpectrum;
         SHORT *leftScale = &SFBleftScale[window * 16];
         SHORT *rightScale = &SFBrightScale[window * 16];
 
@@ -1126,8 +1127,8 @@ void CJointStereo_ApplyMS(
 
               for (int index = pScaleFactorBandOffsets[band];
                    index < pScaleFactorBandOffsets[band + 1]; index++) {
-                FIXP_DBL leftCoefficient = leftSpectrum[index];
-                /* FIXP_DBL rightCoefficient = (FIXP_DBL)0; */
+                int32_t leftCoefficient = leftSpectrum[index];
+                /* int32_t rightCoefficient = (int32_t)0; */
                 rightSpectrum[index] = leftCoefficient;
               }
             }
@@ -1139,8 +1140,8 @@ void CJointStereo_ApplyMS(
 
               for (int index = pScaleFactorBandOffsets[band];
                    index < pScaleFactorBandOffsets[band + 1]; index++) {
-                /* FIXP_DBL leftCoefficient  = (FIXP_DBL)0; */
-                FIXP_DBL rightCoefficient = rightSpectrum[index];
+                /* int32_t leftCoefficient  = (int32_t)0; */
+                int32_t rightCoefficient = rightSpectrum[index];
 
                 leftSpectrum[index] = rightCoefficient;
                 rightSpectrum[index] = -rightCoefficient;
@@ -1180,7 +1181,7 @@ void CJointStereo_ApplyIS(CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
 
     for (int groupwin = 0; groupwin < pWindowGroupLength[group];
          groupwin++, window++) {
-      FIXP_DBL *leftSpectrum, *rightSpectrum;
+      int32_t *leftSpectrum, *rightSpectrum;
       SHORT *leftScale =
           &pAacDecoderChannelInfo[L]->pDynData->aSfbScale[window * 16];
       SHORT *rightScale =
@@ -1201,7 +1202,7 @@ void CJointStereo_ApplyIS(CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
           int lsb = bandScale & 0x03;
 
           /* exponent of MantissaTable[lsb][0] is 1, thus msb+1 below. */
-          FIXP_DBL scale = MantissaTable[lsb][0];
+          int32_t scale = MantissaTable[lsb][0];
 
           /* ISO/IEC 14496-3 Chapter 4.6.8.2.3 :
              The use of intensity stereo coding is signaled by the use of the

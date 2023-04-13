@@ -4074,7 +4074,7 @@ const FIXP_WTP *FDKgetWindowSlope(int length, int shape) {
   /* Get ld2 of length - 2 + 1
      -2: because first table entry is window of size 4
      +1: because we already include +1 because of ceil(log2(length)) */
-  ld2_length = DFRACT_BITS - 1 - fNormz((FIXP_DBL)length) - 1;
+  ld2_length = DFRACT_BITS - 1 - fNormz((int32_t)length) - 1;
 
   /* Extract sort of "eigenvalue" (the 4 left most bits) of length. */
   switch ((length) >> (ld2_length - 2)) {
@@ -4115,9 +4115,9 @@ const FIXP_WTP *FDKgetWindowSlope(int length, int shape) {
 #define QTCFL(x) FL2FXCONST_SGL(x)
 #define QTC(x) FX_DBL2FXCONST_SGL(x)
 #else
-#define QFC(x) ((FIXP_DBL)(x))
+#define QFC(x) ((int32_t)(x))
 #define QTCFL(x) FL2FXCONST_DBL(x)
-#define QTC(x) ((FIXP_DBL)(x))
+#define QTC(x) ((int32_t)(x))
 #endif /* ARCH_PREFER_MULT_32x16 */
 
 /*!
@@ -5913,7 +5913,7 @@ const FIXP_PFT qmf_cldfb_80[QMF80_CLDFB_PFT_TABLE_SIZE] = {
 #define QTMFLLDT(x) FX_DBL2FXCONST_SGL(x)
 #else
 #define QTMFLLD(x) FL2FXCONST_DBL(x / (float)(1 << QMF_MPSLDFB_PFT_SCALE))
-#define QTMFLLDT(x) (FIXP_DBL)(x)
+#define QTMFLLDT(x) (int32_t)(x)
 #endif
 
 /*!
@@ -6519,7 +6519,7 @@ const USHORT sqrt_tab[49] = {
     0xb0b9, 0xb22b, 0xb399, 0xb504};
 
 LNK_SECTION_CONSTDATA_L1
-const FIXP_DBL invCount[80] = /* This could be 16-bit wide */
+const int32_t invCount[80] = /* This could be 16-bit wide */
     {0x00000000, 0x7fffffff, 0x40000000, 0x2aaaaaab, 0x20000000, 0x1999999a,
      0x15555555, 0x12492492, 0x10000000, 0x0e38e38e, 0x0ccccccd, 0x0ba2e8ba,
      0x0aaaaaab, 0x09d89d8a, 0x09249249, 0x08888889, 0x08000000, 0x07878788,
@@ -7219,7 +7219,7 @@ const element_list_t *getBitstreamElementList(AUDIO_OBJECT_TYPE aot,
 /*           0x5A82799A = invSqrtNorm2 (0x4000.0000), exp=1        */
 
 LNK_SECTION_CONSTDATA_L1
-const FIXP_DBL invSqrtTab[SQRT_VALUES] = {
+const int32_t invSqrtTab[SQRT_VALUES] = {
     0x5A827999, 0x5A287E03, 0x59CF8CBC, 0x5977A0AC, 0x5920B4DF, 0x58CAC480,
     0x5875CADE, 0x5821C364, 0x57CEA99D, 0x577C7930, 0x572B2DE0, 0x56DAC38E,
     0x568B3632, 0x563C81E0, 0x55EEA2C4, 0x55A19522, 0x55555555, 0x5509DFD0,

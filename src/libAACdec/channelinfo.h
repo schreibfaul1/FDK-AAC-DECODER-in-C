@@ -200,7 +200,7 @@ typedef struct {
  * This struct must be allocated one for every channel and must be persistent.
  */
 typedef struct {
-  FIXP_DBL *pOverlapBuffer;
+  int32_t *pOverlapBuffer;
   mdct_t IMdct;
 
   CArcoData *hArCo;
@@ -208,10 +208,10 @@ typedef struct {
   INT pnsCurrentSeed;
 
   /* LPD memory */
-  FIXP_DBL old_synth[PIT_MAX_MAX - L_SUBFR];
+  int32_t old_synth[PIT_MAX_MAX - L_SUBFR];
   INT old_T_pf[SYN_SFD];
-  FIXP_DBL old_gain_pf[SYN_SFD];
-  FIXP_DBL mem_bpf[L_FILT + L_SUBFR];
+  int32_t old_gain_pf[SYN_SFD];
+  int32_t mem_bpf[L_FILT + L_SUBFR];
   UCHAR
   old_bpf_control_info; /* (1: enable, 0: disable) bpf for past superframe
                          */
@@ -245,9 +245,9 @@ typedef struct {
   UINT numLostLpdFrames; /* Number of consecutive lost subframes. */
 
   /* TCX memory */
-  FIXP_DBL last_tcx_gain;
+  int32_t last_tcx_gain;
   INT last_tcx_gain_e;
-  FIXP_DBL last_alfd_gains[32]; /* Scaled by one bit. */
+  int32_t last_alfd_gains[32]; /* Scaled by one bit. */
   SHORT last_tcx_pitch;
   UCHAR last_tcx_noise_factor;
 
@@ -308,11 +308,11 @@ typedef shouldBeUnion {
 
   /* Common signal data, can be used once the bit stream data from above is not
    * used anymore. */
-  FIXP_DBL mdctOutTemp[1024];
+  int32_t mdctOutTemp[1024];
 
-  FIXP_DBL synth_buf[(PIT_MAX_MAX + SYN_DELAY + L_FRAME_PLUS)];
+  int32_t synth_buf[(PIT_MAX_MAX + SYN_DELAY + L_FRAME_PLUS)];
 
-  FIXP_DBL workBuffer[WB_SECTION_SIZE];
+  int32_t workBuffer[WB_SECTION_SIZE];
 }
 CWorkBufferCore1;
 
@@ -358,9 +358,9 @@ typedef struct {
 typedef struct {
   shouldBeUnion {
     struct {
-      FIXP_DBL fac_data0[LFAC];
+      int32_t fac_data0[LFAC];
       SCHAR fac_data_e[4];
-      FIXP_DBL
+      int32_t
       *fac_data[4]; /* Pointers to unused parts of pSpectralCoefficient */
 
       UCHAR core_mode; /* current core mode */
@@ -390,7 +390,7 @@ typedef struct {
 
       CAcelpChannelData acelp[4];
 
-      FIXP_DBL tcx_gain[4];
+      int32_t tcx_gain[4];
       SCHAR tcx_gain_e[4];
     } usac;
 
@@ -460,12 +460,12 @@ AAC_DECODER_ERROR IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
 void CJointStereo_ApplyMS(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[2],
-    FIXP_DBL *spectrumL, FIXP_DBL *spectrumR, SHORT *SFBleftScale,
+    int32_t *spectrumL, int32_t *spectrumR, SHORT *SFBleftScale,
     SHORT *SFBrightScale, SHORT *specScaleL, SHORT *specScaleR,
     const SHORT *pScaleFactorBandOffsets, const UCHAR *pWindowGroupLength,
     const int windowGroups, const int max_sfb_ste_outside,
     const int scaleFactorBandsTransmittedL,
-    const int scaleFactorBandsTransmittedR, FIXP_DBL *store_dmx_re_prev,
+    const int scaleFactorBandsTransmittedR, int32_t *store_dmx_re_prev,
     SHORT *store_dmx_re_prev_e, const int mainband_flag);
 
 /*!

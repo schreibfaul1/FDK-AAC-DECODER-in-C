@@ -149,14 +149,14 @@ typedef struct {
   INT highBandFadeCnt; /* counter for fading in high-band signal smoothly */
 
 #endif
-  FIXP_DBL **tmp_memory; /* shared memory between hbeLightTimeDelayBuffer and
+  int32_t **tmp_memory; /* shared memory between hbeLightTimeDelayBuffer and
                             hQmfHBESlotsReal */
 
-  FIXP_DBL **hQmfHBESlotsReal;
-  FIXP_DBL **hQmfHBESlotsImag;
+  int32_t **hQmfHBESlotsReal;
+  int32_t **hQmfHBESlotsImag;
 
-  FIXP_DBL **codecQMFBufferReal;
-  FIXP_DBL **codecQMFBufferImag;
+  int32_t **codecQMFBufferReal;
+  int32_t **codecQMFBufferImag;
   UCHAR savedStates;
   int applySbrProc_old;
 } SBR_DEC;

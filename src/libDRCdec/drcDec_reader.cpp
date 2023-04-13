@@ -1779,9 +1779,9 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
 
 static DRC_ERROR _decodeMethodValue(HANDLE_FDK_BITSTREAM hBs,
                                     const UCHAR methodDefinition,
-                                    FIXP_DBL* methodValue, INT isBox) {
+                                    int32_t* methodValue, INT isBox) {
   int tmp;
-  FIXP_DBL val;
+  int32_t val;
   switch (methodDefinition) {
     case MD_UNKNOWN_OTHER:
     case MD_PROGRAM_LOUDNESS:
@@ -1791,38 +1791,38 @@ static DRC_ERROR _decodeMethodValue(HANDLE_FDK_BITSTREAM hBs,
     case MD_SHORT_TERM_LOUDNESS_MAX:
       tmp = FDKreadBits(hBs, 8);
       val = FL2FXCONST_DBL(-57.75f / (float)(1 << 7)) +
-            (FIXP_DBL)(
+            (int32_t)(
                 tmp << (DFRACT_BITS - 1 - 2 - 7)); /* -57.75 + tmp * 0.25; */
       break;
     case MD_LOUDNESS_RANGE:
       tmp = FDKreadBits(hBs, 8);
       if (tmp == 0)
-        val = (FIXP_DBL)0;
+        val = (int32_t)0;
       else if (tmp <= 128)
-        val = (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 2 - 7)); /* tmp * 0.25; */
+        val = (int32_t)(tmp << (DFRACT_BITS - 1 - 2 - 7)); /* tmp * 0.25; */
       else if (tmp <= 204) {
-        val = (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 1 - 7)) -
+        val = (int32_t)(tmp << (DFRACT_BITS - 1 - 1 - 7)) -
               FL2FXCONST_DBL(32.0f / (float)(1 << 7)); /* 0.5 * tmp - 32.0f; */
       } else {
         /* downscale by 1 more bit to prevent overflow at intermediate result */
-        val = (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 8)) -
+        val = (int32_t)(tmp << (DFRACT_BITS - 1 - 8)) -
               FL2FXCONST_DBL(134.0f / (float)(1 << 8)); /* tmp - 134.0; */
         val <<= 1;
       }
       break;
     case MD_MIXING_LEVEL:
       tmp = FDKreadBits(hBs, isBox ? 8 : 5);
-      val = (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 7)) +
+      val = (int32_t)(tmp << (DFRACT_BITS - 1 - 7)) +
             FL2FXCONST_DBL(80.0f / (float)(1 << 7)); /* tmp + 80.0; */
       break;
     case MD_ROOM_TYPE:
       tmp = FDKreadBits(hBs, isBox ? 8 : 2);
-      val = (FIXP_DBL)(tmp << (DFRACT_BITS - 1 - 7)); /* tmp; */
+      val = (int32_t)(tmp << (DFRACT_BITS - 1 - 7)); /* tmp; */
       break;
     case MD_SHORT_TERM_LOUDNESS:
       tmp = FDKreadBits(hBs, 8);
       val = FL2FXCONST_DBL(-116.0f / (float)(1 << 7)) +
-            (FIXP_DBL)(
+            (int32_t)(
                 tmp << (DFRACT_BITS - 1 - 1 - 7)); /* -116.0 + tmp * 0.5; */
       break;
     default:
@@ -1865,11 +1865,11 @@ static DRC_ERROR _readLoudnessInfo(HANDLE_FDK_BITSTREAM hBs, const int version,
     bsSamplePeakLevel = FDKreadBits(hBs, 12);
     if (bsSamplePeakLevel == 0) {
       loudnessInfo->samplePeakLevelPresent = 0;
-      loudnessInfo->samplePeakLevel = (FIXP_DBL)0;
+      loudnessInfo->samplePeakLevel = (int32_t)0;
     } else { /* 20.0 - bsSamplePeakLevel * 0.03125; */
       loudnessInfo->samplePeakLevel =
           FL2FXCONST_DBL(20.0f / (float)(1 << 7)) -
-          (FIXP_DBL)(bsSamplePeakLevel << (DFRACT_BITS - 1 - 5 - 7));
+          (int32_t)(bsSamplePeakLevel << (DFRACT_BITS - 1 - 5 - 7));
     }
   }
 
@@ -1878,11 +1878,11 @@ static DRC_ERROR _readLoudnessInfo(HANDLE_FDK_BITSTREAM hBs, const int version,
     bsTruePeakLevel = FDKreadBits(hBs, 12);
     if (bsTruePeakLevel == 0) {
       loudnessInfo->truePeakLevelPresent = 0;
-      loudnessInfo->truePeakLevel = (FIXP_DBL)0;
+      loudnessInfo->truePeakLevel = (int32_t)0;
     } else {
       loudnessInfo->truePeakLevel =
           FL2FXCONST_DBL(20.0f / (float)(1 << 7)) -
-          (FIXP_DBL)(bsTruePeakLevel << (DFRACT_BITS - 1 - 5 - 7));
+          (int32_t)(bsTruePeakLevel << (DFRACT_BITS - 1 - 5 - 7));
     }
     loudnessInfo->truePeakLevelMeasurementSystem = FDKreadBits(hBs, 4);
     loudnessInfo->truePeakLevelReliability = FDKreadBits(hBs, 2);

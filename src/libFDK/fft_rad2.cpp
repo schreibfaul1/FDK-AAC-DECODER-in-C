@@ -128,7 +128,7 @@ amm-info@iis.fraunhofer.de
 
 #ifndef FUNCTION_dit_fft
 
-void dit_fft(FIXP_DBL *x, const INT ldn, const FIXP_STP *trigdata,
+void dit_fft(int32_t *x, const INT ldn, const FIXP_STP *trigdata,
              const INT trigDataSize) {
   const INT n = 1 << ldn;
   INT trigstep, i, ldm;
@@ -141,7 +141,7 @@ void dit_fft(FIXP_DBL *x, const INT ldn, const FIXP_STP *trigdata,
    */
 
   for (i = 0; i < n * 2; i += 8) {
-    FIXP_DBL a00, a10, a20, a30;
+    int32_t a00, a10, a20, a30;
     a00 = (x[i + 0] + x[i + 2]) >> 1; /* Re A + Re B */
     a10 = (x[i + 4] + x[i + 6]) >> 1; /* Re C + Re D */
     a20 = (x[i + 1] + x[i + 3]) >> 1; /* Im A + Im B */
@@ -182,7 +182,7 @@ void dit_fft(FIXP_DBL *x, const INT ldn, const FIXP_STP *trigdata,
       for (r = 0; r < n; r += m) {
         INT t1 = (r + j) << 1;
         INT t2 = t1 + (mh << 1);
-        FIXP_DBL vr, vi, ur, ui;
+        int32_t vr, vi, ur, ui;
 
         // cplxMultDiv2(&vi, &vr, x[t2+1], x[t2], (FIXP_SGL)1.0, (FIXP_SGL)0.0);
         vi = x[t2 + 1] >> 1;
@@ -224,7 +224,7 @@ void dit_fft(FIXP_DBL *x, const INT ldn, const FIXP_STP *trigdata,
       for (r = 0; r < n; r += m) {
         INT t1 = (r + j) << 1;
         INT t2 = t1 + (mh << 1);
-        FIXP_DBL vr, vi, ur, ui;
+        int32_t vr, vi, ur, ui;
 
         cplxMultDiv2(&vi, &vr, x[t2 + 1], x[t2], cs);
 
@@ -288,7 +288,7 @@ void dit_fft(FIXP_DBL *x, const INT ldn, const FIXP_STP *trigdata,
       for (r = 0; r < n; r += m) {
         INT t1 = (r + j) << 1;
         INT t2 = t1 + (mh << 1);
-        FIXP_DBL vr, vi, ur, ui;
+        int32_t vr, vi, ur, ui;
 
         cplxMultDiv2(&vi, &vr, x[t2 + 1], x[t2], STC(0x5a82799a),
                      STC(0x5a82799a));

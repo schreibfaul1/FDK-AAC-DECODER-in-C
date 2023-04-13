@@ -263,18 +263,18 @@ typedef struct {
   int prevSmgTime;
   UCHAR prevSmgData[MAX_PARAMETER_BANDS];
 
-  FIXP_DBL opdLeftState__FDK[MAX_PARAMETER_BANDS];
-  FIXP_DBL opdRightState__FDK[MAX_PARAMETER_BANDS];
+  int32_t opdLeftState__FDK[MAX_PARAMETER_BANDS];
+  int32_t opdRightState__FDK[MAX_PARAMETER_BANDS];
 
 } SMOOTHING_STATE;
 
 typedef struct {
-  FIXP_DBL alpha__FDK;
-  FIXP_DBL beta__FDK;
-  FIXP_DBL partNrgPrev__FDK[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS]
+  int32_t alpha__FDK;
+  int32_t beta__FDK;
+  int32_t partNrgPrev__FDK[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS]
                            [BB_ENV_SIZE];
-  FIXP_DBL normNrgPrev__FDK[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
-  FIXP_DBL frameNrgPrev__FDK[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
+  int32_t normNrgPrev__FDK[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
+  int32_t frameNrgPrev__FDK[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
   INT partNrgPrevSF[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
   INT partNrgPrev2SF[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
   INT normNrgPrevSF[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
@@ -340,7 +340,7 @@ struct spatialDec_struct {
   int decorrConfig;    /* chosen decorrelator */
   int envQuantMode;    /* quantization mode of envelope reshaping data */
 
-  FIXP_DBL clipProtectGain__FDK; /* global gain for upmix */
+  int32_t clipProtectGain__FDK; /* global gain for upmix */
   char clipProtectGainSF__FDK;   /* global gain for upmix */
 
   /* Currently ignoring center decorr
@@ -427,8 +427,8 @@ struct spatialDec_struct {
 
   SCHAR ***arbdmxGain__FDK; /* Holds the artistic downmix correction index.*/
 
-  FIXP_DBL *arbdmxAlpha__FDK;
-  FIXP_DBL *arbdmxAlphaPrev__FDK;
+  int32_t *arbdmxAlpha__FDK;
+  int32_t *arbdmxAlphaPrev__FDK;
 
   UCHAR stereoConfigIndex;
   int highRateMode;
@@ -437,59 +437,59 @@ struct spatialDec_struct {
 
   SCHAR ***ottIPD__FDK;
 
-  FIXP_DBL PhaseLeft__FDK[MAX_PARAMETER_BANDS];
-  FIXP_DBL PhaseRight__FDK[MAX_PARAMETER_BANDS];
-  FIXP_DBL PhasePrevLeft__FDK[MAX_PARAMETER_BANDS];
-  FIXP_DBL PhasePrevRight__FDK[MAX_PARAMETER_BANDS];
+  int32_t PhaseLeft__FDK[MAX_PARAMETER_BANDS];
+  int32_t PhaseRight__FDK[MAX_PARAMETER_BANDS];
+  int32_t PhasePrevLeft__FDK[MAX_PARAMETER_BANDS];
+  int32_t PhasePrevRight__FDK[MAX_PARAMETER_BANDS];
   int numOttBandsIPD;
 
   /* GAIN MATRICIES FOR CURRENT and PREVIOUS PARMATER SET(s)*/
-  FIXP_DBL ***M2Real__FDK;
-  FIXP_DBL ***M2Imag__FDK;
-  FIXP_DBL ***M2RealPrev__FDK;
-  FIXP_DBL ***M2ImagPrev__FDK;
+  int32_t ***M2Real__FDK;
+  int32_t ***M2Imag__FDK;
+  int32_t ***M2RealPrev__FDK;
+  int32_t ***M2ImagPrev__FDK;
 
   /* INPUT SIGNALS */
-  FIXP_DBL ***qmfInputRealDelayBuffer__FDK;
-  FIXP_DBL ***qmfInputImagDelayBuffer__FDK;
+  int32_t ***qmfInputRealDelayBuffer__FDK;
+  int32_t ***qmfInputImagDelayBuffer__FDK;
 
   int pc_filterdelay; /* additional delay to align HQ with LP before hybird
                          analysis */
   int qmfInputDelayBufPos;
-  FIXP_DBL **qmfInputReal__FDK;
-  FIXP_DBL **qmfInputImag__FDK;
+  int32_t **qmfInputReal__FDK;
+  int32_t **qmfInputImag__FDK;
 
-  FIXP_DBL **hybInputReal__FDK;
-  FIXP_DBL **hybInputImag__FDK;
+  int32_t **hybInputReal__FDK;
+  int32_t **hybInputImag__FDK;
 
-  FIXP_DBL **binInputReverb;
+  int32_t **binInputReverb;
 
-  FIXP_DBL binGain, reverbGain;
-  FIXP_DBL binCenterGain, reverbCenterGain;
+  int32_t binGain, reverbGain;
+  int32_t binCenterGain, reverbCenterGain;
 
   /* RESIDUAL SIGNALS */
 
-  FIXP_DBL ***qmfResidualReal__FDK;
-  FIXP_DBL ***qmfResidualImag__FDK;
+  int32_t ***qmfResidualReal__FDK;
+  int32_t ***qmfResidualImag__FDK;
 
-  FIXP_DBL **hybResidualReal__FDK;
-  FIXP_DBL **hybResidualImag__FDK;
+  int32_t **hybResidualReal__FDK;
+  int32_t **hybResidualImag__FDK;
 
   int qmfOutputRealDryDelayBufPos;
-  FIXP_DBL ***qmfOutputRealDryDelayBuffer__FDK;
-  FIXP_DBL ***qmfOutputImagDryFilterBuffer__FDK;
-  FIXP_DBL *qmfOutputImagDryFilterBufferBase__FDK;
+  int32_t ***qmfOutputRealDryDelayBuffer__FDK;
+  int32_t ***qmfOutputImagDryFilterBuffer__FDK;
+  int32_t *qmfOutputImagDryFilterBufferBase__FDK;
 
   /* TEMPORARY SIGNALS */
 
-  FIXP_DBL **wReal__FDK;
-  FIXP_DBL **wImag__FDK;
+  int32_t **wReal__FDK;
+  int32_t **wImag__FDK;
 
   /* OUTPUT SIGNALS */
-  FIXP_DBL **hybOutputRealDry__FDK;
-  FIXP_DBL **hybOutputImagDry__FDK;
-  FIXP_DBL **hybOutputRealWet__FDK;
-  FIXP_DBL **hybOutputImagWet__FDK;
+  int32_t **hybOutputRealDry__FDK;
+  int32_t **hybOutputImagDry__FDK;
+  int32_t **hybOutputRealWet__FDK;
+  int32_t **hybOutputImagWet__FDK;
   PCM_MPS *timeOut__FDK;
 
   HANDLE_FDK_QMF_DOMAIN pQmfDomain;
@@ -498,17 +498,17 @@ struct spatialDec_struct {
   *hybridAnalysis; /*!< pointer Analysis hybrid filterbank array. */
   FDK_SYN_HYB_FILTER
   *hybridSynthesis; /*!< pointer Synthesis hybrid filterbank array. */
-  FIXP_DBL **
+  int32_t **
       pHybridAnaStatesLFdmx; /*!< pointer to analysis hybrid filter states LF */
-  FIXP_DBL **
+  int32_t **
       pHybridAnaStatesHFdmx; /*!< pointer to analysis hybrid filter states HF */
-  FIXP_DBL **
+  int32_t **
       pHybridAnaStatesLFres; /*!< pointer to analysis hybrid filter states LF */
-  FIXP_DBL **
+  int32_t **
       pHybridAnaStatesHFres; /*!< pointer to analysis hybrid filter states HF */
 
   DECORR_DEC *apDecor; /*!< pointer decorrelator array. */
-  FIXP_DBL **pDecorBufferCplx;
+  int32_t **pDecorBufferCplx;
 
   SMOOTHING_STATE *smoothState; /*!< Pointer to smoothing states. */
 

@@ -152,8 +152,8 @@ static DRC_ERROR _interpolateDrcGain(
     const SHORT timePrev,  /* time0 */
     const SHORT tGainStep, /* time1 - time0 */
     const SHORT start, const SHORT stop, const SHORT stepsize,
-    const FIXP_DBL gainLeft, const FIXP_DBL gainRight, const FIXP_DBL slopeLeft,
-    const FIXP_DBL slopeRight, FIXP_DBL* buffer) {
+    const int32_t gainLeft, const int32_t gainRight, const int32_t slopeLeft,
+    const int32_t slopeRight, int32_t* buffer) {
   int n, n_buf;
   int start_modulo, start_offset;
 
@@ -191,7 +191,7 @@ static DRC_ERROR _interpolateDrcGain(
     n_min = 8 - n_min;
     for (int i = 0; i < runs; i++) {
       a += a_step;
-      buffer[i] = fMultDiv2(buffer[i], (FIXP_DBL)a) << n_min;
+      buffer[i] = fMultDiv2(buffer[i], (int32_t)a) << n_min;
     }
 #endif /* defined(FUNCTION_interpolateDrcGain_func1) */
   }
@@ -203,12 +203,12 @@ static DRC_ERROR _processNodeSegments(
     const int nNodes, const NODE_LIN* pNodeLin, const int offset,
     const SHORT stepsize,
     const NODE_LIN nodePrevious, /* the last node of the previous frame */
-    const FIXP_DBL channelGain, FIXP_DBL* buffer) {
+    const int32_t channelGain, int32_t* buffer) {
   DRC_ERROR err = DE_OK;
   SHORT timePrev, duration, start, stop, time;
   int n;
-  FIXP_DBL gainLin = FL2FXCONST_DBL(1.0f / (float)(1 << 7)), gainLinPrev;
-  FIXP_DBL slopeLin = (FIXP_DBL)0, slopeLinPrev = (FIXP_DBL)0;
+  int32_t gainLin = FL2FXCONST_DBL(1.0f / (float)(1 << 7)), gainLinPrev;
+  int32_t slopeLin = (int32_t)0, slopeLinPrev = (int32_t)0;
 
   timePrev = nodePrevious.time + offset;
   gainLinPrev = nodePrevious.gainLin;
@@ -251,7 +251,7 @@ DRC_ERROR
 processDrcTime(HANDLE_DRC_GAIN_DECODER hGainDec, const int activeDrcIndex,
                const int delaySamples, const int channelOffset,
                const int drcChannelOffset, const int numChannelsProcessed,
-               const int timeDataChannelOffset, FIXP_DBL* deinterleavedAudio) {
+               const int timeDataChannelOffset, int32_t* deinterleavedAudio) {
   DRC_ERROR err = DE_OK;
   int c, b, i;
   ACTIVE_DRC* pActiveDrc = &(hGainDec->activeDrc[activeDrcIndex]);
@@ -288,7 +288,7 @@ processDrcTime(HANDLE_DRC_GAIN_DECODER hGainDec, const int activeDrcIndex,
       LINEAR_NODE_BUFFER *pLnb, *pLnbPrevious;
       NODE_LIN nodePrevious;
       int lnbPointerDiff;
-      FIXP_DBL channelGain;
+      int32_t channelGain;
       /* get pointer to oldest linearNodes */
       lnbIx = lnbPointer + 1 - NUM_LNB_FRAMES;
       while (lnbIx < 0) lnbIx += NUM_LNB_FRAMES;
@@ -355,26 +355,26 @@ processDrcSubband(HANDLE_DRC_GAIN_DECODER hGainDec, const int activeDrcIndex,
                   const int delaySamples, const int channelOffset,
                   const int drcChannelOffset, const int numChannelsProcessed,
                   const int processSingleTimeslot,
-                  FIXP_DBL* deinterleavedAudioReal[],
-                  FIXP_DBL* deinterleavedAudioImag[]) {
+                  int32_t* deinterleavedAudioReal[],
+                  int32_t* deinterleavedAudioImag[]) {
   DRC_ERROR err = DE_OK;
   int b, c, g, m, m_start, m_stop, s, i;
-  FIXP_DBL gainSb;
+  int32_t gainSb;
   DRC_INSTRUCTIONS_UNI_DRC* pInst = hGainDec->activeDrc[activeDrcIndex].pInst;
   DRC_GAIN_BUFFERS* pDrcGainBuffers = &(hGainDec->drcGainBuffers);
   ACTIVE_DRC* pActiveDrc = &(hGainDec->activeDrc[activeDrcIndex]);
   int activeDrcOffset = pActiveDrc->activeDrcOffset;
   int lnbPointer = pDrcGainBuffers->lnbPointer, lnbIx;
   LINEAR_NODE_BUFFER* pLinearNodeBuffer = pDrcGainBuffers->linearNodeBuffer;
-  FIXP_DBL(*subbandGains)[4 * 1024 / 256] = hGainDec->subbandGains;
-  FIXP_DBL* dummySubbandGains = hGainDec->dummySubbandGains;
+  int32_t(*subbandGains)[4 * 1024 / 256] = hGainDec->subbandGains;
+  int32_t* dummySubbandGains = hGainDec->dummySubbandGains;
   SUBBAND_DOMAIN_MODE subbandDomainMode = hGainDec->subbandDomainSupported;
   int signalIndex = 0;
   int frameSizeSb = 0;
   int nDecoderSubbands;
   SHORT L = 0; /* L: downsampling factor */
   int offset = 0;
-  FIXP_DBL *audioReal = NULL, *audioImag = NULL;
+  int32_t *audioReal = NULL, *audioImag = NULL;
 
   if (hGainDec->delayMode == DM_REGULAR_DELAY) {
     offset = hGainDec->frameSize;
@@ -479,7 +479,7 @@ processDrcSubband(HANDLE_DRC_GAIN_DECODER hGainDec, const int activeDrcIndex,
   }
 
   for (c = channelOffset; c < channelOffset + numChannelsProcessed; c++) {
-    FIXP_DBL* thisSubbandGainsBuffer;
+    int32_t* thisSubbandGainsBuffer;
     if (pInst->drcSetId > 0)
       g = pActiveDrc->channelGroupForChannel[c + drcChannelOffset];
     else

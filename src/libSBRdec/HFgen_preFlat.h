@@ -121,11 +121,11 @@ amm-info@iis.fraunhofer.de
  * \param[in] startSample time slot start.
  * \param[in] stopSample time slot stop.
  */
-void sbrDecoder_calculateGainVec(FIXP_DBL **sourceBufferReal,
-                                 FIXP_DBL **sourceBufferImag,
+void sbrDecoder_calculateGainVec(int32_t **sourceBufferReal,
+                                 int32_t **sourceBufferImag,
                                  int sourceBuffer_e_overlap,
                                  int sourceBuffer_e_current, int overlap,
-                                 FIXP_DBL GainVec[], int GainVec_exp[],
+                                 int32_t GainVec[], int GainVec_exp[],
                                  const int numBands, const int startSample,
                                  const int stopSample);
 

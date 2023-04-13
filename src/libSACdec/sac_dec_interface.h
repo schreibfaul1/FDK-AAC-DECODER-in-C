@@ -103,6 +103,7 @@ amm-info@iis.fraunhofer.de
 #ifndef SAC_DEC_INTERFACE_H
 #define SAC_DEC_INTERFACE_H
 
+#include <stdint.h>
 #include "../libFDK/common_fix.h"
 #include "../libSYS/FDK_audio.h"
 
@@ -250,7 +251,7 @@ typedef struct {
 } MEM_REQUIREMENTS;
 
 #define PCM_MPS LONG
-#define PCM_MPSF FIXP_DBL
+#define PCM_MPSF int32_t
 
 #define FIXP_DBL2PCM_MPS(x) ((LONG)(x))
 
@@ -307,8 +308,8 @@ SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
 SACDEC_ERROR SpatialDecApplyFrame(
     spatialDec *self, SPATIAL_BS_FRAME *frame, SPATIALDEC_INPUT_MODE inputMode,
     PCM_MPS *inData,          /* Time domain input  */
-    FIXP_DBL **qmfInDataReal, /* interleaved l/r */
-    FIXP_DBL **qmfInDataImag, /* interleaved l/r */
+    int32_t **qmfInDataReal, /* interleaved l/r */
+    int32_t **qmfInDataImag, /* interleaved l/r */
     PCM_MPS *pcmOutBuf, /* MAX_OUTPUT_CHANNELS*MAX_TIME_SLOTS*NUM_QMF_BANDS] */
     UINT nSamples, UINT *pControlFlags, int numInputChannels,
     const FDK_channelMapDescr *const mapDescr);

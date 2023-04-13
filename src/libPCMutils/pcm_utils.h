@@ -106,10 +106,10 @@ change
 
 #include "../libFDK/common_fix.h"
 
-void FDK_interleave(const FIXP_DBL *RESTRICT pIn, LONG *RESTRICT pOut,
+void FDK_interleave(const int32_t *RESTRICT pIn, LONG *RESTRICT pOut,
                     const UINT channels, const UINT frameSize,
                     const UINT length);
-void FDK_interleave(const FIXP_DBL *RESTRICT pIn, SHORT *RESTRICT pOut,
+void FDK_interleave(const int32_t *RESTRICT pIn, SHORT *RESTRICT pOut,
                     const UINT channels, const UINT frameSize,
                     const UINT length);
 void FDK_interleave(const FIXP_SGL *RESTRICT pIn, SHORT *RESTRICT pOut,

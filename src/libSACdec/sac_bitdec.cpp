@@ -951,7 +951,7 @@ static SACDEC_ERROR parseArbitraryDownmixData(
 static int nBitsParamSlot(int i) {
   int bitsParamSlot;
 
-  bitsParamSlot = fMax(0, DFRACT_BITS - 1 - fNormz((FIXP_DBL)i));
+  bitsParamSlot = fMax(0, DFRACT_BITS - 1 - fNormz((int32_t)i));
   if ((1 << bitsParamSlot) < i) {
     bitsParamSlot++;
   }
@@ -1357,8 +1357,8 @@ static int deqIdx(int value, int paramType) {
 #define SCALE_FACTOR (1 << SF_FACTOR)
 #define SCALE_CLD_C1C2 (1 << SF_CLD_C1C2)
 
-static FIXP_DBL factorFunct(FIXP_DBL ottVsTotDb, INT quantMode) {
-  FIXP_DBL factor;
+static int32_t factorFunct(int32_t ottVsTotDb, INT quantMode) {
+  int32_t factor;
 
   if (ottVsTotDb > FL2FXCONST_DBL(0.0)) {
     ottVsTotDb = FL2FXCONST_DBL(0.0);
@@ -1383,7 +1383,7 @@ static FIXP_DBL factorFunct(FIXP_DBL ottVsTotDb, INT quantMode) {
     case 2:
       if (ottVsTotDb >= FL2FXCONST_DBL(25.0f / SCALE_CLD_C1C2)) {
         FDK_ASSERT(SF_FACTOR == 3);
-        factor = (FIXP_DBL)
+        factor = (int32_t)
             MAXVAL_DBL; /* avoid warning: FL2FXCONST_DBL(8.0f/SCALE_FACTOR) */
       } else if (ottVsTotDb <= FL2FXCONST_DBL(1.0f / SCALE_CLD_C1C2))
         factor = FL2FXCONST_DBL(1.0f / SCALE_FACTOR);
@@ -1410,17 +1410,17 @@ static FIXP_DBL factorFunct(FIXP_DBL ottVsTotDb, INT quantMode) {
  Return:
 
 *******************************************************************************/
-static void factorCLD(SCHAR *idx, FIXP_DBL ottVsTotDb, FIXP_DBL *ottVsTotDb1,
-                      FIXP_DBL *ottVsTotDb2, SCHAR ottVsTotDbMode,
+static void factorCLD(SCHAR *idx, int32_t ottVsTotDb, int32_t *ottVsTotDb1,
+                      int32_t *ottVsTotDb2, SCHAR ottVsTotDbMode,
                       INT quantMode) {
-  FIXP_DBL factor;
-  FIXP_DBL cldIdxFract;
+  int32_t factor;
+  int32_t cldIdxFract;
   INT cldIdx;
 
   factor = factorFunct(ottVsTotDb, quantMode);
 
   cldIdxFract =
-      fMult((FIXP_DBL)((*idx) << ((DFRACT_BITS - 1) - SF_IDX)), factor);
+      fMult((int32_t)((*idx) << ((DFRACT_BITS - 1) - SF_IDX)), factor);
   cldIdxFract += FL2FXCONST_DBL(15.5f / (1 << (SF_FACTOR + SF_IDX)));
   cldIdx = fixp_truncateToInt(cldIdxFract, SF_FACTOR + SF_IDX);
 
@@ -1454,9 +1454,9 @@ static SACDEC_ERROR mapIndexData(
     int paramType, int startBand, int stopBand, SCHAR defaultValue,
     int numParameterSets, const int *paramSlot, int extendFrame, int quantMode,
     SpatialDecConcealmentInfo *concealmentInfo, SCHAR ottVsTotDbMode,
-    FIXP_DBL (*pOttVsTotDbIn)[MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS],
-    FIXP_DBL (*pOttVsTotDb1)[MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS],
-    FIXP_DBL (*pOttVsTotDb2)[MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS]) {
+    int32_t (*pOttVsTotDbIn)[MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS],
+    int32_t (*pOttVsTotDb1)[MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS],
+    int32_t (*pOttVsTotDb2)[MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS]) {
   int aParamSlots[MAX_PARAMETER_SETS];
   int aInterpolate[MAX_PARAMETER_SETS] = {0};
 

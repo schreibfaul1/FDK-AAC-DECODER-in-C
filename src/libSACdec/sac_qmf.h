@@ -123,8 +123,8 @@ amm-info@iis.fraunhofer.de
  * \return  Error status.
  */
 SACDEC_ERROR CalculateSpaceSynthesisQmf(
-    const HANDLE_FDK_QMF_DOMAIN_OUT hQmfDomainOutCh, const FIXP_DBL *Sr,
-    const FIXP_DBL *Si, const INT stride, PCM_MPS *timeSig);
+    const HANDLE_FDK_QMF_DOMAIN_OUT hQmfDomainOutCh, const int32_t *Sr,
+    const int32_t *Si, const INT stride, PCM_MPS *timeSig);
 
 /**
  * \brief  Convert audio input data to qmf representation.
@@ -138,6 +138,6 @@ SACDEC_ERROR CalculateSpaceSynthesisQmf(
  */
 SACDEC_ERROR CalculateSpaceAnalysisQmf(
     HANDLE_SPACE_ANALYSIS_QMF hSpaceAnalysisQmf, const PCM_MPS *timeSig,
-    FIXP_DBL *Sr, FIXP_DBL *Si);
+    int32_t *Sr, int32_t *Si);
 
 #endif /* SAC_QMF_H */

@@ -106,16 +106,16 @@ amm-info@iis.fraunhofer.de
 #include "common_fix.h"
 
 typedef struct {
-  FIXP_DBL r00r;
-  FIXP_DBL r11r;
-  FIXP_DBL r22r;
-  FIXP_DBL r01r;
-  FIXP_DBL r02r;
-  FIXP_DBL r12r;
-  FIXP_DBL r01i;
-  FIXP_DBL r02i;
-  FIXP_DBL r12i;
-  FIXP_DBL det;
+  int32_t r00r;
+  int32_t r11r;
+  int32_t r22r;
+  int32_t r01r;
+  int32_t r02r;
+  int32_t r12r;
+  int32_t r01i;
+  int32_t r02i;
+  int32_t r12i;
+  int32_t det;
   int det_scale;
 } ACORR_COEFS;
 
@@ -123,14 +123,14 @@ typedef struct {
 
 INT autoCorr2nd_real(
     ACORR_COEFS *ac,          /*!< Pointer to autocorrelation coeffs */
-    const FIXP_DBL *reBuffer, /*!< Pointer to to real part of spectrum */
+    const int32_t *reBuffer, /*!< Pointer to to real part of spectrum */
     const int len             /*!< Number of qmf slots */
 );
 
 INT autoCorr2nd_cplx(
     ACORR_COEFS *ac,          /*!< Pointer to autocorrelation coeffs */
-    const FIXP_DBL *reBuffer, /*!< Pointer to to real part of spectrum */
-    const FIXP_DBL *imBuffer, /*!< Pointer to imag part of spectrum */
+    const int32_t *reBuffer, /*!< Pointer to to real part of spectrum */
+    const int32_t *imBuffer, /*!< Pointer to imag part of spectrum */
     const int len             /*!< Number of qmf slots */
 );
 

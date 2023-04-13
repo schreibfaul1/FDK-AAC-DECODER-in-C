@@ -136,7 +136,7 @@ void CArco_Destroy(CArcoData *pArcoData);
  */
 ARITH_CODING_ERROR CArco_DecodeArithData(CArcoData *pArcoData,
                                          HANDLE_FDK_BITSTREAM hBs,
-                                         FIXP_DBL *RESTRICT spectrum, int lg,
+                                         int32_t *RESTRICT spectrum, int lg,
                                          int lg_max, int arith_reset_flag);
 
 #endif /* AC_ARITH_CODER_H */

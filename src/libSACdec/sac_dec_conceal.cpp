@@ -160,7 +160,7 @@ int SpatialDecConcealment_Apply(
 
     case SpatialDecConcealState_FadeToDefault: {
       /* Start simple fade out */
-      FIXP_DBL fac = fDivNorm(info->cntStateFrames + 1,
+      int32_t fac = fDivNorm(info->cntStateFrames + 1,
                               info->concealParams.numFadeOutFrames + 1);
 
       for (band = startBand; band < stopBand; band += 1) {
@@ -181,7 +181,7 @@ int SpatialDecConcealment_Apply(
       break;
 
     case SpatialDecConcealState_FadeFromDefault: {
-      FIXP_DBL fac = fDivNorm(info->cntValidFrames + 1,
+      int32_t fac = fDivNorm(info->cntValidFrames + 1,
                               info->concealParams.numFadeInFrames + 1);
 
       for (band = startBand; band < stopBand; band += 1) {

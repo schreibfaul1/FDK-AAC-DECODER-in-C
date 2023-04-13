@@ -103,6 +103,7 @@ amm-info@iis.fraunhofer.de
 #ifndef DRCDEC_TYPES_H
 #define DRCDEC_TYPES_H
 
+#include <stdint.h>
 #include "../libFDK/common_fix.h"
 
 /* Data structures corresponding to static and dynamic DRC/Loudness payload
@@ -312,7 +313,7 @@ typedef struct {
   UCHAR targetLayout;
   UCHAR downmixCoefficientsPresent;
   UCHAR bsDownmixOffset;
-  FIXP_DBL downmixCoefficient[8 * 8]; /* e = 2 */
+  int32_t downmixCoefficient[8 * 8]; /* e = 2 */
 } DOWNMIX_INSTRUCTIONS;
 
 typedef struct {
@@ -386,7 +387,7 @@ typedef enum {
 
 typedef struct {
   UCHAR methodDefinition;
-  FIXP_DBL methodValue; /* e = 7 for all methodDefinitions */
+  int32_t methodValue; /* e = 7 for all methodDefinitions */
   UCHAR measurementSystem;
   UCHAR reliability;
 } LOUDNESS_MEASUREMENT;
@@ -397,9 +398,9 @@ typedef struct {
   UCHAR eqSetId;
   UCHAR downmixId;
   UCHAR samplePeakLevelPresent;
-  FIXP_DBL samplePeakLevel; /* e = 7 */
+  int32_t samplePeakLevel; /* e = 7 */
   UCHAR truePeakLevelPresent;
-  FIXP_DBL truePeakLevel; /* e = 7 */
+  int32_t truePeakLevel; /* e = 7 */
   UCHAR truePeakLevelMeasurementSystem;
   UCHAR truePeakLevelReliability;
   UCHAR measurementCount; /* saturated to 8 */

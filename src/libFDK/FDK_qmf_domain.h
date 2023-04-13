@@ -122,11 +122,11 @@ typedef enum {
 #define QMF_MAX_WB_SECTIONS (5) /* maximum number of workbuffer sections */
 #define QMF_WB_SECTION_SIZE (1024 * 2)
 
-H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore1, FIXP_DBL)
-H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore3, FIXP_DBL)
-H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore4, FIXP_DBL)
-H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore6, FIXP_DBL)
-H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore7, FIXP_DBL)
+H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore1, int32_t)
+H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore3, int32_t)
+H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore4, int32_t)
+H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore6, int32_t)
+H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore7, int32_t)
 
 #define QMF_DOMAIN_MAX_ANALYSIS_QMF_BANDS (64)
 #define QMF_DOMAIN_MAX_SYNTHESIS_QMF_BANDS (QMF_MAX_SYNTHESIS_BANDS)
@@ -144,21 +144,21 @@ H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore7, FIXP_DBL)
 #define QMF_DOMAIN_OV_TIMESLOTS_16 (3)
 #define QMF_DOMAIN_OV_TIMESLOTS_32 (6)
 
-H_ALLOC_MEM(AnaQmfStates, FIXP_DBL)
+H_ALLOC_MEM(AnaQmfStates, int32_t)
 H_ALLOC_MEM(SynQmfStates, FIXP_QSS)
-H_ALLOC_MEM(QmfSlotsReal, FIXP_DBL *)
-H_ALLOC_MEM(QmfSlotsImag, FIXP_DBL *)
-H_ALLOC_MEM(QmfOverlapBuffer, FIXP_DBL)
+H_ALLOC_MEM(QmfSlotsReal, int32_t *)
+H_ALLOC_MEM(QmfSlotsImag, int32_t *)
+H_ALLOC_MEM(QmfOverlapBuffer, int32_t)
 
-H_ALLOC_MEM(AnaQmfStates16, FIXP_DBL)
-H_ALLOC_MEM(AnaQmfStates24, FIXP_DBL)
-H_ALLOC_MEM(AnaQmfStates32, FIXP_DBL)
-H_ALLOC_MEM(QmfSlotsReal16, FIXP_DBL *)
-H_ALLOC_MEM(QmfSlotsReal32, FIXP_DBL *)
-H_ALLOC_MEM(QmfSlotsImag16, FIXP_DBL *)
-H_ALLOC_MEM(QmfSlotsImag32, FIXP_DBL *)
-H_ALLOC_MEM(QmfOverlapBuffer16, FIXP_DBL)
-H_ALLOC_MEM(QmfOverlapBuffer32, FIXP_DBL)
+H_ALLOC_MEM(AnaQmfStates16, int32_t)
+H_ALLOC_MEM(AnaQmfStates24, int32_t)
+H_ALLOC_MEM(AnaQmfStates32, int32_t)
+H_ALLOC_MEM(QmfSlotsReal16, int32_t *)
+H_ALLOC_MEM(QmfSlotsReal32, int32_t *)
+H_ALLOC_MEM(QmfSlotsImag16, int32_t *)
+H_ALLOC_MEM(QmfSlotsImag32, int32_t *)
+H_ALLOC_MEM(QmfOverlapBuffer16, int32_t)
+H_ALLOC_MEM(QmfOverlapBuffer32, int32_t)
 
 /**
  * Structure to hold the configuration data which is global whithin a QMF domain
@@ -179,7 +179,7 @@ typedef struct {
                   park a channel if only one processing channel is
                   available. */
   UCHAR parkChannel_requested;
-  FIXP_DBL *
+  int32_t *
       pWorkBuffer[QMF_MAX_WB_SECTIONS]; /*!< Pointerarray to volatile memory. */
   UINT flags; /*!< Flags to be set on all QMF analysis/synthesis filter
                  instances. */
@@ -238,15 +238,15 @@ typedef struct {
                                 (workBuf_nTimeSlots * workBuf_nBands * CMPLX_MOD). */
   USHORT workBufferOffset;   /*!< Offset within work buffer. */
   USHORT workBufferSectSize; /*!< Size of work buffer section. */
-  FIXP_DBL *
+  int32_t *
       pAnaQmfStates; /*!< Pointer to QMF analysis states (persistent memory). */
-  FIXP_DBL
+  int32_t
   *pOverlapBuffer;        /*!< Pointer to QMF overlap/delay memory (persistent
                              memory). */
-  FIXP_DBL **pWorkBuffer; /*!< Pointer array to available work buffers. */
-  FIXP_DBL *
+  int32_t **pWorkBuffer; /*!< Pointer array to available work buffers. */
+  int32_t *
       *hQmfSlotsReal; /*!< Handle for QMF real data time slot pointer array. */
-  FIXP_DBL **hQmfSlotsImag; /*!< Handle for QMF imaginary data time slot pointer
+  int32_t **hQmfSlotsImag; /*!< Handle for QMF imaginary data time slot pointer
                                array. */
 } FDK_QMF_DOMAIN_IN;
 typedef FDK_QMF_DOMAIN_IN *HANDLE_FDK_QMF_DOMAIN_IN;
@@ -321,7 +321,7 @@ void FDK_QmfDomain_SaveOverlap(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int offset);
  */
 void FDK_QmfDomain_GetSlot(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int ts,
                            const int start_band, const int stop_band,
-                           FIXP_DBL *pQmfOutReal, FIXP_DBL *pQmfOutImag,
+                           int32_t *pQmfOutReal, int32_t *pQmfOutImag,
                            const int exp_out);
 
 /**
@@ -338,8 +338,8 @@ void FDK_QmfDomain_GetSlot(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int ts,
  * \return  void
  */
 void FDK_QmfDomain_GetWorkBuffer(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch,
-                                 const int ts, FIXP_DBL **ppQmfReal,
-                                 FIXP_DBL **ppQmfImag);
+                                 const int ts, int32_t **ppQmfReal,
+                                 int32_t **ppQmfImag);
 
 /**
  * \brief For the case that the work buffer associated to this channel is not
@@ -363,7 +363,7 @@ void FDK_QmfDomain_WorkBuffer2ProcChannel(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch);
  * \return  void
  */
 void FDK_QmfDomain_QmfData2HBE(HANDLE_FDK_QMF_DOMAIN_IN qd_ch,
-                               FIXP_DBL **ppQmfReal, FIXP_DBL **ppQmfImag);
+                               int32_t **ppQmfReal, int32_t **ppQmfImag);
 
 /**
  * \brief Set all fields for requested parametervalues in global config struct

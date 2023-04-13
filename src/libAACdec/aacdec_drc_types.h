@@ -155,14 +155,14 @@ typedef struct {
 
 typedef struct {
   /* DRC parameters: Latest user requests */
-  FIXP_DBL usrCut;
-  FIXP_DBL usrBoost;
+  int32_t usrCut;
+  int32_t usrBoost;
   UCHAR usrApplyHeavyCompression;
 
   /* DRC parameters: Currently used, possibly changed by
    * aacDecoder_drcParameterHandling */
-  FIXP_DBL cut;         /* attenuation scale factor */
-  FIXP_DBL boost;       /* boost scale factor  */
+  int32_t cut;         /* attenuation scale factor */
+  int32_t boost;       /* boost scale factor  */
   SCHAR targetRefLevel; /* target reference level for loudness normalization */
   UCHAR applyHeavyCompression; /* heavy compression (DVB) flag */
 
@@ -214,10 +214,10 @@ typedef struct {
 
   UCHAR applyExtGain; /* Flag is 1 if extGain has to be applied, otherwise 0. */
 
-  FIXP_DBL additionalGainPrev; /* Gain of previous frame to be applied to the
+  int32_t additionalGainPrev; /* Gain of previous frame to be applied to the
                                   time data */
-  FIXP_DBL additionalGainFilterState;  /* Filter state for the gain smoothing */
-  FIXP_DBL additionalGainFilterState1; /* Filter state for the gain smoothing */
+  int32_t additionalGainFilterState;  /* Filter state for the gain smoothing */
+  int32_t additionalGainFilterState1; /* Filter state for the gain smoothing */
 
 } CDrcInfo;
 

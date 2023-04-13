@@ -145,7 +145,7 @@ void CLpdChannelStream_Decode(
  */
 AAC_DECODER_ERROR CLpd_RenderTimeSignal(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo, PCM_DEC *pTimeData,
+    CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t *pTimeData,
     INT samplesPerFrame, SamplingRateInfo *pSamplingRateInfo, UINT frameOk,
     const INT aacOutDataHeadroom, UINT flags, UINT strmFlags);
 
@@ -157,7 +157,7 @@ static inline INT CLpd_FAC_getLength(int fNotShortBlock, int fac_length_long) {
   }
 }
 
-void filtLP(const FIXP_DBL *syn, PCM_DEC *syn_out, FIXP_DBL *noise,
+void filtLP(const int32_t *syn, int32_t *syn_out, int32_t *noise,
             const FIXP_SGL *filt, const INT aacOutDataHeadroom, INT stop,
             int len);
 
@@ -177,10 +177,10 @@ void filtLP(const FIXP_DBL *syn, PCM_DEC *syn_out, FIXP_DBL *noise,
  * \param[in,out] mem_bpf pointer to filter memory (L_FILT+L_SUBFR)
  */
 
-void bass_pf_1sf_delay(FIXP_DBL syn[], const INT T_sf[], FIXP_DBL *pit_gain,
+void bass_pf_1sf_delay(int32_t syn[], const INT T_sf[], int32_t *pit_gain,
                        const int frame_length, const INT l_frame,
-                       const INT l_next, PCM_DEC *synth_out,
-                       const INT aacOutDataHeadroom, FIXP_DBL mem_bpf[]);
+                       const INT l_next, int32_t *synth_out,
+                       const INT aacOutDataHeadroom, int32_t mem_bpf[]);
 
 /**
  * \brief random sign generator for FD and TCX noise filling

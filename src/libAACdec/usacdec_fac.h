@@ -115,7 +115,7 @@ amm-info@iis.fraunhofer.de
  * first call and not changed externally.
  * \param isFullbandLPD is 1 if fullband LPD mode is on, otherwise it is 0.
  */
-FIXP_DBL *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                              UCHAR mod[NB_SUBFR], int *pState);
 
 /**
@@ -131,7 +131,7 @@ FIXP_DBL *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
  * Always 0 for FD case.
  * \return 0 on success, -1 on error.
  */
-int CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_DBL *pFac, SCHAR *pFacScale,
+int CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, int32_t *pFac, SCHAR *pFacScale,
                   int length, int use_gain, int frame);
 
 /**
@@ -143,14 +143,14 @@ int CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_DBL *pFac, SCHAR *pFacScale,
  * \param mod mod value (1,2,3) of TCX frame where the FAC signal needs to be
  * applied.
  */
-void CFac_ApplyGains(FIXP_DBL fac_data[LFAC], const INT fac_length,
-                     const FIXP_DBL tcx_gain, const FIXP_DBL alfd_gains[],
+void CFac_ApplyGains(int32_t fac_data[LFAC], const INT fac_length,
+                     const int32_t tcx_gain, const int32_t alfd_gains[],
                      const INT mod);
 
 /**
  * \brief Do FAC transition from frequency domain to ACELP domain.
  */
-INT CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *pFac_data,
+INT CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac_data,
                         const int fac_data_e, FIXP_LPC *A, INT A_exp,
                         INT nrOutSamples, const INT fac_length,
                         const INT isFdFac, UCHAR prevWindowShape);
@@ -178,13 +178,13 @@ INT CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *pFac_data,
  * \param elFlags element specific parser guidance flags.
  * \param isFacForFullband indicates that fac is processed for fullband LPD.
  */
-INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *pSpec,
+INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *pSpec,
                         const SHORT spec_scale[], const int nSpec,
-                        FIXP_DBL *pFac_data, const int fac_data_e,
+                        int32_t *pFac_data, const int fac_data_e,
                         const INT fac_length, INT nrSamples, const INT tl,
                         const FIXP_WTP *wrs, const INT fr, FIXP_LPC A[16],
                         INT A_exp, CAcelpStaticMem *acelp_mem,
-                        const FIXP_DBL gain, const int last_frame_lost,
+                        const int32_t gain, const int last_frame_lost,
                         const int isFdFac, const UCHAR last_lpd, const int k,
                         int currAliasingSymmetry);
 

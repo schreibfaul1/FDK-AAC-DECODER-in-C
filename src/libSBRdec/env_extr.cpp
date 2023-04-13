@@ -355,9 +355,9 @@ void initSbrPrevFrameData(
   /* Set previous energy and noise levels to 0 for the case
      that decoding starts in the middle of a bitstream */
   for (i = 0; i < MAX_FREQ_COEFFS; i++)
-    h_prev_data->sfb_nrg_prev[i] = (FIXP_DBL)0;
+    h_prev_data->sfb_nrg_prev[i] = (int32_t)0;
   for (i = 0; i < MAX_NOISE_COEFFS; i++)
-    h_prev_data->prevNoiseLevel[i] = (FIXP_DBL)0;
+    h_prev_data->prevNoiseLevel[i] = (int32_t)0;
   for (i = 0; i < MAX_INVF_BANDS; i++) h_prev_data->sbr_invf_mode[i] = INVF_OFF;
 
   h_prev_data->stopPos = timeSlots;
@@ -1481,7 +1481,7 @@ int extractFrameInfo(
       }
 
       /* Decode pointer: */
-      pointer_bits = DFRACT_BITS - 1 - CountLeadingBits((FIXP_DBL)(n + 1));
+      pointer_bits = DFRACT_BITS - 1 - CountLeadingBits((int32_t)(n + 1));
       p = FDKreadBits(hBs, pointer_bits); /* p = P [pointer_bits bits] */
 
       if (p > n + 1) return 0;
@@ -1514,7 +1514,7 @@ int extractFrameInfo(
       pFrameInfo->borders[k] = numberTimeSlots; /* last border */
 
       /* Decode pointer: */
-      pointer_bits = DFRACT_BITS - 1 - CountLeadingBits((FIXP_DBL)(n + 1));
+      pointer_bits = DFRACT_BITS - 1 - CountLeadingBits((int32_t)(n + 1));
       p = FDKreadBits(hBs, pointer_bits); /* p = P [pointer_bits bits] */
       if (p > n + 1) return 0;
 
@@ -1592,7 +1592,7 @@ int extractFrameInfo(
 
       /* decode pointer: */
       pointer_bits =
-          DFRACT_BITS - 1 - CountLeadingBits((FIXP_DBL)(nL + nR + 1));
+          DFRACT_BITS - 1 - CountLeadingBits((int32_t)(nL + nR + 1));
       p = FDKreadBits(hBs, pointer_bits); /* p = P [pointer_bits bits] */
 
       if (p > nL + nR + 1) return 0;

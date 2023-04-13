@@ -166,21 +166,21 @@ amm-info@iis.fraunhofer.de
 #define NO_IID_LEVELS_FINE (2 * NO_IID_STEPS_FINE + 1) /* -15 ..  +15 */
 #define NO_ICC_LEVELS (NO_ICC_STEPS)                   /*   0 ..  + 7 */
 
-#define FIXP_SQRT05 ((FIXP_DBL)0x5a827980) /* 1/SQRT2 */
+#define FIXP_SQRT05 ((int32_t)0x5a827980) /* 1/SQRT2 */
 
 struct PS_DEC_COEFFICIENTS {
-  FIXP_DBL H11r[NO_IID_GROUPS]; /*!< coefficients of the sub-subband groups */
-  FIXP_DBL H12r[NO_IID_GROUPS]; /*!< coefficients of the sub-subband groups */
-  FIXP_DBL H21r[NO_IID_GROUPS]; /*!< coefficients of the sub-subband groups */
-  FIXP_DBL H22r[NO_IID_GROUPS]; /*!< coefficients of the sub-subband groups */
+  int32_t H11r[NO_IID_GROUPS]; /*!< coefficients of the sub-subband groups */
+  int32_t H12r[NO_IID_GROUPS]; /*!< coefficients of the sub-subband groups */
+  int32_t H21r[NO_IID_GROUPS]; /*!< coefficients of the sub-subband groups */
+  int32_t H22r[NO_IID_GROUPS]; /*!< coefficients of the sub-subband groups */
 
-  FIXP_DBL
+  int32_t
   DeltaH11r[NO_IID_GROUPS]; /*!< coefficients of the sub-subband groups */
-  FIXP_DBL
+  int32_t
   DeltaH12r[NO_IID_GROUPS]; /*!< coefficients of the sub-subband groups */
-  FIXP_DBL
+  int32_t
   DeltaH21r[NO_IID_GROUPS]; /*!< coefficients of the sub-subband groups */
-  FIXP_DBL
+  int32_t
   DeltaH22r[NO_IID_GROUPS]; /*!< coefficients of the sub-subband groups */
 
   SCHAR
@@ -282,22 +282,22 @@ struct PS_DEC {
                                frame            */
       UCHAR lastUsb; /*!< uppermost WMF delay band of last frame          */
 
-      FIXP_DBL pHybridAnaStatesLFdmx
+      int32_t pHybridAnaStatesLFdmx
           [2 * 13 * NO_QMF_BANDS_HYBRID20]; /*!< Memory used in hybrid analysis
                                                  for filter states. */
       FDK_ANA_HYB_FILTER hybridAnalysis;
       FDK_SYN_HYB_FILTER hybridSynthesis[2];
 
       DECORR_DEC apDecor; /*!< Decorrelator instance. */
-      FIXP_DBL decorrBufferCplx[(2 * ((825) + (373)))];
+      int32_t decorrBufferCplx[(2 * ((825) + (373)))];
 
-      FIXP_DBL h11rPrev[NO_IID_GROUPS]; /*!< previous calculated h(xy)
+      int32_t h11rPrev[NO_IID_GROUPS]; /*!< previous calculated h(xy)
                                            coefficients */
-      FIXP_DBL h12rPrev[NO_IID_GROUPS]; /*!< previous calculated h(xy)
+      int32_t h12rPrev[NO_IID_GROUPS]; /*!< previous calculated h(xy)
                                            coefficients */
-      FIXP_DBL h21rPrev[NO_IID_GROUPS]; /*!< previous calculated h(xy)
+      int32_t h21rPrev[NO_IID_GROUPS]; /*!< previous calculated h(xy)
                                            coefficients */
-      FIXP_DBL h22rPrev[NO_IID_GROUPS]; /*!< previous calculated h(xy)
+      int32_t h22rPrev[NO_IID_GROUPS]; /*!< previous calculated h(xy)
                                            coefficients */
 
       PS_DEC_COEFFICIENTS
@@ -315,18 +315,18 @@ int CreatePsDec(HANDLE_PS_DEC *h_PS_DEC, int aacSamplesPerFrame);
 int DeletePsDec(HANDLE_PS_DEC *h_PS_DEC);
 
 void PreparePsProcessing(HANDLE_PS_DEC h_ps_d,
-                         const FIXP_DBL *const *const rIntBufferLeft,
-                         const FIXP_DBL *const *const iIntBufferLeft,
+                         const int32_t *const *const rIntBufferLeft,
+                         const int32_t *const *const iIntBufferLeft,
                          const int scaleFactorLowBand);
 
 void initSlotBasedRotation(HANDLE_PS_DEC h_ps_d, int env, int usb);
 
 void ApplyPsSlot(
     HANDLE_PS_DEC h_ps_d,      /* parametric stereo decoder handle    */
-    FIXP_DBL **rIntBufferLeft, /* real values of left qmf timeslot    */
-    FIXP_DBL **iIntBufferLeft, /* imag values of left qmf timeslot    */
-    FIXP_DBL *rIntBufferRight, /* real values of right qmf timeslot   */
-    FIXP_DBL *iIntBufferRight, /* imag values of right qmf timeslot   */
+    int32_t **rIntBufferLeft, /* real values of left qmf timeslot    */
+    int32_t **iIntBufferLeft, /* imag values of left qmf timeslot    */
+    int32_t *rIntBufferRight, /* real values of right qmf timeslot   */
+    int32_t *iIntBufferRight, /* imag values of right qmf timeslot   */
     const int scaleFactorLowBand_no_ov, const int scaleFactorLowBand,
     const int scaleFactorHighBand, const int lsb, const int usb);
 

@@ -109,7 +109,7 @@ amm-info@iis.fraunhofer.de
 #define MAXSFTAB 25
 
 #if IMPROVE_ATAN2_ACCURACY
-static const FIXP_DBL f_atan_expand_range[MAXSFTAB - (MINSFTAB - 1)] = {
+static const int32_t f_atan_expand_range[MAXSFTAB - (MINSFTAB - 1)] = {
     /*****************************************************************************
      *
      *  Table holds fixp_atan() output values which are outside of input range
@@ -142,11 +142,11 @@ static const FIXP_DBL f_atan_expand_range[MAXSFTAB - (MINSFTAB - 1)] = {
 };
 #endif
 
-FIXP_DBL fixp_atan2(FIXP_DBL y, FIXP_DBL x) {
-  FIXP_DBL q;
-  FIXP_DBL at;  /* atan  out */
-  FIXP_DBL at2; /* atan2 out */
-  FIXP_DBL ret = FL2FXCONST_DBL(-1.0f);
+int32_t fixp_atan2(int32_t y, int32_t x) {
+  int32_t q;
+  int32_t at;  /* atan  out */
+  int32_t at2; /* atan2 out */
+  int32_t ret = FL2FXCONST_DBL(-1.0f);
   INT sf, sfo, stf;
 
   /* --- division */
@@ -235,15 +235,15 @@ FIXP_DBL fixp_atan2(FIXP_DBL y, FIXP_DBL x) {
   return ret;
 }
 
-FIXP_DBL fixp_atan(FIXP_DBL x) {
+int32_t fixp_atan(int32_t x) {
   INT sign;
-  FIXP_DBL result, temp;
+  int32_t result, temp;
 
   /* SNR of fixp_atan() = 56 dB */
-  FIXP_DBL P281 = (FIXP_DBL)0x00013000;     // 0.281 in q18
-  FIXP_DBL ONEP571 = (FIXP_DBL)0x6487ef00;  // 1.571 in q30
+  int32_t P281 = (int32_t)0x00013000;     // 0.281 in q18
+  int32_t ONEP571 = (int32_t)0x6487ef00;  // 1.571 in q30
 
-  if (x < FIXP_DBL(0)) {
+  if (x < int32_t(0)) {
     sign = 1;
     x = -x;
   } else {
@@ -264,15 +264,15 @@ FIXP_DBL fixp_atan(FIXP_DBL x) {
   */
   {
     x <<= ATI_SF;
-    FIXP_DBL x2 = fPow2(x);
+    int32_t x2 = fPow2(x);
     temp = fMultAddDiv2((FL2FXCONST_DBL(0.1449824901444650f) >> 1), x2,
                         FL2FXCONST_DBL(-0.0382544649702990));
     temp = fMultAddDiv2((FL2FXCONST_DBL(-0.3205332923816640f) >> 2), x2, temp);
     temp = fMultAddDiv2((FL2FXCONST_DBL(0.9991334482227801f) >> 3), x2, temp);
     result = fMult(x, (temp << 2));
   } else if (x < FL2FXCONST_DBL(1.28 / 64.0)) {
-    FIXP_DBL delta_fix;
-    FIXP_DBL PI_BY_4 = FL2FXCONST_DBL(3.1415926 / 4.0) >> 1; /* pi/4 in q30 */
+    int32_t delta_fix;
+    int32_t PI_BY_4 = FL2FXCONST_DBL(3.1415926 / 4.0) >> 1; /* pi/4 in q30 */
 
     delta_fix = (x - FL2FXCONST_DBL(1.0 / 64.0)) << 5; /* q30 */
     result = PI_BY_4 + (delta_fix >> 1) - (fPow2Div2(delta_fix));
@@ -296,8 +296,8 @@ FIXP_DBL fixp_atan(FIXP_DBL x) {
 
 #include "FDK_tools_rom.h"
 
-FIXP_DBL fixp_cos(FIXP_DBL x, int scale) {
-  FIXP_DBL residual, error, sine, cosine;
+int32_t fixp_cos(int32_t x, int scale) {
+  int32_t residual, error, sine, cosine;
 
   residual = fixp_sin_cos_residual_inline(x, scale, &sine, &cosine);
   error = fMult(sine, residual);
@@ -310,8 +310,8 @@ FIXP_DBL fixp_cos(FIXP_DBL x, int scale) {
 #endif
 }
 
-FIXP_DBL fixp_sin(FIXP_DBL x, int scale) {
-  FIXP_DBL residual, error, sine, cosine;
+int32_t fixp_sin(int32_t x, int scale) {
+  int32_t residual, error, sine, cosine;
 
   residual = fixp_sin_cos_residual_inline(x, scale, &sine, &cosine);
   error = fMult(cosine, residual);
@@ -323,8 +323,8 @@ FIXP_DBL fixp_sin(FIXP_DBL x, int scale) {
 #endif
 }
 
-void fixp_cos_sin(FIXP_DBL x, int scale, FIXP_DBL *cos, FIXP_DBL *sin) {
-  FIXP_DBL residual, error0, error1, sine, cosine;
+void fixp_cos_sin(int32_t x, int scale, int32_t *cos, int32_t *sin) {
+  int32_t residual, error0, error1, sine, cosine;
 
   residual = fixp_sin_cos_residual_inline(x, scale, &sine, &cosine);
   error0 = fMult(sine, residual);

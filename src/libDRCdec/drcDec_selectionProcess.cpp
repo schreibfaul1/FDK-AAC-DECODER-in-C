@@ -167,9 +167,9 @@ typedef shouldBeUnion {
   struct {
     DYN_RANGE_MEASUREMENT_REQUEST_TYPE measurementRequestType;
     UCHAR requestedIsRange;
-    FIXP_DBL requestValue;    /* e = 7 */
-    FIXP_DBL requestValueMin; /* e = 7 */
-    FIXP_DBL requestValueMax; /* e = 7 */
+    int32_t requestValue;    /* e = 7 */
+    int32_t requestValueMin; /* e = 7 */
+    int32_t requestValueMax; /* e = 7 */
   } dynamicRange;
   UCHAR drcCharacteristic;
 }
@@ -189,7 +189,7 @@ typedef struct {
 
   /* loudness normalization parameters */
   UCHAR loudnessNormalizationOn;
-  FIXP_DBL targetLoudness; /* e = 7 */
+  int32_t targetLoudness; /* e = 7 */
   UCHAR albumMode;
   UCHAR peakLimiterPresent;
   UCHAR loudnessDeviationMax; /* resolution: 1 dB */
@@ -197,9 +197,9 @@ typedef struct {
   MEASUREMENT_SYSTEM_REQUEST loudnessMeasurementSystem;
   LOUDNESS_PREPROCESSING_REQUEST loudnessMeasurementPreProc; /* not supported */
   LONG deviceCutOffFrequency;                                /* not supported */
-  FIXP_DBL loudnessNormalizationGainDbMax;                   /* e = 7 */
-  FIXP_DBL loudnessNormalizationGainModificationDb;          /* e = 7 */
-  FIXP_DBL outputPeakLevelMax;                               /* e = 7 */
+  int32_t loudnessNormalizationGainDbMax;                   /* e = 7 */
+  int32_t loudnessNormalizationGainModificationDb;          /* e = 7 */
+  int32_t outputPeakLevelMax;                               /* e = 7 */
 
   /* dynamic range control parameters */
   UCHAR dynamicRangeControlOn;
@@ -233,9 +233,9 @@ static DRC_EFFECT_TYPE_REQUEST fallbackEffectTypeRequests[6][5] = {
 typedef struct {
   UCHAR selectionFlag;
   UCHAR downmixIdRequestIndex;
-  FIXP_DBL outputPeakLevel;                     /* e = 7 */
-  FIXP_DBL loudnessNormalizationGainDbAdjusted; /* e = 7 */
-  FIXP_DBL outputLoudness;                      /* e = 7 */
+  int32_t outputPeakLevel;                     /* e = 7 */
+  int32_t loudnessNormalizationGainDbAdjusted; /* e = 7 */
+  int32_t outputLoudness;                      /* e = 7 */
   DRC_INSTRUCTIONS_UNI_DRC* pInst;
 
 } DRCDEC_SELECTION_DATA;
@@ -273,7 +273,7 @@ static inline int _compAssign(SCHAR* dest, const SCHAR src) {
   return diff;
 }
 
-static inline int _compAssign(FIXP_DBL* dest, const FIXP_DBL src) {
+static inline int _compAssign(int32_t* dest, const int32_t src) {
   int diff = 0;
   if (*dest != src) diff = 1;
   *dest = src;
@@ -360,7 +360,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _dynamicRangeMeasurement(
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, DRC_INSTRUCTIONS_UNI_DRC* pInst,
     UCHAR downmixIdRequested,
     DYN_RANGE_MEASUREMENT_REQUEST_TYPE dynamicRangeMeasurementType,
-    int albumMode, int* peakToAveragePresent, FIXP_DBL* peakToAverage);
+    int albumMode, int* peakToAveragePresent, int32_t* peakToAverage);
 
 static DRCDEC_SELECTION_PROCESS_RETURN _channelLayoutToDownmixIdMapping(
     HANDLE_SEL_PROC_INPUT hSelProcInput, HANDLE_UNI_DRC_CONFIG hUniDrcConfig);
@@ -393,25 +393,25 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getLoudness(
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int albumMode,
     METHOD_DEFINITION_REQUEST measurementMethodRequested,
     MEASUREMENT_SYSTEM_REQUEST measurementSystemRequested,
-    FIXP_DBL targetLoudness, int drcSetId, int downmixIdRequested,
-    FIXP_DBL* pLoudnessNormalizationGain, FIXP_DBL* pLoudness);
+    int32_t targetLoudness, int drcSetId, int downmixIdRequested,
+    int32_t* pLoudnessNormalizationGain, int32_t* pLoudness);
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getMixingLevel(
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int downmixIdRequested,
-    int drcSetIdRequested, int albumMode, FIXP_DBL* pMixingLevel);
+    int drcSetIdRequested, int albumMode, int32_t* pMixingLevel);
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getSignalPeakLevel(
     HANDLE_SEL_PROC_INPUT hSelProcInput, HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, DRC_INSTRUCTIONS_UNI_DRC* pInst,
     int downmixIdRequested, int* explicitPeakInformationPresent,
-    FIXP_DBL* signalPeakLevelOut, /* e = 7 */
+    int32_t* signalPeakLevelOut, /* e = 7 */
     SEL_PROC_CODEC_MODE codecMode);
 
 static DRCDEC_SELECTION_PROCESS_RETURN _extractLoudnessPeakToAverageValue(
     LOUDNESS_INFO* loudnessInfo,
     DYN_RANGE_MEASUREMENT_REQUEST_TYPE dynamicRangeMeasurementType,
     int* pLoudnessPeakToAverageValuePresent,
-    FIXP_DBL* pLoudnessPeakToAverageValue);
+    int32_t* pLoudnessPeakToAverageValue);
 
 static DRCDEC_SELECTION_PROCESS_RETURN _selectAlbumLoudness(
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet,
@@ -484,7 +484,7 @@ drcDec_SelectionProcess_SetCodecMode(HANDLE_DRC_SELECTION_PROCESS hInstance,
 DRCDEC_SELECTION_PROCESS_RETURN
 drcDec_SelectionProcess_SetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
                                  const SEL_PROC_USER_PARAM requestType,
-                                 FIXP_DBL requestValue, int* pDiff) {
+                                 int32_t requestValue, int* pDiff) {
   INT requestValueInt = (INT)requestValue;
   int i, diff = 0;
   SEL_PROC_INPUT* pSelProcInput = &(hInstance->selProcInput);
@@ -500,7 +500,7 @@ drcDec_SelectionProcess_SetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
       /* Lower boundary: drcSetTargetLoudnessValueLower default value.
          Upper boundary: drcSetTargetLoudnessValueUpper default value */
       if ((requestValue < FL2FXCONST_DBL(-63.0f / (float)(1 << 7))) ||
-          (requestValue > (FIXP_DBL)0))
+          (requestValue > (int32_t)0))
         return DRCDEC_SELECTION_PROCESS_PARAM_OUT_OF_RANGE;
       if (requestValue >
           FL2FXCONST_DBL(-10.0f /
@@ -598,24 +598,24 @@ drcDec_SelectionProcess_SetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
       diff |= _compAssign(&pSelProcInput->audioSampleRate, requestValueInt);
       break;
     case SEL_PROC_BOOST:
-      if ((requestValue < (FIXP_DBL)0) ||
+      if ((requestValue < (int32_t)0) ||
           (requestValue > FL2FXCONST_DBL(1.0f / (float)(1 << 1))))
         return DRCDEC_SELECTION_PROCESS_PARAM_OUT_OF_RANGE;
       diff |= _compAssign(
           &pSelProcInput->boost,
           FX_DBL2FX_SGL(
               requestValue +
-              (FIXP_DBL)(1 << 15))); /* convert to FIXP_SGL with rounding */
+              (int32_t)(1 << 15))); /* convert to FIXP_SGL with rounding */
       break;
     case SEL_PROC_COMPRESS:
-      if ((requestValue < (FIXP_DBL)0) ||
+      if ((requestValue < (int32_t)0) ||
           (requestValue > FL2FXCONST_DBL(1.0f / (float)(1 << 1))))
         return DRCDEC_SELECTION_PROCESS_PARAM_OUT_OF_RANGE;
       diff |= _compAssign(
           &pSelProcInput->compress,
           FX_DBL2FX_SGL(
               requestValue +
-              (FIXP_DBL)(1 << 15))); /* convert to FIXP_SGL with rounding */
+              (int32_t)(1 << 15))); /* convert to FIXP_SGL with rounding */
       break;
     default:
       return DRCDEC_SELECTION_PROCESS_INVALID_PARAM;
@@ -628,18 +628,18 @@ drcDec_SelectionProcess_SetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
   return DRCDEC_SELECTION_PROCESS_NO_ERROR;
 }
 
-FIXP_DBL
+int32_t
 drcDec_SelectionProcess_GetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
                                  const SEL_PROC_USER_PARAM requestType) {
   SEL_PROC_INPUT* pSelProcInput = &(hInstance->selProcInput);
 
   switch (requestType) {
     case SEL_PROC_LOUDNESS_NORMALIZATION_ON:
-      return (FIXP_DBL)pSelProcInput->loudnessNormalizationOn;
+      return (int32_t)pSelProcInput->loudnessNormalizationOn;
     case SEL_PROC_DYNAMIC_RANGE_CONTROL_ON:
-      return (FIXP_DBL)pSelProcInput->dynamicRangeControlOn;
+      return (int32_t)pSelProcInput->dynamicRangeControlOn;
     default:
-      return (FIXP_DBL)0;
+      return (int32_t)0;
   }
 }
 
@@ -756,9 +756,9 @@ static DRCDEC_SELECTION_PROCESS_RETURN _initDefaultParams(
   hSelProcInput->loudnessMeasurementPreProc = LPR_DEFAULT;
   hSelProcInput->deviceCutOffFrequency = 500;
   hSelProcInput->loudnessNormalizationGainDbMax =
-      (FIXP_DBL)MAXVAL_DBL; /* infinity as default */
-  hSelProcInput->loudnessNormalizationGainModificationDb = (FIXP_DBL)0;
-  hSelProcInput->outputPeakLevelMax = (FIXP_DBL)0;
+      (int32_t)MAXVAL_DBL; /* infinity as default */
+  hSelProcInput->loudnessNormalizationGainModificationDb = (int32_t)0;
+  hSelProcInput->outputPeakLevelMax = (int32_t)0;
   if (hSelProcInput->peakLimiterPresent == 1) {
     hSelProcInput->outputPeakLevelMax = FL2FXCONST_DBL(6.0f / (float)(1 << 7));
   }
@@ -789,7 +789,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _initCodecModeParams(
       /* The peak limiter also has to catch overshoots due to user
       interactivity, downmixing etc. Therefore the maximum output peak level is
       reduced to 0 dB. */
-      hSelProcInput->outputPeakLevelMax = (FIXP_DBL)0;
+      hSelProcInput->outputPeakLevelMax = (int32_t)0;
       break;
     case SEL_PROC_MPEG_4_AAC:
     case SEL_PROC_MPEG_D_USAC:
@@ -1043,14 +1043,14 @@ static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement7(
 }
 
 static void _setSelectionDataInfo(
-    DRCDEC_SELECTION_DATA* pData, FIXP_DBL loudness, /* e = 7 */
-    FIXP_DBL loudnessNormalizationGainDb,            /* e = 7 */
-    FIXP_DBL loudnessNormalizationGainDbMax,         /* e = 7 */
-    FIXP_DBL loudnessDeviationMax,                   /* e = 7 */
-    FIXP_DBL signalPeakLevel,                        /* e = 7 */
-    FIXP_DBL outputPeakLevelMax,                     /* e = 7 */
+    DRCDEC_SELECTION_DATA* pData, int32_t loudness, /* e = 7 */
+    int32_t loudnessNormalizationGainDb,            /* e = 7 */
+    int32_t loudnessNormalizationGainDbMax,         /* e = 7 */
+    int32_t loudnessDeviationMax,                   /* e = 7 */
+    int32_t signalPeakLevel,                        /* e = 7 */
+    int32_t outputPeakLevelMax,                     /* e = 7 */
     int applyAdjustment) {
-  FIXP_DBL adjustment = 0; /* e = 8 */
+  int32_t adjustment = 0; /* e = 8 */
 
   /* use e = 8 for all function parameters to prevent overflow */
   loudness >>= 1;
@@ -1062,9 +1062,9 @@ static void _setSelectionDataInfo(
 
   if (applyAdjustment) {
     adjustment =
-        fMax((FIXP_DBL)0, signalPeakLevel + loudnessNormalizationGainDb -
+        fMax((int32_t)0, signalPeakLevel + loudnessNormalizationGainDb -
                               outputPeakLevelMax);
-    adjustment = fMin(adjustment, fMax((FIXP_DBL)0, loudnessDeviationMax));
+    adjustment = fMin(adjustment, fMax((int32_t)0, loudnessDeviationMax));
   }
 
   pData->loudnessNormalizationGainDbAdjusted = fMin(
@@ -1083,14 +1083,14 @@ static void _setSelectionDataInfo(
 }
 
 static int _targetLoudnessInRange(
-    DRC_INSTRUCTIONS_UNI_DRC* pDrcInstructionUniDrc, FIXP_DBL targetLoudness) {
+    DRC_INSTRUCTIONS_UNI_DRC* pDrcInstructionUniDrc, int32_t targetLoudness) {
   int retVal = 0;
 
-  FIXP_DBL drcSetTargetLoudnessValueUpper =
-      ((FIXP_DBL)pDrcInstructionUniDrc->drcSetTargetLoudnessValueUpper)
+  int32_t drcSetTargetLoudnessValueUpper =
+      ((int32_t)pDrcInstructionUniDrc->drcSetTargetLoudnessValueUpper)
       << (DFRACT_BITS - 1 - 7);
-  FIXP_DBL drcSetTargetLoudnessValueLower =
-      ((FIXP_DBL)pDrcInstructionUniDrc->drcSetTargetLoudnessValueLower)
+  int32_t drcSetTargetLoudnessValueLower =
+      ((int32_t)pDrcInstructionUniDrc->drcSetTargetLoudnessValueLower)
       << (DFRACT_BITS - 1 - 7);
 
   if (pDrcInstructionUniDrc->drcSetTargetLoudnessPresent &&
@@ -1126,14 +1126,14 @@ static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement8(
     DRCDEC_SELECTION* pCandidatesSelected, SEL_PROC_CODEC_MODE codecMode) {
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
   int explicitPeakInformationPresent;
-  FIXP_DBL signalPeakLevel;
+  int32_t signalPeakLevel;
   int addToCandidate = 0;
 
-  FIXP_DBL loudnessNormalizationGainDb;
-  FIXP_DBL loudness;
+  int32_t loudnessNormalizationGainDb;
+  int32_t loudness;
 
-  FIXP_DBL loudnessDeviationMax =
-      ((FIXP_DBL)hSelProcInput->loudnessDeviationMax) << (DFRACT_BITS - 1 - 7);
+  int32_t loudnessDeviationMax =
+      ((int32_t)hSelProcInput->loudnessDeviationMax) << (DFRACT_BITS - 1 - 7);
 
   {
     retVal = _getLoudness(hLoudnessInfoSet, hSelProcInput->albumMode,
@@ -1147,7 +1147,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement8(
   }
 
   if (!hSelProcInput->loudnessNormalizationOn) {
-    loudnessNormalizationGainDb = (FIXP_DBL)0;
+    loudnessNormalizationGainDb = (int32_t)0;
   }
 
   retVal = _getSignalPeakLevel(
@@ -1181,10 +1181,10 @@ static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement8(
         if (hSelProcInput->loudnessNormalizationOn) {
           pData->outputPeakLevel =
               hSelProcInput->targetLoudness -
-              (((FIXP_DBL)pData->pInst->drcSetTargetLoudnessValueUpper)
+              (((int32_t)pData->pInst->drcSetTargetLoudnessValueUpper)
                << (DFRACT_BITS - 1 - 7));
         } else {
-          pData->outputPeakLevel = (FIXP_DBL)0;
+          pData->outputPeakLevel = (int32_t)0;
         }
       } else {
         if ((!hSelProcInput->loudnessNormalizationOn) ||
@@ -1328,8 +1328,8 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetSelectionAddCandidates(
       }
     }
   } else {
-    FIXP_DBL lowestPeakLevel = MAXVAL_DBL; /* e = 7 */
-    FIXP_DBL peakLevel = 0;                /* e = 7 */
+    int32_t lowestPeakLevel = MAXVAL_DBL; /* e = 7 */
+    int32_t peakLevel = 0;                /* e = 7 */
 
     for (i = 0; i < _drcdec_selection_getNumber(pCandidatesPotential); i++) {
       pCandidate = _drcdec_selection_getAt(pCandidatesPotential, i);
@@ -1344,8 +1344,8 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetSelectionAddCandidates(
 
     /* add all with lowest peak level or max 1dB above */
     for (i = 0; i < _drcdec_selection_getNumber(pCandidatesPotential); i++) {
-      FIXP_DBL loudnessDeviationMax =
-          ((FIXP_DBL)hSelProcInput->loudnessDeviationMax)
+      int32_t loudnessDeviationMax =
+          ((int32_t)hSelProcInput->loudnessDeviationMax)
           << (DFRACT_BITS - 1 - 7); /* e = 7 */
 
       pCandidate = _drcdec_selection_getAt(pCandidatesPotential, i);
@@ -1356,9 +1356,9 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetSelectionAddCandidates(
       if (peakLevel == lowestPeakLevel ||
           peakLevel <=
               lowestPeakLevel + FL2FXCONST_DBL(1.0f / (float)(1 << 7))) {
-        FIXP_DBL adjustment =
-            fMax((FIXP_DBL)0, peakLevel - hSelProcInput->outputPeakLevelMax);
-        adjustment = fMin(adjustment, fMax((FIXP_DBL)0, loudnessDeviationMax));
+        int32_t adjustment =
+            fMax((int32_t)0, peakLevel - hSelProcInput->outputPeakLevelMax);
+        adjustment = fMin(adjustment, fMax((int32_t)0, loudnessDeviationMax));
 
         pCandidate->loudnessNormalizationGainDbAdjusted -= adjustment;
         pCandidate->outputPeakLevel -= adjustment;
@@ -1513,10 +1513,10 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectDynamicRange(
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
   int i;
   int peakToAveragePresent;
-  FIXP_DBL peakToAverage;
+  int32_t peakToAverage;
 
-  FIXP_DBL minVal = MAXVAL_DBL;
-  FIXP_DBL val = 0;
+  int32_t minVal = MAXVAL_DBL;
+  int32_t val = 0;
 
   int numSelectedCandidates = _drcdec_selection_getNumber(ppCandidatesSelected);
 
@@ -1675,7 +1675,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetFinalSelection_peakValue0(
         _drcdec_selection_getAt(pCandidatesPotential, i);
     if (pCandidate == NULL) return DRCDEC_SELECTION_PROCESS_NOT_OK;
 
-    if (pCandidate->outputPeakLevel <= FIXP_DBL(0)) {
+    if (pCandidate->outputPeakLevel <= int32_t(0)) {
       if (_drcdec_selection_add(pCandidatesSelected, pCandidate) == NULL)
         return DRCDEC_SELECTION_PROCESS_NOT_OK;
     }
@@ -1812,7 +1812,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectSmallestTargetLoudnessValueUpper(
 }
 
 static DRCDEC_SELECTION_PROCESS_RETURN _drcSetFinalSelection_targetLoudness(
-    FIXP_DBL targetLoudness, DRCDEC_SELECTION* pCandidatesPotential,
+    int32_t targetLoudness, DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected) {
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
   int i;
@@ -1867,8 +1867,8 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetFinalSelection_peakValueLargest(
     DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected) {
   int i;
-  FIXP_DBL largestPeakLevel = MINVAL_DBL;
-  FIXP_DBL peakLevel = 0;
+  int32_t largestPeakLevel = MINVAL_DBL;
+  int32_t peakLevel = 0;
   DRCDEC_SELECTION_DATA* pCandidate = NULL;
 
   for (i = 0; i < _drcdec_selection_getNumber(pCandidatesPotential); i++) {
@@ -2052,7 +2052,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _generateOutputInfo(
   int hasDucking = 0;
   int selectedDrcSetIds;
   int selectedDownmixIds;
-  FIXP_DBL mixingLevel = 0;
+  int32_t mixingLevel = 0;
   int albumMode = hSelProcInput->albumMode;
   UCHAR* pDownmixIdRequested = hSelProcInput->downmixIdRequested;
   FIXP_SGL boost = hSelProcInput->boost;
@@ -2239,7 +2239,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectDownmixMatrix(
 
         if (pDown->downmixCoefficientsPresent) {
           int j, k;
-          FIXP_DBL downmixOffset = getDownmixOffset(
+          int32_t downmixOffset = getDownmixOffset(
               pDown, hSelProcOutput->baseChannelCount); /* e = 1 */
 
           for (j = 0; j < hSelProcOutput->baseChannelCount; j++) {
@@ -2383,7 +2383,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _dynamicRangeMeasurement(
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, DRC_INSTRUCTIONS_UNI_DRC* pInst,
     UCHAR downmixIdRequested,
     DYN_RANGE_MEASUREMENT_REQUEST_TYPE dynamicRangeMeasurementType,
-    int albumMode, int* pPeakToAveragePresent, FIXP_DBL* pPeakToAverage) {
+    int albumMode, int* pPeakToAveragePresent, int32_t* pPeakToAverage) {
   int i;
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
   int drcSetId = fMax(0, pInst->drcSetId);
@@ -2580,12 +2580,12 @@ static LOUDNESS_INFO* _getApplicableLoudnessInfoStructure(
 /*******************************************/
 
 typedef struct {
-  FIXP_DBL value;
+  int32_t value;
   int order;
 } VALUE_ORDER;
 
 void _initValueOrder(VALUE_ORDER* pValue) {
-  pValue->value = (FIXP_DBL)0;
+  pValue->value = (int32_t)0;
   pValue->order = -1;
 }
 
@@ -2604,7 +2604,7 @@ enum {
 };
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getMethodValue(
-    VALUE_ORDER* pValueOrder, FIXP_DBL value, int measurementSystem,
+    VALUE_ORDER* pValueOrder, int32_t value, int measurementSystem,
     int measurementSystemRequested) {
   const int rows = 11;
   const int columns = 12;
@@ -2643,10 +2643,10 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getLoudness(
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int albumMode,
     METHOD_DEFINITION_REQUEST measurementMethodRequested,
     MEASUREMENT_SYSTEM_REQUEST measurementSystemRequested,
-    FIXP_DBL targetLoudness, /* e = 7 */
+    int32_t targetLoudness, /* e = 7 */
     int drcSetId, int downmixIdRequested,
-    FIXP_DBL* pLoudnessNormalizationGain, /* e = 7 */
-    FIXP_DBL* pLoudness)                  /* e = 7 */
+    int32_t* pLoudnessNormalizationGain, /* e = 7 */
+    int32_t* pLoudness)                  /* e = 7 */
 {
   int index;
 
@@ -2665,7 +2665,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getLoudness(
   _initValueOrder(&valueOrder);
 
   *pLoudness = UNDEFINED_LOUDNESS_VALUE;
-  *pLoudnessNormalizationGain = (FIXP_DBL)0;
+  *pLoudnessNormalizationGain = (int32_t)0;
 
   if (drcSetId < 0) {
     drcSetId = 0;
@@ -2756,7 +2756,7 @@ static int _truePeakLevelIsPresent(HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet,
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getTruePeakLevel(
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int drcSetId, int downmixId,
-    int albumMode, FIXP_DBL* pTruePeakLevel) {
+    int albumMode, int32_t* pTruePeakLevel) {
   int i;
   int count;
   LOUDNESS_INFO* pLoudnessInfo = NULL;
@@ -2809,7 +2809,7 @@ static int _samplePeakLevelIsPresent(HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet,
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getSamplePeakLevel(
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int drcSetId, int downmixId,
-    int albumMode, FIXP_DBL* pSamplePeakLevel /* e = 7 */
+    int albumMode, int32_t* pSamplePeakLevel /* e = 7 */
 ) {
   int i;
   int count;
@@ -2858,7 +2858,7 @@ static int _limiterPeakTargetIsPresent(
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getLimiterPeakTarget(
     DRC_INSTRUCTIONS_UNI_DRC* pDrcInstruction, int drcSetId, int downmixId,
-    FIXP_DBL* pLimiterPeakTarget) {
+    int32_t* pLimiterPeakTarget) {
   int i;
 
   if (pDrcInstruction->limiterPeakTargetPresent) {
@@ -2904,7 +2904,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getSignalPeakLevel(
     HANDLE_SEL_PROC_INPUT hSelProcInput, HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, DRC_INSTRUCTIONS_UNI_DRC* pInst,
     int downmixIdRequested, int* explicitPeakInformationPresent,
-    FIXP_DBL* signalPeakLevelOut, /* e = 7 */
+    int32_t* signalPeakLevelOut, /* e = 7 */
     SEL_PROC_CODEC_MODE codecMode
 
 ) {
@@ -2912,8 +2912,8 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getSignalPeakLevel(
 
   int albumMode = hSelProcInput->albumMode;
 
-  FIXP_DBL signalPeakLevelTmp = (FIXP_DBL)0;
-  FIXP_DBL signalPeakLevel = FIXP_DBL(0);
+  int32_t signalPeakLevelTmp = (int32_t)0;
+  int32_t signalPeakLevel = int32_t(0);
 
   int dmxId = downmixIdRequested;
 
@@ -2949,28 +2949,28 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getSignalPeakLevel(
     if (retVal) return (retVal);
   } else if (dmxId != 0) {
     int downmixInstructionIndex = 0;
-    FIXP_DBL downmixPeakLevelDB = 0;
+    int32_t downmixPeakLevelDB = 0;
 
     *explicitPeakInformationPresent = 0;
 
-    signalPeakLevelTmp = FIXP_DBL(0);
+    signalPeakLevelTmp = int32_t(0);
 
     if (_downmixCoefficientsArePresent(hUniDrcConfig, dmxId,
                                        &downmixInstructionIndex)) {
-      FIXP_DBL dB_m;
+      int32_t dB_m;
       int dB_e;
-      FIXP_DBL coeff;
-      FIXP_DBL sum, maxSum; /* e = 7, so it is possible to sum up up to 32
+      int32_t coeff;
+      int32_t sum, maxSum; /* e = 7, so it is possible to sum up up to 32
                                downmix coefficients (with e = 2) */
       int i, j;
       DOWNMIX_INSTRUCTIONS* pDown =
           &(hUniDrcConfig->downmixInstructions[downmixInstructionIndex]);
-      FIXP_DBL downmixOffset = getDownmixOffset(
+      int32_t downmixOffset = getDownmixOffset(
           pDown, hUniDrcConfig->channelLayout.baseChannelCount); /* e = 1 */
-      maxSum = (FIXP_DBL)0;
+      maxSum = (int32_t)0;
 
       for (i = 0; i < pDown->targetChannelCount; i++) {
-        sum = (FIXP_DBL)0;
+        sum = (int32_t)0;
         for (j = 0; j < hUniDrcConfig->channelLayout.baseChannelCount; j++) {
           coeff = pDown->downmixCoefficient[j + i * hUniDrcConfig->channelLayout
                                                         .baseChannelCount];
@@ -2982,7 +2982,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getSignalPeakLevel(
       maxSum = fMultDiv2(maxSum, downmixOffset) << 2;
 
       if (maxSum == FL2FXCONST_DBL(1.0f / (float)(1 << 7))) {
-        downmixPeakLevelDB = (FIXP_DBL)0;
+        downmixPeakLevelDB = (int32_t)0;
       } else {
         dB_m = lin2dB(maxSum, 7, &dB_e); /* e_maxSum = 7 */
         downmixPeakLevelDB =
@@ -3015,8 +3015,8 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getSignalPeakLevel(
 
     signalPeakLevel = signalPeakLevelTmp + downmixPeakLevelDB;
   } else {
-    signalPeakLevel = FIXP_DBL(0); /* worst case estimate */
-    *explicitPeakInformationPresent = FIXP_DBL(0);
+    signalPeakLevel = int32_t(0); /* worst case estimate */
+    *explicitPeakInformationPresent = int32_t(0);
   }
 
   *signalPeakLevelOut = signalPeakLevel;
@@ -3028,7 +3028,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _extractLoudnessPeakToAverageValue(
     LOUDNESS_INFO* loudnessInfo,
     DYN_RANGE_MEASUREMENT_REQUEST_TYPE dynamicRangeMeasurementType,
     int* pLoudnessPeakToAverageValuePresent,
-    FIXP_DBL* pLoudnessPeakToAverageValue) {
+    int32_t* pLoudnessPeakToAverageValue) {
   int i;
 
   VALUE_ORDER valueOrderLoudness;
@@ -3124,8 +3124,8 @@ static int _findMethodDefinition(LOUDNESS_INFO* pLoudnessInfo,
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getMixingLevel(
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int downmixIdRequested,
-    int drcSetIdRequested, int albumMode, FIXP_DBL* pMixingLevel) {
-  const FIXP_DBL mixingLevelDefault = FL2FXCONST_DBL(85.0f / (float)(1 << 7));
+    int drcSetIdRequested, int albumMode, int32_t* pMixingLevel) {
+  const int32_t mixingLevelDefault = FL2FXCONST_DBL(85.0f / (float)(1 << 7));
 
   int i;
   int count;

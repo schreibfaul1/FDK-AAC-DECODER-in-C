@@ -103,15 +103,13 @@ amm-info@iis.fraunhofer.de
 #ifndef AAC_ROM_H
 #define AAC_ROM_H
 
+#include <stdint.h>
 #include "../libFDK/common_fix.h"
 #include "../libSYS/FDK_audio.h"
 #include "aacdec_hcr_types.h"
 #include "aacdec_hcrs.h"
 
-#define PCM_AAC LONG
-#define PCM_DEC FIXP_DBL
-#define MAXVAL_PCM_DEC MAXVAL_DBL
-#define MINVAL_PCM_DEC MINVAL_DBL
+
 #define FIXP_DBL2PCM_DEC(x) (x)
 #define PCM_DEC2FIXP_DBL(x) (x)
 #define PCM_DEC_BITS DFRACT_BITS
@@ -126,8 +124,8 @@ amm-info@iis.fraunhofer.de
 
 #define INV_QUANT_TABLESIZE 256
 
-extern const FIXP_DBL InverseQuantTable[INV_QUANT_TABLESIZE + 1];
-extern const FIXP_DBL MantissaTable[4][14];
+extern const int32_t InverseQuantTable[INV_QUANT_TABLESIZE + 1];
+extern const int32_t MantissaTable[4][14];
 extern const SCHAR ExponentTable[4][14];
 
 #define NUM_LD_COEF_512 1536
@@ -192,7 +190,7 @@ extern const UCHAR tns_max_bands_tbl[13][2];
 extern const UCHAR tns_max_bands_tbl_480[13];
 extern const UCHAR tns_max_bands_tbl_512[13];
 
-#define FIXP_TCC FIXP_DBL
+#define FIXP_TCC int32_t
 
 extern const FIXP_TCC FDKaacDec_tnsCoeff3[8];
 extern const FIXP_TCC FDKaacDec_tnsCoeff4[16];
@@ -202,7 +200,7 @@ extern const UCHAR FDKaacDec_tnsCoeff4_gain_ld[];
 
 extern const USHORT AacDec_randomSign[AAC_NF_NO_RANDOM_VAL / 16];
 
-extern const FIXP_DBL pow2_div24minus1[47];
+extern const int32_t pow2_div24minus1[47];
 extern const int offsetTab[2][16];
 
 /* Channel mapping indices for time domain I/O.
@@ -216,15 +214,15 @@ extern const MP4_ELEMENT_ID elementsTab[AACDEC_MAX_CH_CONF]
 
 #define SF_FNA_COEFFS \
   1 /* Compile-time prescaler for MDST-filter coefficients. */
-/* SF_FNA_COEFFS > 0 should only be considered for FIXP_DBL-coefficients  */
+/* SF_FNA_COEFFS > 0 should only be considered for int32_t-coefficients  */
 /* (i.e. if CPLX_PRED_FILTER_16BIT is not defined).                       */
-/* With FIXP_DBL loss of precision is possible for SF_FNA_COEFFS > 11.    */
+/* With int32_t loss of precision is possible for SF_FNA_COEFFS > 11.    */
 
 #ifdef CPLX_PRED_FILTER_16BIT
 #define FIXP_FILT FIXP_SGL
 #define FILT(a) ((FL2FXCONST_SGL(a)) >> SF_FNA_COEFFS)
 #else
-#define FIXP_FILT FIXP_DBL
+#define FIXP_FILT int32_t
 #define FILT(a) ((FL2FXCONST_DBL(a)) >> SF_FNA_COEFFS)
 #endif
 

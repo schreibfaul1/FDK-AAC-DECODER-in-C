@@ -121,7 +121,7 @@ UINT CConcealment_GetDelay(CConcealParams *pConcealCommonData);
 AAC_DECODER_ERROR
 CConcealment_SetParams(CConcealParams *concealParams, int method,
                        int fadeOutSlope, int fadeInSlope, int muteRelease,
-                       FIXP_DBL comfNoiseLevel);
+                       int32_t comfNoiseLevel);
 
 CConcealmentState CConcealment_GetState(CConcealmentInfo *hConcealmentInfo);
 
@@ -147,6 +147,6 @@ int CConcealment_GetLastFrameOk(CConcealmentInfo *hConcealmentInfo,
 
 INT CConcealment_TDFading(
     int len, CAacDecoderStaticChannelInfo **ppAacDecoderStaticChannelInfo,
-    const INT aacOutDataHeadroom, PCM_DEC *pcmdata, PCM_DEC *pcmdata_1);
+    const INT aacOutDataHeadroom, int32_t *pcmdata, int32_t *pcmdata_1);
 
 #endif /* #ifndef CONCEAL_H */

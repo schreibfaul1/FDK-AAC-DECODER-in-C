@@ -144,6 +144,7 @@ amm-info@iis.fraunhofer.de
   indicate such packet loss by inserting an empty frame with frameOK=0.
 */
 
+#include <stdint.h>
 #include "conceal.h"
 
 #include "aac_rom.h"
@@ -193,10 +194,10 @@ static const FIXP_SGL facMod4Table[4] = {
 };
 
 static void CConcealment_CalcBandEnergy(
-    FIXP_DBL *spectrum, const SamplingRateInfo *pSamplingRateInfo,
+    int32_t *spectrum, const SamplingRateInfo *pSamplingRateInfo,
     const int blockType, CConcealmentExpandType ex, int *sfbEnergy);
 
-static void CConcealment_InterpolateBuffer(FIXP_DBL *spectrum,
+static void CConcealment_InterpolateBuffer(int32_t *spectrum,
                                            SHORT *pSpecScalePrev,
                                            SHORT *pSpecScaleAct,
                                            SHORT *pSpecScaleOut, int *enPrv,
@@ -221,16 +222,16 @@ static void CConcealment_UpdateState(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
     const int samplesPerFrame, CAacDecoderChannelInfo *pAacDecoderChannelInfo);
 
-static void CConcealment_ApplyRandomSign(int iRandomPhase, FIXP_DBL *spec,
+static void CConcealment_ApplyRandomSign(int iRandomPhase, int32_t *spec,
                                          int samplesPerFrame);
 
 /* TimeDomainFading */
-static void CConcealment_TDFadePcmAtt(int start, int len, FIXP_DBL fadeStart,
-                                      FIXP_DBL fadeStop, PCM_DEC *pcmdata);
-static void CConcealment_TDFadeFillFadingStations(FIXP_DBL *fadingStations,
+static void CConcealment_TDFadePcmAtt(int start, int len, int32_t fadeStart,
+                                      int32_t fadeStop, int32_t *pcmdata);
+static void CConcealment_TDFadeFillFadingStations(int32_t *fadingStations,
                                                   int *fadingSteps,
-                                                  FIXP_DBL fadeStop,
-                                                  FIXP_DBL fadeStart,
+                                                  int32_t fadeStop,
+                                                  int32_t fadeStart,
                                                   TDfadingType fadingType);
 static void CConcealment_TDFading_doLinearFadingSteps(int *fadingSteps);
 
@@ -244,7 +245,7 @@ static int CConcealment_TDNoise_Random(ULONG *seed);
 static void CConcealment_TDNoise_Apply(CConcealmentInfo *const pConcealmentInfo,
                                        const int len,
                                        const INT aacOutDataHeadroom,
-                                       PCM_DEC *const pcmdata);
+                                       int32_t *const pcmdata);
 
 static BLOCK_TYPE CConcealment_GetWinSeq(int prevWinSeq) {
   BLOCK_TYPE newWinSeq = BLOCK_LONG;
@@ -274,7 +275,7 @@ void CConcealment_InitCommonData(CConcealParams *pConcealCommonData) {
     pConcealCommonData->numMuteReleaseFrames = CONCEAL_DFLT_MUTE_RELEASE_FRAMES;
 
     pConcealCommonData->comfortNoiseLevel =
-        (FIXP_DBL)CONCEAL_DFLT_COMF_NOISE_LEVEL;
+        (int32_t)CONCEAL_DFLT_COMF_NOISE_LEVEL;
 
     /* Init fade factors (symetric) */
     pConcealCommonData->fadeOutFactor[0] =
@@ -352,7 +353,7 @@ void CConcealment_InitChannelData(CConcealmentInfo *pConcealChannelInfo,
 
   pConcealChannelInfo->cntFadeFrames = 0;
   pConcealChannelInfo->cntValidFrames = 0;
-  pConcealChannelInfo->fade_old = (FIXP_DBL)MAXVAL_DBL;
+  pConcealChannelInfo->fade_old = (int32_t)MAXVAL_DBL;
   pConcealChannelInfo->winGrpOffset[0] = 0;
   pConcealChannelInfo->winGrpOffset[1] = 0;
   pConcealChannelInfo->attGrpOffset[0] = 0;
@@ -372,7 +373,7 @@ void CConcealment_InitChannelData(CConcealmentInfo *pConcealChannelInfo,
 AAC_DECODER_ERROR
 CConcealment_SetParams(CConcealParams *concealParams, int method,
                        int fadeOutSlope, int fadeInSlope, int muteRelease,
-                       FIXP_DBL comfNoiseLevel) {
+                       int32_t comfNoiseLevel) {
   /* set concealment technique */
   if (method != AACDEC_CONCEAL_PARAM_NOT_SPECIFIED) {
     switch ((CConcealmentMethod)method) {
@@ -437,15 +438,15 @@ CConcealment_SetParams(CConcealParams *concealParams, int method,
   }
 
   /* set confort noise level which will be inserted while in state 'muting' */
-  if (comfNoiseLevel != (FIXP_DBL)AACDEC_CONCEAL_PARAM_NOT_SPECIFIED) {
-    if ((comfNoiseLevel < (FIXP_DBL)0) ||
-        (comfNoiseLevel > (FIXP_DBL)MAXVAL_DBL)) {
+  if (comfNoiseLevel != (int32_t)AACDEC_CONCEAL_PARAM_NOT_SPECIFIED) {
+    if ((comfNoiseLevel < (int32_t)0) ||
+        (comfNoiseLevel > (int32_t)MAXVAL_DBL)) {
       return AAC_DEC_SET_PARAM_FAIL;
     }
     if (concealParams == NULL) {
       return AAC_DEC_INVALID_HANDLE;
     } else {
-      concealParams->comfortNoiseLevel = (FIXP_DBL)comfNoiseLevel;
+      concealParams->comfortNoiseLevel = (int32_t)comfNoiseLevel;
     }
   }
 
@@ -488,7 +489,7 @@ CConcealment_SetAttenuation(CConcealParams *concealParams,
     for (i = 0; i < CONCEAL_MAX_NUM_FADE_FACTORS; i++) {
       concealParams->fadeOutFactor[i] =
           FX_DBL2FX_SGL(fLdPow(CONCEAL_MIN_ATTENUATION_FACTOR_025_LD, 0,
-                               (FIXP_DBL)((INT)(FL2FXCONST_DBL(1.0 / 2.0) >>
+                               (int32_t)((INT)(FL2FXCONST_DBL(1.0 / 2.0) >>
                                                 (CONCEAL_PARAMETER_BITS - 1)) *
                                           (INT)fadeOutAttenuationVector[i]),
                                CONCEAL_PARAMETER_BITS));
@@ -514,7 +515,7 @@ CConcealment_SetAttenuation(CConcealParams *concealParams,
     for (i = 0; i < CONCEAL_MAX_NUM_FADE_FACTORS; i++) {
       concealParams->fadeInFactor[i] = FX_DBL2FX_SGL(
           fLdPow(CONCEAL_MIN_ATTENUATION_FACTOR_025_LD, 0,
-                 (FIXP_DBL)((INT)(FIXP_ONE >> CONCEAL_PARAMETER_BITS) *
+                 (int32_t)((INT)(FIXP_ONE >> CONCEAL_PARAMETER_BITS) *
                             (INT)fadeInAttenuationVector[i]),
                  CONCEAL_PARAMETER_BITS));
     }
@@ -555,7 +556,7 @@ void CConcealment_Store(
         pAacDecoderChannelInfo->data.usac.mod[nbDiv - 1] == 0))
 
   {
-    FIXP_DBL *pSpectralCoefficient =
+    int32_t *pSpectralCoefficient =
         SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
     SHORT *pSpecScale = pAacDecoderChannelInfo->specScale;
     CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
@@ -588,7 +589,7 @@ void CConcealment_Store(
 #else
       FIXP_CNCL *RESTRICT pCncl =
           &hConcealmentInfo->spectralCoefficient[1024 - 1];
-      FIXP_DBL *RESTRICT pSpec = &pSpectralCoefficient[1024 - 1];
+      int32_t *RESTRICT pSpec = &pSpectralCoefficient[1024 - 1];
       int i;
       for (i = 1024; i != 0; i--) {
         *pCncl-- = FX_DBL2FX_CNCL(*pSpec--);
@@ -596,19 +597,19 @@ void CConcealment_Store(
 #endif
     } else {
     /* swap spectral data */
-#if (FIXP_CNCL == FIXP_DBL)
-      C_ALLOC_SCRATCH_START(pSpecTmp, FIXP_DBL, 1024);
-      FDKmemcpy(pSpecTmp, pSpectralCoefficient, 1024 * sizeof(FIXP_DBL));
+#if (FIXP_CNCL == int32_t)
+      C_ALLOC_SCRATCH_START(pSpecTmp, int32_t, 1024);
+      FDKmemcpy(pSpecTmp, pSpectralCoefficient, 1024 * sizeof(int32_t));
       FDKmemcpy(pSpectralCoefficient, hConcealmentInfo->spectralCoefficient,
-                1024 * sizeof(FIXP_DBL));
+                1024 * sizeof(int32_t));
       FDKmemcpy(hConcealmentInfo->spectralCoefficient, pSpecTmp,
-                1024 * sizeof(FIXP_DBL));
-      C_ALLOC_SCRATCH_END(pSpecTmp, FIXP_DBL, 1024);
+                1024 * sizeof(int32_t));
+      C_ALLOC_SCRATCH_END(pSpecTmp, int32_t, 1024);
 #else
       FIXP_CNCL *RESTRICT pCncl =
           &hConcealmentInfo->spectralCoefficient[1024 - 1];
-      FIXP_DBL *RESTRICT pSpec = &pSpectralCoefficient[1024 - 1];
-      FIXP_DBL tSpec;
+      int32_t *RESTRICT pSpec = &pSpectralCoefficient[1024 - 1];
+      int32_t tSpec;
 
       for (int i = 1024; i != 0; i--) {
         tSpec = *pSpec;
@@ -721,7 +722,7 @@ int CConcealment_Apply(
           if (!frameOk) {
             /* Mute spectral data in case of errors */
             FDKmemclear(pAacDecoderChannelInfo->pSpectralCoefficient,
-                        samplesPerFrame * sizeof(FIXP_DBL));
+                        samplesPerFrame * sizeof(int32_t));
             /* Set last window shape */
             pAacDecoderChannelInfo->icsInfo.WindowShape =
                 hConcealmentInfo->windowShape;
@@ -747,14 +748,14 @@ int CConcealment_Apply(
       }
     } else if (!frameOk || mute_release_active) {
       /* simply restore the buffer */
-      FIXP_DBL *pSpectralCoefficient =
+      int32_t *pSpectralCoefficient =
           SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
       SHORT *pSpecScale = pAacDecoderChannelInfo->specScale;
       CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
 #if (CNCL_FRACT_BITS != DFRACT_BITS)
       FIXP_CNCL *RESTRICT pCncl =
           &hConcealmentInfo->spectralCoefficient[1024 - 1];
-      FIXP_DBL *RESTRICT pSpec = &pSpectralCoefficient[1024 - 1];
+      int32_t *RESTRICT pSpec = &pSpectralCoefficient[1024 - 1];
       int i;
 #endif
 
@@ -769,7 +770,7 @@ int CConcealment_Apply(
         /* restore spectral bins */
 #if (CNCL_FRACT_BITS == DFRACT_BITS)
         FDKmemcpy(pSpectralCoefficient, hConcealmentInfo->spectralCoefficient,
-                  1024 * sizeof(FIXP_DBL));
+                  1024 * sizeof(int32_t));
 #else
         for (i = 1024; i != 0; i--) {
           *pSpec-- = FX_CNCL2FX_DBL(*pCncl--);
@@ -803,7 +804,7 @@ static int CConcealment_ApplyNoise(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
     const SamplingRateInfo *pSamplingRateInfo, const int samplesPerFrame,
     const UINT flags) {
-  FIXP_DBL *pSpectralCoefficient =
+  int32_t *pSpectralCoefficient =
       SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
   CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
 
@@ -839,9 +840,9 @@ static int CConcealment_ApplyNoise(
                                        all) */
 
       /* mute spectral data */
-      FDKmemclear(pSpectralCoefficient, samplesPerFrame * sizeof(FIXP_DBL));
+      FDKmemclear(pSpectralCoefficient, samplesPerFrame * sizeof(int32_t));
       FDKmemclear(pConcealmentInfo->spectralCoefficient,
-                  samplesPerFrame * sizeof(FIXP_DBL));
+                  samplesPerFrame * sizeof(int32_t));
 
       appliedProcessing = 1;
     } break;
@@ -878,7 +879,7 @@ static int CConcealment_ApplyInter(
   CConcealParams *pConcealCommonData = pConcealmentInfo->pConcealParams;
 #endif
 
-  FIXP_DBL *pSpectralCoefficient =
+  int32_t *pSpectralCoefficient =
       SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
   CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
   SHORT *pSpecScale = pAacDecoderChannelInfo->specScale;
@@ -1101,7 +1102,7 @@ static int CConcealment_ApplyInter(
                                        all) */
 
       /* mute spectral data */
-      FDKmemclear(pSpectralCoefficient, samplesPerFrame * sizeof(FIXP_DBL));
+      FDKmemclear(pSpectralCoefficient, samplesPerFrame * sizeof(int32_t));
 
       appliedProcessing = 1;
     } break;
@@ -1121,7 +1122,7 @@ static int CConcealment_ApplyInter(
   frame interpolation.
 */
 static void CConcealment_CalcBandEnergy(
-    FIXP_DBL *spectrum, const SamplingRateInfo *pSamplingRateInfo,
+    int32_t *spectrum, const SamplingRateInfo *pSamplingRateInfo,
     const int blockType, CConcealmentExpandType expandType, int *sfbEnergy) {
   const SHORT *pSfbOffset;
   int line, sfb, scaleFactorBandsTotal = 0;
@@ -1143,7 +1144,7 @@ static void CConcealment_CalcBandEnergy(
         pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
 
         for (sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
-          FIXP_DBL enAccu = (FIXP_DBL)(LONG)1;
+          int32_t enAccu = (int32_t)(LONG)1;
           int sfbScale =
               (sizeof(LONG) << 3) -
               CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
@@ -1160,7 +1161,7 @@ static void CConcealment_CalcBandEnergy(
         pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Short;
 
         for (sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
-          FIXP_DBL enAccu = (FIXP_DBL)(LONG)1;
+          int32_t enAccu = (int32_t)(LONG)1;
           int sfbScale =
               (sizeof(LONG) << 3) -
               CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
@@ -1183,7 +1184,7 @@ static void CConcealment_CalcBandEnergy(
         pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Short;
 
         for (sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
-          FIXP_DBL enAccu = (FIXP_DBL)(LONG)1;
+          int32_t enAccu = (int32_t)(LONG)1;
           int sfbScale =
               (sizeof(LONG) << 3) -
               CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
@@ -1200,7 +1201,7 @@ static void CConcealment_CalcBandEnergy(
         pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
 
         for (sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
-          FIXP_DBL enAccu = (FIXP_DBL)(LONG)1;
+          int32_t enAccu = (int32_t)(LONG)1;
           int sfbScale =
               (sizeof(LONG) << 3) -
               CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
@@ -1221,7 +1222,7 @@ static void CConcealment_CalcBandEnergy(
   The function creates the interpolated spectral data according to the
   energy of the last good frame and the current (good) frame.
 */
-static void CConcealment_InterpolateBuffer(FIXP_DBL *spectrum,
+static void CConcealment_InterpolateBuffer(int32_t *spectrum,
                                            SHORT *pSpecScalePrv,
                                            SHORT *pSpecScaleAct,
                                            SHORT *pSpecScaleOut, int *enPrv,
@@ -1240,7 +1241,7 @@ static void CConcealment_InterpolateBuffer(FIXP_DBL *spectrum,
     fac_shift = fMax(fMin(fac_shift, DFRACT_BITS - 1), -(DFRACT_BITS - 1));
 
     for (; line < pSfbOffset[sfb + 1]; line++) {
-      FIXP_DBL accu = fMult(*(spectrum + line), facMod4Table[fac_mod]);
+      int32_t accu = fMult(*(spectrum + line), facMod4Table[fac_mod]);
       *(spectrum + line) = scaleValue(accu, fac_shift);
     }
   }
@@ -1597,7 +1598,7 @@ static void CConcealment_UpdateState(
   The function toggles the sign of the spectral data randomly. This is
   useful to ensure the quality of the concealed frames.
  */
-static void CConcealment_ApplyRandomSign(int randomPhase, FIXP_DBL *spec,
+static void CConcealment_ApplyRandomSign(int randomPhase, int32_t *spec,
                                          int samplesPerFrame) {
   int i;
   USHORT packedSign = 0;
@@ -1615,7 +1616,7 @@ static void CConcealment_ApplyRandomSign(int randomPhase, FIXP_DBL *spec,
     }
 
     if (packedSign & 0x1) {
-      spec[i] = -fMax(spec[i], (FIXP_DBL)(MINVAL_DBL + 1));
+      spec[i] = -fMax(spec[i], (int32_t)(MINVAL_DBL + 1));
     }
     packedSign >>= 1;
 
@@ -1682,7 +1683,7 @@ static int CConcealment_ApplyFadeOut(
   int appliedProcessing = 0;
 
   CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
-  FIXP_DBL *pSpectralCoefficient =
+  int32_t *pSpectralCoefficient =
       SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
   SHORT *pSpecScale = pAacDecoderChannelInfo->specScale;
 
@@ -1734,12 +1735,12 @@ static int CConcealment_ApplyFadeOut(
   for (dstWin = 0; dstWin < numWindows; dstWin += 1) {
     FIXP_CNCL *pCncl =
         pConcealmentInfo->spectralCoefficient + (srcWin * windowLen);
-    FIXP_DBL *pOut = pSpectralCoefficient + (dstWin * windowLen);
+    int32_t *pOut = pSpectralCoefficient + (dstWin * windowLen);
 
     if (mode == 1) {
       /* mute if attIdx gets large enaugh */
       if (attIdx > pConcealmentInfo->pConcealParams->numFadeOutFrames) {
-        FDKmemclear(pCncl, sizeof(FIXP_DBL) * windowLen);
+        FDKmemclear(pCncl, sizeof(int32_t) * windowLen);
       }
 
       /* restore frequency coefficients from buffer - attenuation is done later
@@ -1846,11 +1847,11 @@ Target fading level is determined by fading index cntFadeFrames.
 
 INT CConcealment_TDFading(
     int len, CAacDecoderStaticChannelInfo **ppAacDecoderStaticChannelInfo,
-    const INT aacOutDataHeadroom, PCM_DEC *pcmdata, PCM_DEC *pcmdata_1) {
+    const INT aacOutDataHeadroom, int32_t *pcmdata, int32_t *pcmdata_1) {
   /*
   Do the fading in Time domain based on concealment states and core mode
   */
-  FIXP_DBL fadeStop, attMute = (FIXP_DBL)0;
+  int32_t fadeStop, attMute = (int32_t)0;
   int idx = 0, ii;
   CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo =
       *ppAacDecoderStaticChannelInfo;
@@ -1859,9 +1860,9 @@ INT CConcealment_TDFading(
   CConcealParams *pConcealParams = pConcealmentInfo->pConcealParams;
   const CConcealmentState concealState = pConcealmentInfo->concealState;
   TDfadingType fadingType;
-  FIXP_DBL fadingStations[9] = {0};
+  int32_t fadingStations[9] = {0};
   int fadingSteps[8] = {0};
-  const FIXP_DBL fadeStart =
+  const int32_t fadeStart =
       pConcealmentInfo
           ->fade_old; /* start fading at last end-of-frame attenuation */
   FIXP_SGL *fadeFactor = pConcealParams->fadeOutFactor;
@@ -1909,7 +1910,7 @@ INT CConcealment_TDFading(
   switch (fadingType) {
     case FADE_TIMEDOMAIN_FROMSPECTRALMUTE:
       fadeStop =
-          (idx < 0) ? (FIXP_DBL)MAXVAL_DBL : FX_SGL2FX_DBL(fadeFactor[idx]);
+          (idx < 0) ? (int32_t)MAXVAL_DBL : FX_SGL2FX_DBL(fadeFactor[idx]);
       if (pConcealmentInfo->pConcealParams->numFadeInFrames == 0) {
         /* do step as fast as possible */
         fadingSteps[0] = 1;
@@ -1919,7 +1920,7 @@ INT CConcealment_TDFading(
       break;
     case FADE_TIMEDOMAIN:
       fadeStop =
-          (idx < 0) ? (FIXP_DBL)MAXVAL_DBL : FX_SGL2FX_DBL(fadeFactor[idx]);
+          (idx < 0) ? (int32_t)MAXVAL_DBL : FX_SGL2FX_DBL(fadeFactor[idx]);
       CConcealment_TDFading_doLinearFadingSteps(&fadingSteps[0]);
       break;
     case FADE_TIMEDOMAIN_TOSPECTRALMUTE:
@@ -1941,16 +1942,16 @@ INT CConcealment_TDFading(
   CConcealment_TDFadeFillFadingStations(fadingStations, fadingSteps, fadeStop,
                                         fadeStart, fadingType);
 
-  if ((fadingStations[8] != (FIXP_DBL)MAXVAL_DBL) ||
-      (fadingStations[7] != (FIXP_DBL)MAXVAL_DBL) ||
-      (fadingStations[6] != (FIXP_DBL)MAXVAL_DBL) ||
-      (fadingStations[5] != (FIXP_DBL)MAXVAL_DBL) ||
-      (fadingStations[4] != (FIXP_DBL)MAXVAL_DBL) ||
-      (fadingStations[3] != (FIXP_DBL)MAXVAL_DBL) ||
-      (fadingStations[2] != (FIXP_DBL)MAXVAL_DBL) ||
-      (fadingStations[1] != (FIXP_DBL)MAXVAL_DBL) ||
+  if ((fadingStations[8] != (int32_t)MAXVAL_DBL) ||
+      (fadingStations[7] != (int32_t)MAXVAL_DBL) ||
+      (fadingStations[6] != (int32_t)MAXVAL_DBL) ||
+      (fadingStations[5] != (int32_t)MAXVAL_DBL) ||
+      (fadingStations[4] != (int32_t)MAXVAL_DBL) ||
+      (fadingStations[3] != (int32_t)MAXVAL_DBL) ||
+      (fadingStations[2] != (int32_t)MAXVAL_DBL) ||
+      (fadingStations[1] != (int32_t)MAXVAL_DBL) ||
       (fadingStations[0] !=
-       (FIXP_DBL)MAXVAL_DBL)) /* if there's something to fade */
+       (int32_t)MAXVAL_DBL)) /* if there's something to fade */
   {
     int start = 0;
     for (ii = 0; ii < 8; ii++) {
@@ -1971,23 +1972,23 @@ INT CConcealment_TDFading(
 }
 
 /* attenuate pcmdata in Time Domain Fading process */
-static void CConcealment_TDFadePcmAtt(int start, int len, FIXP_DBL fadeStart,
-                                      FIXP_DBL fadeStop, PCM_DEC *pcmdata) {
+static void CConcealment_TDFadePcmAtt(int start, int len, int32_t fadeStart,
+                                      int32_t fadeStop, int32_t *pcmdata) {
   int i;
-  FIXP_DBL dStep;
-  FIXP_DBL dGain;
-  FIXP_DBL dGain_apply;
+  int32_t dStep;
+  int32_t dGain;
+  int32_t dGain_apply;
 
   /* set start energy */
   dGain = fadeStart;
   /* determine energy steps from sample to sample */
-  dStep = (FIXP_DBL)((int)((fadeStart >> 1) - (fadeStop >> 1)) / len) << 1;
+  dStep = (int32_t)((int)((fadeStart >> 1) - (fadeStop >> 1)) / len) << 1;
 
   for (i = start; i < (start + len); i++) {
     dGain -= dStep;
     /* prevent gain from getting negative due to possible fixpoint inaccuracies
      */
-    dGain_apply = fMax((FIXP_DBL)0, dGain);
+    dGain_apply = fMax((int32_t)0, dGain);
     /* finally, attenuate samples */
     pcmdata[i] = FIXP_DBL2PCM_DEC(fMult(pcmdata[i], dGain_apply));
   }
@@ -2017,10 +2018,10 @@ Fadingstations:  [0][1][2][3][4][5][6][7][8]
 to be edited)
 
 */
-static void CConcealment_TDFadeFillFadingStations(FIXP_DBL *fadingStations,
+static void CConcealment_TDFadeFillFadingStations(int32_t *fadingStations,
                                                   int *fadingSteps,
-                                                  FIXP_DBL fadeStop,
-                                                  FIXP_DBL fadeStart,
+                                                  int32_t fadeStop,
+                                                  int32_t fadeStart,
                                                   TDfadingType fadingType) {
   int i;
   INT fadingSteps_sum = 0;
@@ -2033,7 +2034,7 @@ static void CConcealment_TDFadeFillFadingStations(FIXP_DBL *fadingStations,
   fadingStations[0] = fadeStart;
   for (i = 1; i < 8; i++) {
     fadingStations[i] =
-        fadingStations[i - 1] + (FIXP_DBL)(fadeDiff * fadingSteps[i - 1]);
+        fadingStations[i - 1] + (int32_t)(fadeDiff * fadingSteps[i - 1]);
   }
   fadingStations[8] = fadeStop;
 }
@@ -2054,12 +2055,12 @@ static int CConcealment_TDNoise_Random(ULONG *seed) {
 static void CConcealment_TDNoise_Apply(CConcealmentInfo *const pConcealmentInfo,
                                        const int len,
                                        const INT aacOutDataHeadroom,
-                                       PCM_DEC *const pcmdata) {
-  PCM_DEC *states = pConcealmentInfo->TDNoiseStates;
-  PCM_DEC noiseVal;
-  FIXP_DBL noiseValLong;
+                                       int32_t *const pcmdata) {
+  int32_t *states = pConcealmentInfo->TDNoiseStates;
+  int32_t noiseVal;
+  int32_t noiseValLong;
   FIXP_SGL *coef = pConcealmentInfo->TDNoiseCoef;
-  FIXP_DBL TDNoiseAtt;
+  int32_t TDNoiseAtt;
   ULONG seed = pConcealmentInfo->TDNoiseSeed =
       (ULONG)CConcealment_TDNoise_Random(&pConcealmentInfo->TDNoiseSeed) + 1;
 
@@ -2069,25 +2070,25 @@ static void CConcealment_TDNoise_Apply(CConcealmentInfo *const pConcealmentInfo,
 
   if ((pConcealmentInfo->concealState != ConcealState_Ok ||
        pConcealmentInfo->concealState_old != ConcealState_Ok) &&
-      TDNoiseAtt != (FIXP_DBL)0) {
+      TDNoiseAtt != (int32_t)0) {
     for (ii = 0; ii < (len << 3); ii++) {
       /* create filtered noise */
       states[2] = states[1];
       states[1] = states[0];
       states[0] =
-          FIXP_DBL2PCM_DEC((FIXP_DBL)CConcealment_TDNoise_Random(&seed));
+          FIXP_DBL2PCM_DEC((int32_t)CConcealment_TDNoise_Random(&seed));
       noiseValLong = fMult(states[0], coef[0]) + fMult(states[1], coef[1]) +
                      fMult(states[2], coef[2]);
       noiseVal = FIXP_DBL2PCM_DEC(fMult(noiseValLong, TDNoiseAtt) >>
                                   aacOutDataHeadroom);
 
       /* add filtered noise - check for clipping, before */
-      if (noiseVal > (PCM_DEC)0 &&
-          pcmdata[ii] > (PCM_DEC)MAXVAL_PCM_DEC - noiseVal) {
-        noiseVal = noiseVal * (PCM_DEC)-1;
-      } else if (noiseVal < (PCM_DEC)0 &&
-                 pcmdata[ii] < (PCM_DEC)MINVAL_PCM_DEC - noiseVal) {
-        noiseVal = noiseVal * (PCM_DEC)-1;
+      if (noiseVal > (int32_t)0 &&
+          pcmdata[ii] > (int32_t)MAXVAL_DBL - noiseVal) {
+        noiseVal = noiseVal * (int32_t)-1;
+      } else if (noiseVal < (int32_t)0 &&
+                 pcmdata[ii] < (int32_t)MINVAL_DBL - noiseVal) {
+        noiseVal = noiseVal * (int32_t)-1;
       }
 
       pcmdata[ii] += noiseVal;

@@ -145,10 +145,10 @@ int TsdRead(HANDLE_FDK_BITSTREAM hBs, const int numSlots, TSD_DATA *pTsdData);
  * should read from (modified by this function).
  */
 void TsdGenerateNonTr(const int numHybridBands, const TSD_DATA *pTsdData,
-                      const int ts, FIXP_DBL *pVdirectReal,
-                      FIXP_DBL *pVdirectImag, FIXP_DBL *pVnonTrReal,
-                      FIXP_DBL *pVnonTrImag, FIXP_DBL **ppDecorrInReal,
-                      FIXP_DBL **ppDecorrInImag);
+                      const int ts, int32_t *pVdirectReal,
+                      int32_t *pVdirectImag, int32_t *pVnonTrReal,
+                      int32_t *pVnonTrImag, int32_t **ppDecorrInReal,
+                      int32_t **ppDecorrInImag);
 
 /**
  * \brief Generate d_{x,Tr} signal and add to d_{x,nonTr} signal
@@ -161,7 +161,7 @@ void TsdGenerateNonTr(const int numHybridBands, const TSD_DATA *pTsdData,
  * \param[out] pDnonTrImag
  */
 void TsdApply(const int numHybridBands, const TSD_DATA *pTsdData, int *pTsdTs,
-              const FIXP_DBL *pVdirectReal, const FIXP_DBL *pVdirectImag,
-              FIXP_DBL *pDnonTrReal, FIXP_DBL *pDnonTrImag);
+              const int32_t *pVdirectReal, const int32_t *pVdirectImag,
+              int32_t *pDnonTrReal, int32_t *pDnonTrImag);
 
 #endif /* #ifndef SAC_TSD_H */

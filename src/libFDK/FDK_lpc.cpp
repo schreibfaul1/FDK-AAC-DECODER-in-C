@@ -113,12 +113,12 @@ static SCHAR order_ld[LPC_MAX_ORDER] = {
 
 /* IIRLattice */
 #ifndef FUNCTION_CLpc_SynthesisLattice_SGL
-void CLpc_SynthesisLattice(FIXP_DBL *signal, const int signal_size,
+void CLpc_SynthesisLattice(int32_t *signal, const int signal_size,
                            const int signal_e, const int signal_e_out,
                            const int inc, const FIXP_SGL *coeff,
-                           const int order, FIXP_DBL *state) {
+                           const int order, int32_t *state) {
   int i, j;
-  FIXP_DBL *pSignal;
+  int32_t *pSignal;
   int shift;
 
   FDK_ASSERT(order <= LPC_MAX_ORDER);
@@ -143,9 +143,9 @@ void CLpc_SynthesisLattice(FIXP_DBL *signal, const int signal_size,
   shift = -order_ld[order - 1];
 
   for (i = signal_size; i != 0; i--) {
-    FIXP_DBL *pState = state + order - 1;
+    int32_t *pState = state + order - 1;
     const FIXP_SGL *pCoeff = coeff + order - 1;
-    FIXP_DBL tmp;
+    int32_t tmp;
 
     tmp = scaleValue(*pSignal, shift + signal_e) -
           fMultDiv2(*pCoeff--, *pState--);
@@ -165,12 +165,12 @@ void CLpc_SynthesisLattice(FIXP_DBL *signal, const int signal_size,
 #endif
 
 #ifndef FUNCTION_CLpc_SynthesisLattice_DBL
-void CLpc_SynthesisLattice(FIXP_DBL *signal, const int signal_size,
+void CLpc_SynthesisLattice(int32_t *signal, const int signal_size,
                            const int signal_e, const int signal_e_out,
-                           const int inc, const FIXP_DBL *coeff,
-                           const int order, FIXP_DBL *state) {
+                           const int inc, const int32_t *coeff,
+                           const int order, int32_t *state) {
   int i, j;
-  FIXP_DBL *pSignal;
+  int32_t *pSignal;
 
   FDK_ASSERT(order <= LPC_MAX_ORDER);
   FDK_ASSERT(order > 0);
@@ -182,9 +182,9 @@ void CLpc_SynthesisLattice(FIXP_DBL *signal, const int signal_size,
 
   FDK_ASSERT(signal_size > 0);
   for (i = signal_size; i != 0; i--) {
-    FIXP_DBL *pState = state + order - 1;
-    const FIXP_DBL *pCoeff = coeff + order - 1;
-    FIXP_DBL tmp, accu;
+    int32_t *pState = state + order - 1;
+    const int32_t *pCoeff = coeff + order - 1;
+    int32_t tmp, accu;
 
     accu =
         fMultSubDiv2(scaleValue(*pSignal, signal_e - 1), *pCoeff--, *pState--);
@@ -211,12 +211,12 @@ void CLpc_SynthesisLattice(FIXP_DBL *signal, const int signal_size,
 #endif
 
 /* LPC_SYNTHESIS_IIR version */
-void CLpc_Synthesis(FIXP_DBL *signal, const int signal_size, const int signal_e,
+void CLpc_Synthesis(int32_t *signal, const int signal_size, const int signal_e,
                     const int inc, const FIXP_LPC_TNS *lpcCoeff_m,
-                    const int lpcCoeff_e, const int order, FIXP_DBL *state,
+                    const int lpcCoeff_e, const int order, int32_t *state,
                     int *pStateIndex) {
   int i, j;
-  FIXP_DBL *pSignal;
+  int32_t *pSignal;
   int stateIndex = *pStateIndex;
 
   FIXP_LPC_TNS coeff[2 * LPC_MAX_ORDER];
@@ -234,7 +234,7 @@ void CLpc_Synthesis(FIXP_DBL *signal, const int signal_size, const int signal_e,
   /* y(n) = x(n) - lpc[1]*y(n-1) - ... - lpc[order]*y(n-order) */
 
   for (i = 0; i < signal_size; i++) {
-    FIXP_DBL x;
+    int32_t x;
     const FIXP_LPC_TNS *pCoeff = coeff + order - stateIndex;
 
     x = scaleValue(*pSignal, -(lpcCoeff_e + 1));
@@ -254,12 +254,12 @@ void CLpc_Synthesis(FIXP_DBL *signal, const int signal_size, const int signal_e,
   *pStateIndex = stateIndex;
 }
 /* default version */
-void CLpc_Synthesis(FIXP_DBL *signal, const int signal_size, const int signal_e,
+void CLpc_Synthesis(int32_t *signal, const int signal_size, const int signal_e,
                     const int inc, const FIXP_LPC *lpcCoeff_m,
-                    const int lpcCoeff_e, const int order, FIXP_DBL *state,
+                    const int lpcCoeff_e, const int order, int32_t *state,
                     int *pStateIndex) {
   int i, j;
-  FIXP_DBL *pSignal;
+  int32_t *pSignal;
   int stateIndex = *pStateIndex;
 
   FIXP_LPC coeff[2 * LPC_MAX_ORDER];
@@ -277,7 +277,7 @@ void CLpc_Synthesis(FIXP_DBL *signal, const int signal_size, const int signal_e,
   /* y(n) = x(n) - lpc[1]*y(n-1) - ... - lpc[order]*y(n-order) */
 
   for (i = 0; i < signal_size; i++) {
-    FIXP_DBL x;
+    int32_t x;
     const FIXP_LPC *pCoeff = coeff + order - stateIndex;
 
     x = scaleValue(*pSignal, -(lpcCoeff_e + 1));
@@ -298,13 +298,13 @@ void CLpc_Synthesis(FIXP_DBL *signal, const int signal_size, const int signal_e,
 }
 
 /* FIR */
-void CLpc_Analysis(FIXP_DBL *RESTRICT signal, const int signal_size,
+void CLpc_Analysis(int32_t *RESTRICT signal, const int signal_size,
                    const FIXP_LPC lpcCoeff_m[], const int lpcCoeff_e,
-                   const int order, FIXP_DBL *RESTRICT filtState,
+                   const int order, int32_t *RESTRICT filtState,
                    int *filtStateIndex) {
   int stateIndex;
   INT i, j, shift = lpcCoeff_e + 1; /* +1, because fMultDiv2 */
-  FIXP_DBL tmp;
+  int32_t tmp;
 
   if (order <= 0) {
     return;
@@ -353,16 +353,16 @@ void CLpc_Analysis(FIXP_DBL *RESTRICT signal, const int signal_size,
 
 /* For the LPC_SYNTHESIS_IIR version */
 INT CLpc_ParcorToLpc(const FIXP_LPC_TNS reflCoeff[], FIXP_LPC_TNS LpcCoeff[],
-                     INT numOfCoeff, FIXP_DBL workBuffer[]) {
+                     INT numOfCoeff, int32_t workBuffer[]) {
   INT i, j;
   INT shiftval,
       par2LpcShiftVal = 6; /* 6 should be enough, bec. max(numOfCoeff) = 20 */
-  FIXP_DBL maxVal = (FIXP_DBL)0;
+  int32_t maxVal = (int32_t)0;
 
   workBuffer[0] = FX_LPC_TNS2FX_DBL(reflCoeff[0]) >> par2LpcShiftVal;
   for (i = 1; i < numOfCoeff; i++) {
     for (j = 0; j < i / 2; j++) {
-      FIXP_DBL tmp1, tmp2;
+      int32_t tmp1, tmp2;
 
       tmp1 = workBuffer[j];
       tmp2 = workBuffer[i - 1 - j];
@@ -391,16 +391,16 @@ INT CLpc_ParcorToLpc(const FIXP_LPC_TNS reflCoeff[], FIXP_LPC_TNS LpcCoeff[],
 }
 /* Default version */
 INT CLpc_ParcorToLpc(const FIXP_LPC reflCoeff[], FIXP_LPC LpcCoeff[],
-                     INT numOfCoeff, FIXP_DBL workBuffer[]) {
+                     INT numOfCoeff, int32_t workBuffer[]) {
   INT i, j;
   INT shiftval,
       par2LpcShiftVal = 6; /* 6 should be enough, bec. max(numOfCoeff) = 20 */
-  FIXP_DBL maxVal = (FIXP_DBL)0;
+  int32_t maxVal = (int32_t)0;
 
   workBuffer[0] = FX_LPC2FX_DBL(reflCoeff[0]) >> par2LpcShiftVal;
   for (i = 1; i < numOfCoeff; i++) {
     for (j = 0; j < i / 2; j++) {
-      FIXP_DBL tmp1, tmp2;
+      int32_t tmp1, tmp2;
 
       tmp1 = workBuffer[j];
       tmp2 = workBuffer[i - 1 - j];
@@ -428,14 +428,14 @@ INT CLpc_ParcorToLpc(const FIXP_LPC reflCoeff[], FIXP_LPC LpcCoeff[],
   return (par2LpcShiftVal - shiftval);
 }
 
-void CLpc_AutoToParcor(FIXP_DBL acorr[], const int acorr_e,
+void CLpc_AutoToParcor(int32_t acorr[], const int acorr_e,
                        FIXP_LPC reflCoeff[], const int numOfCoeff,
-                       FIXP_DBL *pPredictionGain_m, INT *pPredictionGain_e) {
+                       int32_t *pPredictionGain_m, INT *pPredictionGain_e) {
   INT i, j, scale = 0;
-  FIXP_DBL parcorWorkBuffer[LPC_MAX_ORDER];
+  int32_t parcorWorkBuffer[LPC_MAX_ORDER];
 
-  FIXP_DBL *workBuffer = parcorWorkBuffer;
-  FIXP_DBL autoCorr_0 = acorr[0];
+  int32_t *workBuffer = parcorWorkBuffer;
+  int32_t autoCorr_0 = acorr[0];
 
   FDKmemclear(reflCoeff, numOfCoeff * sizeof(FIXP_LPC));
 
@@ -447,10 +447,10 @@ void CLpc_AutoToParcor(FIXP_DBL acorr[], const int acorr_e,
     return;
   }
 
-  FDKmemcpy(workBuffer, acorr + 1, numOfCoeff * sizeof(FIXP_DBL));
+  FDKmemcpy(workBuffer, acorr + 1, numOfCoeff * sizeof(int32_t));
   for (i = 0; i < numOfCoeff; i++) {
     LONG sign = ((LONG)workBuffer[0] >> (DFRACT_BITS - 1));
-    FIXP_DBL tmp = (FIXP_DBL)((LONG)workBuffer[0] ^ sign);
+    int32_t tmp = (int32_t)((LONG)workBuffer[0] ^ sign);
 
     /* Check preconditions for division function: num<=denum             */
     /* For 1st iteration acorr[0] cannot be 0, it is checked before loop */
@@ -458,29 +458,29 @@ void CLpc_AutoToParcor(FIXP_DBL acorr[], const int acorr_e,
     if (acorr[0] < tmp) break;
 
     /* tmp = div(num, denum, 16) */
-    tmp = (FIXP_DBL)((LONG)schur_div(tmp, acorr[0], FRACT_BITS) ^ (~sign));
+    tmp = (int32_t)((LONG)schur_div(tmp, acorr[0], FRACT_BITS) ^ (~sign));
 
     reflCoeff[i] = FX_DBL2FX_LPC(tmp);
 
     for (j = numOfCoeff - i - 1; j >= 0; j--) {
-      FIXP_DBL accu1 = fMult(tmp, acorr[j]);
-      FIXP_DBL accu2 = fMult(tmp, workBuffer[j]);
+      int32_t accu1 = fMult(tmp, acorr[j]);
+      int32_t accu2 = fMult(tmp, workBuffer[j]);
       workBuffer[j] += accu1;
       acorr[j] += accu2;
     }
     /* Check preconditions for division function: denum (=acorr[0]) > 0 */
-    if (acorr[0] == (FIXP_DBL)0) break;
+    if (acorr[0] == (int32_t)0) break;
 
     workBuffer++;
   }
 
   if (pPredictionGain_m != NULL) {
-    if (acorr[0] > (FIXP_DBL)0) {
+    if (acorr[0] > (int32_t)0) {
       /* prediction gain = signal power / error (residual) power */
       *pPredictionGain_m = fDivNormSigned(autoCorr_0, acorr[0], &scale);
       *pPredictionGain_e = scale;
     } else {
-      *pPredictionGain_m = (FIXP_DBL)0;
+      *pPredictionGain_m = (int32_t)0;
       *pPredictionGain_e = 0;
     }
   }

@@ -129,7 +129,7 @@ void SpatialDecApplyPhase(spatialDec *self, FIXP_SGL alpha,
  */
 SACDEC_ERROR SpatialDecQMFAnalysis(spatialDec *self, const PCM_MPS *inData,
                                    const INT ts, const INT bypassMode,
-                                   FIXP_DBL **qmfReal, FIXP_DBL **qmfImag,
+                                   int32_t **qmfReal, int32_t **qmfImag,
                                    const int numInputChannels);
 
 /**
@@ -146,10 +146,10 @@ SACDEC_ERROR SpatialDecQMFAnalysis(spatialDec *self, const PCM_MPS *inData,
  *
  * \return  Error status.
  */
-SACDEC_ERROR SpatialDecFeedQMF(spatialDec *self, FIXP_DBL **qmfInDataReal,
-                               FIXP_DBL **qmfInDataImag, const INT ts,
-                               const INT bypassMode, FIXP_DBL **qmfReal,
-                               FIXP_DBL **qmfImag, const INT numInputChannels);
+SACDEC_ERROR SpatialDecFeedQMF(spatialDec *self, int32_t **qmfInDataReal,
+                               int32_t **qmfInDataImag, const INT ts,
+                               const INT bypassMode, int32_t **qmfReal,
+                               int32_t **qmfImag, const INT numInputChannels);
 
 /**
  * \brief  Apply Hybrdid Analysis Filterbank.
@@ -168,10 +168,10 @@ SACDEC_ERROR SpatialDecFeedQMF(spatialDec *self, FIXP_DBL **qmfInDataReal,
  *
  * \return  Error status.
  */
-SACDEC_ERROR SpatialDecHybridAnalysis(spatialDec *self, FIXP_DBL **qmfInputReal,
-                                      FIXP_DBL **qmfInputImag,
-                                      FIXP_DBL **hybOutputReal,
-                                      FIXP_DBL **hybOutputImag, const INT ts,
+SACDEC_ERROR SpatialDecHybridAnalysis(spatialDec *self, int32_t **qmfInputReal,
+                                      int32_t **qmfInputImag,
+                                      int32_t **hybOutputReal,
+                                      int32_t **hybOutputImag, const INT ts,
                                       const INT numInputChannels);
 
 /**
@@ -188,9 +188,9 @@ SACDEC_ERROR SpatialDecHybridAnalysis(spatialDec *self, FIXP_DBL **qmfInputReal,
  *
  * \return  Error status.
  */
-SACDEC_ERROR SpatialDecCreateX(spatialDec *self, FIXP_DBL **hybInputReal,
-                               FIXP_DBL **hybInputImag, FIXP_DBL **pxReal,
-                               FIXP_DBL **pxImag);
+SACDEC_ERROR SpatialDecCreateX(spatialDec *self, int32_t **hybInputReal,
+                               int32_t **hybInputImag, int32_t **pxReal,
+                               int32_t **pxImag);
 
 /**
  * \brief  MPS212 combined version of apply M1 parameters and create wet signal
@@ -206,8 +206,8 @@ SACDEC_ERROR SpatialDecCreateX(spatialDec *self, FIXP_DBL **hybInputReal,
  * \return  Error status.
  */
 SACDEC_ERROR SpatialDecApplyM1_CreateW_Mode212(
-    spatialDec *self, const SPATIAL_BS_FRAME *frame, FIXP_DBL **xReal,
-    FIXP_DBL **xImag, FIXP_DBL **vReal, FIXP_DBL **vImag);
+    spatialDec *self, const SPATIAL_BS_FRAME *frame, int32_t **xReal,
+    int32_t **xImag, int32_t **vReal, int32_t **vImag);
 
 /**
  * \brief  Apply M2 parameters.
@@ -227,11 +227,11 @@ SACDEC_ERROR SpatialDecApplyM1_CreateW_Mode212(
  * \return  Error status.
  */
 SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
-                               FIXP_DBL **wReal, FIXP_DBL **wImag,
-                               FIXP_DBL **hybOutputRealDry,
-                               FIXP_DBL **hybOutputImagDry,
-                               FIXP_DBL **hybOutputRealWet,
-                               FIXP_DBL **hybOutputImagWet);
+                               int32_t **wReal, int32_t **wImag,
+                               int32_t **hybOutputRealDry,
+                               int32_t **hybOutputImagDry,
+                               int32_t **hybOutputRealWet,
+                               int32_t **hybOutputImagWet);
 
 /**
  * \brief  Apply M2 parameter for 212 mode with residualCoding and phaseCoding.
@@ -249,8 +249,8 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
  * \return error
  */
 SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
-    spatialDec *self, INT ps, const FIXP_SGL alpha, FIXP_DBL **wReal,
-    FIXP_DBL **wImag, FIXP_DBL **hybOutputRealDry, FIXP_DBL **hybOutputImagDry);
+    spatialDec *self, INT ps, const FIXP_SGL alpha, int32_t **wReal,
+    int32_t **wImag, int32_t **hybOutputRealDry, int32_t **hybOutputImagDry);
 
 /**
  * \brief  Apply M2 parameter for 212 mode, upmix from mono to stereo.
@@ -268,10 +268,10 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
  * \return error
  */
 SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, INT ps,
-                                       const FIXP_SGL alpha, FIXP_DBL **wReal,
-                                       FIXP_DBL **wImag,
-                                       FIXP_DBL **hybOutputRealDry,
-                                       FIXP_DBL **hybOutputImagDry);
+                                       const FIXP_SGL alpha, int32_t **wReal,
+                                       int32_t **wImag,
+                                       int32_t **hybOutputRealDry,
+                                       int32_t **hybOutputImagDry);
 
 /**
  * \brief  Convert Hybrid input to output audio data.
@@ -285,13 +285,13 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, INT ps,
  * \return  Error status.
  */
 SACDEC_ERROR SpatialDecSynthesis(spatialDec *self, const INT ts,
-                                 FIXP_DBL **hybOutputReal,
-                                 FIXP_DBL **hybOutputImag, PCM_MPS *timeOut,
+                                 int32_t **hybOutputReal,
+                                 int32_t **hybOutputImag, PCM_MPS *timeOut,
                                  const INT numInputChannels,
                                  const FDK_channelMapDescr *const mapDescr);
 
 void SpatialDecBufferMatrices(spatialDec *self);
 
-FIXP_DBL getChGain(spatialDec *self, UINT ch, INT *scale);
+int32_t getChGain(spatialDec *self, UINT ch, INT *scale);
 
 #endif

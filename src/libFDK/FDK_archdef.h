@@ -247,9 +247,9 @@ amm-info@iis.fraunhofer.de
 #define FIXP_STP FIXP_SPK
 #define STC(a) (FX_DBL2FXCONST_SGL(a))
 #else
-#define FIXP_STB FIXP_DBL
+#define FIXP_STB int32_t
 #define FIXP_STP FIXP_DPK
-#define STC(a) ((FIXP_DBL)(LONG)(a))
+#define STC(a) ((int32_t)(LONG)(a))
 #endif /* defined(SINETABLE_16BIT) */
 
 #define STCP(cos, sin)     \
@@ -263,10 +263,10 @@ amm-info@iis.fraunhofer.de
 #define FIXP_WTP FIXP_SPK /* packed FIXP_SGL values */
 #define WTC(a) FX_DBL2FXCONST_SGL(a)
 #else /* SINETABLE_16BIT */
-#define FIXP_WTB FIXP_DBL
+#define FIXP_WTB int32_t
 #define FX_DBL2FX_WTB(x) (x)
 #define FIXP_WTP FIXP_DPK
-#define WTC(a) (FIXP_DBL)(a)
+#define WTC(a) (int32_t)(a)
 #endif /* SINETABLE_16BIT */
 
 #define WTCP(a, b)     \

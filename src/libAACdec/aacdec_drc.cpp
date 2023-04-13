@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdint.h>
 #include "aacdec_drc.h"
 
 #include "channelinfo.h"
@@ -119,7 +120,7 @@ amm-info@iis.fraunhofer.de
   (FL2FXCONST_DBL(1.0f / (float)DRC_MAX_QUANT_FACTOR))
 #define DRC_PARAM_SCALE (1)
 #define DRC_SCALING_MAX \
-  ((FIXP_DBL)((INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (INT)127))
+  ((int32_t)((INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (INT)127))
 
 #define DRC_BLOCK_LEN (1024)
 #define DRC_BAND_MULT (4)
@@ -134,8 +135,8 @@ amm-info@iis.fraunhofer.de
 #define OFF 0
 #define ON 1
 
-static INT convert_drcParam(FIXP_DBL param_dbl) {
-  /* converts an internal DRC boost/cut scaling factor in FIXP_DBL
+static INT convert_drcParam(int32_t param_dbl) {
+  /* converts an internal DRC boost/cut scaling factor in int32_t
      (which is downscaled by DRC_PARAM_SCALE)
      back to an integer value between 0 and 127. */
   LONG param_long;
@@ -249,7 +250,7 @@ AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
       if (self == NULL) {
         return AAC_DEC_INVALID_HANDLE;
       }
-      self->params.usrCut = (FIXP_DBL)(
+      self->params.usrCut = (int32_t)(
           (INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (INT)value);
       self->update = 1;
       break;
@@ -261,7 +262,7 @@ AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
       if (self == NULL) {
         return AAC_DEC_INVALID_HANDLE;
       }
-      self->params.usrBoost = (FIXP_DBL)(
+      self->params.usrBoost = (int32_t)(
           (INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (INT)value);
       self->update = 1;
       break;
@@ -836,25 +837,25 @@ static int aacDecoder_drcExtractAndMap(
 
 void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
                          CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                         CDrcChannelData *pDrcChData, FIXP_DBL *extGain,
+                         CDrcChannelData *pDrcChData, int32_t *extGain,
                          int ch, /* needed only for SBR */
                          int aacFrameSize, int bSbrPresent) {
   int band, bin, numBands;
   int bottom = 0;
   int modifyBins = 0;
 
-  FIXP_DBL max_mantissa;
+  int32_t max_mantissa;
   INT max_exponent;
 
-  FIXP_DBL norm_mantissa = FL2FXCONST_DBL(0.5f);
+  int32_t norm_mantissa = FL2FXCONST_DBL(0.5f);
   INT norm_exponent = 1;
 
-  FIXP_DBL fact_mantissa[MAX_DRC_BANDS];
+  int32_t fact_mantissa[MAX_DRC_BANDS];
   INT fact_exponent[MAX_DRC_BANDS];
 
   CDrcParams *pParams = &self->params;
 
-  FIXP_DBL *pSpectralCoefficient =
+  int32_t *pSpectralCoefficient =
       SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
   CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
   SHORT *pSpecScale = pAacDecoderChannelInfo->specScale;
@@ -897,7 +898,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
     norm_mantissa =
         fLdPow(FL2FXCONST_DBL(-1.0), /* log2(0.5) */
                0,
-               (FIXP_DBL)((INT)(FL2FXCONST_DBL(1.0f / 24.0) >> 3) *
+               (int32_t)((INT)(FL2FXCONST_DBL(1.0f / 24.0) >> 3) *
                           (INT)(pParams->targetRefLevel - self->progRefLevel)),
                3, &norm_exponent);
   }
@@ -960,10 +961,10 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
        */
 
       if ((drcVal & 0x7F) > 0) {
-        FIXP_DBL tParamVal = (drcVal & 0x80) ? -pParams->cut : pParams->boost;
+        int32_t tParamVal = (drcVal & 0x80) ? -pParams->cut : pParams->boost;
 
         fact_mantissa[band] = f2Pow(
-            (FIXP_DBL)((INT)fMult(FL2FXCONST_DBL(1.0f / 192.0f), tParamVal) *
+            (int32_t)((INT)fMult(FL2FXCONST_DBL(1.0f / 192.0f), tParamVal) *
                        (drcVal & 0x7F)),
             3 + DRC_PARAM_SCALE, &fact_exponent[band]);
       }
@@ -1127,7 +1128,7 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
       /* dDmx: estimated headroom reduction due to downmix, format: -1/4*dB
          dDmx = floor(-4*20*log10(aacNumChannels/numOutChannels)) */
       if (isDownmix) {
-        FIXP_DBL dmxTmp;
+        int32_t dmxTmp;
         int e_log, e_mult;
         dmxTmp = fDivNorm(self->numOutChannels,
                           aacNumChannels); /* inverse division ->
@@ -1157,7 +1158,7 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
         if (eHr <
             dHr) { /* if encoder provides more headroom than decoder needs */
           /* derive scaling of light DRC */
-          FIXP_DBL calcFactor_norm;
+          int32_t calcFactor_norm;
           INT calcFactor; /* fraction of DRC gains that is minimally needed for
                              clipping prevention */
           calcFactor_norm =
@@ -1166,7 +1167,7 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
           /* quantize to 128 steps */
           calcFactor = convert_drcParam(
               calcFactor_norm); /* convert to integer value between 0 and 127 */
-          calcFactor_norm = (FIXP_DBL)(
+          calcFactor_norm = (int32_t)(
               (INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * calcFactor);
           p->cut = (calcFactor_norm > p->cut)
                        ? calcFactor_norm
@@ -1243,7 +1244,7 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
   }
 
   /* switch on/off processing */
-  self->enable = ((p->boost > (FIXP_DBL)0) || (p->cut > (FIXP_DBL)0) ||
+  self->enable = ((p->boost > (int32_t)0) || (p->cut > (int32_t)0) ||
                   (p->applyHeavyCompression == ON) || (p->targetRefLevel >= 0));
   self->enable = (self->enable && !self->uniDrcPrecedence);
 
@@ -1389,19 +1390,19 @@ void aacDecoder_drcGetInfo(HANDLE_AAC_DRC self, SCHAR *pPresMode,
  *
  * \return exponent of time data
  */
-INT applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, PCM_DEC *samplesIn,
-                               FIXP_DBL *pGain, FIXP_DBL *pGainPerSample,
+INT applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn,
+                               int32_t *pGain, int32_t *pGainPerSample,
                                const INT gain_scale, const UINT gain_delay,
                                const UINT nSamples, const UINT channels,
                                const UINT stride, const UINT limiterEnabled) {
   UINT i;
   INT additionalGain_scaling;
-  FIXP_DBL additionalGain;
+  int32_t additionalGain;
 
   FDK_ASSERT(gain_delay <= nSamples);
 
-  FIXP_DBL additionalGainSmoothState = hDrcInfo->additionalGainFilterState;
-  FIXP_DBL additionalGainSmoothState1 = hDrcInfo->additionalGainFilterState1;
+  int32_t additionalGainSmoothState = hDrcInfo->additionalGainFilterState;
+  int32_t additionalGainSmoothState1 = hDrcInfo->additionalGainFilterState1;
 
   if (!gain_delay) {
     additionalGain = pGain[0];
@@ -1434,7 +1435,7 @@ INT applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, PCM_DEC *samplesIn,
     }
   } else {
     UINT inc;
-    FIXP_DBL additionalGainUnfiltered;
+    int32_t additionalGainUnfiltered;
 
     inc = (stride == 1) ? channels : 1;
 

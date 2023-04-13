@@ -174,7 +174,7 @@ const USHORT FDK_sbrDecoder_sbr_whFactorsIndex[NUM_WHFACTOR_TABLE_ENTRIES] = {
   \li  the first coloumn can be eliminated.
 
 */
-const FIXP_DBL
+const int32_t
     FDK_sbrDecoder_sbr_whFactorsTable[NUM_WHFACTOR_TABLE_ENTRIES][6] = {
         /* OFF_LEVEL, TRANSITION_LEVEL, LOW_LEVEL, MID_LEVEL, HIGH_LEVEL */
         {FL2FXCONST_DBL(0.00f), FL2FXCONST_DBL(0.6f), FL2FXCONST_DBL(0.75f),
@@ -226,7 +226,7 @@ const FIXP_SGL FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4[4] = {
     FL2FXCONST_SGL(2.0f / 4.0f), FL2FXCONST_SGL(3.0f / 4.0f)};
 
 /*! Constants for calculating the number of limiter bands */
-const FIXP_DBL FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4_DBL[4] = {
+const int32_t FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4_DBL[4] = {
     FL2FXCONST_DBL(1.0f / 4.0f), FL2FXCONST_DBL(1.2f / 4.0f),
     FL2FXCONST_DBL(2.0f / 4.0f), FL2FXCONST_DBL(3.0f / 4.0f)};
 
@@ -1101,13 +1101,13 @@ const SCHAR aBookPsIidFineFreqDecode[60][2] = {
 /* constants used in psdec.cpp */
 
 /* the values of the following 3 tables are shiftet right by 1 ! */
-const FIXP_DBL ScaleFactors[NO_IID_LEVELS] = {
+const int32_t ScaleFactors[NO_IID_LEVELS] = {
 
     0x5a5ded00, 0x59cd0400, 0x58c29680, 0x564c2e80, 0x52a3d480,
     0x4c8be080, 0x46df3080, 0x40000000, 0x384ba5c0, 0x304c2980,
     0x24e9f640, 0x1b4a2940, 0x11b5c0a0, 0x0b4e2540, 0x0514ea90};
 
-const FIXP_DBL ScaleFactorsFine[NO_IID_LEVELS_FINE] = {
+const int32_t ScaleFactorsFine[NO_IID_LEVELS_FINE] = {
 
     0x5a825c00, 0x5a821c00, 0x5a815100, 0x5a7ed000, 0x5a76e600, 0x5a5ded00,
     0x5a39b880, 0x59f1fd00, 0x5964d680, 0x5852ca00, 0x564c2e80, 0x54174480,
@@ -1115,7 +1115,7 @@ const FIXP_DBL ScaleFactorsFine[NO_IID_LEVELS_FINE] = {
     0x288dd240, 0x217a2900, 0x1b4a2940, 0x13c5ece0, 0x0e2b0090, 0x0a178ef0,
     0x072ab798, 0x0514ea90, 0x02dc5944, 0x019bf87c, 0x00e7b173, 0x00824b8b,
     0x00494568};
-const FIXP_DBL Alphas[NO_ICC_LEVELS] = {
+const int32_t Alphas[NO_ICC_LEVELS] = {
 
     0x00000000, 0x0b6b5be0, 0x12485f80, 0x1da2fa40,
     0x2637ebc0, 0x3243f6c0, 0x466b7480, 0x6487ed80};

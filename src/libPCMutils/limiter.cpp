@@ -110,11 +110,11 @@ amm-info@iis.fraunhofer.de
 
 /* create limiter */
 TDLimiterPtr pcmLimiter_Create(unsigned int maxAttackMs, unsigned int releaseMs,
-                               FIXP_DBL threshold, unsigned int maxChannels,
+                               int32_t threshold, unsigned int maxChannels,
                                UINT maxSampleRate) {
   TDLimiterPtr limiter = NULL;
   unsigned int attack, release;
-  FIXP_DBL attackConst, releaseConst, exponent;
+  int32_t attackConst, releaseConst, exponent;
   INT e_ans;
 
   /* calc attack and release time in samples */
@@ -126,9 +126,9 @@ TDLimiterPtr pcmLimiter_Create(unsigned int maxAttackMs, unsigned int releaseMs,
   if (!limiter) return NULL;
 
   /* alloc max and delay buffers */
-  limiter->maxBuf = (FIXP_DBL*)FDKcalloc(attack + 1, sizeof(FIXP_DBL));
+  limiter->maxBuf = (int32_t*)FDKcalloc(attack + 1, sizeof(int32_t));
   limiter->delayBuf =
-      (FIXP_DBL*)FDKcalloc(attack * maxChannels, sizeof(FIXP_DBL));
+      (int32_t*)FDKcalloc(attack * maxChannels, sizeof(int32_t));
 
   if (!limiter->maxBuf || !limiter->delayBuf) {
     pcmLimiter_Destroy(limiter);
@@ -165,12 +165,12 @@ TDLimiterPtr pcmLimiter_Create(unsigned int maxAttackMs, unsigned int releaseMs,
 
 /* apply limiter */
 TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
-                                 INT_PCM* samplesOut, FIXP_DBL* pGainPerSample,
+                                 INT_PCM* samplesOut, int32_t* pGainPerSample,
                                  const INT scaling, const UINT nSamples) {
   unsigned int i, j;
-  FIXP_DBL tmp2;
-  FIXP_DBL tmp, old, gain, additionalGain = 0;
-  FIXP_DBL minGain = FL2FXCONST_DBL(1.0f / (1 << 1));
+  int32_t tmp2;
+  int32_t tmp, old, gain, additionalGain = 0;
+  int32_t minGain = FL2FXCONST_DBL(1.0f / (1 << 1));
   UINT additionalGainAvailable = 1;
 
   if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;
@@ -178,18 +178,18 @@ TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
   {
     unsigned int channels = limiter->channels;
     unsigned int attack = limiter->attack;
-    FIXP_DBL attackConst = limiter->attackConst;
-    FIXP_DBL releaseConst = limiter->releaseConst;
-    FIXP_DBL threshold = limiter->threshold >> scaling;
+    int32_t attackConst = limiter->attackConst;
+    int32_t releaseConst = limiter->releaseConst;
+    int32_t threshold = limiter->threshold >> scaling;
 
-    FIXP_DBL max = limiter->max;
-    FIXP_DBL* maxBuf = limiter->maxBuf;
+    int32_t max = limiter->max;
+    int32_t* maxBuf = limiter->maxBuf;
     unsigned int maxBufIdx = limiter->maxBufIdx;
-    FIXP_DBL cor = limiter->cor;
-    FIXP_DBL* delayBuf = limiter->delayBuf;
+    int32_t cor = limiter->cor;
+    int32_t* delayBuf = limiter->delayBuf;
     unsigned int delayBufIdx = limiter->delayBufIdx;
 
-    FIXP_DBL smoothState0 = limiter->smoothState0;
+    int32_t smoothState0 = limiter->smoothState0;
 
     if (limiter->scaling != scaling) {
       scaleValuesSaturate(delayBuf, attack * channels,
@@ -206,11 +206,11 @@ TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
     for (i = 0; i < nSamples; i++) {
       /* get maximum absolute sample value of all channels, including the
        * additional gain. */
-      tmp = (FIXP_DBL)0;
+      tmp = (int32_t)0;
       for (j = 0; j < channels; j++) {
         tmp2 = PCM_LIM2FIXP_DBL(samplesIn[j]);
         tmp2 =
-            (tmp2 == (FIXP_DBL)MINVAL_DBL) ? (FIXP_DBL)MAXVAL_DBL : fAbs(tmp2);
+            (tmp2 == (int32_t)MINVAL_DBL) ? (int32_t)MAXVAL_DBL : fAbs(tmp2);
         tmp = fMax(tmp, tmp2);
       }
 
@@ -282,7 +282,7 @@ TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
 
       gain = smoothState0;
 
-      FIXP_DBL* p_delayBuf = &delayBuf[delayBufIdx * channels + 0];
+      int32_t* p_delayBuf = &delayBuf[delayBufIdx * channels + 0];
       if (gain < FL2FXCONST_DBL(1.0f / (1 << 1))) {
         gain <<= 1;
         /* lookahead delay, apply gain */
@@ -299,10 +299,10 @@ TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
           tmp = fMultDiv2(tmp, gain);
 #if (SAMPLE_BITS == DFRACT_BITS)
           samplesOut[j] = (INT_PCM)FX_DBL2FX_PCM(
-              (FIXP_DBL)SATURATE_LEFT_SHIFT(tmp, scaling + 1, DFRACT_BITS));
+              (int32_t)SATURATE_LEFT_SHIFT(tmp, scaling + 1, DFRACT_BITS));
 #else
-          samplesOut[j] = (INT_PCM)FX_DBL2FX_PCM((FIXP_DBL)SATURATE_LEFT_SHIFT(
-              tmp + ((FIXP_DBL)0x8000 >> (scaling + 1)), scaling + 1,
+          samplesOut[j] = (INT_PCM)FX_DBL2FX_PCM((int32_t)SATURATE_LEFT_SHIFT(
+              tmp + ((int32_t)0x8000 >> (scaling + 1)), scaling + 1,
               DFRACT_BITS));
 #endif
         }
@@ -319,10 +319,10 @@ TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
 
 #if (SAMPLE_BITS == DFRACT_BITS)
           samplesOut[j] = (INT_PCM)FX_DBL2FX_PCM(
-              (FIXP_DBL)SATURATE_LEFT_SHIFT(tmp, scaling, DFRACT_BITS));
+              (int32_t)SATURATE_LEFT_SHIFT(tmp, scaling, DFRACT_BITS));
 #else
-          samplesOut[j] = (INT_PCM)FX_DBL2FX_PCM((FIXP_DBL)SATURATE_LEFT_SHIFT(
-              tmp + ((FIXP_DBL)0x8000 >> scaling), scaling, DFRACT_BITS));
+          samplesOut[j] = (INT_PCM)FX_DBL2FX_PCM((int32_t)SATURATE_LEFT_SHIFT(
+              tmp + ((int32_t)0x8000 >> scaling), scaling, DFRACT_BITS));
 #endif
         }
       }
@@ -357,7 +357,7 @@ TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
 
 /* set limiter threshold */
 TDLIMITER_ERROR pcmLimiter_SetThreshold(TDLimiterPtr limiter,
-                                        FIXP_DBL threshold) {
+                                        int32_t threshold) {
   if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;
 
   limiter->threshold = threshold;
@@ -370,15 +370,15 @@ TDLIMITER_ERROR pcmLimiter_Reset(TDLimiterPtr limiter) {
   if (limiter != NULL) {
     limiter->maxBufIdx = 0;
     limiter->delayBufIdx = 0;
-    limiter->max = (FIXP_DBL)0;
+    limiter->max = (int32_t)0;
     limiter->cor = FL2FXCONST_DBL(1.0f / (1 << 1));
     limiter->smoothState0 = FL2FXCONST_DBL(1.0f / (1 << 1));
     limiter->minGain = FL2FXCONST_DBL(1.0f / (1 << 1));
     limiter->scaling = 0;
 
-    FDKmemset(limiter->maxBuf, 0, (limiter->attack + 1) * sizeof(FIXP_DBL));
+    FDKmemset(limiter->maxBuf, 0, (limiter->attack + 1) * sizeof(int32_t));
     FDKmemset(limiter->delayBuf, 0,
-              limiter->attack * limiter->channels * sizeof(FIXP_DBL));
+              limiter->attack * limiter->channels * sizeof(int32_t));
   } else {
     return TDLIMIT_INVALID_HANDLE;
   }
@@ -410,7 +410,7 @@ INT pcmLimiter_GetMaxGainReduction(TDLimiterPtr limiter) {
   /* maximum gain reduction in dB = -20 * log10(limiter->minGain)
      = -20 * log2(limiter->minGain)/log2(10) = -6.0206*log2(limiter->minGain) */
   int e_ans;
-  FIXP_DBL loggain, maxGainReduction;
+  int32_t loggain, maxGainReduction;
 
   FDK_ASSERT(limiter != NULL);
 
@@ -438,7 +438,7 @@ TDLIMITER_ERROR pcmLimiter_SetNChannels(TDLimiterPtr limiter,
 TDLIMITER_ERROR pcmLimiter_SetSampleRate(TDLimiterPtr limiter,
                                          UINT sampleRate) {
   unsigned int attack, release;
-  FIXP_DBL attackConst, releaseConst, exponent;
+  int32_t attackConst, releaseConst, exponent;
   INT e_ans;
 
   if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;
@@ -474,7 +474,7 @@ TDLIMITER_ERROR pcmLimiter_SetSampleRate(TDLimiterPtr limiter,
 TDLIMITER_ERROR pcmLimiter_SetAttack(TDLimiterPtr limiter,
                                      unsigned int attackMs) {
   unsigned int attack;
-  FIXP_DBL attackConst, exponent;
+  int32_t attackConst, exponent;
   INT e_ans;
 
   if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;
@@ -500,7 +500,7 @@ TDLIMITER_ERROR pcmLimiter_SetAttack(TDLimiterPtr limiter,
 TDLIMITER_ERROR pcmLimiter_SetRelease(TDLimiterPtr limiter,
                                       unsigned int releaseMs) {
   unsigned int release;
-  FIXP_DBL releaseConst, exponent;
+  int32_t releaseConst, exponent;
   INT e_ans;
 
   if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;

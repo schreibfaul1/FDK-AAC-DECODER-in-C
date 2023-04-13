@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdint.h>
 #include "channel.h"
 #include "aacdecoder.h"
 #include "block.h"
@@ -724,7 +725,7 @@ AAC_DECODER_ERROR CChannelElement_Read(
             zero it out (i.e FAC will not be considered in the subsequent
             calculations */
             FDKmemclear(pAacDecoderChannelInfo[ch]->data.usac.fac_data0,
-                        LFAC * sizeof(FIXP_DBL));
+                        LFAC * sizeof(int32_t));
           }
         }
       } break;

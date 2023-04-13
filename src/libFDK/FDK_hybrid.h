@@ -121,10 +121,10 @@ typedef enum {
 typedef const struct FDK_HYBRID_SETUP *HANDLE_FDK_HYBRID_SETUP;
 
 typedef struct {
-  FIXP_DBL *bufferLFReal[3];  /*!< LF real filter states. */
-  FIXP_DBL *bufferLFImag[3];  /*!< LF imag filter states. */
-  FIXP_DBL *bufferHFReal[13]; /*!< HF real delay lines. */
-  FIXP_DBL *bufferHFImag[13]; /*!< HF imag delay lines. */
+  int32_t *bufferLFReal[3];  /*!< LF real filter states. */
+  int32_t *bufferLFImag[3];  /*!< LF imag filter states. */
+  int32_t *bufferHFReal[13]; /*!< HF real delay lines. */
+  int32_t *bufferHFImag[13]; /*!< HF imag delay lines. */
 
   INT bufferLFpos; /*!< Position to write incoming data into ringbuffer. */
   INT bufferHFpos; /*!< Delay line positioning. */
@@ -132,8 +132,8 @@ typedef struct {
   INT cplxBands;   /*!< Number of complex QMF bands.*/
   UCHAR hfMode;    /*!< Flag signalizes treatment of HF bands. */
 
-  FIXP_DBL *pLFmemory; /*!< Pointer to LF states buffer. */
-  FIXP_DBL *pHFmemory; /*!< Pointer to HF states buffer. */
+  int32_t *pLFmemory; /*!< Pointer to LF states buffer. */
+  int32_t *pHFmemory; /*!< Pointer to HF states buffer. */
 
   UINT LFmemorySize; /*!< Size of LF states buffer. */
   UINT HFmemorySize; /*!< Size of HF states buffer. */
@@ -166,8 +166,8 @@ typedef FDK_SYN_HYB_FILTER *HANDLE_FDK_SYN_HYB_FILTER;
  * \return  0 on success.
  */
 INT FDKhybridAnalysisOpen(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
-                          FIXP_DBL *const pLFmemory, const UINT LFmemorySize,
-                          FIXP_DBL *const pHFmemory, const UINT HFmemorySize);
+                          int32_t *const pLFmemory, const UINT LFmemorySize,
+                          int32_t *const pHFmemory, const UINT HFmemorySize);
 
 /**
  * \brief  Initialize and configure Hybrid Analysis Filterbank instance.
@@ -208,10 +208,10 @@ INT FDKhybridAnalysisScaleStates(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
  * \return  0 on success.
  */
 INT FDKhybridAnalysisApply(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
-                           const FIXP_DBL *const pQmfReal,
-                           const FIXP_DBL *const pQmfImag,
-                           FIXP_DBL *const pHybridReal,
-                           FIXP_DBL *const pHybridImag);
+                           const int32_t *const pQmfReal,
+                           const int32_t *const pQmfImag,
+                           int32_t *const pHybridReal,
+                           int32_t *const pHybridImag);
 
 /**
  * \brief  Close a Hybrid Analysis Filterbank instance.
@@ -247,9 +247,9 @@ INT FDKhybridSynthesisInit(HANDLE_FDK_SYN_HYB_FILTER hSynthesisHybFilter,
  *
  */
 void FDKhybridSynthesisApply(HANDLE_FDK_SYN_HYB_FILTER hSynthesisHybFilter,
-                             const FIXP_DBL *const pHybridReal,
-                             const FIXP_DBL *const pHybridImag,
-                             FIXP_DBL *const pQmfReal,
-                             FIXP_DBL *const pQmfImag);
+                             const int32_t *const pHybridReal,
+                             const int32_t *const pHybridImag,
+                             int32_t *const pQmfReal,
+                             int32_t *const pQmfImag);
 
 #endif /* FDK_HYBRID_H */

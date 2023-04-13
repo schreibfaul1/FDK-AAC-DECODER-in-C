@@ -196,20 +196,20 @@ amm-info@iis.fraunhofer.de
   }
 
 struct STP_DEC {
-  FIXP_DBL runDryEner[MAX_INPUT_CHANNELS];
-  FIXP_DBL runWetEner[MAX_OUTPUT_CHANNELS];
-  FIXP_DBL oldDryEnerLD64[MAX_INPUT_CHANNELS];
-  FIXP_DBL oldWetEnerLD64[MAX_OUTPUT_CHANNELS];
-  FIXP_DBL prev_tp_scale[MAX_OUTPUT_CHANNELS];
+  int32_t runDryEner[MAX_INPUT_CHANNELS];
+  int32_t runWetEner[MAX_OUTPUT_CHANNELS];
+  int32_t oldDryEnerLD64[MAX_INPUT_CHANNELS];
+  int32_t oldWetEnerLD64[MAX_OUTPUT_CHANNELS];
+  int32_t prev_tp_scale[MAX_OUTPUT_CHANNELS];
   const FIXP_CFG *BP;
   const FIXP_CFG *BP_GF;
   int update_old_ener;
 };
 
-inline void combineSignalCplx(FIXP_DBL *hybOutputRealDry,
-                              FIXP_DBL *hybOutputImagDry,
-                              FIXP_DBL *hybOutputRealWet,
-                              FIXP_DBL *hybOutputImagWet, int bands) {
+inline void combineSignalCplx(int32_t *hybOutputRealDry,
+                              int32_t *hybOutputImagDry,
+                              int32_t *hybOutputRealWet,
+                              int32_t *hybOutputImagWet, int bands) {
   int n;
 
   for (n = bands - 1; n >= 0; n--) {
@@ -220,14 +220,14 @@ inline void combineSignalCplx(FIXP_DBL *hybOutputRealDry,
   }
 }
 
-inline void combineSignalCplxScale1(FIXP_DBL *hybOutputRealDry,
-                                    FIXP_DBL *hybOutputImagDry,
-                                    FIXP_DBL *hybOutputRealWet,
-                                    FIXP_DBL *hybOutputImagWet,
-                                    const FIXP_CFG *pBP, FIXP_DBL scaleX,
+inline void combineSignalCplxScale1(int32_t *hybOutputRealDry,
+                                    int32_t *hybOutputImagDry,
+                                    int32_t *hybOutputRealWet,
+                                    int32_t *hybOutputImagWet,
+                                    const FIXP_CFG *pBP, int32_t scaleX,
                                     int bands) {
   int n;
-  FIXP_DBL scaleY;
+  int32_t scaleY;
   for (n = bands - 1; n >= 0; n--) {
     scaleY = fMultDiv2(scaleX, *pBP);
     *hybOutputRealDry = SATURATE_LEFT_SHIFT(
@@ -244,10 +244,10 @@ inline void combineSignalCplxScale1(FIXP_DBL *hybOutputRealDry,
   }
 }
 
-inline void combineSignalCplxScale2(FIXP_DBL *hybOutputRealDry,
-                                    FIXP_DBL *hybOutputImagDry,
-                                    FIXP_DBL *hybOutputRealWet,
-                                    FIXP_DBL *hybOutputImagWet, FIXP_DBL scaleX,
+inline void combineSignalCplxScale2(int32_t *hybOutputRealDry,
+                                    int32_t *hybOutputImagDry,
+                                    int32_t *hybOutputRealWet,
+                                    int32_t *hybOutputImagWet, int32_t scaleX,
                                     int bands) {
   int n;
 
@@ -311,20 +311,20 @@ void subbandTPDestroy(HANDLE_STP_DEC *hStpDec) {
  Functionname: subbandTPApply
  ******************************************************************************/
 SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
-  FIXP_DBL *qmfOutputRealDry[MAX_OUTPUT_CHANNELS];
-  FIXP_DBL *qmfOutputImagDry[MAX_OUTPUT_CHANNELS];
-  FIXP_DBL *qmfOutputRealWet[MAX_OUTPUT_CHANNELS];
-  FIXP_DBL *qmfOutputImagWet[MAX_OUTPUT_CHANNELS];
+  int32_t *qmfOutputRealDry[MAX_OUTPUT_CHANNELS];
+  int32_t *qmfOutputImagDry[MAX_OUTPUT_CHANNELS];
+  int32_t *qmfOutputRealWet[MAX_OUTPUT_CHANNELS];
+  int32_t *qmfOutputImagWet[MAX_OUTPUT_CHANNELS];
 
-  FIXP_DBL DryEner[MAX_INPUT_CHANNELS];
-  FIXP_DBL scale[MAX_OUTPUT_CHANNELS];
+  int32_t DryEner[MAX_INPUT_CHANNELS];
+  int32_t scale[MAX_OUTPUT_CHANNELS];
 
-  FIXP_DBL DryEnerLD64[MAX_INPUT_CHANNELS];
-  FIXP_DBL WetEnerLD64[MAX_OUTPUT_CHANNELS];
+  int32_t DryEnerLD64[MAX_INPUT_CHANNELS];
+  int32_t WetEnerLD64[MAX_OUTPUT_CHANNELS];
 
-  FIXP_DBL DryEner0 = FL2FXCONST_DBL(0.0f);
-  FIXP_DBL WetEnerX, damp, tmp;
-  FIXP_DBL dmxReal0, dmxImag0;
+  int32_t DryEner0 = FL2FXCONST_DBL(0.0f);
+  int32_t WetEnerX, damp, tmp;
+  int32_t dmxReal0, dmxImag0;
   int skipChannels[MAX_OUTPUT_CHANNELS];
   int n, ch, cplxBands, cplxHybBands;
   int dry_scale_dmx, wet_scale_dmx;
@@ -362,7 +362,7 @@ SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
   FDKmemset(skipChannels, 0, self->numOutputChannels * sizeof(int));
 
   /* set scale values to zero */
-  FDKmemset(scale, 0, self->numOutputChannels * sizeof(FIXP_DBL));
+  FDKmemset(scale, 0, self->numOutputChannels * sizeof(int32_t));
 
   /* update normalisation energy with latest smoothed energy */
   if (hStpDec->update_old_ener == STP_UPDATE_ENERGY_RATE) {
@@ -540,7 +540,7 @@ SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
           cplxHybBands - self->tp_hybBandBorder);
 
     } else {
-      FIXP_DBL scaleX;
+      int32_t scaleX;
       scaleX = scale[ch];
       pBP = hStpDec->BP - self->tp_hybBandBorder;
       /* Band[HP_SIZE-3+10-1] needs not to be processed in

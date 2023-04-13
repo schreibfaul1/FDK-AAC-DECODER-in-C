@@ -140,7 +140,7 @@ const SCHAR slopeSteepness_huffman[14][2] = {
     {8, -60},  {-61, -55}, {9, -59},  {10, -54}, {-64, 11},
     {-51, 12}, {-62, -50}, {-63, 13}, {-52, -53}};
 
-const FIXP_DBL downmixCoeff[] = {
+const int32_t downmixCoeff[] = {
     FL2FXCONST_DBL(1.0000000000 / (float)(1 << 2)),
     FL2FXCONST_DBL(0.9440608763 / (float)(1 << 2)),
     FL2FXCONST_DBL(0.8912509381 / (float)(1 << 2)),
@@ -158,7 +158,7 @@ const FIXP_DBL downmixCoeff[] = {
     FL2FXCONST_DBL(0.3548133892 / (float)(1 << 2)),
     FL2FXCONST_DBL(0.0000000000 / (float)(1 << 2))};
 
-const FIXP_DBL downmixCoeffV1[] = {
+const int32_t downmixCoeffV1[] = {
     FL2FXCONST_DBL(3.1622776602 / (float)(1 << 2)),
     FL2FXCONST_DBL(1.9952623150 / (float)(1 << 2)),
     FL2FXCONST_DBL(1.6788040181 / (float)(1 << 2)),

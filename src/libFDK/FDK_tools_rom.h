@@ -217,8 +217,8 @@ extern const FIXP_WTP sin_twiddle_L64[];
 #define FIXP_QTW FIXP_SGL
 #define FX_DBL2FX_QTW(x) FX_DBL2FX_SGL(x)
 #else
-#define FIXP_PFT FIXP_DBL
-#define FIXP_QTW FIXP_DBL
+#define FIXP_PFT int32_t
+#define FIXP_QTW int32_t
 
 #define FX_DBL2FX_QTW(x) (x)
 

@@ -292,8 +292,8 @@ SBR_ERROR ResetPsDec(HANDLE_PS_DEC h_ps_d) /*!< pointer to the module state */
   \return
 ****************************************************************************/
 void PreparePsProcessing(HANDLE_PS_DEC h_ps_d,
-                         const FIXP_DBL *const *const rIntBufferLeft,
-                         const FIXP_DBL *const *const iIntBufferLeft,
+                         const int32_t *const *const rIntBufferLeft,
+                         const int32_t *const *const iIntBufferLeft,
                          const int scaleFactorLowBand) {
   if (h_ps_d->procFrameBased ==
       1) /* If we have switched from frame to slot based processing  */
@@ -301,8 +301,8 @@ void PreparePsProcessing(HANDLE_PS_DEC h_ps_d,
     int i, j;
 
     for (i = 0; i < HYBRID_FILTER_DELAY; i++) {
-      FIXP_DBL qmfInputData[2][NO_QMF_BANDS_HYBRID20];
-      FIXP_DBL hybridOutputData[2][NO_SUB_QMF_CHANNELS];
+      int32_t qmfInputData[2][NO_QMF_BANDS_HYBRID20];
+      int32_t hybridOutputData[2][NO_SUB_QMF_CHANNELS];
 
       for (j = 0; j < NO_QMF_BANDS_HYBRID20; j++) {
         qmfInputData[0][j] =
@@ -328,11 +328,11 @@ void initSlotBasedRotation(
   INT noIidSteps;
 
   FIXP_SGL invL;
-  FIXP_DBL ScaleL, ScaleR;
-  FIXP_DBL Alpha, Beta;
-  FIXP_DBL h11r, h12r, h21r, h22r;
+  int32_t ScaleL, ScaleR;
+  int32_t Alpha, Beta;
+  int32_t h11r, h12r, h21r, h22r;
 
-  const FIXP_DBL *PScaleFactors;
+  const int32_t *PScaleFactors;
 
   if (h_ps_d->bsData[h_ps_d->processSlot].mpeg.bFineIidQ) {
     PScaleFactors = ScaleFactorsFine; /* values are shiftet right by one */
@@ -377,7 +377,7 @@ void initSlotBasedRotation(
 
     /* h values are scaled by 1 shift right */
     {
-      FIXP_DBL trigData[4];
+      int32_t trigData[4];
 
       inline_fixp_cos_sin(Beta + Alpha, Beta - Alpha, 2, trigData);
       h11r = fMult(ScaleL, trigData[0]);
@@ -433,11 +433,11 @@ static const UCHAR groupTable[NO_IID_GROUPS + 1] = {
 static void applySlotBasedRotation(
     HANDLE_PS_DEC h_ps_d, /*!< pointer to the module state */
 
-    FIXP_DBL *mHybridRealLeft, /*!< hybrid values real left  */
-    FIXP_DBL *mHybridImagLeft, /*!< hybrid values imag left  */
+    int32_t *mHybridRealLeft, /*!< hybrid values real left  */
+    int32_t *mHybridImagLeft, /*!< hybrid values imag left  */
 
-    FIXP_DBL *mHybridRealRight, /*!< hybrid values real right  */
-    FIXP_DBL *mHybridImagRight  /*!< hybrid values imag right  */
+    int32_t *mHybridRealRight, /*!< hybrid values real right  */
+    int32_t *mHybridImagRight  /*!< hybrid values imag right  */
 ) {
   INT group;
   INT subband;
@@ -515,10 +515,10 @@ static void applySlotBasedRotation(
     const int start = groupTable[group];
     const int stop = groupTable[group + 1];
     for (subband = start; subband < stop; subband++) {
-      FIXP_DBL tmpLeft =
+      int32_t tmpLeft =
           fMultAdd(fMultDiv2(pCoef->H11r[group], mHybridRealLeft[subband]),
                    pCoef->H21r[group], mHybridRealRight[subband]);
-      FIXP_DBL tmpRight =
+      int32_t tmpRight =
           fMultAdd(fMultDiv2(pCoef->H12r[group], mHybridRealLeft[subband]),
                    pCoef->H22r[group], mHybridRealRight[subband]);
       mHybridRealLeft[subband] = tmpLeft;
@@ -545,10 +545,10 @@ static void applySlotBasedRotation(
 ****************************************************************************/
 void ApplyPsSlot(
     HANDLE_PS_DEC h_ps_d,      /*!< handle PS_DEC*/
-    FIXP_DBL **rIntBufferLeft, /*!< real bands left qmf channel (38x64)  */
-    FIXP_DBL **iIntBufferLeft, /*!< imag bands left qmf channel (38x64)  */
-    FIXP_DBL *rIntBufferRight, /*!< real bands right qmf channel (38x64) */
-    FIXP_DBL *iIntBufferRight, /*!< imag bands right qmf channel (38x64) */
+    int32_t **rIntBufferLeft, /*!< real bands left qmf channel (38x64)  */
+    int32_t **iIntBufferLeft, /*!< imag bands left qmf channel (38x64)  */
+    int32_t *rIntBufferRight, /*!< real bands right qmf channel (38x64) */
+    int32_t *iIntBufferRight, /*!< imag bands right qmf channel (38x64) */
     const int scaleFactorLowBand_no_ov, const int scaleFactorLowBand,
     const int scaleFactorHighBand, const int lsb, const int usb) {
 /*!
@@ -587,9 +587,9 @@ l[n],r[n]: left/right output signals
 #define NO_HYBRID_DATA_BANDS (71)
 
   int i;
-  FIXP_DBL qmfInputData[2][NO_QMF_BANDS_HYBRID20];
-  FIXP_DBL *hybridData[2][2];
-  C_ALLOC_SCRATCH_START(pHybridData, FIXP_DBL, 4 * NO_HYBRID_DATA_BANDS);
+  int32_t qmfInputData[2][NO_QMF_BANDS_HYBRID20];
+  int32_t *hybridData[2][2];
+  C_ALLOC_SCRATCH_START(pHybridData, int32_t, 4 * NO_HYBRID_DATA_BANDS);
 
   hybridData[0][0] =
       pHybridData + 0 * NO_HYBRID_DATA_BANDS; /* left real hybrid data */
@@ -648,11 +648,11 @@ l[n],r[n]: left/right output signals
   FDKmemcpy(
       &hybridData[0][0]
                  [usb + (NO_SUB_QMF_CHANNELS - 2 - NO_QMF_BANDS_HYBRID20)],
-      &rIntBufferLeft[0][usb], sizeof(FIXP_DBL) * (NO_QMF_CHANNELS - usb));
+      &rIntBufferLeft[0][usb], sizeof(int32_t) * (NO_QMF_CHANNELS - usb));
   FDKmemcpy(
       &hybridData[0][1]
                  [usb + (NO_SUB_QMF_CHANNELS - 2 - NO_QMF_BANDS_HYBRID20)],
-      &iIntBufferLeft[0][usb], sizeof(FIXP_DBL) * (NO_QMF_CHANNELS - usb));
+      &iIntBufferLeft[0][usb], sizeof(int32_t) * (NO_QMF_CHANNELS - usb));
 
   /*!
   Decorrelation:
@@ -709,6 +709,6 @@ l[n],r[n]: left/right output signals
   }
 
   /* free temporary hybrid qmf values of one timeslot */
-  C_ALLOC_SCRATCH_END(pHybridData, FIXP_DBL, 4 * NO_HYBRID_DATA_BANDS);
+  C_ALLOC_SCRATCH_END(pHybridData, int32_t, 4 * NO_HYBRID_DATA_BANDS);
 
 } /* END ApplyPsSlot */

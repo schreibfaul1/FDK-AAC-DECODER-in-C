@@ -131,16 +131,16 @@ static int _fitsLocation(DRC_INSTRUCTIONS_UNI_DRC* pInst,
 
 static void _setChannelGains(HANDLE_DRC_GAIN_DECODER hGainDec,
                              const int numChannelGains,
-                             const FIXP_DBL* channelGainDb) {
+                             const int32_t* channelGainDb) {
   int i, channelGain_e;
-  FIXP_DBL channelGain;
+  int32_t channelGain;
   FDK_ASSERT(numChannelGains <= 8);
   for (i = 0; i < numChannelGains; i++) {
-    if (channelGainDb[i] == (FIXP_DBL)MINVAL_DBL) {
-      hGainDec->channelGain[i] = (FIXP_DBL)0;
+    if (channelGainDb[i] == (int32_t)MINVAL_DBL) {
+      hGainDec->channelGain[i] = (int32_t)0;
     } else {
       /* add loudness normalisation gain (dB) to channel gain (dB) */
-      FIXP_DBL tmp_channelGainDb = (channelGainDb[i] >> 1) +
+      int32_t tmp_channelGainDb = (channelGainDb[i] >> 1) +
                                    (hGainDec->loudnessNormalisationGainDb >> 2);
       tmp_channelGainDb =
           SATURATE_LEFT_SHIFT(tmp_channelGainDb, 1, DFRACT_BITS);
@@ -252,7 +252,7 @@ drcDec_GainDecoder_Close(HANDLE_DRC_GAIN_DECODER* phGainDec) {
 DRC_ERROR
 drcDec_GainDecoder_Preprocess(HANDLE_DRC_GAIN_DECODER hGainDec,
                               HANDLE_UNI_DRC_GAIN hUniDrcGain,
-                              const FIXP_DBL loudnessNormalizationGainDb,
+                              const int32_t loudnessNormalizationGainDb,
                               const FIXP_SGL boost, const FIXP_SGL compress) {
   DRC_ERROR err = DE_OK;
   int a, c;
@@ -328,9 +328,9 @@ drcDec_GainDecoder_Conceal(HANDLE_DRC_GAIN_DECODER hGainDec,
 void drcDec_GainDecoder_SetChannelGains(HANDLE_DRC_GAIN_DECODER hGainDec,
                                         const int numChannels,
                                         const int frameSize,
-                                        const FIXP_DBL* channelGainDb,
+                                        const int32_t* channelGainDb,
                                         const int audioBufferChannelOffset,
-                                        FIXP_DBL* audioBuffer) {
+                                        int32_t* audioBuffer) {
   int c, i;
 
   if (hGainDec->channelGainActiveDrcIndex >= 0) {
@@ -349,7 +349,7 @@ void drcDec_GainDecoder_SetChannelGains(HANDLE_DRC_GAIN_DECODER hGainDec,
     }
   } else {
     /* smooth and apply channel gains */
-    FIXP_DBL prevChannelGain[8];
+    int32_t prevChannelGain[8];
     for (c = 0; c < numChannels; c++) {
       prevChannelGain[c] = hGainDec->channelGain[c];
     }
@@ -367,9 +367,9 @@ void drcDec_GainDecoder_SetChannelGains(HANDLE_DRC_GAIN_DECODER hGainDec,
                             CntLeadingZeros(hGainDec->channelGain[c])) -
                            1,
                        9);
-      FIXP_DBL gain = prevChannelGain[c] << n_min;
-      FIXP_DBL stepsize = ((hGainDec->channelGain[c] << n_min) - gain);
-      if (stepsize != (FIXP_DBL)0) {
+      int32_t gain = prevChannelGain[c] << n_min;
+      int32_t stepsize = ((hGainDec->channelGain[c] << n_min) - gain);
+      if (stepsize != (int32_t)0) {
         if (frameSize == 1024)
           stepsize = stepsize >> 10;
         else
@@ -395,7 +395,7 @@ drcDec_GainDecoder_ProcessTimeDomain(
     HANDLE_DRC_GAIN_DECODER hGainDec, const int delaySamples,
     const GAIN_DEC_LOCATION drcLocation, const int channelOffset,
     const int drcChannelOffset, const int numChannelsProcessed,
-    const int timeDataChannelOffset, FIXP_DBL* audioIOBuffer) {
+    const int timeDataChannelOffset, int32_t* audioIOBuffer) {
   DRC_ERROR err = DE_OK;
   int a;
 
@@ -421,8 +421,8 @@ drcDec_GainDecoder_ProcessSubbandDomain(
     HANDLE_DRC_GAIN_DECODER hGainDec, const int delaySamples,
     const GAIN_DEC_LOCATION drcLocation, const int channelOffset,
     const int drcChannelOffset, const int numChannelsProcessed,
-    const int processSingleTimeslot, FIXP_DBL* audioIOBufferReal[],
-    FIXP_DBL* audioIOBufferImag[]) {
+    const int processSingleTimeslot, int32_t* audioIOBufferReal[],
+    int32_t* audioIOBufferImag[]) {
   DRC_ERROR err = DE_OK;
   int a;
 
@@ -446,7 +446,7 @@ drcDec_GainDecoder_ProcessSubbandDomain(
 
 DRC_ERROR
 drcDec_GainDecoder_SetLoudnessNormalizationGainDb(
-    HANDLE_DRC_GAIN_DECODER hGainDec, FIXP_DBL loudnessNormalizationGainDb) {
+    HANDLE_DRC_GAIN_DECODER hGainDec, int32_t loudnessNormalizationGainDb) {
   hGainDec->loudnessNormalisationGainDb = loudnessNormalizationGainDb;
 
   return DE_OK;

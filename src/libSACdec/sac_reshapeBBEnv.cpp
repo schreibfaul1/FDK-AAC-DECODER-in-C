@@ -153,12 +153,12 @@ void initBBEnv(spatialDec *self, int initStatesFlag) {
       FL2FXCONST_DBL(0.96436909488f); /* FDKexp(-64 / (0.04f * 44100)) */
 }
 
-static inline void getSlotNrgHQ(FIXP_DBL *RESTRICT pReal,
-                                FIXP_DBL *RESTRICT pImag,
-                                FIXP_DBL *RESTRICT slotNrg, INT maxValSF,
+static inline void getSlotNrgHQ(int32_t *RESTRICT pReal,
+                                int32_t *RESTRICT pImag,
+                                int32_t *RESTRICT slotNrg, INT maxValSF,
                                 INT hybBands) {
   INT qs;
-  FIXP_DBL nrg;
+  int32_t nrg;
 
   /* qs = 12, 13, 14 */
   slotNrg[0] = ((fPow2Div2((*pReal++) << maxValSF) >> (SF_FACTOR_SLOT - 1)) +
@@ -217,17 +217,17 @@ static inline void getSlotNrgHQ(FIXP_DBL *RESTRICT pReal,
     }
     slotNrg[8] = nrg;
   } else {
-    slotNrg[7] = (FIXP_DBL)0;
-    slotNrg[8] = (FIXP_DBL)0;
+    slotNrg[7] = (int32_t)0;
+    slotNrg[8] = (int32_t)0;
   }
 }
 
-static inline void combineDryWet(FIXP_DBL *RESTRICT pReal,
-                                 FIXP_DBL *RESTRICT pImag,
-                                 FIXP_DBL *RESTRICT pHybOutputRealDry,
-                                 FIXP_DBL *RESTRICT pHybOutputImagDry,
-                                 FIXP_DBL *RESTRICT pHybOutputRealWet,
-                                 FIXP_DBL *RESTRICT pHybOutputImagWet,
+static inline void combineDryWet(int32_t *RESTRICT pReal,
+                                 int32_t *RESTRICT pImag,
+                                 int32_t *RESTRICT pHybOutputRealDry,
+                                 int32_t *RESTRICT pHybOutputImagDry,
+                                 int32_t *RESTRICT pHybOutputRealWet,
+                                 int32_t *RESTRICT pHybOutputImagWet,
                                  INT cplxBands, INT hybBands) {
   INT qs;
 
@@ -240,15 +240,15 @@ static inline void combineDryWet(FIXP_DBL *RESTRICT pReal,
   }
 }
 
-static inline void slotAmp(FIXP_DBL *RESTRICT slotAmp_dry,
-                           FIXP_DBL *RESTRICT slotAmp_wet,
-                           FIXP_DBL *RESTRICT pHybOutputRealDry,
-                           FIXP_DBL *RESTRICT pHybOutputImagDry,
-                           FIXP_DBL *RESTRICT pHybOutputRealWet,
-                           FIXP_DBL *RESTRICT pHybOutputImagWet, INT cplxBands,
+static inline void slotAmp(int32_t *RESTRICT slotAmp_dry,
+                           int32_t *RESTRICT slotAmp_wet,
+                           int32_t *RESTRICT pHybOutputRealDry,
+                           int32_t *RESTRICT pHybOutputImagDry,
+                           int32_t *RESTRICT pHybOutputRealWet,
+                           int32_t *RESTRICT pHybOutputImagWet, INT cplxBands,
                            INT hybBands) {
   INT qs;
-  FIXP_DBL dry, wet;
+  int32_t dry, wet;
 
   dry = wet = FL2FXCONST_DBL(0.0f);
   for (qs = 0; qs < cplxBands; qs++) {
@@ -269,8 +269,8 @@ static inline void slotAmp(FIXP_DBL *RESTRICT slotAmp_dry,
 __attribute__((noinline))
 #endif
 static void
-shapeBBEnv(FIXP_DBL *pHybOutputRealDry, FIXP_DBL *pHybOutputImagDry,
-           FIXP_DBL dryFac, INT scale, INT cplxBands, INT hybBands) {
+shapeBBEnv(int32_t *pHybOutputRealDry, int32_t *pHybOutputImagDry,
+           int32_t dryFac, INT scale, INT cplxBands, INT hybBands) {
   INT qs;
 
   if (scale == 0) {
@@ -296,7 +296,7 @@ shapeBBEnv(FIXP_DBL *pHybOutputRealDry, FIXP_DBL *pHybOutputImagDry,
 }
 
 static void extractBBEnv(spatialDec *self, INT inp, INT start, INT channels,
-                         FIXP_DBL *pEnv, const SPATIAL_BS_FRAME *frame) {
+                         int32_t *pEnv, const SPATIAL_BS_FRAME *frame) {
   INT ch, pb, prevChOffs;
   INT clz, scale, scale_min, envSF;
   INT scaleCur, scalePrev, commonScale;
@@ -304,25 +304,25 @@ static void extractBBEnv(spatialDec *self, INT inp, INT start, INT channels,
   INT *pPartNrgPrevSF, *pFrameNrgPrevSF;
   INT *pNormNrgPrevSF, *pPartNrgPrev2SF;
 
-  FIXP_DBL maxVal, env, frameNrg, normNrg;
-  FIXP_DBL *pReal, *pImag;
-  FIXP_DBL *partNrg, *partNrgPrev;
+  int32_t maxVal, env, frameNrg, normNrg;
+  int32_t *pReal, *pImag;
+  int32_t *partNrg, *partNrgPrev;
 
-  C_ALLOC_SCRATCH_START(pScratchBuffer, FIXP_DBL,
+  C_ALLOC_SCRATCH_START(pScratchBuffer, int32_t,
                         (2 * 42 + MAX_PARAMETER_BANDS));
-  C_ALLOC_SCRATCH_START(resPb, FIXP_DBL, (END_BB_ENV - START_BB_ENV));
+  C_ALLOC_SCRATCH_START(resPb, int32_t, (END_BB_ENV - START_BB_ENV));
   C_ALLOC_SCRATCH_START(resPbSF, INT, (END_BB_ENV - START_BB_ENV));
 
-  FIXP_DBL *slotNrg = pScratchBuffer + (2 * 42);
+  int32_t *slotNrg = pScratchBuffer + (2 * 42);
 
   RESHAPE_BBENV_STATE *pBBEnvState = self->reshapeBBEnvState;
 
-  FIXP_DBL alpha = pBBEnvState->alpha__FDK;
-  /*FIXP_DBL  alpha1 = (FL2FXCONST_DBL(1.0f) - alpha) << SF_ALPHA1;*/
-  FIXP_DBL alpha1 = ((FIXP_DBL)MAXVAL_DBL - alpha) << SF_ALPHA1;
-  FIXP_DBL beta = pBBEnvState->beta__FDK;
-  /*FIXP_DBL  beta1  = (FL2FXCONST_DBL(1.0f) - beta) << SF_BETA1;*/
-  FIXP_DBL beta1 = ((FIXP_DBL)MAXVAL_DBL - beta) << SF_BETA1;
+  int32_t alpha = pBBEnvState->alpha__FDK;
+  /*int32_t  alpha1 = (FL2FXCONST_DBL(1.0f) - alpha) << SF_ALPHA1;*/
+  int32_t alpha1 = ((int32_t)MAXVAL_DBL - alpha) << SF_ALPHA1;
+  int32_t beta = pBBEnvState->beta__FDK;
+  /*int32_t  beta1  = (FL2FXCONST_DBL(1.0f) - beta) << SF_BETA1;*/
+  int32_t beta1 = ((int32_t)MAXVAL_DBL - beta) << SF_BETA1;
 
   INT shapeActiv = 1;
   INT hybBands = fixMin(42, self->hybridBands);
@@ -457,8 +457,8 @@ static void extractBBEnv(spatialDec *self, INT inp, INT start, INT channels,
         INT s;
         INT sc = 0;
         INT sn = fixMax(0, CntLeadingZeros(slotNrg[pb]) - 1);
-        FIXP_DBL inv_sqrt = invSqrtNorm2(partNrg[pb], &sc);
-        FIXP_DBL res = fMult(slotNrg[pb] << sn, fPow2(inv_sqrt));
+        int32_t inv_sqrt = invSqrtNorm2(partNrg[pb], &sc);
+        int32_t res = fMult(slotNrg[pb] << sn, fPow2(inv_sqrt));
 
         s = fixMax(0, CntLeadingZeros(res) - 1);
         res = res << s;
@@ -469,7 +469,7 @@ static void extractBBEnv(spatialDec *self, INT inp, INT start, INT channels,
         resPb[pb] = res;
         resPbSF[pb] = sc;
       } else {
-        resPb[pb] = (FIXP_DBL)0;
+        resPb[pb] = (int32_t)0;
         resPbSF[pb] = 0;
       }
     }
@@ -524,17 +524,17 @@ static void extractBBEnv(spatialDec *self, INT inp, INT start, INT channels,
   }
 
   C_ALLOC_SCRATCH_END(resPbSF, INT, (END_BB_ENV - START_BB_ENV));
-  C_ALLOC_SCRATCH_END(resPb, FIXP_DBL, (END_BB_ENV - START_BB_ENV));
-  C_ALLOC_SCRATCH_END(pScratchBuffer, FIXP_DBL, (2 * 42 + MAX_PARAMETER_BANDS));
+  C_ALLOC_SCRATCH_END(resPb, int32_t, (END_BB_ENV - START_BB_ENV));
+  C_ALLOC_SCRATCH_END(pScratchBuffer, int32_t, (2 * 42 + MAX_PARAMETER_BANDS));
 }
 
 void SpatialDecReshapeBBEnv(spatialDec *self, const SPATIAL_BS_FRAME *frame,
                             INT ts) {
   INT ch, scale;
   INT dryFacSF, slotAmpSF;
-  FIXP_DBL tmp, dryFac, envShape;
-  FIXP_DBL slotAmp_dry, slotAmp_wet, slotAmp_ratio;
-  FIXP_DBL envDry[MAX_OUTPUT_CHANNELS], envDmx[2];
+  int32_t tmp, dryFac, envShape;
+  int32_t slotAmp_dry, slotAmp_wet, slotAmp_ratio;
+  int32_t envDry[MAX_OUTPUT_CHANNELS], envDmx[2];
 
   INT cplxBands;
   INT hybBands = self->hybridBands - 6;

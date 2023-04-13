@@ -170,7 +170,7 @@ void sbrDecoder_drcUpdateChannel(HANDLE_SBR_DRC_CHANNEL hDrcData) {
 
   /* swap previous data */
   FDKmemcpy(hDrcData->currFact_mag, hDrcData->nextFact_mag,
-            SBRDEC_MAX_DRC_BANDS * sizeof(FIXP_DBL));
+            SBRDEC_MAX_DRC_BANDS * sizeof(int32_t));
 
   hDrcData->currFact_exp = hDrcData->nextFact_exp;
 
@@ -197,7 +197,7 @@ void sbrDecoder_drcUpdateChannel(HANDLE_SBR_DRC_CHANNEL hDrcData) {
   \return None.
 */
 void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
-                             FIXP_DBL *qmfRealSlot, FIXP_DBL *qmfImagSlot,
+                             int32_t *qmfRealSlot, int32_t *qmfImagSlot,
                              int col, int numQmfSubSamples, int maxShift) {
   const UCHAR *winBorderToColMap;
 
@@ -206,13 +206,13 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
   int frameLenFlag = (numQmfSubSamples == 30) ? 1 : 0;
   int frameSize = (frameLenFlag == 1) ? 960 : 1024;
 
-  const FIXP_DBL *fact_mag = NULL;
+  const int32_t *fact_mag = NULL;
   INT fact_exp = 0;
   UINT numBands = 0;
   USHORT *bandTop = NULL;
   int shortDrc = 0;
 
-  FIXP_DBL alphaValue = FL2FXCONST_DBL(0.0f);
+  int32_t alphaValue = FL2FXCONST_DBL(0.0f);
 
   if (hDrcData == NULL) {
     return;
@@ -236,10 +236,10 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
       if (hDrcData->drcInterpolationSchemeCurr == 0) {
         INT k = (frameLenFlag) ? 0x4444445 : 0x4000000;
 
-        alphaValue = (FIXP_DBL)(j * k);
+        alphaValue = (int32_t)(j * k);
       } else {
         if (j >= (int)winBorderToColMap[hDrcData->drcInterpolationSchemeCurr]) {
-          alphaValue = (FIXP_DBL)MAXVAL_DBL;
+          alphaValue = (int32_t)MAXVAL_DBL;
         }
       }
     } else { /* short windows */
@@ -257,10 +257,10 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
       if (hDrcData->drcInterpolationSchemeNext == 0) {
         INT k = (frameLenFlag) ? 0x4444445 : 0x4000000;
 
-        alphaValue = (FIXP_DBL)(j * k);
+        alphaValue = (int32_t)(j * k);
       } else {
         if (j >= (int)winBorderToColMap[hDrcData->drcInterpolationSchemeNext]) {
-          alphaValue = (FIXP_DBL)MAXVAL_DBL;
+          alphaValue = (int32_t)MAXVAL_DBL;
         }
       }
 
@@ -270,7 +270,7 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
       bandTop = hDrcData->bandTopNext;
     } else {                                /* next: short windows */
       if (hDrcData->winSequenceCurr != 2) { /* current: long window */
-        alphaValue = (FIXP_DBL)0;
+        alphaValue = (int32_t)0;
 
         fact_mag = hDrcData->nextFact_mag;
         fact_exp = hDrcData->nextFact_exp;
@@ -292,10 +292,10 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
       if (hDrcData->drcInterpolationSchemeNext == 0) {
         INT k = (frameLenFlag) ? 0x4444445 : 0x4000000;
 
-        alphaValue = (FIXP_DBL)(j * k);
+        alphaValue = (int32_t)(j * k);
       } else {
         if (j >= (int)winBorderToColMap[hDrcData->drcInterpolationSchemeNext]) {
-          alphaValue = (FIXP_DBL)MAXVAL_DBL;
+          alphaValue = (int32_t)MAXVAL_DBL;
         }
       }
     } else { /* short windows */
@@ -314,15 +314,15 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
   for (band = 0; band < (int)numBands; band++) {
     int bottomQmf, topQmf;
 
-    FIXP_DBL drcFact_mag = (FIXP_DBL)MAXVAL_DBL;
+    int32_t drcFact_mag = (int32_t)MAXVAL_DBL;
 
     topMdct = (bandTop[band] + 1) << 2;
 
     if (!shortDrc) { /* long window */
       if (frameLenFlag) {
         /* 960 framing */
-        bottomQmf = fMultIfloor((FIXP_DBL)0x4444445, bottomMdct);
-        topQmf = fMultIfloor((FIXP_DBL)0x4444445, topMdct);
+        bottomQmf = fMultIfloor((int32_t)0x4444445, bottomMdct);
+        topQmf = fMultIfloor((int32_t)0x4444445, topMdct);
 
         topMdct = 30 * topQmf;
       } else {
@@ -338,8 +338,8 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
       }
 
       for (bin = bottomQmf; bin < topQmf; bin++) {
-        FIXP_DBL drcFact1_mag = hDrcData->prevFact_mag[bin];
-        FIXP_DBL drcFact2_mag = fact_mag[band];
+        int32_t drcFact1_mag = hDrcData->prevFact_mag[bin];
+        int32_t drcFact2_mag = fact_mag[band];
 
         /* normalize scale factors */
         if (hDrcData->prevFact_exp < maxShift) {
@@ -350,14 +350,14 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
         }
 
         /* interpolate */
-        if (alphaValue == (FIXP_DBL)0) {
+        if (alphaValue == (int32_t)0) {
           drcFact_mag = drcFact1_mag;
-        } else if (alphaValue == (FIXP_DBL)MAXVAL_DBL) {
+        } else if (alphaValue == (int32_t)MAXVAL_DBL) {
           drcFact_mag = drcFact2_mag;
         } else {
           drcFact_mag =
               fMult(alphaValue, drcFact2_mag) +
-              fMult(((FIXP_DBL)MAXVAL_DBL - alphaValue), drcFact1_mag);
+              fMult(((int32_t)MAXVAL_DBL - alphaValue), drcFact1_mag);
         }
 
         /* apply scaling */
@@ -374,8 +374,8 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
     } else { /* short windows */
       unsigned startWinIdx, stopWinIdx;
       int startCol, stopCol;
-      FIXP_DBL invFrameSizeDiv8 =
-          (frameLenFlag) ? (FIXP_DBL)0x1111112 : (FIXP_DBL)0x1000000;
+      int32_t invFrameSizeDiv8 =
+          (frameLenFlag) ? (int32_t)0x1111112 : (int32_t)0x1000000;
 
       /* limit top at the frame borders */
       if (topMdct < 0) {
@@ -387,12 +387,12 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
 
       if (frameLenFlag) {
         /*  960 framing */
-        topMdct = fMultIfloor((FIXP_DBL)0x78000000,
-                              fMultIfloor((FIXP_DBL)0x22222223, topMdct) << 2);
+        topMdct = fMultIfloor((int32_t)0x78000000,
+                              fMultIfloor((int32_t)0x22222223, topMdct) << 2);
 
         startWinIdx = fMultIfloor(invFrameSizeDiv8, bottomMdct) +
                       1; /* winBorderToColMap table has offset of 1 */
-        stopWinIdx = fMultIceil(invFrameSizeDiv8 - (FIXP_DBL)1, topMdct) + 1;
+        stopWinIdx = fMultIceil(invFrameSizeDiv8 - (int32_t)1, topMdct) + 1;
       } else {
         /* 1024 framing */
         topMdct &= ~0x03;
@@ -423,8 +423,8 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
 
       if (topQmf == 0) {
         if (frameLenFlag) {
-          FIXP_DBL rem = fMult(invFrameSizeDiv8,
-                               (FIXP_DBL)(topMdct << (DFRACT_BITS - 12)));
+          int32_t rem = fMult(invFrameSizeDiv8,
+                               (int32_t)(topMdct << (DFRACT_BITS - 12)));
           if ((LONG)rem & (LONG)0x1F) {
             stopWinIdx -= 1;
             stopCol = (int)winBorderToColMap[stopWinIdx];
@@ -492,7 +492,7 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
   \return None.
 */
 void sbrDecoder_drcApply(HANDLE_SBR_DRC_CHANNEL hDrcData,
-                         FIXP_DBL **QmfBufferReal, FIXP_DBL **QmfBufferImag,
+                         int32_t **QmfBufferReal, int32_t **QmfBufferImag,
                          int numQmfSubSamples, int *scaleFactor) {
   int col;
   int maxShift = 0;
@@ -517,8 +517,8 @@ void sbrDecoder_drcApply(HANDLE_SBR_DRC_CHANNEL hDrcData,
   }
 
   for (col = 0; col < numQmfSubSamples; col++) {
-    FIXP_DBL *qmfSlotReal = QmfBufferReal[col];
-    FIXP_DBL *qmfSlotImag = (QmfBufferImag == NULL) ? NULL : QmfBufferImag[col];
+    int32_t *qmfSlotReal = QmfBufferReal[col];
+    int32_t *qmfSlotImag = (QmfBufferImag == NULL) ? NULL : QmfBufferImag[col];
 
     sbrDecoder_drcApplySlot(hDrcData, qmfSlotReal, qmfSlotImag, col,
                             numQmfSubSamples, maxShift);

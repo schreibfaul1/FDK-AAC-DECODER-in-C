@@ -118,8 +118,8 @@ amm-info@iis.fraunhofer.de
 **************************************************************************/
 
 #if !defined(FUNCTION_fixabs_D)
-inline FIXP_DBL fixabs_D(FIXP_DBL x) {
-  return ((x) > (FIXP_DBL)(0)) ? (x) : -(x);
+inline int32_t fixabs_D(int32_t x) {
+  return ((x) > (int32_t)(0)) ? (x) : -(x);
 }
 #endif
 

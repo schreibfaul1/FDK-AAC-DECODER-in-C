@@ -119,7 +119,7 @@ amm-info@iis.fraunhofer.de
  * \param total amount of individual data values to decode.
  * \return 0 on success, -1 on error.
  */
-int CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, FIXP_DBL *lsfq, int nk_mode,
+int CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *lsfq, int nk_mode,
                    int nqn, int length);
 
 /**
@@ -180,7 +180,7 @@ void E_LPC_a_weight(FIXP_LPC *wA, const FIXP_LPC *A, const int m);
  * \param gain_code (i) the 7 bit binary word from the bitstream
  *                      representing the gain.
  */
-void CLpd_DecodeGain(FIXP_DBL *gain, INT *gain_e, int gain_code);
+void CLpd_DecodeGain(int32_t *gain, INT *gain_e, int gain_code);
 
 /**
  * \brief convert LSP coefficients into LP domain.

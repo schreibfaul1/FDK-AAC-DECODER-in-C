@@ -564,8 +564,8 @@ const backsubst_data bsd[N_NUMBANDS] = {
  * \param[out] x         output polynomial coefficients (mantissa)
  * \param[out] x_sf      exponents of x[]
  */
-static void backsubst_fw(const int numBands, const FIXP_DBL *const b,
-                         FIXP_DBL *RESTRICT x, int *RESTRICT x_sf) {
+static void backsubst_fw(const int numBands, const int32_t *const b,
+                         int32_t *RESTRICT x, int *RESTRICT x_sf) {
   int i, k;
   int m; /* the trip counter that indexes incrementally through Lnorm1d[] */
 
@@ -577,11 +577,11 @@ static void backsubst_fw(const int numBands, const FIXP_DBL *const b,
   x[0] = b[0];
 
   for (i = 1, m = 0; i <= POLY_ORDER; ++i) {
-    FIXP_DBL sum = b[i] >> SUM_SAFETY;
+    int32_t sum = b[i] >> SUM_SAFETY;
     int sum_sf = x_sf[i];
     for (k = i - 1; k > 0; --k, ++m) {
       int e;
-      FIXP_DBL mult = fMultNorm(FX_CHB2FX_DBL(pLnorm1d[m]), x[k], &e);
+      int32_t mult = fMultNorm(FX_CHB2FX_DBL(pLnorm1d[m]), x[k], &e);
       int mult_sf = pLnorm1d_sf[m] + x_sf[k] + e;
 
       /* check if the new summand mult has a different sf than the sum currently
@@ -627,8 +627,8 @@ static void backsubst_fw(const int numBands, const FIXP_DBL *const b,
  * \param[out] x         solution vector
  * \param[out] x_sf      exponents of x[]
  */
-static void backsubst_bw(const int numBands, const FIXP_DBL *const b,
-                         FIXP_DBL *RESTRICT x, int *RESTRICT x_sf) {
+static void backsubst_bw(const int numBands, const int32_t *const b,
+                         int32_t *RESTRICT x, int *RESTRICT x_sf) {
   int i, k;
   int m; /* the trip counter that indexes incrementally through LnormInv1d[] */
 
@@ -640,13 +640,13 @@ static void backsubst_bw(const int numBands, const FIXP_DBL *const b,
   x[POLY_ORDER] = b[POLY_ORDER];
 
   for (i = POLY_ORDER - 1, m = 0; i >= 0; i--) {
-    FIXP_DBL sum = b[i] >> SUM_SAFETY;
+    int32_t sum = b[i] >> SUM_SAFETY;
     int sum_sf = x_sf[i]; /* sum's sf but disregarding SUM_SAFETY (added at the
                              iteration's end) */
 
     for (k = i + 1; k <= POLY_ORDER; ++k, ++m) {
       int e;
-      FIXP_DBL mult = fMultNorm(FX_CHB2FX_DBL(pLnormInv1d[m]), x[k], &e);
+      int32_t mult = fMultNorm(FX_CHB2FX_DBL(pLnormInv1d[m]), x[k], &e);
       int mult_sf = pLnormInv1d_sf[m] + x_sf[k] + e;
 
       /* check if the new summand mult has a different sf than sum currently has
@@ -682,7 +682,7 @@ static void backsubst_bw(const int numBands, const FIXP_DBL *const b,
  * \param[in,out] b_sf      input: exponent of b; output: exponent of solution
  * p.
  */
-static void choleskySolve(const int numBands, FIXP_DBL *RESTRICT b,
+static void choleskySolve(const int numBands, int32_t *RESTRICT b,
                           int *RESTRICT b_sf) {
   int i, e;
 
@@ -692,7 +692,7 @@ static void choleskySolve(const int numBands, FIXP_DBL *RESTRICT b,
   const SCHAR *RESTRICT pBmul1_sf = bsd[numBands - BSD_IDX_OFFSET].Bmul1_sf;
 
   /* normalize b */
-  FIXP_DBL bnormed[POLY_ORDER + 1];
+  int32_t bnormed[POLY_ORDER + 1];
   for (i = 0; i <= POLY_ORDER; ++i) {
     bnormed[i] = fMultNorm(b[i], FX_CHB2FX_DBL(pBmul0[i]), &e);
     b_sf[i] += pBmul0_sf[i] + e;
@@ -724,8 +724,8 @@ static void choleskySolve(const int numBands, FIXP_DBL *RESTRICT b,
  * \param[out] p         output polynomial coefficients (mantissa)
  * \param[out] p_sf      exponents of p[]
  */
-static void polyfit(const int numBands, const FIXP_DBL *const y, const int y_sf,
-                    FIXP_DBL *RESTRICT p, int *RESTRICT p_sf) {
+static void polyfit(const int numBands, const int32_t *const y, const int y_sf,
+                    int32_t *RESTRICT p, int *RESTRICT p_sf) {
   int i, k;
   LONG v[POLY_ORDER + 1];
   int sum_saftey = getLog2[numBands - 1];
@@ -733,7 +733,7 @@ static void polyfit(const int numBands, const FIXP_DBL *const y, const int y_sf,
   FDK_ASSERT((numBands >= BSD_IDX_OFFSET) && (numBands <= MAXLOWBANDS));
 
   /* construct vector b[] temporarily stored in array p[] */
-  FDKmemclear(p, (POLY_ORDER + 1) * sizeof(FIXP_DBL));
+  FDKmemclear(p, (POLY_ORDER + 1) * sizeof(int32_t));
 
   /* p[] are the sums over n values and each p[i] has its own sf */
   for (i = 0; i <= POLY_ORDER; ++i) p_sf[i] = 1 - DFRACT_BITS;
@@ -745,9 +745,9 @@ static void polyfit(const int numBands, const FIXP_DBL *const y, const int y_sf,
     }
 
     for (i = 0; i <= POLY_ORDER; i++) {
-      if (v[POLY_ORDER - i] != 0 && y[k] != FIXP_DBL(0)) {
+      if (v[POLY_ORDER - i] != 0 && y[k] != int32_t(0)) {
         int e;
-        FIXP_DBL mult = fMultNorm((FIXP_DBL)v[POLY_ORDER - i], y[k], &e);
+        int32_t mult = fMultNorm((int32_t)v[POLY_ORDER - i], y[k], &e);
         int sf = DFRACT_BITS - 1 + y_sf + e;
 
         /* check if the new summand has a different sf than the sum p[i]
@@ -797,19 +797,19 @@ static void polyfit(const int numBands, const FIXP_DBL *const y, const int y_sf,
  *
  * \return             result y(x)
  */
-static FIXP_DBL polyval(const FIXP_DBL *const p, const int *const p_sf,
+static int32_t polyval(const int32_t *const p, const int *const p_sf,
                         const int x_int, int *out_sf) {
   FDK_ASSERT(x_int <= 31); /* otherwise getLog2[] needs more elements */
 
   int k, x_sf;
   int result_sf;   /* working space to compute return value *out_sf */
-  FIXP_DBL x;      /* fractional value of x_int */
-  FIXP_DBL result; /* return value */
+  int32_t x;      /* fractional value of x_int */
+  int32_t result; /* return value */
 
   /* if x == 0, then y(x) is just p3 */
   if (x_int != 0) {
     x_sf = getLog2[x_int];
-    x = (FIXP_DBL)x_int << (DFRACT_BITS - 1 - x_sf);
+    x = (int32_t)x_int << (DFRACT_BITS - 1 - x_sf);
   } else {
     *out_sf = p_sf[3];
     return p[3];
@@ -819,14 +819,14 @@ static FIXP_DBL polyval(const FIXP_DBL *const p, const int *const p_sf,
   result_sf = p_sf[0];
 
   for (k = 1; k <= POLY_ORDER; ++k) {
-    FIXP_DBL mult = fMult(x, result);
+    int32_t mult = fMult(x, result);
     int mult_sf = x_sf + result_sf;
 
     int room = CountLeadingBits(mult);
     mult <<= room;
     mult_sf -= room;
 
-    FIXP_DBL pp = p[k];
+    int32_t pp = p[k];
     int pp_sf = p_sf[k];
 
     /* equalize the shift factors of pp and mult so that we can sum them up */
@@ -859,18 +859,18 @@ static FIXP_DBL polyval(const FIXP_DBL *const p, const int *const p_sf,
   return result;
 }
 
-void sbrDecoder_calculateGainVec(FIXP_DBL **sourceBufferReal,
-                                 FIXP_DBL **sourceBufferImag,
+void sbrDecoder_calculateGainVec(int32_t **sourceBufferReal,
+                                 int32_t **sourceBufferImag,
                                  int sourceBuf_e_overlap,
                                  int sourceBuf_e_current, int overlap,
-                                 FIXP_DBL *RESTRICT GainVec, int *GainVec_exp,
+                                 int32_t *RESTRICT GainVec, int *GainVec_exp,
                                  int numBands, const int startSample,
                                  const int stopSample) {
-  FIXP_DBL p[POLY_ORDER + 1];
-  FIXP_DBL meanNrg;
-  FIXP_DBL LowEnv[MAXLOWBANDS];
-  FIXP_DBL invNumBands = GetInvInt(numBands);
-  FIXP_DBL invNumSlots = GetInvInt(stopSample - startSample);
+  int32_t p[POLY_ORDER + 1];
+  int32_t meanNrg;
+  int32_t LowEnv[MAXLOWBANDS];
+  int32_t invNumBands = GetInvInt(numBands);
+  int32_t invNumSlots = GetInvInt(stopSample - startSample);
   int i, loBand, exp, scale_nrg, scale_nrg_ov;
   int sum_scale = 5, sum_scale_ov = 3;
 
@@ -887,19 +887,19 @@ void sbrDecoder_calculateGainVec(FIXP_DBL **sourceBufferReal,
   scale_nrg = sourceBuf_e_current - exp;
   scale_nrg_ov = sourceBuf_e_overlap - exp;
 
-  meanNrg = (FIXP_DBL)0;
+  meanNrg = (int32_t)0;
   /* Calculate the spectral envelope in dB over the current copy-up frame. */
   for (loBand = 0; loBand < numBands; loBand++) {
-    FIXP_DBL nrg_ov, nrg;
+    int32_t nrg_ov, nrg;
     INT reserve = 0, exp_new;
-    FIXP_DBL maxVal = FL2FX_DBL(0.0f);
+    int32_t maxVal = FL2FX_DBL(0.0f);
 
     for (i = startSample; i < stopSample; i++) {
       maxVal |=
-          (FIXP_DBL)((LONG)(sourceBufferReal[i][loBand]) ^
+          (int32_t)((LONG)(sourceBufferReal[i][loBand]) ^
                      ((LONG)sourceBufferReal[i][loBand] >> (DFRACT_BITS - 1)));
       maxVal |=
-          (FIXP_DBL)((LONG)(sourceBufferImag[i][loBand]) ^
+          (int32_t)((LONG)(sourceBufferImag[i][loBand]) ^
                      ((LONG)sourceBufferImag[i][loBand] >> (DFRACT_BITS - 1)));
     }
 
@@ -907,7 +907,7 @@ void sbrDecoder_calculateGainVec(FIXP_DBL **sourceBufferReal,
       reserve = CntLeadingZeros(maxVal) - 2;
     }
 
-    nrg_ov = nrg = (FIXP_DBL)0;
+    nrg_ov = nrg = (int32_t)0;
     if (scale_nrg_ov > -31) {
       for (i = startSample; i < overlap; i++) {
         nrg_ov +=
@@ -938,13 +938,13 @@ void sbrDecoder_calculateGainVec(FIXP_DBL **sourceBufferReal,
 
     /* LowEnv = 10*log10(nrg) = log2(nrg) * 10/log2(10) */
     /* exponent of logarithmic energy is 8 */
-    if (nrg > (FIXP_DBL)0) {
+    if (nrg > (int32_t)0) {
       int exp_log2;
       nrg = CalcLog2(nrg, exp_new, &exp_log2);
       nrg = scaleValue(nrg, exp_log2 - 6);
       nrg = fMult(FL2FXCONST_SGL(LOG10FAC), nrg);
     } else {
-      nrg = (FIXP_DBL)0;
+      nrg = (int32_t)0;
     }
     LowEnv[loBand] = nrg;
     meanNrg += fMult(nrg, invNumBands);
@@ -971,7 +971,7 @@ void sbrDecoder_calculateGainVec(FIXP_DBL **sourceBufferReal,
       int sf;
 
       /* lowBandEnvSlope[i] = tmp; */
-      FIXP_DBL tmp = polyval(p, p_sf, i, &sf);
+      int32_t tmp = polyval(p, p_sf, i, &sf);
 
       /* GainVec = 10^((mean(y)-y)/20) = 2^( (mean(y)-y) * log2(10)/20 ) */
       tmp = fMult(tmp, FL2FXCONST_SGL(LOG10FAC_INV));
@@ -983,7 +983,7 @@ void sbrDecoder_calculateGainVec(FIXP_DBL **sourceBufferReal,
       int sf = exp; /* exponent of LowEnv[] */
 
       /* lowBandEnvSlope[i] = LowEnv[i]; */
-      FIXP_DBL tmp = LowEnv[i];
+      int32_t tmp = LowEnv[i];
 
       /* GainVec = 10^((mean(y)-y)/20) = 2^( (mean(y)-y) * log2(10)/20 ) */
       tmp = fMult(tmp, FL2FXCONST_SGL(LOG10FAC_INV));

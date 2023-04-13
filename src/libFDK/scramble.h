@@ -125,7 +125,7 @@ amm-info@iis.fraunhofer.de
 #if !defined(FUNCTION_scramble)
 
 /* default scramble functionality */
-inline void scramble(FIXP_DBL *x, INT length) {
+inline void scramble(int32_t *x, INT length) {
   INT m, k, j;
   FDK_ASSERT(!(((INT)(INT64)x) & (ALIGNMENT_DEFAULT - 1)));
   C_ALLOC_ALIGNED_CHECK(x);
@@ -137,7 +137,7 @@ inline void scramble(FIXP_DBL *x, INT length) {
     }
 
     if (j > m) {
-      FIXP_DBL tmp;
+      int32_t tmp;
       tmp = x[2 * m];
       x[2 * m] = x[2 * j];
       x[2 * j] = tmp;

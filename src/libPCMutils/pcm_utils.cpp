@@ -106,11 +106,11 @@ change
 /* library version */
 #include "version.h"
 
-void FDK_interleave(const FIXP_DBL *RESTRICT pIn, LONG *RESTRICT pOut,
+void FDK_interleave(const int32_t *RESTRICT pIn, LONG *RESTRICT pOut,
                     const UINT channels, const UINT frameSize,
                     const UINT length) {
   for (UINT sample = 0; sample < length; sample++) {
-    const FIXP_DBL *In = &pIn[sample];
+    const int32_t *In = &pIn[sample];
     for (UINT ch = 0; ch < channels; ch++) {
       *pOut++ = (LONG)In[0];
       In += frameSize;
@@ -118,11 +118,11 @@ void FDK_interleave(const FIXP_DBL *RESTRICT pIn, LONG *RESTRICT pOut,
   }
 }
 
-void FDK_interleave(const FIXP_DBL *RESTRICT pIn, SHORT *RESTRICT pOut,
+void FDK_interleave(const int32_t *RESTRICT pIn, SHORT *RESTRICT pOut,
                     const UINT channels, const UINT frameSize,
                     const UINT length) {
   for (UINT sample = 0; sample < length; sample++) {
-    const FIXP_DBL *In = &pIn[sample];
+    const int32_t *In = &pIn[sample];
     for (UINT ch = 0; ch < channels; ch++) {
       *pOut++ = (SHORT)FX_DBL2FX_SGL(In[0]);
       In += frameSize;

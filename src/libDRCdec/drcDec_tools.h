@@ -103,6 +103,7 @@ amm-info@iis.fraunhofer.de
 #ifndef DRCDEC_TOOLS_H
 #define DRCDEC_TOOLS_H
 
+#include <stdint.h>
 #include "drcDec_types.h"
 #include "drcDec_selectionProcess.h"
 
@@ -128,19 +129,19 @@ deriveDrcChannelGroups(
     SCHAR* groupForChannel, /* out */
     DUCKING_MODIFICATION* duckingModificationForChannelGroup); /* out */
 
-FIXP_DBL
-dB2lin(const FIXP_DBL dB_m, const int dB_e, int* pLin_e);
+int32_t
+dB2lin(const int32_t dB_m, const int dB_e, int* pLin_e);
 
-FIXP_DBL
-lin2dB(const FIXP_DBL lin_m, const int lin_e, int* pDb_e);
+int32_t
+lin2dB(const int32_t lin_m, const int lin_e, int* pDb_e);
 
-FIXP_DBL
-approxDb2lin(const FIXP_DBL dB_m, const int dB_e, int* pLin_e);
+int32_t
+approxDb2lin(const int32_t dB_m, const int dB_e, int* pLin_e);
 
 int bitstreamContainsMultibandDrc(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
                                   const int downmixId);
 
-FIXP_DBL
+int32_t
 getDownmixOffset(DOWNMIX_INSTRUCTIONS* pDown, int baseChannelCount);
 
 #endif

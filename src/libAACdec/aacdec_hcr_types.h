@@ -405,7 +405,7 @@ typedef UINT (*STATEFUNC)(HANDLE_FDK_BITSTREAM, void *);
 
 typedef struct {
   /* worst-case and 1024/4 non-PCWs exist in worst-case */
-  FIXP_DBL
+  int32_t
   *pResultBase; /* Base address for spectral data output target buffer */
   UINT iNode[1024 >> 2]; /* Helper indices for code books */
   USHORT

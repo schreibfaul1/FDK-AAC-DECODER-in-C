@@ -106,6 +106,6 @@ amm-info@iis.fraunhofer.de
 DRC_ERROR
 prepareDrcGain(HANDLE_DRC_GAIN_DECODER hGainDec,
                HANDLE_UNI_DRC_GAIN hUniDrcGain, const FIXP_SGL compress,
-               const FIXP_SGL boost, const FIXP_DBL loudnessNormalizationGainDb,
+               const FIXP_SGL boost, const int32_t loudnessNormalizationGainDb,
                const int activeDrcIndex);
 #endif

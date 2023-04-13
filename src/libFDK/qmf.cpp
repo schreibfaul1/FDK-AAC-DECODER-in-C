@@ -156,18 +156,18 @@ amm-info@iis.fraunhofer.de
  */
 static void qmfForwardModulationLP_even(
     HANDLE_QMF_FILTER_BANK anaQmf, /*!< Handle of Qmf Analysis Bank  */
-    FIXP_DBL *timeIn,              /*!< Time Signal */
-    FIXP_DBL *rSubband)            /*!< Real Output */
+    int32_t *timeIn,              /*!< Time Signal */
+    int32_t *rSubband)            /*!< Real Output */
 {
   int i;
   int L = anaQmf->no_channels;
   int M = L >> 1;
   int scale = 0;
-  FIXP_DBL accu;
+  int32_t accu;
 
-  const FIXP_DBL *timeInTmp1 = (FIXP_DBL *)&timeIn[3 * M];
-  const FIXP_DBL *timeInTmp2 = timeInTmp1;
-  FIXP_DBL *rSubbandTmp = rSubband;
+  const int32_t *timeInTmp1 = (int32_t *)&timeIn[3 * M];
+  const int32_t *timeInTmp2 = timeInTmp1;
+  int32_t *rSubbandTmp = rSubband;
 
   rSubband[0] = timeIn[3 * M] >> 1;
 
@@ -191,8 +191,8 @@ static void qmfForwardModulationLP_even(
 #if !defined(FUNCTION_qmfForwardModulationLP_odd)
 static void qmfForwardModulationLP_odd(
     HANDLE_QMF_FILTER_BANK anaQmf, /*!< Handle of Qmf Analysis Bank  */
-    const FIXP_DBL *timeIn,        /*!< Time Signal */
-    FIXP_DBL *rSubband)            /*!< Real Output */
+    const int32_t *timeIn,        /*!< Time Signal */
+    int32_t *rSubband)            /*!< Real Output */
 {
   int i;
   int L = anaQmf->no_channels;
@@ -220,9 +220,9 @@ static void qmfForwardModulationLP_odd(
 #if !defined(FUNCTION_qmfForwardModulationHQ)
 static void qmfForwardModulationHQ(
     HANDLE_QMF_FILTER_BANK anaQmf,   /*!< Handle of Qmf Analysis Bank  */
-    const FIXP_DBL *RESTRICT timeIn, /*!< Time Signal */
-    FIXP_DBL *RESTRICT rSubband,     /*!< Real Output */
-    FIXP_DBL *RESTRICT iSubband      /*!< Imaginary Output */
+    const int32_t *RESTRICT timeIn, /*!< Time Signal */
+    int32_t *RESTRICT rSubband,     /*!< Real Output */
+    int32_t *RESTRICT iSubband      /*!< Imaginary Output */
 ) {
   int i;
   int L = anaQmf->no_channels;
@@ -232,7 +232,7 @@ static void qmfForwardModulationHQ(
   /* Time advance by one sample, which is equivalent to the complex
      rotation at the end of the analysis. Works only for STD mode. */
   if ((L == 64) && !(anaQmf->flags & (QMF_FLAG_CLDFB | QMF_FLAG_MPSLDFB))) {
-    FIXP_DBL x, y;
+    int32_t x, y;
 
     /*rSubband[0] = u[1] + u[0]*/
     /*iSubband[0] = u[1] - u[0]*/
@@ -251,7 +251,7 @@ static void qmfForwardModulationHQ(
     }
   } else {
     for (i = 0; i < L; i += 2) {
-      FIXP_DBL x0, x1, y0, y1;
+      int32_t x0, x1, y0, y1;
 
       x0 = timeIn[i + 0] >> 1;
       x1 = timeIn[i + 1] >> 1;
@@ -271,7 +271,7 @@ static void qmfForwardModulationHQ(
   /* Do the complex rotation except for the case of 64 bands (in STD mode). */
   if ((L != 64) || (anaQmf->flags & (QMF_FLAG_CLDFB | QMF_FLAG_MPSLDFB))) {
     if (anaQmf->flags & QMF_FLAG_MPSLDFB_OPTIMIZE_MODULATION) {
-      FIXP_DBL iBand;
+      int32_t iBand;
       for (i = 0; i < fMin(anaQmf->lsb, L); i += 2) {
         iBand = rSubband[i];
         rSubband[i] = -iSubband[i];
@@ -308,31 +308,31 @@ static void qmfForwardModulationHQ(
  */
 inline static void qmfInverseModulationLP_even(
     HANDLE_QMF_FILTER_BANK synQmf, /*!< Handle of Qmf Synthesis Bank  */
-    const FIXP_DBL *qmfReal, /*!< Pointer to qmf real subband slot (input) */
+    const int32_t *qmfReal, /*!< Pointer to qmf real subband slot (input) */
     const int scaleFactorLowBand,  /*!< Scalefactor for Low band */
     const int scaleFactorHighBand, /*!< Scalefactor for High band */
-    FIXP_DBL *pTimeOut             /*!< Pointer to qmf subband slot (output)*/
+    int32_t *pTimeOut             /*!< Pointer to qmf subband slot (output)*/
 ) {
   int i;
   int L = synQmf->no_channels;
   int M = L >> 1;
   int scale = 0;
-  FIXP_DBL tmp;
-  FIXP_DBL *RESTRICT tReal = pTimeOut;
-  FIXP_DBL *RESTRICT tImag = pTimeOut + L;
+  int32_t tmp;
+  int32_t *RESTRICT tReal = pTimeOut;
+  int32_t *RESTRICT tImag = pTimeOut + L;
 
   /* Move input to output vector with offset */
   scaleValuesSaturate(&tReal[0], &qmfReal[0], synQmf->lsb, scaleFactorLowBand);
   scaleValuesSaturate(&tReal[0 + synQmf->lsb], &qmfReal[0 + synQmf->lsb],
                       synQmf->usb - synQmf->lsb, scaleFactorHighBand);
-  FDKmemclear(&tReal[0 + synQmf->usb], (L - synQmf->usb) * sizeof(FIXP_DBL));
+  FDKmemclear(&tReal[0 + synQmf->usb], (L - synQmf->usb) * sizeof(int32_t));
 
   /* Dct type-2 transform */
   dct_II(tReal, tImag, L, &scale);
 
   /* Expand output and replace inplace the output buffers */
   tImag[0] = tReal[M];
-  tImag[M] = (FIXP_DBL)0;
+  tImag[M] = (int32_t)0;
   tmp = tReal[0];
   tReal[0] = tReal[M];
   tReal[M] = tmp;
@@ -364,10 +364,10 @@ inline static void qmfInverseModulationLP_even(
 
 inline static void qmfInverseModulationLP_odd(
     HANDLE_QMF_FILTER_BANK synQmf, /*!< Handle of Qmf Synthesis Bank  */
-    const FIXP_DBL *qmfReal, /*!< Pointer to qmf real subband slot (input) */
+    const int32_t *qmfReal, /*!< Pointer to qmf real subband slot (input) */
     const int scaleFactorLowBand,  /*!< Scalefactor for Low band */
     const int scaleFactorHighBand, /*!< Scalefactor for High band */
-    FIXP_DBL *pTimeOut             /*!< Pointer to qmf subband slot (output)*/
+    int32_t *pTimeOut             /*!< Pointer to qmf subband slot (output)*/
 ) {
   int i;
   int L = synQmf->no_channels;
@@ -378,7 +378,7 @@ inline static void qmfInverseModulationLP_odd(
   scaleValuesSaturate(pTimeOut + M, qmfReal, synQmf->lsb, scaleFactorLowBand);
   scaleValuesSaturate(pTimeOut + M + synQmf->lsb, qmfReal + synQmf->lsb,
                       synQmf->usb - synQmf->lsb, scaleFactorHighBand);
-  FDKmemclear(pTimeOut + M + synQmf->usb, (L - synQmf->usb) * sizeof(FIXP_DBL));
+  FDKmemclear(pTimeOut + M + synQmf->usb, (L - synQmf->usb) * sizeof(int32_t));
 
   dct_IV(pTimeOut + M, L, &shift);
   for (i = 0; i < M; i++) {
@@ -397,18 +397,18 @@ inline static void qmfInverseModulationLP_odd(
  */
 inline static void qmfInverseModulationHQ(
     HANDLE_QMF_FILTER_BANK synQmf, /*!< Handle of Qmf Synthesis Bank     */
-    const FIXP_DBL *qmfReal,       /*!< Pointer to qmf real subband slot */
-    const FIXP_DBL *qmfImag,       /*!< Pointer to qmf imag subband slot */
+    const int32_t *qmfReal,       /*!< Pointer to qmf real subband slot */
+    const int32_t *qmfImag,       /*!< Pointer to qmf imag subband slot */
     const int scaleFactorLowBand,  /*!< Scalefactor for Low band         */
     const int scaleFactorHighBand, /*!< Scalefactor for High band        */
-    FIXP_DBL *pWorkBuffer          /*!< WorkBuffer (output)              */
+    int32_t *pWorkBuffer          /*!< WorkBuffer (output)              */
 ) {
   int i;
   int L = synQmf->no_channels;
   int M = L >> 1;
   int shift = 0;
-  FIXP_DBL *RESTRICT tReal = pWorkBuffer;
-  FIXP_DBL *RESTRICT tImag = pWorkBuffer + L;
+  int32_t *RESTRICT tReal = pWorkBuffer;
+  int32_t *RESTRICT tImag = pWorkBuffer + L;
 
   if (synQmf->flags & QMF_FLAG_CLDFB) {
     for (i = 0; i < synQmf->usb; i++) {
@@ -435,16 +435,16 @@ inline static void qmfInverseModulationHQ(
   }
 
   FDKmemclear(&tReal[synQmf->usb],
-              (synQmf->no_channels - synQmf->usb) * sizeof(FIXP_DBL));
+              (synQmf->no_channels - synQmf->usb) * sizeof(int32_t));
   FDKmemclear(&tImag[synQmf->usb],
-              (synQmf->no_channels - synQmf->usb) * sizeof(FIXP_DBL));
+              (synQmf->no_channels - synQmf->usb) * sizeof(int32_t));
 
   dct_IV(tReal, L, &shift);
   dst_IV(tImag, L, &shift);
 
   if (synQmf->flags & QMF_FLAG_CLDFB) {
     for (i = 0; i < M; i++) {
-      FIXP_DBL r1, i1, r2, i2;
+      int32_t r1, i1, r2, i2;
       r1 = tReal[i];
       i2 = tImag[L - 1 - i];
       r2 = tReal[L - i - 1];
@@ -460,7 +460,7 @@ inline static void qmfInverseModulationHQ(
      * the low and hi band gain. */
     /* 26 cycles on ARM926 */
     for (i = 0; i < M; i++) {
-      FIXP_DBL r1, i1, r2, i2;
+      int32_t r1, i1, r2, i2;
       r1 = -tReal[i];
       i2 = -tImag[L - 1 - i];
       r2 = -tReal[L - i - 1];
@@ -680,7 +680,7 @@ static int qmfInitFilterBank(
       h_Qmf->synScalefactor;
 
   h_Qmf->outGain_m =
-      (FIXP_DBL)0x80000000; /* default init value will be not applied */
+      (int32_t)0x80000000; /* default init value will be not applied */
   h_Qmf->outGain_e = 0;
 
   return (0);
@@ -806,7 +806,7 @@ int qmfGetOutScalefactor(
  */
 void qmfChangeOutGain(
     HANDLE_QMF_FILTER_BANK synQmf, /*!< Handle of Qmf Synthesis Bank */
-    FIXP_DBL outputGain,           /*!< New gain for output data (mantissa) */
+    int32_t outputGain,           /*!< New gain for output data (mantissa) */
     int outputGainScale            /*!< New gain for output data (exponent) */
 ) {
   synQmf->outGain_m = outputGain;
@@ -826,7 +826,7 @@ void qmfChangeOutGain(
 #undef INT_PCM_QMFIN
 #define INT_PCM_QMFOUT LONG
 #define SAMPLE_BITS_QMFOUT 32
-#define FIXP_QAS FIXP_DBL
+#define FIXP_QAS int32_t
 #define QAS_BITS 32
 #define INT_PCM_QMFIN LONG
 #include "qmf_pcm.h"

@@ -105,7 +105,7 @@ amm-info@iis.fraunhofer.de
 
 #include "common_fix.h"
 
-#define FIXP_MPS FIXP_DBL
+#define FIXP_MPS int32_t
 
 #ifndef ARCH_PREFER_MULT_32x32
 #define FIXP_DECORR FIXP_SGL
@@ -116,12 +116,12 @@ amm-info@iis.fraunhofer.de
 #define DECORR(a) (FX_DBL2FXCONST_SGL(a))
 #define FL2FXCONST_DECORR FL2FXCONST_SGL
 #else
-#define FIXP_DECORR FIXP_DBL
+#define FIXP_DECORR int32_t
 #define FX_DECORR2FX_DBL
 #define FX_DECORR2FX_SGL FX_DBL2FX_SGL
 #define FX_DBL2FX_DECORR
 #define FX_SGL2FX_DECORR FX_SGL2FX_DBL
-#define DECORR(a) FIXP_DBL(a)
+#define DECORR(a) int32_t(a)
 #define FL2FXCONST_DECORR FL2FXCONST_DBL
 #endif
 
@@ -183,8 +183,8 @@ typedef struct DUCKER_INSTANCE {
   */
   FIXP_MPS peakDecay[(28)];
   FIXP_MPS peakDiff[(28)];
-  FIXP_DBL maxValDirectData;
-  FIXP_DBL maxValReverbData;
+  int32_t maxValDirectData;
+  int32_t maxValReverbData;
   SCHAR scaleDirectNrg;
   SCHAR scaleReverbNrg;
   SCHAR scaleSmoothDirRevNrg;
@@ -194,7 +194,7 @@ typedef struct DUCKER_INSTANCE {
 
 typedef struct DECORR_FILTER_INSTANCE {
   FIXP_MPS *stateCplx;
-  FIXP_DBL *DelayBufferCplx;
+  int32_t *DelayBufferCplx;
 
   const FIXP_DECORR *numeratorReal;
   const FIXP_STP *coeffsPacked;
@@ -203,9 +203,9 @@ typedef struct DECORR_FILTER_INSTANCE {
 
 typedef struct DECORR_DEC {
   INT L_stateBufferCplx;
-  FIXP_DBL *stateBufferCplx;
+  int32_t *stateBufferCplx;
   INT L_delayBufferCplx;
-  FIXP_DBL *delayBufferCplx;
+  int32_t *delayBufferCplx;
 
   const REVBAND_FILT_TYPE *REV_filtType;
   const UCHAR *REV_bandOffset;
@@ -227,13 +227,13 @@ typedef struct DECORR_DEC {
  * \param hDecorrDec          A pointer to a decorrelator instance which was
  * allocated externally.
  * \param bufferCplx          Externally allocated buffer (allocate (2*( ( 825 )
- * + ( 373 ) )) FIXP_DBL values).
+ * + ( 373 ) )) int32_t values).
  * \param bufLen              Length of bufferCplx. Must be >= (2*( ( 825 ) + (
  * 373 ) )).
  *
  * \return  0 on success.
  */
-INT FDKdecorrelateOpen(HANDLE_DECORR_DEC hDecorrDec, FIXP_DBL *bufferCplx,
+INT FDKdecorrelateOpen(HANDLE_DECORR_DEC hDecorrDec, int32_t *bufferCplx,
                        const INT bufLen);
 
 /**
@@ -284,9 +284,9 @@ INT FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const INT nrHybBands,
  *
  * \return  0 on success.
  */
-INT FDKdecorrelateApply(HANDLE_DECORR_DEC hDecorrDec, FIXP_DBL *dataRealIn,
-                        FIXP_DBL *dataImagIn, FIXP_DBL *dataRealOut,
-                        FIXP_DBL *dataImagOut, const INT startHybBand);
+INT FDKdecorrelateApply(HANDLE_DECORR_DEC hDecorrDec, int32_t *dataRealIn,
+                        int32_t *dataImagIn, int32_t *dataRealOut,
+                        int32_t *dataImagOut, const INT startHybBand);
 
 /**
  * \brief  Destroy a Decorrelator instance.
@@ -309,6 +309,6 @@ INT FDKdecorrelateClose(HANDLE_DECORR_DEC hDecorrDec);
  *
  * \return  address of max value
  */
-FIXP_DBL *getAddrDirectSignalMaxVal(HANDLE_DECORR_DEC hDecorrDec);
+int32_t *getAddrDirectSignalMaxVal(HANDLE_DECORR_DEC hDecorrDec);
 
 #endif /* FDK_DECORRELATE_H */

@@ -331,10 +331,10 @@ FDK_drcDec_Init(HANDLE_DRC_DECODER hDrcDec, const int frameSize,
   if (hDrcDec->functionalRange & DRC_DEC_SELECTION) {
     sErr = drcDec_SelectionProcess_SetParam(
         hDrcDec->hSelectionProc, SEL_PROC_BASE_CHANNEL_COUNT,
-        (FIXP_DBL)baseChannelCount, &(hDrcDec->selProcInputDiff));
+        (int32_t)baseChannelCount, &(hDrcDec->selProcInputDiff));
     if (sErr) return DRC_DEC_NOT_OK;
     sErr = drcDec_SelectionProcess_SetParam(
-        hDrcDec->hSelectionProc, SEL_PROC_SAMPLE_RATE, (FIXP_DBL)sampleRate,
+        hDrcDec->hSelectionProc, SEL_PROC_SAMPLE_RATE, (int32_t)sampleRate,
         &(hDrcDec->selProcInputDiff));
     if (sErr) return DRC_DEC_NOT_OK;
   }
@@ -386,7 +386,7 @@ FDK_drcDec_Close(HANDLE_DRC_DECODER* phDrcDec) {
 DRC_DEC_ERROR
 FDK_drcDec_SetParam(HANDLE_DRC_DECODER hDrcDec,
                     const DRC_DEC_USERPARAM requestType,
-                    const FIXP_DBL requestValue) {
+                    const int32_t requestValue) {
   DRC_ERROR dErr = DE_OK;
   DRCDEC_SELECTION_PROCESS_RETURN sErr = DRCDEC_SELECTION_PROCESS_NO_ERROR;
   int invalidParameter = 0;
@@ -557,7 +557,7 @@ FDK_drcDec_GetSelectionProcessOutput(HANDLE_DRC_DECODER hDrcDec) {
   return &(hDrcDec->selProcOutput);
 }
 
-LONG /* FIXP_DBL, e = 7 */
+LONG /* int32_t, e = 7 */
 FDK_drcDec_GetGroupLoudness(HANDLE_SEL_PROC_OUTPUT hSelProcOutput,
                             const int groupID, int* groupLoudnessAvailable) {
   return (LONG)0;
@@ -565,7 +565,7 @@ FDK_drcDec_GetGroupLoudness(HANDLE_SEL_PROC_OUTPUT hSelProcOutput,
 
 void FDK_drcDec_SetChannelGains(HANDLE_DRC_DECODER hDrcDec,
                                 const int numChannels, const int frameSize,
-                                FIXP_DBL* channelGainDb, FIXP_DBL* audioBuffer,
+                                int32_t* channelGainDb, int32_t* audioBuffer,
                                 const int audioBufferChannelOffset) {
   int err;
 
@@ -795,7 +795,7 @@ DRC_DEC_ERROR
 FDK_drcDec_ProcessTime(HANDLE_DRC_DECODER hDrcDec, const int delaySamples,
                        const DRC_DEC_LOCATION drcLocation,
                        const int channelOffset, const int drcChannelOffset,
-                       const int numChannelsProcessed, FIXP_DBL* realBuffer,
+                       const int numChannelsProcessed, int32_t* realBuffer,
                        const int timeDataChannelOffset) {
   DRC_ERROR dErr = DE_OK;
 
@@ -818,8 +818,8 @@ FDK_drcDec_ProcessFreq(HANDLE_DRC_DECODER hDrcDec, const int delaySamples,
                        const DRC_DEC_LOCATION drcLocation,
                        const int channelOffset, const int drcChannelOffset,
                        const int numChannelsProcessed,
-                       const int processSingleTimeslot, FIXP_DBL** realBuffer,
-                       FIXP_DBL** imagBuffer) {
+                       const int processSingleTimeslot, int32_t** realBuffer,
+                       int32_t** imagBuffer) {
   DRC_ERROR dErr = DE_OK;
 
   if (hDrcDec == NULL) return DRC_DEC_NOT_OPENED;
@@ -838,14 +838,14 @@ FDK_drcDec_ProcessFreq(HANDLE_DRC_DECODER hDrcDec, const int delaySamples,
 
 DRC_DEC_ERROR
 FDK_drcDec_ApplyDownmix(HANDLE_DRC_DECODER hDrcDec, int* reverseInChannelMap,
-                        int* reverseOutChannelMap, FIXP_DBL* realBuffer,
+                        int* reverseOutChannelMap, int32_t* realBuffer,
                         int* pNChannels) {
   SEL_PROC_OUTPUT* pSelProcOutput = &(hDrcDec->selProcOutput);
   int baseChCnt = pSelProcOutput->baseChannelCount;
   int targetChCnt = pSelProcOutput->targetChannelCount;
   int frameSize, n, ic, oc;
-  FIXP_DBL tmp_out[8];
-  FIXP_DBL* audioChannels[8];
+  int32_t tmp_out[8];
+  int32_t* audioChannels[8];
 
   if (hDrcDec == NULL) return DRC_DEC_NOT_OPENED;
   if (!(hDrcDec->functionalRange & DRC_DEC_GAIN)) return DRC_DEC_NOT_OK;
@@ -874,7 +874,7 @@ FDK_drcDec_ApplyDownmix(HANDLE_DRC_DECODER hDrcDec, int* reverseInChannelMap,
   /* in-place downmix */
   for (n = 0; n < frameSize; n++) {
     for (oc = 0; oc < targetChCnt; oc++) {
-      tmp_out[oc] = (FIXP_DBL)0;
+      tmp_out[oc] = (int32_t)0;
       for (ic = 0; ic < baseChCnt; ic++) {
         tmp_out[oc] +=
             fMultDiv2(audioChannels[ic][n],
@@ -890,7 +890,7 @@ FDK_drcDec_ApplyDownmix(HANDLE_DRC_DECODER hDrcDec, int* reverseInChannelMap,
   }
 
   for (oc = targetChCnt; oc < baseChCnt; oc++) {
-    FDKmemset(audioChannels[oc], 0, frameSize * sizeof(FIXP_DBL));
+    FDKmemset(audioChannels[oc], 0, frameSize * sizeof(int32_t));
   }
 
   *pNChannels = targetChCnt;

@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdint.h>
 #include "aacdec_pns.h"
 #include "aac_rom.h"
 #include "channelinfo.h"
@@ -238,11 +239,11 @@ void CPns_Read(CPnsData *pPnsData, HANDLE_FDK_BITSTREAM bs,
  * \param pRandomState pointer to the state of the random generator being used.
  * \return exponent of generated noise vector.
  */
-static int GenerateRandomVector(FIXP_DBL *RESTRICT spec, int size,
+static int GenerateRandomVector(int32_t *RESTRICT spec, int size,
                                 int *pRandomState) {
   int i, invNrg_e = 0, nrg_e = 0;
-  FIXP_DBL invNrg_m, nrg_m = FL2FXCONST_DBL(0.0f);
-  FIXP_DBL *RESTRICT ptr = spec;
+  int32_t invNrg_m, nrg_m = FL2FXCONST_DBL(0.0f);
+  int32_t *RESTRICT ptr = spec;
   int randomState = *pRandomState;
 
 #define GEN_NOISE_NRG_SCALE 7
@@ -251,8 +252,8 @@ static int GenerateRandomVector(FIXP_DBL *RESTRICT spec, int size,
   for (i = 0; i < size; i++) {
     randomState =
         (((INT64)1664525 * randomState) + (INT64)1013904223) & 0xFFFFFFFF;
-    nrg_m = fPow2AddDiv2(nrg_m, (FIXP_DBL)randomState >> GEN_NOISE_NRG_SCALE);
-    *ptr++ = (FIXP_DBL)randomState;
+    nrg_m = fPow2AddDiv2(nrg_m, (int32_t)randomState >> GEN_NOISE_NRG_SCALE);
+    *ptr++ = (int32_t)randomState;
   }
   nrg_e = GEN_NOISE_NRG_SCALE * 2 + 1;
 
@@ -270,10 +271,10 @@ static int GenerateRandomVector(FIXP_DBL *RESTRICT spec, int size,
   return invNrg_e;
 }
 
-static void ScaleBand(FIXP_DBL *RESTRICT spec, int size, int scaleFactor,
+static void ScaleBand(int32_t *RESTRICT spec, int size, int scaleFactor,
                       int specScale, int noise_e, int out_of_phase) {
   int i, shift, sfExponent;
-  FIXP_DBL sfMatissa;
+  int32_t sfMatissa;
 
   /* Get gain from scale factor value = 2^(scaleFactor * 0.25) */
   sfMatissa = MantissaTable[scaleFactor & 0x03][0];
@@ -324,7 +325,7 @@ void CPns_Apply(const CPnsData *pPnsData, const CIcsInfo *pIcsInfo,
          group++) {
       for (int groupwin = 0; groupwin < GetWindowGroupLength(pIcsInfo, group);
            groupwin++, window++) {
-        FIXP_DBL *spectrum = SPEC(pSpectrum, window, granuleLength);
+        int32_t *spectrum = SPEC(pSpectrum, window, granuleLength);
 
         for (int band = 0; band < ScaleFactorBandsTransmitted; band++) {
           if (CPns_IsPnsUsed(pPnsData, group, band)) {

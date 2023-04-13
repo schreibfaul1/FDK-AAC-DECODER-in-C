@@ -164,7 +164,7 @@ int aacDecoder_drcProlog(
  * \param pSbrDec pointer to SBR decoder instance
  * \param pAacDecoderChannelInfo AAC decoder channel instance to be processed
  * \param pDrcDat DRC channel data
- * \param extGain Pointer to a FIXP_DBL where a externally applyable gain will
+ * \param extGain Pointer to a int32_t where a externally applyable gain will
  * be stored into (independently on whether it will be apply internally or not).
  *                At function call the buffer must hold the scale (0 >= scale <
  * DFRACT_BITS) to be applied on the gain value.
@@ -175,7 +175,7 @@ int aacDecoder_drcProlog(
  */
 void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
                          CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                         CDrcChannelData *pDrcDat, FIXP_DBL *extGain, int ch,
+                         CDrcChannelData *pDrcDat, int32_t *extGain, int ch,
                          int aacFrameSize, int bSbrPresent);
 
 int aacDecoder_drcEpilog(
@@ -230,8 +230,8 @@ void aacDecoder_drcGetInfo(HANDLE_AAC_DRC self, SCHAR *pPresMode,
  *
  * \return exponent of time data
  */
-INT applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, PCM_DEC *samplesIn,
-                               FIXP_DBL *pGain, FIXP_DBL *pGainPerSample,
+INT applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn,
+                               int32_t *pGain, int32_t *pGainPerSample,
                                const INT gain_scale, const UINT gain_delay,
                                const UINT nSamples, const UINT channels,
                                const UINT stride, const UINT limiterEnabled);

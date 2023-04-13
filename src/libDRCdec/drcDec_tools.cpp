@@ -278,27 +278,27 @@ deriveDrcChannelGroups(
   return DE_OK;
 }
 
-FIXP_DBL
-dB2lin(const FIXP_DBL dB_m, const int dB_e, int* pLin_e) {
+int32_t
+dB2lin(const int32_t dB_m, const int dB_e, int* pLin_e) {
   /* get linear value from dB.
      return lin_val = 10^(dB_val/20) = 2^(log2(10)/20*dB_val)
      with dB_val = dB_m *2^dB_e and lin_val = lin_m * 2^lin_e */
-  FIXP_DBL lin_m =
+  int32_t lin_m =
       f2Pow(fMult(dB_m, FL2FXCONST_DBL(0.1660964f * (float)(1 << 2))), dB_e - 2,
             pLin_e);
 
   return lin_m;
 }
 
-FIXP_DBL
-lin2dB(const FIXP_DBL lin_m, const int lin_e, int* pDb_e) {
+int32_t
+lin2dB(const int32_t lin_m, const int lin_e, int* pDb_e) {
   /* get dB value from linear value.
      return dB_val = 20*log10(lin_val)
      with dB_val = dB_m *2^dB_e and lin_val = lin_m * 2^lin_e */
-  FIXP_DBL dB_m;
+  int32_t dB_m;
 
-  if (lin_m == (FIXP_DBL)0) { /* return very small value representing -inf */
-    dB_m = (FIXP_DBL)MINVAL_DBL;
+  if (lin_m == (int32_t)0) { /* return very small value representing -inf */
+    dB_m = (int32_t)MINVAL_DBL;
     *pDb_e = DFRACT_BITS - 1;
   } else {
     /* 20*log10(lin_val) = 20/log2(10)*log2(lin_val) */
@@ -310,12 +310,12 @@ lin2dB(const FIXP_DBL lin_m, const int lin_e, int* pDb_e) {
   return dB_m;
 }
 
-FIXP_DBL
-approxDb2lin(const FIXP_DBL dB_m, const int dB_e, int* pLin_e) {
+int32_t
+approxDb2lin(const int32_t dB_m, const int dB_e, int* pLin_e) {
   /* get linear value from approximate dB.
      return lin_val = 2^(dB_val/6)
      with dB_val = dB_m *2^dB_e and lin_val = lin_m * 2^lin_e */
-  FIXP_DBL lin_m =
+  int32_t lin_m =
       f2Pow(fMult(dB_m, FL2FXCONST_DBL(0.1666667f * (float)(1 << 2))), dB_e - 2,
             pLin_e);
 
@@ -349,15 +349,15 @@ int bitstreamContainsMultibandDrc(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
   return isMultiband;
 }
 
-FIXP_DBL getDownmixOffset(DOWNMIX_INSTRUCTIONS* pDown, int baseChannelCount) {
-  FIXP_DBL downmixOffset = FL2FXCONST_DBL(1.0f / (1 << 1)); /* e = 1 */
+int32_t getDownmixOffset(DOWNMIX_INSTRUCTIONS* pDown, int baseChannelCount) {
+  int32_t downmixOffset = FL2FXCONST_DBL(1.0f / (1 << 1)); /* e = 1 */
   if ((pDown->bsDownmixOffset == 1) || (pDown->bsDownmixOffset == 2)) {
     int e_a, e_downmixOffset;
-    FIXP_DBL a, q;
+    int32_t a, q;
     if (baseChannelCount <= pDown->targetChannelCount) return downmixOffset;
 
-    q = fDivNorm((FIXP_DBL)pDown->targetChannelCount,
-                 (FIXP_DBL)baseChannelCount); /* e = 0 */
+    q = fDivNorm((int32_t)pDown->targetChannelCount,
+                 (int32_t)baseChannelCount); /* e = 0 */
     a = lin2dB(q, 0, &e_a);
     if (pDown->bsDownmixOffset == 2) {
       e_a += 1; /* a *= 2 */

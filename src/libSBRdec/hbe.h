@@ -132,7 +132,7 @@ typedef enum {
 } KEEP_STATES_SYNCED_MODE;
 
 struct hbeTransposer {
-  FIXP_DBL anaQmfStates[HBE_QMF_FILTER_STATE_ANA_SIZE];
+  int32_t anaQmfStates[HBE_QMF_FILTER_STATE_ANA_SIZE];
   FIXP_QSS synQmfStates[HBE_QMF_FILTER_STATE_SYN_SIZE];
 
   int xOverQmf[MAX_NUM_PATCHES_HBE];
@@ -148,19 +148,19 @@ struct hbeTransposer {
   int bSbr41;
 
   LONG *inBuf_F;
-  FIXP_DBL **qmfInBufReal_F;
-  FIXP_DBL **qmfInBufImag_F;
+  int32_t **qmfInBufReal_F;
+  int32_t **qmfInBufImag_F;
 
-  FIXP_DBL *qmfBufferCodecTempSlot_F;
+  int32_t *qmfBufferCodecTempSlot_F;
 
   QMF_FILTER_BANK HBEAnalysiscQMF;
   QMF_FILTER_BANK HBESynthesisQMF;
 
-  FIXP_DBL const *synthesisQmfPreModCos_F;
-  FIXP_DBL const *synthesisQmfPreModSin_F;
+  int32_t const *synthesisQmfPreModCos_F;
+  int32_t const *synthesisQmfPreModSin_F;
 
-  FIXP_DBL **qmfHBEBufReal_F;
-  FIXP_DBL **qmfHBEBufImag_F;
+  int32_t **qmfHBEBufReal_F;
+  int32_t **qmfHBEBufImag_F;
 
   int bXProducts[MAX_STRETCH_HBE];
 
@@ -183,12 +183,12 @@ SBR_ERROR QmfTransposerReInit(HANDLE_HBE_TRANSPOSER hQmfTransposer,
 void QmfTransposerClose(HANDLE_HBE_TRANSPOSER hQmfTransposer);
 
 void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
-                        FIXP_DBL **qmfBufferCodecReal,
-                        FIXP_DBL **qmfBufferCodecImag, int nColsIn,
-                        FIXP_DBL **ppQmfBufferOutReal_F,
-                        FIXP_DBL **ppQmfBufferOutImag_F,
-                        FIXP_DBL lpcFilterStatesReal[2 + (3 * (4))][(64)],
-                        FIXP_DBL lpcFilterStatesImag[2 + (3 * (4))][(64)],
+                        int32_t **qmfBufferCodecReal,
+                        int32_t **qmfBufferCodecImag, int nColsIn,
+                        int32_t **ppQmfBufferOutReal_F,
+                        int32_t **ppQmfBufferOutImag_F,
+                        int32_t lpcFilterStatesReal[2 + (3 * (4))][(64)],
+                        int32_t lpcFilterStatesImag[2 + (3 * (4))][(64)],
                         int pitchInBins, int scale_lb, int scale_hbe,
                         int *scale_hb, int timeStep, int firstSlotOffsset,
                         int ov_len,

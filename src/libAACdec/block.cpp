@@ -235,7 +235,7 @@ void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                                       &pAacDecoderChannelInfo->icsInfo, group);
          groupwin++, window++) {
       int SpecScale_window = pSpecScale[window];
-      FIXP_DBL *pSpectrum = SPEC(pSpectralCoefficient, window,
+      int32_t *pSpectrum = SPEC(pSpectralCoefficient, window,
                                  pAacDecoderChannelInfo->granuleLength);
 
       /* find scaling for current window */
@@ -434,17 +434,17 @@ AAC_DECODER_ERROR CBlock_ReadSectionData(
  * \param scale max allowed shift scale for the sfb.
  */
 static inline void InverseQuantizeBand(
-    FIXP_DBL *RESTRICT spectrum, const FIXP_DBL *RESTRICT InverseQuantTabler,
-    const FIXP_DBL *RESTRICT MantissaTabler,
+    int32_t *RESTRICT spectrum, const int32_t *RESTRICT InverseQuantTabler,
+    const int32_t *RESTRICT MantissaTabler,
     const SCHAR *RESTRICT ExponentTabler, INT noLines, INT scale) {
   scale = scale + 1; /* +1 to compensate fMultDiv2 shift-right in loop */
 
-  FIXP_DBL *RESTRICT ptr = spectrum;
-  FIXP_DBL signedValue;
+  int32_t *RESTRICT ptr = spectrum;
+  int32_t signedValue;
 
   for (INT i = noLines; i--;) {
     if ((signedValue = *ptr++) != FL2FXCONST_DBL(0)) {
-      FIXP_DBL value = fAbs(signedValue);
+      int32_t value = fAbs(signedValue);
       UINT freeBits = CntLeadingZeros(value);
       UINT exponent = 32 - freeBits;
 
@@ -457,21 +457,21 @@ static inline void InverseQuantizeBand(
       UINT r1 = (UINT)(LONG)InverseQuantTabler[tableIndex + 1];
       UINT temp = (r1 - r0) * x + (r0 << 4);
 
-      value = fMultDiv2((FIXP_DBL)temp, MantissaTabler[exponent]);
+      value = fMultDiv2((int32_t)temp, MantissaTabler[exponent]);
 
       /* + 1 compensates fMultDiv2() */
       scaleValueInPlace(&value, scale + ExponentTabler[exponent]);
 
-      signedValue = (signedValue < (FIXP_DBL)0) ? -value : value;
+      signedValue = (signedValue < (int32_t)0) ? -value : value;
       ptr[-1] = signedValue;
     }
   }
 }
 
-static inline FIXP_DBL maxabs_D(const FIXP_DBL *pSpectralCoefficient,
+static inline int32_t maxabs_D(const int32_t *pSpectralCoefficient,
                                 const int noLines) {
   /* Find max spectral line value of the current sfb */
-  FIXP_DBL locMax = (FIXP_DBL)0;
+  int32_t locMax = (int32_t)0;
   int i;
 
   DWORD_ALIGNED(pSpectralCoefficient);
@@ -509,11 +509,11 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
          groupwin++, window++) {
       /* inverse quantization */
       for (band = 0; band < ScaleFactorBandsTransmitted; band++) {
-        FIXP_DBL *pSpectralCoefficient =
+        int32_t *pSpectralCoefficient =
             SPEC(pAacDecoderChannelInfo->pSpectralCoefficient, window,
                  pAacDecoderChannelInfo->granuleLength) +
             BandOffsets[band];
-        FIXP_DBL locMax;
+        int32_t locMax;
 
         const int noLines = BandOffsets[band + 1] - BandOffsets[band];
         const int bnds = group * 16 + band;
@@ -534,13 +534,13 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
         locMax = maxabs_D(pSpectralCoefficient, noLines);
 
         if (active_band_search) {
-          if (locMax != FIXP_DBL(0)) {
+          if (locMax != int32_t(0)) {
             band_is_noise[group * 16 + band] = 0;
           }
         }
 
         /* Cheap robustness improvement - Do not remove!!! */
-        if (fixp_abs(locMax) > (FIXP_DBL)MAX_QUANTIZED_VALUE) {
+        if (fixp_abs(locMax) > (int32_t)MAX_QUANTIZED_VALUE) {
           return AAC_DEC_PARSE_ERROR;
         }
 
@@ -581,7 +581,7 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
         int msb = pScaleFactor[bnds] >> 2;
 
         /* Inverse quantize band only if it is not empty */
-        if (locMax != FIXP_DBL(0)) {
+        if (locMax != int32_t(0)) {
           int lsb = pScaleFactor[bnds] & 0x03;
 
           int scale = EvaluatePower43(&locMax, lsb);
@@ -602,11 +602,11 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
       SHORT start_clear = BandOffsets[ScaleFactorBandsTransmitted];
       SHORT end_clear = BandOffsets[total_bands];
       int diff_clear = (int)(end_clear - start_clear);
-      FIXP_DBL *pSpectralCoefficient =
+      int32_t *pSpectralCoefficient =
           SPEC(pAacDecoderChannelInfo->pSpectralCoefficient, window,
                pAacDecoderChannelInfo->granuleLength) +
           start_clear;
-      FDKmemclear(pSpectralCoefficient, diff_clear * sizeof(FIXP_DBL));
+      FDKmemclear(pSpectralCoefficient, diff_clear * sizeof(int32_t));
 
     } /* for (groupwin=0; groupwin <
          GetWindowGroupLength(&pAacDecoderChannelInfo->icsInfo,group);
@@ -674,7 +674,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
           const USHORT(*CodeBook)[HuffmanEntries] = hcb->CodeBook;
           int groupwin;
 
-          FIXP_DBL *mdctSpectrum =
+          int32_t *mdctSpectrum =
               &pSpectralCoefficient[groupoffset * granuleLength];
 
           if (offset == 0) {
@@ -682,14 +682,14 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
               for (index = bandOffset0; index < bandOffset1; index += step) {
                 int idx = CBlock_DecodeHuffmanWordCB(bs, CodeBook);
                 for (i = 0; i < step; i++, idx >>= bits) {
-                  FIXP_DBL tmp = (FIXP_DBL)((idx & mask) - offset);
-                  if (tmp != FIXP_DBL(0)) tmp = (FDKreadBit(bs)) ? -tmp : tmp;
+                  int32_t tmp = (int32_t)((idx & mask) - offset);
+                  if (tmp != int32_t(0)) tmp = (FDKreadBit(bs)) ? -tmp : tmp;
                   mdctSpectrum[index + i] = tmp;
                 }
 
                 if (currentCB == ESCBOOK) {
                   for (int j = 0; j < 2; j++)
-                    mdctSpectrum[index + j] = (FIXP_DBL)CBlock_GetEscape(
+                    mdctSpectrum[index + j] = (int32_t)CBlock_GetEscape(
                         bs, (LONG)mdctSpectrum[index + j]);
                 }
               }
@@ -700,11 +700,11 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
               for (index = bandOffset0; index < bandOffset1; index += step) {
                 int idx = CBlock_DecodeHuffmanWordCB(bs, CodeBook);
                 for (i = 0; i < step; i++, idx >>= bits) {
-                  mdctSpectrum[index + i] = (FIXP_DBL)((idx & mask) - offset);
+                  mdctSpectrum[index + i] = (int32_t)((idx & mask) - offset);
                 }
                 if (currentCB == ESCBOOK) {
                   for (int j = 0; j < 2; j++)
-                    mdctSpectrum[index + j] = (FIXP_DBL)CBlock_GetEscape(
+                    mdctSpectrum[index + j] = (int32_t)CBlock_GetEscape(
                         bs, (LONG)mdctSpectrum[index + j]);
                 }
               }
@@ -851,18 +851,18 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
             1;
         int lsb =
             pAacDecoderChannelInfo->pDynData->aScaleFactor[g * 16 + sfb] & 3;
-        FIXP_DBL mantissa = MantissaTable[lsb][0];
+        int32_t mantissa = MantissaTable[lsb][0];
 
         for (gwin = 0; gwin < windowGroupLength; gwin++) {
-          FIXP_DBL *pSpec =
+          int32_t *pSpec =
               SPEC(pAacDecoderChannelInfo->pSpectralCoefficient, win + gwin,
                    pAacDecoderChannelInfo->granuleLength);
 
           int scale1 = scale - pAacDecoderChannelInfo->pDynData
                                    ->aSfbScale[(win + gwin) * 16 + sfb];
-          FIXP_DBL scaled_noiseVal_pos =
+          int32_t scaled_noiseVal_pos =
               scaleValue(fMultDiv2(noiseVal_pos, mantissa), scale1);
-          FIXP_DBL scaled_noiseVal_neg = -scaled_noiseVal_pos;
+          int32_t scaled_noiseVal_neg = -scaled_noiseVal_pos;
 
           /* If the whole band is zero, just fill without checking */
           if (flagN) {
@@ -877,7 +877,7 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
           /*If band is sparsely filled, check for 0 and fill */
           else {
             for (int bin = bin_start; bin < bin_stop; bin++) {
-              if (pSpec[bin] == (FIXP_DBL)0) {
+              if (pSpec[bin] == (int32_t)0) {
                 seed = (ULONG)(
                     (UINT64)seed * 69069 +
                     5); /* Inlined: UsacRandomSign - origin in usacdec_lpd.h */
@@ -977,16 +977,16 @@ static int getWindow2Nr(int length, int shape) {
   return nr;
 }
 
-FIXP_DBL get_gain(const FIXP_DBL *x, const FIXP_DBL *y, int n) {
-  FIXP_DBL corr = (FIXP_DBL)0;
-  FIXP_DBL ener = (FIXP_DBL)1;
+int32_t get_gain(const int32_t *x, const int32_t *y, int n) {
+  int32_t corr = (int32_t)0;
+  int32_t ener = (int32_t)1;
 
   int headroom_x = getScalefactor(x, n);
   int headroom_y = getScalefactor(y, n);
 
   /*Calculate the normalization necessary due to addition*/
   /* Check for power of two /special case */
-  INT width_shift = (INT)(fNormz((FIXP_DBL)n));
+  INT width_shift = (INT)(fNormz((int32_t)n));
   /* Get the number of bits necessary minus one, because we need one sign bit
    * only */
   width_shift = 31 - width_shift;
@@ -1001,7 +1001,7 @@ FIXP_DBL get_gain(const FIXP_DBL *x, const FIXP_DBL *y, int n) {
   int exp_ener = ((17 - headroom_y) << 1) + width_shift + 1;
 
   int temp_exp = 0;
-  FIXP_DBL output = fDivNormSigned(corr, ener, &temp_exp);
+  int32_t output = fDivNormSigned(corr, ener, &temp_exp);
 
   int output_exp = (exp_corr - exp_ener) + temp_exp;
 
@@ -1015,8 +1015,8 @@ FIXP_DBL get_gain(const FIXP_DBL *x, const FIXP_DBL *y, int n) {
 
 void CBlock_FrequencyToTime(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo, PCM_DEC outSamples[],
-    const SHORT frameLen, const int frameOk, FIXP_DBL *pWorkBuffer1,
+    CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t outSamples[],
+    const SHORT frameLen, const int frameOk, int32_t *pWorkBuffer1,
     const INT aacOutDataHeadroom, UINT elFlags, INT elCh) {
   int fr, fl, tl, nSpec;
 
@@ -1071,7 +1071,7 @@ void CBlock_FrequencyToTime(
         fac_FB = 2;
       }
 
-      FIXP_DBL *synth;
+      int32_t *synth;
 
       /* Keep some free space at the beginning of the buffer. To be used for
        * past data */
@@ -1087,7 +1087,7 @@ void CBlock_FrequencyToTime(
               : (frameLen >> 3);
 
       INT pitch[NB_SUBFR_SUPERFR + SYN_SFD];
-      FIXP_DBL pit_gain[NB_SUBFR_SUPERFR + SYN_SFD];
+      int32_t pit_gain[NB_SUBFR_SUPERFR + SYN_SFD];
 
       int nbDiv = (elFlags & AC_EL_FULLBANDLPD) ? 2 : 4;
       int lFrame = (elFlags & AC_EL_FULLBANDLPD) ? frameLen / 2 : frameLen;
@@ -1105,13 +1105,13 @@ void CBlock_FrequencyToTime(
       /* FAC case */
       if (pAacDecoderStaticChannelInfo->last_lpd_mode == 0 ||
           pAacDecoderStaticChannelInfo->last_lpd_mode == 4) {
-        FIXP_DBL fac_buf[LFAC];
+        int32_t fac_buf[LFAC];
         FIXP_LPC *A = pAacDecoderChannelInfo->data.usac.lp_coeff[0];
 
         if (!frameOk || last_frame_lost ||
             (pAacDecoderChannelInfo->data.usac.fac_data[0] == NULL)) {
           FDKmemclear(fac_buf,
-                      pAacDecoderChannelInfo->granuleLength * sizeof(FIXP_DBL));
+                      pAacDecoderChannelInfo->granuleLength * sizeof(int32_t));
           pAacDecoderChannelInfo->data.usac.fac_data[0] = fac_buf;
           pAacDecoderChannelInfo->data.usac.fac_data_e[0] = 0;
         }
@@ -1141,7 +1141,7 @@ void CBlock_FrequencyToTime(
                 FDKgetWindowSlope(
                     fr, GetWindowShape(&pAacDecoderChannelInfo->icsInfo)),
                 fr, A, A_exp, &pAacDecoderStaticChannelInfo->acelp,
-                (FIXP_DBL)0, /* FAC gain has already been applied. */
+                (int32_t)0, /* FAC gain has already been applied. */
                 (last_frame_lost || !frameOk), 1,
                 pAacDecoderStaticChannelInfo->last_lpd_mode, 0,
                 pAacDecoderChannelInfo->currAliasingSymmetry);
@@ -1159,7 +1159,7 @@ void CBlock_FrequencyToTime(
                 fl,
                 FDKgetWindowSlope(
                     fr, GetWindowShape(&pAacDecoderChannelInfo->icsInfo)),
-                fr, (FIXP_DBL)0,
+                fr, (int32_t)0,
                 pAacDecoderChannelInfo->currAliasingSymmetry
                     ? MLT_FLAG_CURR_ALIAS_SYMMETRY
                     : 0);
@@ -1172,11 +1172,11 @@ void CBlock_FrequencyToTime(
         FDKmemcpy(pitch, pAacDecoderStaticChannelInfo->old_T_pf,
                   SynSfd * sizeof(INT));
         FDKmemcpy(pit_gain, pAacDecoderStaticChannelInfo->old_gain_pf,
-                  SynSfd * sizeof(FIXP_DBL));
+                  SynSfd * sizeof(int32_t));
 
         for (int i = SynSfd; i < LpdSfd + 3; i++) {
           pitch[i] = L_SUBFR;
-          pit_gain[i] = (FIXP_DBL)0;
+          pit_gain[i] = (int32_t)0;
         }
 
         if (pAacDecoderStaticChannelInfo->last_lpd_mode == 0) {
@@ -1192,17 +1192,17 @@ void CBlock_FrequencyToTime(
         {
           FDKmemcpy(
               pWorkBuffer1, pAacDecoderStaticChannelInfo->old_synth,
-              ((PIT_MAX_MAX - (1 * L_SUBFR)) * fac_FB) * sizeof(FIXP_DBL));
+              ((PIT_MAX_MAX - (1 * L_SUBFR)) * fac_FB) * sizeof(int32_t));
         }
 
-        FIXP_DBL *p2_synth = pWorkBuffer1 + (PIT_MAX_MAX * fac_FB);
+        int32_t *p2_synth = pWorkBuffer1 + (PIT_MAX_MAX * fac_FB);
 
         /* recalculate pitch gain to allow postfilering on FAC area */
         for (int i = 0; i < SynSfd + 2; i++) {
           int T = pitch[i];
-          FIXP_DBL gain = pit_gain[i];
+          int32_t gain = pit_gain[i];
 
-          if (gain > (FIXP_DBL)0) {
+          if (gain > (int32_t)0) {
             gain = get_gain(&p2_synth[i * L_SUBFR * fac_FB],
                             &p2_synth[(i * L_SUBFR * fac_FB) - fac_FB * T],
                             L_SUBFR * fac_FB);
@@ -1219,7 +1219,7 @@ void CBlock_FrequencyToTime(
 
     } else /* last_core_mode was not LPD */
     {
-      FIXP_DBL *tmp =
+      int32_t *tmp =
           pAacDecoderChannelInfo->pComStaticData->pWorkBufferCore1->mdctOutTemp;
 #if defined(FDK_ASSERT_ENABLE)
       nSamples =
@@ -1232,7 +1232,7 @@ void CBlock_FrequencyToTime(
                      fl,
                      FDKgetWindowSlope(
                          fr, GetWindowShape(&pAacDecoderChannelInfo->icsInfo)),
-                     fr, (FIXP_DBL)0,
+                     fr, (int32_t)0,
                      pAacDecoderChannelInfo->currAliasingSymmetry
                          ? MLT_FLAG_CURR_ALIAS_SYMMETRY
                          : 0);
@@ -1253,7 +1253,7 @@ void CBlock_FrequencyToTime(
 #include "ldfiltbank.h"
 void CBlock_FrequencyToTimeLowDelay(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo, PCM_DEC outSamples[],
+    CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t outSamples[],
     const short frameLen) {
   InvMdctTransformLowDelay_fdk(
       SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient),

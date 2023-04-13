@@ -920,7 +920,7 @@ static void dmxAddChannel(FIXP_DMX mixFactors[(8)][(8)],
                           const INT scale) {
   int ch;
   for (ch = 0; ch < (8); ch += 1) {
-    FIXP_DBL addFact = fMult(mixFactors[srcCh][ch], factor);
+    int32_t addFact = fMult(mixFactors[srcCh][ch], factor);
     if (addFact != (FIXP_DMX)0) {
       INT newScale = mixScales[srcCh][ch] + scale;
       if (mixFactors[dstCh][ch] != (FIXP_DMX)0) {
@@ -1138,7 +1138,7 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
       /* 10^(dmx_gain_5/80) */
       dmxGain = FX_DBL2FX_DMX(
           fLdPow(FL2FXCONST_DBL(0.830482023721841f), 2, /* log2(10) */
-                 (FIXP_DBL)(sign * val * (LONG)FL2FXCONST_DBL(0.0125f)), 0,
+                 (int32_t)(sign * val * (LONG)FL2FXCONST_DBL(0.0125f)), 0,
                  &dmxScale));
       /* Currently only positive scale factors supported! */
       if (dmxScale < 0) {
@@ -1381,7 +1381,7 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
               /* 10^(dmx_gain_2/80) */
               dmxGain = FX_DBL2FX_DMX(
                   fLdPow(FL2FXCONST_DBL(0.830482023721841f), 2, /* log2(10) */
-                         (FIXP_DBL)(sign * val * (LONG)FL2FXCONST_DBL(0.0125f)),
+                         (int32_t)(sign * val * (LONG)FL2FXCONST_DBL(0.0125f)),
                          0, &dmxScale));
               /* Currently only positive scale factors supported! */
               if (dmxScale < 0) {
@@ -2271,7 +2271,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
     /* Sample processing loop */
     for (sample = 0; sample < frameSize; sample++) {
       DMX_PCM tIn[(8)] = {0};
-      FIXP_DBL tOut[(8)] = {(FIXP_DBL)0};
+      int32_t tOut[(8)] = {(int32_t)0};
       int inCh, outCh;
 
       /* Preload all input samples */

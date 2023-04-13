@@ -200,7 +200,7 @@ const FIXP_CFG dequantIPD__FDK[16] = {
   atan2(w2 * sinIpd, w1 * iidLin + w2 * cosIpd);
       }
 */
-const FIXP_DBL dequantIPD_CLD_ICC_splitAngle__FDK[15][31][8] = {
+const int32_t dequantIPD_CLD_ICC_splitAngle__FDK[15][31][8] = {
     {
         {SCALE_SPLIT_ANGLE(0.39269909262657),
          SCALE_SPLIT_ANGLE(0.39269909262657),
@@ -4193,7 +4193,7 @@ const DATA_TYPE_H H12_nc[31][8] = {
   }
 */
 #define SCALE_CLD_C1C2(a) (FL2FXCONST_DBL(a / (float)(1 << SF_CLD_C1C2)))
-const FIXP_DBL dequantCLD_c1[31] = {SCALE_CLD_C1C2(-1.5000000000000000e+002f),
+const int32_t dequantCLD_c1[31] = {SCALE_CLD_C1C2(-1.5000000000000000e+002f),
                                     SCALE_CLD_C1C2(-4.5000137329101563e+001f),
                                     SCALE_CLD_C1C2(-4.0000434875488281e+001f),
                                     SCALE_CLD_C1C2(-3.5001373291015625e+001f),
@@ -4451,11 +4451,11 @@ const SCHAR row2residual[][MAX_M2_INPUT] = {{-1, 0},  {-1, 0},  {-1, -1},
  Return: nothing
 
 *******************************************************************************/
-void SpatialDequantGetCLDValues(int index, FIXP_DBL* cu, FIXP_DBL* cl) {
+void SpatialDequantGetCLDValues(int index, int32_t* cu, int32_t* cl) {
   *cu = FX_CFG2FX_DBL(dequantCLD_c_l[index]);
   *cl = FX_CFG2FX_DBL(dequantCLD_c_l[31 - 1 - index]);
 }
 
-void SpatialDequantGetCLD2Values(int idx, FIXP_DBL* x) {
+void SpatialDequantGetCLD2Values(int idx, int32_t* x) {
   *x = FX_CFG2FX_DBL(dequantCLD__FDK[idx]);
 }

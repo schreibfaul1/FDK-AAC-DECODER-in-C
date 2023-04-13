@@ -101,6 +101,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdint.h>
 #include "aacdec_hcr.h"
 
 #include "aacdec_hcr_types.h"
@@ -141,7 +142,7 @@ static INT DecodeEscapeSequence(HANDLE_FDK_BITSTREAM bs, const INT bsAnchor,
 
 static int DecodePCW_Sign(HANDLE_FDK_BITSTREAM bs, const INT bsAnchor,
                           UINT codebookDim, const SCHAR *pQuantVal,
-                          FIXP_DBL *pQuantSpecCoef, int *quantSpecCoefIdx,
+                          int32_t *pQuantSpecCoef, int *quantSpecCoefIdx,
                           INT *pLeftStartOfSegment,
                           SCHAR *pRemainingBitsInSegment, int *pNumDecodedBits);
 
@@ -160,7 +161,7 @@ static void HcrReorderQuantizedSpectralCoefficients(
 
 static UCHAR errDetectPcwSegmentation(SCHAR remainingBitsInSegment,
                                       H_HCR_INFO pHcr, PCW_TYPE kind,
-                                      FIXP_DBL *qsc_base_of_cw,
+                                      int32_t *qsc_base_of_cw,
                                       UCHAR dimension);
 
 static void errDetectWithinSegmentationFinal(H_HCR_INFO pHcr);
@@ -514,13 +515,13 @@ static void HcrReorderQuantizedSpectralCoefficients(
   UINT abs_qsc;
   UINT i, j;
   USHORT numSpectralValuesInSection;
-  FIXP_DBL *pTeVa;
+  int32_t *pTeVa;
   USHORT lavErrorCnt = 0;
 
   UINT numSection = pHcr->decInOut.numSection;
   SPECTRAL_PTR pQuantizedSpectralCoefficientsBase =
       pHcr->decInOut.pQuantizedSpectralCoefficientsBase;
-  FIXP_DBL *pQuantizedSpectralCoefficients =
+  int32_t *pQuantizedSpectralCoefficients =
       SPEC_LONG(pHcr->decInOut.pQuantizedSpectralCoefficientsBase);
   const UCHAR *pCbDimShift = aDimCbShift;
   const USHORT *pLargestAbsVal = aLargestAbsoluteValue;
@@ -528,10 +529,10 @@ static void HcrReorderQuantizedSpectralCoefficients(
   USHORT *pNumSortedCodewordInSection =
       pHcr->sectionInfo.pNumSortedCodewordInSection;
   USHORT *pReorderOffset = pHcr->sectionInfo.pReorderOffset;
-  FIXP_DBL pTempValues[1024];
-  FIXP_DBL *pBak = pTempValues;
+  int32_t pTempValues[1024];
+  int32_t *pBak = pTempValues;
 
-  FDKmemclear(pTempValues, 1024 * sizeof(FIXP_DBL));
+  FDKmemclear(pTempValues, 1024 * sizeof(int32_t));
 
   /* long and short: check if decoded huffman-values (quantized spectral
    * coefficients) are within range */
@@ -543,16 +544,16 @@ static void HcrReorderQuantizedSpectralCoefficients(
       qsc = *pQuantizedSpectralCoefficients++;
       abs_qsc = fAbs(qsc);
       if (abs_qsc <= pLargestAbsVal[*pSortedCodebook]) {
-        *pTeVa++ = (FIXP_DBL)qsc; /* the qsc value is within range */
+        *pTeVa++ = (int32_t)qsc; /* the qsc value is within range */
       } else {                    /* line is too high .. */
         if (abs_qsc ==
             Q_VALUE_INVALID) { /* .. because of previous marking --> dont set
                                   LAV flag (would be confusing), just copy out
                                   the already marked value */
-          *pTeVa++ = (FIXP_DBL)qsc;
+          *pTeVa++ = (int32_t)qsc;
         } else { /* .. because a too high value was decoded for this cb --> set
                     LAV flag */
-          *pTeVa++ = (FIXP_DBL)Q_VALUE_INVALID;
+          *pTeVa++ = (int32_t)Q_VALUE_INVALID;
           lavErrorCnt += 1;
         }
       }
@@ -561,9 +562,9 @@ static void HcrReorderQuantizedSpectralCoefficients(
   }
 
   if (!IsLongBlock(&pAacDecoderChannelInfo->icsInfo)) {
-    FIXP_DBL *pOut;
-    FIXP_DBL locMax;
-    FIXP_DBL tmp;
+    int32_t *pOut;
+    int32_t locMax;
+    int32_t tmp;
     SCHAR groupoffset;
     SCHAR group;
     SCHAR band;
@@ -626,8 +627,8 @@ static void HcrReorderQuantizedSpectralCoefficients(
               locMax = fixMax(tmp, locMax);
             }
           }
-          if (fixp_abs(locMax) > (FIXP_DBL)MAX_QUANTIZED_VALUE) {
-            locMax = (FIXP_DBL)MAX_QUANTIZED_VALUE;
+          if (fixp_abs(locMax) > (int32_t)MAX_QUANTIZED_VALUE) {
+            locMax = (int32_t)MAX_QUANTIZED_VALUE;
           }
           pSfbSclHcr[window * 16 + band] =
               msb - GetScaleFromValue(
@@ -1014,7 +1015,7 @@ static void DecodePCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO pHcr) {
       pHcr->sectionInfo.pNumExtendedSortedSectionsInSets;
   int numExtendedSortedSectionsInSetsIdx =
       pHcr->sectionInfo.numExtendedSortedSectionsInSetsIdx;
-  FIXP_DBL *pQuantizedSpectralCoefficients =
+  int32_t *pQuantizedSpectralCoefficients =
       SPEC_LONG(pHcr->decInOut.pQuantizedSpectralCoefficientsBase);
   int quantizedSpectralCoefficientsIdx =
       pHcr->decInOut.quantizedSpectralCoefficientsIdx;
@@ -1029,7 +1030,7 @@ static void DecodePCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO pHcr) {
 
   /* clear result array */
   FDKmemclear(pQuantizedSpectralCoefficients + quantizedSpectralCoefficientsIdx,
-              1024 * sizeof(FIXP_DBL));
+              1024 * sizeof(int32_t));
 
   /* decode all PCWs in the extended sorted section(s) belonging to set 0 */
   for (extSortSec =
@@ -1077,7 +1078,7 @@ static void DecodePCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO pHcr) {
         /* result is written out here because NO sign bits follow the body */
         for (i = dimension; i != 0; i--) {
           pQuantizedSpectralCoefficients[quantizedSpectralCoefficientsIdx] =
-              (FIXP_DBL)*pQuantVal++; /* write quant. spec. coef. into
+              (int32_t)*pQuantVal++; /* write quant. spec. coef. into
                                          spectrum; sign is already valid */
           quantizedSpectralCoefficientsIdx++;
           if (quantizedSpectralCoefficientsIdx >= 1024) {
@@ -1173,9 +1174,9 @@ static void DecodePCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO pHcr) {
 
         if (fixp_abs(pQuantizedSpectralCoefficients
                          [quantizedSpectralCoefficientsIdx]) ==
-            (FIXP_DBL)ESCAPE_VALUE) {
+            (int32_t)ESCAPE_VALUE) {
           pQuantizedSpectralCoefficients[quantizedSpectralCoefficientsIdx] =
-              (FIXP_DBL)DecodeEscapeSequence(
+              (int32_t)DecodeEscapeSequence(
                   bs, pHcr->decInOut.bitstreamAnchor,
                   pQuantizedSpectralCoefficients
                       [quantizedSpectralCoefficientsIdx],
@@ -1189,9 +1190,9 @@ static void DecodePCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO pHcr) {
 
         if (fixp_abs(pQuantizedSpectralCoefficients
                          [quantizedSpectralCoefficientsIdx]) ==
-            (FIXP_DBL)ESCAPE_VALUE) {
+            (int32_t)ESCAPE_VALUE) {
           pQuantizedSpectralCoefficients[quantizedSpectralCoefficientsIdx] =
-              (FIXP_DBL)DecodeEscapeSequence(
+              (int32_t)DecodeEscapeSequence(
                   bs, pHcr->decInOut.bitstreamAnchor,
                   pQuantizedSpectralCoefficients
                       [quantizedSpectralCoefficientsIdx],
@@ -1259,7 +1260,7 @@ two or four quantized spectral coefficients belonging to the current codeword
 */
 static UCHAR errDetectPcwSegmentation(SCHAR remainingBitsInSegment,
                                       H_HCR_INFO pHcr, PCW_TYPE kind,
-                                      FIXP_DBL *qsc_base_of_cw,
+                                      int32_t *qsc_base_of_cw,
                                       UCHAR dimension) {
   SCHAR i;
   if (remainingBitsInSegment < 0) {
@@ -1277,7 +1278,7 @@ static UCHAR errDetectPcwSegmentation(SCHAR remainingBitsInSegment,
     }
     /* mark the erred lines */
     for (i = dimension; i != 0; i--) {
-      *qsc_base_of_cw++ = (FIXP_DBL)Q_VALUE_INVALID;
+      *qsc_base_of_cw++ = (int32_t)Q_VALUE_INVALID;
     }
     return 1;
   }
@@ -1452,7 +1453,7 @@ line)
 */
 static int DecodePCW_Sign(HANDLE_FDK_BITSTREAM bs, const INT bsAnchor,
                           UINT codebookDim, const SCHAR *pQuantVal,
-                          FIXP_DBL *pQuantSpecCoef, int *quantSpecCoefIdx,
+                          int32_t *pQuantSpecCoef, int *quantSpecCoefIdx,
                           INT *pLeftStartOfSegment,
                           SCHAR *pRemainingBitsInSegment,
                           int *pNumDecodedBits) {
@@ -1474,9 +1475,9 @@ static int DecodePCW_Sign(HANDLE_FDK_BITSTREAM bs, const INT bsAnchor,
 
       /* adapt sign of values according to the decoded sign bit */
       if (carryBit != 0) {
-        pQuantSpecCoef[*quantSpecCoefIdx] = -(FIXP_DBL)quantSpecCoef;
+        pQuantSpecCoef[*quantSpecCoefIdx] = -(int32_t)quantSpecCoef;
       } else {
-        pQuantSpecCoef[*quantSpecCoefIdx] = (FIXP_DBL)quantSpecCoef;
+        pQuantSpecCoef[*quantSpecCoefIdx] = (int32_t)quantSpecCoef;
       }
     } else {
       pQuantSpecCoef[*quantSpecCoefIdx] = FL2FXCONST_DBL(0.0f);
@@ -1496,12 +1497,12 @@ static int DecodePCW_Sign(HANDLE_FDK_BITSTREAM bs, const INT bsAnchor,
 */
 void HcrMuteErroneousLines(H_HCR_INFO hHcr) {
   int c;
-  FIXP_DBL *RESTRICT pLong =
+  int32_t *RESTRICT pLong =
       SPEC_LONG(hHcr->decInOut.pQuantizedSpectralCoefficientsBase);
 
   /* if there is a line with value Q_VALUE_INVALID mute it */
   for (c = 0; c < 1024; c++) {
-    if (pLong[c] == (FIXP_DBL)Q_VALUE_INVALID) {
+    if (pLong[c] == (int32_t)Q_VALUE_INVALID) {
       pLong[c] = FL2FXCONST_DBL(0.0f); /* muting */
     }
   }

@@ -142,12 +142,12 @@ inline void FDK_add_MantExp(FIXP_SGL a_m, /*!< Mantissa of 1st operand a */
                             FIXP_SGL *ptrSum_m, /*!< Mantissa of result */
                             SCHAR *ptrSum_e)    /*!< Exponent of result */
 {
-  FIXP_DBL accu;
+  int32_t accu;
   int shift;
   int shiftAbs;
 
-  FIXP_DBL shiftedMantissa;
-  FIXP_DBL otherMantissa;
+  int32_t shiftedMantissa;
+  int32_t otherMantissa;
 
   /* Equalize exponents of the summands.
      For the smaller summand, the exponent is adapted and
@@ -165,7 +165,7 @@ inline void FDK_add_MantExp(FIXP_SGL a_m, /*!< Mantissa of 1st operand a */
   accu = (shiftedMantissa >> 1) + (otherMantissa >> 1);
   /* shift by 1 bit to avoid overflow */
 
-  if ((accu >= (FL2FXCONST_DBL(0.5f) - (FIXP_DBL)1)) ||
+  if ((accu >= (FL2FXCONST_DBL(0.5f) - (int32_t)1)) ||
       (accu <= FL2FXCONST_DBL(-0.5f)))
     *ptrSum_e += 1;
   else
@@ -174,19 +174,19 @@ inline void FDK_add_MantExp(FIXP_SGL a_m, /*!< Mantissa of 1st operand a */
   *ptrSum_m = FX_DBL2FX_SGL(accu);
 }
 
-inline void FDK_add_MantExp(FIXP_DBL a,       /*!< Mantissa of 1st operand a */
+inline void FDK_add_MantExp(int32_t a,       /*!< Mantissa of 1st operand a */
                             SCHAR a_e,        /*!< Exponent of 1st operand a */
-                            FIXP_DBL b,       /*!< Mantissa of 2nd operand b */
+                            int32_t b,       /*!< Mantissa of 2nd operand b */
                             SCHAR b_e,        /*!< Exponent of 2nd operand b */
-                            FIXP_DBL *ptrSum, /*!< Mantissa of result */
+                            int32_t *ptrSum, /*!< Mantissa of result */
                             SCHAR *ptrSum_e)  /*!< Exponent of result */
 {
-  FIXP_DBL accu;
+  int32_t accu;
   int shift;
   int shiftAbs;
 
-  FIXP_DBL shiftedMantissa;
-  FIXP_DBL otherMantissa;
+  int32_t shiftedMantissa;
+  int32_t otherMantissa;
 
   /* Equalize exponents of the summands.
      For the smaller summand, the exponent is adapted and
@@ -203,7 +203,7 @@ inline void FDK_add_MantExp(FIXP_DBL a,       /*!< Mantissa of 1st operand a */
   accu = (shiftedMantissa >> 1) + (otherMantissa >> 1);
   /* shift by 1 bit to avoid overflow */
 
-  if ((accu >= (FL2FXCONST_DBL(0.5f) - (FIXP_DBL)1)) ||
+  if ((accu >= (FL2FXCONST_DBL(0.5f) - (int32_t)1)) ||
       (accu <= FL2FXCONST_DBL(-0.5f)))
     *ptrSum_e += 1;
   else
@@ -233,7 +233,7 @@ static inline void FDK_divide_MantExp(
 
 {
   int preShift, postShift, index, shift;
-  FIXP_DBL ratio_m;
+  int32_t ratio_m;
   FIXP_SGL bInv_m = FL2FXCONST_SGL(0.0f);
 
   preShift = CntLeadingZeros(FX_SGL2FX_DBL(b_m));
@@ -280,16 +280,16 @@ static inline void FDK_divide_MantExp(
 }
 
 static inline void FDK_divide_MantExp(
-    FIXP_DBL a_m,          /*!< Mantissa of dividend a */
+    int32_t a_m,          /*!< Mantissa of dividend a */
     SCHAR a_e,             /*!< Exponent of dividend a */
-    FIXP_DBL b_m,          /*!< Mantissa of divisor b */
+    int32_t b_m,          /*!< Mantissa of divisor b */
     SCHAR b_e,             /*!< Exponent of divisor b */
-    FIXP_DBL *ptrResult_m, /*!< Mantissa of quotient a/b */
+    int32_t *ptrResult_m, /*!< Mantissa of quotient a/b */
     SCHAR *ptrResult_e)    /*!< Exponent of quotient a/b */
 
 {
   int preShift, postShift, index, shift;
-  FIXP_DBL ratio_m;
+  int32_t ratio_m;
   FIXP_SGL bInv_m = FL2FXCONST_SGL(0.0f);
 
   preShift = CntLeadingZeros(b_m);
@@ -346,11 +346,11 @@ static inline void FDK_divide_MantExp(
   which limits accuracy.
 */
 static inline void FDK_sqrt_MantExp(
-    FIXP_DBL *mantissa, /*!< Pointer to mantissa */
+    int32_t *mantissa, /*!< Pointer to mantissa */
     SCHAR *exponent, const SCHAR *destScale) {
-  FIXP_DBL input_m = *mantissa;
+  int32_t input_m = *mantissa;
   int input_e = (int)*exponent;
-  FIXP_DBL result = FL2FXCONST_DBL(0.0f);
+  int32_t result = FL2FXCONST_DBL(0.0f);
   int result_e = -FRACT_BITS;
 
   /* Call lookup square root, which does internally normalization. */

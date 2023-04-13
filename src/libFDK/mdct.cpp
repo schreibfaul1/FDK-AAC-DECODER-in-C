@@ -106,9 +106,9 @@ amm-info@iis.fraunhofer.de
 #include "dct.h"
 #include "fixpoint_math.h"
 
-void mdct_init(H_MDCT hMdct, FIXP_DBL *overlap, INT overlapBufferSize) {
+void mdct_init(H_MDCT hMdct, int32_t *overlap, INT overlapBufferSize) {
   hMdct->overlap.freq = overlap;
-  // FDKmemclear(overlap, overlapBufferSize*sizeof(FIXP_DBL));
+  // FDKmemclear(overlap, overlapBufferSize*sizeof(int32_t));
   hMdct->prev_fr = 0;
   hMdct->prev_nr = 0;
   hMdct->prev_tl = 0;
@@ -133,7 +133,7 @@ Once the output (already windowed) block (-D-Cr,A-Br) is ready it is passed to
 the DCT IV for processing.
 */
 INT mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
-               const INT noInSamples, FIXP_DBL *RESTRICT mdctData,
+               const INT noInSamples, int32_t *RESTRICT mdctData,
                const INT nSpec, const INT tl, const FIXP_WTP *pRightWindowPart,
                const INT fr, SHORT *pMdctData_e) {
   int i, n;
@@ -182,9 +182,9 @@ INT mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
     the window coefficients with which A must be multiplied are zero.    */
     for (i = 0; i < nl; i++) {
 #if SAMPLE_BITS == DFRACT_BITS /* SPC_BITS and DFRACT_BITS should be equal. */
-      mdctData[(tl / 2) + i] = -((FIXP_DBL)timeData[tl - i - 1] >> (1));
+      mdctData[(tl / 2) + i] = -((int32_t)timeData[tl - i - 1] >> (1));
 #else
-      mdctData[(tl / 2) + i] = -(FIXP_DBL)timeData[tl - i - 1]
+      mdctData[(tl / 2) + i] = -(int32_t)timeData[tl - i - 1]
                                << (DFRACT_BITS - SAMPLE_BITS - 1); /* 0(A)-Br */
 #endif
     }
@@ -206,7 +206,7 @@ INT mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
     The (A-Br) data is written to the output buffer (mdctData) without being
     flipped.     */
     for (i = 0; i < fl / 2; i++) {
-      FIXP_DBL tmp0;
+      int32_t tmp0;
       tmp0 = fMultDiv2((FIXP_PCM)timeData[i + nl], wls[i].v.im); /* a*window */
       mdctData[(tl / 2) + i + nl] =
           fMultSubDiv2(tmp0, (FIXP_PCM)timeData[tl - nl - i - 1],
@@ -221,10 +221,10 @@ INT mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
     for (i = 0; i < nr; i++) {
 #if SAMPLE_BITS == \
     DFRACT_BITS /* This should be SPC_BITS instead of DFRACT_BITS. */
-      mdctData[(tl / 2) - 1 - i] = -((FIXP_DBL)timeData[tl + i] >> (1));
+      mdctData[(tl / 2) - 1 - i] = -((int32_t)timeData[tl + i] >> (1));
 #else
       mdctData[(tl / 2) - 1 - i] =
-          -(FIXP_DBL)timeData[tl + i]
+          -(int32_t)timeData[tl + i]
           << (DFRACT_BITS - SAMPLE_BITS - 1); /* -C flipped at placing */
 #endif
     }
@@ -244,7 +244,7 @@ INT mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
     mdctData[(tl/2)-nr-i-1] = -fMultAddDiv2(tmp1,
     (FIXP_PCM)timeData[(tl*2)-nr-i-1], pRightWindowPart[i].v.im);*/
     for (i = 0; i < fr / 2; i++) {
-      FIXP_DBL tmp1;
+      int32_t tmp1;
       tmp1 = fMultDiv2((FIXP_PCM)timeData[tl + nr + i],
                        wrs[i].v.re); /* C*window */
       mdctData[(tl / 2) - nr - i - 1] =
@@ -269,8 +269,8 @@ INT mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
   return nSpec * tl;
 }
 
-void imdct_gain(FIXP_DBL *pGain_m, int *pGain_e, int tl) {
-  FIXP_DBL gain_m = *pGain_m;
+void imdct_gain(int32_t *pGain_m, int *pGain_e, int tl) {
+  int32_t gain_m = *pGain_m;
   int gain_e = *pGain_e;
   int log2_tl;
 
@@ -282,7 +282,7 @@ void imdct_gain(FIXP_DBL *pGain_m, int *pGain_e, int tl) {
     return;
   }
 
-  log2_tl = DFRACT_BITS - 1 - fNormz((FIXP_DBL)tl);
+  log2_tl = DFRACT_BITS - 1 - fNormz((int32_t)tl);
   gain_e += -log2_tl;
 
   /* Detect non-radix 2 transform length and add amplitude compensation factor
@@ -290,14 +290,14 @@ void imdct_gain(FIXP_DBL *pGain_m, int *pGain_e, int tl) {
   switch ((tl) >> (log2_tl - 2)) {
     case 0x7: /* 10 ms, 1/tl = 1.0/(FDKpow(2.0, -log2_tl) *
                  0.53333333333333333333) */
-      if (gain_m == (FIXP_DBL)0) {
+      if (gain_m == (int32_t)0) {
         gain_m = FL2FXCONST_DBL(0.53333333333333333333f);
       } else {
         gain_m = fMult(gain_m, FL2FXCONST_DBL(0.53333333333333333333f));
       }
       break;
     case 0x6: /* 3/4 of radix 2, 1/tl = 1.0/(FDKpow(2.0, -log2_tl) * 2.0/3.0) */
-      if (gain_m == (FIXP_DBL)0) {
+      if (gain_m == (int32_t)0) {
         gain_m = FL2FXCONST_DBL(2.0 / 3.0f);
       } else {
         gain_m = fMult(gain_m, FL2FXCONST_DBL(2.0 / 3.0f));
@@ -305,7 +305,7 @@ void imdct_gain(FIXP_DBL *pGain_m, int *pGain_e, int tl) {
       break;
     case 0x5: /* 0.8 of radix 2 (e.g. tl 160), 1/tl = 1.0/(FDKpow(2.0, -log2_tl)
                * 0.8/1.5) */
-      if (gain_m == (FIXP_DBL)0) {
+      if (gain_m == (int32_t)0) {
         gain_m = FL2FXCONST_DBL(0.53333333333333333333f);
       } else {
         gain_m = fMult(gain_m, FL2FXCONST_DBL(0.53333333333333333333f));
@@ -324,7 +324,7 @@ void imdct_gain(FIXP_DBL *pGain_m, int *pGain_e, int tl) {
   *pGain_e = gain_e;
 }
 
-INT imdct_drain(H_MDCT hMdct, FIXP_DBL *output, INT nrSamplesRoom) {
+INT imdct_drain(H_MDCT hMdct, int32_t *output, INT nrSamplesRoom) {
   int buffered_samples = 0;
 
   if (nrSamplesRoom > 0) {
@@ -334,33 +334,33 @@ INT imdct_drain(H_MDCT hMdct, FIXP_DBL *output, INT nrSamplesRoom) {
 
     if (buffered_samples > 0) {
       FDKmemcpy(output, hMdct->overlap.time,
-                buffered_samples * sizeof(FIXP_DBL));
+                buffered_samples * sizeof(int32_t));
       hMdct->ov_offset = 0;
     }
   }
   return buffered_samples;
 }
 
-INT imdct_copy_ov_and_nr(H_MDCT hMdct, FIXP_DBL *pTimeData, INT nrSamples) {
-  FIXP_DBL *pOvl;
+INT imdct_copy_ov_and_nr(H_MDCT hMdct, int32_t *pTimeData, INT nrSamples) {
+  int32_t *pOvl;
   int nt, nf, i;
 
   nt = fMin(hMdct->ov_offset, nrSamples);
   nrSamples -= nt;
   nf = fMin(hMdct->prev_nr, nrSamples);
-  FDKmemcpy(pTimeData, hMdct->overlap.time, nt * sizeof(FIXP_DBL));
+  FDKmemcpy(pTimeData, hMdct->overlap.time, nt * sizeof(int32_t));
   pTimeData += nt;
 
   pOvl = hMdct->overlap.freq + hMdct->ov_size - 1;
   if (hMdct->prevPrevAliasSymmetry == 0) {
     for (i = 0; i < nf; i++) {
-      FIXP_DBL x = -(*pOvl--);
+      int32_t x = -(*pOvl--);
       *pTimeData = IMDCT_SCALE_DBL(x);
       pTimeData++;
     }
   } else {
     for (i = 0; i < nf; i++) {
-      FIXP_DBL x = (*pOvl--);
+      int32_t x = (*pOvl--);
       *pTimeData = IMDCT_SCALE_DBL(x);
       pTimeData++;
     }
@@ -462,13 +462,13 @@ appropriate window functions.
 Once we have obtained the C and D segments the overlap buffer is emptied and the
 current buffer is sent in it, so that the E and F segments are available for
 decoding in the next algorithm pass.*/
-INT imlt_block(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *spectrum,
+INT imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
                const SHORT scalefactor[], const INT nSpec,
                const INT noOutSamples, const INT tl, const FIXP_WTP *wls,
-               INT fl, const FIXP_WTP *wrs, const INT fr, FIXP_DBL gain,
+               INT fl, const FIXP_WTP *wrs, const INT fr, int32_t gain,
                int flags) {
-  FIXP_DBL *pOvl;
-  FIXP_DBL *pOut0 = output, *pOut1;
+  int32_t *pOvl;
+  int32_t *pOut0 = output, *pOut1;
   INT nl, nr;
   int w, i, nrSamples = 0, specShiftScale, transform_gain_e = 0;
   int currAliasSymmetry = (flags & MLT_FLAG_CURR_ALIAS_SYMMETRY);
@@ -498,7 +498,7 @@ INT imlt_block(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *spectrum,
   }
 
   for (w = 0; w < nSpec; w++) {
-    FIXP_DBL *pSpec, *pCurr;
+    int32_t *pSpec, *pCurr;
     const FIXP_WTP *pWindow;
 
     /* Detect FRprevious / FL mismatches and override parameters accordingly */
@@ -519,16 +519,16 @@ INT imlt_block(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *spectrum,
       if (hMdct->prevAliasSymmetry == 0) {
         dct_IV(pSpec, tl, &specShiftScale);
       } else {
-        FIXP_DBL _tmp[1024 + ALIGNMENT_DEFAULT / sizeof(FIXP_DBL)];
-        FIXP_DBL *tmp = (FIXP_DBL *)ALIGN_PTR(_tmp);
+        int32_t _tmp[1024 + ALIGNMENT_DEFAULT / sizeof(int32_t)];
+        int32_t *tmp = (int32_t *)ALIGN_PTR(_tmp);
         C_ALLOC_ALIGNED_REGISTER(tmp, sizeof(_tmp));
         dct_III(pSpec, tmp, tl, &specShiftScale);
         C_ALLOC_ALIGNED_UNREGISTER(tmp);
       }
     } else {
       if (hMdct->prevAliasSymmetry == 0) {
-        FIXP_DBL _tmp[1024 + ALIGNMENT_DEFAULT / sizeof(FIXP_DBL)];
-        FIXP_DBL *tmp = (FIXP_DBL *)ALIGN_PTR(_tmp);
+        int32_t _tmp[1024 + ALIGNMENT_DEFAULT / sizeof(int32_t)];
+        int32_t *tmp = (int32_t *)ALIGN_PTR(_tmp);
         C_ALLOC_ALIGNED_REGISTER(tmp, sizeof(_tmp));
         dst_III(pSpec, tmp, tl, &specShiftScale);
         C_ALLOC_ALIGNED_UNREGISTER(tmp);
@@ -540,7 +540,7 @@ INT imlt_block(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *spectrum,
     /* Optional scaling of time domain - no yet windowed - of current spectrum
      */
     /* and de-scale current spectrum signal (time domain, no yet windowed) */
-    if (gain != (FIXP_DBL)0) {
+    if (gain != (int32_t)0) {
       for (i = 0; i < tl; i++) {
         pSpec[i] = fMult(pSpec[i], gain);
       }
@@ -568,7 +568,7 @@ INT imlt_block(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *spectrum,
       /* In the case of ACELP -> TCX20 -> FD short add FAC ZIR on nr signal part
        */
       for (i = 0; i < hMdct->prev_nr; i++) {
-        FIXP_DBL x = -(*pOvl--);
+        int32_t x = -(*pOvl--);
         *pOut0 = fAddSaturate(x, IMDCT_SCALE_DBL(hMdct->pFacZir[i]));
         pOut0++;
       }
@@ -581,13 +581,13 @@ INT imlt_block(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *spectrum,
       "pOut0" writes sequentially the C block from left to right.   */
       if (hMdct->prevPrevAliasSymmetry == 0) {
         for (i = 0; i < hMdct->prev_nr; i++) {
-          FIXP_DBL x = -(*pOvl--);
+          int32_t x = -(*pOvl--);
           *pOut0 = IMDCT_SCALE_DBL(x);
           pOut0++;
         }
       } else {
         for (i = 0; i < hMdct->prev_nr; i++) {
-          FIXP_DBL x = *pOvl--;
+          int32_t x = *pOvl--;
           *pOut0 = IMDCT_SCALE_DBL(x);
           pOut0++;
         }
@@ -618,7 +618,7 @@ INT imlt_block(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *spectrum,
       if (hMdct->prevAliasSymmetry == 0) {
         if (!hMdct->pAsymOvlp) {
           for (i = 0; i < fl / 2; i++) {
-            FIXP_DBL x0, x1;
+            int32_t x0, x1;
             cplxMultDiv2(&x1, &x0, *pCurr++, -*pOvl--, pWindow[i]);
             *pOut0 = IMDCT_SCALE_DBL_LSH1(x0);
             *pOut1 = IMDCT_SCALE_DBL_LSH1(-x1);
@@ -626,9 +626,9 @@ INT imlt_block(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *spectrum,
             pOut1--;
           }
         } else {
-          FIXP_DBL *pAsymOvl = hMdct->pAsymOvlp + fl / 2 - 1;
+          int32_t *pAsymOvl = hMdct->pAsymOvlp + fl / 2 - 1;
           for (i = 0; i < fl / 2; i++) {
-            FIXP_DBL x0, x1;
+            int32_t x0, x1;
             x1 = -fMultDiv2(*pCurr, pWindow[i].v.re) +
                  fMultDiv2(*pAsymOvl, pWindow[i].v.im);
             x0 = fMultDiv2(*pCurr, pWindow[i].v.im) -
@@ -643,7 +643,7 @@ INT imlt_block(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *spectrum,
         }
       } else { /* prevAliasingSymmetry == 1 */
         for (i = 0; i < fl / 2; i++) {
-          FIXP_DBL x0, x1;
+          int32_t x0, x1;
           cplxMultDiv2(&x1, &x0, *pCurr++, -*pOvl--, pWindow[i]);
           *pOut0 = IMDCT_SCALE_DBL_LSH1(x0);
           *pOut1 = IMDCT_SCALE_DBL_LSH1(x1);
@@ -654,7 +654,7 @@ INT imlt_block(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *spectrum,
     } else { /* prevPrevAliasingSymmetry == 1 */
       if (hMdct->prevAliasSymmetry == 0) {
         for (i = 0; i < fl / 2; i++) {
-          FIXP_DBL x0, x1;
+          int32_t x0, x1;
           cplxMultDiv2(&x1, &x0, *pCurr++, *pOvl--, pWindow[i]);
           *pOut0 = IMDCT_SCALE_DBL_LSH1(x0);
           *pOut1 = IMDCT_SCALE_DBL_LSH1(-x1);
@@ -663,7 +663,7 @@ INT imlt_block(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *spectrum,
         }
       } else { /* prevAliasingSymmetry == 1 */
         for (i = 0; i < fl / 2; i++) {
-          FIXP_DBL x0, x1;
+          int32_t x0, x1;
           cplxMultDiv2(&x1, &x0, *pCurr++, *pOvl--, pWindow[i]);
           *pOut0 = IMDCT_SCALE_DBL_LSH1(x0);
           *pOut1 = IMDCT_SCALE_DBL_LSH1(x1);
@@ -675,7 +675,7 @@ INT imlt_block(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *spectrum,
 
     if (hMdct->pFacZir != 0) {
       /* add FAC ZIR of previous ACELP -> mdct transition */
-      FIXP_DBL *pOut = pOut0 - fl / 2;
+      int32_t *pOut = pOut0 - fl / 2;
       FDK_ASSERT(fl / 2 <= 128);
       for (i = 0; i < fl / 2; i++) {
         pOut[i] = fAddSaturate(pOut[i], IMDCT_SCALE_DBL(hMdct->pFacZir[i]));
@@ -694,12 +694,12 @@ INT imlt_block(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *spectrum,
     "pOut1" writes sequentially the D block from left to right.   */
     if (hMdct->prevAliasSymmetry == 0) {
       for (i = 0; i < nl; i++) {
-        FIXP_DBL x = -(*pCurr--);
+        int32_t x = -(*pCurr--);
         *pOut1++ = IMDCT_SCALE_DBL(x);
       }
     } else {
       for (i = 0; i < nl; i++) {
-        FIXP_DBL x = *pCurr--;
+        int32_t x = *pCurr--;
         *pOut1++ = IMDCT_SCALE_DBL(x);
       }
     }
@@ -721,7 +721,7 @@ INT imlt_block(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *spectrum,
   /* Save overlap */
 
   pOvl = hMdct->overlap.freq + hMdct->ov_size - tl / 2;
-  FDKmemcpy(pOvl, &spectrum[(nSpec - 1) * tl], (tl / 2) * sizeof(FIXP_DBL));
+  FDKmemcpy(pOvl, &spectrum[(nSpec - 1) * tl], (tl / 2) * sizeof(int32_t));
 
   return nrSamples;
 }

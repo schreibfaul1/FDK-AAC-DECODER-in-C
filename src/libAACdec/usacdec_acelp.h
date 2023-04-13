@@ -112,18 +112,18 @@ amm-info@iis.fraunhofer.de
 
 /** Structure which holds the ACELP internal persistent memory */
 typedef struct {
-  FIXP_DBL old_exc_mem[PIT_MAX_MAX + L_INTERPOL];
-  FIXP_DBL old_syn_mem[M_LP_FILTER_ORDER]; /* synthesis filter states */
+  int32_t old_exc_mem[PIT_MAX_MAX + L_INTERPOL];
+  int32_t old_syn_mem[M_LP_FILTER_ORDER]; /* synthesis filter states */
   FIXP_SGL A[M_LP_FILTER_ORDER];
   INT A_exp;
-  FIXP_DBL gc_threshold;
-  FIXP_DBL de_emph_mem;
+  int32_t gc_threshold;
+  int32_t de_emph_mem;
   FIXP_SGL past_gpit;
-  FIXP_DBL past_gcode;
+  int32_t past_gcode;
   USHORT old_T0;
   UCHAR old_T0_frac;
-  FIXP_DBL deemph_mem_wsyn;
-  FIXP_DBL wsyn_rms;
+  int32_t deemph_mem_wsyn;
+  int32_t wsyn_rms;
   SHORT seed_ace;
 } CAcelpStaticMem;
 
@@ -168,9 +168,9 @@ INT CLpd_AcelpRead(HANDLE_FDK_BITSTREAM hBs, CAcelpChannelData *acelpData,
  * \param[out] i_offset pitch lag offset for the decoding of the pitch lag
  * \param[in] coreCoderFrameLength length of core coder frame (1024|768)
  */
-void Acelp_PreProcessing(FIXP_DBL *synth_buf, FIXP_DBL *old_synth, INT *pitch,
-                         INT *old_T_pf, FIXP_DBL *pit_gain,
-                         FIXP_DBL *old_gain_pf, INT samplingRate, INT *i_offset,
+void Acelp_PreProcessing(int32_t *synth_buf, int32_t *old_synth, INT *pitch,
+                         INT *old_T_pf, int32_t *pit_gain,
+                         int32_t *old_gain_pf, INT samplingRate, INT *i_offset,
                          INT coreCoderFrameLength, INT synSfd,
                          INT nbSubfrSuperfr);
 
@@ -186,7 +186,7 @@ void Acelp_PreProcessing(FIXP_DBL *synth_buf, FIXP_DBL *old_synth, INT *pitch,
  * \param[in] pitch decoded pitch lag values of current LPD frame
  * \param[out] old_T_pf memory where last SYN_SFD pitch lag values are stored
  */
-void Acelp_PostProcessing(FIXP_DBL *synth_buf, FIXP_DBL *old_synth, INT *pitch,
+void Acelp_PostProcessing(int32_t *synth_buf, int32_t *old_synth, INT *pitch,
                           INT *old_T_pf, INT coreCoderFrameLength, INT synSfd,
                           INT nbSubfrSuperfr);
 
@@ -210,7 +210,7 @@ void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, INT i_offset,
                       const FIXP_LPC lsp_new[M_LP_FILTER_ORDER],
                       FIXP_SGL stab_fac, CAcelpChannelData *acelpData,
                       INT numLostSubframes, int lastLpcLost, int frameCnt,
-                      FIXP_DBL synth[], int pT[], FIXP_DBL *pit_gain,
+                      int32_t synth[], int pT[], int32_t *pit_gain,
                       INT coreCoderFrameLength);
 
 /**
@@ -233,7 +233,7 @@ void CLpd_AcelpReset(CAcelpStaticMem *acelp_mem);
  * \param[in,out] acelp_mem pointer to ACELP memory structure
  * \param[in] coreCoderFrameLength length of core coder frame (1024|768)
  */
-void CLpd_AcelpPrepareInternalMem(const FIXP_DBL *synth, UCHAR last_lpd_mode,
+void CLpd_AcelpPrepareInternalMem(const int32_t *synth, UCHAR last_lpd_mode,
                                   UCHAR last_last_lpd_mode,
                                   const FIXP_LPC *A_new, const INT A_new_exp,
                                   const FIXP_LPC *A_old, const INT A_old_exp,
@@ -250,12 +250,12 @@ void CLpd_AcelpPrepareInternalMem(const FIXP_DBL *synth, UCHAR last_lpd_mode,
  */
 void CLpd_Acelp_Zir(const FIXP_LPC A[], const INT A_exp,
                     CAcelpStaticMem *acelp_mem, const INT length,
-                    FIXP_DBL zir[], int doDeemph);
+                    int32_t zir[], int doDeemph);
 
 /**
  * \brief Borrow static excitation memory from ACELP decoder
  * \param[in] acelp_mem pointer to ACELP memory structure
- * \param[in] length number of requested FIXP_DBL values
+ * \param[in] length number of requested int32_t values
  * \return pointer to requested memory
  *
  * The caller has to take care not to overwrite valid memory areas.
@@ -264,13 +264,13 @@ void CLpd_Acelp_Zir(const FIXP_LPC A[], const INT A_exp,
  * - 256 samples in case of ACELP -> TCX20 -> ACELP transition
  * - PIT_MAX_MAX+L_INTERPOL samples in all other cases
  */
-FIXP_DBL *CLpd_ACELP_GetFreeExcMem(CAcelpStaticMem *acelp_mem, INT length);
+int32_t *CLpd_ACELP_GetFreeExcMem(CAcelpStaticMem *acelp_mem, INT length);
 
 void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, SHORT *pitch,
                        const FIXP_LPC lsp_old[M_LP_FILTER_ORDER],
                        const FIXP_LPC lsp_new[M_LP_FILTER_ORDER],
                        const FIXP_SGL stab_fac, INT numLostSubframes,
-                       FIXP_DBL synth[], INT coreCoderFrameLength,
+                       int32_t synth[], INT coreCoderFrameLength,
                        UCHAR last_tcx_noise_factor);
 
 inline SHORT E_UTIL_random(SHORT *seed) {

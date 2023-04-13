@@ -484,17 +484,17 @@ sbrdecUpdateFreqScale(
 static FIXP_SGL calcFactorPerBand(int k_start, int k_stop, int num_bands) {
   /* Scaled bandfactor and step 1 bit right to avoid overflow
    * use double data type */
-  FIXP_DBL bandfactor = FL2FXCONST_DBL(0.25f); /* Start value */
-  FIXP_DBL step = FL2FXCONST_DBL(0.125f); /* Initial increment for factor */
+  int32_t bandfactor = FL2FXCONST_DBL(0.25f); /* Start value */
+  int32_t step = FL2FXCONST_DBL(0.125f); /* Initial increment for factor */
 
   int direction = 1;
 
   /* Because saturation can't be done in INT IIS,
-   * changed start and stop data type from FIXP_SGL to FIXP_DBL */
-  FIXP_DBL start = k_start << (DFRACT_BITS - 8);
-  FIXP_DBL stop = k_stop << (DFRACT_BITS - 8);
+   * changed start and stop data type from FIXP_SGL to int32_t */
+  int32_t start = k_start << (DFRACT_BITS - 8);
+  int32_t stop = k_stop << (DFRACT_BITS - 8);
 
-  FIXP_DBL temp;
+  int32_t temp;
 
   int j, i = 0;
 
@@ -511,11 +511,11 @@ static FIXP_SGL calcFactorPerBand(int k_start, int k_stop, int num_bands) {
       if (direction == 0)
         /* Halfen step. Right shift is not done as fract because otherwise the
            lowest bit cannot be cleared due to rounding */
-        step = (FIXP_DBL)((LONG)step >> 1);
+        step = (int32_t)((LONG)step >> 1);
       direction = 1;
       bandfactor = bandfactor + step;
     } else { /* Factor is too weak: make it stronger */
-      if (direction == 1) step = (FIXP_DBL)((LONG)step >> 1);
+      if (direction == 1) step = (int32_t)((LONG)step >> 1);
       direction = 0;
       bandfactor = bandfactor - step;
     }

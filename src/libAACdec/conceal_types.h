@@ -112,7 +112,7 @@ amm-info@iis.fraunhofer.de
 
 #define CONCEAL_MAX_NUM_FADE_FACTORS (32)
 
-#define FIXP_CNCL FIXP_DBL
+#define FIXP_CNCL int32_t
 #define FL2FXCONST_CNCL FL2FXCONST_DBL
 #define FX_DBL2FX_CNCL
 #define FX_CNCL2FX_DBL
@@ -146,7 +146,7 @@ typedef struct {
   int numFadeOutFrames;
   int numFadeInFrames;
   int numMuteReleaseFrames;
-  FIXP_DBL comfortNoiseLevel;
+  int32_t comfortNoiseLevel;
 
 } CConcealParams;
 
@@ -182,7 +182,7 @@ typedef struct {
 
   CConcealmentState concealState;
   CConcealmentState concealState_old;
-  FIXP_DBL fade_old;           /* last fading factor */
+  int32_t fade_old;           /* last fading factor */
   TDfadingType lastFadingType; /* last fading type */
 
   SHORT aRvlcPreviousScaleFactor[RVLC_MAX_SFB]; /* needed once per channel */
@@ -191,10 +191,10 @@ typedef struct {
   SCHAR rvlcPreviousBlockType;
 
   FIXP_LPC lsf4[M_LP_FILTER_ORDER];
-  FIXP_DBL last_tcx_gain;
+  int32_t last_tcx_gain;
   INT last_tcx_gain_e;
   ULONG TDNoiseSeed;
-  PCM_DEC TDNoiseStates[3];
+  int32_t TDNoiseStates[3];
   FIXP_SGL TDNoiseCoef[3];
   FIXP_SGL TDNoiseAtt;
 

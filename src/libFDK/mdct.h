@@ -116,7 +116,7 @@ amm-info@iis.fraunhofer.de
 
 #define IMDCT_SCALE(x, s) \
   SATURATE_RIGHT_SHIFT((x), ((s) + MDCT_OUTPUT_SCALE), PCM_OUT_BITS)
-#define IMDCT_SCALE_DBL(x) (FIXP_DBL)(x)
+#define IMDCT_SCALE_DBL(x) (int32_t)(x)
 #define IMDCT_SCALE_DBL_LSH1(x) SATURATE_LEFT_SHIFT_ALT((x), 1, DFRACT_BITS)
 
 #define MLT_FLAG_CURR_ALIAS_SYMMETRY 1
@@ -135,8 +135,8 @@ typedef enum { SHAPE_SINE = 0, SHAPE_KBD, SHAPE_LOL } WINDOW_SHAPE;
  */
 typedef struct {
   union {
-    FIXP_DBL *freq;
-    FIXP_DBL *time;
+    int32_t *freq;
+    int32_t *time;
   } overlap; /**< Pointer to overlap memory */
 
   const FIXP_WTP *prev_wrs; /**< pointer to previous right window slope  */
@@ -149,8 +149,8 @@ typedef struct {
   int prevAliasSymmetry;
   int prevPrevAliasSymmetry;
 
-  FIXP_DBL *pFacZir;
-  FIXP_DBL *pAsymOvlp; /**< pointer to asymmetric overlap (used for stereo LPD
+  int32_t *pFacZir;
+  int32_t *pAsymOvlp; /**< pointer to asymmetric overlap (used for stereo LPD
                           transition) */
 } mdct_t;
 
@@ -160,10 +160,10 @@ typedef mdct_t *H_MDCT;
  * \brief Initialize as valid MDCT handle
  *
  * \param hMdct handle of an allocated MDCT handle.
- * \param overlap pointer to FIXP_DBL overlap buffer.
+ * \param overlap pointer to int32_t overlap buffer.
  * \param overlapBufferSize size in FIXP_DBLs of the given overlap buffer.
  */
-void mdct_init(H_MDCT hMdct, FIXP_DBL *overlap, INT overlapBufferSize);
+void mdct_init(H_MDCT hMdct, int32_t *overlap, INT overlapBufferSize);
 
 /**
  * \brief perform MDCT transform (time domain to frequency domain) with given
@@ -180,7 +180,7 @@ void mdct_init(H_MDCT hMdct, FIXP_DBL *overlap, INT overlapBufferSize);
  * \return number of input samples processed.
  */
 INT mdct_block(H_MDCT hMdct, const INT_PCM *pTimeData, const INT noInSamples,
-               FIXP_DBL *RESTRICT mdctData, const INT nSpec, const INT tl,
+               int32_t *RESTRICT mdctData, const INT nSpec, const INT tl,
                const FIXP_WTP *pRightWindowPart, const INT fr,
                SHORT *pMdctData_e);
 
@@ -194,20 +194,20 @@ INT mdct_block(H_MDCT hMdct, const INT_PCM *pTimeData, const INT noInSamples,
  * \param tl length of the IMDCT where the gain *pGain * (2 ^ *pExponent) will
  * be applied to.
  */
-void imdct_gain(FIXP_DBL *pGain, int *pExponent, int tl);
+void imdct_gain(int32_t *pGain, int *pExponent, int tl);
 
 /**
  * \brief drain buffered output samples into given buffer. Changes the MDCT
  * state.
  */
-INT imdct_drain(H_MDCT hMdct, FIXP_DBL *pTimeData, INT nrSamplesRoom);
+INT imdct_drain(H_MDCT hMdct, int32_t *pTimeData, INT nrSamplesRoom);
 
 /**
  * \brief Copy overlap time domain data to given buffer. Does not change the
  * MDCT state.
  * \return number of actually copied samples (ov + nr).
  */
-INT imdct_copy_ov_and_nr(H_MDCT hMdct, FIXP_DBL *pTimeData, INT nrSamples);
+INT imdct_copy_ov_and_nr(H_MDCT hMdct, int32_t *pTimeData, INT nrSamples);
 
 /**
  * \brief Adapt MDCT parameters for non-matching window slopes.
@@ -242,10 +242,10 @@ void imdct_adapt_parameters(H_MDCT hMdct, int *pfl, int *pnl, int tl,
  * \param flags flags controlling the type of transform
  * \return number of output samples returned.
  */
-INT imlt_block(H_MDCT hMdct, FIXP_DBL *output, FIXP_DBL *spectrum,
+INT imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
                const SHORT scalefactor[], const INT nSpec,
                const INT noOutSamples, const INT tl, const FIXP_WTP *wls,
-               INT fl, const FIXP_WTP *wrs, const INT fr, FIXP_DBL gain,
+               INT fl, const FIXP_WTP *wrs, const INT fr, int32_t gain,
                int flags);
 
 #endif /* MDCT_H */

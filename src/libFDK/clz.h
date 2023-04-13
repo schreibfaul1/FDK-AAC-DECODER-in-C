@@ -190,10 +190,10 @@ inline INT fixnorm_S(FIXP_SGL val) {
 #endif
 
 #if !defined(FUNCTION_fixnorm_D)
-inline INT fixnorm_D(FIXP_DBL val) {
+inline INT fixnorm_D(int32_t val) {
   INT leadingBits = 0;
-  if (val != (FIXP_DBL)0) {
-    if (val < (FIXP_DBL)0) {
+  if (val != (int32_t)0) {
+    if (val < (int32_t)0) {
       val = ~val;
     }
     leadingBits = fixnormz_D(val) - 1;

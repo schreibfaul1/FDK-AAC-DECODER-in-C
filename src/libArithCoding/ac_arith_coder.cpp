@@ -101,6 +101,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdint.h>
 #include "ac_arith_coder.h"
 
 #define cbitsnew     16
@@ -445,7 +446,7 @@ static inline ULONG get_pk_v2(ULONG s) {
 }
 
 static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf, UCHAR *RESTRICT c_prev,
-								  FIXP_DBL *RESTRICT pSpectralCoefficient, INT n, INT nt) {
+								  int32_t *RESTRICT pSpectralCoefficient, INT n, INT nt) {
 	Tastat             as;
 	int                i, l, r;
 	INT                lev, esc_nb, pki;
@@ -512,8 +513,8 @@ static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf, UCHAR *RESTRICT c_p
 				b = (b << 1) | (r >> 1);
 			}
 
-			pSpectralCoefficient[2 * i] = (FIXP_DBL)a;
-			pSpectralCoefficient[2 * i + 1] = (FIXP_DBL)b;
+			pSpectralCoefficient[2 * i] = (int32_t)a;
+			pSpectralCoefficient[2 * i + 1] = (int32_t)b;
 
 			c_0 = a + b + 1;
 			if(c_0 > 0xF) { c_0 = 0xF; }
@@ -535,15 +536,15 @@ static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf, UCHAR *RESTRICT c_p
 	int j = i;
 	for(i = 0; i < j; i++) {
 		int bits = 0;
-		if(pSpectralCoefficient[2 * i] != (FIXP_DBL)0) bits++;
-		if(pSpectralCoefficient[2 * i + 1] != (FIXP_DBL)0) bits++;
+		if(pSpectralCoefficient[2 * i] != (int32_t)0) bits++;
+		if(pSpectralCoefficient[2 * i + 1] != (int32_t)0) bits++;
 
 		if(bits) {
 			r = FDKreadBits(bbuf, bits);
-			if(pSpectralCoefficient[2 * i] != (FIXP_DBL)0 && !(r >> (bits - 1))) {
+			if(pSpectralCoefficient[2 * i] != (int32_t)0 && !(r >> (bits - 1))) {
 				pSpectralCoefficient[2 * i] = -pSpectralCoefficient[2 * i];
 			}
-			if(pSpectralCoefficient[2 * i + 1] != (FIXP_DBL)0 && !(r & 1)) {
+			if(pSpectralCoefficient[2 * i + 1] != (int32_t)0 && !(r & 1)) {
 				pSpectralCoefficient[2 * i + 1] = -pSpectralCoefficient[2 * i + 1];
 			}
 		}
@@ -564,13 +565,13 @@ void CArco_Destroy(CArcoData *pArcoData) {
 }
 
 ARITH_CODING_ERROR CArco_DecodeArithData(CArcoData *pArcoData, HANDLE_FDK_BITSTREAM hBs,
-										 FIXP_DBL *RESTRICT mdctSpectrum, int lg, int lg_max, int arith_reset_flag) {
+										 int32_t *RESTRICT mdctSpectrum, int lg, int lg_max, int arith_reset_flag) {
 	ARITH_CODING_ERROR ErrorStatus = ARITH_CODER_OK;
 
 	/* Check lg and lg_max consistency. */
 	if(lg_max < lg) { return ARITH_CODER_ERROR; }
 
-	FDKmemclear(mdctSpectrum, lg_max * sizeof(FIXP_DBL));
+	FDKmemclear(mdctSpectrum, lg_max * sizeof(int32_t));
 
 	/* arith_map_context */
 	if(arith_reset_flag) { FDKmemclear(pArcoData->c_prev, sizeof(pArcoData->c_prev[0]) * ((lg_max / 2) + 4)); }

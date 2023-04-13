@@ -104,11 +104,11 @@ amm-info@iis.fraunhofer.de
 #include "FDK_tools_rom.h"
 
 #define W_PiFOURTH STC(0x5a82799a)
-//#define W_PiFOURTH ((FIXP_DBL)(0x5a82799a))
+//#define W_PiFOURTH ((int32_t)(0x5a82799a))
 #ifndef SUMDIFF_PIFOURTH
 #define SUMDIFF_PIFOURTH(diff, sum, a, b) \
   {                                       \
-    FIXP_DBL wa, wb;                      \
+    int32_t wa, wb;                      \
     wa = fMultDiv2(a, W_PiFOURTH);        \
     wb = fMultDiv2(b, W_PiFOURTH);        \
     diff = wb - wa;                       \
@@ -170,9 +170,9 @@ amm-info@iis.fraunhofer.de
 
 /* Performs the FFT of length 2. Input vector unscaled, output vector scaled
  * with factor 0.5 */
-static FDK_FORCEINLINE void fft2(FIXP_DBL *RESTRICT pDat) {
-  FIXP_DBL r1, i1;
-  FIXP_DBL r2, i2;
+static FDK_FORCEINLINE void fft2(int32_t *RESTRICT pDat) {
+  int32_t r1, i1;
+  int32_t r2, i2;
 
   /* real part */
   r1 = pDat[2];
@@ -196,10 +196,10 @@ static FDK_FORCEINLINE void fft2(FIXP_DBL *RESTRICT pDat) {
 
 #ifndef FUNCTION_fft3
 /* Performs the FFT of length 3 according to the algorithm after winograd. */
-static FDK_FORCEINLINE void fft3(FIXP_DBL *RESTRICT pDat) {
-  FIXP_DBL r1, r2;
-  FIXP_DBL s1, s2;
-  FIXP_DBL pD;
+static FDK_FORCEINLINE void fft3(int32_t *RESTRICT pDat) {
+  int32_t r1, r2;
+  int32_t s1, s2;
+  int32_t pD;
 
   /* real part */
   r1 = pDat[2] + pDat[4];
@@ -233,10 +233,10 @@ static FDK_FORCEINLINE void fft3(FIXP_DBL *RESTRICT pDat) {
 
 /* performs the FFT of length 5 according to the algorithm after winograd */
 /* This version works with a prescale of 2 instead of 3 */
-static FDK_FORCEINLINE void fft5(FIXP_DBL *RESTRICT pDat) {
-  FIXP_DBL r1, r2, r3, r4;
-  FIXP_DBL s1, s2, s3, s4;
-  FIXP_DBL t;
+static FDK_FORCEINLINE void fft5(int32_t *RESTRICT pDat) {
+  int32_t r1, r2, r3, r4;
+  int32_t s1, s2, s3, s4;
+  int32_t t;
 
   /* real part */
   r1 = (pDat[2] + pDat[8]) >> 1;
@@ -309,14 +309,14 @@ static FDK_FORCEINLINE void fft5(FIXP_DBL *RESTRICT pDat) {
  *
  * \return   void
  */
-static void fft10(FIXP_DBL *x)  // FIXP_DBL *re, FIXP_DBL *im, FIXP_SGL s)
+static void fft10(int32_t *x)  // int32_t *re, int32_t *im, FIXP_SGL s)
 {
-  FIXP_DBL t;
-  FIXP_DBL x0, x1, x2, x3, x4;
-  FIXP_DBL r1, r2, r3, r4;
-  FIXP_DBL s1, s2, s3, s4;
-  FIXP_DBL y00, y01, y02, y03, y04, y05, y06, y07, y08, y09;
-  FIXP_DBL y10, y11, y12, y13, y14, y15, y16, y17, y18, y19;
+  int32_t t;
+  int32_t x0, x1, x2, x3, x4;
+  int32_t r1, r2, r3, r4;
+  int32_t s1, s2, s3, s4;
+  int32_t y00, y01, y02, y03, y04, y05, y06, y07, y08, y09;
+  int32_t y10, y11, y12, y13, y14, y15, y16, y17, y18, y19;
 
   const int s = 1;  // stride factor
 
@@ -461,14 +461,14 @@ static void fft10(FIXP_DBL *x)  // FIXP_DBL *re, FIXP_DBL *im, FIXP_SGL s)
 #undef C31
 #define C31 (STC(0x91261468)) /* FL2FXCONST_DBL(-0.86602540) = -sqrt(3)/2  */
 
-static inline void fft12(FIXP_DBL *pInput) {
-  FIXP_DBL aDst[24];
-  FIXP_DBL *pSrc, *pDst;
+static inline void fft12(int32_t *pInput) {
+  int32_t aDst[24];
+  int32_t *pSrc, *pDst;
   int i;
 
   pSrc = pInput;
   pDst = aDst;
-  FIXP_DBL r1, r2, s1, s2, pD;
+  int32_t r1, r2, s1, s2, pD;
 
   /* First 3*2 samples are shifted right by 2 before output */
   r1 = pSrc[8] + pSrc[16];
@@ -494,7 +494,7 @@ static inline void fft12(FIXP_DBL *pInput) {
 
   const FIXP_STB *pVecRe = RotVectorReal12;
   const FIXP_STB *pVecIm = RotVectorImag12;
-  FIXP_DBL re, im;
+  int32_t re, im;
   FIXP_STB vre, vim;
   for (i = 0; i < 2; i++) {
     /* sample 0,1 are shifted right by 2 before output */
@@ -561,7 +561,7 @@ static inline void fft12(FIXP_DBL *pInput) {
   pDst = pInput;
   for (i = 0; i < 3; i++) {
     /* inline FFT4 merged with incoming resorting loop */
-    FIXP_DBL a00, a10, a20, a30, tmp0, tmp1;
+    int32_t a00, a10, a20, a30, tmp0, tmp1;
 
     a00 = (pSrc[0] + pSrc[12]) >> 1; /* Re A + Re B */
     a10 = (pSrc[6] + pSrc[18]) >> 1; /* Re C + Re D */
@@ -600,9 +600,9 @@ static inline void fft12(FIXP_DBL *pInput) {
 
 /* Performs the FFT of length 15. It is split into FFTs of length 3 and
  * length 5. */
-static inline void fft15(FIXP_DBL *pInput) {
-  FIXP_DBL aDst[2 * N15];
-  FIXP_DBL aDst1[2 * N15];
+static inline void fft15(int32_t *pInput) {
+  int32_t aDst[2 * N15];
+  int32_t aDst1[2 * N15];
   int i, k, l;
 
   /* Sort input vector for fft's of length 3
@@ -612,8 +612,8 @@ static inline void fft15(FIXP_DBL *pInput) {
   input3(9:11)  = [input(9) input(14) input(4)];
   input3(12:14) = [input(12) input(2) input(7)]; */
   {
-    const FIXP_DBL *pSrc = pInput;
-    FIXP_DBL *RESTRICT pDst = aDst;
+    const int32_t *pSrc = pInput;
+    int32_t *RESTRICT pDst = aDst;
     /* Merge 3 loops into one, skip call of fft3 */
     for (i = 0, l = 0, k = 0; i < N5; i++, k += 6) {
       pDst[k + 0] = pSrc[l];
@@ -631,8 +631,8 @@ static inline void fft15(FIXP_DBL *pInput) {
       if (l >= (2 * N15)) l -= (2 * N15);
 
       /* fft3 merged with shift right by 2 loop */
-      FIXP_DBL r1, r2, r3;
-      FIXP_DBL s1, s2;
+      int32_t r1, r2, r3;
+      int32_t s1, s2;
       /* real part */
       r1 = pDst[k + 2] + pDst[k + 4];
       r2 = fMult((pDst[k + 2] - pDst[k + 4]), C31);
@@ -660,8 +660,8 @@ static inline void fft15(FIXP_DBL *pInput) {
   input5(10:14) = [output3(2) output3(5) output3(8) output3(11) output3(14)]; */
   /* Merge 2 loops into one, brings about 10% */
   {
-    const FIXP_DBL *pSrc = aDst;
-    FIXP_DBL *RESTRICT pDst = aDst1;
+    const int32_t *pSrc = aDst;
+    int32_t *RESTRICT pDst = aDst1;
     for (i = 0, l = 0, k = 0; i < N3; i++, k += 10) {
       l = 2 * i;
       pDst[k + 0] = pSrc[l + 0];
@@ -683,8 +683,8 @@ static inline void fft15(FIXP_DBL *pInput) {
             out5(5)  out5(11) out5(2)  out5(8)  out5(14)]; */
   /* optimize clumsy loop, brings about 5% */
   {
-    const FIXP_DBL *pSrc = aDst1;
-    FIXP_DBL *RESTRICT pDst = pInput;
+    const int32_t *pSrc = aDst1;
+    int32_t *RESTRICT pDst = pInput;
     for (i = 0, l = 0, k = 0; i < N3; i++, k += 10) {
       pDst[k + 0] = pSrc[l];
       pDst[k + 1] = pSrc[l + 1];
@@ -724,7 +724,7 @@ static inline void fft15(FIXP_DBL *pInput) {
 #define SHIFT_B >> 1
 #endif
 
-#ifndef FUNCTION_fft_16 /* we check, if fft_16 (FIXP_DBL *) is not yet defined \
+#ifndef FUNCTION_fft_16 /* we check, if fft_16 (int32_t *) is not yet defined \
                          */
 
 /* This defines prevents this array to be declared twice, if 16-bit fft is
@@ -734,14 +734,14 @@ static const FIXP_STP fft16_w16[2] = {STCP(0x7641af3d, 0x30fbc54d),
                                       STCP(0x30fbc54d, 0x7641af3d)};
 
 LNK_SECTION_CODE_L1
-inline void fft_16(FIXP_DBL *RESTRICT x) {
-  FIXP_DBL vr, ur;
-  FIXP_DBL vr2, ur2;
-  FIXP_DBL vr3, ur3;
-  FIXP_DBL vr4, ur4;
-  FIXP_DBL vi, ui;
-  FIXP_DBL vi2, ui2;
-  FIXP_DBL vi3, ui3;
+inline void fft_16(int32_t *RESTRICT x) {
+  int32_t vr, ur;
+  int32_t vr2, ur2;
+  int32_t vr3, ur3;
+  int32_t vr4, ur4;
+  int32_t vi, ui;
+  int32_t vi2, ui2;
+  int32_t vi3, ui3;
 
   vr = (x[0] >> 1) + (x[16] >> 1);       /* Re A + Re B */
   ur = (x[1] >> 1) + (x[17] >> 1);       /* Im A + Im B */
@@ -1001,21 +1001,21 @@ static const FIXP_STP fft32_w32[6] = {
 #define W_PiFOURTH STC(0x5a82799a)
 
 LNK_SECTION_CODE_L1
-inline void fft_32(FIXP_DBL *const _x) {
+inline void fft_32(int32_t *const _x) {
   /*
    * 1+2 stage radix 4
    */
 
   /////////////////////////////////////////////////////////////////////////////////////////
   {
-    FIXP_DBL *const x = _x;
-    FIXP_DBL vi, ui;
-    FIXP_DBL vi2, ui2;
-    FIXP_DBL vi3, ui3;
-    FIXP_DBL vr, ur;
-    FIXP_DBL vr2, ur2;
-    FIXP_DBL vr3, ur3;
-    FIXP_DBL vr4, ur4;
+    int32_t *const x = _x;
+    int32_t vi, ui;
+    int32_t vi2, ui2;
+    int32_t vi3, ui3;
+    int32_t vr, ur;
+    int32_t vr2, ur2;
+    int32_t vr3, ur3;
+    int32_t vr4, ur4;
 
     // i = 0
     vr = (x[0] + x[32]) >> 1;     /* Re A + Re B */
@@ -1207,11 +1207,11 @@ inline void fft_32(FIXP_DBL *const _x) {
   }
 
   {
-    FIXP_DBL *xt = _x;
+    int32_t *xt = _x;
 
     int j = 4;
     do {
-      FIXP_DBL vi, ui, vr, ur;
+      int32_t vi, ui, vr, ur;
 
       vr = xt[8];
       vi = xt[9];
@@ -1252,8 +1252,8 @@ inline void fft_32(FIXP_DBL *const _x) {
   }
 
   {
-    FIXP_DBL *const x = _x;
-    FIXP_DBL vi, ui, vr, ur;
+    int32_t *const x = _x;
+    int32_t vi, ui, vr, ur;
 
     vr = x[16];
     vi = x[17];
@@ -1537,10 +1537,10 @@ inline void fft_32(FIXP_DBL *const _x) {
 #define noFFT_APPLY_ROT_VECTOR_HQ
 
 #ifndef FUNCTION_fft_apply_rot_vector__FIXP_DBL
-static inline void fft_apply_rot_vector(FIXP_DBL *RESTRICT pData, const int cl,
+static inline void fft_apply_rot_vector(int32_t *RESTRICT pData, const int cl,
                                         const int l, const FIXP_STB *pVecRe,
                                         const FIXP_STB *pVecIm) {
-  FIXP_DBL re, im;
+  int32_t re, im;
   FIXP_STB vre, vim;
 
   int i, c;
@@ -1574,18 +1574,18 @@ static inline void fft_apply_rot_vector(FIXP_DBL *RESTRICT pData, const int cl,
 /* select either switch case of function pointer. */
 //#define FFT_TWO_STAGE_SWITCH_CASE
 #ifndef FUNCTION_fftN2_func
-static inline void fftN2_func(FIXP_DBL *pInput, const int length,
+static inline void fftN2_func(int32_t *pInput, const int length,
                               const int dim1, const int dim2,
-                              void (*const fft1)(FIXP_DBL *),
-                              void (*const fft2)(FIXP_DBL *),
+                              void (*const fft1)(int32_t *),
+                              void (*const fft2)(int32_t *),
                               const FIXP_STB *RotVectorReal,
-                              const FIXP_STB *RotVectorImag, FIXP_DBL *aDst,
-                              FIXP_DBL *aDst2) {
+                              const FIXP_STB *RotVectorImag, int32_t *aDst,
+                              int32_t *aDst2) {
   /* The real part of the input samples are at the addresses with even indices
   and the imaginary part of the input samples are at the addresses with odd
   indices. The output samples are stored at the address of pInput
   */
-  FIXP_DBL *pSrc, *pDst, *pDstOut;
+  int32_t *pSrc, *pDst, *pDstOut;
   int i;
 
   FDK_ASSERT(length == dim1 * dim2);
@@ -1712,92 +1712,92 @@ static inline void fftN2_func(FIXP_DBL *pInput, const int length,
    */
 
 #ifndef FUNCTION_fft6
-static inline void fft6(FIXP_DBL *pInput) {
-  fftN2(FIXP_DBL, pInput, 6, 2, 3, fft2, fft3, RotVectorReal6, RotVectorImag6);
+static inline void fft6(int32_t *pInput) {
+  fftN2(int32_t, pInput, 6, 2, 3, fft2, fft3, RotVectorReal6, RotVectorImag6);
 }
 #endif /* #ifndef FUNCTION_fft6 */
 
 #ifndef FUNCTION_fft12
-static inline void fft12(FIXP_DBL *pInput) {
-  fftN2(FIXP_DBL, pInput, 12, 3, 4, fft3, fft_4, RotVectorReal12,
+static inline void fft12(int32_t *pInput) {
+  fftN2(int32_t, pInput, 12, 3, 4, fft3, fft_4, RotVectorReal12,
         RotVectorImag12); /* 16,58 */
 }
 #endif /* #ifndef FUNCTION_fft12 */
 
 #ifndef FUNCTION_fft20
-static inline void fft20(FIXP_DBL *pInput) {
-  fftN2(FIXP_DBL, pInput, 20, 4, 5, fft_4, fft5, RotVectorReal20,
+static inline void fft20(int32_t *pInput) {
+  fftN2(int32_t, pInput, 20, 4, 5, fft_4, fft5, RotVectorReal20,
         RotVectorImag20);
 }
 #endif /* FUNCTION_fft20 */
 
-static inline void fft24(FIXP_DBL *pInput) {
-  fftN2(FIXP_DBL, pInput, 24, 2, 12, fft2, fft12, RotVectorReal24,
+static inline void fft24(int32_t *pInput) {
+  fftN2(int32_t, pInput, 24, 2, 12, fft2, fft12, RotVectorReal24,
         RotVectorImag24); /* 16,73 */
 }
 
-static inline void fft48(FIXP_DBL *pInput) {
-  fftN2(FIXP_DBL, pInput, 48, 4, 12, fft_4, fft12, RotVectorReal48,
+static inline void fft48(int32_t *pInput) {
+  fftN2(int32_t, pInput, 48, 4, 12, fft_4, fft12, RotVectorReal48,
         RotVectorImag48); /* 16,32 */
 }
 
 #ifndef FUNCTION_fft60
-static inline void fft60(FIXP_DBL *pInput) {
-  fftN2(FIXP_DBL, pInput, 60, 4, 15, fft_4, fft15, RotVectorReal60,
+static inline void fft60(int32_t *pInput) {
+  fftN2(int32_t, pInput, 60, 4, 15, fft_4, fft15, RotVectorReal60,
         RotVectorImag60); /* 15,51 */
 }
 #endif /* FUNCTION_fft60 */
 
 #ifndef FUNCTION_fft80
-static inline void fft80(FIXP_DBL *pInput) {
-  fftN2(FIXP_DBL, pInput, 80, 5, 16, fft5, fft_16, RotVectorReal80,
+static inline void fft80(int32_t *pInput) {
+  fftN2(int32_t, pInput, 80, 5, 16, fft5, fft_16, RotVectorReal80,
         RotVectorImag80); /*  */
 }
 #endif
 
 #ifndef FUNCTION_fft96
-static inline void fft96(FIXP_DBL *pInput) {
-  fftN2(FIXP_DBL, pInput, 96, 3, 32, fft3, fft_32, RotVectorReal96,
+static inline void fft96(int32_t *pInput) {
+  fftN2(int32_t, pInput, 96, 3, 32, fft3, fft_32, RotVectorReal96,
         RotVectorImag96); /* 15,47 */
 }
 #endif /* FUNCTION_fft96*/
 
 #ifndef FUNCTION_fft120
-static inline void fft120(FIXP_DBL *pInput) {
-  fftN2(FIXP_DBL, pInput, 120, 8, 15, fft_8, fft15, RotVectorReal120,
+static inline void fft120(int32_t *pInput) {
+  fftN2(int32_t, pInput, 120, 8, 15, fft_8, fft15, RotVectorReal120,
         RotVectorImag120);
 }
 #endif /* FUNCTION_fft120 */
 
 #ifndef FUNCTION_fft192
-static inline void fft192(FIXP_DBL *pInput) {
-  fftN2(FIXP_DBL, pInput, 192, 16, 12, fft_16, fft12, RotVectorReal192,
+static inline void fft192(int32_t *pInput) {
+  fftN2(int32_t, pInput, 192, 16, 12, fft_16, fft12, RotVectorReal192,
         RotVectorImag192); /* 15,50 */
 }
 #endif
 
 #ifndef FUNCTION_fft240
-static inline void fft240(FIXP_DBL *pInput) {
-  fftN2(FIXP_DBL, pInput, 240, 16, 15, fft_16, fft15, RotVectorReal240,
+static inline void fft240(int32_t *pInput) {
+  fftN2(int32_t, pInput, 240, 16, 15, fft_16, fft15, RotVectorReal240,
         RotVectorImag240); /* 15.44 */
 }
 #endif
 
 #ifndef FUNCTION_fft384
-static inline void fft384(FIXP_DBL *pInput) {
-  fftN2(FIXP_DBL, pInput, 384, 12, 32, fft12, fft_32, RotVectorReal384,
+static inline void fft384(int32_t *pInput) {
+  fftN2(int32_t, pInput, 384, 12, 32, fft12, fft_32, RotVectorReal384,
         RotVectorImag384); /* 16.02 */
 }
 #endif /* FUNCTION_fft384 */
 
 #ifndef FUNCTION_fft480
-static inline void fft480(FIXP_DBL *pInput) {
-  fftN2(FIXP_DBL, pInput, 480, 32, 15, fft_32, fft15, RotVectorReal480,
+static inline void fft480(int32_t *pInput) {
+  fftN2(int32_t, pInput, 480, 32, 15, fft_32, fft15, RotVectorReal480,
         RotVectorImag480); /* 15.84 */
 }
 #endif /* FUNCTION_fft480 */
 
-void fft(int length, FIXP_DBL *pInput, INT *pScalefactor) {
+void fft(int length, int32_t *pInput, INT *pScalefactor) {
   /* Ensure, that the io-ptr is always (at least 8-byte) aligned */
   C_ALLOC_ALIGNED_CHECK(pInput);
 
@@ -1913,7 +1913,7 @@ void fft(int length, FIXP_DBL *pInput, INT *pScalefactor) {
   }
 }
 
-void ifft(int length, FIXP_DBL *pInput, INT *scalefactor) {
+void ifft(int length, int32_t *pInput, INT *scalefactor) {
   switch (length) {
     default:
       FDK_ASSERT(0); /* IFFT length not supported! */

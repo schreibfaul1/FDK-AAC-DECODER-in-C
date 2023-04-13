@@ -139,7 +139,7 @@ extern const UCHAR FDK_sbrDecoder_sbr_start_freq_128[16];
 #define NUM_WHFACTOR_TABLE_ENTRIES 9
 extern const USHORT
     FDK_sbrDecoder_sbr_whFactorsIndex[NUM_WHFACTOR_TABLE_ENTRIES];
-extern const FIXP_DBL
+extern const int32_t
     FDK_sbrDecoder_sbr_whFactorsTable[NUM_WHFACTOR_TABLE_ENTRIES][6];
 
 /*
@@ -150,7 +150,7 @@ extern const UCHAR FDK_sbrDecoder_sbr_limGains_e[4];
 extern const FIXP_SGL FDK_sbrDecoder_sbr_limGainsPvc_m[4];
 extern const UCHAR FDK_sbrDecoder_sbr_limGainsPvc_e[4];
 extern const FIXP_SGL FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4[4];
-extern const FIXP_DBL FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4_DBL[4];
+extern const int32_t FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4_DBL[4];
 extern const FIXP_SGL FDK_sbrDecoder_sbr_smoothFilter[4];
 extern const FIXP_SGL FDK_sbrDecoder_sbr_randomPhase[SBR_NF_NO_RANDOM_VAL][2];
 
@@ -199,9 +199,9 @@ extern const SCHAR aBookPsIidFineTimeDecode[60][2];
 extern const SCHAR aBookPsIidFineFreqDecode[60][2];
 
 /* the values of the following 3 tables are shiftet right by 1 ! */
-extern const FIXP_DBL ScaleFactors[NO_IID_LEVELS];
-extern const FIXP_DBL ScaleFactorsFine[NO_IID_LEVELS_FINE];
-extern const FIXP_DBL Alphas[NO_ICC_LEVELS];
+extern const int32_t ScaleFactors[NO_IID_LEVELS];
+extern const int32_t ScaleFactorsFine[NO_IID_LEVELS_FINE];
+extern const int32_t Alphas[NO_ICC_LEVELS];
 
 extern const UCHAR bins2groupMap20[NO_IID_GROUPS];
 extern const UCHAR FDK_sbrDecoder_aNoIidBins[3];

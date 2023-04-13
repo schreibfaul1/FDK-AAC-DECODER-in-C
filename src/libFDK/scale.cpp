@@ -172,7 +172,7 @@ void scaleValues(FIXP_SGL *vector, /*!< Vector */
  */
 #define FUNCTION_scaleValues_DBL
 SCALE_INLINE
-void scaleValues(FIXP_DBL *vector, /*!< Vector */
+void scaleValues(int32_t *vector, /*!< Vector */
                  INT len,          /*!< Length */
                  INT scalefactor   /*!< Scalefactor */
 ) {
@@ -219,7 +219,7 @@ void scaleValues(FIXP_DBL *vector, /*!< Vector */
  */
 #define FUNCTION_scaleValuesSaturate_DBL
 SCALE_INLINE
-void scaleValuesSaturate(FIXP_DBL *vector, /*!< Vector */
+void scaleValuesSaturate(int32_t *vector, /*!< Vector */
                          INT len,          /*!< Length */
                          INT scalefactor   /*!< Scalefactor */
 ) {
@@ -250,8 +250,8 @@ void scaleValuesSaturate(FIXP_DBL *vector, /*!< Vector */
  */
 #define FUNCTION_scaleValuesSaturate_DBL_DBL
 SCALE_INLINE
-void scaleValuesSaturate(FIXP_DBL *dst,       /*!< Output */
-                         const FIXP_DBL *src, /*!< Input   */
+void scaleValuesSaturate(int32_t *dst,       /*!< Output */
+                         const int32_t *src, /*!< Input   */
                          INT len,             /*!< Length */
                          INT scalefactor      /*!< Scalefactor */
 ) {
@@ -259,7 +259,7 @@ void scaleValuesSaturate(FIXP_DBL *dst,       /*!< Output */
 
   /* Return if scalefactor is Zero */
   if (scalefactor == 0) {
-    FDKmemmove(dst, src, len * sizeof(FIXP_DBL));
+    FDKmemmove(dst, src, len * sizeof(int32_t));
     return;
   }
 
@@ -277,7 +277,7 @@ void scaleValuesSaturate(FIXP_DBL *dst,       /*!< Output */
  *
  *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
  *  \param dst         destination buffer (FIXP_SGL)
- *  \param src         source buffer (FIXP_DBL)
+ *  \param src         source buffer (int32_t)
  *  \param len         length of vector
  *  \param scalefactor amount of shifts to be applied
  *  \return void
@@ -286,7 +286,7 @@ void scaleValuesSaturate(FIXP_DBL *dst,       /*!< Output */
 #define FUNCTION_scaleValuesSaturate_SGL_DBL
 SCALE_INLINE
 void scaleValuesSaturate(FIXP_SGL *dst,       /*!< Output */
-                         const FIXP_DBL *src, /*!< Input   */
+                         const int32_t *src, /*!< Input   */
                          INT len,             /*!< Length */
                          INT scalefactor)     /*!< Scalefactor */
 {
@@ -296,7 +296,7 @@ void scaleValuesSaturate(FIXP_SGL *dst,       /*!< Output */
 
   for (i = 0; i < len; i++) {
     dst[i] = FX_DBL2FX_SGL(fAddSaturate(scaleValueSaturate(src[i], scalefactor),
-                                        (FIXP_DBL)0x8000));
+                                        (int32_t)0x8000));
   }
 }
 #endif /* FUNCTION_scaleValuesSaturate_SGL_DBL */
@@ -382,8 +382,8 @@ void scaleValuesSaturate(FIXP_SGL *dst,       /*!< Output */
  */
 #define FUNCTION_scaleValues_DBLDBL
 SCALE_INLINE
-void scaleValues(FIXP_DBL *dst,       /*!< dst Vector */
-                 const FIXP_DBL *src, /*!< src Vector */
+void scaleValues(int32_t *dst,       /*!< dst Vector */
+                 const int32_t *src, /*!< src Vector */
                  INT len,             /*!< Length */
                  INT scalefactor      /*!< Scalefactor */
 ) {
@@ -391,7 +391,7 @@ void scaleValues(FIXP_DBL *dst,       /*!< dst Vector */
 
   /* Return if scalefactor is Zero */
   if (scalefactor == 0) {
-    if (dst != src) FDKmemmove(dst, src, len * sizeof(FIXP_DBL));
+    if (dst != src) FDKmemmove(dst, src, len * sizeof(int32_t));
   } else {
     if (scalefactor > 0) {
       scalefactor = fixmin_I(scalefactor, (INT)DFRACT_BITS - 1);
@@ -436,7 +436,7 @@ void scaleValues(FIXP_DBL *dst,       /*!< dst Vector */
 #define FUNCTION_scaleValues_PCMDBL
 SCALE_INLINE
 void scaleValues(FIXP_PCM *dst,       /*!< dst Vector */
-                 const FIXP_DBL *src, /*!< src Vector */
+                 const int32_t *src, /*!< src Vector */
                  INT len,             /*!< Length */
                  INT scalefactor      /*!< Scalefactor */
 ) {
@@ -497,7 +497,7 @@ void scaleValues(FIXP_SGL *dst,       /*!< dst Vector */
 
   /* Return if scalefactor is Zero */
   if (scalefactor == 0) {
-    if (dst != src) FDKmemmove(dst, src, len * sizeof(FIXP_DBL));
+    if (dst != src) FDKmemmove(dst, src, len * sizeof(int32_t));
   } else {
     if (scalefactor > 0) {
       scalefactor = fixmin_I(scalefactor, (INT)DFRACT_BITS - 1);
@@ -536,7 +536,7 @@ void scaleValues(FIXP_SGL *dst,       /*!< dst Vector */
  */
 #define FUNCTION_scaleValuesWithFactor_DBL
 SCALE_INLINE
-void scaleValuesWithFactor(FIXP_DBL *vector, FIXP_DBL factor, INT len,
+void scaleValuesWithFactor(int32_t *vector, int32_t factor, INT len,
                            INT scalefactor) {
   INT i;
 
@@ -686,15 +686,15 @@ INT getScalefactorShort(const SHORT *vector, /*!< Pointer to input vector */
  */
 #define FUNCTION_getScalefactor_DBL
 SCALE_INLINE
-INT getScalefactor(const FIXP_DBL *vector, /*!< Pointer to input vector */
+INT getScalefactor(const int32_t *vector, /*!< Pointer to input vector */
                    INT len)                /*!< Length of input vector */
 {
   INT i;
-  FIXP_DBL temp, maxVal = (FIXP_DBL)0;
+  int32_t temp, maxVal = (int32_t)0;
 
   for (i = len; i != 0; i--) {
     temp = (LONG)(*vector++);
-    maxVal |= (FIXP_DBL)((LONG)temp ^ (LONG)(temp >> (DFRACT_BITS - 1)));
+    maxVal |= (int32_t)((LONG)temp ^ (LONG)(temp >> (DFRACT_BITS - 1)));
   }
 
   return fixmax_I((INT)0, (INT)(fixnormz_D(maxVal) - 1));

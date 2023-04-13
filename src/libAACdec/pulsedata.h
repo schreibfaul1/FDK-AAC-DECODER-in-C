@@ -145,6 +145,6 @@ INT CPulseData_Read(const HANDLE_FDK_BITSTREAM bs, CPulseData *const PulseData,
  * \return  none
  */
 void CPulseData_Apply(CPulseData *PulseData,
-                      const short *pScaleFactorBandOffsets, FIXP_DBL *coef);
+                      const short *pScaleFactorBandOffsets, int32_t *coef);
 
 #endif /* #ifndef PULSEDATA_H */

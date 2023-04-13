@@ -480,12 +480,12 @@ int pvcInitFrame(PVC_STATIC_DATA *pPvcStaticData,
 
 /* call if pvcMode = 1,2 */
 void pvcDecodeFrame(PVC_STATIC_DATA *pPvcStaticData,
-                    PVC_DYNAMIC_DATA *pPvcDynamicData, FIXP_DBL **qmfBufferReal,
-                    FIXP_DBL **qmfBufferImag, const int overlap,
+                    PVC_DYNAMIC_DATA *pPvcDynamicData, int32_t **qmfBufferReal,
+                    int32_t **qmfBufferImag, const int overlap,
                     const int qmfExponentOverlap,
                     const int qmfExponentCurrent) {
   int t;
-  FIXP_DBL *predictedEsgSlot;
+  int32_t *predictedEsgSlot;
   int RATE = pPvcDynamicData->RATE;
   int pvcBorder0 = pPvcDynamicData->pvcBorder0;
 
@@ -505,16 +505,16 @@ void pvcDecodeFrame(PVC_STATIC_DATA *pPvcStaticData,
 
 void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
                        PVC_DYNAMIC_DATA *pPvcDynamicData,
-                       FIXP_DBL **qmfSlotReal, FIXP_DBL **qmfSlotImag,
+                       int32_t **qmfSlotReal, int32_t **qmfSlotImag,
                        const int qmfExponent, const int pvcBorder0,
-                       const int timeSlotNumber, FIXP_DBL predictedEsgSlot[],
+                       const int timeSlotNumber, int32_t predictedEsgSlot[],
                        int *predictedEsg_exp) {
   int i, band, ksg, ksg_start = 0;
   int RATE = pPvcDynamicData->RATE;
   int Esg_index = pPvcStaticData->Esg_slot_index;
   const SCHAR *sg_borders = pPvcDynamicData->sg_offset_low;
-  FIXP_DBL *pEsg = pPvcStaticData->Esg[Esg_index];
-  FIXP_DBL E[PVC_NBLOW] = {0};
+  int32_t *pEsg = pPvcStaticData->Esg[Esg_index];
+  int32_t E[PVC_NBLOW] = {0};
 
   /* Subband grouping in QMF subbands below SBR range */
   /* Within one timeslot ( i = [0...(RATE-1)] QMF subsamples) calculate energy
@@ -528,7 +528,7 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
   }
 
   for (i = 0; i < RATE; i++) {
-    FIXP_DBL *qmfR, *qmfI;
+    int32_t *qmfR, *qmfI;
     qmfR = qmfSlotReal[i];
     qmfI = qmfSlotImag[i];
     for (ksg = ksg_start; ksg < PVC_NBLOW; ksg++) {
@@ -540,10 +540,10 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
     }
   }
   for (ksg = ksg_start; ksg < PVC_NBLOW; ksg++) {
-    if (E[ksg] > (FIXP_DBL)0) {
+    if (E[ksg] > (int32_t)0) {
       /* 10/log2(10) = 0.752574989159953 * 2^2 */
       int exp_log;
-      FIXP_DBL nrg = CalcLog2(E[ksg], 2 * qmfExponent + 2, &exp_log);
+      int32_t nrg = CalcLog2(E[ksg], 2 * qmfExponent + 2, &exp_log);
       nrg = fMult(nrg, FL2FXCONST_SGL(LOG10FAC));
       nrg = scaleValue(nrg, exp_log - PVC_ESG_EXP + 2);
       pEsg[ksg] = fMax(nrg, FL2FXCONST_DBL(-10.0 / (1 << PVC_ESG_EXP)));
@@ -556,10 +556,10 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
   /* Time domain smoothing of subband-grouped energy */
   {
     int idx = pPvcStaticData->Esg_slot_index;
-    FIXP_DBL *pEsg_filt;
+    int32_t *pEsg_filt;
     FIXP_SGL SCcoeff;
 
-    E[0] = E[1] = E[2] = (FIXP_DBL)0;
+    E[0] = E[1] = E[2] = (int32_t)0;
     for (i = 0; i < pPvcDynamicData->ns; i++) {
       SCcoeff = pPvcDynamicData->pSCcoeffs[i];
       pEsg_filt = pPvcStaticData->Esg[idx];
@@ -599,7 +599,7 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
     pTab2 = &(pPvcDynamicData->pPVCTab2[pvcTab2ID * pPvcDynamicData->nbHigh]);
     for (ksg = 0; ksg < pPvcDynamicData->nbHigh; ksg++) {
       FIXP_SGL predCoeff;
-      FIXP_DBL accu;
+      int32_t accu;
       int predCoeff_exp, kb;
       E_high_exp[ksg] = 0;
 
@@ -663,10 +663,10 @@ void pvcEndFrame(PVC_STATIC_DATA *pPvcStaticData,
 }
 
 void expandPredEsg(const PVC_DYNAMIC_DATA *pPvcDynamicData, const int timeSlot,
-                   const int lengthOutputVector, FIXP_DBL *pOutput,
+                   const int lengthOutputVector, int32_t *pOutput,
                    SCHAR *pOutput_exp) {
   int k = 0, ksg;
-  const FIXP_DBL *predEsg = pPvcDynamicData->predEsg[timeSlot];
+  const int32_t *predEsg = pPvcDynamicData->predEsg[timeSlot];
 
   for (ksg = 0; ksg < pPvcDynamicData->nbHigh; ksg++) {
     for (; k < pPvcDynamicData->sg_offset_high_kx[ksg + 1]; k++) {

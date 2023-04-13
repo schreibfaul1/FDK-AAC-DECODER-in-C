@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdint.h>
 #include "sac_qmf.h"
 
 #include "../libFDK/FDK_matrixCalloc.h"
@@ -109,8 +110,8 @@ amm-info@iis.fraunhofer.de
 #include "../libFDK/qmf.h"
 
 SACDEC_ERROR CalculateSpaceSynthesisQmf(
-    const HANDLE_FDK_QMF_DOMAIN_OUT hQmfDomainOutCh, const FIXP_DBL *Sr,
-    const FIXP_DBL *Si, const INT stride, PCM_MPS *timeSig) {
+    const HANDLE_FDK_QMF_DOMAIN_OUT hQmfDomainOutCh, const int32_t *Sr,
+    const int32_t *Si, const INT stride, PCM_MPS *timeSig) {
   SACDEC_ERROR err = MPS_OK;
 
   if (hQmfDomainOutCh == NULL) {
@@ -118,19 +119,19 @@ SACDEC_ERROR CalculateSpaceSynthesisQmf(
   } else {
     HANDLE_SPACE_SYNTHESIS_QMF hSpaceSynthesisQmf = &hQmfDomainOutCh->fb;
 #if (QMF_MAX_SYNTHESIS_BANDS <= 64)
-    C_AALLOC_SCRATCH_START(pWorkBuffer, FIXP_DBL,
+    C_AALLOC_SCRATCH_START(pWorkBuffer, int32_t,
                            (QMF_MAX_SYNTHESIS_BANDS << 1));
 #else
-    C_AALLOC_STACK_START(pWorkBuffer, FIXP_DBL, (QMF_MAX_SYNTHESIS_BANDS << 1));
+    C_AALLOC_STACK_START(pWorkBuffer, int32_t, (QMF_MAX_SYNTHESIS_BANDS << 1));
 #endif
 
     qmfSynthesisFilteringSlot(hSpaceSynthesisQmf, Sr, Si, 0, 0, timeSig, stride,
                               pWorkBuffer);
 
 #if (QMF_MAX_SYNTHESIS_BANDS <= 64)
-    C_AALLOC_SCRATCH_END(pWorkBuffer, FIXP_DBL, (QMF_MAX_SYNTHESIS_BANDS << 1));
+    C_AALLOC_SCRATCH_END(pWorkBuffer, int32_t, (QMF_MAX_SYNTHESIS_BANDS << 1));
 #else
-    C_AALLOC_STACK_END(pWorkBuffer, FIXP_DBL, (QMF_MAX_SYNTHESIS_BANDS << 1));
+    C_AALLOC_STACK_END(pWorkBuffer, int32_t, (QMF_MAX_SYNTHESIS_BANDS << 1));
 #endif
   }
 
@@ -139,17 +140,17 @@ SACDEC_ERROR CalculateSpaceSynthesisQmf(
 
 SACDEC_ERROR CalculateSpaceAnalysisQmf(
     HANDLE_SPACE_ANALYSIS_QMF hSpaceAnalysisQmf, const PCM_MPS *timeSig,
-    FIXP_DBL *Sr, FIXP_DBL *Si) {
+    int32_t *Sr, int32_t *Si) {
   SACDEC_ERROR err = MPS_OK;
 
   if (hSpaceAnalysisQmf == NULL) {
     err = MPS_INVALID_HANDLE;
   } else {
-    C_AALLOC_SCRATCH_START(pWorkBuffer, FIXP_DBL, (64 << 1));
+    C_AALLOC_SCRATCH_START(pWorkBuffer, int32_t, (64 << 1));
 
     qmfAnalysisFilteringSlot(hSpaceAnalysisQmf, Sr, Si, timeSig, 1,
                              pWorkBuffer);
-    C_AALLOC_SCRATCH_END(pWorkBuffer, FIXP_DBL, (64 << 1));
+    C_AALLOC_SCRATCH_END(pWorkBuffer, int32_t, (64 << 1));
   }
 
   return err;

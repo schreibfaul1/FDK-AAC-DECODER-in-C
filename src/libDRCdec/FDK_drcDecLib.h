@@ -213,7 +213,7 @@ FDK_drcDec_Close(HANDLE_DRC_DECODER* phDrcDec);
 DRC_DEC_ERROR
 FDK_drcDec_SetParam(HANDLE_DRC_DECODER hDrcDec,
                     const DRC_DEC_USERPARAM requestType,
-                    const FIXP_DBL requestValue);
+                    const int32_t requestValue);
 
 LONG FDK_drcDec_GetParam(HANDLE_DRC_DECODER hDrcDec,
                          const DRC_DEC_USERPARAM requestType);
@@ -239,13 +239,13 @@ void FDK_drcDec_SetSelectionProcessOutput(
 HANDLE_SEL_PROC_OUTPUT
 FDK_drcDec_GetSelectionProcessOutput(HANDLE_DRC_DECODER hDrcDec);
 
-LONG /* FIXP_DBL, e = 7 */
+LONG /* int32_t, e = 7 */
 FDK_drcDec_GetGroupLoudness(HANDLE_SEL_PROC_OUTPUT hSelProcOutput,
                             const int groupID, int* groupLoudnessAvailable);
 
 void FDK_drcDec_SetChannelGains(HANDLE_DRC_DECODER hDrcDec,
                                 const int numChannels, const int frameSize,
-                                FIXP_DBL* channelGainDb, FIXP_DBL* audioBuffer,
+                                int32_t* channelGainDb, int32_t* audioBuffer,
                                 const int audioBufferChannelOffset);
 
 DRC_DEC_ERROR
@@ -295,7 +295,7 @@ DRC_DEC_ERROR
 FDK_drcDec_ProcessTime(HANDLE_DRC_DECODER hDrcDec, const int delaySamples,
                        const DRC_DEC_LOCATION drcLocation,
                        const int channelOffset, const int drcChannelOffset,
-                       const int numChannelsProcessed, FIXP_DBL* realBuffer,
+                       const int numChannelsProcessed, int32_t* realBuffer,
                        const int timeDataChannelOffset);
 
 DRC_DEC_ERROR
@@ -303,12 +303,12 @@ FDK_drcDec_ProcessFreq(HANDLE_DRC_DECODER hDrcDec, const int delaySamples,
                        const DRC_DEC_LOCATION drcLocation,
                        const int channelOffset, const int drcChannelOffset,
                        const int numChannelsProcessed,
-                       const int processSingleTimeslot, FIXP_DBL** realBuffer,
-                       FIXP_DBL** imagBuffer);
+                       const int processSingleTimeslot, int32_t** realBuffer,
+                       int32_t** imagBuffer);
 
 DRC_DEC_ERROR
 FDK_drcDec_ApplyDownmix(HANDLE_DRC_DECODER hDrcDec, int* reverseInChannelMap,
-                        int* reverseOutChannelMap, FIXP_DBL* realBuffer,
+                        int* reverseOutChannelMap, int32_t* realBuffer,
                         int* pNChannels);
 
 /* Get library info for this module. */

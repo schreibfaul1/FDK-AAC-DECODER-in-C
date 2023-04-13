@@ -114,7 +114,7 @@ amm-info@iis.fraunhofer.de
   functionname: LdDataVector
 *****************************************************************************/
 LNK_SECTION_CODE_L1
-void LdDataVector(FIXP_DBL *srcVector, FIXP_DBL *destVector, INT n) {
+void LdDataVector(int32_t *srcVector, int32_t *destVector, INT n) {
   INT i;
   for (i = 0; i < n; i++) {
     destVector[i] = fLog2(srcVector[i], 0);
@@ -139,7 +139,7 @@ void LdDataVector(FIXP_DBL *srcVector, FIXP_DBL *destVector, INT n) {
 #ifndef POW2COEFF_16BIT
 RAM_ALIGN
 LNK_SECTION_CONSTDATA_L1
-static const FIXP_DBL pow2Coeff[MAX_POW2_PRECISION] = {
+static const int32_t pow2Coeff[MAX_POW2_PRECISION] = {
     FL2FXCONST_DBL(0.693147180559945309417232121458177),   /* ln(2)^1 /1! */
     FL2FXCONST_DBL(0.240226506959100712333551263163332),   /* ln(2)^2 /2! */
     FL2FXCONST_DBL(0.0555041086648215799531422637686218),  /* ln(2)^3 /3! */
@@ -252,116 +252,116 @@ LD_INT_TAB_LEN)
 
 #if (LD_INT_TAB_LEN <= 120)
 LNK_SECTION_CONSTDATA_L1
-static const FIXP_DBL ldIntCoeff[] = {
-    (FIXP_DBL)0x80000001, (FIXP_DBL)0x00000000, (FIXP_DBL)0x02000000,
-    (FIXP_DBL)0x032b8034, (FIXP_DBL)0x04000000, (FIXP_DBL)0x04a4d3c2,
-    (FIXP_DBL)0x052b8034, (FIXP_DBL)0x059d5da0, (FIXP_DBL)0x06000000,
-    (FIXP_DBL)0x06570069, (FIXP_DBL)0x06a4d3c2, (FIXP_DBL)0x06eb3a9f,
-    (FIXP_DBL)0x072b8034, (FIXP_DBL)0x0766a009, (FIXP_DBL)0x079d5da0,
-    (FIXP_DBL)0x07d053f7, (FIXP_DBL)0x08000000, (FIXP_DBL)0x082cc7ee,
-    (FIXP_DBL)0x08570069, (FIXP_DBL)0x087ef05b, (FIXP_DBL)0x08a4d3c2,
-    (FIXP_DBL)0x08c8ddd4, (FIXP_DBL)0x08eb3a9f, (FIXP_DBL)0x090c1050,
-    (FIXP_DBL)0x092b8034, (FIXP_DBL)0x0949a785, (FIXP_DBL)0x0966a009,
-    (FIXP_DBL)0x0982809d, (FIXP_DBL)0x099d5da0, (FIXP_DBL)0x09b74949,
-    (FIXP_DBL)0x09d053f7, (FIXP_DBL)0x09e88c6b, (FIXP_DBL)0x0a000000,
-    (FIXP_DBL)0x0a16bad3, (FIXP_DBL)0x0a2cc7ee, (FIXP_DBL)0x0a423162,
-    (FIXP_DBL)0x0a570069, (FIXP_DBL)0x0a6b3d79, (FIXP_DBL)0x0a7ef05b,
-    (FIXP_DBL)0x0a92203d, (FIXP_DBL)0x0aa4d3c2, (FIXP_DBL)0x0ab7110e,
-    (FIXP_DBL)0x0ac8ddd4, (FIXP_DBL)0x0ada3f60, (FIXP_DBL)0x0aeb3a9f,
-    (FIXP_DBL)0x0afbd42b, (FIXP_DBL)0x0b0c1050, (FIXP_DBL)0x0b1bf312,
-    (FIXP_DBL)0x0b2b8034, (FIXP_DBL)0x0b3abb40, (FIXP_DBL)0x0b49a785,
-    (FIXP_DBL)0x0b584822, (FIXP_DBL)0x0b66a009, (FIXP_DBL)0x0b74b1fd,
-    (FIXP_DBL)0x0b82809d, (FIXP_DBL)0x0b900e61, (FIXP_DBL)0x0b9d5da0,
-    (FIXP_DBL)0x0baa708f, (FIXP_DBL)0x0bb74949, (FIXP_DBL)0x0bc3e9ca,
-    (FIXP_DBL)0x0bd053f7, (FIXP_DBL)0x0bdc899b, (FIXP_DBL)0x0be88c6b,
-    (FIXP_DBL)0x0bf45e09, (FIXP_DBL)0x0c000000, (FIXP_DBL)0x0c0b73cb,
-    (FIXP_DBL)0x0c16bad3, (FIXP_DBL)0x0c21d671, (FIXP_DBL)0x0c2cc7ee,
-    (FIXP_DBL)0x0c379085, (FIXP_DBL)0x0c423162, (FIXP_DBL)0x0c4caba8,
-    (FIXP_DBL)0x0c570069, (FIXP_DBL)0x0c6130af, (FIXP_DBL)0x0c6b3d79,
-    (FIXP_DBL)0x0c7527b9, (FIXP_DBL)0x0c7ef05b, (FIXP_DBL)0x0c88983f,
-    (FIXP_DBL)0x0c92203d, (FIXP_DBL)0x0c9b8926, (FIXP_DBL)0x0ca4d3c2,
-    (FIXP_DBL)0x0cae00d2, (FIXP_DBL)0x0cb7110e, (FIXP_DBL)0x0cc0052b,
-    (FIXP_DBL)0x0cc8ddd4, (FIXP_DBL)0x0cd19bb0, (FIXP_DBL)0x0cda3f60,
-    (FIXP_DBL)0x0ce2c97d, (FIXP_DBL)0x0ceb3a9f, (FIXP_DBL)0x0cf39355,
-    (FIXP_DBL)0x0cfbd42b, (FIXP_DBL)0x0d03fda9, (FIXP_DBL)0x0d0c1050,
-    (FIXP_DBL)0x0d140ca0, (FIXP_DBL)0x0d1bf312, (FIXP_DBL)0x0d23c41d,
-    (FIXP_DBL)0x0d2b8034, (FIXP_DBL)0x0d3327c7, (FIXP_DBL)0x0d3abb40,
-    (FIXP_DBL)0x0d423b08, (FIXP_DBL)0x0d49a785, (FIXP_DBL)0x0d510118,
-    (FIXP_DBL)0x0d584822, (FIXP_DBL)0x0d5f7cff, (FIXP_DBL)0x0d66a009,
-    (FIXP_DBL)0x0d6db197, (FIXP_DBL)0x0d74b1fd, (FIXP_DBL)0x0d7ba190,
-    (FIXP_DBL)0x0d82809d, (FIXP_DBL)0x0d894f75, (FIXP_DBL)0x0d900e61,
-    (FIXP_DBL)0x0d96bdad, (FIXP_DBL)0x0d9d5da0, (FIXP_DBL)0x0da3ee7f,
-    (FIXP_DBL)0x0daa708f, (FIXP_DBL)0x0db0e412, (FIXP_DBL)0x0db74949,
-    (FIXP_DBL)0x0dbda072, (FIXP_DBL)0x0dc3e9ca, (FIXP_DBL)0x0dca258e};
+static const int32_t ldIntCoeff[] = {
+    (int32_t)0x80000001, (int32_t)0x00000000, (int32_t)0x02000000,
+    (int32_t)0x032b8034, (int32_t)0x04000000, (int32_t)0x04a4d3c2,
+    (int32_t)0x052b8034, (int32_t)0x059d5da0, (int32_t)0x06000000,
+    (int32_t)0x06570069, (int32_t)0x06a4d3c2, (int32_t)0x06eb3a9f,
+    (int32_t)0x072b8034, (int32_t)0x0766a009, (int32_t)0x079d5da0,
+    (int32_t)0x07d053f7, (int32_t)0x08000000, (int32_t)0x082cc7ee,
+    (int32_t)0x08570069, (int32_t)0x087ef05b, (int32_t)0x08a4d3c2,
+    (int32_t)0x08c8ddd4, (int32_t)0x08eb3a9f, (int32_t)0x090c1050,
+    (int32_t)0x092b8034, (int32_t)0x0949a785, (int32_t)0x0966a009,
+    (int32_t)0x0982809d, (int32_t)0x099d5da0, (int32_t)0x09b74949,
+    (int32_t)0x09d053f7, (int32_t)0x09e88c6b, (int32_t)0x0a000000,
+    (int32_t)0x0a16bad3, (int32_t)0x0a2cc7ee, (int32_t)0x0a423162,
+    (int32_t)0x0a570069, (int32_t)0x0a6b3d79, (int32_t)0x0a7ef05b,
+    (int32_t)0x0a92203d, (int32_t)0x0aa4d3c2, (int32_t)0x0ab7110e,
+    (int32_t)0x0ac8ddd4, (int32_t)0x0ada3f60, (int32_t)0x0aeb3a9f,
+    (int32_t)0x0afbd42b, (int32_t)0x0b0c1050, (int32_t)0x0b1bf312,
+    (int32_t)0x0b2b8034, (int32_t)0x0b3abb40, (int32_t)0x0b49a785,
+    (int32_t)0x0b584822, (int32_t)0x0b66a009, (int32_t)0x0b74b1fd,
+    (int32_t)0x0b82809d, (int32_t)0x0b900e61, (int32_t)0x0b9d5da0,
+    (int32_t)0x0baa708f, (int32_t)0x0bb74949, (int32_t)0x0bc3e9ca,
+    (int32_t)0x0bd053f7, (int32_t)0x0bdc899b, (int32_t)0x0be88c6b,
+    (int32_t)0x0bf45e09, (int32_t)0x0c000000, (int32_t)0x0c0b73cb,
+    (int32_t)0x0c16bad3, (int32_t)0x0c21d671, (int32_t)0x0c2cc7ee,
+    (int32_t)0x0c379085, (int32_t)0x0c423162, (int32_t)0x0c4caba8,
+    (int32_t)0x0c570069, (int32_t)0x0c6130af, (int32_t)0x0c6b3d79,
+    (int32_t)0x0c7527b9, (int32_t)0x0c7ef05b, (int32_t)0x0c88983f,
+    (int32_t)0x0c92203d, (int32_t)0x0c9b8926, (int32_t)0x0ca4d3c2,
+    (int32_t)0x0cae00d2, (int32_t)0x0cb7110e, (int32_t)0x0cc0052b,
+    (int32_t)0x0cc8ddd4, (int32_t)0x0cd19bb0, (int32_t)0x0cda3f60,
+    (int32_t)0x0ce2c97d, (int32_t)0x0ceb3a9f, (int32_t)0x0cf39355,
+    (int32_t)0x0cfbd42b, (int32_t)0x0d03fda9, (int32_t)0x0d0c1050,
+    (int32_t)0x0d140ca0, (int32_t)0x0d1bf312, (int32_t)0x0d23c41d,
+    (int32_t)0x0d2b8034, (int32_t)0x0d3327c7, (int32_t)0x0d3abb40,
+    (int32_t)0x0d423b08, (int32_t)0x0d49a785, (int32_t)0x0d510118,
+    (int32_t)0x0d584822, (int32_t)0x0d5f7cff, (int32_t)0x0d66a009,
+    (int32_t)0x0d6db197, (int32_t)0x0d74b1fd, (int32_t)0x0d7ba190,
+    (int32_t)0x0d82809d, (int32_t)0x0d894f75, (int32_t)0x0d900e61,
+    (int32_t)0x0d96bdad, (int32_t)0x0d9d5da0, (int32_t)0x0da3ee7f,
+    (int32_t)0x0daa708f, (int32_t)0x0db0e412, (int32_t)0x0db74949,
+    (int32_t)0x0dbda072, (int32_t)0x0dc3e9ca, (int32_t)0x0dca258e};
 
 #elif (LD_INT_TAB_LEN <= 193)
 LNK_SECTION_CONSTDATA_L1
-static const FIXP_DBL ldIntCoeff[] = {
-    (FIXP_DBL)0x80000001, (FIXP_DBL)0x00000000, (FIXP_DBL)0x02000000,
-    (FIXP_DBL)0x032b8034, (FIXP_DBL)0x04000000, (FIXP_DBL)0x04a4d3c2,
-    (FIXP_DBL)0x052b8034, (FIXP_DBL)0x059d5da0, (FIXP_DBL)0x06000000,
-    (FIXP_DBL)0x06570069, (FIXP_DBL)0x06a4d3c2, (FIXP_DBL)0x06eb3a9f,
-    (FIXP_DBL)0x072b8034, (FIXP_DBL)0x0766a009, (FIXP_DBL)0x079d5da0,
-    (FIXP_DBL)0x07d053f7, (FIXP_DBL)0x08000000, (FIXP_DBL)0x082cc7ee,
-    (FIXP_DBL)0x08570069, (FIXP_DBL)0x087ef05b, (FIXP_DBL)0x08a4d3c2,
-    (FIXP_DBL)0x08c8ddd4, (FIXP_DBL)0x08eb3a9f, (FIXP_DBL)0x090c1050,
-    (FIXP_DBL)0x092b8034, (FIXP_DBL)0x0949a785, (FIXP_DBL)0x0966a009,
-    (FIXP_DBL)0x0982809d, (FIXP_DBL)0x099d5da0, (FIXP_DBL)0x09b74949,
-    (FIXP_DBL)0x09d053f7, (FIXP_DBL)0x09e88c6b, (FIXP_DBL)0x0a000000,
-    (FIXP_DBL)0x0a16bad3, (FIXP_DBL)0x0a2cc7ee, (FIXP_DBL)0x0a423162,
-    (FIXP_DBL)0x0a570069, (FIXP_DBL)0x0a6b3d79, (FIXP_DBL)0x0a7ef05b,
-    (FIXP_DBL)0x0a92203d, (FIXP_DBL)0x0aa4d3c2, (FIXP_DBL)0x0ab7110e,
-    (FIXP_DBL)0x0ac8ddd4, (FIXP_DBL)0x0ada3f60, (FIXP_DBL)0x0aeb3a9f,
-    (FIXP_DBL)0x0afbd42b, (FIXP_DBL)0x0b0c1050, (FIXP_DBL)0x0b1bf312,
-    (FIXP_DBL)0x0b2b8034, (FIXP_DBL)0x0b3abb40, (FIXP_DBL)0x0b49a785,
-    (FIXP_DBL)0x0b584822, (FIXP_DBL)0x0b66a009, (FIXP_DBL)0x0b74b1fd,
-    (FIXP_DBL)0x0b82809d, (FIXP_DBL)0x0b900e61, (FIXP_DBL)0x0b9d5da0,
-    (FIXP_DBL)0x0baa708f, (FIXP_DBL)0x0bb74949, (FIXP_DBL)0x0bc3e9ca,
-    (FIXP_DBL)0x0bd053f7, (FIXP_DBL)0x0bdc899b, (FIXP_DBL)0x0be88c6b,
-    (FIXP_DBL)0x0bf45e09, (FIXP_DBL)0x0c000000, (FIXP_DBL)0x0c0b73cb,
-    (FIXP_DBL)0x0c16bad3, (FIXP_DBL)0x0c21d671, (FIXP_DBL)0x0c2cc7ee,
-    (FIXP_DBL)0x0c379085, (FIXP_DBL)0x0c423162, (FIXP_DBL)0x0c4caba8,
-    (FIXP_DBL)0x0c570069, (FIXP_DBL)0x0c6130af, (FIXP_DBL)0x0c6b3d79,
-    (FIXP_DBL)0x0c7527b9, (FIXP_DBL)0x0c7ef05b, (FIXP_DBL)0x0c88983f,
-    (FIXP_DBL)0x0c92203d, (FIXP_DBL)0x0c9b8926, (FIXP_DBL)0x0ca4d3c2,
-    (FIXP_DBL)0x0cae00d2, (FIXP_DBL)0x0cb7110e, (FIXP_DBL)0x0cc0052b,
-    (FIXP_DBL)0x0cc8ddd4, (FIXP_DBL)0x0cd19bb0, (FIXP_DBL)0x0cda3f60,
-    (FIXP_DBL)0x0ce2c97d, (FIXP_DBL)0x0ceb3a9f, (FIXP_DBL)0x0cf39355,
-    (FIXP_DBL)0x0cfbd42b, (FIXP_DBL)0x0d03fda9, (FIXP_DBL)0x0d0c1050,
-    (FIXP_DBL)0x0d140ca0, (FIXP_DBL)0x0d1bf312, (FIXP_DBL)0x0d23c41d,
-    (FIXP_DBL)0x0d2b8034, (FIXP_DBL)0x0d3327c7, (FIXP_DBL)0x0d3abb40,
-    (FIXP_DBL)0x0d423b08, (FIXP_DBL)0x0d49a785, (FIXP_DBL)0x0d510118,
-    (FIXP_DBL)0x0d584822, (FIXP_DBL)0x0d5f7cff, (FIXP_DBL)0x0d66a009,
-    (FIXP_DBL)0x0d6db197, (FIXP_DBL)0x0d74b1fd, (FIXP_DBL)0x0d7ba190,
-    (FIXP_DBL)0x0d82809d, (FIXP_DBL)0x0d894f75, (FIXP_DBL)0x0d900e61,
-    (FIXP_DBL)0x0d96bdad, (FIXP_DBL)0x0d9d5da0, (FIXP_DBL)0x0da3ee7f,
-    (FIXP_DBL)0x0daa708f, (FIXP_DBL)0x0db0e412, (FIXP_DBL)0x0db74949,
-    (FIXP_DBL)0x0dbda072, (FIXP_DBL)0x0dc3e9ca, (FIXP_DBL)0x0dca258e,
-    (FIXP_DBL)0x0dd053f7, (FIXP_DBL)0x0dd6753e, (FIXP_DBL)0x0ddc899b,
-    (FIXP_DBL)0x0de29143, (FIXP_DBL)0x0de88c6b, (FIXP_DBL)0x0dee7b47,
-    (FIXP_DBL)0x0df45e09, (FIXP_DBL)0x0dfa34e1, (FIXP_DBL)0x0e000000,
-    (FIXP_DBL)0x0e05bf94, (FIXP_DBL)0x0e0b73cb, (FIXP_DBL)0x0e111cd2,
-    (FIXP_DBL)0x0e16bad3, (FIXP_DBL)0x0e1c4dfb, (FIXP_DBL)0x0e21d671,
-    (FIXP_DBL)0x0e275460, (FIXP_DBL)0x0e2cc7ee, (FIXP_DBL)0x0e323143,
-    (FIXP_DBL)0x0e379085, (FIXP_DBL)0x0e3ce5d8, (FIXP_DBL)0x0e423162,
-    (FIXP_DBL)0x0e477346, (FIXP_DBL)0x0e4caba8, (FIXP_DBL)0x0e51daa8,
-    (FIXP_DBL)0x0e570069, (FIXP_DBL)0x0e5c1d0b, (FIXP_DBL)0x0e6130af,
-    (FIXP_DBL)0x0e663b74, (FIXP_DBL)0x0e6b3d79, (FIXP_DBL)0x0e7036db,
-    (FIXP_DBL)0x0e7527b9, (FIXP_DBL)0x0e7a1030, (FIXP_DBL)0x0e7ef05b,
-    (FIXP_DBL)0x0e83c857, (FIXP_DBL)0x0e88983f, (FIXP_DBL)0x0e8d602e,
-    (FIXP_DBL)0x0e92203d, (FIXP_DBL)0x0e96d888, (FIXP_DBL)0x0e9b8926,
-    (FIXP_DBL)0x0ea03232, (FIXP_DBL)0x0ea4d3c2, (FIXP_DBL)0x0ea96df0,
-    (FIXP_DBL)0x0eae00d2, (FIXP_DBL)0x0eb28c7f, (FIXP_DBL)0x0eb7110e,
-    (FIXP_DBL)0x0ebb8e96, (FIXP_DBL)0x0ec0052b, (FIXP_DBL)0x0ec474e4,
-    (FIXP_DBL)0x0ec8ddd4, (FIXP_DBL)0x0ecd4012, (FIXP_DBL)0x0ed19bb0,
-    (FIXP_DBL)0x0ed5f0c4, (FIXP_DBL)0x0eda3f60, (FIXP_DBL)0x0ede8797,
-    (FIXP_DBL)0x0ee2c97d, (FIXP_DBL)0x0ee70525, (FIXP_DBL)0x0eeb3a9f,
-    (FIXP_DBL)0x0eef69ff, (FIXP_DBL)0x0ef39355, (FIXP_DBL)0x0ef7b6b4,
-    (FIXP_DBL)0x0efbd42b, (FIXP_DBL)0x0effebcd, (FIXP_DBL)0x0f03fda9,
-    (FIXP_DBL)0x0f0809cf, (FIXP_DBL)0x0f0c1050, (FIXP_DBL)0x0f10113b,
-    (FIXP_DBL)0x0f140ca0, (FIXP_DBL)0x0f18028d, (FIXP_DBL)0x0f1bf312,
-    (FIXP_DBL)0x0f1fde3d, (FIXP_DBL)0x0f23c41d, (FIXP_DBL)0x0f27a4c0,
-    (FIXP_DBL)0x0f2b8034};
+static const int32_t ldIntCoeff[] = {
+    (int32_t)0x80000001, (int32_t)0x00000000, (int32_t)0x02000000,
+    (int32_t)0x032b8034, (int32_t)0x04000000, (int32_t)0x04a4d3c2,
+    (int32_t)0x052b8034, (int32_t)0x059d5da0, (int32_t)0x06000000,
+    (int32_t)0x06570069, (int32_t)0x06a4d3c2, (int32_t)0x06eb3a9f,
+    (int32_t)0x072b8034, (int32_t)0x0766a009, (int32_t)0x079d5da0,
+    (int32_t)0x07d053f7, (int32_t)0x08000000, (int32_t)0x082cc7ee,
+    (int32_t)0x08570069, (int32_t)0x087ef05b, (int32_t)0x08a4d3c2,
+    (int32_t)0x08c8ddd4, (int32_t)0x08eb3a9f, (int32_t)0x090c1050,
+    (int32_t)0x092b8034, (int32_t)0x0949a785, (int32_t)0x0966a009,
+    (int32_t)0x0982809d, (int32_t)0x099d5da0, (int32_t)0x09b74949,
+    (int32_t)0x09d053f7, (int32_t)0x09e88c6b, (int32_t)0x0a000000,
+    (int32_t)0x0a16bad3, (int32_t)0x0a2cc7ee, (int32_t)0x0a423162,
+    (int32_t)0x0a570069, (int32_t)0x0a6b3d79, (int32_t)0x0a7ef05b,
+    (int32_t)0x0a92203d, (int32_t)0x0aa4d3c2, (int32_t)0x0ab7110e,
+    (int32_t)0x0ac8ddd4, (int32_t)0x0ada3f60, (int32_t)0x0aeb3a9f,
+    (int32_t)0x0afbd42b, (int32_t)0x0b0c1050, (int32_t)0x0b1bf312,
+    (int32_t)0x0b2b8034, (int32_t)0x0b3abb40, (int32_t)0x0b49a785,
+    (int32_t)0x0b584822, (int32_t)0x0b66a009, (int32_t)0x0b74b1fd,
+    (int32_t)0x0b82809d, (int32_t)0x0b900e61, (int32_t)0x0b9d5da0,
+    (int32_t)0x0baa708f, (int32_t)0x0bb74949, (int32_t)0x0bc3e9ca,
+    (int32_t)0x0bd053f7, (int32_t)0x0bdc899b, (int32_t)0x0be88c6b,
+    (int32_t)0x0bf45e09, (int32_t)0x0c000000, (int32_t)0x0c0b73cb,
+    (int32_t)0x0c16bad3, (int32_t)0x0c21d671, (int32_t)0x0c2cc7ee,
+    (int32_t)0x0c379085, (int32_t)0x0c423162, (int32_t)0x0c4caba8,
+    (int32_t)0x0c570069, (int32_t)0x0c6130af, (int32_t)0x0c6b3d79,
+    (int32_t)0x0c7527b9, (int32_t)0x0c7ef05b, (int32_t)0x0c88983f,
+    (int32_t)0x0c92203d, (int32_t)0x0c9b8926, (int32_t)0x0ca4d3c2,
+    (int32_t)0x0cae00d2, (int32_t)0x0cb7110e, (int32_t)0x0cc0052b,
+    (int32_t)0x0cc8ddd4, (int32_t)0x0cd19bb0, (int32_t)0x0cda3f60,
+    (int32_t)0x0ce2c97d, (int32_t)0x0ceb3a9f, (int32_t)0x0cf39355,
+    (int32_t)0x0cfbd42b, (int32_t)0x0d03fda9, (int32_t)0x0d0c1050,
+    (int32_t)0x0d140ca0, (int32_t)0x0d1bf312, (int32_t)0x0d23c41d,
+    (int32_t)0x0d2b8034, (int32_t)0x0d3327c7, (int32_t)0x0d3abb40,
+    (int32_t)0x0d423b08, (int32_t)0x0d49a785, (int32_t)0x0d510118,
+    (int32_t)0x0d584822, (int32_t)0x0d5f7cff, (int32_t)0x0d66a009,
+    (int32_t)0x0d6db197, (int32_t)0x0d74b1fd, (int32_t)0x0d7ba190,
+    (int32_t)0x0d82809d, (int32_t)0x0d894f75, (int32_t)0x0d900e61,
+    (int32_t)0x0d96bdad, (int32_t)0x0d9d5da0, (int32_t)0x0da3ee7f,
+    (int32_t)0x0daa708f, (int32_t)0x0db0e412, (int32_t)0x0db74949,
+    (int32_t)0x0dbda072, (int32_t)0x0dc3e9ca, (int32_t)0x0dca258e,
+    (int32_t)0x0dd053f7, (int32_t)0x0dd6753e, (int32_t)0x0ddc899b,
+    (int32_t)0x0de29143, (int32_t)0x0de88c6b, (int32_t)0x0dee7b47,
+    (int32_t)0x0df45e09, (int32_t)0x0dfa34e1, (int32_t)0x0e000000,
+    (int32_t)0x0e05bf94, (int32_t)0x0e0b73cb, (int32_t)0x0e111cd2,
+    (int32_t)0x0e16bad3, (int32_t)0x0e1c4dfb, (int32_t)0x0e21d671,
+    (int32_t)0x0e275460, (int32_t)0x0e2cc7ee, (int32_t)0x0e323143,
+    (int32_t)0x0e379085, (int32_t)0x0e3ce5d8, (int32_t)0x0e423162,
+    (int32_t)0x0e477346, (int32_t)0x0e4caba8, (int32_t)0x0e51daa8,
+    (int32_t)0x0e570069, (int32_t)0x0e5c1d0b, (int32_t)0x0e6130af,
+    (int32_t)0x0e663b74, (int32_t)0x0e6b3d79, (int32_t)0x0e7036db,
+    (int32_t)0x0e7527b9, (int32_t)0x0e7a1030, (int32_t)0x0e7ef05b,
+    (int32_t)0x0e83c857, (int32_t)0x0e88983f, (int32_t)0x0e8d602e,
+    (int32_t)0x0e92203d, (int32_t)0x0e96d888, (int32_t)0x0e9b8926,
+    (int32_t)0x0ea03232, (int32_t)0x0ea4d3c2, (int32_t)0x0ea96df0,
+    (int32_t)0x0eae00d2, (int32_t)0x0eb28c7f, (int32_t)0x0eb7110e,
+    (int32_t)0x0ebb8e96, (int32_t)0x0ec0052b, (int32_t)0x0ec474e4,
+    (int32_t)0x0ec8ddd4, (int32_t)0x0ecd4012, (int32_t)0x0ed19bb0,
+    (int32_t)0x0ed5f0c4, (int32_t)0x0eda3f60, (int32_t)0x0ede8797,
+    (int32_t)0x0ee2c97d, (int32_t)0x0ee70525, (int32_t)0x0eeb3a9f,
+    (int32_t)0x0eef69ff, (int32_t)0x0ef39355, (int32_t)0x0ef7b6b4,
+    (int32_t)0x0efbd42b, (int32_t)0x0effebcd, (int32_t)0x0f03fda9,
+    (int32_t)0x0f0809cf, (int32_t)0x0f0c1050, (int32_t)0x0f10113b,
+    (int32_t)0x0f140ca0, (int32_t)0x0f18028d, (int32_t)0x0f1bf312,
+    (int32_t)0x0f1fde3d, (int32_t)0x0f23c41d, (int32_t)0x0f27a4c0,
+    (int32_t)0x0f2b8034};
 
 #else
 #error "ldInt table size too small"
@@ -375,13 +375,13 @@ void InitLdInt() { /* nothing to do! Use preinitialized logarithm table */
 #if (LD_INT_TAB_LEN != 0)
 
 LNK_SECTION_CODE_L1
-FIXP_DBL CalcLdInt(INT i) {
+int32_t CalcLdInt(INT i) {
   /* calculates ld(op)/LD_DATA_SCALING */
   /* op is assumed to be an integer value between 1 and LD_INT_TAB_LEN */
 
   FDK_ASSERT((LD_INT_TAB_LEN > 0) &&
-             ((FIXP_DBL)ldIntCoeff[0] ==
-              (FIXP_DBL)0x80000001)); /* tab has to be initialized */
+             ((int32_t)ldIntCoeff[0] ==
+              (int32_t)0x80000001)); /* tab has to be initialized */
 
   if ((i > 0) && (i < LD_INT_TAB_LEN))
     return ldIntCoeff[i];
@@ -399,14 +399,14 @@ FIXP_DBL CalcLdInt(INT i) {
 
 *****************************************************************************/
 
-FIXP_DBL schur_div(FIXP_DBL num, FIXP_DBL denum, INT count) {
+int32_t schur_div(int32_t num, int32_t denum, INT count) {
   INT L_num = (LONG)num >> 1;
   INT L_denum = (LONG)denum >> 1;
   INT div = 0;
   INT k = count;
 
-  FDK_ASSERT(num >= (FIXP_DBL)0);
-  FDK_ASSERT(denum > (FIXP_DBL)0);
+  FDK_ASSERT(num >= (int32_t)0);
+  FDK_ASSERT(denum > (int32_t)0);
   FDK_ASSERT(num <= denum);
 
   if (L_num != 0)
@@ -418,48 +418,48 @@ FIXP_DBL schur_div(FIXP_DBL num, FIXP_DBL denum, INT count) {
         div++;
       }
     }
-  return (FIXP_DBL)(div << (DFRACT_BITS - count));
+  return (int32_t)(div << (DFRACT_BITS - count));
 }
 
 #endif /* !defined(FUNCTION_schur_div) */
 
 #ifndef FUNCTION_fMultNorm
-FIXP_DBL fMultNorm(FIXP_DBL f1, FIXP_DBL f2, INT *result_e) {
+int32_t fMultNorm(int32_t f1, int32_t f2, INT *result_e) {
   INT product = 0;
   INT norm_f1, norm_f2;
 
-  if ((f1 == (FIXP_DBL)0) || (f2 == (FIXP_DBL)0)) {
+  if ((f1 == (int32_t)0) || (f2 == (int32_t)0)) {
     *result_e = 0;
-    return (FIXP_DBL)0;
+    return (int32_t)0;
   }
   norm_f1 = CountLeadingBits(f1);
   f1 = f1 << norm_f1;
   norm_f2 = CountLeadingBits(f2);
   f2 = f2 << norm_f2;
 
-  if ((f1 == (FIXP_DBL)MINVAL_DBL) && (f2 == (FIXP_DBL)MINVAL_DBL)) {
-    product = -((FIXP_DBL)MINVAL_DBL >> 1);
+  if ((f1 == (int32_t)MINVAL_DBL) && (f2 == (int32_t)MINVAL_DBL)) {
+    product = -((int32_t)MINVAL_DBL >> 1);
     *result_e = -(norm_f1 + norm_f2 - 1);
   } else {
     product = fMult(f1, f2);
     *result_e = -(norm_f1 + norm_f2);
   }
 
-  return (FIXP_DBL)product;
+  return (int32_t)product;
 }
 #endif
 
 #ifndef FUNCTION_fDivNorm
-FIXP_DBL fDivNorm(FIXP_DBL L_num, FIXP_DBL L_denum, INT *result_e) {
-  FIXP_DBL div;
+int32_t fDivNorm(int32_t L_num, int32_t L_denum, INT *result_e) {
+  int32_t div;
   INT norm_num, norm_den;
 
-  FDK_ASSERT(L_num >= (FIXP_DBL)0);
-  FDK_ASSERT(L_denum > (FIXP_DBL)0);
+  FDK_ASSERT(L_num >= (int32_t)0);
+  FDK_ASSERT(L_denum > (int32_t)0);
 
-  if (L_num == (FIXP_DBL)0) {
+  if (L_num == (int32_t)0) {
     *result_e = 0;
-    return ((FIXP_DBL)0);
+    return ((int32_t)0);
   }
 
   norm_num = CountLeadingBits(L_num);
@@ -478,9 +478,9 @@ FIXP_DBL fDivNorm(FIXP_DBL L_num, FIXP_DBL L_denum, INT *result_e) {
 #endif /* !FUNCTION_fDivNorm */
 
 #ifndef FUNCTION_fDivNorm
-FIXP_DBL fDivNorm(FIXP_DBL num, FIXP_DBL denom) {
+int32_t fDivNorm(int32_t num, int32_t denom) {
   INT e;
-  FIXP_DBL res;
+  int32_t res;
 
   FDK_ASSERT(denom >= num);
 
@@ -488,8 +488,8 @@ FIXP_DBL fDivNorm(FIXP_DBL num, FIXP_DBL denom) {
 
   /* Avoid overflow since we must output a value with exponent 0
      there is no other choice than saturating to almost 1.0f */
-  if (res == (FIXP_DBL)(1 << (DFRACT_BITS - 2)) && e == 1) {
-    res = (FIXP_DBL)MAXVAL_DBL;
+  if (res == (int32_t)(1 << (DFRACT_BITS - 2)) && e == 1) {
+    res = (int32_t)MAXVAL_DBL;
   } else {
     res = scaleValue(res, e);
   }
@@ -499,24 +499,24 @@ FIXP_DBL fDivNorm(FIXP_DBL num, FIXP_DBL denom) {
 #endif /* !FUNCTION_fDivNorm */
 
 #ifndef FUNCTION_fDivNormSigned
-FIXP_DBL fDivNormSigned(FIXP_DBL num, FIXP_DBL denom) {
+int32_t fDivNormSigned(int32_t num, int32_t denom) {
   INT e;
-  FIXP_DBL res;
+  int32_t res;
   int sign;
 
-  if (denom == (FIXP_DBL)0) {
-    return (FIXP_DBL)MAXVAL_DBL;
+  if (denom == (int32_t)0) {
+    return (int32_t)MAXVAL_DBL;
   }
 
-  sign = ((num >= (FIXP_DBL)0) != (denom >= (FIXP_DBL)0));
+  sign = ((num >= (int32_t)0) != (denom >= (int32_t)0));
   res = fDivNormSigned(num, denom, &e);
 
   /* Saturate since we must output a value with exponent 0 */
   if ((e > 0) && (fAbs(res) >= FL2FXCONST_DBL(0.5))) {
     if (sign) {
-      res = (FIXP_DBL)MINVAL_DBL;
+      res = (int32_t)MINVAL_DBL;
     } else {
-      res = (FIXP_DBL)MAXVAL_DBL;
+      res = (int32_t)MAXVAL_DBL;
     }
   } else {
     res = scaleValue(res, e);
@@ -524,20 +524,20 @@ FIXP_DBL fDivNormSigned(FIXP_DBL num, FIXP_DBL denom) {
 
   return res;
 }
-FIXP_DBL fDivNormSigned(FIXP_DBL L_num, FIXP_DBL L_denum, INT *result_e) {
-  FIXP_DBL div;
+int32_t fDivNormSigned(int32_t L_num, int32_t L_denum, INT *result_e) {
+  int32_t div;
   INT norm_num, norm_den;
   int sign;
 
-  sign = ((L_num >= (FIXP_DBL)0) != (L_denum >= (FIXP_DBL)0));
+  sign = ((L_num >= (int32_t)0) != (L_denum >= (int32_t)0));
 
-  if (L_num == (FIXP_DBL)0) {
+  if (L_num == (int32_t)0) {
     *result_e = 0;
-    return ((FIXP_DBL)0);
+    return ((int32_t)0);
   }
-  if (L_denum == (FIXP_DBL)0) {
+  if (L_denum == (int32_t)0) {
     *result_e = 14;
-    return ((FIXP_DBL)MAXVAL_DBL);
+    return ((int32_t)MAXVAL_DBL);
   }
 
   norm_num = CountLeadingBits(L_num);
@@ -563,16 +563,16 @@ FIXP_DBL fDivNormSigned(FIXP_DBL L_num, FIXP_DBL L_denum, INT *result_e) {
 #endif /* FUNCTION_fDivNormSigned */
 
 #ifndef FUNCTION_fDivNormHighPrec
-FIXP_DBL fDivNormHighPrec(FIXP_DBL num, FIXP_DBL denom, INT *result_e) {
-  FIXP_DBL div;
+int32_t fDivNormHighPrec(int32_t num, int32_t denom, INT *result_e) {
+  int32_t div;
   INT norm_num, norm_den;
 
-  FDK_ASSERT(num >= (FIXP_DBL)0);
-  FDK_ASSERT(denom > (FIXP_DBL)0);
+  FDK_ASSERT(num >= (int32_t)0);
+  FDK_ASSERT(denom > (int32_t)0);
 
-  if (num == (FIXP_DBL)0) {
+  if (num == (int32_t)0) {
     *result_e = 0;
-    return ((FIXP_DBL)0);
+    return ((int32_t)0);
   }
 
   norm_num = CountLeadingBits(num);
@@ -590,14 +590,14 @@ FIXP_DBL fDivNormHighPrec(FIXP_DBL num, FIXP_DBL denom, INT *result_e) {
 #endif /* !FUNCTION_fDivNormHighPrec */
 
 #ifndef FUNCTION_fPow
-FIXP_DBL f2Pow(const FIXP_DBL exp_m, const INT exp_e, INT *result_e) {
-  FIXP_DBL frac_part, result_m;
+int32_t f2Pow(const int32_t exp_m, const INT exp_e, INT *result_e) {
+  int32_t frac_part, result_m;
   INT int_part;
 
   if (exp_e > 0) {
     INT exp_bits = DFRACT_BITS - 1 - exp_e;
     int_part = exp_m >> exp_bits;
-    frac_part = exp_m - (FIXP_DBL)(int_part << exp_bits);
+    frac_part = exp_m - (int32_t)(int_part << exp_bits);
     frac_part = frac_part << exp_e;
   } else {
     int_part = 0;
@@ -619,7 +619,7 @@ FIXP_DBL f2Pow(const FIXP_DBL exp_m, const INT exp_e, INT *result_e) {
 
   /* Evaluate taylor polynomial which approximates 2^x */
   {
-    FIXP_DBL p;
+    int32_t p;
 
     /* result_m ~= 2^frac_part */
     p = frac_part;
@@ -635,8 +635,8 @@ FIXP_DBL f2Pow(const FIXP_DBL exp_m, const INT exp_e, INT *result_e) {
   return result_m;
 }
 
-FIXP_DBL f2Pow(const FIXP_DBL exp_m, const INT exp_e) {
-  FIXP_DBL result_m;
+int32_t f2Pow(const int32_t exp_m, const INT exp_e) {
+  int32_t result_m;
   INT result_e;
 
   result_m = f2Pow(exp_m, exp_e, &result_e);
@@ -645,13 +645,13 @@ FIXP_DBL f2Pow(const FIXP_DBL exp_m, const INT exp_e) {
   return scaleValue(result_m, result_e);
 }
 
-FIXP_DBL fPow(FIXP_DBL base_m, INT base_e, FIXP_DBL exp_m, INT exp_e,
+int32_t fPow(int32_t base_m, INT base_e, int32_t exp_m, INT exp_e,
               INT *result_e) {
   INT ans_lg2_e, baselg2_e;
-  FIXP_DBL base_lg2, ans_lg2, result;
+  int32_t base_lg2, ans_lg2, result;
 
-  if (base_m <= (FIXP_DBL)0) {
-    result = (FIXP_DBL)0;
+  if (base_m <= (int32_t)0) {
+    result = (int32_t)0;
     *result_e = 0;
     return result;
   }
@@ -678,10 +678,10 @@ FIXP_DBL fPow(FIXP_DBL base_m, INT base_e, FIXP_DBL exp_m, INT exp_e,
   return result;
 }
 
-FIXP_DBL fLdPow(FIXP_DBL baseLd_m, INT baseLd_e, FIXP_DBL exp_m, INT exp_e,
+int32_t fLdPow(int32_t baseLd_m, INT baseLd_e, int32_t exp_m, INT exp_e,
                 INT *result_e) {
   INT ans_lg2_e;
-  FIXP_DBL ans_lg2, result;
+  int32_t ans_lg2, result;
 
   /* Prepare exp */
   {
@@ -702,8 +702,8 @@ FIXP_DBL fLdPow(FIXP_DBL baseLd_m, INT baseLd_e, FIXP_DBL exp_m, INT exp_e,
   return result;
 }
 
-FIXP_DBL fLdPow(FIXP_DBL baseLd_m, INT baseLd_e, FIXP_DBL exp_m, INT exp_e) {
-  FIXP_DBL result_m;
+int32_t fLdPow(int32_t baseLd_m, INT baseLd_e, int32_t exp_m, INT exp_e) {
+  int32_t result_m;
   int result_e;
 
   result_m = fLdPow(baseLd_m, baseLd_e, exp_m, exp_e, &result_e);
@@ -711,13 +711,13 @@ FIXP_DBL fLdPow(FIXP_DBL baseLd_m, INT baseLd_e, FIXP_DBL exp_m, INT exp_e) {
   return SATURATE_SHIFT(result_m, -result_e, DFRACT_BITS);
 }
 
-FIXP_DBL fPowInt(FIXP_DBL base_m, INT base_e, INT exp, INT *pResult_e) {
-  FIXP_DBL result;
+int32_t fPowInt(int32_t base_m, INT base_e, INT exp, INT *pResult_e) {
+  int32_t result;
 
   if (exp != 0) {
     INT result_e = 0;
 
-    if (base_m != (FIXP_DBL)0) {
+    if (base_m != (int32_t)0) {
       {
         INT leadingBits;
         leadingBits = CountLeadingBits(base_m);
@@ -747,7 +747,7 @@ FIXP_DBL fPowInt(FIXP_DBL base_m, INT base_e, INT exp, INT *pResult_e) {
       result_e += exp * base_e;
 
     } else {
-      result = (FIXP_DBL)0;
+      result = (int32_t)0;
     }
     *pResult_e = result_e;
   } else {
@@ -760,25 +760,25 @@ FIXP_DBL fPowInt(FIXP_DBL base_m, INT base_e, INT exp, INT *pResult_e) {
 #endif /* FUNCTION_fPow */
 
 #ifndef FUNCTION_fLog2
-FIXP_DBL CalcLog2(FIXP_DBL base_m, INT base_e, INT *result_e) {
+int32_t CalcLog2(int32_t base_m, INT base_e, INT *result_e) {
   return fLog2(base_m, base_e, result_e);
 }
 #endif /* FUNCTION_fLog2 */
 
-INT fixp_floorToInt(FIXP_DBL f_inp, INT sf) {
+INT fixp_floorToInt(int32_t f_inp, INT sf) {
   FDK_ASSERT(sf >= 0);
   INT floorInt = (INT)(f_inp >> ((DFRACT_BITS - 1) - sf));
   return floorInt;
 }
 
-FIXP_DBL fixp_floor(FIXP_DBL f_inp, INT sf) {
+int32_t fixp_floor(int32_t f_inp, INT sf) {
   FDK_ASSERT(sf >= 0);
   INT floorInt = fixp_floorToInt(f_inp, sf);
-  FIXP_DBL f_floor = (FIXP_DBL)(floorInt << ((DFRACT_BITS - 1) - sf));
+  int32_t f_floor = (int32_t)(floorInt << ((DFRACT_BITS - 1) - sf));
   return f_floor;
 }
 
-INT fixp_ceilToInt(FIXP_DBL f_inp, INT sf)  // sf  mantissaBits left of dot
+INT fixp_ceilToInt(int32_t f_inp, INT sf)  // sf  mantissaBits left of dot
 {
   FDK_ASSERT(sf >= 0);
   INT sx = (DFRACT_BITS - 1) - sf;  // sx  mantissaBits right of dot
@@ -795,7 +795,7 @@ INT fixp_ceilToInt(FIXP_DBL f_inp, INT sf)  // sf  mantissaBits left of dot
   return ceilInt;
 }
 
-FIXP_DBL fixp_ceil(FIXP_DBL f_inp, INT sf) {
+int32_t fixp_ceil(int32_t f_inp, INT sf) {
   FDK_ASSERT(sf >= 0);
   INT sx = (DFRACT_BITS - 1) - sf;
   INT ceilInt = fixp_ceilToInt(f_inp, sf);
@@ -806,7 +806,7 @@ FIXP_DBL fixp_ceil(FIXP_DBL f_inp, INT sf) {
   if ((f_inp > FL2FXCONST_DBL(0.0f)) && (ceilInt & mask)) {
     --ceilInt;
   }
-  FIXP_DBL f_ceil = (FIXP_DBL)ceilInt;
+  int32_t f_ceil = (int32_t)ceilInt;
 
   return f_ceil;
 }
@@ -819,7 +819,7 @@ FIXP_DBL fixp_ceil(FIXP_DBL f_inp, INT sf) {
 
    returns INT
 *****************************************************************************/
-INT fixp_truncateToInt(FIXP_DBL f_inp, INT sf)  // sf  mantissaBits left  of dot
+INT fixp_truncateToInt(int32_t f_inp, INT sf)  // sf  mantissaBits left  of dot
                                                 // (without sign)  e.g. at width
                                                 // 32 this would be [sign]7.
                                                 // supposed sf equals 8.
@@ -843,12 +843,12 @@ INT fixp_truncateToInt(FIXP_DBL f_inp, INT sf)  // sf  mantissaBits left  of dot
    fixp_truncate()
      Just remove the fractional part which is located right of decimal point
 
-   returns FIXP_DBL
+   returns int32_t
 *****************************************************************************/
-FIXP_DBL fixp_truncate(FIXP_DBL f_inp, INT sf) {
+int32_t fixp_truncate(int32_t f_inp, INT sf) {
   FDK_ASSERT(sf >= 0);
   INT truncateInt = fixp_truncateToInt(f_inp, sf);
-  FIXP_DBL f_truncate = (FIXP_DBL)(truncateInt << ((DFRACT_BITS - 1) - sf));
+  int32_t f_truncate = (int32_t)(truncateInt << ((DFRACT_BITS - 1) - sf));
   return f_truncate;
 }
 
@@ -859,7 +859,7 @@ FIXP_DBL fixp_truncate(FIXP_DBL f_inp, INT sf) {
     See fct roundRef() [which is the reference]
   returns INT
 *****************************************************************************/
-INT fixp_roundToInt(FIXP_DBL f_inp, INT sf) {
+INT fixp_roundToInt(int32_t f_inp, INT sf) {
   FDK_ASSERT(sf >= 0);
   INT sx = DFRACT_BITS - 1 - sf;
   INT inp = (INT)f_inp;
@@ -888,9 +888,9 @@ INT fixp_roundToInt(FIXP_DBL f_inp, INT sf) {
     round [typical rounding]
 
     See fct roundRef() [which is the reference]
-  returns FIXP_DBL
+  returns int32_t
 *****************************************************************************/
-FIXP_DBL fixp_round(FIXP_DBL f_inp, INT sf) {
+int32_t fixp_round(int32_t f_inp, INT sf) {
   FDK_ASSERT(sf >= 0);
   INT sx = DFRACT_BITS - 1 - sf;
   INT r = fixp_roundToInt(f_inp, sf);
@@ -901,6 +901,6 @@ FIXP_DBL fixp_round(FIXP_DBL f_inp, INT sf) {
     --r;
   }
 
-  FIXP_DBL f_round = (FIXP_DBL)r;
+  int32_t f_round = (int32_t)r;
   return f_round;
 }

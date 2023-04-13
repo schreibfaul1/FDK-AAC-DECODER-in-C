@@ -118,7 +118,7 @@ amm-info@iis.fraunhofer.de
 #define QAS_BITS SAMPLE_BITS
 #define INT_PCM_QMFIN INT_PCM
 
-#define FIXP_QSS FIXP_DBL
+#define FIXP_QSS int32_t
 #define QSS_BITS DFRACT_BITS
 
 /* Flags for QMF intialization */
@@ -179,7 +179,7 @@ struct QMF_FILTER_BANK {
 
   void *FilterStates;    /*!< Pointer to buffer of filter states
                               FIXP_PCM in analyse and
-                              FIXP_DBL in synthesis filter */
+                              int32_t in synthesis filter */
   int FilterSize;        /*!< Size of prototype filter. */
   const FIXP_QTW *t_cos; /*!< Modulation tables. */
   const FIXP_QTW *t_sin;
@@ -192,7 +192,7 @@ struct QMF_FILTER_BANK {
 
   int synScalefactor; /*!< Scale factor of synthesis qmf (syn only) */
   int outScalefactor; /*!< Scale factor of output data (syn only) */
-  FIXP_DBL outGain_m; /*!< Mantissa of gain output data (syn only) (init with
+  int32_t outGain_m; /*!< Mantissa of gain output data (syn only) (init with
                          0x80000000 to ignore) */
   int outGain_e;      /*!< Exponent of gain output data (syn only) */
 
@@ -214,7 +214,7 @@ int qmfInitAnalysisFilterBank(
 
 int qmfInitAnalysisFilterBank(
     HANDLE_QMF_FILTER_BANK h_Qmf, /*!< QMF Handle */
-    FIXP_DBL *pFilterStates,      /*!< Pointer to filter state buffer */
+    int32_t *pFilterStates,      /*!< Pointer to filter state buffer */
     int noCols,                   /*!< Number of time slots  */
     int lsb,                      /*!< Number of lower bands */
     int usb,                      /*!< Number of upper bands */
@@ -224,45 +224,45 @@ int qmfInitAnalysisFilterBank(
 
 void qmfAnalysisFiltering(
     HANDLE_QMF_FILTER_BANK anaQmf, /*!< Handle of Qmf Analysis Bank   */
-    FIXP_DBL **qmfReal,            /*!< Pointer to real subband slots */
-    FIXP_DBL **qmfImag,            /*!< Pointer to imag subband slots */
+    int32_t **qmfReal,            /*!< Pointer to real subband slots */
+    int32_t **qmfImag,            /*!< Pointer to imag subband slots */
     QMF_SCALE_FACTOR *scaleFactor, /*!< Scale factors of QMF data     */
     const INT_PCM *timeIn,         /*!< Time signal */
     const int timeIn_e,            /*!< Exponent of audio data        */
     const int stride,              /*!< Stride factor of audio data   */
-    FIXP_DBL *pWorkBuffer          /*!< pointer to temporal working buffer */
+    int32_t *pWorkBuffer          /*!< pointer to temporal working buffer */
 );
 #if SAMPLE_BITS == 16
 
 void qmfAnalysisFiltering(
     HANDLE_QMF_FILTER_BANK anaQmf, /*!< Handle of Qmf Analysis Bank   */
-    FIXP_DBL **qmfReal,            /*!< Pointer to real subband slots */
-    FIXP_DBL **qmfImag,            /*!< Pointer to imag subband slots */
+    int32_t **qmfReal,            /*!< Pointer to real subband slots */
+    int32_t **qmfImag,            /*!< Pointer to imag subband slots */
     QMF_SCALE_FACTOR *scaleFactor, /*!< Scale factors of QMF data     */
     const LONG *timeIn,            /*!< Time signal */
     const int timeIn_e,            /*!< Exponent of audio data        */
     const int stride,              /*!< Stride factor of audio data   */
-    FIXP_DBL *pWorkBuffer          /*!< pointer to temporary working buffer */
+    int32_t *pWorkBuffer          /*!< pointer to temporary working buffer */
 );
 #endif
 
 void qmfAnalysisFilteringSlot(
     HANDLE_QMF_FILTER_BANK anaQmf, /*!< Handle of Qmf Synthesis Bank  */
-    FIXP_DBL *qmfReal,             /*!< Low and High band, real */
-    FIXP_DBL *qmfImag,             /*!< Low and High band, imag */
+    int32_t *qmfReal,             /*!< Low and High band, real */
+    int32_t *qmfImag,             /*!< Low and High band, imag */
     const INT_PCM *timeIn,         /*!< Pointer to input */
     const int stride,              /*!< stride factor of input */
-    FIXP_DBL *pWorkBuffer          /*!< pointer to temporal working buffer */
+    int32_t *pWorkBuffer          /*!< pointer to temporal working buffer */
 );
 #if SAMPLE_BITS == 16
 
 void qmfAnalysisFilteringSlot(
     HANDLE_QMF_FILTER_BANK anaQmf, /*!< Handle of Qmf Synthesis Bank  */
-    FIXP_DBL *qmfReal,             /*!< Low and High band, real */
-    FIXP_DBL *qmfImag,             /*!< Low and High band, imag */
+    int32_t *qmfReal,             /*!< Low and High band, real */
+    int32_t *qmfImag,             /*!< Low and High band, imag */
     const LONG *timeIn,            /*!< Pointer to input */
     const int stride,              /*!< stride factor of input */
-    FIXP_DBL *pWorkBuffer          /*!< pointer to temporary working buffer */
+    int32_t *pWorkBuffer          /*!< pointer to temporary working buffer */
 );
 #endif
 
@@ -277,43 +277,43 @@ int qmfInitSynthesisFilterBank(
 
 void qmfSynthesisFiltering(
     HANDLE_QMF_FILTER_BANK synQmf,       /*!< Handle of Qmf Synthesis Bank  */
-    FIXP_DBL **QmfBufferReal,            /*!< Pointer to real subband slots */
-    FIXP_DBL **QmfBufferImag,            /*!< Pointer to imag subband slots */
+    int32_t **QmfBufferReal,            /*!< Pointer to real subband slots */
+    int32_t **QmfBufferImag,            /*!< Pointer to imag subband slots */
     const QMF_SCALE_FACTOR *scaleFactor, /*!< Scale factors of QMF data     */
     const int ov_len,                    /*!< Length of band overlap        */
     INT_PCM *timeOut,                    /*!< Time signal */
     const INT stride,                    /*!< Stride factor of audio data   */
-    FIXP_DBL *pWorkBuffer /*!< pointer to temporary working buffer. It must be
+    int32_t *pWorkBuffer /*!< pointer to temporary working buffer. It must be
                              aligned */
 );
 #if SAMPLE_BITS == 16
 
 void qmfSynthesisFiltering(
     HANDLE_QMF_FILTER_BANK synQmf,       /*!< Handle of Qmf Synthesis Bank  */
-    FIXP_DBL **QmfBufferReal,            /*!< Pointer to real subband slots */
-    FIXP_DBL **QmfBufferImag,            /*!< Pointer to imag subband slots */
+    int32_t **QmfBufferReal,            /*!< Pointer to real subband slots */
+    int32_t **QmfBufferImag,            /*!< Pointer to imag subband slots */
     const QMF_SCALE_FACTOR *scaleFactor, /*!< Scale factors of QMF data     */
     const int ov_len,                    /*!< Length of band overlap        */
     LONG *timeOut,                       /*!< Time signal */
     const int timeOut_e,                 /*!< Target exponent for timeOut  */
-    FIXP_DBL *pWorkBuffer /*!< pointer to temporary working buffer */
+    int32_t *pWorkBuffer /*!< pointer to temporary working buffer */
 );
 #endif
 
 void qmfSynthesisFilteringSlot(HANDLE_QMF_FILTER_BANK synQmf,
-                               const FIXP_DBL *realSlot,
-                               const FIXP_DBL *imagSlot,
+                               const int32_t *realSlot,
+                               const int32_t *imagSlot,
                                const int scaleFactorLowBand,
                                const int scaleFactorHighBand, INT_PCM *timeOut,
-                               const int timeOut_e, FIXP_DBL *pWorkBuffer);
+                               const int timeOut_e, int32_t *pWorkBuffer);
 #if SAMPLE_BITS == 16
 
 void qmfSynthesisFilteringSlot(HANDLE_QMF_FILTER_BANK synQmf,
-                               const FIXP_DBL *realSlot,
-                               const FIXP_DBL *imagSlot,
+                               const int32_t *realSlot,
+                               const int32_t *imagSlot,
                                const int scaleFactorLowBand,
                                const int scaleFactorHighBand, LONG *timeOut,
-                               const int timeOut_e, FIXP_DBL *pWorkBuffer);
+                               const int timeOut_e, int32_t *pWorkBuffer);
 #endif
 
 void qmfChangeOutScalefactor(
@@ -327,7 +327,7 @@ int qmfGetOutScalefactor(
 
 void qmfChangeOutGain(
     HANDLE_QMF_FILTER_BANK synQmf, /*!< Handle of Qmf Synthesis Bank */
-    FIXP_DBL outputGain,           /*!< New gain for output data (mantissa) */
+    int32_t outputGain,           /*!< New gain for output data (mantissa) */
     int outputGainScale            /*!< New gain for output data (exponent) */
 );
 

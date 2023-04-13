@@ -124,8 +124,8 @@ amm-info@iis.fraunhofer.de
  *
  * \return Interpolated parameter value.
  */
-FDK_INLINE FIXP_DBL interpolateParameter(const FIXP_SGL alpha, const FIXP_DBL a,
-                                         const FIXP_DBL b) {
+FDK_INLINE int32_t interpolateParameter(const FIXP_SGL alpha, const int32_t a,
+                                         const int32_t b) {
   return (b - fMult(alpha, b) + fMult(alpha, a));
 }
 
@@ -146,9 +146,9 @@ static UINT mapChannel(spatialDec *self, UINT ch) {
   return (chanelIdx[idx][ch]);
 }
 
-FIXP_DBL getChGain(spatialDec *self, UINT ch, INT *scale) {
+int32_t getChGain(spatialDec *self, UINT ch, INT *scale) {
   /* init no gain modifier */
-  FIXP_DBL gain = 0x80000000;
+  int32_t gain = 0x80000000;
   *scale = 0;
 
   if ((!isTwoChMode(self->upmixType)) &&
@@ -163,7 +163,7 @@ FIXP_DBL getChGain(spatialDec *self, UINT ch, INT *scale) {
 
 SACDEC_ERROR SpatialDecQMFAnalysis(spatialDec *self, const PCM_MPS *inData,
                                    const INT ts, const INT bypassMode,
-                                   FIXP_DBL **qmfReal, FIXP_DBL **qmfImag,
+                                   int32_t **qmfReal, int32_t **qmfImag,
                                    const int numInputChannels) {
   SACDEC_ERROR err = MPS_OK;
   int ch, offset;
@@ -175,8 +175,8 @@ SACDEC_ERROR SpatialDecQMFAnalysis(spatialDec *self, const PCM_MPS *inData,
     for (ch = 0; ch < numInputChannels; ch++) {
       const PCM_MPS *inSamples =
           &inData[ts * self->pQmfDomain->globalConf.nBandsAnalysis];
-      FIXP_DBL *pQmfRealAnalysis = qmfReal[ch]; /* no delay in blind mode */
-      FIXP_DBL *pQmfImagAnalysis = qmfImag[ch];
+      int32_t *pQmfRealAnalysis = qmfReal[ch]; /* no delay in blind mode */
+      int32_t *pQmfImagAnalysis = qmfImag[ch];
 
       CalculateSpaceAnalysisQmf(&self->pQmfDomain->QmfDomainIn[ch].fb,
                                 inSamples + (ch * offset), pQmfRealAnalysis,
@@ -202,19 +202,19 @@ SACDEC_ERROR SpatialDecQMFAnalysis(spatialDec *self, const PCM_MPS *inData,
   return err;
 }
 
-SACDEC_ERROR SpatialDecFeedQMF(spatialDec *self, FIXP_DBL **qmfInDataReal,
-                               FIXP_DBL **qmfInDataImag, const INT ts,
-                               const INT bypassMode, FIXP_DBL **qmfReal__FDK,
-                               FIXP_DBL **qmfImag__FDK,
+SACDEC_ERROR SpatialDecFeedQMF(spatialDec *self, int32_t **qmfInDataReal,
+                               int32_t **qmfInDataImag, const INT ts,
+                               const INT bypassMode, int32_t **qmfReal__FDK,
+                               int32_t **qmfImag__FDK,
                                const INT numInputChannels) {
   SACDEC_ERROR err = MPS_OK;
   int ch;
 
   {
     for (ch = 0; ch < numInputChannels; ch++) {
-      FIXP_DBL *pQmfRealAnalysis =
+      int32_t *pQmfRealAnalysis =
           qmfReal__FDK[ch]; /* no delay in blind mode */
-      FIXP_DBL *pQmfImagAnalysis = qmfImag__FDK[ch];
+      int32_t *pQmfImagAnalysis = qmfImag__FDK[ch];
 
       /* Write Input data to pQmfRealAnalysis. */
       if (self->bShareDelayWithSBR) {
@@ -277,10 +277,10 @@ self->hybInputImag[MAX_INPUT_CHANNELS][MAX_TIME_SLOTS][MAX_HYBRID_BANDS];
 
 
 *******************************************************************************/
-SACDEC_ERROR SpatialDecHybridAnalysis(spatialDec *self, FIXP_DBL **qmfInputReal,
-                                      FIXP_DBL **qmfInputImag,
-                                      FIXP_DBL **hybOutputReal,
-                                      FIXP_DBL **hybOutputImag, const INT ts,
+SACDEC_ERROR SpatialDecHybridAnalysis(spatialDec *self, int32_t **qmfInputReal,
+                                      int32_t **qmfInputImag,
+                                      int32_t **hybOutputReal,
+                                      int32_t **hybOutputImag, const INT ts,
                                       const INT numInputChannels) {
   SACDEC_ERROR err = MPS_OK;
   int ch;
@@ -318,9 +318,9 @@ SACDEC_ERROR SpatialDecHybridAnalysis(spatialDec *self, FIXP_DBL **qmfInputReal,
   return err;
 }
 
-SACDEC_ERROR SpatialDecCreateX(spatialDec *self, FIXP_DBL **hybInputReal,
-                               FIXP_DBL **hybInputImag, FIXP_DBL **pxReal,
-                               FIXP_DBL **pxImag) {
+SACDEC_ERROR SpatialDecCreateX(spatialDec *self, int32_t **hybInputReal,
+                               int32_t **hybInputImag, int32_t **pxReal,
+                               int32_t **pxImag) {
   SACDEC_ERROR err = MPS_OK;
   int row;
 
@@ -335,8 +335,8 @@ SACDEC_ERROR SpatialDecCreateX(spatialDec *self, FIXP_DBL **hybInputReal,
 }
 
 static void M2ParamToKernelMult(FIXP_SGL *RESTRICT pKernel,
-                                FIXP_DBL *RESTRICT Mparam,
-                                FIXP_DBL *RESTRICT MparamPrev,
+                                int32_t *RESTRICT Mparam,
+                                int32_t *RESTRICT MparamPrev,
                                 int *RESTRICT pWidth, FIXP_SGL alpha__FDK,
                                 int nBands) {
   int pb;
@@ -361,19 +361,19 @@ static void M2ParamToKernelMult(FIXP_SGL *RESTRICT pKernel,
 }
 
 SACDEC_ERROR SpatialDecApplyM1_CreateW_Mode212(
-    spatialDec *self, const SPATIAL_BS_FRAME *frame, FIXP_DBL **xReal,
-    FIXP_DBL **xImag, FIXP_DBL **vReal, FIXP_DBL **vImag) {
+    spatialDec *self, const SPATIAL_BS_FRAME *frame, int32_t **xReal,
+    int32_t **xImag, int32_t **vReal, int32_t **vImag) {
   SACDEC_ERROR err = MPS_OK;
   int res;
-  FIXP_DBL *decorrInReal = vReal[0];
-  FIXP_DBL *decorrInImag = vImag[0];
+  int32_t *decorrInReal = vReal[0];
+  int32_t *decorrInImag = vImag[0];
 
   /* M1 does not do anything in 212 mode, so use simplified processing */
   FDK_ASSERT(self->numVChannels == 2);
   FDK_ASSERT(self->numDirektSignals == 1);
   FDK_ASSERT(self->numDecorSignals == 1);
-  FDKmemcpy(vReal[0], xReal[0], self->hybridBands * sizeof(FIXP_DBL));
-  FDKmemcpy(vImag[0], xImag[0], self->hybridBands * sizeof(FIXP_DBL));
+  FDKmemcpy(vReal[0], xReal[0], self->hybridBands * sizeof(int32_t));
+  FDKmemcpy(vImag[0], xImag[0], self->hybridBands * sizeof(int32_t));
 
   if (isTsdActive(frame->TsdData)) {
     /* Generate v_{x,nonTr} as input for allpass based decorrelator */
@@ -402,19 +402,19 @@ SACDEC_ERROR SpatialDecApplyM1_CreateW_Mode212(
   if (self->residualBands[res] > 0) {
     int stopBand = self->param2hyb[self->residualBands[res]];
     FDKmemcpy(vReal[1], self->hybResidualReal__FDK[res],
-              fixMin(stopBand, self->hybridBands) * sizeof(FIXP_DBL));
+              fixMin(stopBand, self->hybridBands) * sizeof(int32_t));
     FDKmemcpy(vImag[1], self->hybResidualImag__FDK[res],
-              fixMin(stopBand, self->hybridBands) * sizeof(FIXP_DBL));
+              fixMin(stopBand, self->hybridBands) * sizeof(int32_t));
   } /* (self->residualBands[res]>0) */
 
   return err;
 }
 
 SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, INT ps,
-                                       const FIXP_SGL alpha, FIXP_DBL **wReal,
-                                       FIXP_DBL **wImag,
-                                       FIXP_DBL **hybOutputRealDry,
-                                       FIXP_DBL **hybOutputImagDry) {
+                                       const FIXP_SGL alpha, int32_t **wReal,
+                                       int32_t **wImag,
+                                       int32_t **hybOutputRealDry,
+                                       int32_t **hybOutputImagDry) {
   SACDEC_ERROR err = MPS_OK;
   INT row;
 
@@ -428,20 +428,20 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, INT ps,
 
   for (row = 0; row < max_row; row++)  // 2 times
   {
-    FIXP_DBL *Mparam0 = self->M2Real__FDK[row][0];
-    FIXP_DBL *Mparam1 = self->M2Real__FDK[row][1];
-    FIXP_DBL *MparamPrev0 = self->M2RealPrev__FDK[row][0];
-    FIXP_DBL *MparamPrev1 = self->M2RealPrev__FDK[row][1];
+    int32_t *Mparam0 = self->M2Real__FDK[row][0];
+    int32_t *Mparam1 = self->M2Real__FDK[row][1];
+    int32_t *MparamPrev0 = self->M2RealPrev__FDK[row][0];
+    int32_t *MparamPrev1 = self->M2RealPrev__FDK[row][1];
 
-    FIXP_DBL *RESTRICT pHybOutRealDry = hybOutputRealDry[row];
-    FIXP_DBL *RESTRICT pHybOutImagDry = hybOutputImagDry[row];
+    int32_t *RESTRICT pHybOutRealDry = hybOutputRealDry[row];
+    int32_t *RESTRICT pHybOutImagDry = hybOutputImagDry[row];
 
-    FIXP_DBL *RESTRICT pWReal0 = wReal[0];
-    FIXP_DBL *RESTRICT pWReal1 = wReal[1];
-    FIXP_DBL *RESTRICT pWImag0 = wImag[0];
-    FIXP_DBL *RESTRICT pWImag1 = wImag[1];
+    int32_t *RESTRICT pWReal0 = wReal[0];
+    int32_t *RESTRICT pWReal1 = wReal[1];
+    int32_t *RESTRICT pWImag0 = wImag[0];
+    int32_t *RESTRICT pWImag1 = wImag[1];
     for (INT pb = 0; pb < pb_max; pb++) {
-      FIXP_DBL tmp0, tmp1;
+      int32_t tmp0, tmp1;
 
       tmp0 = interpolateParameter(alpha, Mparam0[pb], MparamPrev0[pb]);
       tmp1 = interpolateParameter(alpha, Mparam1[pb], MparamPrev1[pb]);
@@ -450,7 +450,7 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, INT ps,
 
       do  // about 3-4 times
       {
-        FIXP_DBL var0, var1, real, imag;
+        int32_t var0, var1, real, imag;
 
         var0 = *pWReal0++;
         var1 = *pWReal1++;
@@ -469,9 +469,9 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, INT ps,
 }
 
 SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
-    spatialDec *self, INT ps, const FIXP_SGL alpha, FIXP_DBL **wReal,
-    FIXP_DBL **wImag, FIXP_DBL **hybOutputRealDry,
-    FIXP_DBL **hybOutputImagDry) {
+    spatialDec *self, INT ps, const FIXP_SGL alpha, int32_t **wReal,
+    int32_t **wImag, int32_t **hybOutputRealDry,
+    int32_t **hybOutputImagDry) {
   SACDEC_ERROR err = MPS_OK;
   INT row;
   INT scale_param_m2;
@@ -483,30 +483,30 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
   for (row = 0; row < self->numM2rows; row++) {
     INT qs, pb;
 
-    FIXP_DBL *RESTRICT pWReal0 = wReal[0];
-    FIXP_DBL *RESTRICT pWImag0 = wImag[0];
-    FIXP_DBL *RESTRICT pWReal1 = wReal[1];
-    FIXP_DBL *RESTRICT pWImag1 = wImag[1];
+    int32_t *RESTRICT pWReal0 = wReal[0];
+    int32_t *RESTRICT pWImag0 = wImag[0];
+    int32_t *RESTRICT pWReal1 = wReal[1];
+    int32_t *RESTRICT pWImag1 = wImag[1];
 
-    FIXP_DBL *MReal0 = self->M2Real__FDK[row][0];
-    FIXP_DBL *MImag0 = self->M2Imag__FDK[row][0];
-    FIXP_DBL *MReal1 = self->M2Real__FDK[row][1];
-    FIXP_DBL *MRealPrev0 = self->M2RealPrev__FDK[row][0];
-    FIXP_DBL *MImagPrev0 = self->M2ImagPrev__FDK[row][0];
-    FIXP_DBL *MRealPrev1 = self->M2RealPrev__FDK[row][1];
+    int32_t *MReal0 = self->M2Real__FDK[row][0];
+    int32_t *MImag0 = self->M2Imag__FDK[row][0];
+    int32_t *MReal1 = self->M2Real__FDK[row][1];
+    int32_t *MRealPrev0 = self->M2RealPrev__FDK[row][0];
+    int32_t *MImagPrev0 = self->M2ImagPrev__FDK[row][0];
+    int32_t *MRealPrev1 = self->M2RealPrev__FDK[row][1];
 
-    FIXP_DBL *RESTRICT pHybOutRealDry = hybOutputRealDry[row];
-    FIXP_DBL *RESTRICT pHybOutImagDry = hybOutputImagDry[row];
+    int32_t *RESTRICT pHybOutRealDry = hybOutputRealDry[row];
+    int32_t *RESTRICT pHybOutImagDry = hybOutputImagDry[row];
 
     FDK_ASSERT(!(self->pConfigCurrent->syntaxFlags & SACDEC_SYNTAX_LD));
     FDK_ASSERT((pWidth[0] + pWidth[1]) >= 3);
 
     for (pb = 0, qs = 3; pb < 2; pb++) {
       INT s;
-      FIXP_DBL maxVal;
-      FIXP_DBL mReal1;
-      FIXP_DBL mReal0, mImag0;
-      FIXP_DBL iReal0, iImag0, iReal1;
+      int32_t maxVal;
+      int32_t mReal1;
+      int32_t mReal0, mImag0;
+      int32_t iReal0, iImag0, iReal1;
 
       iReal0 = interpolateParameter(alpha, MReal0[pb], MRealPrev0[pb]);
       iImag0 = -interpolateParameter(alpha, MImag0[pb], MImagPrev0[pb]);
@@ -527,7 +527,7 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
       INT i = pWidth[pb];
 
       do {
-        FIXP_DBL real, imag, wReal0, wImag0, wReal1, wImag1;
+        int32_t real, imag, wReal0, wImag0, wReal1, wImag1;
 
         wReal0 = *pWReal0++;
         wImag0 = *pWImag0++;
@@ -548,10 +548,10 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
 
     for (; pb < pb_max; pb++) {
       INT s;
-      FIXP_DBL maxVal;
+      int32_t maxVal;
       FIXP_SGL mReal1;
       FIXP_SGL mReal0, mImag0;
-      FIXP_DBL iReal0, iImag0, iReal1;
+      int32_t iReal0, iImag0, iReal1;
 
       iReal0 = interpolateParameter(alpha, MReal0[pb], MRealPrev0[pb]);
       iImag0 = interpolateParameter(alpha, MImag0[pb], MImagPrev0[pb]);
@@ -572,7 +572,7 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
       INT i = pWidth[pb];
 
       do {
-        FIXP_DBL real, imag, wReal0, wImag0, wReal1, wImag1;
+        int32_t real, imag, wReal0, wImag0, wReal1, wImag1;
 
         wReal0 = *pWReal0++;
         wImag0 = *pWImag0++;
@@ -591,11 +591,11 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
 }
 
 SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
-                               FIXP_DBL **wReal, FIXP_DBL **wImag,
-                               FIXP_DBL **hybOutputRealDry,
-                               FIXP_DBL **hybOutputImagDry,
-                               FIXP_DBL **hybOutputRealWet,
-                               FIXP_DBL **hybOutputImagWet) {
+                               int32_t **wReal, int32_t **wImag,
+                               int32_t **hybOutputRealDry,
+                               int32_t **hybOutputImagDry,
+                               int32_t **hybOutputRealWet,
+                               int32_t **hybOutputImagWet) {
   SACDEC_ERROR err = MPS_OK;
 
   {
@@ -606,7 +606,7 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
     int toolsDisabled;
 
     UCHAR activParamBands;
-    FIXP_DBL *RESTRICT pWReal, *RESTRICT pWImag, *RESTRICT pHybOutRealDry,
+    int32_t *RESTRICT pWReal, *RESTRICT pWImag, *RESTRICT pHybOutRealDry,
         *RESTRICT pHybOutImagDry, *RESTRICT pHybOutRealWet,
         *RESTRICT pHybOutImagWet;
     C_ALLOC_SCRATCH_START(pKernel, FIXP_SGL, MAX_HYBRID_BANDS);
@@ -623,19 +623,19 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
 
     FDKmemclear(hybOutputImagDry[0],
                 self->createParams.maxNumOutputChannels *
-                    self->createParams.maxNumCmplxHybBands * sizeof(FIXP_DBL));
+                    self->createParams.maxNumCmplxHybBands * sizeof(int32_t));
     FDKmemclear(hybOutputRealDry[0], self->createParams.maxNumOutputChannels *
                                          self->createParams.maxNumHybridBands *
-                                         sizeof(FIXP_DBL));
+                                         sizeof(int32_t));
 
     if (!toolsDisabled) {
       FDKmemclear(hybOutputRealWet[0],
                   self->createParams.maxNumOutputChannels *
-                      self->createParams.maxNumHybridBands * sizeof(FIXP_DBL));
+                      self->createParams.maxNumHybridBands * sizeof(int32_t));
       FDKmemclear(hybOutputImagWet[0],
                   self->createParams.maxNumOutputChannels *
                       self->createParams.maxNumCmplxHybBands *
-                      sizeof(FIXP_DBL));
+                      sizeof(int32_t));
     }
 
     if (self->phaseCoding == 3) {
@@ -770,8 +770,8 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
             }
           } else { /* self->upmixType */
             /* residual signals */
-            FIXP_DBL *RESTRICT pHybOutReal;
-            FIXP_DBL *RESTRICT pHybOutImag;
+            int32_t *RESTRICT pHybOutReal;
+            int32_t *RESTRICT pHybOutImag;
 
             for (qs = 0; qs < resHybIndex; qs++) {
               pHybOutRealDry[qs] += SAC_DEC_APPLY_M2_SCALE(
@@ -878,8 +878,8 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
 }
 
 SACDEC_ERROR SpatialDecSynthesis(spatialDec *self, const INT ts,
-                                 FIXP_DBL **hybOutputReal,
-                                 FIXP_DBL **hybOutputImag, PCM_MPS *timeOut,
+                                 int32_t **hybOutputReal,
+                                 int32_t **hybOutputImag, PCM_MPS *timeOut,
                                  const INT numInputChannels,
                                  const FDK_channelMapDescr *const mapDescr) {
   SACDEC_ERROR err = MPS_OK;
@@ -892,8 +892,8 @@ SACDEC_ERROR SpatialDecSynthesis(spatialDec *self, const INT ts,
 
   PCM_MPS *pTimeOut__FDK =
       &timeOut[stride * self->pQmfDomain->globalConf.nBandsSynthesis * ts];
-  C_ALLOC_SCRATCH_START(pQmfReal, FIXP_DBL, QMF_MAX_SYNTHESIS_BANDS);
-  C_ALLOC_SCRATCH_START(pQmfImag, FIXP_DBL, QMF_MAX_SYNTHESIS_BANDS);
+  C_ALLOC_SCRATCH_START(pQmfReal, int32_t, QMF_MAX_SYNTHESIS_BANDS);
+  C_ALLOC_SCRATCH_START(pQmfImag, int32_t, QMF_MAX_SYNTHESIS_BANDS);
 
   for (ch = 0; ch < self->numOutputChannelsAT; ch++) {
     if (self->pConfigCurrent->syntaxFlags & SACDEC_SYNTAX_LD) {
@@ -918,9 +918,9 @@ SACDEC_ERROR SpatialDecSynthesis(spatialDec *self, const INT ts,
       if (self->stereoConfigIndex == 3) {
         /* MPS -> SBR */
         int i;
-        FIXP_DBL *pWorkBufReal, *pWorkBufImag;
+        int32_t *pWorkBufReal, *pWorkBufImag;
         FDK_ASSERT((self->pQmfDomain->QmfDomainOut[outCh].fb.outGain_m ==
-                    (FIXP_DBL)0x80000000) &&
+                    (int32_t)0x80000000) &&
                    (self->pQmfDomain->QmfDomainOut[outCh].fb.outGain_e == 0));
         FDK_QmfDomain_GetWorkBuffer(&self->pQmfDomain->QmfDomainIn[outCh], ts,
                                     &pWorkBufReal, &pWorkBufImag);
@@ -949,8 +949,8 @@ SACDEC_ERROR SpatialDecSynthesis(spatialDec *self, const INT ts,
   } /* ch loop */
 
 bail:
-  C_ALLOC_SCRATCH_END(pQmfImag, FIXP_DBL, QMF_MAX_SYNTHESIS_BANDS);
-  C_ALLOC_SCRATCH_END(pQmfReal, FIXP_DBL, QMF_MAX_SYNTHESIS_BANDS);
+  C_ALLOC_SCRATCH_END(pQmfImag, int32_t, QMF_MAX_SYNTHESIS_BANDS);
+  C_ALLOC_SCRATCH_END(pQmfReal, int32_t, QMF_MAX_SYNTHESIS_BANDS);
 
   return err;
 }
@@ -966,19 +966,19 @@ void SpatialDecBufferMatrices(spatialDec *self) {
   for (row = 0; row < self->numM2rows; row++) {
     for (col = 0; col < self->numVChannels; col++) {
       FDKmemcpy(self->M2RealPrev__FDK[row][col], self->M2Real__FDK[row][col],
-                self->numParameterBands * sizeof(FIXP_DBL));
+                self->numParameterBands * sizeof(int32_t));
       if (0 || (self->phaseCoding == 3)) {
         FDKmemcpy(self->M2ImagPrev__FDK[row][col], self->M2Imag__FDK[row][col],
-                  complexParBands * sizeof(FIXP_DBL));
+                  complexParBands * sizeof(int32_t));
       }
     }
   }
 
   /* buffer phase */
   FDKmemcpy(self->PhasePrevLeft__FDK, self->PhaseLeft__FDK,
-            self->numParameterBands * sizeof(FIXP_DBL));
+            self->numParameterBands * sizeof(int32_t));
   FDKmemcpy(self->PhasePrevRight__FDK, self->PhaseRight__FDK,
-            self->numParameterBands * sizeof(FIXP_DBL));
+            self->numParameterBands * sizeof(int32_t));
 }
 
 #define PHASE_SCALE 2
@@ -988,8 +988,8 @@ void SpatialDecBufferMatrices(spatialDec *self) {
 #endif
 
 /* For better precision, PI (pi_x2) is already doubled */
-static FIXP_DBL interp_angle__FDK(FIXP_DBL angle1, FIXP_DBL angle2,
-                                  FIXP_SGL alpha, FIXP_DBL pi_x2) {
+static int32_t interp_angle__FDK(int32_t angle1, int32_t angle2,
+                                  FIXP_SGL alpha, int32_t pi_x2) {
   if (angle2 - angle1 > (pi_x2 >> 1)) angle2 -= pi_x2;
 
   if (angle1 - angle2 > (pi_x2 >> 1)) angle1 -= pi_x2;
@@ -1003,12 +1003,12 @@ static FIXP_DBL interp_angle__FDK(FIXP_DBL angle1, FIXP_DBL angle2,
 void SpatialDecApplyPhase(spatialDec *self, FIXP_SGL alpha__FDK,
                           int lastSlotOfParamSet) {
   int pb, qs;
-  FIXP_DBL ppb[MAX_PARAMETER_BANDS *
+  int32_t ppb[MAX_PARAMETER_BANDS *
                4]; /* left real, imag - right real, imag interleaved */
 
-  const FIXP_DBL pi_x2 = PIx2__IPD;
+  const int32_t pi_x2 = PIx2__IPD;
   for (pb = 0; pb < self->numParameterBands; pb++) {
-    FIXP_DBL pl, pr;
+    int32_t pl, pr;
 
     pl = interp_angle__FDK(self->PhasePrevLeft__FDK[pb],
                            self->PhaseLeft__FDK[pb], alpha__FDK, pi_x2);
@@ -1022,13 +1022,13 @@ void SpatialDecApplyPhase(spatialDec *self, FIXP_SGL alpha__FDK,
 
   const SCHAR *kernels = &self->kernels[0];
 
-  FIXP_DBL *Dry_real0 = &self->hybOutputRealDry__FDK[0][0];
-  FIXP_DBL *Dry_imag0 = &self->hybOutputImagDry__FDK[0][0];
-  FIXP_DBL *Dry_real1 = &self->hybOutputRealDry__FDK[1][0];
-  FIXP_DBL *Dry_imag1 = &self->hybOutputImagDry__FDK[1][0];
+  int32_t *Dry_real0 = &self->hybOutputRealDry__FDK[0][0];
+  int32_t *Dry_imag0 = &self->hybOutputImagDry__FDK[0][0];
+  int32_t *Dry_real1 = &self->hybOutputRealDry__FDK[1][0];
+  int32_t *Dry_imag1 = &self->hybOutputImagDry__FDK[1][0];
 
   for (qs = 2; qs >= 0; qs--) {
-    FIXP_DBL out_re, out_im;
+    int32_t out_re, out_im;
 
     pb = *kernels++;
     if (qs == 1) /* sign[qs] >= 0 */
@@ -1065,7 +1065,7 @@ void SpatialDecApplyPhase(spatialDec *self, FIXP_SGL alpha__FDK,
 
   /* sign is +1 for qs >=3 */
   for (qs = self->hybridBands - 3; qs--;) {
-    FIXP_DBL out_re, out_im;
+    int32_t out_re, out_im;
 
     pb = *kernels++;
     cplxMultDiv2(&out_re, &out_im, *Dry_real0, *Dry_imag0, ppb[4 * pb + 0],

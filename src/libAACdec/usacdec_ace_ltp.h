@@ -112,7 +112,7 @@ amm-info@iis.fraunhofer.de
  * \param T0 integer part of decoded pitch lag (input)
  * \param frac fractional part of decoded pitch lag (0..3) (input)
  */
-void Pred_lt4(FIXP_DBL exc[], /* in/out: excitation buffer */
+void Pred_lt4(int32_t exc[], /* in/out: excitation buffer */
               int T0,         /* input : integer pitch lag */
               int frac        /* input : fraction of lag   */
 );
@@ -122,7 +122,7 @@ void Pred_lt4(FIXP_DBL exc[], /* in/out: excitation buffer */
  * ltp_filtering_flag == 0.
  * \param exc points to adaptive codebook of current subframe (input/output)
  */
-void Pred_lt4_postfilter(FIXP_DBL exc[] /* in/out: excitation buffer */
+void Pred_lt4_postfilter(int32_t exc[] /* in/out: excitation buffer */
 );
 
 #endif /* USACDEC_ACE_LTP_H */

@@ -103,6 +103,7 @@ amm-info@iis.fraunhofer.de
 #ifndef DRCDEC_SELECTIONPROCESS_H
 #define DRCDEC_SELECTIONPROCESS_H
 
+#include <stdint.h>
 #include "drcDec_types.h"
 #include "drcDecoder.h"
 
@@ -111,7 +112,7 @@ amm-info@iis.fraunhofer.de
 
 typedef struct s_drcdec_selection_process* HANDLE_DRC_SELECTION_PROCESS;
 
-#define UNDEFINED_LOUDNESS_VALUE (FIXP_DBL)(MAXVAL_DBL - 1)
+#define UNDEFINED_LOUDNESS_VALUE (int32_t)(MAXVAL_DBL - 1)
 
 typedef enum {
   DRCDEC_SELECTION_PROCESS_NO_ERROR = 0,
@@ -159,9 +160,9 @@ typedef enum {
 } SEL_PROC_USER_PARAM;
 
 typedef struct s_selection_process_output {
-  FIXP_DBL outputPeakLevelDb;           /* e = 7 */
-  FIXP_DBL loudnessNormalizationGainDb; /* e = 7 */
-  FIXP_DBL outputLoudness;              /* e = 7 */
+  int32_t outputPeakLevelDb;           /* e = 7 */
+  int32_t loudnessNormalizationGainDb; /* e = 7 */
+  int32_t outputLoudness;              /* e = 7 */
 
   UCHAR numSelectedDrcSets;
   SCHAR selectedDrcSetIds[MAX_ACTIVE_DRCS];
@@ -172,12 +173,12 @@ typedef struct s_selection_process_output {
   UCHAR targetChannelCount;
   SCHAR targetLayout;
   UCHAR downmixMatrixPresent;
-  FIXP_DBL downmixMatrix[8][8]; /* e = 2 */
+  int32_t downmixMatrix[8][8]; /* e = 2 */
 
   FIXP_SGL boost;    /* e = 1 */
   FIXP_SGL compress; /* e = 1 */
 
-  FIXP_DBL mixingLevel; /* e = 7 */
+  int32_t mixingLevel; /* e = 7 */
 
 } SEL_PROC_OUTPUT, *HANDLE_SEL_PROC_OUTPUT;
 
@@ -197,9 +198,9 @@ drcDec_SelectionProcess_SetCodecMode(HANDLE_DRC_SELECTION_PROCESS hInstance,
 DRCDEC_SELECTION_PROCESS_RETURN
 drcDec_SelectionProcess_SetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
                                  const SEL_PROC_USER_PARAM requestType,
-                                 FIXP_DBL requestValue, int* pDiff);
+                                 int32_t requestValue, int* pDiff);
 
-FIXP_DBL
+int32_t
 drcDec_SelectionProcess_GetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
                                  const SEL_PROC_USER_PARAM requestType);
 

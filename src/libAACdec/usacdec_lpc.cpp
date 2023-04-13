@@ -153,7 +153,7 @@ static int get_vlclbf_n(HANDLE_FDK_BITSTREAM hBs, int n) {
    because the loss of precision caused by fPow2Div2 in RE8_PPV() */
 //#define ZF_SCALE ((NQ_MAX-3)>>1)
 #define ZF_SCALE ((DFRACT_BITS / 2))
-#define FIXP_ZF FIXP_DBL
+#define FIXP_ZF int32_t
 #define INT2ZF(x, s) (FIXP_ZF)((x) << (ZF_SCALE - (s)))
 #define ZF2INT(x) (INT)((x) >> ZF_SCALE)
 
@@ -480,7 +480,7 @@ static void re8_k2y(int *k, int r, SHORT *y) {
   return 0 on success, -1 on error.
   --------------------------------------------------------------------------
  */
-static int RE8_dec(int n, int I, int *k, FIXP_DBL *y) {
+static int RE8_dec(int n, int I, int *k, int32_t *y) {
   SHORT v[8];
   SHORT _y[8];
   UINT r;
@@ -534,7 +534,7 @@ static int RE8_dec(int n, int I, int *k, FIXP_DBL *y) {
  * \param xq weighted residual LSF vector
  * \param nk_mode code book number coding mode.
  */
-static void lsf_weight_2st(FIXP_LPC *lsfq, FIXP_DBL *xq, int nk_mode) {
+static void lsf_weight_2st(FIXP_LPC *lsfq, int32_t *xq, int nk_mode) {
   FIXP_LPC d[M_LP_FILTER_ORDER + 1];
   FIXP_SGL factor;
   LONG w; /* inverse weight factor */
@@ -566,7 +566,7 @@ static void lsf_weight_2st(FIXP_LPC *lsfq, FIXP_DBL *xq, int nk_mode) {
   for (i = 0; i < M_LP_FILTER_ORDER; i++) {
     w = (LONG)fMultDiv2(factor, sqrtFixp(fMult(d[i], d[i + 1])));
     lsfq[i] = fAddSaturate(lsfq[i],
-                           FX_DBL2FX_LPC((FIXP_DBL)((INT64)w * (LONG)xq[i])));
+                           FX_DBL2FX_LPC((int32_t)((INT64)w * (LONG)xq[i])));
   }
 
   return;
@@ -697,7 +697,7 @@ static int vlpc_2st_dec(
     int nk_mode     /* input:  0=abs, >0=rel                   */
 ) {
   int err;
-  FIXP_DBL xq[M_LP_FILTER_ORDER]; /* weighted residual LSF vector */
+  int32_t xq[M_LP_FILTER_ORDER]; /* weighted residual LSF vector */
 
   /* Decode AVQ refinement */
   { err = CLpc_DecodeAVQ(hBs, xq, nk_mode, 2, 8); }
@@ -719,7 +719,7 @@ static int vlpc_2st_dec(
  * Externally visible functions
  */
 
-int CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, FIXP_DBL *pOutput, int nk_mode,
+int CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *pOutput, int nk_mode,
                    int no_qn, int length) {
   int i, l;
 
@@ -731,7 +731,7 @@ int CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, FIXP_DBL *pOutput, int nk_mode,
 
     for (l = 0; l < no_qn; l++) {
       if (qn[l] == 0) {
-        FDKmemclear(&pOutput[i + l * 8], 8 * sizeof(FIXP_DBL));
+        FDKmemclear(&pOutput[i + l * 8], 8 * sizeof(int32_t));
       }
 
       /* Voronoi extension order ( nk ) */
@@ -929,7 +929,7 @@ int CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
   }
 
   {
-    FIXP_DBL divFac;
+    int32_t divFac;
     int last, numLpc = 0;
 
     i = nbDiv;
@@ -953,7 +953,7 @@ int CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
 
     /* get the adaptive mean for the next (bad) frame */
     for (k = 0; k < M_LP_FILTER_ORDER; k++) {
-      FIXP_DBL tmp = (FIXP_DBL)0;
+      int32_t tmp = (int32_t)0;
       for (i = nbDiv; i > last; i--) {
         if (lpc_present[i]) {
           tmp = fMultAdd(tmp >> 1, lsp[i][k], divFac);
@@ -973,7 +973,7 @@ int CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
     lsf_prev = lsp[0];
     for (i = 1; i < (nbDiv + 1); i++) {
       if (lpc_present[i]) {
-        FIXP_DBL tmp = (FIXP_DBL)0;
+        int32_t tmp = (int32_t)0;
         int j;
         lsf_curr = lsp[i];
 
@@ -1088,7 +1088,7 @@ void CLpc_Conceal(FIXP_LPC lsp[][M_LP_FILTER_ORDER],
 }
 
 void E_LPC_a_weight(FIXP_LPC *wA, const FIXP_LPC *A, int m) {
-  FIXP_DBL f;
+  int32_t f;
   int i;
 
   f = FL2FXCONST_DBL(0.92f);
@@ -1098,12 +1098,12 @@ void E_LPC_a_weight(FIXP_LPC *wA, const FIXP_LPC *A, int m) {
   }
 }
 
-void CLpd_DecodeGain(FIXP_DBL *gain, INT *gain_e, int gain_code) {
+void CLpd_DecodeGain(int32_t *gain, INT *gain_e, int gain_code) {
   /* gain * 2^(gain_e) = 10^(gain_code/28) */
   *gain = fLdPow(
       FL2FXCONST_DBL(3.3219280948873623478703194294894 / 4.0), /* log2(10)*/
       2,
-      fMultDiv2((FIXP_DBL)gain_code << (DFRACT_BITS - 1 - 7),
+      fMultDiv2((int32_t)gain_code << (DFRACT_BITS - 1 - 7),
                 FL2FXCONST_DBL(2.0f / 28.0f)),
       7, gain_e);
 }
@@ -1127,8 +1127,8 @@ void CLpd_DecodeGain(FIXP_DBL *gain, INT *gain_e, int gain_code) {
 
 #define SF_F 8
 
-static void get_lsppol(FIXP_LPC lsp[], FIXP_DBL f[], int n, int flag) {
-  FIXP_DBL b;
+static void get_lsppol(FIXP_LPC lsp[], int32_t f[], int n, int flag) {
+  int32_t b;
   FIXP_LPC *plsp;
   int i, j;
 
@@ -1158,7 +1158,7 @@ static void get_lsppol(FIXP_LPC lsp[], FIXP_DBL f[], int n, int flag) {
  * \brief a output LP filter coefficient vector scaled by SF_A_COEFFS.
  */
 void E_LPC_f_lsp_a_conversion(FIXP_LPC *lsp, FIXP_LPC *a, INT *a_exp) {
-  FIXP_DBL f1[NC + 1], f2[NC + 1];
+  int32_t f1[NC + 1], f2[NC + 1];
   int i, k;
 
   /*-----------------------------------------------------*
@@ -1179,7 +1179,7 @@ void E_LPC_f_lsp_a_conversion(FIXP_LPC *lsp, FIXP_LPC *a, INT *a_exp) {
     f2[i] -= f2[i - 1];
   }
 
-  FIXP_DBL aDBL[M_LP_FILTER_ORDER];
+  int32_t aDBL[M_LP_FILTER_ORDER];
 
   for (i = 1, k = M_LP_FILTER_ORDER - 1; i <= NC; i++, k--) {
     aDBL[i - 1] = f1[i] + f2[i];

@@ -111,9 +111,9 @@ amm-info@iis.fraunhofer.de
 #include "env_extr.h"
 
 typedef struct {
-  FIXP_DBL filtBuffer[MAX_FREQ_COEFFS];      /*!< previous gains (required for
+  int32_t filtBuffer[MAX_FREQ_COEFFS];      /*!< previous gains (required for
                                                 smoothing) */
-  FIXP_DBL filtBufferNoise[MAX_FREQ_COEFFS]; /*!< previous noise levels
+  int32_t filtBufferNoise[MAX_FREQ_COEFFS]; /*!< previous noise levels
                                                 (required for smoothing) */
   SCHAR filtBuffer_e[MAX_FREQ_COEFFS];       /*!< Exponents of previous gains */
   SCHAR filtBufferNoise_e; /*!< Common exponent of previous noise levels */
@@ -148,11 +148,11 @@ void calculateSbrEnvelope(
     QMF_SCALE_FACTOR *sbrScaleFactor,
     HANDLE_SBR_CALCULATE_ENVELOPE h_sbr_cal_env,
     HANDLE_SBR_HEADER_DATA hHeaderData, HANDLE_SBR_FRAME_DATA hFrameData,
-    PVC_DYNAMIC_DATA *pPvcDynamicData, FIXP_DBL **analysBufferReal,
-    FIXP_DBL *
+    PVC_DYNAMIC_DATA *pPvcDynamicData, int32_t **analysBufferReal,
+    int32_t *
         *analysBufferImag, /*!< Imag part of subband samples to be processed */
     const int useLP,
-    FIXP_DBL *degreeAlias, /*!< Estimated aliasing for each QMF channel */
+    int32_t *degreeAlias, /*!< Estimated aliasing for each QMF channel */
     const UINT flags, const int frameErrorFlag);
 
 SBR_ERROR
@@ -171,12 +171,12 @@ ResetLimiterBands(UCHAR *limiterBandTable, UCHAR *noLimiterBands,
                   int limiterBands, UCHAR sbrPatchingMode,
                   int xOverQmf[MAX_NUM_PATCHES], int sbrRatio);
 
-void rescaleSubbandSamples(FIXP_DBL **re, FIXP_DBL **im, int lowSubband,
+void rescaleSubbandSamples(int32_t **re, int32_t **im, int lowSubband,
                            int noSubbands, int start_pos, int next_pos,
                            int shift);
 
-FIXP_DBL maxSubbandSample(FIXP_DBL **analysBufferReal_m,
-                          FIXP_DBL **analysBufferImag_m, int lowSubband,
+int32_t maxSubbandSample(int32_t **analysBufferReal_m,
+                          int32_t **analysBufferImag_m, int lowSubband,
                           int highSubband, int start_pos, int stop_pos);
 
 #endif  // ENV_CALC_H

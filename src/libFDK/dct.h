@@ -119,7 +119,7 @@ void dct_getTables(const FIXP_WTP **ptwiddle, const FIXP_STP **sin_twiddle,
  * \param pDat_e pointer to an integer containing the exponent of the data
  *               referenced by pDat. The exponent is updated accordingly.
  */
-void dct_II(FIXP_DBL *pDat, FIXP_DBL *tmp, int size, int *pDat_e);
+void dct_II(int32_t *pDat, int32_t *tmp, int size, int *pDat_e);
 
 /**
  * \brief Calculate DCT type III of given length. The DCT IV is
@@ -131,7 +131,7 @@ void dct_II(FIXP_DBL *pDat, FIXP_DBL *tmp, int size, int *pDat_e);
  * \param pDat_e pointer to an integer containing the exponent of the data
  *               referenced by pDat. The exponent is updated accordingly.
  */
-void dct_III(FIXP_DBL *pDat, FIXP_DBL *tmp, int size, int *pDat_e);
+void dct_III(int32_t *pDat, int32_t *tmp, int size, int *pDat_e);
 
 /**
  * \brief Calculate DST type III of given length. The DST III is
@@ -144,7 +144,7 @@ void dct_III(FIXP_DBL *pDat, FIXP_DBL *tmp, int size, int *pDat_e);
  * \param pDat_e pointer to an integer containing the exponent of the data
  *               referenced by pDat. The exponent is updated accordingly.
  */
-void dst_III(FIXP_DBL *pDat, FIXP_DBL *tmp, int size, int *pDat_e);
+void dst_III(int32_t *pDat, int32_t *tmp, int size, int *pDat_e);
 
 /**
  * \brief Calculate DCT type IV of given length. The DCT IV is
@@ -155,7 +155,7 @@ void dst_III(FIXP_DBL *pDat, FIXP_DBL *tmp, int size, int *pDat_e);
  * \param pDat_e pointer to an integer containing the exponent of the data
  *               referenced by pDat. The exponent is updated accordingly.
  */
-void dct_IV(FIXP_DBL *pDat, int size, int *pDat_e);
+void dct_IV(int32_t *pDat, int size, int *pDat_e);
 
 /**
  * \brief Calculate DST type IV of given length. The DST IV is
@@ -166,6 +166,6 @@ void dct_IV(FIXP_DBL *pDat, int size, int *pDat_e);
  * \param pDat_e pointer to an integer containing the exponent of the data
  *               referenced by pDat. The exponent is updated accordingly.
  */
-void dst_IV(FIXP_DBL *pDat, int size, int *pDat_e);
+void dst_IV(int32_t *pDat, int size, int *pDat_e);
 
 #endif

@@ -124,14 +124,14 @@ static const UCHAR nBitsTsdCW_64slots[64] = {
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
 static const FIXP_DPK phiTsd[8] = {
-    {{(FIXP_DBL)0x7fffffff, (FIXP_DBL)0x00000000}},
-    {{(FIXP_DBL)0x5a82799a, (FIXP_DBL)0x5a82799a}},
-    {{(FIXP_DBL)0x00000000, (FIXP_DBL)0x7fffffff}},
-    {{(FIXP_DBL)0xa57d8666, (FIXP_DBL)0x5a82799a}},
-    {{(FIXP_DBL)0x80000000, (FIXP_DBL)0x00000000}},
-    {{(FIXP_DBL)0xa57d8666, (FIXP_DBL)0xa57d8666}},
-    {{(FIXP_DBL)0x00000000, (FIXP_DBL)0x80000000}},
-    {{(FIXP_DBL)0x5a82799a, (FIXP_DBL)0xa57d8666}}};
+    {{(int32_t)0x7fffffff, (int32_t)0x00000000}},
+    {{(int32_t)0x5a82799a, (int32_t)0x5a82799a}},
+    {{(int32_t)0x00000000, (int32_t)0x7fffffff}},
+    {{(int32_t)0xa57d8666, (int32_t)0x5a82799a}},
+    {{(int32_t)0x80000000, (int32_t)0x00000000}},
+    {{(int32_t)0xa57d8666, (int32_t)0xa57d8666}},
+    {{(int32_t)0x00000000, (int32_t)0x80000000}},
+    {{(int32_t)0x5a82799a, (int32_t)0xa57d8666}}};
 
 /*** Static Functions ***/
 static void longmult1(USHORT a[], USHORT b, USHORT d[], int len) {
@@ -303,10 +303,10 @@ int TsdRead(HANDLE_FDK_BITSTREAM hBs, const int numSlots, TSD_DATA *pTsdData) {
 }
 
 void TsdGenerateNonTr(const int numHybridBands, const TSD_DATA *pTsdData,
-                      const int ts, FIXP_DBL *pVdirectReal,
-                      FIXP_DBL *pVdirectImag, FIXP_DBL *pVnonTrReal,
-                      FIXP_DBL *pVnonTrImag, FIXP_DBL **ppDecorrInReal,
-                      FIXP_DBL **ppDecorrInImag) {
+                      const int ts, int32_t *pVdirectReal,
+                      int32_t *pVdirectImag, int32_t *pVnonTrReal,
+                      int32_t *pVnonTrImag, int32_t **ppDecorrInReal,
+                      int32_t **ppDecorrInImag) {
   int k = 0;
 
   if (!isTrSlot(pTsdData, ts)) {
@@ -322,16 +322,16 @@ void TsdGenerateNonTr(const int numHybridBands, const TSD_DATA *pTsdData,
     pVnonTrImag[k] = pVdirectImag[k];
   }
   for (; k < numHybridBands; k++) {
-    pVnonTrReal[k] = (FIXP_DBL)0;
-    pVnonTrImag[k] = (FIXP_DBL)0;
+    pVnonTrReal[k] = (int32_t)0;
+    pVnonTrImag[k] = (int32_t)0;
   }
   *ppDecorrInReal = pVnonTrReal;
   *ppDecorrInImag = pVnonTrImag;
 }
 
 void TsdApply(const int numHybridBands, const TSD_DATA *pTsdData, int *pTsdTs,
-              const FIXP_DBL *pVdirectReal, const FIXP_DBL *pVdirectImag,
-              FIXP_DBL *pDnonTrReal, FIXP_DBL *pDnonTrImag) {
+              const int32_t *pVdirectReal, const int32_t *pVdirectImag,
+              int32_t *pDnonTrReal, int32_t *pDnonTrImag) {
   const int ts = *pTsdTs;
 
   if (isTrSlot(pTsdData, ts)) {
@@ -342,7 +342,7 @@ void TsdApply(const int numHybridBands, const TSD_DATA *pTsdData, int *pTsdTs,
 
     /* d = d_nonTr + v_direct * exp(j * bsTsdTrPhaseData[ts]/4 * pi ) */
     for (k = TSD_START_BAND; k < numHybridBands; k++) {
-      FIXP_DBL tempReal, tempImag;
+      int32_t tempReal, tempImag;
       cplxMultDiv2(&tempReal, &tempImag, pVdirectReal[k], pVdirectImag[k],
                    *phi);
       pDnonTrReal[k] = SATURATE_LEFT_SHIFT(

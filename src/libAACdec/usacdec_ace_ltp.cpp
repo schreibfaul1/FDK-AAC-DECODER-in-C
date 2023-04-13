@@ -130,14 +130,14 @@ static const LONG Pred_lt4_inter4_2[UP_SAMP][L_INTERPOL2] = {
      (LONG)0x0790F8C9, (LONG)0x06AAFA0C, (LONG)0x0521FBC1, (LONG)0x035EFD75,
      (LONG)0x01CFFECE, (LONG)0x00B9FF9E, (LONG)0x002BFFF2, (LONG)0x00020000}};
 
-void Pred_lt4(FIXP_DBL exc[], /* in/out: excitation buffer              */
+void Pred_lt4(int32_t exc[], /* in/out: excitation buffer              */
               int T0,         /* input : integer pitch lag              */
               int frac        /* input : fraction of lag in range 0..3  */
 ) {
   int j;
-  FIXP_DBL *x;
+  int32_t *x;
   const LONG *interpol;
-  FIXP_DBL L_sumb, L_sumt;
+  int32_t L_sumb, L_sumt;
 
   x = &exc[-T0 - L_INTERPOL2 + 1];
 
@@ -156,8 +156,8 @@ void Pred_lt4(FIXP_DBL exc[], /* in/out: excitation buffer              */
   j = L_SUBFR + 1;
   do {
     LONG filt;
-    FIXP_DBL x0, x1;
-    FIXP_DBL *xi = x++;
+    int32_t x0, x1;
+    int32_t *xi = x++;
     interpol = Pred_lt4_inter4_2[frac];
     int i = 3;
 
@@ -205,14 +205,14 @@ void Pred_lt4(FIXP_DBL exc[], /* in/out: excitation buffer              */
   return;
 }
 
-void Pred_lt4_postfilter(FIXP_DBL exc[] /* in/out: excitation buffer */
+void Pred_lt4_postfilter(int32_t exc[] /* in/out: excitation buffer */
 ) {
   /*
   exc[i]   = A*exc[i-1] + B*exc[i] + A*exc[i+1]
   exc[i+1] =              A*exc[i] + B*exc[i+1] + A*exc[i+2] ; i = 0:2:62
   */
   int i;
-  FIXP_DBL sum0, sum1, a_exc0, a_exc1;
+  int32_t sum0, sum1, a_exc0, a_exc1;
   a_exc0 = fMultDiv2(A2, exc[-1]);
   a_exc1 = fMultDiv2(A2, exc[0]);
 

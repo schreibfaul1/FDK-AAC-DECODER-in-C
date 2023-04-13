@@ -147,7 +147,7 @@ amm-info@iis.fraunhofer.de
  * level is being inserted to achieve a smooth transition.
  */
 
-static FIXP_DBL mapInvfMode(INVF_MODE mode, INVF_MODE prevMode,
+static int32_t mapInvfMode(INVF_MODE mode, INVF_MODE prevMode,
                             WHITENING_FACTORS whFactors) {
   switch (mode) {
     case INVF_LOW_LEVEL:
@@ -183,11 +183,11 @@ static void inverseFilteringLevelEmphasis(
     UCHAR nInvfBands,              /*!< Number of bands for inverse filtering */
     INVF_MODE *sbr_invf_mode,      /*!< Current inverse filtering modes */
     INVF_MODE *sbr_invf_mode_prev, /*!< Previous inverse filtering modes */
-    FIXP_DBL *bwVector             /*!< Resulting filtering levels */
+    int32_t *bwVector             /*!< Resulting filtering levels */
 ) {
   for (int i = 0; i < nInvfBands; i++) {
-    FIXP_DBL accu;
-    FIXP_DBL bwTmp = mapInvfMode(sbr_invf_mode[i], sbr_invf_mode_prev[i],
+    int32_t accu;
+    int32_t bwTmp = mapInvfMode(sbr_invf_mode[i], sbr_invf_mode_prev[i],
                                  hLppTrans->pSettings->whFactors);
 
     if (bwTmp < hLppTrans->bwVectorOld[i]) {
@@ -215,13 +215,13 @@ static void inverseFilteringLevelEmphasis(
  * assumed. */
 #define QMFOUT_EXP ((SAMPLE_BITS - 15) - sbrScaleFactor->lb_scale)
 
-static inline void calc_qmfBufferReal(FIXP_DBL **qmfBufferReal,
-                                      const FIXP_DBL *const lowBandReal,
+static inline void calc_qmfBufferReal(int32_t **qmfBufferReal,
+                                      const int32_t *const lowBandReal,
                                       const int startSample,
                                       const int stopSample, const UCHAR hiBand,
                                       const int dynamicScale, const int descale,
                                       const FIXP_SGL a0r, const FIXP_SGL a1r) {
-  FIXP_DBL accu1, accu2;
+  int32_t accu1, accu2;
   int i;
 
   for (i = 0; i < stopSample - startSample; i++) {
@@ -256,11 +256,11 @@ static inline void calc_qmfBufferReal(FIXP_DBL **qmfBufferReal,
 void lppTransposer(
     HANDLE_SBR_LPP_TRANS hLppTrans,   /*!< Handle of lpp transposer  */
     QMF_SCALE_FACTOR *sbrScaleFactor, /*!< Scaling factors */
-    FIXP_DBL **qmfBufferReal, /*!< Pointer to pointer to real part of subband
+    int32_t **qmfBufferReal, /*!< Pointer to pointer to real part of subband
                                  samples (source) */
 
-    FIXP_DBL *degreeAlias,    /*!< Vector for results of aliasing estimation */
-    FIXP_DBL **qmfBufferImag, /*!< Pointer to pointer to imaginary part of
+    int32_t *degreeAlias,    /*!< Vector for results of aliasing estimation */
+    int32_t **qmfBufferImag, /*!< Pointer to pointer to imaginary part of
                                  subband samples (source) */
     const int useLP, const int fPreWhitening, const int v_k_master0,
     const int timeStep,       /*!< Time step of envelope */
@@ -271,8 +271,8 @@ void lppTransposer(
     INVF_MODE *sbr_invf_mode_prev /*!< Previous inverse filtering modes */
 ) {
   INT bwIndex[MAX_NUM_PATCHES];
-  FIXP_DBL bwVector[MAX_NUM_PATCHES]; /*!< pole moving factors */
-  FIXP_DBL preWhiteningGains[(64) / 2];
+  int32_t bwVector[MAX_NUM_PATCHES]; /*!< pole moving factors */
+  int32_t preWhiteningGains[(64) / 2];
   int preWhiteningGains_exp[(64) / 2];
 
   int i;
@@ -287,7 +287,7 @@ void lppTransposer(
 
   int autoCorrLength;
 
-  FIXP_DBL k1, k1_below = 0, k1_below2 = 0;
+  int32_t k1, k1_below = 0, k1_below2 = 0;
 
   ACORR_COEFS ac;
   int startSample;
@@ -322,7 +322,7 @@ void lppTransposer(
         patchParam[pSettings->noOfPatches - 1].targetStartBand +
         patchParam[pSettings->noOfPatches - 1].numBandsInPatch;
 
-    int memSize = ((64) - targetStopBand) * sizeof(FIXP_DBL);
+    int memSize = ((64) - targetStopBand) * sizeof(int32_t);
 
     if (!useLP) {
       for (i = startSample; i < stopSampleClear; i++) {
@@ -377,13 +377,13 @@ void lppTransposer(
   }
 
   for (loBand = start; loBand < stop; loBand++) {
-    FIXP_DBL lowBandReal[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
-    FIXP_DBL *plowBandReal = lowBandReal;
-    FIXP_DBL **pqmfBufferReal =
+    int32_t lowBandReal[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
+    int32_t *plowBandReal = lowBandReal;
+    int32_t **pqmfBufferReal =
         qmfBufferReal + firstSlotOffs * timeStep /* + pSettings->overlap */;
-    FIXP_DBL lowBandImag[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
-    FIXP_DBL *plowBandImag = lowBandImag;
-    FIXP_DBL **pqmfBufferImag =
+    int32_t lowBandImag[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
+    int32_t *plowBandImag = lowBandImag;
+    int32_t **pqmfBufferImag =
         qmfBufferImag + firstSlotOffs * timeStep /* + pSettings->overlap */;
     int resetLPCCoeffs = 0;
     int dynamicScale = DFRACT_BITS - 1 - LPC_SCALE_FACTOR;
@@ -452,12 +452,12 @@ void lppTransposer(
          prevent -1.0, so negative values for dynamicScale can be avoided. */
       for (i = 0; i < (LPC_ORDER + pSettings->overlap + pSettings->nCols);
            i++) {
-        lowBandReal[i] = fixMax(lowBandReal[i], (FIXP_DBL)0x80000001);
+        lowBandReal[i] = fixMax(lowBandReal[i], (int32_t)0x80000001);
       }
       if (!useLP) {
         for (i = 0; i < (LPC_ORDER + pSettings->overlap + pSettings->nCols);
              i++) {
-          lowBandImag[i] = fixMax(lowBandImag[i], (FIXP_DBL)0x80000001);
+          lowBandImag[i] = fixMax(lowBandImag[i], (int32_t)0x80000001);
         }
       }
     } else {
@@ -503,7 +503,7 @@ void lppTransposer(
     if (!useLP) alphai[1] = FL2FXCONST_SGL(0.0f);
 
     if (ac.det != FL2FXCONST_DBL(0.0f)) {
-      FIXP_DBL tmp, absTmp, absDet;
+      int32_t tmp, absTmp, absDet;
 
       absDet = fixp_abs(ac.det);
 
@@ -522,10 +522,10 @@ void lppTransposer(
        */
       {
         INT scale;
-        FIXP_DBL result = fDivNorm(absTmp, absDet, &scale);
+        int32_t result = fDivNorm(absTmp, absDet, &scale);
         scale = scale + ac.det_scale;
 
-        if ((scale > 0) && (result >= (FIXP_DBL)MAXVAL_DBL >> scale)) {
+        if ((scale > 0) && (result >= (int32_t)MAXVAL_DBL >> scale)) {
           resetLPCCoeffs = 1;
         } else {
           alphar[1] = FX_DBL2FX_SGL(scaleValue(result, scale));
@@ -538,7 +538,7 @@ void lppTransposer(
       if (!useLP) {
         tmp = (fMultDiv2(ac.r01i, ac.r12r) >> (LPC_SCALE_FACTOR - 1)) +
               ((fMultDiv2(ac.r01r, ac.r12i) -
-                (FIXP_DBL)fMultDiv2(ac.r02i, ac.r11r)) >>
+                (int32_t)fMultDiv2(ac.r02i, ac.r11r)) >>
                (LPC_SCALE_FACTOR - 1));
 
         absTmp = fixp_abs(tmp);
@@ -548,11 +548,11 @@ void lppTransposer(
         */
         {
           INT scale;
-          FIXP_DBL result = fDivNorm(absTmp, absDet, &scale);
+          int32_t result = fDivNorm(absTmp, absDet, &scale);
           scale = scale + ac.det_scale;
 
           if ((scale > 0) &&
-              (result >= /*FL2FXCONST_DBL(1.f)*/ (FIXP_DBL)MAXVAL_DBL >>
+              (result >= /*FL2FXCONST_DBL(1.f)*/ (int32_t)MAXVAL_DBL >>
                scale)) {
             resetLPCCoeffs = 1;
           } else {
@@ -570,7 +570,7 @@ void lppTransposer(
 
     if (ac.r11r != FL2FXCONST_DBL(0.0f)) {
       /* ac.r11r is always >=0 */
-      FIXP_DBL tmp, absTmp;
+      int32_t tmp, absTmp;
 
       if (!useLP) {
         tmp = (ac.r01r >> (LPC_SCALE_FACTOR + 1)) +
@@ -594,7 +594,7 @@ void lppTransposer(
         resetLPCCoeffs = 1;
       } else {
         INT scale;
-        FIXP_DBL result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
+        int32_t result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
         alphar[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
 
         if ((tmp > FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f)))
@@ -614,7 +614,7 @@ void lppTransposer(
           resetLPCCoeffs = 1;
         } else {
           INT scale;
-          FIXP_DBL result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
+          int32_t result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
           alphai[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
           if ((tmp > FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f)))
             alphai[0] = -alphai[0];
@@ -648,15 +648,15 @@ void lppTransposer(
       } else {
         if (fixp_abs(ac.r01r) >= fixp_abs(ac.r11r)) {
           if (fMultDiv2(ac.r01r, ac.r11r) < FL2FX_DBL(0.0f)) {
-            k1 = (FIXP_DBL)MAXVAL_DBL /*FL2FXCONST_SGL(1.0f)*/;
+            k1 = (int32_t)MAXVAL_DBL /*FL2FXCONST_SGL(1.0f)*/;
           } else {
             /* Since this value is squared later, it must not ever become -1.0f.
              */
-            k1 = (FIXP_DBL)(MINVAL_DBL + 1) /*FL2FXCONST_SGL(-1.0f)*/;
+            k1 = (int32_t)(MINVAL_DBL + 1) /*FL2FXCONST_SGL(-1.0f)*/;
           }
         } else {
           INT scale;
-          FIXP_DBL result =
+          int32_t result =
               fDivNorm(fixp_abs(ac.r01r), fixp_abs(ac.r11r), &scale);
           k1 = scaleValue(result, scale);
 
@@ -667,12 +667,12 @@ void lppTransposer(
       }
       if ((loBand > 1) && (loBand < v_k_master0)) {
         /* Check if the gain should be locked */
-        FIXP_DBL deg =
-            /*FL2FXCONST_DBL(1.0f)*/ (FIXP_DBL)MAXVAL_DBL - fPow2(k1_below);
+        int32_t deg =
+            /*FL2FXCONST_DBL(1.0f)*/ (int32_t)MAXVAL_DBL - fPow2(k1_below);
         degreeAlias[loBand] = FL2FXCONST_DBL(0.0f);
         if (((loBand & 1) == 0) && (k1 < FL2FXCONST_DBL(0.0f))) {
           if (k1_below < FL2FXCONST_DBL(0.0f)) { /* 2-Ch Aliasing Detection */
-            degreeAlias[loBand] = (FIXP_DBL)MAXVAL_DBL /*FL2FXCONST_DBL(1.0f)*/;
+            degreeAlias[loBand] = (int32_t)MAXVAL_DBL /*FL2FXCONST_DBL(1.0f)*/;
             if (k1_below2 >
                 FL2FXCONST_DBL(0.0f)) { /* 3-Ch Aliasing Detection */
               degreeAlias[loBand - 1] = deg;
@@ -684,7 +684,7 @@ void lppTransposer(
         }
         if (((loBand & 1) == 1) && (k1 > FL2FXCONST_DBL(0.0f))) {
           if (k1_below > FL2FXCONST_DBL(0.0f)) { /* 2-CH Aliasing Detection */
-            degreeAlias[loBand] = (FIXP_DBL)MAXVAL_DBL /*FL2FXCONST_DBL(1.0f)*/;
+            degreeAlias[loBand] = (int32_t)MAXVAL_DBL /*FL2FXCONST_DBL(1.0f)*/;
             if (k1_below2 <
                 FL2FXCONST_DBL(0.0f)) { /* 3-CH Aliasing Detection */
               degreeAlias[loBand - 1] = deg;
@@ -746,7 +746,7 @@ void lppTransposer(
           int descale =
               fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
           for (i = startSample; i < stopSample; i++) {
-            FIXP_DBL accu1, accu2;
+            int32_t accu1, accu2;
             accu1 = lowBandReal[LPC_ORDER + i] >> descale;
             accu2 = lowBandImag[LPC_ORDER + i] >> descale;
             if (fPreWhitening) {
@@ -782,7 +782,7 @@ void lppTransposer(
               preWhiteningGains_exp[loBand] + 1);
 #else
           for (i = startSample; i < stopSample; i++) {
-            FIXP_DBL accu1, accu2;
+            int32_t accu1, accu2;
 
             accu1 = (fMultDiv2(a0r, lowBandReal[LPC_ORDER + i - 1]) -
                      fMultDiv2(a0i, lowBandImag[LPC_ORDER + i - 1]) +
@@ -869,9 +869,9 @@ void lppTransposerHBE(
     HANDLE_SBR_LPP_TRANS hLppTrans, /*!< Handle of lpp transposer  */
     HANDLE_HBE_TRANSPOSER hQmfTransposer,
     QMF_SCALE_FACTOR *sbrScaleFactor, /*!< Scaling factors */
-    FIXP_DBL **qmfBufferReal, /*!< Pointer to pointer to real part of subband
+    int32_t **qmfBufferReal, /*!< Pointer to pointer to real part of subband
                                  samples (source) */
-    FIXP_DBL **qmfBufferImag, /*!< Pointer to pointer to imaginary part of
+    int32_t **qmfBufferImag, /*!< Pointer to pointer to imaginary part of
                                  subband samples (source) */
     const int timeStep,       /*!< Time step of envelope */
     const int firstSlotOffs,  /*!< Start position in time */
@@ -881,7 +881,7 @@ void lppTransposerHBE(
     INVF_MODE *sbr_invf_mode_prev /*!< Previous inverse filtering modes */
 ) {
   INT bwIndex;
-  FIXP_DBL bwVector[MAX_NUM_PATCHES_HBE]; /*!< pole moving factors */
+  int32_t bwVector[MAX_NUM_PATCHES_HBE]; /*!< pole moving factors */
 
   int i;
   int loBand, start, stop;
@@ -926,7 +926,7 @@ void lppTransposerHBE(
         patchParam[pSettings->noOfPatches - 1].targetStartBand +
         patchParam[pSettings->noOfPatches - 1].numBandsInPatch;
 
-    int memSize = ((64) - targetStopBand) * sizeof(FIXP_DBL);
+    int memSize = ((64) - targetStopBand) * sizeof(int32_t);
 
     for (i = startSample; i < stopSampleClear; i++) {
       FDKmemclear(&qmfBufferReal[i][targetStopBand], memSize);
@@ -957,8 +957,8 @@ void lppTransposerHBE(
   for (loBand = start; loBand < stop; loBand++) {
     bwIndex = 0;
 
-    FIXP_DBL lowBandReal[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
-    FIXP_DBL lowBandImag[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
+    int32_t lowBandReal[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
+    int32_t lowBandImag[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
 
     int resetLPCCoeffs = 0;
     int dynamicScale = DFRACT_BITS - 1 - LPC_SCALE_FACTOR;
@@ -1045,7 +1045,7 @@ void lppTransposerHBE(
     alphai[1] = FL2FXCONST_SGL(0.0f);
 
     if (ac.det != FL2FXCONST_DBL(0.0f)) {
-      FIXP_DBL tmp, absTmp, absDet;
+      int32_t tmp, absTmp, absDet;
 
       absDet = fixp_abs(ac.det);
 
@@ -1059,10 +1059,10 @@ void lppTransposerHBE(
       */
       {
         INT scale;
-        FIXP_DBL result = fDivNorm(absTmp, absDet, &scale);
+        int32_t result = fDivNorm(absTmp, absDet, &scale);
         scale = scale + ac.det_scale;
 
-        if ((scale > 0) && (result >= (FIXP_DBL)MAXVAL_DBL >> scale)) {
+        if ((scale > 0) && (result >= (int32_t)MAXVAL_DBL >> scale)) {
           resetLPCCoeffs = 1;
         } else {
           alphar[1] = FX_DBL2FX_SGL(scaleValue(result, scale));
@@ -1074,7 +1074,7 @@ void lppTransposerHBE(
 
       tmp = (fMultDiv2(ac.r01i, ac.r12r) >> (LPC_SCALE_FACTOR - 1)) +
             ((fMultDiv2(ac.r01r, ac.r12i) -
-              (FIXP_DBL)fMultDiv2(ac.r02i, ac.r11r)) >>
+              (int32_t)fMultDiv2(ac.r02i, ac.r11r)) >>
              (LPC_SCALE_FACTOR - 1));
 
       absTmp = fixp_abs(tmp);
@@ -1084,11 +1084,11 @@ void lppTransposerHBE(
       */
       {
         INT scale;
-        FIXP_DBL result = fDivNorm(absTmp, absDet, &scale);
+        int32_t result = fDivNorm(absTmp, absDet, &scale);
         scale = scale + ac.det_scale;
 
         if ((scale > 0) &&
-            (result >= /*FL2FXCONST_DBL(1.f)*/ (FIXP_DBL)MAXVAL_DBL >> scale)) {
+            (result >= /*FL2FXCONST_DBL(1.f)*/ (int32_t)MAXVAL_DBL >> scale)) {
           resetLPCCoeffs = 1;
         } else {
           alphai[1] = FX_DBL2FX_SGL(scaleValue(result, scale));
@@ -1104,7 +1104,7 @@ void lppTransposerHBE(
 
     if (ac.r11r != FL2FXCONST_DBL(0.0f)) {
       /* ac.r11r is always >=0 */
-      FIXP_DBL tmp, absTmp;
+      int32_t tmp, absTmp;
 
       tmp = (ac.r01r >> (LPC_SCALE_FACTOR + 1)) +
             (fMultDiv2(alphar[1], ac.r12r) + fMultDiv2(alphai[1], ac.r12i));
@@ -1119,7 +1119,7 @@ void lppTransposerHBE(
         resetLPCCoeffs = 1;
       } else {
         INT scale;
-        FIXP_DBL result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
+        int32_t result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
         alphar[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
 
         if ((tmp > FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f)))
@@ -1138,7 +1138,7 @@ void lppTransposerHBE(
         resetLPCCoeffs = 1;
       } else {
         INT scale;
-        FIXP_DBL result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
+        int32_t result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
         alphai[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
         if ((tmp > FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f))) {
           alphai[0] = -alphai[0];
@@ -1198,7 +1198,7 @@ void lppTransposerHBE(
                 headroom' */
 
       for (i = startSample; i < stopSample; i++) {
-        FIXP_DBL accu1, accu2;
+        int32_t accu1, accu2;
 
         accu1 = (fMultDiv2(a0r, lowBandReal[LPC_ORDER + i - 1]) -
                  fMultDiv2(a0i, lowBandImag[LPC_ORDER + i - 1]) +

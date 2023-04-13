@@ -328,9 +328,9 @@ spatialDec *FDK_SpatialDecOpen(const SPATIAL_DEC_CONFIG *config,
   FDK_ALLOCATE_MEMORY_3D(self->arbdmxGain__FDK, setup.maxNumInputChannels,
                          MAX_PARAMETER_SETS, MAX_PARAMETER_BANDS, SCHAR)
   FDK_ALLOCATE_MEMORY_1D(self->arbdmxAlpha__FDK, setup.maxNumInputChannels,
-                         FIXP_DBL)
+                         int32_t)
   FDK_ALLOCATE_MEMORY_1D(self->arbdmxAlphaPrev__FDK, setup.maxNumInputChannels,
-                         FIXP_DBL)
+                         int32_t)
   FDK_ALLOCATE_MEMORY_2D(self->cmpArbdmxGainIdxPrev, setup.maxNumInputChannels,
                          MAX_PARAMETER_BANDS, SCHAR)
 
@@ -339,38 +339,38 @@ spatialDec *FDK_SpatialDecOpen(const SPATIAL_DEC_CONFIG *config,
 
   FDK_ALLOCATE_MEMORY_3D_INT(self->M2Real__FDK, setup.maxNumOutputChannels,
                              setup.maxNumVChannels, MAX_PARAMETER_BANDS,
-                             FIXP_DBL, SECT_DATA_L2)
+                             int32_t, SECT_DATA_L2)
   FDK_ALLOCATE_MEMORY_3D(self->M2Imag__FDK, setup.maxNumOutputChannels,
-                         setup.maxNumVChannels, MAX_PARAMETER_BANDS, FIXP_DBL)
+                         setup.maxNumVChannels, MAX_PARAMETER_BANDS, int32_t)
 
   FDK_ALLOCATE_MEMORY_3D_INT(self->M2RealPrev__FDK, setup.maxNumOutputChannels,
                              setup.maxNumVChannels, MAX_PARAMETER_BANDS,
-                             FIXP_DBL, SECT_DATA_L2)
+                             int32_t, SECT_DATA_L2)
   FDK_ALLOCATE_MEMORY_3D(self->M2ImagPrev__FDK, setup.maxNumOutputChannels,
-                         setup.maxNumVChannels, MAX_PARAMETER_BANDS, FIXP_DBL)
+                         setup.maxNumVChannels, MAX_PARAMETER_BANDS, int32_t)
 
   FDK_ALLOCATE_MEMORY_2D_INT_ALIGNED(
       self->qmfInputReal__FDK, setup.maxNumInputChannels, setup.maxNumQmfBands,
-      FIXP_DBL, SECT_DATA_L2)
+      int32_t, SECT_DATA_L2)
   FDK_ALLOCATE_MEMORY_2D_INT_ALIGNED(
       self->qmfInputImag__FDK, setup.maxNumInputChannels,
-      setup.maxNumCmplxQmfBands, FIXP_DBL, SECT_DATA_L2)
+      setup.maxNumCmplxQmfBands, int32_t, SECT_DATA_L2)
 
   FDK_ALLOCATE_MEMORY_2D_INT(self->hybInputReal__FDK, setup.maxNumInputChannels,
-                             setup.maxNumHybridBands, FIXP_DBL, SECT_DATA_L2)
+                             setup.maxNumHybridBands, int32_t, SECT_DATA_L2)
   FDK_ALLOCATE_MEMORY_2D_INT(self->hybInputImag__FDK, setup.maxNumInputChannels,
-                             setup.maxNumCmplxHybBands, FIXP_DBL, SECT_DATA_L2)
+                             setup.maxNumCmplxHybBands, int32_t, SECT_DATA_L2)
 
   if (setup.bProcResidual) {
     FDK_ALLOCATE_MEMORY_1D(self->qmfResidualReal__FDK, setup.maxNumResChannels,
-                           FIXP_DBL **)
+                           int32_t **)
     FDK_ALLOCATE_MEMORY_1D(self->qmfResidualImag__FDK, setup.maxNumResChannels,
-                           FIXP_DBL **)
+                           int32_t **)
 
     FDK_ALLOCATE_MEMORY_1D(self->hybResidualReal__FDK, setup.maxNumResChannels,
-                           FIXP_DBL *)
+                           int32_t *)
     FDK_ALLOCATE_MEMORY_1D(self->hybResidualImag__FDK, setup.maxNumResChannels,
-                           FIXP_DBL *)
+                           int32_t *)
 
     for (i = 0; i < setup.maxNumResChannels; i++) {
       int resQmfBands = (config->decoderMode == EXT_LP_ONLY)
@@ -382,35 +382,35 @@ spatialDec *FDK_SpatialDecOpen(const SPATIAL_DEC_CONFIG *config,
       /* Alignment is needed for USAC residuals because QMF analysis directly
        * writes to this buffer. */
       FDK_ALLOCATE_MEMORY_2D_INT_ALIGNED(self->qmfResidualReal__FDK[i], (1),
-                                         resQmfBands, FIXP_DBL, SECT_DATA_L1)
+                                         resQmfBands, int32_t, SECT_DATA_L1)
       FDK_ALLOCATE_MEMORY_2D_INT_ALIGNED(self->qmfResidualImag__FDK[i], (1),
-                                         resQmfBands, FIXP_DBL, SECT_DATA_L1)
+                                         resQmfBands, int32_t, SECT_DATA_L1)
 
       FDK_ALLOCATE_MEMORY_1D(self->hybResidualReal__FDK[i],
-                             setup.maxNumHybridBands, FIXP_DBL)
+                             setup.maxNumHybridBands, int32_t)
       FDK_ALLOCATE_MEMORY_1D(self->hybResidualImag__FDK[i], resHybBands,
-                             FIXP_DBL)
+                             int32_t)
     }
   } /* if (setup.bProcResidual) */
 
   FDK_ALLOCATE_MEMORY_2D_INT(self->wReal__FDK, setup.maxNumVChannels,
-                             setup.maxNumHybridBands, FIXP_DBL, SECT_DATA_L2)
+                             setup.maxNumHybridBands, int32_t, SECT_DATA_L2)
   FDK_ALLOCATE_MEMORY_2D_INT(self->wImag__FDK, setup.maxNumVChannels,
-                             setup.maxNumCmplxHybBands, FIXP_DBL, SECT_DATA_L2)
+                             setup.maxNumCmplxHybBands, int32_t, SECT_DATA_L2)
 
   FDK_ALLOCATE_MEMORY_2D_INT(self->hybOutputRealDry__FDK,
                              setup.maxNumOutputChannels,
-                             setup.maxNumHybridBands, FIXP_DBL, SECT_DATA_L2)
+                             setup.maxNumHybridBands, int32_t, SECT_DATA_L2)
   FDK_ALLOCATE_MEMORY_2D_INT(self->hybOutputImagDry__FDK,
                              setup.maxNumOutputChannels,
-                             setup.maxNumCmplxHybBands, FIXP_DBL, SECT_DATA_L2)
+                             setup.maxNumCmplxHybBands, int32_t, SECT_DATA_L2)
 
   FDK_ALLOCATE_MEMORY_2D_INT(self->hybOutputRealWet__FDK,
                              setup.maxNumOutputChannels,
-                             setup.maxNumHybridBands, FIXP_DBL, SECT_DATA_L2)
+                             setup.maxNumHybridBands, int32_t, SECT_DATA_L2)
   FDK_ALLOCATE_MEMORY_2D_INT(self->hybOutputImagWet__FDK,
                              setup.maxNumOutputChannels,
-                             setup.maxNumCmplxHybBands, FIXP_DBL, SECT_DATA_L2)
+                             setup.maxNumCmplxHybBands, int32_t, SECT_DATA_L2)
 
   FDK_ALLOCATE_MEMORY_1D(self->hybridSynthesis, setup.maxNumOutputChannels,
                          FDK_SYN_HYB_FILTER)
@@ -429,21 +429,21 @@ spatialDec *FDK_SpatialDecOpen(const SPATIAL_DEC_CONFIG *config,
   }
 
   FDK_ALLOCATE_MEMORY_2D_INT(self->pHybridAnaStatesLFdmx,
-                             setup.maxNumInputChannels, lfSize, FIXP_DBL,
+                             setup.maxNumInputChannels, lfSize, int32_t,
                              SECT_DATA_L2) {
     FDK_ALLOCATE_MEMORY_2D(self->pHybridAnaStatesHFdmx,
-                           setup.maxNumInputChannels, hfSize, FIXP_DBL)
+                           setup.maxNumInputChannels, hfSize, int32_t)
   }
 
   for (i = 0; i < setup.maxNumInputChannels; i++) {
-    FIXP_DBL *pHybridAnaStatesHFdmx;
+    int32_t *pHybridAnaStatesHFdmx;
 
     pHybridAnaStatesHFdmx = self->pHybridAnaStatesHFdmx[i];
 
     FDKhybridAnalysisOpen(&self->hybridAnalysis[i],
                           self->pHybridAnaStatesLFdmx[i],
-                          lfSize * sizeof(FIXP_DBL), pHybridAnaStatesHFdmx,
-                          hfSize * sizeof(FIXP_DBL));
+                          lfSize * sizeof(int32_t), pHybridAnaStatesHFdmx,
+                          hfSize * sizeof(int32_t));
   }
   if (setup.bProcResidual) {
     lfSize = 2 * BUFFER_LEN_LF * MAX_QMF_BANDS_TO_HYBRID;
@@ -454,19 +454,19 @@ spatialDec *FDK_SpatialDecOpen(const SPATIAL_DEC_CONFIG *config,
               (setup.maxNumCmplxQmfBands - MAX_QMF_BANDS_TO_HYBRID));
 
     FDK_ALLOCATE_MEMORY_2D_INT(self->pHybridAnaStatesLFres,
-                               setup.maxNumResChannels, lfSize, FIXP_DBL,
+                               setup.maxNumResChannels, lfSize, int32_t,
                                SECT_DATA_L2)
     FDK_ALLOCATE_MEMORY_2D(self->pHybridAnaStatesHFres, setup.maxNumResChannels,
-                           hfSize, FIXP_DBL)
+                           hfSize, int32_t)
 
     for (i = setup.maxNumInputChannels;
          i < (setup.maxNumInputChannels + setup.maxNumResChannels); i++) {
       FDKhybridAnalysisOpen(
           &self->hybridAnalysis[i],
           self->pHybridAnaStatesLFres[i - setup.maxNumInputChannels],
-          lfSize * sizeof(FIXP_DBL),
+          lfSize * sizeof(int32_t),
           self->pHybridAnaStatesHFres[i - setup.maxNumInputChannels],
-          hfSize * sizeof(FIXP_DBL));
+          hfSize * sizeof(int32_t));
     }
   }
 
@@ -475,7 +475,7 @@ spatialDec *FDK_SpatialDecOpen(const SPATIAL_DEC_CONFIG *config,
 
   FDK_ALLOCATE_MEMORY_1D(self->apDecor, setup.maxNumDecorChannels, DECORR_DEC)
   FDK_ALLOCATE_MEMORY_2D_INT(self->pDecorBufferCplx, setup.maxNumDecorChannels,
-                             (2 * ((825) + (373))), FIXP_DBL, SECT_DATA_L2)
+                             (2 * ((825) + (373))), int32_t, SECT_DATA_L2)
 
   for (i = 0; i < setup.maxNumDecorChannels; i++) {
     if (FDKdecorrelateOpen(&self->apDecor[i], self->pDecorBufferCplx[i],
@@ -766,7 +766,7 @@ SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
     /* output scaling */
     for (nCh = 0; nCh < self->numOutputChannelsAT; nCh++) {
       int outputScale = 0, outputGain_e = 0, scale = -(8) + (1);
-      FIXP_DBL outputGain_m = getChGain(self, nCh, &outputGain_e);
+      int32_t outputGain_m = getChGain(self, nCh, &outputGain_e);
 
       if (!isTwoChMode(self->upmixType) && !bypassMode) {
         outputScale +=
@@ -852,9 +852,9 @@ SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
     FDKmemclear(self->smoothState->prevSmgData,
                 MAX_PARAMETER_BANDS * sizeof(UCHAR));
     FDKmemclear(self->smoothState->opdLeftState__FDK,
-                MAX_PARAMETER_BANDS * sizeof(FIXP_DBL));
+                MAX_PARAMETER_BANDS * sizeof(int32_t));
     FDKmemclear(self->smoothState->opdRightState__FDK,
-                MAX_PARAMETER_BANDS * sizeof(FIXP_DBL));
+                MAX_PARAMETER_BANDS * sizeof(int32_t));
   }
 
   self->prevTimeSlot = -1;
@@ -1033,10 +1033,10 @@ void FDK_SpatialDecClose(spatialDec *self) {
  * \param numInputChannels amount if input channels available in hybInputReal
  * and hybInputImag, which may differ from self->numInputChannels.
  */
-static void SpatialDecApplyBypass(spatialDec *self, FIXP_DBL **hybInputReal,
-                                  FIXP_DBL **hybInputImag,
-                                  FIXP_DBL **hybOutputReal,
-                                  FIXP_DBL **hybOutputImag,
+static void SpatialDecApplyBypass(spatialDec *self, int32_t **hybInputReal,
+                                  int32_t **hybInputImag,
+                                  int32_t **hybOutputReal,
+                                  int32_t **hybOutputImag,
                                   const int numInputChannels) {
   int complexHybBands;
 
@@ -1060,39 +1060,39 @@ static void SpatialDecApplyBypass(spatialDec *self, FIXP_DBL **hybInputReal,
       case 1:
         if (cf > 0) {
           FDKmemcpy(hybOutputReal[cf], hybInputReal[0],
-                    self->hybridBands * sizeof(FIXP_DBL));
+                    self->hybridBands * sizeof(int32_t));
           FDKmemcpy(hybOutputImag[cf], hybInputImag[0],
-                    complexHybBands * sizeof(FIXP_DBL));
+                    complexHybBands * sizeof(int32_t));
         } else {
           FDKmemcpy(hybOutputReal[lf], hybInputReal[0],
-                    self->hybridBands * sizeof(FIXP_DBL));
+                    self->hybridBands * sizeof(int32_t));
           FDKmemcpy(hybOutputReal[rf], hybInputReal[0],
-                    self->hybridBands * sizeof(FIXP_DBL));
+                    self->hybridBands * sizeof(int32_t));
           FDKmemcpy(hybOutputImag[lf], hybInputImag[0],
-                    complexHybBands * sizeof(FIXP_DBL));
+                    complexHybBands * sizeof(int32_t));
           FDKmemcpy(hybOutputImag[rf], hybInputImag[0],
-                    complexHybBands * sizeof(FIXP_DBL));
+                    complexHybBands * sizeof(int32_t));
         }
         break;
       case 2:
         FDK_ASSERT(lf != -1);
         FDK_ASSERT(rf != -1);
         FDKmemcpy(hybOutputReal[lf], hybInputReal[0],
-                  self->hybridBands * sizeof(FIXP_DBL));
+                  self->hybridBands * sizeof(int32_t));
         FDKmemcpy(hybOutputReal[rf], hybInputReal[1],
-                  self->hybridBands * sizeof(FIXP_DBL));
+                  self->hybridBands * sizeof(int32_t));
         FDKmemcpy(hybOutputImag[lf], hybInputImag[0],
-                  complexHybBands * sizeof(FIXP_DBL));
+                  complexHybBands * sizeof(int32_t));
         FDKmemcpy(hybOutputImag[rf], hybInputImag[1],
-                  complexHybBands * sizeof(FIXP_DBL));
+                  complexHybBands * sizeof(int32_t));
         break;
     }
     for (ch = 0; ch < self->numOutputChannelsAT; ch++) {
       if (ch == lf || ch == rf || ch == cf) {
         continue; /* Skip bypassed channels */
       }
-      FDKmemclear(hybOutputReal[ch], self->hybridBands * sizeof(FIXP_DBL));
-      FDKmemclear(hybOutputImag[ch], complexHybBands * sizeof(FIXP_DBL));
+      FDKmemclear(hybOutputReal[ch], self->hybridBands * sizeof(int32_t));
+      FDKmemclear(hybOutputImag[ch], complexHybBands * sizeof(int32_t));
     }
   }
 }
@@ -1111,8 +1111,8 @@ static void SpatialDecApplyBypass(spatialDec *self, FIXP_DBL **hybInputReal,
 static SACDEC_ERROR SpatialDecApplyParameterSets(
     spatialDec *self, const SPATIAL_BS_FRAME *frame, SPATIALDEC_INPUT_MODE mode,
     PCM_MPS *inData,          /* Time domain input  */
-    FIXP_DBL **qmfInDataReal, /* QMF domain data l/r */
-    FIXP_DBL **qmfInDataImag, /* QMF domain data l/r */
+    int32_t **qmfInDataReal, /* QMF domain data l/r */
+    int32_t **qmfInDataImag, /* QMF domain data l/r */
     UINT nSamples, UINT controlFlags, int numInputChannels,
     const FDK_channelMapDescr *const mapDescr) {
   SACDEC_ERROR err = MPS_OK;
@@ -1213,9 +1213,9 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
 
         if (!isTwoChMode(self->upmixType) && !bypassMode) {
           int i;
-          FIXP_DBL *RESTRICT self_qmfResidualReal__FDK_0_0 =
+          int32_t *RESTRICT self_qmfResidualReal__FDK_0_0 =
               &self->qmfResidualReal__FDK[0][0][0];
-          FIXP_DBL *RESTRICT self_qmfResidualImag__FDK_0_0 =
+          int32_t *RESTRICT self_qmfResidualImag__FDK_0_0 =
               &self->qmfResidualImag__FDK[0][0][0];
 
           if ((self->pQmfDomain->globalConf.nBandsAnalysis == 24) &&
@@ -1259,8 +1259,8 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
           self->hybOutputImagDry__FDK, numInputChannels);
     } else /* !bypassMode */
     {
-      FIXP_DBL *pxReal[MAX_NUM_XCHANNELS] = {NULL};
-      FIXP_DBL *pxImag[MAX_NUM_XCHANNELS] = {NULL};
+      int32_t *pxReal[MAX_NUM_XCHANNELS] = {NULL};
+      int32_t *pxImag[MAX_NUM_XCHANNELS] = {NULL};
 
       SpatialDecCreateX(self,
                         self->hybInputReal__FDK, /* input: hybInput(Real/Imag),
@@ -1343,10 +1343,10 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
           nHybBands = self->hybridBands;
 
           for (ch = 0; ch < self->numOutputChannels; ch++) {
-            FIXP_DBL *RESTRICT pRealDry = self->hybOutputRealDry__FDK[ch];
-            FIXP_DBL *RESTRICT pImagDry = self->hybOutputImagDry__FDK[ch];
-            FIXP_DBL *RESTRICT pRealWet = self->hybOutputRealWet__FDK[ch];
-            FIXP_DBL *RESTRICT pImagWet = self->hybOutputImagWet__FDK[ch];
+            int32_t *RESTRICT pRealDry = self->hybOutputRealDry__FDK[ch];
+            int32_t *RESTRICT pImagDry = self->hybOutputImagDry__FDK[ch];
+            int32_t *RESTRICT pRealWet = self->hybOutputRealWet__FDK[ch];
+            int32_t *RESTRICT pImagWet = self->hybOutputImagWet__FDK[ch];
             for (hyb = 0; hyb < nHybBands; hyb++) {
               pRealDry[hyb] = fAddSaturate(pRealDry[hyb], pRealWet[hyb]);
               pImagDry[hyb] = fAddSaturate(pImagDry[hyb], pImagWet[hyb]);
@@ -1408,8 +1408,8 @@ SACDEC_ERROR SpatialDecApplyFrame(
     spatialDec *self,
     SPATIAL_BS_FRAME *frame, /* parsed frame data to be applied */
     SPATIALDEC_INPUT_MODE inputMode, PCM_MPS *inData, /* Time domain input  */
-    FIXP_DBL **qmfInDataReal,                         /* QMF domain data l/r */
-    FIXP_DBL **qmfInDataImag,                         /* QMF domain data l/r */
+    int32_t **qmfInDataReal,                         /* QMF domain data l/r */
+    int32_t **qmfInDataImag,                         /* QMF domain data l/r */
     PCM_MPS *pcmOutBuf, /* MAX_OUTPUT_CHANNELS*MAX_TIME_SLOTS*NUM_QMF_BANDS] */
     UINT nSamples, UINT *pControlFlags, int numInputChannels,
     const FDK_channelMapDescr *const mapDescr) {

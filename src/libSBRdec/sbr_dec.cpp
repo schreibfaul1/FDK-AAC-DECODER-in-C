@@ -129,16 +129,16 @@ amm-info@iis.fraunhofer.de
 
 #include "sbrdec_drc.h"
 
-static void copyHarmonicSpectrum(int *xOverQmf, FIXP_DBL **qmfReal,
-                                 FIXP_DBL **qmfImag, int noCols, int overlap,
+static void copyHarmonicSpectrum(int *xOverQmf, int32_t **qmfReal,
+                                 int32_t **qmfImag, int noCols, int overlap,
                                  KEEP_STATES_SYNCED_MODE keepStatesSynced) {
   int patchBands;
   int patch, band, col, target, sourceBands, i;
   int numPatches = 0;
   int slotOffset = 0;
 
-  FIXP_DBL **ppqmfReal = qmfReal + overlap;
-  FIXP_DBL **ppqmfImag = qmfImag + overlap;
+  int32_t **ppqmfReal = qmfReal + overlap;
+  int32_t **ppqmfImag = qmfImag + overlap;
 
   if (keepStatesSynced == KEEP_STATES_SYNCED_NORMAL) {
     slotOffset = noCols - overlap - LPC_ORDER;
@@ -274,7 +274,7 @@ void sbr_dec(
   int i, slot, reserve;
   int saveLbScale;
   int lastSlotOffs;
-  FIXP_DBL maxVal;
+  int32_t maxVal;
 
   /* temporary pointer / variable for QMF;
      required as we want to use temporary buffer
@@ -288,12 +288,12 @@ void sbr_dec(
   int noCols = hHeaderData->numberTimeSlots * hHeaderData->timeStep;
 
   /* create pointer array for data to use for HBE and legacy sbr */
-  FIXP_DBL *pLowBandReal[(3 * 4) + 2 * ((1024) / (32) * (4) / 2)];
-  FIXP_DBL *pLowBandImag[(3 * 4) + 2 * ((1024) / (32) * (4) / 2)];
+  int32_t *pLowBandReal[(3 * 4) + 2 * ((1024) / (32) * (4) / 2)];
+  int32_t *pLowBandImag[(3 * 4) + 2 * ((1024) / (32) * (4) / 2)];
 
   /* set pReal to where QMF analysis writes in case of legacy SBR */
-  FIXP_DBL **pReal = pLowBandReal + ov_len;
-  FIXP_DBL **pImag = pLowBandImag + ov_len;
+  int32_t **pReal = pLowBandReal + ov_len;
+  int32_t **pImag = pLowBandImag + ov_len;
 
   /* map QMF buffer to pointer array (Overlap + Frame)*/
   for (i = 0; i < noCols + ov_len; i++) {
@@ -325,9 +325,9 @@ void sbr_dec(
       /* We have to move old hbe frame data to lb area of buffer */
       for (i = 0; i < noCols; i++) {
         FDKmemcpy(pLowBandReal[ov_len + i], hSbrDec->hQmfHBESlotsReal[i],
-                  hHeaderData->numberOfAnalysisBands * sizeof(FIXP_DBL));
+                  hHeaderData->numberOfAnalysisBands * sizeof(int32_t));
         FDKmemcpy(pLowBandImag[ov_len + i], hSbrDec->hQmfHBESlotsImag[i],
-                  hHeaderData->numberOfAnalysisBands * sizeof(FIXP_DBL));
+                  hHeaderData->numberOfAnalysisBands * sizeof(int32_t));
       }
     }
   }
@@ -340,12 +340,12 @@ void sbr_dec(
     if (!(flags & SBRDEC_USAC_HARMONICSBR)) /* stereoCfgIndex3 w/o HBE */
       FDK_QmfDomain_WorkBuffer2ProcChannel(hSbrDec->qmfDomainInCh);
   } else {
-    C_AALLOC_SCRATCH_START(qmfTemp, FIXP_DBL, 2 * (64));
+    C_AALLOC_SCRATCH_START(qmfTemp, int32_t, 2 * (64));
     qmfAnalysisFiltering(&hSbrDec->qmfDomainInCh->fb, pReal, pImag,
                          &hSbrDec->qmfDomainInCh->scaling, pTimeInQmf,
                          0 + sbrInDataHeadroom, 1, qmfTemp);
 
-    C_AALLOC_SCRATCH_END(qmfTemp, FIXP_DBL, 2 * (64));
+    C_AALLOC_SCRATCH_END(qmfTemp, int32_t, 2 * (64));
   }
 
   /*
@@ -358,14 +358,14 @@ void sbr_dec(
     if (!(flags & SBRDEC_LOW_POWER)) {
       for (slot = ov_len; slot < noCols + ov_len; slot++) {
         FDKmemclear(&pLowBandReal[slot][nAnalysisBands],
-                    ((64) - nAnalysisBands) * sizeof(FIXP_DBL));
+                    ((64) - nAnalysisBands) * sizeof(int32_t));
         FDKmemclear(&pLowBandImag[slot][nAnalysisBands],
-                    ((64) - nAnalysisBands) * sizeof(FIXP_DBL));
+                    ((64) - nAnalysisBands) * sizeof(int32_t));
       }
     } else {
       for (slot = ov_len; slot < noCols + ov_len; slot++) {
         FDKmemclear(&pLowBandReal[slot][nAnalysisBands],
-                    ((64) - nAnalysisBands) * sizeof(FIXP_DBL));
+                    ((64) - nAnalysisBands) * sizeof(int32_t));
       }
     }
   }
@@ -407,7 +407,7 @@ void sbr_dec(
     lastSlotOffs = borders[hFrameData->frameInfo.nEnvelopes] -
                    hHeaderData->numberTimeSlots;
 
-    FIXP_DBL degreeAlias[(64)];
+    int32_t degreeAlias[(64)];
     PVC_DYNAMIC_DATA pvcDynamicData;
     pvcInitFrame(
         &hSbrDec->PvcStaticData, &pvcDynamicData,
@@ -431,7 +431,7 @@ void sbr_dec(
       FDKmemclear(&degreeAlias[hHeaderData->freqBandData.lowSubband],
                   (hHeaderData->freqBandData.highSubband -
                    hHeaderData->freqBandData.lowSubband) *
-                      sizeof(FIXP_DBL));
+                      sizeof(int32_t));
 
     /*
       Inverse filtering of lowband and transposition into the SBR-frequency
@@ -458,11 +458,11 @@ void sbr_dec(
             FDKmemcpy(
                 hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[i],
                 hSbrDec->codecQMFBufferReal[noCols - LPC_ORDER - ov_len + i],
-                hSbrDec->hHBE->noChannels * sizeof(FIXP_DBL));
+                hSbrDec->hHBE->noChannels * sizeof(int32_t));
             FDKmemcpy(
                 hSbrDec->LppTrans.lpcFilterStatesImagLegSBR[i],
                 hSbrDec->codecQMFBufferImag[noCols - LPC_ORDER - ov_len + i],
-                hSbrDec->hHBE->noChannels * sizeof(FIXP_DBL));
+                hSbrDec->hHBE->noChannels * sizeof(int32_t));
           }
         }
 
@@ -470,9 +470,9 @@ void sbr_dec(
          * to HBE */
         for (i = 0; i < hSbrDec->hHBE->noCols; i++) {
           FDKmemcpy(hSbrDec->codecQMFBufferReal[i], pLowBandReal[ov_len + i],
-                    hSbrDec->hHBE->noChannels * sizeof(FIXP_DBL));
+                    hSbrDec->hHBE->noChannels * sizeof(int32_t));
           FDKmemcpy(hSbrDec->codecQMFBufferImag[i], pLowBandImag[ov_len + i],
-                    hSbrDec->hHBE->noChannels * sizeof(FIXP_DBL));
+                    hSbrDec->hHBE->noChannels * sizeof(int32_t));
         }
 
         QmfTransposerApply(
@@ -513,11 +513,11 @@ void sbr_dec(
           FDKmemcpy(hSbrDec->LppTrans.lpcFilterStatesRealHBE[i],
                     hSbrDec->qmfDomainInCh
                         ->hQmfSlotsReal[hSbrDec->hHBE->noCols - LPC_ORDER + i],
-                    (64) * sizeof(FIXP_DBL));
+                    (64) * sizeof(int32_t));
           FDKmemcpy(hSbrDec->LppTrans.lpcFilterStatesImagHBE[i],
                     hSbrDec->qmfDomainInCh
                         ->hQmfSlotsImag[hSbrDec->hHBE->noCols - LPC_ORDER + i],
-                    (64) * sizeof(FIXP_DBL));
+                    (64) * sizeof(int32_t));
         }
       }
       {
@@ -642,14 +642,14 @@ void sbr_dec(
       if (!(flags & SBRDEC_LOW_POWER)) {
         FDKmemcpy(hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[i],
                   pLowBandReal[noCols - LPC_ORDER + i],
-                  length * sizeof(FIXP_DBL));
+                  length * sizeof(int32_t));
         FDKmemcpy(hSbrDec->LppTrans.lpcFilterStatesImagLegSBR[i],
                   pLowBandImag[noCols - LPC_ORDER + i],
-                  length * sizeof(FIXP_DBL));
+                  length * sizeof(int32_t));
       } else
         FDKmemcpy(hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[i],
                   pLowBandReal[noCols - LPC_ORDER + i],
-                  length * sizeof(FIXP_DBL));
+                  length * sizeof(int32_t));
     }
   }
 
@@ -676,9 +676,9 @@ void sbr_dec(
         int save_usb = hSbrDec->qmfDomainOutCh->fb.usb;
 
 #if (QMF_MAX_SYNTHESIS_BANDS <= 64)
-        C_AALLOC_SCRATCH_START(qmfTemp, FIXP_DBL, 2 * QMF_MAX_SYNTHESIS_BANDS);
+        C_AALLOC_SCRATCH_START(qmfTemp, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
 #else
-        C_AALLOC_STACK_START(qmfTemp, FIXP_DBL, 2 * QMF_MAX_SYNTHESIS_BANDS);
+        C_AALLOC_STACK_START(qmfTemp, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
 #endif
         if (hSbrDec->qmfDomainOutCh->fb.usb < hFreq->ov_highSubband) {
           /* we need to patch usb for this frame as overlap may contain higher
@@ -704,9 +704,9 @@ void sbr_dec(
         hSbrDec->qmfDomainOutCh->fb.usb = save_usb;
         hFreq->ov_highSubband = save_usb;
 #if (QMF_MAX_SYNTHESIS_BANDS <= 64)
-        C_AALLOC_SCRATCH_END(qmfTemp, FIXP_DBL, 2 * QMF_MAX_SYNTHESIS_BANDS);
+        C_AALLOC_SCRATCH_END(qmfTemp, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
 #else
-        C_AALLOC_STACK_END(qmfTemp, FIXP_DBL, 2 * QMF_MAX_SYNTHESIS_BANDS);
+        C_AALLOC_STACK_END(qmfTemp, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
 #endif
       }
     }
@@ -763,10 +763,10 @@ void sbr_dec(
 
     {
 #if (QMF_MAX_SYNTHESIS_BANDS <= 64)
-      C_AALLOC_SCRATCH_START(pWorkBuffer, FIXP_DBL,
+      C_AALLOC_SCRATCH_START(pWorkBuffer, int32_t,
                              2 * QMF_MAX_SYNTHESIS_BANDS);
 #else
-      C_AALLOC_STACK_START(pWorkBuffer, FIXP_DBL, 2 * QMF_MAX_SYNTHESIS_BANDS);
+      C_AALLOC_STACK_START(pWorkBuffer, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
 #endif
 
       int maxShift = 0;
@@ -793,8 +793,8 @@ void sbr_dec(
         INT outScalefactorR, outScalefactorL;
 
         /* qmf timeslot of right channel */
-        FIXP_DBL *rQmfReal = pWorkBuffer;
-        FIXP_DBL *rQmfImag = pWorkBuffer + synQmf->no_channels;
+        int32_t *rQmfReal = pWorkBuffer;
+        int32_t *rQmfImag = pWorkBuffer + synQmf->no_channels;
 
         {
           if (i ==
@@ -853,9 +853,9 @@ void sbr_dec(
         }
       } /* no_col loop  i  */
 #if (QMF_MAX_SYNTHESIS_BANDS <= 64)
-      C_AALLOC_SCRATCH_END(pWorkBuffer, FIXP_DBL, 2 * QMF_MAX_SYNTHESIS_BANDS);
+      C_AALLOC_SCRATCH_END(pWorkBuffer, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
 #else
-      C_AALLOC_STACK_END(pWorkBuffer, FIXP_DBL, 2 * QMF_MAX_SYNTHESIS_BANDS);
+      C_AALLOC_STACK_END(pWorkBuffer, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
 #endif
     }
   }
@@ -952,16 +952,16 @@ createSbrDec(SBR_CHANNEL *hSbrChannel,
 
     /* shared memory between hbeLightTimeDelayBuffer and hQmfHBESlotsReal if
      * SBRDEC_HBE_ENABLE */
-    hSbrChannel->SbrDec.tmp_memory = (FIXP_DBL **)fdkCallocMatrix2D_aligned(
-        noCols, noChannels, sizeof(FIXP_DBL));
+    hSbrChannel->SbrDec.tmp_memory = (int32_t **)fdkCallocMatrix2D_aligned(
+        noCols, noChannels, sizeof(int32_t));
     if (hSbrChannel->SbrDec.tmp_memory == NULL) {
       return SBRDEC_MEM_ALLOC_FAILED;
     }
 
     hSbrChannel->SbrDec.hQmfHBESlotsReal = hSbrChannel->SbrDec.tmp_memory;
     hSbrChannel->SbrDec.hQmfHBESlotsImag =
-        (FIXP_DBL **)fdkCallocMatrix2D_aligned(noCols, noChannels,
-                                               sizeof(FIXP_DBL));
+        (int32_t **)fdkCallocMatrix2D_aligned(noCols, noChannels,
+                                               sizeof(int32_t));
     if (hSbrChannel->SbrDec.hQmfHBESlotsImag == NULL) {
       return SBRDEC_MEM_ALLOC_FAILED;
     }
@@ -971,15 +971,15 @@ createSbrDec(SBR_CHANNEL *hSbrChannel,
     /* buffer can be used as LPCFilterstates buffer because legacy SBR needs
      * exactly these values for LPC filtering */
     hSbrChannel->SbrDec.codecQMFBufferReal =
-        (FIXP_DBL **)fdkCallocMatrix2D_aligned(noCols, noChannels,
-                                               sizeof(FIXP_DBL));
+        (int32_t **)fdkCallocMatrix2D_aligned(noCols, noChannels,
+                                               sizeof(int32_t));
     if (hSbrChannel->SbrDec.codecQMFBufferReal == NULL) {
       return SBRDEC_MEM_ALLOC_FAILED;
     }
 
     hSbrChannel->SbrDec.codecQMFBufferImag =
-        (FIXP_DBL **)fdkCallocMatrix2D_aligned(noCols, noChannels,
-                                               sizeof(FIXP_DBL));
+        (int32_t **)fdkCallocMatrix2D_aligned(noCols, noChannels,
+                                               sizeof(int32_t));
     if (hSbrChannel->SbrDec.codecQMFBufferImag == NULL) {
       return SBRDEC_MEM_ALLOC_FAILED;
     }
@@ -1032,8 +1032,8 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
             const UINT flags, HANDLE_SBR_FRAME_DATA hFrameData) {
   SBR_ERROR sbrError = SBRDEC_OK;
   int i;
-  FIXP_DBL *pLowBandReal[128];
-  FIXP_DBL *pLowBandImag[128];
+  int32_t *pLowBandReal[128];
+  int32_t *pLowBandImag[128];
   int useLP = flags & SBRDEC_LOW_POWER;
 
   int old_lsb = hSbrDec->qmfDomainInCh->fb.lsb;
@@ -1042,8 +1042,8 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
   /* int new_usb = hHeaderData->freqBandData.highSubband; */
   int l, startBand, stopBand, startSlot, size;
 
-  FIXP_DBL **OverlapBufferReal = hSbrDec->qmfDomainInCh->hQmfSlotsReal;
-  FIXP_DBL **OverlapBufferImag = hSbrDec->qmfDomainInCh->hQmfSlotsImag;
+  int32_t **OverlapBufferReal = hSbrDec->qmfDomainInCh->hQmfSlotsReal;
+  int32_t **OverlapBufferImag = hSbrDec->qmfDomainInCh->hQmfSlotsImag;
 
   /* in case the previous frame was not active in terms of SBR processing, the
      full band from 0 to no_channels was rescaled and not overwritten. Thats why
@@ -1102,12 +1102,12 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
     /* keep already adjusted data in the x-over-area */
     if (!useLP) {
       for (l = startSlot; l < hSbrDec->LppTrans.pSettings->overlap; l++) {
-        FDKmemclear(&OverlapBufferReal[l][startBand], size * sizeof(FIXP_DBL));
-        FDKmemclear(&OverlapBufferImag[l][startBand], size * sizeof(FIXP_DBL));
+        FDKmemclear(&OverlapBufferReal[l][startBand], size * sizeof(int32_t));
+        FDKmemclear(&OverlapBufferImag[l][startBand], size * sizeof(int32_t));
       }
     } else {
       for (l = startSlot; l < hSbrDec->LppTrans.pSettings->overlap; l++) {
-        FDKmemclear(&OverlapBufferReal[l][startBand], size * sizeof(FIXP_DBL));
+        FDKmemclear(&OverlapBufferReal[l][startBand], size * sizeof(int32_t));
       }
     }
 
@@ -1119,20 +1119,20 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
     size = fixMax(0, stopBand - startBand);
 
     FDKmemclear(&hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[0][startBand],
-                size * sizeof(FIXP_DBL));
+                size * sizeof(int32_t));
     FDKmemclear(&hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[1][startBand],
-                size * sizeof(FIXP_DBL));
+                size * sizeof(int32_t));
     if (!useLP) {
       FDKmemclear(&hSbrDec->LppTrans.lpcFilterStatesImagLegSBR[0][startBand],
-                  size * sizeof(FIXP_DBL));
+                  size * sizeof(int32_t));
       FDKmemclear(&hSbrDec->LppTrans.lpcFilterStatesImagLegSBR[1][startBand],
-                  size * sizeof(FIXP_DBL));
+                  size * sizeof(int32_t));
     }
   }
 
   if (startSlot != 0) {
     int source_exp, target_exp, delta_exp, target_lsb, target_usb, reserve;
-    FIXP_DBL maxVal;
+    int32_t maxVal;
 
     /*
     Rescale already processed spectral data between old and new x-over
@@ -1267,12 +1267,12 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
           hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[i],
           hSbrDec->codecQMFBufferReal[hSbrDec->hHBE->noCols - LPC_ORDER -
                                       hSbrDec->LppTrans.pSettings->overlap + i],
-          hSbrDec->hHBE->noChannels * sizeof(FIXP_DBL));
+          hSbrDec->hHBE->noChannels * sizeof(int32_t));
       FDKmemcpy(
           hSbrDec->LppTrans.lpcFilterStatesImagLegSBR[i],
           hSbrDec->codecQMFBufferImag[hSbrDec->hHBE->noCols - LPC_ORDER -
                                       hSbrDec->LppTrans.pSettings->overlap + i],
-          hSbrDec->hHBE->noChannels * sizeof(FIXP_DBL));
+          hSbrDec->hHBE->noChannels * sizeof(int32_t));
     }
     hSbrDec->savedStates = 1;
 
@@ -1374,10 +1374,10 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
           */
           FDKmemcpy(hSbrDec->qmfDomainInCh->hQmfSlotsReal[i],
                     hSbrDec->LppTrans.lpcFilterStatesRealHBE[i + LPC_ORDER],
-                    (64) * sizeof(FIXP_DBL));
+                    (64) * sizeof(int32_t));
           FDKmemcpy(hSbrDec->qmfDomainInCh->hQmfSlotsImag[i],
                     hSbrDec->LppTrans.lpcFilterStatesImagHBE[i + LPC_ORDER],
-                    (64) * sizeof(FIXP_DBL));
+                    (64) * sizeof(int32_t));
         }
 
         for (i = startSlot; i < hSbrDec->LppTrans.pSettings->overlap; i++) {
@@ -1390,13 +1390,13 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
               hSbrDec->codecQMFBufferReal[hSbrDec->hHBE->noCols -
                                           hSbrDec->LppTrans.pSettings->overlap +
                                           i],
-              new_lsb * sizeof(FIXP_DBL));
+              new_lsb * sizeof(int32_t));
           FDKmemcpy(
               hSbrDec->qmfDomainInCh->hQmfSlotsImag[i],
               hSbrDec->codecQMFBufferImag[hSbrDec->hHBE->noCols -
                                           hSbrDec->LppTrans.pSettings->overlap +
                                           i],
-              new_lsb * sizeof(FIXP_DBL));
+              new_lsb * sizeof(int32_t));
         }
       }
     }
@@ -1442,12 +1442,12 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
           FDKmemcpy(&OverlapBufferReal[i][old_lsb],
                     &hSbrDec->LppTrans
                          .lpcFilterStatesRealLegSBR[LPC_ORDER + i][old_lsb],
-                    fMax(new_lsb - old_lsb, 0) * sizeof(FIXP_DBL));
+                    fMax(new_lsb - old_lsb, 0) * sizeof(int32_t));
           if (!useLP) {
             FDKmemcpy(&OverlapBufferImag[i][old_lsb],
                       &hSbrDec->LppTrans
                            .lpcFilterStatesImagLegSBR[LPC_ORDER + i][old_lsb],
-                      fMax(new_lsb - old_lsb, 0) * sizeof(FIXP_DBL));
+                      fMax(new_lsb - old_lsb, 0) * sizeof(int32_t));
           }
         }
       }

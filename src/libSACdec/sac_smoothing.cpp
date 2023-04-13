@@ -119,10 +119,10 @@ amm-info@iis.fraunhofer.de
 
 
 *******************************************************************************/
-static FIXP_DBL calcFilterCoeff__FDK(spatialDec *self, int ps,
+static int32_t calcFilterCoeff__FDK(spatialDec *self, int ps,
                                      const SPATIAL_BS_FRAME *frame) {
   int dSlots;
-  FIXP_DBL delta;
+  int32_t delta;
 
   dSlots = frame->paramSlot[ps] - self->smoothState->prevParamSlot;
 
@@ -159,8 +159,8 @@ static int getSmoothOnOff(spatialDec *self, int ps, int pb) {
 
 void SpatialDecSmoothM1andM2(spatialDec *self, const SPATIAL_BS_FRAME *frame,
                              int ps) {
-  FIXP_DBL delta__FDK;
-  FIXP_DBL one_minus_delta__FDK;
+  int32_t delta__FDK;
+  int32_t one_minus_delta__FDK;
 
   int pb, row, col;
   int residualBands = 0;
@@ -176,10 +176,10 @@ void SpatialDecSmoothM1andM2(spatialDec *self, const SPATIAL_BS_FRAME *frame,
   }
 
   delta__FDK = calcFilterCoeff__FDK(self, ps, frame);
-  if (delta__FDK == /*FL2FXCONST_DBL(1.0f)*/ (FIXP_DBL)MAXVAL_DBL)
+  if (delta__FDK == /*FL2FXCONST_DBL(1.0f)*/ (int32_t)MAXVAL_DBL)
     one_minus_delta__FDK = FL2FXCONST_DBL(0.0f);
   else if (delta__FDK == FL2FXCONST_DBL(0.0f))
-    one_minus_delta__FDK = /*FL2FXCONST_DBL(1.0f)*/ (FIXP_DBL)MAXVAL_DBL;
+    one_minus_delta__FDK = /*FL2FXCONST_DBL(1.0f)*/ (int32_t)MAXVAL_DBL;
   else
     one_minus_delta__FDK = (FL2FXCONST_DBL(0.5f) - (delta__FDK >> 1)) << 1;
 
@@ -219,19 +219,19 @@ void SpatialDecSmoothOPD(spatialDec *self, const SPATIAL_BS_FRAME *frame,
                          int ps) {
   int pb;
   int dSlots;
-  FIXP_DBL delta__FDK;
-  FIXP_DBL one_minus_delta__FDK;
-  FIXP_DBL *phaseLeftSmooth__FDK = self->smoothState->opdLeftState__FDK;
-  FIXP_DBL *phaseRightSmooth__FDK = self->smoothState->opdRightState__FDK;
+  int32_t delta__FDK;
+  int32_t one_minus_delta__FDK;
+  int32_t *phaseLeftSmooth__FDK = self->smoothState->opdLeftState__FDK;
+  int32_t *phaseRightSmooth__FDK = self->smoothState->opdRightState__FDK;
   int quantCoarse;
 
   quantCoarse = frame->IPDLosslessData[0].bsQuantCoarseXXX[ps];
 
   if (frame->OpdSmoothingMode == 0) {
     FDKmemcpy(phaseLeftSmooth__FDK, self->PhaseLeft__FDK,
-              self->numParameterBands * sizeof(FIXP_DBL));
+              self->numParameterBands * sizeof(int32_t));
     FDKmemcpy(phaseRightSmooth__FDK, self->PhaseRight__FDK,
-              self->numParameterBands * sizeof(FIXP_DBL));
+              self->numParameterBands * sizeof(int32_t));
   } else {
     if (ps == 0) {
       dSlots = frame->paramSlot[ps] + 1;
@@ -239,17 +239,17 @@ void SpatialDecSmoothOPD(spatialDec *self, const SPATIAL_BS_FRAME *frame,
       dSlots = frame->paramSlot[ps] - frame->paramSlot[ps - 1];
     }
 
-    delta__FDK = (FIXP_DBL)((INT)(FL2FXCONST_DBL(0.0078125f)) * dSlots);
+    delta__FDK = (int32_t)((INT)(FL2FXCONST_DBL(0.0078125f)) * dSlots);
 
-    if (delta__FDK == (FIXP_DBL)MAXVAL_DBL /*FL2FXCONST_DBL(1.0f)*/)
+    if (delta__FDK == (int32_t)MAXVAL_DBL /*FL2FXCONST_DBL(1.0f)*/)
       one_minus_delta__FDK = FL2FXCONST_DBL(0.0f);
     else if (delta__FDK == FL2FXCONST_DBL(0.0f))
-      one_minus_delta__FDK = (FIXP_DBL)MAXVAL_DBL /*FL2FXCONST_DBL(1.0f)*/;
+      one_minus_delta__FDK = (int32_t)MAXVAL_DBL /*FL2FXCONST_DBL(1.0f)*/;
     else
       one_minus_delta__FDK = (FL2FXCONST_DBL(0.5f) - (delta__FDK >> 1)) << 1;
 
     for (pb = 0; pb < self->numParameterBands; pb++) {
-      FIXP_DBL tmpL, tmpR, tmp;
+      int32_t tmpL, tmpR, tmp;
 
       tmpL = self->PhaseLeft__FDK[pb];
       tmpR = self->PhaseRight__FDK[pb];
@@ -280,11 +280,11 @@ void SpatialDecSmoothOPD(spatialDec *self, const SPATIAL_BS_FRAME *frame,
 
       while (phaseLeftSmooth__FDK[pb] > PI__IPD << 1)
         phaseLeftSmooth__FDK[pb] -= PI__IPD << 1;
-      while (phaseLeftSmooth__FDK[pb] < (FIXP_DBL)0)
+      while (phaseLeftSmooth__FDK[pb] < (int32_t)0)
         phaseLeftSmooth__FDK[pb] += PI__IPD << 1;
       while (phaseRightSmooth__FDK[pb] > PI__IPD << 1)
         phaseRightSmooth__FDK[pb] -= PI__IPD << 1;
-      while (phaseRightSmooth__FDK[pb] < (FIXP_DBL)0)
+      while (phaseRightSmooth__FDK[pb] < (int32_t)0)
         phaseRightSmooth__FDK[pb] += PI__IPD << 1;
 
       self->PhaseLeft__FDK[pb] = phaseLeftSmooth__FDK[pb];

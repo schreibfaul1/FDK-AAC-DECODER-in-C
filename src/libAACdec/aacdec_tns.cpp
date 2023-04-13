@@ -287,7 +287,7 @@ void CTns_Apply(CTnsData *RESTRICT pTnsData, /*!< pointer to aac decoder info */
     }
 
     for (window = start_window; window < wins_per_frame; window++) {
-      FIXP_DBL *pSpectrum;
+      int32_t *pSpectrum;
 
       { pSpectrum = SPEC(pSpectralCoefficient, window, granuleLength); }
 
@@ -344,14 +344,14 @@ void CTns_Apply(CTnsData *RESTRICT pTnsData, /*!< pointer to aac decoder info */
           size = stop - start;
 
           if (size) {
-            C_ALLOC_SCRATCH_START(state, FIXP_DBL, TNS_MAXIMUM_ORDER)
+            C_ALLOC_SCRATCH_START(state, int32_t, TNS_MAXIMUM_ORDER)
 
-            FDKmemclear(state, TNS_MAXIMUM_ORDER * sizeof(FIXP_DBL));
+            FDKmemclear(state, TNS_MAXIMUM_ORDER * sizeof(int32_t));
             CLpc_SynthesisLattice(pSpectrum + start, size, 0, 0,
                                   filter->Direction, coeff, filter->Order,
                                   state);
 
-            C_ALLOC_SCRATCH_END(state, FIXP_DBL, TNS_MAXIMUM_ORDER)
+            C_ALLOC_SCRATCH_END(state, int32_t, TNS_MAXIMUM_ORDER)
           }
         }
       }

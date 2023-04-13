@@ -574,8 +574,8 @@ AAC_DECODER_ERROR CAacDecoder_ApplyCrossFade(INT_PCM *pTimeData, INT_PCM **pTime
 		INT_PCM *pIn = &pTimeData[ch * s1];
 		for(i = 0; i < TIME_DATA_FLUSH_SIZE; i++) {
 			FIXP_SGL alpha = (FIXP_SGL)i << (FRACT_BITS - 1 - TIME_DATA_FLUSH_SIZE_SF);
-			FIXP_DBL time = FX_PCM2FX_DBL(*pIn);
-			FIXP_DBL timeFlush = FX_PCM2FX_DBL(pTimeDataFlush[ch][i]);
+			int32_t time = FX_PCM2FX_DBL(*pIn);
+			int32_t timeFlush = FX_PCM2FX_DBL(pTimeDataFlush[ch][i]);
 
 			*pIn = (INT_PCM)(FIXP_PCM)FX_DBL2FX_PCM(timeFlush - fMult(timeFlush, alpha) + fMult(time, alpha));
 			pIn += s2;
@@ -1182,16 +1182,16 @@ HANDLE_AACDECODER CAacDecoder_Open(TRANSPORT_TYPE bsFormat) /*!< bitstream forma
 	aacDecoder_drcSetParam(self->hDrcInfo, DRC_BS_DELAY, CConcealment_GetDelay(&self->concealCommonData));
 
     WBC1 = ((CWorkBufferCore1 *)FDKaalloc_L((1) * sizeof(CWorkBufferCore1), 8, SECT_DATA_L1));
-	self->workBufferCore1 = (FIXP_DBL *)WBC1;
+	self->workBufferCore1 = (int32_t *)WBC1;
 
-	self->workBufferCore2 = (FIXP_DBL *) FDKaalloc_L(8 * 1024 * sizeof(FIXP_DBL), 8, SECT_DATA_L2);
+	self->workBufferCore2 = (int32_t *) FDKaalloc_L(8 * 1024 * sizeof(int32_t), 8, SECT_DATA_L2);
 	if(self->workBufferCore2 == NULL) goto bail;
 
 	/* When RSVD60 is active use dedicated memory for core decoding */
-	self->pTimeData2 = (FIXP_DBL *)FDKaalloc_L(((8) * (1024 * 4) * 2) * sizeof(FIXP_DBL), 8, SECT_DATA_EXTERN);
+	self->pTimeData2 = (int32_t *)FDKaalloc_L(((8) * (1024 * 4) * 2) * sizeof(int32_t), 8, SECT_DATA_EXTERN);
 
-    GRMWBC5  = 64 * 1024 * sizeof(FIXP_DBL) + 8 + sizeof(void *);
-    GRMWBC5 += ((8 - (64 * 1024) * sizeof(FIXP_DBL) + 8 + sizeof(void *) & 7) & 7);
+    GRMWBC5  = 64 * 1024 * sizeof(int32_t) + 8 + sizeof(void *);
+    GRMWBC5 += ((8 - (64 * 1024) * sizeof(int32_t) + 8 + sizeof(void *) & 7) & 7);
 	self->timeData2Size = GRMWBC5;
 
 	if(self->pTimeData2 == NULL) { goto bail; }
@@ -1900,7 +1900,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, UCHAR
 								(CAacDecoderCommonStaticData *)FDKcalloc(1, sizeof(CAacDecoderCommonStaticData));
 							if(self->pAacDecoderChannelInfo[ch]->pComStaticData == NULL) { goto bail; }
 							if(ch == aacChannelsOffset) {
-                                UINT a = fMax((UINT)sizeof(FIXP_DBL) * 1024 * 2, (UINT)sizeof(CAacDecoderCommonData));
+                                UINT a = fMax((UINT)sizeof(int32_t) * 1024 * 2, (UINT)sizeof(CAacDecoderCommonData));
 								self->pAacDecoderChannelInfo[ch]->pComData =
 									(CAacDecoderCommonData *)(SCHAR *)FDKaalloc_L(a * sizeof(SCHAR), 8, SECT_DATA_L2);
 
@@ -1961,7 +1961,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, UCHAR
 					if(self->pAacDecoderStaticChannelInfo[ch] == NULL) { goto bail; }
 
                     /* This area size depends on the AOT */
-                    FIXP_DBL *ap = (FIXP_DBL *)FDKaalloc(((768)) * sizeof(FIXP_DBL), 8);
+                    int32_t *ap = (int32_t *)FDKaalloc(((768)) * sizeof(int32_t), 8);
 					self->pAacDecoderStaticChannelInfo[ch]->pOverlapBuffer = ap;
 
 					if(self->pAacDecoderStaticChannelInfo[ch]->pOverlapBuffer == NULL) { goto bail; }
@@ -2022,7 +2022,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, UCHAR
 								self->pAacDecoderStaticChannelInfo[ch]->concealmentInfo.specScale;
 							self->pAacDecoderStaticChannelInfo[ch]
 								->pCpeStaticData->jointStereoPersistentData.scratchBuffer =
-								(FIXP_DBL *)self->pTimeData2;
+								(int32_t *)self->pTimeData2;
 						}
 						chIdx++;
 						ch++;
@@ -2153,7 +2153,7 @@ bail:
 	return AAC_DEC_OUT_OF_MEMORY;
 }
 
-AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const UINT flags, PCM_DEC *pTimeData,
+AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const UINT flags, int32_t *pTimeData,
 										  const INT timeDataSize, const int timeDataChannelOffset) {
 	AAC_DECODER_ERROR ErrorStatus = AAC_DEC_OK;
 
@@ -2241,7 +2241,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const UINT fla
 											 self->streamInfo.aacSamplesPerFrame);
 				/* Clear overlap-add buffers to avoid clicks. */
 				FDKmemclear(self->pAacDecoderStaticChannelInfo[ch]->pOverlapBuffer,
-							OverlapBufferSize * sizeof(FIXP_DBL));
+							OverlapBufferSize * sizeof(int32_t));
 			}
 			if(self->streamInfo.channelConfig > 0) {
 				/* Declare the possibly adopted old PCE (with outdated metadata)
@@ -2413,12 +2413,12 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const UINT fla
 					CWorkBufferCore1            workBufferCore1;
 					commonStaticData.pWorkBufferCore1 = &workBufferCore1;
 					/* memory for spectral lines temporal on scratch */
-					C_AALLOC_SCRATCH_START(mdctSpec, FIXP_DBL, 1024);
+					C_AALLOC_SCRATCH_START(mdctSpec, int32_t, 1024);
 
 					/* create dummy channel for CCE parsing on stack */
 					CAacDecoderChannelInfo tmpAacDecoderChannelInfo, *pTmpAacDecoderChannelInfo;
 
-					FDKmemclear(mdctSpec, 1024 * sizeof(FIXP_DBL));
+					FDKmemclear(mdctSpec, 1024 * sizeof(int32_t));
 
 					tmpAacDecoderChannelInfo.pDynData = commonData.pAacDecoderDynamicData;
 					tmpAacDecoderChannelInfo.pComData = &commonData;
@@ -2436,7 +2436,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const UINT fla
 													   AC_EL_GA_CCE, self->streamInfo.aacSamplesPerFrame, 1,
 													   self->streamInfo.epConfig, self->hInput);
 
-					C_AALLOC_SCRATCH_END(mdctSpec, FIXP_DBL, 1024);
+					C_AALLOC_SCRATCH_END(mdctSpec, int32_t, 1024);
 
 					if(ErrorStatus) { self->frameOK = 0; }
 
@@ -2691,7 +2691,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const UINT fla
 					if(!hdaacDecoded) {
 						if(self->pAacDecoderStaticChannelInfo[aacChannels]->pCpeStaticData != NULL) {
 							self->pAacDecoderStaticChannelInfo[aacChannels]
-								->pCpeStaticData->jointStereoPersistentData.scratchBuffer = (FIXP_DBL *)pTimeData;
+								->pCpeStaticData->jointStereoPersistentData.scratchBuffer = (int32_t *)pTimeData;
 						}
 						CChannelElement_Decode(&self->pAacDecoderChannelInfo[aacChannels],
 											   &self->pAacDecoderStaticChannelInfo[aacChannels],
@@ -2899,7 +2899,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const UINT fla
 					/* Clear pAacDecoderChannelInfo->pSpectralCoefficient because with
 					 * AACDEC_FLUSH set it contains undefined data. */
 					FDKmemclear(pAacDecoderChannelInfo->pSpectralCoefficient,
-								sizeof(FIXP_DBL) * self->streamInfo.aacSamplesPerFrame);
+								sizeof(int32_t) * self->streamInfo.aacSamplesPerFrame);
 				}
 
 				/* if The ics info is not valid and it will be stored and used in the
@@ -2947,7 +2947,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const UINT fla
 
 				/* The DRC module demands to be called with the gain field holding the
 				 * gain scale. */
-				self->extGain[0] = (FIXP_DBL)AACDEC_DRC_GAIN_SCALING;
+				self->extGain[0] = (int32_t)AACDEC_DRC_GAIN_SCALING;
 
 				/* DRC processing */
 				aacDecoder_drcApply(self->hDrcInfo, self->hSbrDecoder, pAacDecoderChannelInfo,
@@ -2961,7 +2961,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const UINT fla
 					break;
 				}
 				if(self->flushStatus && (self->flushCnt > 0) && !(flags & AACDEC_CONCEAL)) {
-					FDKmemclear(pTimeData + offset, sizeof(PCM_DEC) * self->streamInfo.aacSamplesPerFrame);
+					FDKmemclear(pTimeData + offset, sizeof(int32_t) * self->streamInfo.aacSamplesPerFrame);
 				}
 				else
 					switch(pAacDecoderChannelInfo->renderMode) {
@@ -3020,13 +3020,13 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const UINT fla
 			if((aacChannels == 2) && bsPseudoLr) {
 				int            i, offset2;
 				const FIXP_SGL invSqrt2 = FL2FXCONST_SGL(0.707106781186547f);
-				PCM_DEC       *pTD = pTimeData;
+				int32_t       *pTD = pTimeData;
 
 				offset2 = timeDataChannelOffset;
 
 				for(i = 0; i < self->streamInfo.aacSamplesPerFrame; i++) {
-					FIXP_DBL L = PCM_DEC2FIXP_DBL(pTD[0]);
-					FIXP_DBL R = PCM_DEC2FIXP_DBL(pTD[offset2]);
+					int32_t L = PCM_DEC2FIXP_DBL(pTD[0]);
+					int32_t R = PCM_DEC2FIXP_DBL(pTD[offset2]);
 					L = fMult(L, invSqrt2);
 					R = fMult(R, invSqrt2);
 					pTD[0] = L + R;

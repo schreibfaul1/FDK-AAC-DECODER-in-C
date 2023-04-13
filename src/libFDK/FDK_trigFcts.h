@@ -108,7 +108,7 @@ amm-info@iis.fraunhofer.de
 #include "FDK_tools_rom.h"
 
 /* Fixed point precision definitions */
-#define Q(format) ((FIXP_DBL)(((LONG)1) << (format)))
+#define Q(format) ((int32_t)(((LONG)1) << (format)))
 
 #ifndef M_PI
 #define M_PI (3.14159265358979323846f)
@@ -131,11 +131,11 @@ amm-info@iis.fraunhofer.de
 #define AT2O_SCALE ((float)(1 << AT2O_SF))
 // --------------------
 
-FIXP_DBL fixp_atan(FIXP_DBL x);
-FIXP_DBL fixp_atan2(FIXP_DBL y, FIXP_DBL x);
+int32_t fixp_atan(int32_t x);
+int32_t fixp_atan2(int32_t y, int32_t x);
 
-FIXP_DBL fixp_cos(FIXP_DBL x, int scale);
-FIXP_DBL fixp_sin(FIXP_DBL x, int scale);
+int32_t fixp_cos(int32_t x, int scale);
+int32_t fixp_sin(int32_t x, int scale);
 
 #define FIXP_COS_SIN
 
@@ -152,10 +152,10 @@ FIXP_DBL fixp_sin(FIXP_DBL x, int scale);
  * Calculates coarse lookup index and sign for sine.
  * Returns delta x residual.
  */
-static inline FIXP_DBL fixp_sin_cos_residual_inline(FIXP_DBL x, int scale,
-                                                    FIXP_DBL *sine,
-                                                    FIXP_DBL *cosine) {
-  FIXP_DBL residual;
+static inline int32_t fixp_sin_cos_residual_inline(int32_t x, int scale,
+                                                    int32_t *sine,
+                                                    int32_t *cosine) {
+  int32_t residual;
   int s;
   int shift = (31 - scale - LD - 1);
   int ssign = 1;
@@ -203,13 +203,13 @@ static inline FIXP_DBL fixp_sin_cos_residual_inline(FIXP_DBL x, int scale,
     }
 
 #ifdef SINETABLE_16BIT
-    *sine = (FIXP_DBL)((sl * ssign) << (DFRACT_BITS - FRACT_BITS));
-    *cosine = (FIXP_DBL)((cl * csign) << (DFRACT_BITS - FRACT_BITS));
+    *sine = (int32_t)((sl * ssign) << (DFRACT_BITS - FRACT_BITS));
+    *cosine = (int32_t)((cl * csign) << (DFRACT_BITS - FRACT_BITS));
 #else
     /* scale down by 1 for overflow prevention. This is undone at the calling
      * function. */
-    *sine = (FIXP_DBL)(sl * ssign) >> 1;
-    *cosine = (FIXP_DBL)(cl * csign) >> 1;
+    *sine = (int32_t)(sl * ssign) >> 1;
+    *cosine = (int32_t)(cl * csign) >> 1;
 #endif
   }
 
@@ -222,12 +222,12 @@ static inline FIXP_DBL fixp_sin_cos_residual_inline(FIXP_DBL x, int scale,
  * \param x1 first angle value
  * \param x2 second angle value
  * \param scale exponent of x1 and x2
- * \param out pointer to 4 FIXP_DBL locations, were the values cos(x1), sin(x1),
+ * \param out pointer to 4 int32_t locations, were the values cos(x1), sin(x1),
  * cos(x2), sin(x2) will be stored into.
  */
-static inline void inline_fixp_cos_sin(FIXP_DBL x1, FIXP_DBL x2,
-                                       const int scale, FIXP_DBL *out) {
-  FIXP_DBL residual, error0, error1, sine, cosine;
+static inline void inline_fixp_cos_sin(int32_t x1, int32_t x2,
+                                       const int scale, int32_t *out) {
+  int32_t residual, error0, error1, sine, cosine;
   residual = fixp_sin_cos_residual_inline(x1, scale, &sine, &cosine);
   error0 = fMultDiv2(sine, residual);
   error1 = fMultDiv2(cosine, residual);

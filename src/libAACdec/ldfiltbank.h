@@ -103,11 +103,12 @@ amm-info@iis.fraunhofer.de
 #ifndef LDFILTBANK_H
 #define LDFILTBANK_H
 
+#include <stdint.h>
 #include "../libFDK/common_fix.h"
 #include "aac_rom.h"
 
-int InvMdctTransformLowDelay_fdk(FIXP_DBL *mdctdata_m, const int mdctdata_e,
-                                 PCM_DEC *mdctOut, FIXP_DBL *fs_buffer,
+int InvMdctTransformLowDelay_fdk(int32_t *mdctdata_m, const int mdctdata_e,
+                                 int32_t *mdctOut, int32_t *fs_buffer,
                                  const int frameLength);
 
 #endif

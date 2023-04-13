@@ -111,20 +111,20 @@ amm-info@iis.fraunhofer.de
 #include "../libSYS/machine_type.h"
 
 /* Global ROM table data type: */
-#define FIXP_CFG FIXP_DBL
+#define FIXP_CFG int32_t
 #define FX_CFG2FX_DBL
 #define FX_CFG2FX_SGL FX_DBL2FX_SGL
-#define CFG(a) FIXP_DBL(a)
+#define CFG(a) int32_t(a)
 #define FL2FXCONST_CFG FL2FXCONST_DBL
-#define FX_DBL2FX_CFG(x) ((FIXP_DBL)(x))
+#define FX_DBL2FX_CFG(x) ((int32_t)(x))
 
 /* others  */
 #define SCALE_INV_ICC (2)
 #define G_dd_SCALE (2)
 
 #define QCC_SCALE 1
-#define M1M2_DATA FIXP_DBL
-#define M1M2_CDATA FIXP_DBL
+#define M1M2_DATA int32_t
+#define M1M2_CDATA int32_t
 #define M1M2_CDATA2FX_DBL(a) (a)
 #define FX_DBL2M1M2_CDATA(a) (a)
 
@@ -145,12 +145,12 @@ extern const FIXP_CFG dequantCLD__FDK[31];
   (FL2FXCONST_DBL(3.1415926535897932f / (float)(1 << (IPD_SCALE - 1))))
 
 extern const FIXP_CFG dequantIPD__FDK[16];
-extern const FIXP_DBL dequantIPD_CLD_ICC_splitAngle__FDK[15][31][8];
+extern const int32_t dequantIPD_CLD_ICC_splitAngle__FDK[15][31][8];
 
 extern const FIXP_CFG H11_nc[31][8];
 extern const FIXP_CFG H12_nc[31][8];
 
-extern const FIXP_DBL dequantCLD_c1[31];
+extern const int32_t dequantCLD_c1[31];
 
 extern const FIXP_CFG BP__FDK[];
 extern const FIXP_CFG BP_GF__FDK[];
@@ -204,9 +204,9 @@ extern const SCHAR row2channelGES[][MAX_M2_INPUT];
 /* sac_calcM1andM2 */
 extern const SCHAR row2residual[][MAX_M2_INPUT];
 
-void SpatialDequantGetCLDValues(int index, FIXP_DBL* cu, FIXP_DBL* cl);
+void SpatialDequantGetCLDValues(int index, int32_t* cu, int32_t* cl);
 
-void SpatialDequantGetCLD2Values(int index, FIXP_DBL* x);
+void SpatialDequantGetCLD2Values(int index, int32_t* x);
 
 /* External helper functions */
 static inline int SacGetHybridSubbands(int qmfSubbands) {
