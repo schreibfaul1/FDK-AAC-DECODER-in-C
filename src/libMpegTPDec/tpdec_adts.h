@@ -121,28 +121,28 @@ amm-info@iis.fraunhofer.de
 
 typedef struct {
   /* ADTS header fields */
-  UCHAR mpeg_id;
-  UCHAR layer;
-  UCHAR protection_absent;
-  UCHAR profile;
-  UCHAR sample_freq_index;
-  UCHAR private_bit;
-  UCHAR channel_config;
-  UCHAR original;
-  UCHAR home;
-  UCHAR copyright_id;
-  UCHAR copyright_start;
+  uint8_t mpeg_id;
+  uint8_t layer;
+  uint8_t protection_absent;
+  uint8_t profile;
+  uint8_t sample_freq_index;
+  uint8_t private_bit;
+  uint8_t channel_config;
+  uint8_t original;
+  uint8_t home;
+  uint8_t copyright_id;
+  uint8_t copyright_start;
   uint16_t frame_length;
   uint16_t adts_fullness;
-  UCHAR num_raw_blocks;
-  UCHAR num_pce_bits;
+  uint8_t num_raw_blocks;
+  uint8_t num_pce_bits;
 } STRUCT_ADTS_BS;
 
 struct STRUCT_ADTS {
   STRUCT_ADTS_BS bs;
 
-  UCHAR decoderCanDoMpeg4;
-  UCHAR BufferFullnesStartFlag;
+  uint8_t decoderCanDoMpeg4;
+  uint8_t BufferFullnesStartFlag;
 
   FDK_CRCINFO crcInfo;        /* CRC state info */
   uint16_t crcReadValue;        /* CRC value read from bitstream data */

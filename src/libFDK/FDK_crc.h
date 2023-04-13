@@ -113,7 +113,7 @@ amm-info@iis.fraunhofer.de
  *  This structure describes single crc region used for crc calculation.
  */
 typedef struct {
-  UCHAR isActive;
+  uint8_t isActive;
   int32_t maxBits;
   int32_t bitBufCntBits;
   int32_t validBits;
@@ -131,7 +131,7 @@ typedef struct {
   uint16_t crcPoly;    /*!< CRC generator polynom. */
   uint16_t crcMask;    /*!< CRC mask. */
   uint16_t startValue; /*!< CRC start value. */
-  UCHAR crcLen;      /*!< CRC length. */
+  uint8_t crcLen;      /*!< CRC length. */
 
   uint32_t regStart; /*!< Start region marker for synchronization. */
   uint32_t regStop;  /*!< Stop region marker for synchronization. */

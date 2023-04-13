@@ -385,7 +385,7 @@ static inline int32_t ari_decode_14bits(HANDLE_FDK_BITSTREAM hBs, Tastat *s, con
 	return symbol;
 }
 
-static inline void copyTableAmrwbArith2(UCHAR tab[], int32_t sizeIn, int32_t sizeOut) {
+static inline void copyTableAmrwbArith2(uint8_t tab[], int32_t sizeIn, int32_t sizeOut) {
 	int32_t i;
 	int32_t j;
 	int32_t k = 2;
@@ -402,7 +402,7 @@ static inline void copyTableAmrwbArith2(UCHAR tab[], int32_t sizeIn, int32_t siz
 		j = sizeIn - 1;
 
 		for(; i >= 0; j--) {
-			UCHAR tq_data0 = tab[j];
+			uint8_t tq_data0 = tab[j];
 
 			for(int32_t l = (k >> 1); l > 0; l--) {
 				tab[i--] = tq_data0;
@@ -415,7 +415,7 @@ static inline void copyTableAmrwbArith2(UCHAR tab[], int32_t sizeIn, int32_t siz
 		else if(sizeOut == (sizeIn >> 2)) { k = 4; }
 
 		for(i = 0, j = 0; i < sizeOut; j += k) {
-			UCHAR tq_data0 = tab[j];
+			uint8_t tq_data0 = tab[j];
 
 			tab[i++] = tq_data0;
 		}
@@ -445,7 +445,7 @@ static inline uint32_t get_pk_v2(uint32_t s) {
 	return (j & 0x3F);
 }
 
-static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf, UCHAR *RESTRICT c_prev,
+static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf, uint8_t *RESTRICT c_prev,
 								  int32_t *RESTRICT pSpectralCoefficient, int32_t n, int32_t nt) {
 	Tastat             as;
 	int32_t                i, l, r;
@@ -525,7 +525,7 @@ static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf, UCHAR *RESTRICT c_p
 		c_3 = c_2;
 		c_2 = c_1;
 		c_1 = c_0;
-		c_prev[i] = (UCHAR)c_0;
+		c_prev[i] = (uint8_t)c_0;
 
 	} /* for (i=0; i<n; i++) */
 

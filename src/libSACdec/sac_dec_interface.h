@@ -183,12 +183,12 @@ typedef enum {
  */
 typedef struct {
   /* Basics */
-  UCHAR outputMode;
-  UCHAR blindEnable;
-  UCHAR bypassMode;
+  uint8_t outputMode;
+  uint8_t blindEnable;
+  uint8_t bypassMode;
 
   /* Error concealment */
-  UCHAR concealMethod;
+  uint8_t concealMethod;
   uint32_t concealNumKeepFrames;
   uint32_t concealFadeOutSlopeLength;
   uint32_t concealFadeInSlopeLength;
@@ -324,7 +324,7 @@ SACDEC_ERROR SpatialDecApplyFrame(
  */
 void SpatialDecChannelProperties(spatialDec *self,
                                  AUDIO_CHANNEL_TYPE channelType[],
-                                 UCHAR channelIndices[],
+                                 uint8_t channelIndices[],
                                  const FDK_channelMapDescr *const mapDescr);
 
 void FDK_SpatialDecClose(spatialDec *self);

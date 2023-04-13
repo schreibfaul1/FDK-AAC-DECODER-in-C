@@ -113,7 +113,7 @@ amm-info@iis.fraunhofer.de
 #define SPEC_FAC(ptr, i, gl) ((ptr) + ((i) * (gl)))
 
 int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                             UCHAR mod[NB_DIV], int32_t *pState) {
+                             uint8_t mod[NB_DIV], int32_t *pState) {
   int32_t *ptr;
   int32_t i;
   int32_t k = 0;
@@ -142,7 +142,7 @@ int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
   return ptr;
 }
 
-int32_t CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, int32_t *pFac, SCHAR *pFacScale,
+int32_t CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, int32_t *pFac, int8_t *pFacScale,
                   int32_t length, int32_t use_gain, int32_t frame) {
   int32_t fac_gain;
   int32_t fac_gain_e = 0;
@@ -272,7 +272,7 @@ static void CFac_CalcFacSignal(int32_t *pOut, int32_t *pFac,
 int32_t CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac,
                         const int32_t fac_scale, FIXP_LPC *A, int32_t A_exp,
                         int32_t nrOutSamples, const int32_t fac_length,
-                        const int32_t isFdFac, UCHAR prevWindowShape) {
+                        const int32_t isFdFac, uint8_t prevWindowShape) {
   int32_t *pOvl;
   int32_t *pOut0;
   const FIXP_WTP *pWindow;
@@ -382,12 +382,12 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
                         const FIXP_WTP *wrs, const int32_t fr, FIXP_LPC A[16],
                         int32_t A_exp, CAcelpStaticMem *acelp_mem,
                         const int32_t gain, const int32_t last_frame_lost,
-                        const int32_t isFdFac, const UCHAR last_lpd_mode,
+                        const int32_t isFdFac, const uint8_t last_lpd_mode,
                         const int32_t k, int32_t currAliasingSymmetry) {
   int32_t *pCurr, *pOvl, *pSpec;
   const FIXP_WTP *pWindow;
   const FIXP_WTB *FacWindowZir_conceal;
-  UCHAR doFacZirConceal = 0;
+  uint8_t doFacZirConceal = 0;
   int32_t doDeemph = 1;
   const FIXP_WTB *FacWindowZir, *FacWindowSynth;
   int32_t *pOut0 = output, *pOut1;

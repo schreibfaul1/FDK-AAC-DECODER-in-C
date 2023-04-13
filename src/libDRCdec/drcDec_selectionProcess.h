@@ -164,15 +164,15 @@ typedef struct s_selection_process_output {
   int32_t loudnessNormalizationGainDb; /* e = 7 */
   int32_t outputLoudness;              /* e = 7 */
 
-  UCHAR numSelectedDrcSets;
-  SCHAR selectedDrcSetIds[MAX_ACTIVE_DRCS];
-  UCHAR selectedDownmixIds[MAX_ACTIVE_DRCS];
+  uint8_t numSelectedDrcSets;
+  int8_t selectedDrcSetIds[MAX_ACTIVE_DRCS];
+  uint8_t selectedDownmixIds[MAX_ACTIVE_DRCS];
 
-  UCHAR activeDownmixId;
-  UCHAR baseChannelCount;
-  UCHAR targetChannelCount;
-  SCHAR targetLayout;
-  UCHAR downmixMatrixPresent;
+  uint8_t activeDownmixId;
+  uint8_t baseChannelCount;
+  uint8_t targetChannelCount;
+  int8_t targetLayout;
+  uint8_t downmixMatrixPresent;
   int32_t downmixMatrix[8][8]; /* e = 2 */
 
   FIXP_SGL boost;    /* e = 1 */

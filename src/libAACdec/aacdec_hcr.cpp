@@ -117,10 +117,10 @@ amm-info@iis.fraunhofer.de
 
 extern int32_t mlFileChCurr;
 
-static void errDetectorInHcrSideinfoShrt(SCHAR cb, int16_t numLine,
+static void errDetectorInHcrSideinfoShrt(int8_t cb, int16_t numLine,
                                          uint32_t *errorWord);
 
-static void errDetectorInHcrLengths(SCHAR lengthOfLongestCodeword,
+static void errDetectorInHcrLengths(int8_t lengthOfLongestCodeword,
                                     int16_t lengthOfReorderedSpectralData,
                                     uint32_t *errorWord);
 
@@ -137,20 +137,20 @@ static void DeriveNumberOfExtendedSortedSectionsInSets(
 
 static int32_t DecodeEscapeSequence(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor,
                                 int32_t quantSpecCoef, int32_t *pLeftStartOfSegment,
-                                SCHAR *pRemainingBitsInSegment,
+                                int8_t *pRemainingBitsInSegment,
                                 int32_t *pNumDecodedBits, uint32_t *errorWord);
 
 static int32_t DecodePCW_Sign(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor,
-                          uint32_t codebookDim, const SCHAR *pQuantVal,
+                          uint32_t codebookDim, const int8_t *pQuantVal,
                           int32_t *pQuantSpecCoef, int32_t *quantSpecCoefIdx,
                           int32_t *pLeftStartOfSegment,
-                          SCHAR *pRemainingBitsInSegment, int32_t *pNumDecodedBits);
+                          int8_t *pRemainingBitsInSegment, int32_t *pNumDecodedBits);
 
-static const SCHAR *DecodePCW_Body(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor,
+static const int8_t *DecodePCW_Body(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor,
                                    const uint32_t *pCurrentTree,
-                                   const SCHAR *pQuantValBase,
+                                   const int8_t *pQuantValBase,
                                    int32_t *pLeftStartOfSegment,
-                                   SCHAR *pRemainingBitsInSegment,
+                                   int8_t *pRemainingBitsInSegment,
                                    int32_t *pNumDecodedBits);
 
 static void DecodePCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO pHcr);
@@ -159,10 +159,10 @@ static void HcrReorderQuantizedSpectralCoefficients(
     H_HCR_INFO pHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     const SamplingRateInfo *pSamplingRateInfo);
 
-static UCHAR errDetectPcwSegmentation(SCHAR remainingBitsInSegment,
+static uint8_t errDetectPcwSegmentation(int8_t remainingBitsInSegment,
                                       H_HCR_INFO pHcr, PCW_TYPE kind,
                                       int32_t *qsc_base_of_cw,
-                                      UCHAR dimension);
+                                      uint8_t dimension);
 
 static void errDetectWithinSegmentationFinal(H_HCR_INFO pHcr);
 
@@ -171,7 +171,7 @@ static void errDetectWithinSegmentationFinal(H_HCR_INFO pHcr);
 (int16_t only)
 --------------------------------------------------------------------------------------------
 */
-static void errDetectorInHcrSideinfoShrt(SCHAR cb, int16_t numLine,
+static void errDetectorInHcrSideinfoShrt(int8_t cb, int16_t numLine,
                                          uint32_t *errorWord) {
   if (cb < ZERO_HCB || cb >= MAX_CB_CHECK || cb == BOOKSCL) {
     *errorWord |= CB_OUT_OF_RANGE_SHORT_BLOCK;
@@ -185,7 +185,7 @@ static void errDetectorInHcrSideinfoShrt(SCHAR cb, int16_t numLine,
      description:   Check both HCR lengths
 --------------------------------------------------------------------------------------------
 */
-static void errDetectorInHcrLengths(SCHAR lengthOfLongestCodeword,
+static void errDetectorInHcrLengths(int8_t lengthOfLongestCodeword,
                                     int16_t lengthOfReorderedSpectralData,
                                     uint32_t *errorWord) {
   if (lengthOfReorderedSpectralData < lengthOfLongestCodeword) {
@@ -203,7 +203,7 @@ void CHcr_Read(HANDLE_FDK_BITSTREAM bs,
                CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                const MP4_ELEMENT_ID globalHcrType) {
   int16_t lengOfReorderedSpectralData;
-  SCHAR lengOfLongestCodeword;
+  int8_t lengOfLongestCodeword;
 
   pAacDecoderChannelInfo->pDynData->specificTo.aac.lenOfReorderedSpectralData =
       0;
@@ -268,9 +268,9 @@ uint32_t HcrInit(H_HCR_INFO pHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo
              HANDLE_FDK_BITSTREAM bs) {
   CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
   int16_t *pNumLinesInSec;
-  UCHAR *pCodeBk;
+  uint8_t *pCodeBk;
   int16_t numSection;
-  SCHAR cb;
+  int8_t cb;
   int32_t numLine;
   int32_t i;
 
@@ -299,17 +299,17 @@ uint32_t HcrInit(H_HCR_INFO pHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo
   {
     int16_t band;
     int16_t maxBand;
-    SCHAR group;
-    SCHAR winGroupLen;
-    SCHAR window;
-    SCHAR numUnitInBand;
-    SCHAR cntUnitInBand;
-    SCHAR groupWin;
-    SCHAR cb_prev;
+    int8_t group;
+    int8_t winGroupLen;
+    int8_t window;
+    int8_t numUnitInBand;
+    int8_t cntUnitInBand;
+    int8_t groupWin;
+    int8_t cb_prev;
 
-    UCHAR *pCodeBook;
+    uint8_t *pCodeBook;
     const int16_t *BandOffsets;
-    SCHAR numOfGroups;
+    int8_t numOfGroups;
 
     pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook; /* in */
     pNumLinesInSec = pHcr->decInOut.pNumLineInSect;          /* out */
@@ -337,7 +337,7 @@ uint32_t HcrInit(H_HCR_INFO pHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo
       for (cntUnitInBand = numUnitInBand; cntUnitInBand != 0;
            cntUnitInBand--) { /* for every unit in the band */
         for (window = 0, group = 0; group < numOfGroups; group++) {
-          winGroupLen = (SCHAR)GetWindowGroupLength(
+          winGroupLen = (int8_t)GetWindowGroupLength(
               &pAacDecoderChannelInfo->icsInfo, group);
           for (groupWin = winGroupLen; groupWin != 0; groupWin--, window++) {
             cb = pCodeBook[group * 16 + band];
@@ -523,9 +523,9 @@ static void HcrReorderQuantizedSpectralCoefficients(
       pHcr->decInOut.pQuantizedSpectralCoefficientsBase;
   int32_t *pQuantizedSpectralCoefficients =
       SPEC_LONG(pHcr->decInOut.pQuantizedSpectralCoefficientsBase);
-  const UCHAR *pCbDimShift = aDimCbShift;
+  const uint8_t *pCbDimShift = aDimCbShift;
   const uint16_t *pLargestAbsVal = aLargestAbsoluteValue;
-  UCHAR *pSortedCodebook = pHcr->sectionInfo.pSortedCodebook;
+  uint8_t *pSortedCodebook = pHcr->sectionInfo.pSortedCodebook;
   uint16_t *pNumSortedCodewordInSection =
       pHcr->sectionInfo.pNumSortedCodewordInSection;
   uint16_t *pReorderOffset = pHcr->sectionInfo.pReorderOffset;
@@ -565,15 +565,15 @@ static void HcrReorderQuantizedSpectralCoefficients(
     int32_t *pOut;
     int32_t locMax;
     int32_t tmp;
-    SCHAR groupoffset;
-    SCHAR group;
-    SCHAR band;
-    SCHAR groupwin;
-    SCHAR window;
-    SCHAR numWinGroup;
+    int8_t groupoffset;
+    int8_t group;
+    int8_t band;
+    int8_t groupwin;
+    int8_t window;
+    int8_t numWinGroup;
     int16_t interm;
-    SCHAR numSfbTransm;
-    SCHAR winGroupLen;
+    int8_t numSfbTransm;
+    int8_t winGroupLen;
     int16_t index;
     int32_t msb;
     int32_t lsb;
@@ -672,9 +672,9 @@ static void HcrCalcNumCodeword(H_HCR_INFO pHcr) {
   uint32_t numCodeword;
 
   uint32_t numSection = pHcr->decInOut.numSection;
-  UCHAR *pCodebook = pHcr->decInOut.pCodebook;
+  uint8_t *pCodebook = pHcr->decInOut.pCodebook;
   int16_t *pNumLineInSection = pHcr->decInOut.pNumLineInSect;
-  const UCHAR *pCbDimShift = aDimCbShift;
+  const uint8_t *pCbDimShift = aDimCbShift;
 
   uint16_t *pNumCodewordInSection = pHcr->sectionInfo.pNumCodewordInSection;
 
@@ -699,25 +699,25 @@ numCodewordInSection according to the priority.
 
 static void HcrSortCodebookAndNumCodewordInSection(H_HCR_INFO pHcr) {
   uint32_t i, j, k;
-  UCHAR temp;
+  uint8_t temp;
   uint32_t counter;
   uint32_t startOffset;
   uint32_t numZeroSection;
-  UCHAR *pDest;
+  uint8_t *pDest;
   uint32_t numSectionDec;
 
   uint32_t numSection = pHcr->decInOut.numSection;
-  UCHAR *pCodebook = pHcr->decInOut.pCodebook;
-  UCHAR *pSortedCodebook = pHcr->sectionInfo.pSortedCodebook;
+  uint8_t *pCodebook = pHcr->decInOut.pCodebook;
+  uint8_t *pSortedCodebook = pHcr->sectionInfo.pSortedCodebook;
   uint16_t *pNumCodewordInSection = pHcr->sectionInfo.pNumCodewordInSection;
   uint16_t *pNumSortedCodewordInSection =
       pHcr->sectionInfo.pNumSortedCodewordInSection;
-  UCHAR *pCodebookSwitch = pHcr->sectionInfo.pCodebookSwitch;
+  uint8_t *pCodebookSwitch = pHcr->sectionInfo.pCodebookSwitch;
   uint16_t *pReorderOffset = pHcr->sectionInfo.pReorderOffset;
-  const UCHAR *pCbPriority = aCbPriority;
-  const UCHAR *pMinOfCbPair = aMinOfCbPair;
-  const UCHAR *pMaxOfCbPair = aMaxOfCbPair;
-  const UCHAR *pCbDimShift = aDimCbShift;
+  const uint8_t *pCbPriority = aCbPriority;
+  const uint8_t *pMinOfCbPair = aMinOfCbPair;
+  const uint8_t *pMaxOfCbPair = aMaxOfCbPair;
+  const uint8_t *pCbDimShift = aDimCbShift;
 
   uint32_t searchStart = 0;
 
@@ -801,23 +801,23 @@ static void HcrPrepareSegmentationGrid(H_HCR_INFO pHcr) {
   uint16_t i, j;
   uint16_t numSegment = 0;
   int32_t segmentStart = 0;
-  UCHAR segmentWidth;
-  UCHAR lastSegmentWidth;
-  UCHAR sortedCodebook;
-  UCHAR endFlag = 0;
+  uint8_t segmentWidth;
+  uint8_t lastSegmentWidth;
+  uint8_t sortedCodebook;
+  uint8_t endFlag = 0;
   int32_t intermediateResult;
 
-  SCHAR lengthOfLongestCodeword = pHcr->decInOut.lengthOfLongestCodeword;
+  int8_t lengthOfLongestCodeword = pHcr->decInOut.lengthOfLongestCodeword;
   int16_t lengthOfReorderedSpectralData =
       pHcr->decInOut.lengthOfReorderedSpectralData;
   uint32_t numSortedSection = pHcr->sectionInfo.numSortedSection;
-  UCHAR *pSortedCodebook = pHcr->sectionInfo.pSortedCodebook;
+  uint8_t *pSortedCodebook = pHcr->sectionInfo.pSortedCodebook;
   uint16_t *pNumSortedCodewordInSection =
       pHcr->sectionInfo.pNumSortedCodewordInSection;
   int32_t *pLeftStartOfSegment = pHcr->segmentInfo.pLeftStartOfSegment;
   int32_t *pRightStartOfSegment = pHcr->segmentInfo.pRightStartOfSegment;
-  SCHAR *pRemainingBitsInSegment = pHcr->segmentInfo.pRemainingBitsInSegment;
-  const UCHAR *pMaxCwLength = aMaxCwLen;
+  int8_t *pRemainingBitsInSegment = pHcr->segmentInfo.pRemainingBitsInSegment;
+  const uint8_t *pMaxCwLength = aMaxCwLen;
 
   for (i = numSortedSection; i != 0; i--) {
     sortedCodebook = *pSortedCodebook++;
@@ -877,16 +877,16 @@ static void HcrExtendedSectionInfo(H_HCR_INFO pHcr) {
   uint32_t inSegmentRemainNumCW;
 
   uint32_t numSortedSection = pHcr->sectionInfo.numSortedSection;
-  UCHAR *pSortedCodebook = pHcr->sectionInfo.pSortedCodebook;
+  uint8_t *pSortedCodebook = pHcr->sectionInfo.pSortedCodebook;
   uint16_t *pNumSortedCodewordInSection =
       pHcr->sectionInfo.pNumSortedCodewordInSection;
-  UCHAR *pExtendedSortedCoBo = pHcr->sectionInfo.pExtendedSortedCodebook;
+  uint8_t *pExtendedSortedCoBo = pHcr->sectionInfo.pExtendedSortedCodebook;
   uint16_t *pNumExtSortCwInSect =
       pHcr->sectionInfo.pNumExtendedSortedCodewordInSection;
   uint32_t numSegment = pHcr->segmentInfo.numSegment;
-  UCHAR *pMaxLenOfCbInExtSrtSec = pHcr->sectionInfo.pMaxLenOfCbInExtSrtSec;
-  SCHAR lengthOfLongestCodeword = pHcr->decInOut.lengthOfLongestCodeword;
-  const UCHAR *pMaxCwLength = aMaxCwLen;
+  uint8_t *pMaxLenOfCbInExtSrtSec = pHcr->sectionInfo.pMaxLenOfCbInExtSrtSec;
+  int8_t lengthOfLongestCodeword = pHcr->decInOut.lengthOfLongestCodeword;
+  const uint8_t *pMaxCwLength = aMaxCwLen;
 
   remainNumCwInSortSec = pNumSortedCodewordInSection[srtSecCnt];
   inSegmentRemainNumCW = numSegment;
@@ -999,17 +999,17 @@ static void DecodePCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO pHcr) {
   uint32_t i;
   uint16_t extSortSec;
   uint16_t curExtSortCwInSec;
-  UCHAR codebook;
-  UCHAR dimension;
+  uint8_t codebook;
+  uint8_t dimension;
   const uint32_t *pCurrentTree;
-  const SCHAR *pQuantValBase;
-  const SCHAR *pQuantVal;
+  const int8_t *pQuantValBase;
+  const int8_t *pQuantVal;
 
   uint16_t *pNumExtendedSortedCodewordInSection =
       pHcr->sectionInfo.pNumExtendedSortedCodewordInSection;
   int32_t numExtendedSortedCodewordInSectionIdx =
       pHcr->sectionInfo.numExtendedSortedCodewordInSectionIdx;
-  UCHAR *pExtendedSortedCodebook = pHcr->sectionInfo.pExtendedSortedCodebook;
+  uint8_t *pExtendedSortedCodebook = pHcr->sectionInfo.pExtendedSortedCodebook;
   int32_t extendedSortedCodebookIdx = pHcr->sectionInfo.extendedSortedCodebookIdx;
   uint16_t *pNumExtendedSortedSectionsInSets =
       pHcr->sectionInfo.pNumExtendedSortedSectionsInSets;
@@ -1020,13 +1020,13 @@ static void DecodePCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO pHcr) {
   int32_t quantizedSpectralCoefficientsIdx =
       pHcr->decInOut.quantizedSpectralCoefficientsIdx;
   int32_t *pLeftStartOfSegment = pHcr->segmentInfo.pLeftStartOfSegment;
-  SCHAR *pRemainingBitsInSegment = pHcr->segmentInfo.pRemainingBitsInSegment;
-  UCHAR *pMaxLenOfCbInExtSrtSec = pHcr->sectionInfo.pMaxLenOfCbInExtSrtSec;
+  int8_t *pRemainingBitsInSegment = pHcr->segmentInfo.pRemainingBitsInSegment;
+  uint8_t *pMaxLenOfCbInExtSrtSec = pHcr->sectionInfo.pMaxLenOfCbInExtSrtSec;
   int32_t maxLenOfCbInExtSrtSecIdx = pHcr->sectionInfo.maxLenOfCbInExtSrtSecIdx;
-  UCHAR maxAllowedCwLen;
+  uint8_t maxAllowedCwLen;
   int32_t numDecodedBits;
-  const UCHAR *pCbDimension = aDimCb;
-  const UCHAR *pCbSign = aSignCb;
+  const uint8_t *pCbDimension = aDimCb;
+  const uint8_t *pCbSign = aSignCb;
 
   /* clear result array */
   FDKmemclear(pQuantizedSpectralCoefficients + quantizedSpectralCoefficientsIdx,
@@ -1258,11 +1258,11 @@ two or four quantized spectral coefficients belonging to the current codeword
                     are marked (for being detected by concealment later).
 --------------------------------------------------------------------------------------------
 */
-static UCHAR errDetectPcwSegmentation(SCHAR remainingBitsInSegment,
+static uint8_t errDetectPcwSegmentation(int8_t remainingBitsInSegment,
                                       H_HCR_INFO pHcr, PCW_TYPE kind,
                                       int32_t *qsc_base_of_cw,
-                                      UCHAR dimension) {
-  SCHAR i;
+                                      uint8_t dimension) {
+  int8_t i;
   if (remainingBitsInSegment < 0) {
     /* log the error */
     switch (kind) {
@@ -1292,9 +1292,9 @@ back where from the remaining bits are.
 --------------------------------------------------------------------------------------------
 */
 static void errDetectWithinSegmentationFinal(H_HCR_INFO pHcr) {
-  UCHAR segmentationErrorFlag = 0;
+  uint8_t segmentationErrorFlag = 0;
   uint16_t i;
-  SCHAR *pRemainingBitsInSegment = pHcr->segmentInfo.pRemainingBitsInSegment;
+  int8_t *pRemainingBitsInSegment = pHcr->segmentInfo.pRemainingBitsInSegment;
   uint32_t numSegment = pHcr->segmentInfo.numSegment;
 
   for (i = numSegment; i != 0; i--) {
@@ -1312,7 +1312,7 @@ static void errDetectWithinSegmentationFinal(H_HCR_INFO pHcr) {
 branch is taken depends on the decoded carryBit input parameter.
 --------------------------------------------------------------------------------------------
 */
-void CarryBitToBranchValue(UCHAR carryBit, uint32_t treeNode, uint32_t *branchValue,
+void CarryBitToBranchValue(uint8_t carryBit, uint32_t treeNode, uint32_t *branchValue,
                            uint32_t *branchNode) {
   if (carryBit == 0) {
     *branchNode =
@@ -1331,17 +1331,17 @@ void CarryBitToBranchValue(UCHAR carryBit, uint32_t treeNode, uint32_t *branchVa
 spectral coefficients
 --------------------------------------------------------------------------------------------
 */
-static const SCHAR *DecodePCW_Body(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor,
+static const int8_t *DecodePCW_Body(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor,
                                    const uint32_t *pCurrentTree,
-                                   const SCHAR *pQuantValBase,
+                                   const int8_t *pQuantValBase,
                                    int32_t *pLeftStartOfSegment,
-                                   SCHAR *pRemainingBitsInSegment,
+                                   int8_t *pRemainingBitsInSegment,
                                    int32_t *pNumDecodedBits) {
-  UCHAR carryBit;
+  uint8_t carryBit;
   uint32_t branchNode;
   uint32_t treeNode;
   uint32_t branchValue;
-  const SCHAR *pQuantVal;
+  const int8_t *pQuantVal;
 
   /* decode PCW_BODY */
   treeNode = *pCurrentTree; /* get first node of current tree belonging to
@@ -1386,7 +1386,7 @@ value == 16, a escapeSequence is decoded in two steps:
 
 static int32_t DecodeEscapeSequence(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor,
                                 int32_t quantSpecCoef, int32_t *pLeftStartOfSegment,
-                                SCHAR *pRemainingBitsInSegment,
+                                int8_t *pRemainingBitsInSegment,
                                 int32_t *pNumDecodedBits, uint32_t *errorWord) {
   uint32_t i;
   int32_t sign;
@@ -1452,10 +1452,10 @@ line)
 --------------------------------------------------------------------------------------------
 */
 static int32_t DecodePCW_Sign(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor,
-                          uint32_t codebookDim, const SCHAR *pQuantVal,
+                          uint32_t codebookDim, const int8_t *pQuantVal,
                           int32_t *pQuantSpecCoef, int32_t *quantSpecCoefIdx,
                           int32_t *pLeftStartOfSegment,
-                          SCHAR *pRemainingBitsInSegment,
+                          int8_t *pRemainingBitsInSegment,
                           int32_t *pNumDecodedBits) {
   uint32_t i;
   uint32_t carryBit;

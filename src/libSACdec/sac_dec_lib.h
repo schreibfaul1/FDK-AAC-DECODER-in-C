@@ -317,7 +317,7 @@ SACDEC_ERROR mpegSurroundDecoder_Config(
     CMpegSurroundDecoder *pMpegSurroundDecoder, HANDLE_FDK_BITSTREAM hBs,
     AUDIO_OBJECT_TYPE coreCodec, int32_t samplingRate, int32_t frameSize,
     int32_t stereoConfigIndex, int32_t coreSbrFrameLengthIndex, int32_t configBytes,
-    const UCHAR configMode, UCHAR *configChanged);
+    const uint8_t configMode, uint8_t *configChanged);
 
 SACDEC_ERROR
 mpegSurroundDecoder_ConfigureQmfDomain(
@@ -414,7 +414,7 @@ int32_t mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder,
                               int32_t *nChannels, int32_t *frameSize, int32_t sampleRate,
                               AUDIO_OBJECT_TYPE coreCodec,
                               AUDIO_CHANNEL_TYPE channelType[],
-                              UCHAR channelIndices[],
+                              uint8_t channelIndices[],
                               const FDK_channelMapDescr *const mapDescr,
                               const int32_t inDataHeadroom, int32_t *outDataHeadroom);
 

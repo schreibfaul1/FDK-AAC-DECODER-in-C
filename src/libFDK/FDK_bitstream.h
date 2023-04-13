@@ -134,7 +134,7 @@ typedef FDK_BITSTREAM *HANDLE_FDK_BITSTREAM;
  * \param config   Initialize BitStream as Reader or Writer.
  */
 FDK_INLINE
-HANDLE_FDK_BITSTREAM FDKcreateBitStream(UCHAR *pBuffer, uint32_t bufSize,
+HANDLE_FDK_BITSTREAM FDKcreateBitStream(uint8_t *pBuffer, uint32_t bufSize,
                                         FDK_BS_CFG config = BS_READER) {
   HANDLE_FDK_BITSTREAM hBitStream =
       (HANDLE_FDK_BITSTREAM)FDKcalloc(1, sizeof(FDK_BITSTREAM));
@@ -161,7 +161,7 @@ HANDLE_FDK_BITSTREAM FDKcreateBitStream(UCHAR *pBuffer, uint32_t bufSize,
  * \return void
  */
 FDK_INLINE
-void FDKinitBitStream(HANDLE_FDK_BITSTREAM hBitStream, UCHAR *pBuffer,
+void FDKinitBitStream(HANDLE_FDK_BITSTREAM hBitStream, uint8_t *pBuffer,
                       uint32_t bufSize, uint32_t validBits,
                       FDK_BS_CFG config = BS_READER) {
   FDK_InitBitBuffer(&hBitStream->hBitBuf, pBuffer, bufSize, validBits);
@@ -339,7 +339,7 @@ FDK_INLINE uint32_t FDKgetBits(HANDLE_FDK_BITSTREAM hBitStream, uint32_t numBits
  * \param numberOfBits  The number of bits to be written
  * \return              Number of bits written
  */
-FDK_INLINE UCHAR FDKwriteBits(HANDLE_FDK_BITSTREAM hBitStream, uint32_t value,
+FDK_INLINE uint8_t FDKwriteBits(HANDLE_FDK_BITSTREAM hBitStream, uint32_t value,
                               const uint32_t numberOfBits) {
   const uint32_t validMask = BitMask[numberOfBits];
 
@@ -384,7 +384,7 @@ FDK_INLINE UCHAR FDKwriteBits(HANDLE_FDK_BITSTREAM hBitStream, uint32_t value,
  * \param numberOfBits  The number of bits to be written.
  * \return number of bits written
  */
-FDK_INLINE UCHAR FDKwriteBitsBwd(HANDLE_FDK_BITSTREAM hBitStream, uint32_t value,
+FDK_INLINE uint8_t FDKwriteBitsBwd(HANDLE_FDK_BITSTREAM hBitStream, uint32_t value,
                                  const uint32_t numberOfBits) {
   const uint32_t validMask = BitMask[numberOfBits];
 
@@ -417,10 +417,10 @@ FDK_INLINE UCHAR FDKwriteBitsBwd(HANDLE_FDK_BITSTREAM hBitStream, uint32_t value
  * \param nBits3  number of bits to write for a large integer value
  * \return number of bits written
  */
-FDK_INLINE UCHAR FDKwriteEscapedValue(HANDLE_FDK_BITSTREAM hBitStream,
+FDK_INLINE uint8_t FDKwriteEscapedValue(HANDLE_FDK_BITSTREAM hBitStream,
                                       uint32_t value, uint32_t nBits1, uint32_t nBits2,
                                       uint32_t nBits3) {
-  UCHAR nbits = 0;
+  uint8_t nbits = 0;
   uint32_t tmp = (1 << nBits1) - 1;
 
   if (value < tmp) {
@@ -601,7 +601,7 @@ FDK_INLINE int32_t FDKgetFreeBits(HANDLE_FDK_BITSTREAM hBitStream) {
  * \return void
  */
 FDK_INLINE void FDKfeedBuffer(HANDLE_FDK_BITSTREAM hBitStream,
-                              const UCHAR inputBuffer[], const uint32_t bufferSize,
+                              const uint8_t inputBuffer[], const uint32_t bufferSize,
                               uint32_t *bytesValid) {
   FDKsyncCache(hBitStream);
   FDK_Feed(&hBitStream->hBitBuf, inputBuffer, bufferSize, bytesValid);
@@ -634,7 +634,7 @@ FDK_INLINE void FDKcopyBuffer(HANDLE_FDK_BITSTREAM hBSDst,
  * \return void
  */
 FDK_INLINE void FDKfetchBuffer(HANDLE_FDK_BITSTREAM hBitStream,
-                               UCHAR *outputBuffer, uint32_t *writeBytes) {
+                               uint8_t *outputBuffer, uint32_t *writeBytes) {
   FDKsyncCache(hBitStream);
   FDK_Fetch(&hBitStream->hBitBuf, outputBuffer, writeBytes);
 }

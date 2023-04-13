@@ -123,8 +123,8 @@ read direction. It is called very often, therefore it makes sense to inline it
 --------------------------------------------------------------------------------------------
 */
 
-UCHAR rvlcReadBitFromBitstream(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor,
-                               int32_t *pPosition, UCHAR readDirection) {
+uint8_t rvlcReadBitFromBitstream(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor,
+                               int32_t *pPosition, uint8_t readDirection) {
   uint32_t bit;
   int32_t readBitOffset = (int32_t)FDKgetValidBits(bs) - bsAnchor + *pPosition;
 

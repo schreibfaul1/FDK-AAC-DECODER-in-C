@@ -416,11 +416,11 @@ FDK_INLINE int32_t fMin(int32_t a, int32_t b) { return fixmin_I(a, b); }
 inline uint32_t fMax(uint32_t a, uint32_t b) { return fixmax_UI(a, b); }
 inline uint32_t fMin(uint32_t a, uint32_t b) { return fixmin_UI(a, b); }
 
-inline UCHAR fMax(UCHAR a, UCHAR b) {
-  return (UCHAR)fixmax_UI((uint32_t)a, (uint32_t)b);
+inline uint8_t fMax(uint8_t a, uint8_t b) {
+  return (uint8_t)fixmax_UI((uint32_t)a, (uint32_t)b);
 }
-inline UCHAR fMin(UCHAR a, UCHAR b) {
-  return (UCHAR)fixmin_UI((uint32_t)a, (uint32_t)b);
+inline uint8_t fMin(uint8_t a, uint8_t b) {
+  return (uint8_t)fixmin_UI((uint32_t)a, (uint32_t)b);
 }
 
 /* Complex data types */

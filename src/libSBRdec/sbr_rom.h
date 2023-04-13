@@ -120,18 +120,18 @@ amm-info@iis.fraunhofer.de
 */
 
 /* if defined(SBRDEC_RATIO_16_64_ENABLE) ((4) = 4) else ((4) = 2) */
-extern const UCHAR FDK_sbrDecoder_sbr_start_freq_16[(4) / 2][16];
-extern const UCHAR FDK_sbrDecoder_sbr_start_freq_22[(4) / 2][16];
-extern const UCHAR FDK_sbrDecoder_sbr_start_freq_24[(4) / 2][16];
-extern const UCHAR FDK_sbrDecoder_sbr_start_freq_32[(4) / 2][16];
-extern const UCHAR FDK_sbrDecoder_sbr_start_freq_40[(4) / 2][16];
-extern const UCHAR FDK_sbrDecoder_sbr_start_freq_44[(4) / 2][16];
-extern const UCHAR FDK_sbrDecoder_sbr_start_freq_48[(4) / 2][16];
-extern const UCHAR FDK_sbrDecoder_sbr_start_freq_64[(4) / 2][16];
-extern const UCHAR FDK_sbrDecoder_sbr_start_freq_88[(4) / 2][16];
-extern const UCHAR FDK_sbrDecoder_sbr_start_freq_192[16];
-extern const UCHAR FDK_sbrDecoder_sbr_start_freq_176[16];
-extern const UCHAR FDK_sbrDecoder_sbr_start_freq_128[16];
+extern const uint8_t FDK_sbrDecoder_sbr_start_freq_16[(4) / 2][16];
+extern const uint8_t FDK_sbrDecoder_sbr_start_freq_22[(4) / 2][16];
+extern const uint8_t FDK_sbrDecoder_sbr_start_freq_24[(4) / 2][16];
+extern const uint8_t FDK_sbrDecoder_sbr_start_freq_32[(4) / 2][16];
+extern const uint8_t FDK_sbrDecoder_sbr_start_freq_40[(4) / 2][16];
+extern const uint8_t FDK_sbrDecoder_sbr_start_freq_44[(4) / 2][16];
+extern const uint8_t FDK_sbrDecoder_sbr_start_freq_48[(4) / 2][16];
+extern const uint8_t FDK_sbrDecoder_sbr_start_freq_64[(4) / 2][16];
+extern const uint8_t FDK_sbrDecoder_sbr_start_freq_88[(4) / 2][16];
+extern const uint8_t FDK_sbrDecoder_sbr_start_freq_192[16];
+extern const uint8_t FDK_sbrDecoder_sbr_start_freq_176[16];
+extern const uint8_t FDK_sbrDecoder_sbr_start_freq_128[16];
 
 /*
   Low-Power-Profile Transposer
@@ -146,9 +146,9 @@ extern const int32_t
   Envelope Adjustor
 */
 extern const FIXP_SGL FDK_sbrDecoder_sbr_limGains_m[4];
-extern const UCHAR FDK_sbrDecoder_sbr_limGains_e[4];
+extern const uint8_t FDK_sbrDecoder_sbr_limGains_e[4];
 extern const FIXP_SGL FDK_sbrDecoder_sbr_limGainsPvc_m[4];
-extern const UCHAR FDK_sbrDecoder_sbr_limGainsPvc_e[4];
+extern const uint8_t FDK_sbrDecoder_sbr_limGainsPvc_e[4];
 extern const FIXP_SGL FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4[4];
 extern const int32_t FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4_DBL[4];
 extern const FIXP_SGL FDK_sbrDecoder_sbr_smoothFilter[4];
@@ -169,43 +169,43 @@ extern const FRAME_INFO FDK_sbrDecoder_sbr_frame_info2_16;
 extern const FRAME_INFO FDK_sbrDecoder_sbr_frame_info4_16;
 extern const FRAME_INFO FDK_sbrDecoder_sbr_frame_info8_16;
 
-extern const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvLevel10T[120][2];
-extern const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvLevel10F[120][2];
-extern const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvBalance10T[48][2];
-extern const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvBalance10F[48][2];
-extern const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvLevel11T[62][2];
-extern const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvLevel11F[62][2];
-extern const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvBalance11T[24][2];
-extern const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvBalance11F[24][2];
-extern const SCHAR FDK_sbrDecoder_sbr_huffBook_NoiseLevel11T[62][2];
-extern const SCHAR FDK_sbrDecoder_sbr_huffBook_NoiseBalance11T[24][2];
+extern const int8_t FDK_sbrDecoder_sbr_huffBook_EnvLevel10T[120][2];
+extern const int8_t FDK_sbrDecoder_sbr_huffBook_EnvLevel10F[120][2];
+extern const int8_t FDK_sbrDecoder_sbr_huffBook_EnvBalance10T[48][2];
+extern const int8_t FDK_sbrDecoder_sbr_huffBook_EnvBalance10F[48][2];
+extern const int8_t FDK_sbrDecoder_sbr_huffBook_EnvLevel11T[62][2];
+extern const int8_t FDK_sbrDecoder_sbr_huffBook_EnvLevel11F[62][2];
+extern const int8_t FDK_sbrDecoder_sbr_huffBook_EnvBalance11T[24][2];
+extern const int8_t FDK_sbrDecoder_sbr_huffBook_EnvBalance11F[24][2];
+extern const int8_t FDK_sbrDecoder_sbr_huffBook_NoiseLevel11T[62][2];
+extern const int8_t FDK_sbrDecoder_sbr_huffBook_NoiseBalance11T[24][2];
 
 /*
  Parametric stereo
 */
 
 /* FIX_BORDER can have 0, 1, 2, 4 envelops */
-extern const UCHAR FDK_sbrDecoder_aFixNoEnvDecode[4];
+extern const uint8_t FDK_sbrDecoder_aFixNoEnvDecode[4];
 
 /* IID & ICC Huffman codebooks */
-extern const SCHAR aBookPsIidTimeDecode[28][2];
-extern const SCHAR aBookPsIidFreqDecode[28][2];
-extern const SCHAR aBookPsIccTimeDecode[14][2];
-extern const SCHAR aBookPsIccFreqDecode[14][2];
+extern const int8_t aBookPsIidTimeDecode[28][2];
+extern const int8_t aBookPsIidFreqDecode[28][2];
+extern const int8_t aBookPsIccTimeDecode[14][2];
+extern const int8_t aBookPsIccFreqDecode[14][2];
 
 /* IID-fine Huffman codebooks */
 
-extern const SCHAR aBookPsIidFineTimeDecode[60][2];
-extern const SCHAR aBookPsIidFineFreqDecode[60][2];
+extern const int8_t aBookPsIidFineTimeDecode[60][2];
+extern const int8_t aBookPsIidFineFreqDecode[60][2];
 
 /* the values of the following 3 tables are shiftet right by 1 ! */
 extern const int32_t ScaleFactors[NO_IID_LEVELS];
 extern const int32_t ScaleFactorsFine[NO_IID_LEVELS_FINE];
 extern const int32_t Alphas[NO_ICC_LEVELS];
 
-extern const UCHAR bins2groupMap20[NO_IID_GROUPS];
-extern const UCHAR FDK_sbrDecoder_aNoIidBins[3];
-extern const UCHAR FDK_sbrDecoder_aNoIccBins[3];
+extern const uint8_t bins2groupMap20[NO_IID_GROUPS];
+extern const uint8_t FDK_sbrDecoder_aNoIidBins[3];
+extern const uint8_t FDK_sbrDecoder_aNoIccBins[3];
 
 /* Lookup tables for some arithmetic functions */
 

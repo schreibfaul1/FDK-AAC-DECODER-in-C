@@ -116,23 +116,23 @@ amm-info@iis.fraunhofer.de
 
 typedef struct backsubst_data {
   FIXP_CHB Lnorm1d[3]; /*!< Normalized L matrix */
-  SCHAR Lnorm1d_sf[3];
+  int8_t Lnorm1d_sf[3];
   FIXP_CHB Lnormii
       [3]; /*!< The diagonal data points [i][i] of the normalized L matrix */
-  SCHAR Lnormii_sf[3];
+  int8_t Lnormii_sf[3];
   FIXP_CHB Bmul0
       [4]; /*!< To normalize L*x=b, Bmul0 is what we need to multiply b with. */
-  SCHAR Bmul0_sf[4];
+  int8_t Bmul0_sf[4];
   FIXP_CHB LnormInv1d[6]; /*!< Normalized inverted L matrix (L') */
-  SCHAR LnormInv1d_sf[6];
+  int8_t LnormInv1d_sf[6];
   FIXP_CHB
   Bmul1[4]; /*!< To normalize L'*x=b, Bmul1 is what we need to multiply b
                with. */
-  SCHAR Bmul1_sf[4];
+  int8_t Bmul1_sf[4];
 } backsubst_data;
 
 /* for each element n do, f(n) = trunc(log2(n))+1  */
-const UCHAR getLog2[32] = {0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4,
+const uint8_t getLog2[32] = {0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4,
                            5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
 
 /** \def  BSD_IDX_OFFSET
@@ -570,9 +570,9 @@ static void backsubst_fw(const int32_t numBands, const int32_t *const b,
   int32_t m; /* the trip counter that indexes incrementally through Lnorm1d[] */
 
   const FIXP_CHB *RESTRICT pLnorm1d = bsd[numBands - BSD_IDX_OFFSET].Lnorm1d;
-  const SCHAR *RESTRICT pLnorm1d_sf = bsd[numBands - BSD_IDX_OFFSET].Lnorm1d_sf;
+  const int8_t *RESTRICT pLnorm1d_sf = bsd[numBands - BSD_IDX_OFFSET].Lnorm1d_sf;
   const FIXP_CHB *RESTRICT pLnormii = bsd[numBands - BSD_IDX_OFFSET].Lnormii;
-  const SCHAR *RESTRICT pLnormii_sf = bsd[numBands - BSD_IDX_OFFSET].Lnormii_sf;
+  const int8_t *RESTRICT pLnormii_sf = bsd[numBands - BSD_IDX_OFFSET].Lnormii_sf;
 
   x[0] = b[0];
 
@@ -634,7 +634,7 @@ static void backsubst_bw(const int32_t numBands, const int32_t *const b,
 
   const FIXP_CHB *RESTRICT pLnormInv1d =
       bsd[numBands - BSD_IDX_OFFSET].LnormInv1d;
-  const SCHAR *RESTRICT pLnormInv1d_sf =
+  const int8_t *RESTRICT pLnormInv1d_sf =
       bsd[numBands - BSD_IDX_OFFSET].LnormInv1d_sf;
 
   x[POLY_ORDER] = b[POLY_ORDER];
@@ -687,9 +687,9 @@ static void choleskySolve(const int32_t numBands, int32_t *RESTRICT b,
   int32_t i, e;
 
   const FIXP_CHB *RESTRICT pBmul0 = bsd[numBands - BSD_IDX_OFFSET].Bmul0;
-  const SCHAR *RESTRICT pBmul0_sf = bsd[numBands - BSD_IDX_OFFSET].Bmul0_sf;
+  const int8_t *RESTRICT pBmul0_sf = bsd[numBands - BSD_IDX_OFFSET].Bmul0_sf;
   const FIXP_CHB *RESTRICT pBmul1 = bsd[numBands - BSD_IDX_OFFSET].Bmul1;
-  const SCHAR *RESTRICT pBmul1_sf = bsd[numBands - BSD_IDX_OFFSET].Bmul1_sf;
+  const int8_t *RESTRICT pBmul1_sf = bsd[numBands - BSD_IDX_OFFSET].Bmul1_sf;
 
   /* normalize b */
   int32_t bnormed[POLY_ORDER + 1];

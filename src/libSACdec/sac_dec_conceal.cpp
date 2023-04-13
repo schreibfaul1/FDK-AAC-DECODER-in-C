@@ -129,13 +129,13 @@ void SpatialDecConcealment_Init(SpatialDecConcealmentInfo *info,
 
 int32_t SpatialDecConcealment_Apply(
     SpatialDecConcealmentInfo *info,
-    const SCHAR (*cmpIdxData)[MAX_PARAMETER_BANDS], SCHAR **diffIdxData,
-    SCHAR *
+    const int8_t (*cmpIdxData)[MAX_PARAMETER_BANDS], int8_t **diffIdxData,
+    int8_t *
         idxPrev, /* char
                     idxPrev[SPATIALDEC_MAX_NUM_OTT][SPATIALDEC_MAX_PARAMETER_BANDS],
                   */
-    SCHAR *bsXXXDataMode, const int32_t startBand, const int32_t stopBand,
-    const SCHAR defaultValue, const int32_t paramType, const int32_t numParamSets) {
+    int8_t *bsXXXDataMode, const int32_t startBand, const int32_t stopBand,
+    const int8_t defaultValue, const int32_t paramType, const int32_t numParamSets) {
   int32_t appliedProcessing = 0;
   int32_t band, dataMode = -1;
 

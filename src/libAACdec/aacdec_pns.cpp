@@ -125,8 +125,8 @@ void CPns_ResetData(CPnsData *pPnsData,
   pPnsData->PnsActive = 0;
   pPnsData->CurrentEnergy = 0;
 
-  FDKmemclear(pPnsData->pnsUsed, (8 * 16) * sizeof(UCHAR));
-  FDKmemclear(pPnsInterChannelData->correlated, (8 * 16) * sizeof(UCHAR));
+  FDKmemclear(pPnsData->pnsUsed, (8 * 16) * sizeof(uint8_t));
+  FDKmemclear(pPnsInterChannelData->correlated, (8 * 16) * sizeof(uint8_t));
 }
 
 /*!
@@ -154,7 +154,7 @@ void CPns_UpdateNoiseState(CPnsData *pPnsData, int32_t *currentSeed,
 int32_t CPns_IsPnsUsed(const CPnsData *pPnsData, const int32_t group, const int32_t band) {
   unsigned pns_band = group * 16 + band;
 
-  return pPnsData->pnsUsed[pns_band] & (UCHAR)1;
+  return pPnsData->pnsUsed[pns_band] & (uint8_t)1;
 }
 
 /*!
@@ -209,7 +209,7 @@ static int32_t CPns_IsOutOfPhase(const CPnsData *pPnsData, const int32_t group,
 */
 void CPns_Read(CPnsData *pPnsData, HANDLE_FDK_BITSTREAM bs,
                const CodeBookDescription *hcb, int16_t *pScaleFactor,
-               UCHAR global_gain, int32_t band, int32_t group /* = 0 */) {
+               uint8_t global_gain, int32_t band, int32_t group /* = 0 */) {
   int32_t delta;
   uint32_t pns_band = group * 16 + band;
 

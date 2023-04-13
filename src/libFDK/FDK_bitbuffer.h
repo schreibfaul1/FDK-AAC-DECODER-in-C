@@ -116,7 +116,7 @@ typedef struct {
   uint32_t WriteOffset;
   uint32_t BitNdx;
 
-  UCHAR *Buffer;
+  uint8_t *Buffer;
   uint32_t bufSize;
   uint32_t bufBits;
 } FDK_BITBUF;
@@ -133,10 +133,10 @@ extern const uint32_t BitMask[32 + 1];
      For Functions functional survey look there.
 */
 
-void FDK_CreateBitBuffer(HANDLE_FDK_BITBUF *hBitBuffer, UCHAR *pBuffer,
+void FDK_CreateBitBuffer(HANDLE_FDK_BITBUF *hBitBuffer, uint8_t *pBuffer,
                          uint32_t bufSize);
 
-void FDK_InitBitBuffer(HANDLE_FDK_BITBUF hBitBuffer, UCHAR *pBuffer,
+void FDK_InitBitBuffer(HANDLE_FDK_BITBUF hBitBuffer, uint8_t *pBuffer,
                        uint32_t bufSize, uint32_t validBits);
 
 void FDK_ResetBitBuffer(HANDLE_FDK_BITBUF hBitBuffer);
@@ -154,22 +154,22 @@ void FDK_putBwd(HANDLE_FDK_BITBUF hBitBuffer, uint32_t value,
                 const uint32_t numberOfBits);
 
 void FDK_pushBack(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits,
-                  UCHAR config);
+                  uint8_t config);
 
 void FDK_pushForward(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits,
-                     UCHAR config);
+                     uint8_t config);
 
 uint32_t FDK_getValidBits(HANDLE_FDK_BITBUF hBitBuffer);
 
 int32_t FDK_getFreeBits(HANDLE_FDK_BITBUF hBitBuffer);
 
-void FDK_Feed(HANDLE_FDK_BITBUF hBitBuffer, const UCHAR inputBuffer[],
+void FDK_Feed(HANDLE_FDK_BITBUF hBitBuffer, const uint8_t inputBuffer[],
               const uint32_t bufferSize, uint32_t *bytesValid);
 
 void FDK_Copy(HANDLE_FDK_BITBUF hBitBufDst, HANDLE_FDK_BITBUF hBitBufSrc,
               uint32_t *bytesValid);
 
-void FDK_Fetch(HANDLE_FDK_BITBUF hBitBuffer, UCHAR outBuf[], uint32_t *writeBytes);
+void FDK_Fetch(HANDLE_FDK_BITBUF hBitBuffer, uint8_t outBuf[], uint32_t *writeBytes);
 
 #ifdef __cplusplus
 }

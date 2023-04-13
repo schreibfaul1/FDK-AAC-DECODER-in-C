@@ -351,22 +351,22 @@ typedef struct {
   int16_t numSection;
   int16_t *pNumLineInSect;
   int32_t bitstreamAnchor;
-  SCHAR lengthOfLongestCodeword;
-  UCHAR *pCodebook;
+  int8_t lengthOfLongestCodeword;
+  uint8_t *pCodebook;
 } HCR_INPUT_OUTPUT;
 
 typedef struct {
-  const UCHAR *pMinOfCbPair;
-  const UCHAR *pMaxOfCbPair;
+  const uint8_t *pMinOfCbPair;
+  const uint8_t *pMaxOfCbPair;
 } HCR_CB_PAIRS;
 
 typedef struct {
   const uint16_t *pLargestAbsVal;
-  const UCHAR *pMaxCwLength;
-  const UCHAR *pCbDimension;
-  const UCHAR *pCbDimShift;
-  const UCHAR *pCbSign;
-  const UCHAR *pCbPriority;
+  const uint8_t *pMaxCwLength;
+  const uint8_t *pCbDimension;
+  const uint8_t *pCbDimShift;
+  const uint8_t *pCbSign;
+  const uint8_t *pCbPriority;
 } HCR_TABLE_INFO;
 
 typedef struct {
@@ -376,9 +376,9 @@ typedef struct {
   uint32_t segmentOffset;
   int32_t pLeftStartOfSegment[1024 >> 1];
   int32_t pRightStartOfSegment[1024 >> 1];
-  SCHAR pRemainingBitsInSegment[1024 >> 1];
-  UCHAR readDirection;
-  UCHAR numWordForBitfield;
+  int8_t pRemainingBitsInSegment[1024 >> 1];
+  uint8_t readDirection;
+  uint8_t numWordForBitfield;
   uint16_t pNumBitValidInLastWord;
 } HCR_SEGMENT_INFO;
 
@@ -392,13 +392,13 @@ typedef struct {
   uint16_t pNumExtendedSortedSectionsInSets[MAX_HCR_SETS];
   int32_t numExtendedSortedSectionsInSetsIdx;
   uint16_t pReorderOffset[MAX_SFB_HCR];
-  UCHAR pSortedCodebook[MAX_SFB_HCR];
+  uint8_t pSortedCodebook[MAX_SFB_HCR];
 
-  UCHAR pExtendedSortedCodebook[MAX_SFB_HCR + MAX_HCR_SETS];
+  uint8_t pExtendedSortedCodebook[MAX_SFB_HCR + MAX_HCR_SETS];
   int32_t extendedSortedCodebookIdx;
-  UCHAR pMaxLenOfCbInExtSrtSec[MAX_SFB_HCR + MAX_HCR_SETS];
+  uint8_t pMaxLenOfCbInExtSrtSec[MAX_SFB_HCR + MAX_HCR_SETS];
   int32_t maxLenOfCbInExtSrtSecIdx;
-  UCHAR pCodebookSwitch[MAX_SFB_HCR];
+  uint8_t pCodebookSwitch[MAX_SFB_HCR];
 } HCR_SECTION_INFO;
 
 typedef uint32_t (*STATEFUNC)(HANDLE_FDK_BITSTREAM, void *);
@@ -413,11 +413,11 @@ typedef struct {
   uint32_t pEscapeSequenceInfo[1024 >> 2];
   uint32_t codewordOffset;
   STATEFUNC pState;
-  UCHAR pCodebook[1024 >> 2];
-  UCHAR pCntSign[1024 >> 2];
+  uint8_t pCodebook[1024 >> 2];
+  uint8_t pCntSign[1024 >> 2];
   /* this array holds the states coded as integer values within the range
    * [0,1,..,7] */
-  SCHAR pSta[1024 >> 2];
+  int8_t pSta[1024 >> 2];
 } HCR_NON_PCW_SIDEINFO;
 
 typedef struct {

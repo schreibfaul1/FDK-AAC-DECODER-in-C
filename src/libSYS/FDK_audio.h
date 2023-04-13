@@ -378,7 +378,7 @@ typedef struct {
   AUDIO_OBJECT_TYPE aot;     /**< Audio Object Type (AOT).           */
   AUDIO_OBJECT_TYPE extAOT;  /**< Extension Audio Object Type (SBR). */
   CHANNEL_MODE channelMode;  /**< Channel mode.                      */
-  UCHAR channelConfigZero;   /**< Use channel config zero + pce although a
+  uint8_t channelConfigZero;   /**< Use channel config zero + pce although a
                                 standard channel config could be signaled. */
   int32_t samplingRate;          /**< Sampling rate.                     */
   int32_t extSamplingRate;       /**< Extended samplerate (SBR).         */
@@ -395,23 +395,23 @@ typedef struct {
   int32_t BSAClayerLength; /**< The average length of the large-step layers in bytes
                           (BSAC).                            */
   uint32_t flags;          /**< flags */
-  UCHAR matrixMixdownA; /**< Matrix mixdown index to put into PCE. Default value
+  uint8_t matrixMixdownA; /**< Matrix mixdown index to put into PCE. Default value
                            0 means no mixdown coefficient, valid values are 1-4
                            which correspond to matrix_mixdown_idx 0-3. */
-  UCHAR headerPeriod;   /**< Frame period for sending in band configuration
+  uint8_t headerPeriod;   /**< Frame period for sending in band configuration
                            buffers in the transport layer. */
 
-  UCHAR stereoConfigIndex;       /**< USAC MPS stereo mode */
-  UCHAR sbrMode;                 /**< USAC SBR mode */
+  uint8_t stereoConfigIndex;       /**< USAC MPS stereo mode */
+  uint8_t sbrMode;                 /**< USAC SBR mode */
   SBR_PS_SIGNALING sbrSignaling; /**< 0: implicit signaling, 1: backwards
                                     compatible explicit signaling, 2:
                                     hierarcical explicit signaling */
 
-  UCHAR rawConfig[64]; /**< raw codec specific config as bit stream */
+  uint8_t rawConfig[64]; /**< raw codec specific config as bit stream */
   int32_t rawConfigBits;   /**< Size of rawConfig in bits */
 
-  UCHAR sbrPresent;
-  UCHAR psPresent;
+  uint8_t sbrPresent;
+  uint8_t psPresent;
 } CODER_CONFIG;
 
 #define USAC_ID_BIT 16 /** USAC element IDs start at USAC_ID_BIT */

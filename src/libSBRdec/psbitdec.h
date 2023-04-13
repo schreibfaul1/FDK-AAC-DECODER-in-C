@@ -109,7 +109,7 @@ amm-info@iis.fraunhofer.de
 uint32_t ReadPsData(struct PS_DEC *h_ps_d, HANDLE_FDK_BITSTREAM hBs,
                         int32_t nBitsLeft);
 
-int32_t DecodePs(struct PS_DEC *h_ps_d, const UCHAR frameError,
+int32_t DecodePs(struct PS_DEC *h_ps_d, const uint8_t frameError,
              PS_DEC_COEFFICIENTS *pCoef);
 
 #endif /* PSBITDEC_H */

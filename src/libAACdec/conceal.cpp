@@ -156,7 +156,7 @@ amm-info@iis.fraunhofer.de
 
 #define CONCEAL_DFLT_COMF_NOISE_LEVEL (0x100000)
 
-#define CONCEAL_NOT_DEFINED ((UCHAR)-1)
+#define CONCEAL_NOT_DEFINED ((uint8_t)-1)
 
 /* default settings */
 #define CONCEAL_DFLT_FADEOUT_FRAMES (6)
@@ -550,7 +550,7 @@ void CConcealment_Store(
     CConcealmentInfo *hConcealmentInfo,
     CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo) {
-  UCHAR nbDiv = NB_DIV;
+  uint8_t nbDiv = NB_DIV;
 
   if (!(pAacDecoderChannelInfo->renderMode == AACDEC_RENDER_LPD &&
         pAacDecoderChannelInfo->data.usac.mod[nbDiv - 1] == 0))
@@ -562,7 +562,7 @@ void CConcealment_Store(
     CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
 
     int16_t tSpecScale[8];
-    UCHAR tWindowShape;
+    uint8_t tWindowShape;
     BLOCK_TYPE tWindowSequence;
 
     /* store old window infos for swapping */
@@ -649,7 +649,7 @@ int32_t CConcealment_Apply(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
     const SamplingRateInfo *pSamplingRateInfo, const int32_t samplesPerFrame,
-    const UCHAR lastLpdMode, const int32_t frameOk, const uint32_t flags) {
+    const uint8_t lastLpdMode, const int32_t frameOk, const uint32_t flags) {
   int32_t appliedProcessing = 0;
   const int32_t mute_release_active =
       frameOk && (hConcealmentInfo->concealState >= ConcealState_Mute) &&
@@ -667,7 +667,7 @@ int32_t CConcealment_Apply(
   if (frameOk && !mute_release_active) {
     /* Update render mode if frameOk except for ongoing mute release state. */
     hConcealmentInfo->lastRenderMode =
-        (SCHAR)pAacDecoderChannelInfo->renderMode;
+        (int8_t)pAacDecoderChannelInfo->renderMode;
 
     /* Rescue current data for concealment in future frames */
     CConcealment_Store(hConcealmentInfo, pAacDecoderChannelInfo,

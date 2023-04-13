@@ -137,11 +137,11 @@ static inline FIXP_SGL FDK_getNumOctavesDiv8(int32_t a, /*!< lower band */
 */
 /************************************************************************/
 inline void FDK_add_MantExp(FIXP_SGL a_m, /*!< Mantissa of 1st operand a */
-                            SCHAR a_e,    /*!< Exponent of 1st operand a */
+                            int8_t a_e,    /*!< Exponent of 1st operand a */
                             FIXP_SGL b_m, /*!< Mantissa of 2nd operand b */
-                            SCHAR b_e,    /*!< Exponent of 2nd operand b */
+                            int8_t b_e,    /*!< Exponent of 2nd operand b */
                             FIXP_SGL *ptrSum_m, /*!< Mantissa of result */
-                            SCHAR *ptrSum_e)    /*!< Exponent of result */
+                            int8_t *ptrSum_e)    /*!< Exponent of result */
 {
   int32_t accu;
   int32_t shift;
@@ -176,11 +176,11 @@ inline void FDK_add_MantExp(FIXP_SGL a_m, /*!< Mantissa of 1st operand a */
 }
 
 inline void FDK_add_MantExp(int32_t a,       /*!< Mantissa of 1st operand a */
-                            SCHAR a_e,        /*!< Exponent of 1st operand a */
+                            int8_t a_e,        /*!< Exponent of 1st operand a */
                             int32_t b,       /*!< Mantissa of 2nd operand b */
-                            SCHAR b_e,        /*!< Exponent of 2nd operand b */
+                            int8_t b_e,        /*!< Exponent of 2nd operand b */
                             int32_t *ptrSum, /*!< Mantissa of result */
-                            SCHAR *ptrSum_e)  /*!< Exponent of result */
+                            int8_t *ptrSum_e)  /*!< Exponent of result */
 {
   int32_t accu;
   int32_t shift;
@@ -226,11 +226,11 @@ inline void FDK_add_MantExp(int32_t a,       /*!< Mantissa of 1st operand a */
 /************************************************************************/
 static inline void FDK_divide_MantExp(
     FIXP_SGL a_m,          /*!< Mantissa of dividend a */
-    SCHAR a_e,             /*!< Exponent of dividend a */
+    int8_t a_e,             /*!< Exponent of dividend a */
     FIXP_SGL b_m,          /*!< Mantissa of divisor b */
-    SCHAR b_e,             /*!< Exponent of divisor b */
+    int8_t b_e,             /*!< Exponent of divisor b */
     FIXP_SGL *ptrResult_m, /*!< Mantissa of quotient a/b */
-    SCHAR *ptrResult_e)    /*!< Exponent of quotient a/b */
+    int8_t *ptrResult_e)    /*!< Exponent of quotient a/b */
 
 {
   int32_t preShift, postShift, index, shift;
@@ -282,11 +282,11 @@ static inline void FDK_divide_MantExp(
 
 static inline void FDK_divide_MantExp(
     int32_t a_m,          /*!< Mantissa of dividend a */
-    SCHAR a_e,             /*!< Exponent of dividend a */
+    int8_t a_e,             /*!< Exponent of dividend a */
     int32_t b_m,          /*!< Mantissa of divisor b */
-    SCHAR b_e,             /*!< Exponent of divisor b */
+    int8_t b_e,             /*!< Exponent of divisor b */
     int32_t *ptrResult_m, /*!< Mantissa of quotient a/b */
-    SCHAR *ptrResult_e)    /*!< Exponent of quotient a/b */
+    int8_t *ptrResult_e)    /*!< Exponent of quotient a/b */
 
 {
   int32_t preShift, postShift, index, shift;
@@ -348,7 +348,7 @@ static inline void FDK_divide_MantExp(
 */
 static inline void FDK_sqrt_MantExp(
     int32_t *mantissa, /*!< Pointer to mantissa */
-    SCHAR *exponent, const SCHAR *destScale) {
+    int8_t *exponent, const int8_t *destScale) {
   int32_t input_m = *mantissa;
   int32_t input_e = (int32_t)*exponent;
   int32_t result = FL2FXCONST_DBL(0.0f);

@@ -127,8 +127,8 @@ typedef struct {
 
   int16_t enable;
 
-  UCHAR winSequenceCurr;
-  UCHAR winSequenceNext;
+  uint8_t winSequenceCurr;
+  uint8_t winSequenceNext;
 
 } SBRDEC_DRC_CHANNEL;
 

@@ -113,7 +113,7 @@ typedef enum { ARITH_CODER_OK = 0, ARITH_CODER_ERROR = 5 } ARITH_CODING_ERROR;
 
 typedef struct {
   int16_t m_numberLinesPrev;
-  UCHAR c_prev[(1024 / 2) + 4]; /* 2-tuple context of previous frame, 4 bit */
+  uint8_t c_prev[(1024 / 2) + 4]; /* 2-tuple context of previous frame, 4 bit */
 } CArcoData;
 
 /* prototypes */

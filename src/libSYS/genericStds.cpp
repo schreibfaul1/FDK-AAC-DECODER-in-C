@@ -198,8 +198,8 @@ char *FDKstrncpy(char *dest, const char *src, uint32_t n) {
   }
 
   // allocate memory with an optional alignment information
-	void *FDKcallocExt(const uint32_t n, const uint32_t size, const UCHAR alignment) {
-    UCHAR alignment_effective = alignment;
+	void *FDKcallocExt(const uint32_t n, const uint32_t size, const uint8_t alignment) {
+    uint8_t alignment_effective = alignment;
 	  void *ptr=nullptr;
 //	  if (alignment%4 == 0 || size==4 || size==8 || size>20000){
 	  if (alignment%4 == 0){
@@ -217,7 +217,7 @@ char *FDKstrncpy(char *dest, const char *src, uint32_t n) {
 
 #else
 
-	void *FDKcallocExt(const uint32_t n, const uint32_t size, const UCHAR) {
+	void *FDKcallocExt(const uint32_t n, const uint32_t size, const uint8_t) {
     return FDKcalloc(n, size);
   }
 
@@ -348,7 +348,7 @@ int32_t FDKstrncmp(const char *s1, const char *s2, const uint32_t size) {
 
 int32_t IS_LITTLE_ENDIAN(void) {
   int32_t __dummy = 1;
-  return (*((UCHAR *)(&(__dummy))));
+  return (*((uint8_t *)(&(__dummy))));
 }
 
 uint32_t TO_LITTLE_ENDIAN(uint32_t val) {
@@ -391,7 +391,7 @@ uint32_t FDKfwrite_EL(const void *ptrf, int32_t size, uint32_t nmemb, FDKFILE *f
     uint32_t n;
     int32_t s;
 
-    const UCHAR *ptr = (const UCHAR *)ptrf;
+    const uint8_t *ptr = (const uint8_t *)ptrf;
 
     for (n = 0; n < nmemb; n++) {
       for (s = size - 1; s >= 0; s--) {
@@ -405,12 +405,12 @@ uint32_t FDKfwrite_EL(const void *ptrf, int32_t size, uint32_t nmemb, FDKFILE *f
 
 uint32_t FDKfread_EL(void *dst, int32_t size, uint32_t nmemb, FDKFILE *fp) {
   uint32_t n, s0, s1, err;
-  UCHAR tmp, *ptr;
-  UCHAR tmp24[3];
+  uint8_t tmp, *ptr;
+  uint8_t tmp24[3];
 
   /* Enforce alignment of 24 bit data. */
   if (size == 3) {
-    ptr = (UCHAR *)dst;
+    ptr = (uint8_t *)dst;
     for (n = 0; n < nmemb; n++) {
       if ((err = FDKfread(tmp24, 1, 3, fp)) != 3) {
         return err;
@@ -433,7 +433,7 @@ uint32_t FDKfread_EL(void *dst, int32_t size, uint32_t nmemb, FDKFILE *fp) {
     }
   }
   if (!IS_LITTLE_ENDIAN() && size > 1) {
-    ptr = (UCHAR *)dst;
+    ptr = (uint8_t *)dst;
     for (n = 0; n < nmemb; n++) {
       for (s0 = 0, s1 = size - 1; s0 < s1; s0++, s1--) {
         tmp = ptr[s0];

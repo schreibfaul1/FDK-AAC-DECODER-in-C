@@ -110,7 +110,7 @@ amm-info@iis.fraunhofer.de
         return:       new read direction
 --------------------------------------------------------------------------------------------
 */
-UCHAR ToggleReadDirection(UCHAR readDirection) {
+uint8_t ToggleReadDirection(uint8_t readDirection) {
   if (readDirection == FROM_LEFT_TO_RIGHT) {
     return FROM_RIGHT_TO_LEFT;
   } else {
@@ -134,7 +134,7 @@ read direction. It is called very often, therefore it makes sense to inline it
 */
 uint32_t HcrGetABitFromBitstream(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor,
                              int32_t *pLeftStartOfSegment,
-                             int32_t *pRightStartOfSegment, UCHAR readDirection) {
+                             int32_t *pRightStartOfSegment, uint8_t readDirection) {
   uint32_t bit;
   int32_t readBitOffset;
 

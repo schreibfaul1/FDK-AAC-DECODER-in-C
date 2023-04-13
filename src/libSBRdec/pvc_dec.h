@@ -122,10 +122,10 @@ amm-info@iis.fraunhofer.de
 /** Data for each PVC instance which needs to be persistent accross SBR frames
  */
 typedef struct {
-  UCHAR kx_last;        /**< Xover frequency of last frame */
-  UCHAR pvc_mode_last;  /**< PVC mode of last frame */
-  UCHAR Esg_slot_index; /**< Ring buffer index to current Esg time slot */
-  UCHAR pvcBorder0;     /**< Start SBR time slot of PVC frame */
+  uint8_t kx_last;        /**< Xover frequency of last frame */
+  uint8_t pvc_mode_last;  /**< PVC mode of last frame */
+  uint8_t Esg_slot_index; /**< Ring buffer index to current Esg time slot */
+  uint8_t pvcBorder0;     /**< Start SBR time slot of PVC frame */
   int32_t Esg[PVC_NS_MAX][PVC_NBLOW]; /**< Esg(ksg,t) of current and 15
                                           previous time slots (ring buffer) in
                                           logarithmical domain */
@@ -133,27 +133,27 @@ typedef struct {
 
 /** Data for each PVC instance which is valid during one SBR frame */
 typedef struct {
-  UCHAR pvc_mode;   /**< PVC mode 1 or 2, 0 means legacy SBR */
-  UCHAR pvcBorder0; /**< Start SBR time slot of PVC frame */
-  UCHAR kx;         /**< Index of the first QMF subband in the SBR range */
-  UCHAR RATE;       /**< Number of QMF subband samples per time slot (2 or 4) */
-  UCHAR ns; /**< Number of time slots for time-domain smoothing of Esg(ksg,t) */
-  const UCHAR
+  uint8_t pvc_mode;   /**< PVC mode 1 or 2, 0 means legacy SBR */
+  uint8_t pvcBorder0; /**< Start SBR time slot of PVC frame */
+  uint8_t kx;         /**< Index of the first QMF subband in the SBR range */
+  uint8_t RATE;       /**< Number of QMF subband samples per time slot (2 or 4) */
+  uint8_t ns; /**< Number of time slots for time-domain smoothing of Esg(ksg,t) */
+  const uint8_t
       *pPvcID; /**< Pointer to prediction coefficient matrix index table */
-  UCHAR pastEsgSlotsAvail;   /**< Number of past Esg(ksg,t) which are available
+  uint8_t pastEsgSlotsAvail;   /**< Number of past Esg(ksg,t) which are available
                                 for smoothing filter */
   const FIXP_SGL *pSCcoeffs; /**< Pointer to smoothing window table */
-  SCHAR
+  int8_t
   sg_offset_low[PVC_NBLOW + 1]; /**< Offset table for PVC grouping of SBR
                                    subbands below SBR range */
-  SCHAR sg_offset_high_kx[PVC_NBHIGH_MAX + 1]; /**< Offset table for PVC
+  int8_t sg_offset_high_kx[PVC_NBHIGH_MAX + 1]; /**< Offset table for PVC
                                                   grouping of SBR subbands in
                                                   SBR range (relativ to kx) */
-  UCHAR nbHigh; /**< Number of grouped QMF subbands in the SBR range */
-  const SCHAR *pScalingCoef; /**< Pointer to scaling coeff table */
-  const UCHAR *pPVCTab1;     /**< PVC mode 1 table */
-  const UCHAR *pPVCTab2;     /**< PVC mode 2 table */
-  const UCHAR *pPVCTab1_dp;  /**< Mapping of pvcID to PVC mode 1 table */
+  uint8_t nbHigh; /**< Number of grouped QMF subbands in the SBR range */
+  const int8_t *pScalingCoef; /**< Pointer to scaling coeff table */
+  const uint8_t *pPVCTab1;     /**< PVC mode 1 table */
+  const uint8_t *pPVCTab2;     /**< PVC mode 2 table */
+  const uint8_t *pPVCTab1_dp;  /**< Mapping of pvcID to PVC mode 1 table */
   int32_t predEsg[PVC_NTIMESLOT]
                   [PVC_NBHIGH_MAX]; /**< Predicted Energy in linear domain */
   int32_t predEsg_exp[PVC_NTIMESLOT];   /**< Exponent of predicted Energy in linear
@@ -174,9 +174,9 @@ typedef struct {
  * \param[in] pPvcID Pointer to array of PvcIDs read from bitstream
  */
 int32_t pvcInitFrame(PVC_STATIC_DATA *pPvcStaticData,
-                 PVC_DYNAMIC_DATA *pPvcDynamicData, const UCHAR pvcMode,
-                 const UCHAR ns, const int32_t RATE, const int32_t kx,
-                 const int32_t pvcBorder0, const UCHAR *pPvcID);
+                 PVC_DYNAMIC_DATA *pPvcDynamicData, const uint8_t pvcMode,
+                 const uint8_t ns, const int32_t RATE, const int32_t kx,
+                 const int32_t pvcBorder0, const uint8_t *pPvcID);
 
 /**
  * \brief Wrapper function for pvcDecodeTimeSlot() to decode PVC data of one
@@ -233,6 +233,6 @@ void pvcEndFrame(PVC_STATIC_DATA *pPvcStaticData,
  */
 void expandPredEsg(const PVC_DYNAMIC_DATA *pPvcDynamicData, const int32_t timeSlot,
                    const int32_t lengthOutputVector, int32_t *pOutput,
-                   SCHAR *pOutput_exp);
+                   int8_t *pOutput_exp);
 
 #endif /* PVC_DEC_H*/

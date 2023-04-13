@@ -113,13 +113,13 @@ amm-info@iis.fraunhofer.de
 typedef enum { DUAL, QUAD } SBR_RATE;
 
 SBR_ERROR
-sbrdecUpdateFreqScale(UCHAR *v_k_master, UCHAR *numMaster, uint32_t fs,
+sbrdecUpdateFreqScale(uint8_t *v_k_master, uint8_t *numMaster, uint32_t fs,
                       HANDLE_SBR_HEADER_DATA headerData, uint32_t flags);
 
-void sbrdecDownSampleLoRes(UCHAR *v_result, UCHAR num_result,
-                           UCHAR *freqBandTableRef, UCHAR num_Ref);
+void sbrdecDownSampleLoRes(uint8_t *v_result, uint8_t num_result,
+                           uint8_t *freqBandTableRef, uint8_t num_Ref);
 
-void shellsort(UCHAR *in, UCHAR n);
+void shellsort(uint8_t *in, uint8_t n);
 
 SBR_ERROR
 resetFreqBandTables(HANDLE_SBR_HEADER_DATA hHeaderData, const uint32_t flags);

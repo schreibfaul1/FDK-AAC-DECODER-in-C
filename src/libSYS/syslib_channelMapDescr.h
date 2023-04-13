@@ -113,9 +113,9 @@ amm-info@iis.fraunhofer.de
  * \brief  Contains information needed for a single channel map.
  */
 typedef struct {
-  const UCHAR*
+  const uint8_t*
       pChannelMap; /*!< Actual channel mapping for one single configuration. */
-  UCHAR numChannels; /*!< The number of channels for the channel map which is
+  uint8_t numChannels; /*!< The number of channels for the channel map which is
                         the maximum used channel index+1. */
 } CHANNEL_MAP_INFO;
 
@@ -177,8 +177,8 @@ int32_t FDK_chMapDescr_setPassThrough(FDK_channelMapDescr* const pMapDescr,
  * index).
  * \return            Mapping value.
  */
-UCHAR FDK_chMapDescr_getMapValue(const FDK_channelMapDescr* const pMapDescr,
-                                 const UCHAR chIdx, const uint32_t mapIdx);
+uint8_t FDK_chMapDescr_getMapValue(const FDK_channelMapDescr* const pMapDescr,
+                                 const uint8_t chIdx, const uint32_t mapIdx);
 
 /**
  * \brief  Evaluate whether channel map descriptor is reasonable or not.

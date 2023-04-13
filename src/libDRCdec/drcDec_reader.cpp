@@ -136,7 +136,7 @@ static int32_t _getTimeDeltaMin(const GAIN_SET* pGset, const int32_t deltaTminDe
 }
 
 /* compare and assign */
-static inline int32_t _compAssign(UCHAR* dest, const UCHAR src) {
+static inline int32_t _compAssign(uint8_t* dest, const uint8_t src) {
   int32_t diff = 0;
   if (*dest != src) diff = 1;
   *dest = src;
@@ -150,12 +150,12 @@ static inline int32_t _compAssign(uint32_t* dest, const uint32_t src) {
   return diff;
 }
 
-typedef const SCHAR (*Huffman)[2];
+typedef const int8_t (*Huffman)[2];
 
 int32_t _decodeHuffmanCW(Huffman h, /*!< pointer to huffman codebook table */
                      HANDLE_FDK_BITSTREAM hBs) /*!< Handle to bitbuffer */
 {
-  SCHAR index = 0;
+  int8_t index = 0;
   int32_t value, bit;
 
   while (index >= 0) {
@@ -372,7 +372,7 @@ static void _decodeTimes(HANDLE_FDK_BITSTREAM hBs, const int32_t deltaTmin,
 
 static void _readNodes(HANDLE_FDK_BITSTREAM hBs, GAIN_SET* gainSet,
                        const int32_t frameSize, const int32_t timeDeltaMin,
-                       UCHAR* pNNodes, GAIN_NODE* pNodes) {
+                       uint8_t* pNNodes, GAIN_NODE* pNodes) {
   int32_t timeOffset, drcGainCodingMode, nNodes;
   int32_t Z = _getZ(frameSize / timeDeltaMin);
   if (gainSet->timeAlignment == 0) {
@@ -402,12 +402,12 @@ static void _readNodes(HANDLE_FDK_BITSTREAM hBs, GAIN_SET* gainSet,
     _decodeGains(hBs, (GAIN_CODING_PROFILE)gainSet->gainCodingProfile, nNodes,
                  pNodes);
   }
-  *pNNodes = (UCHAR)nNodes;
+  *pNNodes = (uint8_t)nNodes;
 }
 
 static void _readDrcGainSequence(HANDLE_FDK_BITSTREAM hBs, GAIN_SET* gainSet,
                                  const int32_t frameSize, const int32_t timeDeltaMin,
-                                 UCHAR* pNNodes, GAIN_NODE pNodes[16]) {
+                                 uint8_t* pNNodes, GAIN_NODE pNodes[16]) {
   int16_t timeBufPrevFrame[16], timeBufCurFrame[16];
   int32_t nNodesNodeRes, nNodesCur, k, m;
 
@@ -487,16 +487,16 @@ drcDec_readUniDrcGain(HANDLE_FDK_BITSTREAM hBs,
   if (hUniDrcGain == NULL) return DE_NOT_OK;
   hUniDrcGain->status = 0;
   if (pCoef) {
-    gainSequenceCount = fMin(pCoef->gainSequenceCount, (UCHAR)12);
+    gainSequenceCount = fMin(pCoef->gainSequenceCount, (uint8_t)12);
   } else {
     gainSequenceCount = 0;
   }
 
   for (seq = 0; seq < gainSequenceCount; seq++) {
-    UCHAR index = pCoef->gainSetIndexForGainSequence[seq];
+    uint8_t index = pCoef->gainSetIndexForGainSequence[seq];
     GAIN_SET* gainSet;
     int32_t timeDeltaMin;
-    UCHAR tmpNNodes = 0;
+    uint8_t tmpNNodes = 0;
     GAIN_NODE tmpNodes[16];
 
     if ((index >= pCoef->gainSetCount) || (index >= 12)) return DE_NOT_OK;
@@ -509,7 +509,7 @@ drcDec_readUniDrcGain(HANDLE_FDK_BITSTREAM hBs,
 
     hUniDrcGain->nNodes[seq] = tmpNNodes;
     FDKmemcpy(hUniDrcGain->gainNode[seq], tmpNodes,
-              fMin(tmpNNodes, (UCHAR)16) * sizeof(GAIN_NODE));
+              fMin(tmpNNodes, (uint8_t)16) * sizeof(GAIN_NODE));
   }
 
   hUniDrcGain->uniDrcGainExtPresent = FDKreadBits(hBs, 1);
@@ -759,7 +759,7 @@ static DRC_ERROR _readGainSet(HANDLE_FDK_BITSTREAM hBs, const int32_t version,
 
 static DRC_ERROR _readCustomDrcCharacteristic(HANDLE_FDK_BITSTREAM hBs,
                                               const CHARACTERISTIC_SIDE side,
-                                              UCHAR* pCharacteristicFormat,
+                                              uint8_t* pCharacteristicFormat,
                                               CUSTOM_DRC_CHAR* pCChar,
                                               int32_t isBox) {
   if (isBox) FDKpushFor(hBs, 7); /* reserved */
@@ -1021,7 +1021,7 @@ static DRC_ERROR _skipEqInstructions(HANDLE_FDK_BITSTREAM hBs,
   int32_t additionalDrcSetIdPresent, additionalDrcSetIdCount;
   int32_t dependsOnEqSetPresent, eqChannelGroupCount, tdFilterCascadePresent,
       subbandGainsPresent, eqTransitionDurationPresent;
-  UCHAR eqChannelGroupForChannel[8];
+  uint8_t eqChannelGroupForChannel[8];
 
   FDKpushFor(hBs, 6); /* eqSetId */
   FDKpushFor(hBs, 4); /* eqSetComplexityLevel */
@@ -1135,8 +1135,8 @@ static DRC_ERROR _readDrcCoefficientsUniDrc(HANDLE_FDK_BITSTREAM hBs,
     }
     pCoef->gainSequenceCount = gainSequenceCount;
   } else { /* (version == 1) */
-    UCHAR drcCharacteristicLeftPresent, drcCharacteristicRightPresent;
-    UCHAR shapeFiltersPresent, shapeFilterCount, tmpPresent;
+    uint8_t drcCharacteristicLeftPresent, drcCharacteristicRightPresent;
+    uint8_t shapeFiltersPresent, shapeFilterCount, tmpPresent;
     int32_t gainSetCount;
     drcCharacteristicLeftPresent = FDKreadBits(hBs, 1);
     if (drcCharacteristicLeftPresent) {
@@ -1253,8 +1253,8 @@ static DRC_ERROR _readDrcInstructionsUniDrc(HANDLE_FDK_BITSTREAM hBs,
   DRC_COEFFICIENTS_UNI_DRC* pCoef = NULL;
   int32_t repeatParameters, bsRepeatParametersCount;
   int32_t repeatSequenceIndex, bsRepeatSequenceCount;
-  SCHAR* gainSetIndex = pInst->gainSetIndex;
-  SCHAR channelGroupForChannel[8];
+  int8_t* gainSetIndex = pInst->gainSetIndex;
+  int8_t channelGroupForChannel[8];
   DUCKING_MODIFICATION duckingModificationForChannelGroup[8];
 
   pInst->drcSetId = FDKreadBits(hBs, 6);
@@ -1545,7 +1545,7 @@ static DRC_ERROR _readDrcExtensionV1(HANDLE_FDK_BITSTREAM hBs,
                         FDKreadBits(hBs, 7));
     offset = hUniDrcConfig->downmixInstructionsCountV0;
     hUniDrcConfig->downmixInstructionsCount = fMin(
-        (UCHAR)(offset + hUniDrcConfig->downmixInstructionsCountV1), (UCHAR)6);
+        (uint8_t)(offset + hUniDrcConfig->downmixInstructionsCountV1), (uint8_t)6);
     for (i = 0; i < hUniDrcConfig->downmixInstructionsCountV1; i++) {
       DOWNMIX_INSTRUCTIONS tmpDown;
       FDKmemclear(&tmpDown, sizeof(DOWNMIX_INSTRUCTIONS));
@@ -1569,8 +1569,8 @@ static DRC_ERROR _readDrcExtensionV1(HANDLE_FDK_BITSTREAM hBs,
                         FDKreadBits(hBs, 3));
     offset = hUniDrcConfig->drcCoefficientsUniDrcCountV0;
     hUniDrcConfig->drcCoefficientsUniDrcCount =
-        fMin((UCHAR)(offset + hUniDrcConfig->drcCoefficientsUniDrcCountV1),
-             (UCHAR)2);
+        fMin((uint8_t)(offset + hUniDrcConfig->drcCoefficientsUniDrcCountV1),
+             (uint8_t)2);
     for (i = 0; i < hUniDrcConfig->drcCoefficientsUniDrcCountV1; i++) {
       DRC_COEFFICIENTS_UNI_DRC tmpCoef;
       FDKmemclear(&tmpCoef, sizeof(DRC_COEFFICIENTS_UNI_DRC));
@@ -1588,8 +1588,8 @@ static DRC_ERROR _readDrcExtensionV1(HANDLE_FDK_BITSTREAM hBs,
                         FDKreadBits(hBs, 6));
     offset = hUniDrcConfig->drcInstructionsUniDrcCount;
     hUniDrcConfig->drcInstructionsUniDrcCount =
-        fMin((UCHAR)(offset + hUniDrcConfig->drcInstructionsUniDrcCountV1),
-             (UCHAR)12);
+        fMin((uint8_t)(offset + hUniDrcConfig->drcInstructionsUniDrcCountV1),
+             (uint8_t)12);
     for (i = 0; i < hUniDrcConfig->drcInstructionsUniDrcCount; i++) {
       DRC_INSTRUCTIONS_UNI_DRC tmpInst;
       FDKmemclear(&tmpInst, sizeof(DRC_INSTRUCTIONS_UNI_DRC));
@@ -1712,7 +1712,7 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
   hUniDrcConfig->channelLayout = tmpChan;
 
   hUniDrcConfig->downmixInstructionsCount =
-      fMin(hUniDrcConfig->downmixInstructionsCountV0, (UCHAR)6);
+      fMin(hUniDrcConfig->downmixInstructionsCountV0, (uint8_t)6);
   for (i = 0; i < hUniDrcConfig->downmixInstructionsCountV0; i++) {
     DOWNMIX_INSTRUCTIONS tmpDown;
     FDKmemclear(&tmpDown, sizeof(DOWNMIX_INSTRUCTIONS));
@@ -1734,7 +1734,7 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
   }
 
   hUniDrcConfig->drcCoefficientsUniDrcCount =
-      fMin(hUniDrcConfig->drcCoefficientsUniDrcCountV0, (UCHAR)2);
+      fMin(hUniDrcConfig->drcCoefficientsUniDrcCountV0, (uint8_t)2);
   for (i = 0; i < hUniDrcConfig->drcCoefficientsUniDrcCountV0; i++) {
     DRC_COEFFICIENTS_UNI_DRC tmpCoef;
     FDKmemclear(&tmpCoef, sizeof(DRC_COEFFICIENTS_UNI_DRC));
@@ -1748,7 +1748,7 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
   }
 
   hUniDrcConfig->drcInstructionsUniDrcCount =
-      fMin(hUniDrcConfig->drcInstructionsUniDrcCountV0, (UCHAR)12);
+      fMin(hUniDrcConfig->drcInstructionsUniDrcCountV0, (uint8_t)12);
   for (i = 0; i < hUniDrcConfig->drcInstructionsUniDrcCountV0; i++) {
     DRC_INSTRUCTIONS_UNI_DRC tmpInst;
     FDKmemclear(&tmpInst, sizeof(DRC_INSTRUCTIONS_UNI_DRC));
@@ -1778,7 +1778,7 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
 /*******************/
 
 static DRC_ERROR _decodeMethodValue(HANDLE_FDK_BITSTREAM hBs,
-                                    const UCHAR methodDefinition,
+                                    const uint8_t methodDefinition,
                                     int32_t* methodValue, int32_t isBox) {
   int32_t tmp;
   int32_t val;
@@ -1915,7 +1915,7 @@ static DRC_ERROR _readLoudnessInfoSetExtEq(
 
   offset = hLoudnessInfoSet->loudnessInfoAlbumCountV0;
   hLoudnessInfoSet->loudnessInfoAlbumCount = fMin(
-      (UCHAR)(offset + hLoudnessInfoSet->loudnessInfoAlbumCountV1), (UCHAR)12);
+      (uint8_t)(offset + hLoudnessInfoSet->loudnessInfoAlbumCountV1), (uint8_t)12);
   for (i = 0; i < hLoudnessInfoSet->loudnessInfoAlbumCountV1; i++) {
     LOUDNESS_INFO tmpLoud;
     FDKmemclear(&tmpLoud, sizeof(LOUDNESS_INFO));
@@ -1931,7 +1931,7 @@ static DRC_ERROR _readLoudnessInfoSetExtEq(
 
   offset = hLoudnessInfoSet->loudnessInfoCountV0;
   hLoudnessInfoSet->loudnessInfoCount =
-      fMin((UCHAR)(offset + hLoudnessInfoSet->loudnessInfoCountV1), (UCHAR)12);
+      fMin((uint8_t)(offset + hLoudnessInfoSet->loudnessInfoCountV1), (uint8_t)12);
   for (i = 0; i < hLoudnessInfoSet->loudnessInfoCountV1; i++) {
     LOUDNESS_INFO tmpLoud;
     FDKmemclear(&tmpLoud, sizeof(LOUDNESS_INFO));
@@ -2000,7 +2000,7 @@ drcDec_readLoudnessInfoSet(HANDLE_FDK_BITSTREAM hBs,
       _compAssign(&hLoudnessInfoSet->loudnessInfoCountV0, FDKreadBits(hBs, 6));
 
   hLoudnessInfoSet->loudnessInfoAlbumCount =
-      fMin(hLoudnessInfoSet->loudnessInfoAlbumCountV0, (UCHAR)12);
+      fMin(hLoudnessInfoSet->loudnessInfoAlbumCountV0, (uint8_t)12);
   for (i = 0; i < hLoudnessInfoSet->loudnessInfoAlbumCountV0; i++) {
     LOUDNESS_INFO tmpLoud;
     FDKmemclear(&tmpLoud, sizeof(LOUDNESS_INFO));
@@ -2014,7 +2014,7 @@ drcDec_readLoudnessInfoSet(HANDLE_FDK_BITSTREAM hBs,
   }
 
   hLoudnessInfoSet->loudnessInfoCount =
-      fMin(hLoudnessInfoSet->loudnessInfoCountV0, (UCHAR)12);
+      fMin(hLoudnessInfoSet->loudnessInfoCountV0, (uint8_t)12);
   for (i = 0; i < hLoudnessInfoSet->loudnessInfoCountV0; i++) {
     LOUDNESS_INFO tmpLoud;
     FDKmemclear(&tmpLoud, sizeof(LOUDNESS_INFO));

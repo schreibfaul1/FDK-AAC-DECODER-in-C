@@ -173,7 +173,7 @@ typedef enum {
 typedef int32_t ERROR_t;
 
 ERROR_t EcDataPairDec(DECODER_TYPE DECODER, HANDLE_FDK_BITSTREAM strm,
-                      SCHAR *aaOutData1, SCHAR *aaOutData2, SCHAR *aHistory,
+                      int8_t *aaOutData1, int8_t *aaOutData2, int8_t *aHistory,
                       DATA_TYPE data_type, int32_t startBand, int32_t dataBands,
                       int32_t pair_flag, int32_t coarse_flag,
                       int32_t allowDiffTimeBack_flag);
@@ -182,6 +182,6 @@ ERROR_t EcDataPairDec(DECODER_TYPE DECODER, HANDLE_FDK_BITSTREAM strm,
 ERROR_t huff_dec_reshape(HANDLE_FDK_BITSTREAM strm, int32_t *out_data, int32_t num_val);
 
 extern ERROR_t sym_restoreIPD(HANDLE_FDK_BITSTREAM strm, int32_t lav,
-                              SCHAR data[2]);
+                              int8_t data[2]);
 
 #endif

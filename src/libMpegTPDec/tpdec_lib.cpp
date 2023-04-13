@@ -139,7 +139,7 @@ struct TRANSPORTDEC {
   CSTpCallBacks callbacks; /*!< Struct holding callback and its data */
 
   FDK_BITSTREAM bitStream[1]; /* Bitstream reader */
-  UCHAR *bsBuffer;            /* Internal bitstreamd data buffer */
+  uint8_t *bsBuffer;            /* Internal bitstreamd data buffer */
 
   transportdec_parser_t parser; /* Format specific parser structs. */
 
@@ -186,7 +186,7 @@ struct TRANSPORTDEC {
 #define TPDEC_SKIP_PACKET 1
 
 C_ALLOC_MEM(Ram_TransportDecoder, struct TRANSPORTDEC, 1)
-C_ALLOC_MEM(Ram_TransportDecoderBuffer, UCHAR, (8192 * 4))
+C_ALLOC_MEM(Ram_TransportDecoderBuffer, uint8_t, (8192 * 4))
 
 HANDLE_TRANSPORTDEC transportDec_Open(const TRANSPORT_TYPE transportFmt, const uint32_t flags, const uint32_t nrOfLayers) {
   HANDLE_TRANSPORTDEC hInput;
@@ -260,7 +260,7 @@ HANDLE_TRANSPORTDEC transportDec_Open(const TRANSPORT_TYPE transportFmt, const u
 }
 
 TRANSPORTDEC_ERROR transportDec_OutOfBandConfig(HANDLE_TRANSPORTDEC hTp,
-                                                UCHAR *conf, const uint32_t length,
+                                                uint8_t *conf, const uint32_t length,
                                                 uint32_t layer) {
   int32_t i;
 
@@ -271,10 +271,10 @@ TRANSPORTDEC_ERROR transportDec_OutOfBandConfig(HANDLE_TRANSPORTDEC hTp,
 
   int32_t fConfigFound = 0;
 
-  UCHAR configChanged = 0;
-  UCHAR configMode = AC_CM_DET_CFG_CHANGE;
+  uint8_t configChanged = 0;
+  uint8_t configMode = AC_CM_DET_CFG_CHANGE;
 
-  UCHAR tmpConf[1024] = {0};
+  uint8_t tmpConf[1024] = {0};
   if (length > 1024) {
     return TRANSPORTDEC_UNSUPPORTED_FORMAT;
   }
@@ -361,17 +361,17 @@ TRANSPORTDEC_ERROR transportDec_OutOfBandConfig(HANDLE_TRANSPORTDEC hTp,
 }
 
 TRANSPORTDEC_ERROR transportDec_InBandConfig(HANDLE_TRANSPORTDEC hTp,
-                                             UCHAR *newConfig,
+                                             uint8_t *newConfig,
                                              const uint32_t newConfigLength,
-                                             const UCHAR buildUpStatus,
-                                             UCHAR *configChanged, uint32_t layer,
-                                             UCHAR *implicitExplicitCfgDiff) {
+                                             const uint8_t buildUpStatus,
+                                             uint8_t *configChanged, uint32_t layer,
+                                             uint8_t *implicitExplicitCfgDiff) {
   int32_t errC;
   FDK_BITSTREAM bs;
   HANDLE_FDK_BITSTREAM hBs = &bs;
   TRANSPORTDEC_ERROR err = TRANSPORTDEC_OK;
   int32_t fConfigFound = 0;
-  UCHAR configMode = AC_CM_ALLOC_MEM;
+  uint8_t configMode = AC_CM_ALLOC_MEM;
   *implicitExplicitCfgDiff = 0;
 
   FDK_ASSERT(hTp->asc->m_aot == AOT_USAC);
@@ -443,7 +443,7 @@ TRANSPORTDEC_ERROR transportDec_InBandConfig(HANDLE_TRANSPORTDEC hTp,
          TPDEC_RSV60_DASH_IPF_ATSC_FLUSH_ON) ||
         (hTp->ctrlCFGChange[layer].flushStatus ==
          TPDEC_USAC_DASH_IPF_FLUSH_ON)) {
-      SCHAR counter = 0;
+      int8_t counter = 0;
       if (hTp->asc->m_aot == AOT_USAC) {
         counter = TPDEC_USAC_NUM_CONFIG_CHANGE_FRAMES;
       }
@@ -639,7 +639,7 @@ int32_t transportDec_RegisterUniDrcConfigCallback(HANDLE_TRANSPORTDEC hTpDec,
 }
 
 TRANSPORTDEC_ERROR transportDec_FillData(const HANDLE_TRANSPORTDEC hTp,
-                                         UCHAR *pBuffer, const uint32_t bufferSize,
+                                         uint8_t *pBuffer, const uint32_t bufferSize,
                                          uint32_t *pBytesValid, const int32_t layer) {
   HANDLE_FDK_BITSTREAM hBs;
 
@@ -885,8 +885,8 @@ static TRANSPORTDEC_ERROR transportDec_readHeader(
 
         hTp->globalFramePos = FDKgetValidBits(hBs);
 
-        UCHAR configChanged = 0;
-        UCHAR configMode = AC_CM_DET_CFG_CHANGE;
+        uint8_t configChanged = 0;
+        uint8_t configMode = AC_CM_DET_CFG_CHANGE;
 
         for (i = 0; i < 2; i++) {
           if (i > 0) {
@@ -1474,8 +1474,8 @@ TRANSPORTDEC_ERROR transportDec_ReadAccessUnit(const HANDLE_TRANSPORTDEC hTp,
         int32_t i;
         CProgramConfig *pce;
         int32_t bsStart = FDKgetValidBits(hBs);
-        UCHAR configChanged = 0;
-        UCHAR configMode = AC_CM_DET_CFG_CHANGE;
+        uint8_t configChanged = 0;
+        uint8_t configMode = AC_CM_DET_CFG_CHANGE;
 
         for (i = 0; i < 2; i++) {
           if (i > 0) {
@@ -1824,7 +1824,7 @@ TRANSPORTDEC_ERROR transportDec_CrcCheck(HANDLE_TRANSPORTDEC pTp) {
   }
 }
 
-TRANSPORTDEC_ERROR transportDec_DrmRawSdcAudioConfig_Check(UCHAR *conf,
+TRANSPORTDEC_ERROR transportDec_DrmRawSdcAudioConfig_Check(uint8_t *conf,
                                                            const uint32_t length) {
   CSAudioSpecificConfig asc;
   FDK_BITSTREAM bs;
@@ -1833,7 +1833,7 @@ TRANSPORTDEC_ERROR transportDec_DrmRawSdcAudioConfig_Check(UCHAR *conf,
   FDKinitBitStream(hBs, conf, BUFSIZE_DUMMY_VALUE, length << 3, BS_READER);
 
   TRANSPORTDEC_ERROR err =
-      DrmRawSdcAudioConfig_Parse(&asc, hBs, NULL, (UCHAR)AC_CM_ALLOC_MEM, 0);
+      DrmRawSdcAudioConfig_Parse(&asc, hBs, NULL, (uint8_t)AC_CM_ALLOC_MEM, 0);
 
   return err;
 }

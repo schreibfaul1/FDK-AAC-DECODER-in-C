@@ -164,7 +164,7 @@ AAC_DECODER_ERROR CBlock_ReadScaleFactorData(
   int32_t position = 0; /* accu for intensity delta coding */
   int32_t factor = pAacDecoderChannelInfo->pDynData->RawDataInfo
                    .GlobalGain; /* accu for scale factor delta coding */
-  UCHAR *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
+  uint8_t *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
   int16_t *pScaleFactor = pAacDecoderChannelInfo->pDynData->aScaleFactor;
   const CodeBookDescription *hcb = &AACcodeBookDescriptionTable[BOOKSCL];
 
@@ -215,7 +215,7 @@ AAC_DECODER_ERROR CBlock_ReadScaleFactorData(
 }
 
 void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                              UCHAR maxSfbs,
+                              uint8_t maxSfbs,
                               SamplingRateInfo *pSamplingRateInfo) {
   int32_t band;
   int32_t window;
@@ -329,36 +329,36 @@ AAC_DECODER_ERROR CBlock_ReadSectionData(
   int32_t top, band;
   int32_t sect_len, sect_len_incr;
   int32_t group;
-  UCHAR sect_cb;
-  UCHAR *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
+  uint8_t sect_cb;
+  uint8_t *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
   /* HCR input (int32_t) */
   int16_t *pNumLinesInSec =
       pAacDecoderChannelInfo->pDynData->specificTo.aac.aNumLineInSec4Hcr;
   int32_t numLinesInSecIdx = 0;
-  UCHAR *pHcrCodeBook =
+  uint8_t *pHcrCodeBook =
       pAacDecoderChannelInfo->pDynData->specificTo.aac.aCodeBooks4Hcr;
   const int16_t *BandOffsets = GetScaleFactorBandOffsets(
       &pAacDecoderChannelInfo->icsInfo, pSamplingRateInfo);
   pAacDecoderChannelInfo->pDynData->specificTo.aac.numberSection = 0;
   AAC_DECODER_ERROR ErrorStatus = AAC_DEC_OK;
 
-  FDKmemclear(pCodeBook, sizeof(UCHAR) * (8 * 16));
+  FDKmemclear(pCodeBook, sizeof(uint8_t) * (8 * 16));
 
   const int32_t nbits =
       (IsLongBlock(&pAacDecoderChannelInfo->icsInfo) == 1) ? 5 : 3;
 
   int32_t sect_esc_val = (1 << nbits) - 1;
 
-  UCHAR ScaleFactorBandsTransmitted =
+  uint8_t ScaleFactorBandsTransmitted =
       GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);
   for (group = 0; group < GetWindowGroups(&pAacDecoderChannelInfo->icsInfo);
        group++) {
     for (band = 0; band < ScaleFactorBandsTransmitted;) {
       sect_len = 0;
       if (flags & AC_ER_VCB11) {
-        sect_cb = (UCHAR)FDKreadBits(bs, 5);
+        sect_cb = (uint8_t)FDKreadBits(bs, 5);
       } else
-        sect_cb = (UCHAR)FDKreadBits(bs, 4);
+        sect_cb = (uint8_t)FDKreadBits(bs, 4);
 
       if (((flags & AC_ER_VCB11) == 0) || (sect_cb < 11) ||
           ((sect_cb > 11) && (sect_cb < 16))) {
@@ -436,7 +436,7 @@ AAC_DECODER_ERROR CBlock_ReadSectionData(
 static inline void InverseQuantizeBand(
     int32_t *RESTRICT spectrum, const int32_t *RESTRICT InverseQuantTabler,
     const int32_t *RESTRICT MantissaTabler,
-    const SCHAR *RESTRICT ExponentTabler, int32_t noLines, int32_t scale) {
+    const int8_t *RESTRICT ExponentTabler, int32_t noLines, int32_t scale) {
   scale = scale + 1; /* +1 to compensate fMultDiv2 shift-right in loop */
 
   int32_t *RESTRICT ptr = spectrum;
@@ -486,12 +486,12 @@ static inline int32_t maxabs_D(const int32_t *pSpectralCoefficient,
 
 AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    SamplingRateInfo *pSamplingRateInfo, UCHAR *band_is_noise,
-    UCHAR active_band_search) {
+    SamplingRateInfo *pSamplingRateInfo, uint8_t *band_is_noise,
+    uint8_t active_band_search) {
   int32_t window, group, groupwin, band;
   int32_t ScaleFactorBandsTransmitted =
       GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);
-  UCHAR *RESTRICT pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
+  uint8_t *RESTRICT pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
   int16_t *RESTRICT pSfbScale = pAacDecoderChannelInfo->pDynData->aSfbScale;
   int16_t *RESTRICT pScaleFactor = pAacDecoderChannelInfo->pDynData->aScaleFactor;
   const int16_t *RESTRICT BandOffsets = GetScaleFactorBandOffsets(
@@ -634,7 +634,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
   if ((flags & AC_ER_HCR) == 0) {
     int32_t group;
     int32_t groupoffset;
-    UCHAR *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
+    uint8_t *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
     int32_t ScaleFactorBandsTransmitted =
         GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);
     int32_t granuleLength = pAacDecoderChannelInfo->granuleLength;
@@ -653,7 +653,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
 
       int32_t bandOffset1 = BandOffsets[0];
       for (band = 0; band < ScaleFactorBandsTransmitted; band++, bnds++) {
-        UCHAR currentCB = pCodeBook[bnds];
+        uint8_t currentCB = pCodeBook[bnds];
         int32_t bandOffset0 = bandOffset1;
         bandOffset1 = BandOffsets[band + 1];
 
@@ -782,7 +782,7 @@ static const FIXP_SGL noise_level_tab[8] = {
 
 void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                        SamplingRateInfo *pSamplingRateInfo, uint32_t *nfRandomSeed,
-                       UCHAR *band_is_noise) {
+                       uint8_t *band_is_noise) {
   const int16_t *swb_offset = GetScaleFactorBandOffsets(
       &pAacDecoderChannelInfo->icsInfo, pSamplingRateInfo);
   int32_t g, win, gwin, sfb, noiseFillingStartOffset, nfStartOffset_sfb;
@@ -956,7 +956,7 @@ void ApplyTools(CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
                pAacDecoderChannelInfo[channel]->granuleLength, channel);
   }
 
-  UCHAR nbands =
+  uint8_t nbands =
       GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo[channel]->icsInfo);
 
   CTns_Apply(&pAacDecoderChannelInfo[channel]->pDynData->TnsData,

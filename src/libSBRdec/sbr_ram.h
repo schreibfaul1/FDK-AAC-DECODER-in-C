@@ -129,14 +129,14 @@ typedef struct {
                     concealment */
   int32_t nChannels; /* Number of elements output channels (=2 in case of PS) */
 
-  UCHAR frameErrorFlag[(1) + 1]; /* Frame error status (for every slot in the
+  uint8_t frameErrorFlag[(1) + 1]; /* Frame error status (for every slot in the
                                     delay line). Will be copied into header at
                                     the very beginning of decodeElement()
                                     routine. */
 
-  UCHAR useFrameSlot; /* Index which defines which slot will be decoded/filled
+  uint8_t useFrameSlot; /* Index which defines which slot will be decoded/filled
                          next (used with additional delay) */
-  UCHAR useHeaderSlot[(1) + 1]; /* Index array that provides the link between
+  uint8_t useHeaderSlot[(1) + 1]; /* Index array that provides the link between
                                    header and frame data (important when
                                    processing with additional delay). */
 } SBR_DECODER_ELEMENT;
@@ -159,12 +159,12 @@ struct SBR_DECODER_INSTANCE {
   int32_t sampleRateOut; /* Sampling rate of the SBR decoder output audio samples.
                       */
   uint16_t codecFrameSize;
-  UCHAR synDownsampleFac;
+  uint8_t synDownsampleFac;
   int32_t downscaleFactor;
-  UCHAR numDelayFrames; /* The current number of additional delay frames used
+  uint8_t numDelayFrames; /* The current number of additional delay frames used
                            for processing. */
-  UCHAR harmonicSBR;
-  UCHAR
+  uint8_t harmonicSBR;
+  uint8_t
   numFlushedFrames; /* The variable counts the number of frames which are
                        flushed consecutively. */
 

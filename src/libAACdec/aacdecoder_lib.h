@@ -809,7 +809,7 @@ typedef struct {
                       module, i.e. the original channel configuration. */
   AUDIO_CHANNEL_TYPE
   *pChannelType; /*!< Audio channel type of each output audio channel. */
-  UCHAR *pChannelIndices; /*!< Audio channel index for each output audio
+  uint8_t *pChannelIndices; /*!< Audio channel index for each output audio
                              channel. See ISO/IEC 13818-7:2005(E), 8.5.3.2
                              Explicit channel mapping using a
                              program_config_element() */
@@ -841,7 +841,7 @@ typedef struct {
   uint32_t flags; /*!< Copy of internal flags. Only to be written by the decoder,
                  and only to be read externally. */
 
-  SCHAR epConfig; /*!< epConfig level (from ASC): only level 0 supported, -1
+  int8_t epConfig; /*!< epConfig level (from ASC): only level 0 supported, -1
                      means no ER (e. g. AOT=2, MPEG-2 AAC, etc.)  */
   /* Statistics */
   int32_t numLostAccessUnits; /*!< This integer will reflect the estimated amount of
@@ -861,14 +861,14 @@ typedef struct {
                               were considered with errors from numTotalBytes. */
 
   /* Metadata */
-  SCHAR drcProgRefLev; /*!< DRC program reference level. Defines the reference
+  int8_t drcProgRefLev; /*!< DRC program reference level. Defines the reference
                           level below full-scale. It is quantized in steps of
                           0.25dB. The valid values range from 0 (0 dBFS) to 127
                           (-31.75 dBFS). It is used to reflect the average
                           loudness of the audio in LKFS according to ITU-R BS
                           1770. If no level has been found in the bitstream the
                           value is -1. */
-  SCHAR
+  int8_t
   drcPresMode;        /*!< DRC presentation mode. According to ETSI TS 101 154,
                          this field indicates whether   light (MPEG-4 Dynamic Range
                          Control tool) or heavy compression (DVB heavy
@@ -907,7 +907,7 @@ extern "C" {
  * \return        Error code.
  */
 AAC_DECODER_ERROR aacDecoder_AncDataInit(HANDLE_AACDECODER self,
-                                                    UCHAR *buffer, int32_t size);
+                                                    uint8_t *buffer, int32_t size);
 
 /**
  * \brief Get one ancillary data element.
@@ -921,7 +921,7 @@ AAC_DECODER_ERROR aacDecoder_AncDataInit(HANDLE_AACDECODER self,
  * \return       Error code.
  */
 AAC_DECODER_ERROR aacDecoder_AncDataGet(HANDLE_AACDECODER self,
-                                                   int32_t index, UCHAR **ptr,
+                                                   int32_t index, uint8_t **ptr,
                                                    int32_t *size);
 
 /**
@@ -969,7 +969,7 @@ int32_t myfunction();
  * \return        Error code.
  */
 AAC_DECODER_ERROR aacDecoder_ConfigRaw(HANDLE_AACDECODER self,
-                                                  UCHAR *conf[],
+                                                  uint8_t *conf[],
                                                   const uint32_t length[]);
 
 /**
@@ -983,7 +983,7 @@ AAC_DECODER_ERROR aacDecoder_ConfigRaw(HANDLE_AACDECODER self,
  * \return        Error code.
  */
 AAC_DECODER_ERROR aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self,
-                                                       UCHAR *buffer,
+                                                       uint8_t *buffer,
                                                        uint32_t length);
 
 /**
@@ -1010,7 +1010,7 @@ AAC_DECODER_ERROR aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self,
  * \return            Error code.
  */
 AAC_DECODER_ERROR aacDecoder_Fill(HANDLE_AACDECODER self,
-                                             UCHAR *pBuffer,
+                                             uint8_t *pBuffer,
                                              const uint32_t bufferSize,
                                              uint32_t *bytesValid);
 

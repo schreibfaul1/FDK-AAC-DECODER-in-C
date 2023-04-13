@@ -164,7 +164,7 @@ amm-info@iis.fraunhofer.de
 #define SBRDECODER_LIB_BUILD_TIME __TIME__
 #endif
 
-static void setFrameErrorFlag(SBR_DECODER_ELEMENT *pSbrElement, UCHAR value) {
+static void setFrameErrorFlag(SBR_DECODER_ELEMENT *pSbrElement, uint8_t value) {
   if (pSbrElement != NULL) {
     switch (value) {
       case FRAME_ERROR_ALLSLOTS:
@@ -177,10 +177,10 @@ static void setFrameErrorFlag(SBR_DECODER_ELEMENT *pSbrElement, UCHAR value) {
   }
 }
 
-static UCHAR getHeaderSlot(UCHAR currentSlot, UCHAR hdrSlotUsage[(1) + 1]) {
+static uint8_t getHeaderSlot(uint8_t currentSlot, uint8_t hdrSlotUsage[(1) + 1]) {
   uint32_t occupied = 0;
   int32_t s;
-  UCHAR slot = hdrSlotUsage[currentSlot];
+  uint8_t slot = hdrSlotUsage[currentSlot];
 
   FDK_ASSERT((1) + 1 < 32);
 
@@ -243,19 +243,19 @@ static int32_t compareSbrHeader(const HANDLE_SBR_HEADER_DATA hHdr1,
 
   /* compare frequency band data */
   result |= FDKmemcmp(&hHdr1->freqBandData, &hHdr2->freqBandData,
-                      (8 + MAX_NUM_LIMITERS + 1) * sizeof(UCHAR));
+                      (8 + MAX_NUM_LIMITERS + 1) * sizeof(uint8_t));
   result |= FDKmemcmp(hHdr1->freqBandData.freqBandTableLo,
                       hHdr2->freqBandData.freqBandTableLo,
-                      (MAX_FREQ_COEFFS / 2 + 1) * sizeof(UCHAR));
+                      (MAX_FREQ_COEFFS / 2 + 1) * sizeof(uint8_t));
   result |= FDKmemcmp(hHdr1->freqBandData.freqBandTableHi,
                       hHdr2->freqBandData.freqBandTableHi,
-                      (MAX_FREQ_COEFFS + 1) * sizeof(UCHAR));
+                      (MAX_FREQ_COEFFS + 1) * sizeof(uint8_t));
   result |= FDKmemcmp(hHdr1->freqBandData.freqBandTableNoise,
                       hHdr2->freqBandData.freqBandTableNoise,
-                      (MAX_NOISE_COEFFS + 1) * sizeof(UCHAR));
+                      (MAX_NOISE_COEFFS + 1) * sizeof(uint8_t));
   result |=
       FDKmemcmp(hHdr1->freqBandData.v_k_master, hHdr2->freqBandData.v_k_master,
-                (MAX_FREQ_COEFFS + 1) * sizeof(UCHAR));
+                (MAX_FREQ_COEFFS + 1) * sizeof(uint8_t));
 
   return result;
 }
@@ -526,8 +526,8 @@ SBR_ERROR sbrDecoder_InitElement(
     HANDLE_SBRDECODER self, const int32_t sampleRateIn, const int32_t sampleRateOut,
     const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE coreCodec,
     const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
-    const UCHAR harmonicSBR, const UCHAR stereoConfigIndex,
-    const UCHAR configMode, UCHAR *configChanged, const int32_t downscaleFactor) {
+    const uint8_t harmonicSBR, const uint8_t stereoConfigIndex,
+    const uint8_t configMode, uint8_t *configChanged, const int32_t downscaleFactor) {
   SBR_ERROR sbrError = SBRDEC_OK;
   int32_t chCnt = 0;
   int32_t nSbrElementsStart;
@@ -692,7 +692,7 @@ SBR_ERROR sbrDecoder_InitElement(
 
   /* clear error flags for all delay slots */
   FDKmemclear(self->pSbrElement[elementIndex]->frameErrorFlag,
-              ((1) + 1) * sizeof(UCHAR));
+              ((1) + 1) * sizeof(uint8_t));
 
   {
     int32_t overlap;
@@ -798,8 +798,8 @@ int32_t sbrDecoder_Header(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
                       const int32_t samplesPerFrame,
                       const AUDIO_OBJECT_TYPE coreCodec,
                       const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
-                      const UCHAR harmonicSBR, const UCHAR stereoConfigIndex,
-                      const UCHAR configMode, UCHAR *configChanged,
+                      const uint8_t harmonicSBR, const uint8_t stereoConfigIndex,
+                      const uint8_t configMode, uint8_t *configChanged,
                       const int32_t downscaleFactor) {
   SBR_HEADER_STATUS headerStatus;
   HANDLE_SBR_HEADER_DATA hSbrHeader;
@@ -895,7 +895,7 @@ SBR_ERROR sbrDecoder_SetParam(HANDLE_SBRDECODER self, const SBRDEC_PARAM param,
       if (self == NULL) {
         errorStatus = SBRDEC_NOT_INITIALIZED;
       } else {
-        self->numDelayFrames = (UCHAR)value;
+        self->numDelayFrames = (uint8_t)value;
       }
       break;
     case SBR_QMF_MODE:
@@ -1049,7 +1049,7 @@ SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, int32_t ch,
                                     uint32_t numBands, int32_t *pNextFact_mag,
                                     int32_t nextFact_exp,
                                     int16_t drcInterpolationScheme,
-                                    UCHAR winSequence, uint16_t *pBandTop) {
+                                    uint8_t winSequence, uint16_t *pBandTop) {
   SBRDEC_DRC_CHANNEL *pSbrDrcChannelData = NULL;
   int32_t band, isValidData = 0;
 
@@ -1113,7 +1113,7 @@ void sbrDecoder_drcDisable(HANDLE_SBRDECODER self, int32_t ch) {
 }
 
 SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
-                           UCHAR *pDrmBsBuffer, uint16_t drmBsBufferSize,
+                           uint8_t *pDrmBsBuffer, uint16_t drmBsBufferSize,
                            int32_t *count, int32_t bsPayLen, int32_t crcFlag,
                            MP4_ELEMENT_ID prevElement, int32_t elementIndex,
                            uint32_t acFlags, uint32_t acElFlags[]) {
@@ -1183,10 +1183,10 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
     j = 0;
     for (; dataBytes > 0; dataBytes--) {
       int32_t i;
-      UCHAR tmpByte;
-      UCHAR buffer = 0x00;
+      uint8_t tmpByte;
+      uint8_t buffer = 0x00;
 
-      tmpByte = (UCHAR)FDKreadBits(hBs, 8);
+      tmpByte = (uint8_t)FDKreadBits(hBs, 8);
       for (i = 0; i < 4; i++) {
         int32_t shift = 2 * i + 1;
         buffer |= (tmpByte & (0x08 >> i)) << shift;
@@ -1558,7 +1558,7 @@ bail:
  * \brief Render one SBR element into time domain signal.
  * \param self SBR decoder handle
  * \param timeData pointer to output buffer
- * \param channelMapping pointer to UCHAR array where next 2 channel offsets are
+ * \param channelMapping pointer to uint8_t array where next 2 channel offsets are
  * stored.
  * \param elementIndex enumerating index of the SBR element to render.
  * \param numInChannels number of channels from core coder.
@@ -1794,7 +1794,7 @@ SBR_ERROR sbrDecoder_Apply(HANDLE_SBRDECODER self, int32_t *input, int32_t *time
                            int32_t *sampleRate,
                            const FDK_channelMapDescr *const mapDescr,
                            const int32_t mapIdx, const int32_t coreDecodedOk,
-                           UCHAR *psDecoded, const int32_t inDataHeadroom,
+                           uint8_t *psDecoded, const int32_t inDataHeadroom,
                            int32_t *outDataHeadroom) {
   SBR_ERROR errorStatus = SBRDEC_OK;
 

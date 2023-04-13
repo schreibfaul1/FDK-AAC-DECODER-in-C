@@ -261,7 +261,7 @@ extern const uint16_t sqrt_tab[49];
 
 inline int32_t sqrtFixp_lookup(int32_t x) {
   uint32_t y = (int32_t)x;
-  UCHAR is_zero = (y == 0);
+  uint8_t is_zero = (y == 0);
   int32_t zeros = fixnormz_D(y) & 0x1e;
   y <<= zeros;
   uint32_t idx = (y >> 26) - 16;

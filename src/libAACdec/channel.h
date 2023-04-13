@@ -154,7 +154,7 @@ AAC_DECODER_ERROR CChannelElement_Read(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
     const AUDIO_OBJECT_TYPE aot, SamplingRateInfo *pSamplingRateInfo,
     const uint32_t flags, const uint32_t elFlags, const uint32_t frame_length,
-    const UCHAR numberOfChannels, const SCHAR epConfig,
+    const uint8_t numberOfChannels, const int8_t epConfig,
     HANDLE_TRANSPORTDEC pTpDec);
 
 #endif /* #ifndef CHANNEL_H */

@@ -105,10 +105,10 @@ amm-info@iis.fraunhofer.de
 
 #include "aacdec_hcr.h"
 
-UCHAR ToggleReadDirection(UCHAR readDirection);
+uint8_t ToggleReadDirection(uint8_t readDirection);
 
 uint32_t HcrGetABitFromBitstream(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor,
                              int32_t *pLeftStartOfSegment,
-                             int32_t *pRightStartOfSegment, UCHAR readDirection);
+                             int32_t *pRightStartOfSegment, uint8_t readDirection);
 
 #endif /* AACDEC_HCR_BIT_H */

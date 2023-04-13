@@ -121,27 +121,27 @@ enum {
 #endif
 
 typedef struct {
-  SCHAR Coeff[TNS_MAXIMUM_ORDER];
+  int8_t Coeff[TNS_MAXIMUM_ORDER];
 
-  UCHAR StartBand;
-  UCHAR StopBand;
+  uint8_t StartBand;
+  uint8_t StopBand;
 
-  SCHAR Direction;
-  SCHAR Resolution;
+  int8_t Direction;
+  int8_t Resolution;
 
-  UCHAR Order;
+  uint8_t Order;
 } CFilter;
 
 typedef struct {
   CFilter Filter[TNS_MAX_WINDOWS][TNS_MAXIMUM_FILTERS];
-  UCHAR NumberOfFilters[TNS_MAX_WINDOWS];
-  UCHAR DataPresent;
-  UCHAR Active;
+  uint8_t NumberOfFilters[TNS_MAX_WINDOWS];
+  uint8_t DataPresent;
+  uint8_t Active;
 
   /* log2 of the maximum total filter gains. The value is required to
      keep necessary mantissa headroom so that while applying the TNS predictor
      the mantissas do not overflow. */
-  UCHAR GainLd;
+  uint8_t GainLd;
 } CTnsData;
 
 void CTns_Reset(CTnsData *pTnsData);

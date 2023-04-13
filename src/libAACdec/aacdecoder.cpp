@@ -256,7 +256,7 @@ void CAacDecoder_SignalInterruption(HANDLE_AACDECODER self) {
 
   \return  element channels
 */
-static int32_t CAacDecoder_GetELChannels(MP4_ELEMENT_ID type, UCHAR usacStereoConfigIndex) {
+static int32_t CAacDecoder_GetELChannels(MP4_ELEMENT_ID type, uint8_t usacStereoConfigIndex) {
 	int32_t el_channels = 0;
 
 	switch(type) {
@@ -395,7 +395,7 @@ static AAC_DECODER_ERROR CAacDecoder_AncDataParse(CAncData *ancData, HANDLE_FDK_
   \return  Error code
 */
 static AAC_DECODER_ERROR CDataStreamElement_Read(HANDLE_AACDECODER self, HANDLE_FDK_BITSTREAM bs,
-												 UCHAR *elementInstanceTag, uint32_t alignmentAnchor) {
+												 uint8_t *elementInstanceTag, uint32_t alignmentAnchor) {
 	AAC_DECODER_ERROR error = AAC_DEC_OK;
 	uint32_t              dseBits;
 	int32_t               dataStart;
@@ -608,9 +608,9 @@ AAC_DECODER_ERROR CAacDecoder_PreRollExtensionPayloadParse(HANDLE_AACDECODER sel
 	uint32_t  configLength = 0;
 	uint32_t  preRollPossible = 1;
 	uint32_t  i;
-	UCHAR configChanged = 0;
-	UCHAR config[TP_USAC_MAX_CONFIG_LEN] = {0};
-	UCHAR
+	uint8_t configChanged = 0;
+	uint8_t config[TP_USAC_MAX_CONFIG_LEN] = {0};
+	uint8_t
 	implicitExplicitCfgDiff = 0; /* in case implicit and explicit config is
 									equal preroll AU's should be processed
 									after decoder reset */
@@ -861,8 +861,8 @@ static AAC_DECODER_ERROR CAacDecoder_ExtPayloadParse(HANDLE_AACDECODER self, HAN
 		case EXT_SBR_DATA:
 			if(IS_CHANNEL_ELEMENT(previous_element)) {
 				SBR_ERROR sbrError;
-				UCHAR     configMode = 0;
-				UCHAR     configChanged = 0;
+				uint8_t     configMode = 0;
+				uint8_t     configChanged = 0;
 
 				CAacDecoder_SyncQmfMode(self);
 
@@ -1253,7 +1253,7 @@ static void CAacDecoder_DeInit(HANDLE_AACDECODER self, const int32_t subStreamIn
 				}
 				if(ch == aacChannelOffset) {
                     if(self->pAacDecoderChannelInfo[ch]->pComData){
-                        FDKafree_L((SCHAR *)self->pAacDecoderChannelInfo[ch]->pComData);
+                        FDKafree_L((int8_t *)self->pAacDecoderChannelInfo[ch]->pComData);
                         self->pAacDecoderChannelInfo[ch]->pComData = NULL;
                     }
 				}
@@ -1312,8 +1312,8 @@ static void CAacDecoder_DeInit(HANDLE_AACDECODER self, const int32_t subStreamIn
  *
  * \return error
  */
-AAC_DECODER_ERROR CAacDecoder_CtrlCFGChange(HANDLE_AACDECODER self, UCHAR flushStatus, SCHAR flushCnt,
-											UCHAR buildUpStatus, SCHAR buildUpCnt) {
+AAC_DECODER_ERROR CAacDecoder_CtrlCFGChange(HANDLE_AACDECODER self, uint8_t flushStatus, int8_t flushCnt,
+											uint8_t buildUpStatus, int8_t buildUpCnt) {
 	AAC_DECODER_ERROR err = AAC_DEC_OK;
 
 	self->flushStatus = flushStatus;
@@ -1387,11 +1387,11 @@ void CAacDecoder_Close(HANDLE_AACDECODER self) {
 */
 
 AAC_DECODER_ERROR
-CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, UCHAR configMode, UCHAR *configChanged) {
+CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, uint8_t configMode, uint8_t *configChanged) {
 	AAC_DECODER_ERROR  err = AAC_DEC_OK;
 	int32_t                ascChannels, ascChanged = 0;
 	AACDEC_RENDER_MODE initRenderMode = AACDEC_RENDER_INVALID;
-	SCHAR              usacStereoConfigIndex = -1;
+	int8_t              usacStereoConfigIndex = -1;
 	int32_t                usacResidualDelayCompSamples = 0;
 	int32_t                elementOffset, aacChannelsOffset, aacChannelsOffsetIdx;
 	const int32_t          streamIndex = 0;
@@ -1399,8 +1399,8 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, UCHAR
 
 	if(!self) return AAC_DEC_INVALID_HANDLE;
 
-	UCHAR downscaleFactor = self->downscaleFactor;
-	UCHAR downscaleFactorInBS = self->downscaleFactorInBS;
+	uint8_t downscaleFactor = self->downscaleFactor;
+	uint8_t downscaleFactorInBS = self->downscaleFactorInBS;
 
 	self->aacOutDataHeadroom = (3);
 
@@ -1818,7 +1818,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, UCHAR
 		switch(asc->m_aot) {
 			case AOT_USAC:
 				if(self->sbrEnabled) {
-					const UCHAR map_sbrRatio_2_nAnaBands[] = {16, 24, 32};
+					const uint8_t map_sbrRatio_2_nAnaBands[] = {16, 24, 32};
 
 					FDK_ASSERT(asc->m_sc.m_usacConfig.m_sbrRatioIndex > 0);
 					FDK_ASSERT(streamIndex == 0);
@@ -1902,7 +1902,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, UCHAR
 							if(ch == aacChannelsOffset) {
                                 uint32_t a = fMax((uint32_t)sizeof(int32_t) * 1024 * 2, (uint32_t)sizeof(CAacDecoderCommonData));
 								self->pAacDecoderChannelInfo[ch]->pComData =
-									(CAacDecoderCommonData *)(SCHAR *)FDKaalloc_L(a * sizeof(SCHAR), 8, SECT_DATA_L2);
+									(CAacDecoderCommonData *)(int8_t *)FDKaalloc_L(a * sizeof(int8_t), 8, SECT_DATA_L2);
 
                                 CWorkBufferCore1* ap = ((CWorkBufferCore1 *)FDKaalloc_L((1) * sizeof(CWorkBufferCore1), 8, SECT_DATA_L1));
 								self->pAacDecoderChannelInfo[ch]->pComStaticData->pWorkBufferCore1 = ap;
@@ -2255,7 +2255,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 
 	int32_t            hdaacDecoded = 0;
 	MP4_ELEMENT_ID previous_element = ID_END;  /* Last element ID (required for extension payload mapping */
-	UCHAR          previous_element_index = 0; /* Canonical index of last element */
+	uint8_t          previous_element_index = 0; /* Canonical index of last element */
 	int32_t            element_count = 0;          /* Element counter for elements found in the bitstream */
 	int32_t            channel_element_count = 0;  /* Channel element counter */
 	MP4_ELEMENT_ID
@@ -2369,8 +2369,8 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 					   !(self->flags[streamIndex] & AC_USAC) /* Is done during explicit config set up */
 					) {
 						SBR_ERROR sbrError;
-						UCHAR     configMode = 0;
-						UCHAR     configChanged = 0;
+						uint8_t     configMode = 0;
+						uint8_t     configChanged = 0;
 						configMode |= AC_CM_ALLOC_MEM;
 
 						sbrError = sbrDecoder_InitElement(self->hSbrDecoder, self->streamInfo.aacSampleRate,
@@ -2456,7 +2456,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 				break;
 
 			case ID_DSE: {
-				UCHAR element_instance_tag;
+				uint8_t element_instance_tag;
 
 				CDataStreamElement_Read(self, bs, &element_instance_tag, auStartAnchor);
 
@@ -2733,7 +2733,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 		/* Because the downmix could be active, its necessary to restore the channel
 		 * type and indices. */
 		FDKmemcpy(self->channelType, self->channelTypePrev, (8) * sizeof(AUDIO_CHANNEL_TYPE)); /* restore */
-		FDKmemcpy(self->channelIndices, self->channelIndicesPrev, (8) * sizeof(UCHAR));        /* restore */
+		FDKmemcpy(self->channelIndices, self->channelIndicesPrev, (8) * sizeof(uint8_t));        /* restore */
 		self->sbrEnabled = self->sbrEnabledPrev;
 	}
 	else {
@@ -2741,7 +2741,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 		if(self->frameOK && !(flags & AACDEC_CONCEAL)) {
 			self->aacChannelsPrev = aacChannels;                                                   /* store */
 			FDKmemcpy(self->channelTypePrev, self->channelType, (8) * sizeof(AUDIO_CHANNEL_TYPE)); /* store */
-			FDKmemcpy(self->channelIndicesPrev, self->channelIndices, (8) * sizeof(UCHAR));        /* store */
+			FDKmemcpy(self->channelIndicesPrev, self->channelIndices, (8) * sizeof(uint8_t));        /* store */
 			self->sbrEnabledPrev = self->sbrEnabled;
 		}
 		else {
@@ -2754,7 +2754,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 				}
 				else { aacChannels = self->aacChannelsPrev; /* restore */ }
 				FDKmemcpy(self->channelType, self->channelTypePrev, (8) * sizeof(AUDIO_CHANNEL_TYPE)); /* restore */
-				FDKmemcpy(self->channelIndices, self->channelIndicesPrev, (8) * sizeof(UCHAR));        /* restore */
+				FDKmemcpy(self->channelIndices, self->channelIndicesPrev, (8) * sizeof(uint8_t));        /* restore */
 				self->sbrEnabled = self->sbrEnabledPrev;
 			}
 		}
@@ -2801,7 +2801,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 	{
 		int32_t   c, cIdx;
 		int32_t   mapped, fCopyChMap = 1;
-		UCHAR drcChMap[(8)];
+		uint8_t drcChMap[(8)];
 
 		if((self->streamInfo.channelConfig == 0) && CProgramConfig_IsValid(pce)) {
 			/* ISO/IEC 14496-3 says:
@@ -2814,7 +2814,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 			   specified to be an independently switched coupling channel. Thus we
 			   have to convert the internal channel mapping from "canonical" MPEG to
 			   PCE order: */
-			UCHAR tmpChMap[(8)];
+			uint8_t tmpChMap[(8)];
 			if(CProgramConfig_GetPceChMap(pce, tmpChMap, (8)) == 0) {
 				for(c = 0; c < aacChannels; c += 1) {
 					drcChMap[c] = (self->chMapping[c] == 255) ? 255 : tmpChMap[self->chMapping[c]];
@@ -2822,7 +2822,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 				fCopyChMap = 0;
 			}
 		}
-		if(fCopyChMap != 0) { FDKmemcpy(drcChMap, self->chMapping, (8) * sizeof(UCHAR)); }
+		if(fCopyChMap != 0) { FDKmemcpy(drcChMap, self->chMapping, (8) * sizeof(uint8_t)); }
 
 		/* deactivate legacy DRC in case uniDrc is active, i.e. uniDrc payload is
 		 * present and one of DRC or Loudness Normalization is switched on */
@@ -2847,7 +2847,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 		}
 
 		/* Create a reverse mapping table */
-		UCHAR Reverse_chMapping[((8) * 2)];
+		uint8_t Reverse_chMapping[((8) * 2)];
 		for(c = 0; c < aacChannels; c++) {
 			int32_t d;
 			for(d = 0; d < aacChannels - 1; d++) {
@@ -3063,7 +3063,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 	/* Reorder channel type information tables.  */
 	if(!(self->flags[0] & AC_RSV603DA)) {
 		AUDIO_CHANNEL_TYPE types[(8)];
-		UCHAR              idx[(8)];
+		uint8_t              idx[(8)];
 		int32_t                c;
 		int32_t                mapValue;
 

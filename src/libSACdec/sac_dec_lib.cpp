@@ -197,7 +197,7 @@ typedef enum {
 
 struct MpegSurroundDecoder {
   HANDLE_FDK_QMF_DOMAIN pQmfDomain;
-  UCHAR mpsData[MPS_DATA_BUFFER_SIZE]; /* Buffer for MPS payload accross more
+  uint8_t mpsData[MPS_DATA_BUFFER_SIZE]; /* Buffer for MPS payload accross more
                                           than one segment */
   int32_t mpsDataBits;                     /* Amount of bits in mpsData */
   /* MPEG Surround decoder */
@@ -208,20 +208,20 @@ struct MpegSurroundDecoder {
   spatialSpecificConfigBackup; /* SSC used while parsing */
 
   /* Creation parameter */
-  UCHAR mpegSurroundDecoderLevel;
+  uint8_t mpegSurroundDecoderLevel;
   /* Run-time parameter */
-  UCHAR mpegSurroundSscIsGlobalCfg; /* Flag telling that the SSC
+  uint8_t mpegSurroundSscIsGlobalCfg; /* Flag telling that the SSC
                                        (::spatialSpecificConfig) is a
                                        out-of-band configuration. */
-  UCHAR mpegSurroundUseTimeInterface;
+  uint8_t mpegSurroundUseTimeInterface;
 
   SPATIAL_BS_FRAME
   bsFrames[1];         /* Bitstream Structs that contain data read from the
                           SpatialFrame() bitstream element */
   BS_LL_STATE llState; /* Bit stream parser state memory */
-  UCHAR bsFrameParse;  /* Current parse frame context index */
-  UCHAR bsFrameDecode; /* Current decode/apply frame context index */
-  UCHAR bsFrameDelay;  /* Amount of frames delay between parsing and processing.
+  uint8_t bsFrameParse;  /* Current parse frame context index */
+  uint8_t bsFrameDecode; /* Current decode/apply frame context index */
+  uint8_t bsFrameDelay;  /* Amount of frames delay between parsing and processing.
                           Required i.e. for interpolation error concealment. */
 
   /* User prameters */
@@ -256,7 +256,7 @@ static int32_t mpegSurroundDecoder_GetNrOfQmfBands(
     switch (pSsc->coreCodec) {
       case AOT_USAC:
         if ((pSsc->stereoConfigIndex == 3)) {
-          static const UCHAR mapIdx2QmfBands[3] = {24, 32, 16};
+          static const uint8_t mapIdx2QmfBands[3] = {24, 32, 16};
           FDK_ASSERT((pSsc->coreSbrFrameLengthIndex >= 2) &&
                      (pSsc->coreSbrFrameLengthIndex <= 4));
           qmfBands = mapIdx2QmfBands[pSsc->coreSbrFrameLengthIndex - 2];
@@ -701,7 +701,7 @@ SACDEC_ERROR mpegSurroundDecoder_Config(
     CMpegSurroundDecoder *pMpegSurroundDecoder, HANDLE_FDK_BITSTREAM hBs,
     AUDIO_OBJECT_TYPE coreCodec, int32_t samplingRate, int32_t frameSize,
     int32_t stereoConfigIndex, int32_t coreSbrFrameLengthIndex, int32_t configBytes,
-    const UCHAR configMode, UCHAR *configChanged) {
+    const uint8_t configMode, uint8_t *configChanged) {
   SACDEC_ERROR err = MPS_OK;
   SPATIAL_SPECIFIC_CONFIG spatialSpecificConfig;
   SPATIAL_SPECIFIC_CONFIG *pSsc =
@@ -1512,7 +1512,7 @@ int32_t mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder,
                               int32_t *nChannels, int32_t *frameSize, int32_t sampleRate,
                               AUDIO_OBJECT_TYPE coreCodec,
                               AUDIO_CHANNEL_TYPE channelType[],
-                              UCHAR channelIndices[],
+                              uint8_t channelIndices[],
                               const FDK_channelMapDescr *const mapDescr,
                               const int32_t inDataHeadroom, int32_t *outDataHeadroom) {
   SACDEC_ERROR err = MPS_OK;
@@ -1848,8 +1848,8 @@ SACDEC_ERROR mpegSurroundDecoder_SetParam(
       if (err == MPS_OK) {
         if (0) {
           err = MPS_INVALID_PARAMETER;
-        } else if (pUserParams->outputMode != (UCHAR)value) {
-          pUserParams->outputMode = (UCHAR)value;
+        } else if (pUserParams->outputMode != (uint8_t)value) {
+          pUserParams->outputMode = (uint8_t)value;
           pMpegSurroundDecoder
               ->initFlags[pMpegSurroundDecoder->bsFrameDecode] |=
               MPEGS_INIT_CHANGE_OUTPUT_MODE;
@@ -1864,8 +1864,8 @@ SACDEC_ERROR mpegSurroundDecoder_SetParam(
       if (err != MPS_OK) {
         goto bail;
       }
-      if (pMpegSurroundDecoder->mpegSurroundUseTimeInterface != (UCHAR)value) {
-        pMpegSurroundDecoder->mpegSurroundUseTimeInterface = (UCHAR)value;
+      if (pMpegSurroundDecoder->mpegSurroundUseTimeInterface != (uint8_t)value) {
+        pMpegSurroundDecoder->mpegSurroundUseTimeInterface = (uint8_t)value;
         pMpegSurroundDecoder->initFlags[pMpegSurroundDecoder->bsFrameDecode] |=
             MPEGS_INIT_CHANGE_TIME_FREQ_INTERFACE;
       }

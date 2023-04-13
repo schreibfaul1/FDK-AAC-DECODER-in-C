@@ -153,56 +153,56 @@ enum {
 
 typedef struct {
   /* PCE bitstream elements: */
-  UCHAR ElementInstanceTag;
-  UCHAR Profile;
-  UCHAR SamplingFrequencyIndex;
-  UCHAR NumFrontChannelElements;
-  UCHAR NumSideChannelElements;
-  UCHAR NumBackChannelElements;
-  UCHAR NumLfeChannelElements;
-  UCHAR NumAssocDataElements;
-  UCHAR NumValidCcElements;
+  uint8_t ElementInstanceTag;
+  uint8_t Profile;
+  uint8_t SamplingFrequencyIndex;
+  uint8_t NumFrontChannelElements;
+  uint8_t NumSideChannelElements;
+  uint8_t NumBackChannelElements;
+  uint8_t NumLfeChannelElements;
+  uint8_t NumAssocDataElements;
+  uint8_t NumValidCcElements;
 
-  UCHAR MonoMixdownPresent;
-  UCHAR MonoMixdownElementNumber;
+  uint8_t MonoMixdownPresent;
+  uint8_t MonoMixdownElementNumber;
 
-  UCHAR StereoMixdownPresent;
-  UCHAR StereoMixdownElementNumber;
+  uint8_t StereoMixdownPresent;
+  uint8_t StereoMixdownElementNumber;
 
-  UCHAR MatrixMixdownIndexPresent;
-  UCHAR MatrixMixdownIndex;
-  UCHAR PseudoSurroundEnable;
+  uint8_t MatrixMixdownIndexPresent;
+  uint8_t MatrixMixdownIndex;
+  uint8_t PseudoSurroundEnable;
 
-  UCHAR FrontElementIsCpe[PC_FSB_CHANNELS_MAX];
-  UCHAR FrontElementTagSelect[PC_FSB_CHANNELS_MAX];
-  UCHAR FrontElementHeightInfo[PC_FSB_CHANNELS_MAX];
+  uint8_t FrontElementIsCpe[PC_FSB_CHANNELS_MAX];
+  uint8_t FrontElementTagSelect[PC_FSB_CHANNELS_MAX];
+  uint8_t FrontElementHeightInfo[PC_FSB_CHANNELS_MAX];
 
-  UCHAR SideElementIsCpe[PC_FSB_CHANNELS_MAX];
-  UCHAR SideElementTagSelect[PC_FSB_CHANNELS_MAX];
-  UCHAR SideElementHeightInfo[PC_FSB_CHANNELS_MAX];
+  uint8_t SideElementIsCpe[PC_FSB_CHANNELS_MAX];
+  uint8_t SideElementTagSelect[PC_FSB_CHANNELS_MAX];
+  uint8_t SideElementHeightInfo[PC_FSB_CHANNELS_MAX];
 
-  UCHAR BackElementIsCpe[PC_FSB_CHANNELS_MAX];
-  UCHAR BackElementTagSelect[PC_FSB_CHANNELS_MAX];
-  UCHAR BackElementHeightInfo[PC_FSB_CHANNELS_MAX];
+  uint8_t BackElementIsCpe[PC_FSB_CHANNELS_MAX];
+  uint8_t BackElementTagSelect[PC_FSB_CHANNELS_MAX];
+  uint8_t BackElementHeightInfo[PC_FSB_CHANNELS_MAX];
 
-  UCHAR LfeElementTagSelect[PC_LFE_CHANNELS_MAX];
+  uint8_t LfeElementTagSelect[PC_LFE_CHANNELS_MAX];
 
-  UCHAR AssocDataElementTagSelect[PC_ASSOCDATA_MAX];
+  uint8_t AssocDataElementTagSelect[PC_ASSOCDATA_MAX];
 
-  UCHAR CcElementIsIndSw[PC_CCEL_MAX];
-  UCHAR ValidCcElementTagSelect[PC_CCEL_MAX];
+  uint8_t CcElementIsIndSw[PC_CCEL_MAX];
+  uint8_t ValidCcElementTagSelect[PC_CCEL_MAX];
 
-  UCHAR CommentFieldBytes;
-  UCHAR Comment[PC_COMMENTLENGTH];
+  uint8_t CommentFieldBytes;
+  uint8_t Comment[PC_COMMENTLENGTH];
 
   /* Helper variables for administration: */
-  UCHAR isValid; /*!< Flag showing if PCE has been read successfully. */
-  UCHAR
+  uint8_t isValid; /*!< Flag showing if PCE has been read successfully. */
+  uint8_t
   NumChannels; /*!< Amount of audio channels summing all channel elements
                   including LFEs */
-  UCHAR NumEffectiveChannels; /*!< Amount of audio channels summing only SCEs
+  uint8_t NumEffectiveChannels; /*!< Amount of audio channels summing only SCEs
                                  and CPEs */
-  UCHAR elCounter;
+  uint8_t elCounter;
 
 } CProgramConfig;
 
@@ -242,13 +242,13 @@ typedef enum {
 } ASC_ELD_EXT_TYPE;
 
 typedef struct {
-  UCHAR m_frameLengthFlag;
+  uint8_t m_frameLengthFlag;
 
-  UCHAR m_sbrPresentFlag;
-  UCHAR
+  uint8_t m_sbrPresentFlag;
+  uint8_t
   m_useLdQmfTimeAlign; /* Use LD-MPS QMF in SBR to achive time alignment */
-  UCHAR m_sbrSamplingRate;
-  UCHAR m_sbrCrcFlag;
+  uint8_t m_sbrSamplingRate;
+  uint8_t m_sbrCrcFlag;
   uint32_t m_downscaledSamplingFrequency;
 
 } CSEldSpecificConfig;
@@ -257,35 +257,35 @@ typedef struct {
   USAC_EXT_ELEMENT_TYPE usacExtElementType;
   uint16_t usacExtElementConfigLength;
   uint16_t usacExtElementDefaultLength;
-  UCHAR usacExtElementPayloadFrag;
-  UCHAR usacExtElementHasAudioPreRoll;
+  uint8_t usacExtElementPayloadFrag;
+  uint8_t usacExtElementHasAudioPreRoll;
 } CSUsacExtElementConfig;
 
 typedef struct {
   MP4_ELEMENT_ID usacElementType;
-  UCHAR m_noiseFilling;
-  UCHAR m_harmonicSBR;
-  UCHAR m_interTes;
-  UCHAR m_pvc;
-  UCHAR m_stereoConfigIndex;
+  uint8_t m_noiseFilling;
+  uint8_t m_harmonicSBR;
+  uint8_t m_interTes;
+  uint8_t m_pvc;
+  uint8_t m_stereoConfigIndex;
   CSUsacExtElementConfig extElement;
 } CSUsacElementConfig;
 
 typedef struct {
-  UCHAR m_frameLengthFlag;
-  UCHAR m_coreSbrFrameLengthIndex;
-  UCHAR m_sbrRatioIndex;
-  UCHAR m_nUsacChannels; /* number of audio channels signaled in
+  uint8_t m_frameLengthFlag;
+  uint8_t m_coreSbrFrameLengthIndex;
+  uint8_t m_sbrRatioIndex;
+  uint8_t m_nUsacChannels; /* number of audio channels signaled in
                             UsacDecoderConfig() / rsv603daDecoderConfig() via
                             numElements and usacElementType */
-  UCHAR m_channelConfigurationIndex;
+  uint8_t m_channelConfigurationIndex;
   uint32_t m_usacNumElements;
   CSUsacElementConfig element[TP_USAC_MAX_ELEMENTS];
 
-  UCHAR numAudioChannels;
-  UCHAR m_usacConfigExtensionPresent;
-  UCHAR elementLengthPresent;
-  UCHAR UsacConfig[TP_USAC_MAX_CONFIG_LEN];
+  uint8_t numAudioChannels;
+  uint8_t m_usacConfigExtensionPresent;
+  uint8_t elementLengthPresent;
+  uint8_t UsacConfig[TP_USAC_MAX_CONFIG_LEN];
   uint16_t UsacConfigBits;
 } CSUsacConfig;
 
@@ -312,57 +312,57 @@ typedef struct {
   AUDIO_OBJECT_TYPE m_extensionAudioObjectType; /**< Audio object type */
   uint32_t m_extensionSamplingFrequency;            /**< Samplerate            */
 
-  SCHAR m_channelConfiguration; /**< Channel configuration index */
+  int8_t m_channelConfiguration; /**< Channel configuration index */
 
-  SCHAR m_epConfig;  /**< Error protection index                           */
-  SCHAR m_vcb11Flag; /**< aacSectionDataResilienceFlag                     */
-  SCHAR m_rvlcFlag;  /**< aacScalefactorDataResilienceFlag                 */
-  SCHAR m_hcrFlag;   /**< aacSpectralDataResilienceFlag                    */
+  int8_t m_epConfig;  /**< Error protection index                           */
+  int8_t m_vcb11Flag; /**< aacSectionDataResilienceFlag                     */
+  int8_t m_rvlcFlag;  /**< aacScalefactorDataResilienceFlag                 */
+  int8_t m_hcrFlag;   /**< aacSpectralDataResilienceFlag                    */
 
-  SCHAR m_sbrPresentFlag; /**< Flag indicating the presence of SBR data in the
+  int8_t m_sbrPresentFlag; /**< Flag indicating the presence of SBR data in the
                              bitstream               */
-  SCHAR
+  int8_t
   m_psPresentFlag; /**< Flag indicating the presence of parametric stereo
                       data in the bitstream */
-  UCHAR m_samplingFrequencyIndex;          /**< Samplerate index          */
-  UCHAR m_extensionSamplingFrequencyIndex; /**< Samplerate index */
-  SCHAR m_extensionChannelConfiguration;   /**< Channel configuration index   */
+  uint8_t m_samplingFrequencyIndex;          /**< Samplerate index          */
+  uint8_t m_extensionSamplingFrequencyIndex; /**< Samplerate index */
+  int8_t m_extensionChannelConfiguration;   /**< Channel configuration index   */
 
-  UCHAR
+  uint8_t
   configMode; /**< The flag indicates if the callback shall work in memory
                  allocation mode or in config change detection mode */
-  UCHAR AacConfigChanged; /**< The flag will be set if at least one aac config
+  uint8_t AacConfigChanged; /**< The flag will be set if at least one aac config
                              parameter has changed that requires a memory
                              reconfiguration, otherwise it will be cleared */
-  UCHAR SbrConfigChanged; /**< The flag will be set if at least one sbr config
+  uint8_t SbrConfigChanged; /**< The flag will be set if at least one sbr config
                              parameter has changed that requires a memory
                              reconfiguration, otherwise it will be cleared */
-  UCHAR SacConfigChanged; /**< The flag will be set if at least one sac config
+  uint8_t SacConfigChanged; /**< The flag will be set if at least one sac config
                              parameter has changed that requires a memory
                              reconfiguration, otherwise it will be cleared */
 
-  UCHAR
+  uint8_t
   config[TP_USAC_MAX_CONFIG_LEN]; /**< Configuration stored as bitstream */
   uint32_t configBits;                /**< Configuration length in bits */
 
 } CSAudioSpecificConfig;
 
 typedef struct {
-  SCHAR flushCnt;      /**< Flush frame counter */
-  UCHAR flushStatus;   /**< Flag indicates flush mode: on|off */
-  SCHAR buildUpCnt;    /**< Build up frame counter */
-  UCHAR buildUpStatus; /**< Flag indicates build up mode: on|off */
-  UCHAR cfgChanged; /**< Flag indicates that the config changed and the decoder
+  int8_t flushCnt;      /**< Flush frame counter */
+  uint8_t flushStatus;   /**< Flag indicates flush mode: on|off */
+  int8_t buildUpCnt;    /**< Build up frame counter */
+  uint8_t buildUpStatus; /**< Flag indicates build up mode: on|off */
+  uint8_t cfgChanged; /**< Flag indicates that the config changed and the decoder
                        needs to be initialized again via callback. Make sure
                        that memory is freed before initialization. */
-  UCHAR contentChanged; /**< Flag indicates that the content changed i.e. a
+  uint8_t contentChanged; /**< Flag indicates that the content changed i.e. a
                            right truncation occured before */
-  UCHAR forceCfgChange; /**< Flag indicates if config change has to be forced
+  uint8_t forceCfgChange; /**< Flag indicates if config change has to be forced
                            even if new config is the same */
 } CCtrlCFGChange;
 
 typedef int32_t (*cbUpdateConfig_t)(void *, const CSAudioSpecificConfig *,
-                                const UCHAR configMode, UCHAR *configChanged);
+                                const uint8_t configMode, uint8_t *configChanged);
 typedef int32_t (*cbFreeMem_t)(void *, const CSAudioSpecificConfig *);
 typedef int32_t (*cbCtrlCFGChange_t)(void *, const CCtrlCFGChange *);
 typedef int32_t (*cbSsc_t)(void *, HANDLE_FDK_BITSTREAM,
@@ -370,15 +370,15 @@ typedef int32_t (*cbSsc_t)(void *, HANDLE_FDK_BITSTREAM,
                        const int32_t samplingRate, const int32_t frameSize,
                        const int32_t stereoConfigIndex,
                        const int32_t coreSbrFrameLengthIndex, const int32_t configBytes,
-                       const UCHAR configMode, UCHAR *configChanged);
+                       const uint8_t configMode, uint8_t *configChanged);
 
 typedef int32_t (*cbSbr_t)(void *self, HANDLE_FDK_BITSTREAM hBs,
                        const int32_t sampleRateIn, const int32_t sampleRateOut,
                        const int32_t samplesPerFrame,
                        const AUDIO_OBJECT_TYPE coreCodec,
                        const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
-                       const UCHAR harmonicSbr, const UCHAR stereoConfigIndex,
-                       const UCHAR configMode, UCHAR *configChanged,
+                       const uint8_t harmonicSbr, const uint8_t stereoConfigIndex,
+                       const uint8_t configMode, uint8_t *configChanged,
                        const int32_t downscaleFactor);
 
 typedef int32_t (*cbUsac_t)(void *self, HANDLE_FDK_BITSTREAM hBs);

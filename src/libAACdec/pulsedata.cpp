@@ -114,13 +114,13 @@ int32_t CPulseData_Read(HANDLE_FDK_BITSTREAM bs, CPulseData *const PulseData,
   /* reset pulse data flag */
   PulseData->PulseDataPresent = 0;
 
-  if ((PulseData->PulseDataPresent = (UCHAR)FDKreadBit(bs)) != 0) {
+  if ((PulseData->PulseDataPresent = (uint8_t)FDKreadBit(bs)) != 0) {
     if (!IsLongBlock((const CIcsInfo *)pIcsInfo)) {
       return AAC_DEC_DECODE_FRAME_ERROR;
     }
 
-    PulseData->NumberPulse = (UCHAR)FDKreadBits(bs, 2);
-    PulseData->PulseStartBand = (UCHAR)FDKreadBits(bs, 6);
+    PulseData->NumberPulse = (uint8_t)FDKreadBits(bs, 2);
+    PulseData->PulseStartBand = (uint8_t)FDKreadBits(bs, 6);
 
     if (PulseData->PulseStartBand >= MaxSfBands) {
       return AAC_DEC_DECODE_FRAME_ERROR;
@@ -129,8 +129,8 @@ int32_t CPulseData_Read(HANDLE_FDK_BITSTREAM bs, CPulseData *const PulseData,
     k = sfb_startlines[PulseData->PulseStartBand];
 
     for (i = 0; i <= PulseData->NumberPulse; i++) {
-      PulseData->PulseOffset[i] = (UCHAR)FDKreadBits(bs, 5);
-      PulseData->PulseAmp[i] = (UCHAR)FDKreadBits(bs, 4);
+      PulseData->PulseOffset[i] = (uint8_t)FDKreadBits(bs, 5);
+      PulseData->PulseAmp[i] = (uint8_t)FDKreadBits(bs, 4);
       k += PulseData->PulseOffset[i];
     }
 

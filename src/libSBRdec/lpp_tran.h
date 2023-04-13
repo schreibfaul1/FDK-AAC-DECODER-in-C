@@ -171,19 +171,19 @@ typedef enum {
 
 /** parameter set for one single patch */
 typedef struct {
-  UCHAR sourceStartBand; /*!< first band in lowbands where to take the samples
+  uint8_t sourceStartBand; /*!< first band in lowbands where to take the samples
                             from */
-  UCHAR
+  uint8_t
   sourceStopBand;       /*!< first band in lowbands which is not included in the
                            patch anymore */
-  UCHAR guardStartBand; /*!< first band in highbands to be filled with zeros in
+  uint8_t guardStartBand; /*!< first band in highbands to be filled with zeros in
                            order to reduce interferences between patches */
-  UCHAR
+  uint8_t
   targetStartBand;       /*!< first band in highbands to be filled with whitened
                             lowband signal */
-  UCHAR targetBandOffs;  /*!< difference between 'startTargetBand' and
+  uint8_t targetBandOffs;  /*!< difference between 'startTargetBand' and
                             'startSourceBand' */
-  UCHAR numBandsInPatch; /*!< number of consecutive bands in this one patch */
+  uint8_t numBandsInPatch; /*!< number of consecutive bands in this one patch */
 } PATCH_PARAM;
 
 /** whitening factors for different levels of whitening
@@ -199,11 +199,11 @@ typedef struct {
 /*! The transposer settings are calculated on a header reset and are shared by
  * both channels. */
 typedef struct {
-  UCHAR nCols;           /*!< number subsamples of a codec frame */
-  UCHAR noOfPatches;     /*!< number of patches */
-  UCHAR lbStartPatching; /*!< first band of lowbands that will be patched */
-  UCHAR lbStopPatching;  /*!< first band that won't be patched anymore*/
-  UCHAR bwBorders[MAX_NUM_NOISE_VALUES]; /*!< spectral bands with different
+  uint8_t nCols;           /*!< number subsamples of a codec frame */
+  uint8_t noOfPatches;     /*!< number of patches */
+  uint8_t lbStartPatching; /*!< first band of lowbands that will be patched */
+  uint8_t lbStopPatching;  /*!< first band that won't be patched anymore*/
+  uint8_t bwBorders[MAX_NUM_NOISE_VALUES]; /*!< spectral bands with different
                                             inverse filtering levels */
 
   PATCH_PARAM
@@ -212,7 +212,7 @@ typedef struct {
   whFactors;     /*!< the pole moving factors for certain
                     whitening levels as indicated     in the bitstream
                     depending on the crossover frequency */
-  UCHAR overlap; /*!< Overlap size */
+  uint8_t overlap; /*!< Overlap size */
 } TRANSPOSER_SETTINGS;
 
 typedef struct {
@@ -262,14 +262,14 @@ void lppTransposerHBE(
 SBR_ERROR
 createLppTransposer(HANDLE_SBR_LPP_TRANS hLppTrans,
                     TRANSPOSER_SETTINGS *pSettings, const int32_t highBandStartSb,
-                    UCHAR *v_k_master, const int32_t numMaster, const int32_t usb,
-                    const int32_t timeSlots, const int32_t nCols, UCHAR *noiseBandTable,
+                    uint8_t *v_k_master, const int32_t numMaster, const int32_t usb,
+                    const int32_t timeSlots, const int32_t nCols, uint8_t *noiseBandTable,
                     const int32_t noNoiseBands, uint32_t fs, const int32_t chan,
                     const int32_t overlap);
 
 SBR_ERROR
-resetLppTransposer(HANDLE_SBR_LPP_TRANS hLppTrans, UCHAR highBandStartSb,
-                   UCHAR *v_k_master, UCHAR numMaster, UCHAR *noiseBandTable,
-                   UCHAR noNoiseBands, UCHAR usb, uint32_t fs);
+resetLppTransposer(HANDLE_SBR_LPP_TRANS hLppTrans, uint8_t highBandStartSb,
+                   uint8_t *v_k_master, uint8_t numMaster, uint8_t *noiseBandTable,
+                   uint8_t noNoiseBands, uint8_t usb, uint32_t fs);
 
 #endif /* LPP_TRAN_H */

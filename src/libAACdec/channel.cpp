@@ -122,9 +122,9 @@ static void MapMidSideMaskToPnsCorrelation(
 
   for (group = 0; group < pAacDecoderChannelInfo[L]->icsInfo.WindowGroups;
        group++) {
-    UCHAR groupMask = 1 << group;
+    uint8_t groupMask = 1 << group;
 
-    for (UCHAR band = 0; band < pAacDecoderChannelInfo[L]->icsInfo.MaxSfBands;
+    for (uint8_t band = 0; band < pAacDecoderChannelInfo[L]->icsInfo.MaxSfBands;
          band++) {
       if (pAacDecoderChannelInfo[L]->pComData->jointStereoData.MsUsed[band] &
           groupMask) { /* channels are correlated */
@@ -247,7 +247,7 @@ void CChannelElement_Decode(
       CLpdChannelStream_Decode(pAacDecoderChannelInfo[ch],
                                pAacDecoderStaticChannelInfo[ch], flags);
     } else {
-      UCHAR noSfbs =
+      uint8_t noSfbs =
           GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo[ch]->icsInfo);
       /* For USAC common window: max_sfb of both channels may differ
        * (common_max_sfb == 0). */
@@ -386,7 +386,7 @@ void CChannel_CodebookTableInit(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo) {
   int32_t b, w, maxBands, maxWindows;
   int32_t maxSfb = GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);
-  UCHAR *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
+  uint8_t *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
 
   if (IsLongBlock(&pAacDecoderChannelInfo->icsInfo)) {
     maxBands = 64;
@@ -415,7 +415,7 @@ AAC_DECODER_ERROR CChannelElement_Read(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
     const AUDIO_OBJECT_TYPE aot, SamplingRateInfo *pSamplingRateInfo,
     const uint32_t flags, const uint32_t elFlags, const uint32_t frame_length,
-    const UCHAR numberOfChannels, const SCHAR epConfig,
+    const uint8_t numberOfChannels, const int8_t epConfig,
     HANDLE_TRANSPORTDEC pTpDec) {
   AAC_DECODER_ERROR error = AAC_DEC_OK;
   const element_list_t *list;
@@ -539,8 +539,8 @@ AAC_DECODER_ERROR CChannelElement_Read(
 
         max_sfb_ste_clear = 64;
 
-        pAacDecoderChannelInfo[0]->icsInfo.max_sfb_ste = (UCHAR)max_sfb_ste;
-        pAacDecoderChannelInfo[1]->icsInfo.max_sfb_ste = (UCHAR)max_sfb_ste;
+        pAacDecoderChannelInfo[0]->icsInfo.max_sfb_ste = (uint8_t)max_sfb_ste;
+        pAacDecoderChannelInfo[1]->icsInfo.max_sfb_ste = (uint8_t)max_sfb_ste;
 
         if (flags & (AC_USAC | AC_RSV603DA) &&
             pAacDecoderChannelInfo[ch]->pDynData->RawDataInfo.CommonWindow ==
@@ -576,7 +576,7 @@ AAC_DECODER_ERROR CChannelElement_Read(
 
       case global_gain:
         pAacDecoderChannelInfo[ch]->pDynData->RawDataInfo.GlobalGain =
-            (UCHAR)FDKreadBits(hBs, 8);
+            (uint8_t)FDKreadBits(hBs, 8);
         break;
 
       case section_data:
@@ -656,7 +656,7 @@ AAC_DECODER_ERROR CChannelElement_Read(
               pAacDecoderChannelInfo[0]->pDynData->RawDataInfo.CommonWindow);
         } else {
           pAacDecoderChannelInfo[0]->pDynData->specificTo.usac.tns_on_lr =
-              (UCHAR)1;
+              (uint8_t)1;
         }
         break;
       case core_mode:
@@ -795,7 +795,7 @@ AAC_DECODER_ERROR CChannelElement_Read(
 
       case gain_element_lists: {
         const CodeBookDescription *hcb;
-        UCHAR *pCodeBook;
+        uint8_t *pCodeBook;
         int32_t c;
 
         hcb = &AACcodeBookDescriptionTable[BOOKSCL];
@@ -890,9 +890,9 @@ AAC_DECODER_ERROR CChannelElement_Read(
     if (pAacDecoderChannelInfo[ch]->renderMode == AACDEC_RENDER_IMDCT ||
         pAacDecoderChannelInfo[ch]->renderMode == AACDEC_RENDER_ELDFB) {
       /* Shows which bands are empty. */
-      UCHAR *band_is_noise =
+      uint8_t *band_is_noise =
           pAacDecoderChannelInfo[ch]->pDynData->band_is_noise;
-      FDKmemset(band_is_noise, (UCHAR)1, sizeof(UCHAR) * (8 * 16));
+      FDKmemset(band_is_noise, (uint8_t)1, sizeof(uint8_t) * (8 * 16));
 
       error = CBlock_InverseQuantizeSpectralData(
           pAacDecoderChannelInfo[ch], pSamplingRateInfo, band_is_noise, 1);

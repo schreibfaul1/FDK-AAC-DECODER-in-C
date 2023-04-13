@@ -114,7 +114,7 @@ uint32_t HcrInit(H_HCR_INFO pHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo
 uint32_t HcrDecoder(H_HCR_INFO hHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                 const SamplingRateInfo *pSamplingRateInfo,
                 HANDLE_FDK_BITSTREAM bs);
-void CarryBitToBranchValue(UCHAR carryBit, uint32_t treeNode, uint32_t *branchValue,
+void CarryBitToBranchValue(uint8_t carryBit, uint32_t treeNode, uint32_t *branchValue,
                            uint32_t *branchNode);
 
 void CHcr_Read(HANDLE_FDK_BITSTREAM bs,

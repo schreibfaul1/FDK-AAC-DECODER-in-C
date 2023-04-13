@@ -116,7 +116,7 @@ amm-info@iis.fraunhofer.de
 const uint32_t fdk_dec_tab_factorial[8] = {5040, 720, 120, 24, 6, 2, 1, 1};
 
 /*  Da - Absolute leaders */
-const UCHAR fdk_dec_Da[NB_LEADER][8] = {
+const uint8_t fdk_dec_Da[NB_LEADER][8] = {
     {1, 1, 1, 1, 1, 1, 1, 1},   {2, 2, 0, 0, 0, 0, 0, 0},
     {2, 2, 2, 2, 0, 0, 0, 0},   {3, 1, 1, 1, 1, 1, 1, 1},
     {4, 0, 0, 0, 0, 0, 0, 0},   {2, 2, 2, 2, 2, 2, 0, 0},
@@ -138,7 +138,7 @@ const UCHAR fdk_dec_Da[NB_LEADER][8] = {
     {20, 0, 0, 0, 0, 0, 0, 0}};
 
 /* Ds - Sign codes of all signed leaders */
-const UCHAR fdk_dec_Ds[NB_LDSIGN] = {
+const uint8_t fdk_dec_Ds[NB_LDSIGN] = {
     0,   3,   15,  63,  255, 0,   64,  192, 0,   16,  48,  112, 240, 1,   7,
     31,  127, 128, 131, 143, 191, 0,   128, 0,   4,   12,  28,  60,  124, 252,
     0,   3,   15,  63,  65,  71,  95,  192, 195, 207, 255, 0,   32,  96,  128,
@@ -157,12 +157,12 @@ const UCHAR fdk_dec_Ds[NB_LDSIGN] = {
     128};
 
 /* Ns - Number of signed leader associated to a given absolute leader */
-const UCHAR fdk_dec_Ns[NB_LEADER] = {
+const uint8_t fdk_dec_Ns[NB_LEADER] = {
     5, 3, 5, 8, 2, 7, 11, 6, 9, 12, 10, 3, 8, 13, 14, 9, 14, 4, 4,
     8, 8, 8, 2, 3, 6, 4,  8, 4, 3,  4,  2, 4, 3,  4,  4, 2,  2};
 
 /* Ia - Position of the first signed leader associated to an absolute leader */
-const UCHAR fdk_dec_Ia[NB_LEADER] = {
+const uint8_t fdk_dec_Ia[NB_LEADER] = {
     0,   5,   8,   13,  21,  23,  30,  41,  47,  56,  68,  78,  81,
     89,  102, 116, 125, 139, 143, 147, 155, 163, 171, 173, 176, 182,
     186, 194, 198, 201, 205, 207, 211, 214, 218, 222, 224};
@@ -192,10 +192,10 @@ const uint16_t fdk_dec_Is[NB_LDSIGN] = {
     65392, 65448, 65504, 65512, 65520, 65528};
 
 /* A3 - Number of the absolute leaders in codebooks Q2 and Q3 */
-const UCHAR fdk_dec_A3[NB_LDQ3] = {0, 1, 4, 2, 3, 7, 11, 17, 22};
+const uint8_t fdk_dec_A3[NB_LDQ3] = {0, 1, 4, 2, 3, 7, 11, 17, 22};
 
 /* A4 - Number of the absolute leaders in codebook Q4 */
-const UCHAR fdk_dec_A4[NB_LDQ4] = {5,  6,  8,  9,  10, 12, 13, 14, 15, 16,
+const uint8_t fdk_dec_A4[NB_LDQ4] = {5,  6,  8,  9,  10, 12, 13, 14, 15, 16,
                                    18, 19, 20, 21, 23, 24, 25, 26, 27, 28,
                                    29, 30, 31, 32, 33, 34, 35, 36};
 

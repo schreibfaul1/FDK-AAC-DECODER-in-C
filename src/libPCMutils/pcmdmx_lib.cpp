@@ -188,9 +188,9 @@ amm-info@iis.fraunhofer.de
 #define SP_Z_MUL (8) /* Should be smaller than SP_Z_LFE */
 
 typedef struct {
-  SCHAR x; /* horizontal position:  center (0), left (-), right (+) */
-  SCHAR y; /* deepth position:      front, side, back, position */
-  SCHAR z; /* heigth positions:     normal, top, bottom, lfe */
+  int8_t x; /* horizontal position:  center (0), left (-), right (+) */
+  int8_t y; /* deepth position:      front, side, back, position */
+  int8_t z; /* heigth positions:     normal, top, bottom, lfe */
 } PCM_DMX_SPEAKER_POSITION;
 
 /* CAUTION: The maximum x-value should be less or equal to
@@ -336,17 +336,17 @@ static const FIXP_DMX mpegMixDownIdx2PreFact[3][4] = {
 typedef struct {
   uint32_t typeFlags;
   /* From DSE */
-  UCHAR cLevIdx;
-  UCHAR sLevIdx;
-  UCHAR dmixIdxA;
-  UCHAR dmixIdxB;
-  UCHAR dmixIdxLfe;
-  UCHAR dmxGainIdx2;
-  UCHAR dmxGainIdx5;
+  uint8_t cLevIdx;
+  uint8_t sLevIdx;
+  uint8_t dmixIdxA;
+  uint8_t dmixIdxB;
+  uint8_t dmixIdxLfe;
+  uint8_t dmxGainIdx2;
+  uint8_t dmxGainIdx5;
   /* From PCE */
-  UCHAR matrixMixdownIdx;
+  uint8_t matrixMixdownIdx;
   /* Attributes: */
-  SCHAR pseudoSurround; /*!< If set to 1 the signal is pseudo surround
+  int8_t pseudoSurround; /*!< If set to 1 the signal is pseudo surround
                            compatible. The value 0 tells that it is not. If the
                            value is -1 the information is not available.  */
   uint32_t expiryCount; /*!< Counter to monitor the life time of a meta data set. */
@@ -367,7 +367,7 @@ typedef struct {
   pseudoSurrMode;          /*!< Linked to DMX_PSEUDO_SURROUND_MODE       */
   int16_t numOutChannelsMin; /*!< Linked to MIN_NUMBER_OF_OUTPUT_CHANNELS  */
   int16_t numOutChannelsMax; /*!< Linked to MAX_NUMBER_OF_OUTPUT_CHANNELS  */
-  UCHAR frameDelay;        /*!< Linked to DMX_BS_DATA_DELAY              */
+  uint8_t frameDelay;        /*!< Linked to DMX_BS_DATA_DELAY              */
 
 } PCM_DMX_USER_PARAMS;
 
@@ -377,7 +377,7 @@ struct PCM_DMX_INSTANCE {
   DMX_BS_META_DATA bsMetaData[(1) + 1];
   PCM_DMX_USER_PARAMS userParams;
 
-  UCHAR applyProcessing; /*!< Flag to en-/disable modules processing.
+  uint8_t applyProcessing; /*!< Flag to en-/disable modules processing.
                               The max channel limiting is done independently. */
 };
 
@@ -396,7 +396,7 @@ static uint32_t getSpeakerDistance(PCM_DMX_SPEAKER_POSITION posA,
 }
 
 static PCM_DMX_SPEAKER_POSITION getSpeakerPos(AUDIO_CHANNEL_TYPE chType,
-                                              UCHAR chIndex, UCHAR numChInGrp) {
+                                              uint8_t chIndex, uint8_t numChInGrp) {
 #define PCMDMX_SPKR_POS_X_MAX_WIDTH (3)
 #define PCMDMX_SPKR_POS_Y_SPREAD (2)
 #define PCMDMX_SPKR_POS_Z_SPREAD (2)
@@ -413,7 +413,7 @@ static PCM_DMX_SPEAKER_POSITION getSpeakerPos(AUDIO_CHANNEL_TYPE chType,
 
   if ((chGrp == ACT_FRONT) && fHasCenter) {
     if (chIndex == 0) fIsCenter = 1;
-    chIndex = (UCHAR)fMax(0, chIndex - 1);
+    chIndex = (uint8_t)fMax(0, chIndex - 1);
   } else if (fHasCenter && (chIndex == numChInGrp - 1)) {
     fIsCenter = 1;
   }
@@ -434,18 +434,18 @@ static PCM_DMX_SPEAKER_POSITION getSpeakerPos(AUDIO_CHANNEL_TYPE chType,
   if (chType == ACT_SIDE) {
     spkrPos.x = (offset < 0) ? -PCMDMX_SPKR_POS_X_MAX_WIDTH
                              : PCMDMX_SPKR_POS_X_MAX_WIDTH;
-    spkrPos.y = /* 1x */ PCMDMX_SPKR_POS_Y_SPREAD + (SCHAR)fAbs(offset) - 1;
+    spkrPos.y = /* 1x */ PCMDMX_SPKR_POS_Y_SPREAD + (int8_t)fAbs(offset) - 1;
     spkrPos.z = 0;
   } else {
     unsigned spread =
         ((chGrpWidth == 1) && (!fIsLfe)) ? PCMDMX_SPKR_POS_X_MAX_WIDTH - 1 : 1;
-    spkrPos.x = (SCHAR)offset * (SCHAR)spread;
+    spkrPos.x = (int8_t)offset * (int8_t)spread;
     if (fIsLfe) {
       spkrPos.y = 0;
       spkrPos.z = SP_Z_LFE;
     } else {
-      spkrPos.y = (SCHAR)fMax((SCHAR)chGrp - 1, 0) * PCMDMX_SPKR_POS_Y_SPREAD;
-      spkrPos.z = (SCHAR)chType >> 4;
+      spkrPos.y = (int8_t)fMax((int8_t)chGrp - 1, 0) * PCMDMX_SPKR_POS_Y_SPREAD;
+      spkrPos.z = (int8_t)chType >> 4;
       if (spkrPos.z == 2) { /* ACT_BOTTOM */
         spkrPos.z = -1;
       }
@@ -494,7 +494,7 @@ static PCM_DMX_CHANNEL_MODE getChMode4Plain(
   return plainChMode;
 }
 
-static inline uint32_t getIdxSum(UCHAR numCh) {
+static inline uint32_t getIdxSum(uint8_t numCh) {
   uint32_t result = 0;
   int32_t i;
   for (i = 1; i < numCh; i += 1) {
@@ -519,13 +519,13 @@ static inline uint32_t getIdxSum(UCHAR numCh) {
 static PCMDMX_ERROR getChannelMode(
     const uint32_t numChannels,                 /* in */
     const AUDIO_CHANNEL_TYPE channelType[], /* in */
-    UCHAR channelIndices[],                 /* in */
-    UCHAR offsetTable[(8)],                 /* out */
+    uint8_t channelIndices[],                 /* in */
+    uint8_t offsetTable[(8)],                 /* out */
     PCM_DMX_CHANNEL_MODE *chMode            /* out */
 ) {
   uint32_t idxSum[(3)][(4)];
-  UCHAR numCh[(3)][(4)];
-  UCHAR mapped[(8)];
+  uint8_t numCh[(3)][(4)];
+  uint8_t mapped[(8)];
   PCM_DMX_SPEAKER_POSITION spkrPos[(8)];
   PCMDMX_ERROR err = PCMDMX_OK;
   unsigned ch, numMappedInChs = 0;
@@ -539,11 +539,11 @@ static PCMDMX_ERROR getChannelMode(
 
   /* For details see ISO/IEC 13818-7:2005(E), 8.5.3 Channel configuration */
   FDKmemclear(idxSum, (3) * (4) * sizeof(uint32_t));
-  FDKmemclear(numCh, (3) * (4) * sizeof(UCHAR));
-  FDKmemclear(mapped, (8) * sizeof(UCHAR));
+  FDKmemclear(numCh, (3) * (4) * sizeof(uint8_t));
+  FDKmemclear(mapped, (8) * sizeof(uint8_t));
   FDKmemclear(spkrPos, (8) * sizeof(PCM_DMX_SPEAKER_POSITION));
   /* Init output */
-  FDKmemset(offsetTable, 255, (8) * sizeof(UCHAR));
+  FDKmemset(offsetTable, 255, (8) * sizeof(uint8_t));
   *chMode = CH_MODE_UNDEFINED;
 
   /* Determine how many channels are assigned to each channels each group: */
@@ -598,7 +598,7 @@ static PCMDMX_ERROR getChannelMode(
       }
     }
     if (mapDist <= PCMDMX_THRESHOLD_MAP_HEAT_1) {
-      offsetTable[mapPos] = (UCHAR)ch;
+      offsetTable[mapPos] = (uint8_t)ch;
       mapped[ch] = 1;
       numMappedInChs += 1;
     }
@@ -631,7 +631,7 @@ static PCMDMX_ERROR getChannelMode(
            || ((spkrPos[ch].x == 0) &&
                (spkrSlotPos[mapPos].x ==
                 0)))) { /* Assign center channels to center slots only. */
-        offsetTable[mapPos] = (UCHAR)ch;
+        offsetTable[mapPos] = (uint8_t)ch;
         mapped[ch] = 1;
         numMappedInChs += 1;
       }
@@ -656,7 +656,7 @@ static PCMDMX_ERROR getChannelMode(
         }
       }
       if (mapDist < PCMDMX_THRESHOLD_MAP_HEAT_3) {
-        offsetTable[ch] = (UCHAR)mapPos;
+        offsetTable[ch] = (uint8_t)mapPos;
         mapped[mapPos] = 1;
         numMappedInChs += 1;
         if ((spkrPos[mapPos].x == 0) && (spkrSlotPos[ch].x != 0) &&
@@ -697,8 +697,8 @@ static void getChannelDescription(
     const PCM_DMX_CHANNEL_MODE chMode,         /* in */
     const FDK_channelMapDescr *const mapDescr, /* in */
     AUDIO_CHANNEL_TYPE channelType[],          /* out */
-    UCHAR channelIndices[],                    /* out */
-    UCHAR offsetTable[(8)]                     /* out */
+    uint8_t channelIndices[],                    /* out */
+    uint8_t offsetTable[(8)]                     /* out */
 ) {
   int32_t grpIdx, plainIdx, numPlains = 1, numTotalChannels = 0;
   int32_t chCfg, ch = 0;
@@ -710,8 +710,8 @@ static void getChannelDescription(
 
   /* Init output arrays */
   FDKmemclear(channelType, (8) * sizeof(AUDIO_CHANNEL_TYPE));
-  FDKmemclear(channelIndices, (8) * sizeof(UCHAR));
-  FDKmemset(offsetTable, 255, (8) * sizeof(UCHAR));
+  FDKmemclear(channelIndices, (8) * sizeof(uint8_t));
+  FDKmemset(offsetTable, 255, (8) * sizeof(uint8_t));
 
   /* Summerize to get the total number of channels */
   for (grpIdx = 0; grpIdx < (4); grpIdx += 1) {
@@ -747,7 +747,7 @@ static void getChannelDescription(
 
   for (plainIdx = 0; plainIdx < numPlains; plainIdx += 1) {
     PCM_DMX_CHANNEL_MODE plainChMode;
-    UCHAR numChInGrp[(4)];
+    uint8_t numChInGrp[(4)];
 
     plainChMode = getChMode4Plain(plainIdx, chMode, chCfg);
 
@@ -761,8 +761,8 @@ static void getChannelDescription(
     if ((numChInGrp[CH_GROUP_FRONT] & 0x1) && (plainIdx == CH_PLAIN_NORMAL)) {
       /* Odd number of front channels -> we have a center channel.
          In MPEG-4 the center has the index 0. */
-      int32_t mappedIdx = FDK_chMapDescr_getMapValue(mapDescr, (UCHAR)ch, chCfg);
-      offsetTable[CENTER_FRONT_CHANNEL] = (UCHAR)mappedIdx;
+      int32_t mappedIdx = FDK_chMapDescr_getMapValue(mapDescr, (uint8_t)ch, chCfg);
+      offsetTable[CENTER_FRONT_CHANNEL] = (uint8_t)mappedIdx;
       channelType[mappedIdx] = ACT_FRONT;
       channelIndices[mappedIdx] = 0;
       ch += 1;
@@ -818,7 +818,7 @@ static void getChannelDescription(
 
       /* Map all channels in this group */
       for (; chIdx < numChInGrp[grpIdx]; chIdx += 1) {
-        int32_t mappedIdx = FDK_chMapDescr_getMapValue(mapDescr, (UCHAR)ch, chCfg);
+        int32_t mappedIdx = FDK_chMapDescr_getMapValue(mapDescr, (uint8_t)ch, chCfg);
         if ((chIdx == maxChannels) || (offsetTable[chMapPos] < 255)) {
           /* No space left in this channel group! */
           if (offsetTable[LEFT_MULTIPRPS_CHANNEL] ==
@@ -828,9 +828,9 @@ static void getChannelDescription(
             FDK_ASSERT(0);
           }
         }
-        offsetTable[chMapPos] = (UCHAR)mappedIdx;
+        offsetTable[chMapPos] = (uint8_t)mappedIdx;
         channelType[mappedIdx] = type;
-        channelIndices[mappedIdx] = (UCHAR)chIdx;
+        channelIndices[mappedIdx] = (uint8_t)chIdx;
         chMapPos += 1;
         ch += 1;
       }
@@ -955,7 +955,7 @@ static void dmxAddChannel(FIXP_DMX mixFactors[(8)][(8)],
  * @param [out] The common scale factor of the downmix matrix.
  * @returns     An error code.
  **/
-static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
+static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
                                   PCM_DMX_CHANNEL_MODE inChMode,
                                   const PCM_DMX_CHANNEL_MODE outChMode,
                                   const PCM_DMX_USER_PARAMS *pParams,
@@ -1685,7 +1685,7 @@ PCMDMX_ERROR pcmDmx_SetParam(HANDLE_PCM_DOWNMIX self, const PCMDMX_PARAM param,
       if (self == NULL) {
         return (PCMDMX_INVALID_HANDLE);
       }
-      self->userParams.frameDelay = (UCHAR)value;
+      self->userParams.frameDelay = (uint8_t)value;
       break;
 
     case MIN_NUMBER_OF_OUTPUT_CHANNELS:
@@ -1868,7 +1868,7 @@ PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self, HANDLE_FDK_BITSTREAM hBs,
     if (FDKreadBit(hBs)) skip4Dmx += 8;
   } else {
     FDKpushFor(hBs, 2); /* drc presentation mode */
-    pBsMetaData->pseudoSurround = (SCHAR)FDKreadBit(hBs);
+    pBsMetaData->pseudoSurround = (int8_t)FDKreadBit(hBs);
     FDKpushFor(hBs, 4); /* reserved bits */
   }
 
@@ -1896,13 +1896,13 @@ PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self, HANDLE_FDK_BITSTREAM hBs,
   /* downmix_levels_MPEGX */
   if (dmxLvlAvail) {
     if (FDKreadBit(hBs)) { /* center_mix_level_on */
-      pBsMetaData->cLevIdx = (UCHAR)FDKreadBits(hBs, 3);
+      pBsMetaData->cLevIdx = (uint8_t)FDKreadBits(hBs, 3);
       foundNewData |= TYPE_DSE_CLEV_DATA;
     } else {
       FDKreadBits(hBs, 3);
     }
     if (FDKreadBit(hBs)) { /* surround_mix_level_on */
-      pBsMetaData->sLevIdx = (UCHAR)FDKreadBits(hBs, 3);
+      pBsMetaData->sLevIdx = (uint8_t)FDKreadBits(hBs, 3);
       foundNewData |= TYPE_DSE_SLEV_DATA;
     } else {
       FDKreadBits(hBs, 3);
@@ -1923,20 +1923,20 @@ PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self, HANDLE_FDK_BITSTREAM hBs,
     FDKreadBits(hBs, 4); /* reserved bits */
 
     if (extDmxLvlSt) {
-      pBsMetaData->dmixIdxA = (UCHAR)FDKreadBits(hBs, 3);
-      pBsMetaData->dmixIdxB = (UCHAR)FDKreadBits(hBs, 3);
+      pBsMetaData->dmixIdxA = (uint8_t)FDKreadBits(hBs, 3);
+      pBsMetaData->dmixIdxB = (uint8_t)FDKreadBits(hBs, 3);
       FDKreadBits(hBs, 2); /* reserved bits */
       foundNewData |= TYPE_DSE_DMIX_AB_DATA;
     }
     if (extDmxGainSt) {
-      pBsMetaData->dmxGainIdx5 = (UCHAR)FDKreadBits(hBs, 7);
+      pBsMetaData->dmxGainIdx5 = (uint8_t)FDKreadBits(hBs, 7);
       FDKreadBit(hBs); /* reserved bit */
-      pBsMetaData->dmxGainIdx2 = (UCHAR)FDKreadBits(hBs, 7);
+      pBsMetaData->dmxGainIdx2 = (uint8_t)FDKreadBits(hBs, 7);
       FDKreadBit(hBs); /* reserved bit */
       foundNewData |= TYPE_DSE_DMX_GAIN_DATA;
     }
     if (extDmxLfeSt) {
-      pBsMetaData->dmixIdxLfe = (UCHAR)FDKreadBits(hBs, 4);
+      pBsMetaData->dmixIdxLfe = (uint8_t)FDKreadBits(hBs, 4);
       FDKreadBits(hBs, 4); /* reserved bits */
       foundNewData |= TYPE_DSE_DMIX_LFE_DATA;
     }
@@ -1960,7 +1960,7 @@ PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self, HANDLE_FDK_BITSTREAM hBs,
 /*
  * Read DMX meta-data from a data stream element.
  */
-PCMDMX_ERROR pcmDmx_ReadDvbAncData(HANDLE_PCM_DOWNMIX self, UCHAR *pAncDataBuf,
+PCMDMX_ERROR pcmDmx_ReadDvbAncData(HANDLE_PCM_DOWNMIX self, uint8_t *pAncDataBuf,
                                    uint32_t ancDataBytes, int32_t isMpeg2) {
   PCMDMX_ERROR errorStatus = PCMDMX_OK;
   FDK_BITSTREAM bs;
@@ -2035,7 +2035,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
                                const int32_t pcmBufSize, uint32_t frameSize,
                                int32_t *nChannels, int32_t fInterleaved,
                                AUDIO_CHANNEL_TYPE channelType[],
-                               UCHAR channelIndices[],
+                               uint8_t channelIndices[],
                                const FDK_channelMapDescr *const mapDescr,
                                int32_t *pDmxOutScale) {
   PCM_DMX_USER_PARAMS *pParam = NULL;
@@ -2048,7 +2048,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
   int32_t inStride, outStride, offset;
   int32_t dmxMaxScale, dmxScale;
   int32_t slot;
-  UCHAR inOffsetTable[(8)];
+  uint8_t inOffsetTable[(8)];
 
   DMX_BS_META_DATA bsMetaData;
 
@@ -2161,7 +2161,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
     DMX_PCM *pInPcm[(8)] = {NULL};
     DMX_PCM *pOutPcm[(8)] = {NULL};
     FIXP_DMX mixFactors[(8)][(8)];
-    UCHAR outOffsetTable[(8)];
+    uint8_t outOffsetTable[(8)];
     uint32_t sample;
     int32_t chCfg = 0;
     int32_t bypScale = 0;
@@ -2229,7 +2229,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
       int32_t inCh, outCh, map[(8)];
       int32_t ch = 0;
       for (inCh = 0; inCh < (8); inCh += 1) {
-        if (inOffsetTable[inCh] < (UCHAR)numInChannels) {
+        if (inOffsetTable[inCh] < (uint8_t)numInChannels) {
           pInPcm[ch] = &pPcmBuf[inOffsetTable[inCh] * offset];
           map[ch++] = inCh;
         }
@@ -2250,7 +2250,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
       /* Set channel pointer for output. Remove empty cols. */
       ch = 0;
       for (outCh = 0; outCh < (8); outCh += 1) {
-        if (outOffsetTable[outCh] < (UCHAR)numOutChannels) {
+        if (outOffsetTable[outCh] < (uint8_t)numOutChannels) {
           pOutPcm[ch] = &pPcmBuf[outOffsetTable[outCh] * offset];
           map[ch++] = outCh;
         }
@@ -2305,7 +2305,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
        - - - - - - - - - - - - - - - - - - */
   else if (numInChannels < numOutChannels) { /* Apply rudimentary upmix */
     /* Set up channel pointer */
-    UCHAR outOffsetTable[(8)];
+    uint8_t outOffsetTable[(8)];
 
     /* FIRST STAGE
          Create a stereo/dual channel signal */
@@ -2351,7 +2351,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
       /* Prepare for next stage: */
       inStride = outStride;
       inChMode = outChMode;
-      FDKmemcpy(inOffsetTable, outOffsetTable, (8) * sizeof(UCHAR));
+      FDKmemcpy(inOffsetTable, outOffsetTable, (8) * sizeof(uint8_t));
     }
 
     /* SECOND STAGE
@@ -2362,8 +2362,8 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
       DMX_PCM *pOut[(8)] = {NULL};
       uint32_t sample;
       AUDIO_CHANNEL_TYPE inChTypes[(8)];
-      UCHAR inChIndices[(8)];
-      UCHAR numChPerGrp[2][(4)];
+      uint8_t inChIndices[(8)];
+      uint8_t numChPerGrp[2][(4)];
       int32_t nContentCh = 0; /* Number of channels with content */
       int32_t nEmptyCh = 0;   /* Number of channels with content */
       int32_t ch, chGrp, isCompatible = 1;
@@ -2374,9 +2374,9 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
                 numInChannels * sizeof(AUDIO_CHANNEL_TYPE));
       FDKmemclear(inChTypes + numInChannels,
                   ((8) - numInChannels) * sizeof(AUDIO_CHANNEL_TYPE));
-      FDKmemcpy(inChIndices, channelIndices, numInChannels * sizeof(UCHAR));
+      FDKmemcpy(inChIndices, channelIndices, numInChannels * sizeof(uint8_t));
       FDKmemclear(inChIndices + numInChannels,
-                  ((8) - numInChannels) * sizeof(UCHAR));
+                  ((8) - numInChannels) * sizeof(uint8_t));
 
       /* Set this stages output stride and channel mode: */
       outStride = (fInterleaved) ? numOutChannels : 1;
@@ -2414,7 +2414,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
         }
       } else {
         /* Just copy and extend the original config */
-        FDKmemcpy(outOffsetTable, inOffsetTable, (8) * sizeof(UCHAR));
+        FDKmemcpy(outOffsetTable, inOffsetTable, (8) * sizeof(uint8_t));
       }
 
       /* Set I/O channel pointer.
@@ -2473,7 +2473,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
                                                    (frameSize - 1) * outStride];
             /* Expand output signalling */
             channelType[outOffsetTable[ch]] = ACT_NONE;
-            channelIndices[outOffsetTable[ch]] = (UCHAR)nEmptyCh;
+            channelIndices[outOffsetTable[ch]] = (uint8_t)nEmptyCh;
             outOffsetTable[ch] = 255;
             nEmptyCh += 1;
           }
@@ -2484,7 +2484,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
           pOut[ch] = &pPcmBuf[ch * offset + (frameSize - 1) * outStride];
           /* Expand output signalling */
           channelType[ch] = ACT_NONE;
-          channelIndices[ch] = (UCHAR)nEmptyCh;
+          channelIndices[ch] = (uint8_t)nEmptyCh;
           nEmptyCh += 1;
         }
       }

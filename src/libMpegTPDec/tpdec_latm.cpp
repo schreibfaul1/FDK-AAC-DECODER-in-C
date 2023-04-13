@@ -107,14 +107,14 @@ amm-info@iis.fraunhofer.de
 #define TPDEC_TRACKINDEX(p, l) (1 * (p) + (l))
 
 static uint32_t CLatmDemux_GetValue(HANDLE_FDK_BITSTREAM bs) {
-  UCHAR bytesForValue = 0, tmp = 0;
+  uint8_t bytesForValue = 0, tmp = 0;
   int32_t value = 0;
 
-  bytesForValue = (UCHAR)FDKreadBits(bs, 2);
+  bytesForValue = (uint8_t)FDKreadBits(bs, 2);
 
   for (uint32_t i = 0; i <= bytesForValue; i++) {
     value <<= 8;
-    tmp = (UCHAR)FDKreadBits(bs, 8);
+    tmp = (uint8_t)FDKreadBits(bs, 8);
     value += tmp;
   }
 
@@ -132,8 +132,8 @@ static TRANSPORTDEC_ERROR CLatmDemux_ReadAudioMuxElement(
 
     if (!pLatmDemux->m_useSameStreamMux) {
       int32_t i;
-      UCHAR configChanged = 0;
-      UCHAR configMode = 0;
+      uint8_t configChanged = 0;
+      uint8_t configMode = 0;
 
       FDK_BITSTREAM bsAnchor;
 
@@ -283,7 +283,7 @@ TRANSPORTDEC_ERROR CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
 TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
     HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux,
     CSTpCallBacks *pTpDecCallbacks, CSAudioSpecificConfig *pAsc,
-    int32_t *pfConfigFound, UCHAR configMode, UCHAR configChanged) {
+    int32_t *pfConfigFound, uint8_t configMode, uint8_t configChanged) {
   CSAudioSpecificConfig ascDummy; /* the actual config is needed for flushing,
                                      after that new config can be parsed */
   CSAudioSpecificConfig *pAscDummy;
@@ -291,7 +291,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
   pLatmDemux->usacExplicitCfgChanged = 0;
   LATM_LAYER_INFO *p_linfo = NULL;
   TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
-  UCHAR updateConfig[1 * 1] = {0};
+  uint8_t updateConfig[1 * 1] = {0};
 
   pLatmDemux->m_AudioMuxVersion = FDKreadBits(bs, 1);
 
@@ -346,7 +346,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
           }
         } else {
           uint32_t usacConfigLengthPrev = 0;
-          UCHAR usacConfigPrev[TP_USAC_MAX_CONFIG_LEN];
+          uint8_t usacConfigPrev[TP_USAC_MAX_CONFIG_LEN];
 
           if (!(pLatmDemux->applyAsc) &&
               (pAsc[TPDEC_TRACKINDEX(prog, lay)].m_aot == AOT_USAC)) {
@@ -580,7 +580,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
 
 bail:
   if (ErrorStatus != TRANSPORTDEC_OK) {
-    UCHAR applyAsc = pLatmDemux->applyAsc;
+    uint8_t applyAsc = pLatmDemux->applyAsc;
     FDKmemclear(pLatmDemux, sizeof(CLatmDemux)); /* reset structure */
     pLatmDemux->applyAsc = applyAsc;
   } else {
@@ -628,11 +628,11 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadPayloadLengthInfo(HANDLE_FDK_BITSTREAM bs,
 }
 
 int32_t CLatmDemux_ReadAuChunkLengthInfo(HANDLE_FDK_BITSTREAM bs) {
-  UCHAR endFlag;
+  uint8_t endFlag;
   int32_t len = 0;
 
   do {
-    UCHAR tmp = (UCHAR)FDKreadBits(bs, 8);
+    uint8_t tmp = (uint8_t)FDKreadBits(bs, 8);
     endFlag = (tmp < 255);
 
     len += tmp;

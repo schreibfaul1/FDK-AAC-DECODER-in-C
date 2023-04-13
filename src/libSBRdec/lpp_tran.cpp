@@ -180,7 +180,7 @@ static int32_t mapInvfMode(INVF_MODE mode, INVF_MODE prevMode,
 
 static void inverseFilteringLevelEmphasis(
     HANDLE_SBR_LPP_TRANS hLppTrans, /*!< Handle of lpp transposer  */
-    UCHAR nInvfBands,              /*!< Number of bands for inverse filtering */
+    uint8_t nInvfBands,              /*!< Number of bands for inverse filtering */
     INVF_MODE *sbr_invf_mode,      /*!< Current inverse filtering modes */
     INVF_MODE *sbr_invf_mode_prev, /*!< Previous inverse filtering modes */
     int32_t *bwVector             /*!< Resulting filtering levels */
@@ -218,7 +218,7 @@ static void inverseFilteringLevelEmphasis(
 static inline void calc_qmfBufferReal(int32_t **qmfBufferReal,
                                       const int32_t *const lowBandReal,
                                       const int32_t startSample,
-                                      const int32_t stopSample, const UCHAR hiBand,
+                                      const int32_t stopSample, const uint8_t hiBand,
                                       const int32_t dynamicScale, const int32_t descale,
                                       const FIXP_SGL a0r, const FIXP_SGL a1r) {
   int32_t accu1, accu2;
@@ -835,7 +835,7 @@ void lppTransposer(
          loBand < pSettings->lbStopPatching; loBand++) {
       patch = 0;
       while (patch < pSettings->noOfPatches) {
-        UCHAR hiBand = loBand + patchParam[patch].targetBandOffs;
+        uint8_t hiBand = loBand + patchParam[patch].targetBandOffs;
 
         if (loBand < patchParam[patch].sourceStartBand ||
             loBand >= patchParam[patch].sourceStopBand ||
@@ -1246,12 +1246,12 @@ createLppTransposer(
     HANDLE_SBR_LPP_TRANS hs,        /*!< Handle of low power transposer  */
     TRANSPOSER_SETTINGS *pSettings, /*!< Pointer to settings */
     const int32_t highBandStartSb,      /*!< ? */
-    UCHAR *v_k_master,              /*!< Master table */
+    uint8_t *v_k_master,              /*!< Master table */
     const int32_t numMaster,            /*!< Valid entries in master table */
     const int32_t usb,                  /*!< Highband area stop subband */
     const int32_t timeSlots,            /*!< Number of time slots */
     const int32_t nCols,                /*!< Number of colums (codec qmf bank) */
-    UCHAR *noiseBandTable,  /*!< Mapping of SBR noise bands to QMF bands */
+    uint8_t *noiseBandTable,  /*!< Mapping of SBR noise bands to QMF bands */
     const int32_t noNoiseBands, /*!< Number of noise bands */
     uint32_t fs,                /*!< Sample Frequency */
     const int32_t chan,         /*!< Channel number */
@@ -1281,8 +1281,8 @@ createLppTransposer(
   return SBRDEC_OK;
 }
 
-static int32_t findClosestEntry(UCHAR goalSb, UCHAR *v_k_master, UCHAR numMaster,
-                            UCHAR direction) {
+static int32_t findClosestEntry(uint8_t goalSb, uint8_t *v_k_master, uint8_t numMaster,
+                            uint8_t direction) {
   int32_t index;
 
   if (goalSb <= v_k_master[0]) return v_k_master[0];
@@ -1313,12 +1313,12 @@ static int32_t findClosestEntry(UCHAR goalSb, UCHAR *v_k_master, UCHAR numMaster
 SBR_ERROR
 resetLppTransposer(
     HANDLE_SBR_LPP_TRANS hLppTrans, /*!< Handle of lpp transposer  */
-    UCHAR highBandStartSb,          /*!< High band area: start subband */
-    UCHAR *v_k_master,              /*!< Master table */
-    UCHAR numMaster,                /*!< Valid entries in master table */
-    UCHAR *noiseBandTable, /*!< Mapping of SBR noise bands to QMF bands */
-    UCHAR noNoiseBands,    /*!< Number of noise bands */
-    UCHAR usb,             /*!< High band area: stop subband */
+    uint8_t highBandStartSb,          /*!< High band area: start subband */
+    uint8_t *v_k_master,              /*!< Master table */
+    uint8_t numMaster,                /*!< Valid entries in master table */
+    uint8_t *noiseBandTable, /*!< Mapping of SBR noise bands to QMF bands */
+    uint8_t noNoiseBands,    /*!< Number of noise bands */
+    uint8_t usb,             /*!< High band area: stop subband */
     uint32_t fs                /*!< SBR output sampling frequency */
 ) {
   TRANSPOSER_SETTINGS *pSettings = hLppTrans->pSettings;

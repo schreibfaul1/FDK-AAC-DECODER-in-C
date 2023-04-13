@@ -114,14 +114,14 @@ SBR_ERROR ResetPsDec(HANDLE_PS_DEC h_ps_d);
   \return index of huffman codebook table
 
 ****************************************************************************/
-static SCHAR decode_huff_cw(
+static int8_t decode_huff_cw(
     Huffman h,                    /*!< pointer to huffman codebook table */
     HANDLE_FDK_BITSTREAM hBitBuf, /*!< Handle to Bitbuffer */
     int32_t *length)                  /*!< length of huffman codeword (or NULL) */
 {
-  UCHAR bit = 0;
-  SCHAR index = 0;
-  UCHAR bitCount = 0;
+  uint8_t bit = 0;
+  int8_t index = 0;
+  uint8_t bitCount = 0;
 
   while (index >= 0) {
     bit = FDKreadBits(hBitBuf, 1);
@@ -142,7 +142,7 @@ static SCHAR decode_huff_cw(
 
 ****************************************************************************/
 
-static SCHAR limitMinMax(SCHAR i, SCHAR min, SCHAR max) {
+static int8_t limitMinMax(int8_t i, int8_t min, int8_t max) {
   if (i < min)
     return min;
   else if (i > max)
@@ -163,12 +163,12 @@ static SCHAR limitMinMax(SCHAR i, SCHAR min, SCHAR max) {
 
 ****************************************************************************/
 static void deltaDecodeArray(
-    SCHAR enable, SCHAR *aIndex,  /*!< ICC/IID parameters */
-    SCHAR *aPrevFrameIndex,       /*!< ICC/IID parameters  of previous frame */
-    SCHAR DtDf, UCHAR nrElements, /*!< as conveyed in bitstream */
+    int8_t enable, int8_t *aIndex,  /*!< ICC/IID parameters */
+    int8_t *aPrevFrameIndex,       /*!< ICC/IID parameters  of previous frame */
+    int8_t DtDf, uint8_t nrElements, /*!< as conveyed in bitstream */
                                   /*!< output array size: nrElements*stride */
-    UCHAR stride,                 /*!< 1=dflt, 2=half freq. resolution */
-    SCHAR minIdx, SCHAR maxIdx) {
+    uint8_t stride,                 /*!< 1=dflt, 2=half freq. resolution */
+    int8_t minIdx, int8_t maxIdx) {
   int32_t i;
 
   /* Delta decode */
@@ -205,8 +205,8 @@ static void deltaDecodeArray(
   \return none
 
 ****************************************************************************/
-static void map34IndexTo20(SCHAR *aIndex, /*!< decoded ICC/IID parameters */
-                           UCHAR noBins)  /*!< number of stereo bands     */
+static void map34IndexTo20(int8_t *aIndex, /*!< decoded ICC/IID parameters */
+                           uint8_t noBins)  /*!< number of stereo bands     */
 {
   aIndex[0] = (2 * aIndex[0] + aIndex[1]) / 3;
   aIndex[1] = (aIndex[1] + 2 * aIndex[2]) / 3;
@@ -242,10 +242,10 @@ static void map34IndexTo20(SCHAR *aIndex, /*!< decoded ICC/IID parameters */
 
 ****************************************************************************/
 int32_t DecodePs(struct PS_DEC *h_ps_d,  /*!< PS handle */
-             const UCHAR frameError, /*!< Flag telling that frame had errors */
+             const uint8_t frameError, /*!< Flag telling that frame had errors */
              PS_DEC_COEFFICIENTS *pScratch) {
   MPEG_PS_BS_DATA *pBsData;
-  UCHAR gr, env;
+  uint8_t gr, env;
   int32_t bPsHeaderValid, bPsDataAvail;
 
   /* Assign Scratch */
@@ -280,10 +280,10 @@ int32_t DecodePs(struct PS_DEC *h_ps_d,  /*!< PS handle */
    * Decode bitstream payload or prepare parameter for concealment:
    */
   for (env = 0; env < pBsData->noEnv; env++) {
-    SCHAR *aPrevIidIndex;
-    SCHAR *aPrevIccIndex;
+    int8_t *aPrevIidIndex;
+    int8_t *aPrevIccIndex;
 
-    UCHAR noIidSteps = pBsData->bFineIidQ ? NO_IID_STEPS_FINE : NO_IID_STEPS;
+    uint8_t noIidSteps = pBsData->bFineIidQ ? NO_IID_STEPS_FINE : NO_IID_STEPS;
 
     if (env == 0) {
       aPrevIidIndex = h_ps_d->specificTo.mpeg.aIidPrevFrameIndex;
@@ -389,8 +389,8 @@ int32_t DecodePs(struct PS_DEC *h_ps_d,  /*!< PS handle */
 
     /* enforce strictly monotonic increasing borders */
     for (env = 1; env < pBsData->noEnv; env++) {
-      UCHAR thr;
-      thr = (UCHAR)h_ps_d->noSubSamples - (pBsData->noEnv - env);
+      uint8_t thr;
+      thr = (uint8_t)h_ps_d->noSubSamples - (pBsData->noEnv - env);
       if (pBsData->aEnvStartStop[env] > thr) {
         pBsData->aEnvStartStop[env] = thr;
       } else {
@@ -404,7 +404,7 @@ int32_t DecodePs(struct PS_DEC *h_ps_d,  /*!< PS handle */
 
   /* copy data prior to possible 20<->34 in-place mapping */
   for (env = 0; env < pBsData->noEnv; env++) {
-    UCHAR i;
+    uint8_t i;
     for (i = 0; i < NO_HI_RES_IID_BINS; i++) {
       h_ps_d->specificTo.mpeg.pCoef->aaIidIndexMapped[env][i] =
           pBsData->aaIidIndex[env][i];
@@ -452,11 +452,11 @@ uint32_t ReadPsData(
 ) {
   MPEG_PS_BS_DATA *pBsData;
 
-  UCHAR gr, env;
-  SCHAR dtFlag;
+  uint8_t gr, env;
+  int8_t dtFlag;
   int32_t startbits;
   Huffman CurrentTable;
-  SCHAR bEnableHeader;
+  int8_t bEnableHeader;
 
   if (!h_ps_d) return 0;
 
@@ -470,35 +470,35 @@ uint32_t ReadPsData(
 
   startbits = (int32_t)FDKgetValidBits(hBitBuf);
 
-  bEnableHeader = (SCHAR)FDKreadBits(hBitBuf, 1);
+  bEnableHeader = (int8_t)FDKreadBits(hBitBuf, 1);
 
   /* Read header */
   if (bEnableHeader) {
     pBsData->bPsHeaderValid = 1;
-    pBsData->bEnableIid = (UCHAR)FDKreadBits(hBitBuf, 1);
+    pBsData->bEnableIid = (uint8_t)FDKreadBits(hBitBuf, 1);
     if (pBsData->bEnableIid) {
-      pBsData->modeIid = (UCHAR)FDKreadBits(hBitBuf, 3);
+      pBsData->modeIid = (uint8_t)FDKreadBits(hBitBuf, 3);
     }
 
-    pBsData->bEnableIcc = (UCHAR)FDKreadBits(hBitBuf, 1);
+    pBsData->bEnableIcc = (uint8_t)FDKreadBits(hBitBuf, 1);
     if (pBsData->bEnableIcc) {
-      pBsData->modeIcc = (UCHAR)FDKreadBits(hBitBuf, 3);
+      pBsData->modeIcc = (uint8_t)FDKreadBits(hBitBuf, 3);
     }
 
-    pBsData->bEnableExt = (UCHAR)FDKreadBits(hBitBuf, 1);
+    pBsData->bEnableExt = (uint8_t)FDKreadBits(hBitBuf, 1);
   }
 
-  pBsData->bFrameClass = (UCHAR)FDKreadBits(hBitBuf, 1);
+  pBsData->bFrameClass = (uint8_t)FDKreadBits(hBitBuf, 1);
   if (pBsData->bFrameClass == 0) {
     /* FIX_BORDERS NoEnv=0,1,2,4 */
     pBsData->noEnv =
-        FDK_sbrDecoder_aFixNoEnvDecode[(UCHAR)FDKreadBits(hBitBuf, 2)];
+        FDK_sbrDecoder_aFixNoEnvDecode[(uint8_t)FDKreadBits(hBitBuf, 2)];
     /* all additional handling of env borders is now in DecodePs() */
   } else {
     /* VAR_BORDERS NoEnv=1,2,3,4 */
-    pBsData->noEnv = 1 + (UCHAR)FDKreadBits(hBitBuf, 2);
+    pBsData->noEnv = 1 + (uint8_t)FDKreadBits(hBitBuf, 2);
     for (env = 1; env < pBsData->noEnv + 1; env++)
-      pBsData->aEnvStartStop[env] = ((UCHAR)FDKreadBits(hBitBuf, 5)) + 1;
+      pBsData->aEnvStartStop[env] = ((uint8_t)FDKreadBits(hBitBuf, 5)) + 1;
     /* all additional handling of env borders is now in DecodePs() */
   }
 
@@ -536,7 +536,7 @@ uint32_t ReadPsData(
   /* Extract IID data */
   if (pBsData->bEnableIid) {
     for (env = 0; env < pBsData->noEnv; env++) {
-      dtFlag = (SCHAR)FDKreadBits(hBitBuf, 1);
+      dtFlag = (int8_t)FDKreadBits(hBitBuf, 1);
       if (!dtFlag) {
         if (pBsData->bFineIidQ)
           CurrentTable = (Huffman)&aBookPsIidFineFreqDecode;
@@ -559,7 +559,7 @@ uint32_t ReadPsData(
   /* Extract ICC data */
   if (pBsData->bEnableIcc) {
     for (env = 0; env < pBsData->noEnv; env++) {
-      dtFlag = (SCHAR)FDKreadBits(hBitBuf, 1);
+      dtFlag = (int8_t)FDKreadBits(hBitBuf, 1);
       if (!dtFlag)
         CurrentTable = (Huffman)&aBookPsIccFreqDecode;
       else

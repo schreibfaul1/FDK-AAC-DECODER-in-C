@@ -178,7 +178,7 @@ SBR_ERROR QmfTransposerCreate(HANDLE_HBE_TRANSPOSER *hQmfTransposer,
                               int32_t bSbr41);
 
 SBR_ERROR QmfTransposerReInit(HANDLE_HBE_TRANSPOSER hQmfTransposer,
-                              UCHAR *FreqBandTable[2], UCHAR NSfb[2]);
+                              uint8_t *FreqBandTable[2], uint8_t NSfb[2]);
 
 void QmfTransposerClose(HANDLE_HBE_TRANSPOSER hQmfTransposer);
 

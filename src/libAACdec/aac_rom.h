@@ -126,7 +126,7 @@ amm-info@iis.fraunhofer.de
 
 extern const int32_t InverseQuantTable[INV_QUANT_TABLESIZE + 1];
 extern const int32_t MantissaTable[4][14];
-extern const SCHAR ExponentTable[4][14];
+extern const int8_t ExponentTable[4][14];
 
 #define NUM_LD_COEF_512 1536
 #define NUM_LD_COEF_480 1440
@@ -145,8 +145,8 @@ extern const FIXP_WTB LowDelaySynthesis120[360];
 typedef struct {
   const int16_t *sfbOffsetLong;
   const int16_t *sfbOffsetShort;
-  UCHAR numberOfSfbLong;
-  UCHAR numberOfSfbShort;
+  uint8_t numberOfSfbLong;
+  uint8_t numberOfSfbShort;
 } SFB_INFO;
 
 extern const SFB_INFO sfbOffsetTables[5][16];
@@ -156,9 +156,9 @@ enum { HuffmanBits = 2, HuffmanEntries = (1 << HuffmanBits) };
 
 typedef struct {
   const uint16_t (*CodeBook)[HuffmanEntries];
-  UCHAR Dimension;
-  UCHAR numBits;
-  UCHAR Offset;
+  uint8_t Dimension;
+  uint8_t numBits;
+  uint8_t Offset;
 } CodeBookDescription;
 
 extern const CodeBookDescription AACcodeBookDescriptionTable[13];
@@ -166,37 +166,37 @@ extern const CodeBookDescription AACcodeBookDescriptionSCL;
 
 extern const STATEFUNC aStateConstant2State[];
 
-extern const SCHAR aCodebook2StartInt[];
+extern const int8_t aCodebook2StartInt[];
 
-extern const UCHAR aMinOfCbPair[];
-extern const UCHAR aMaxOfCbPair[];
+extern const uint8_t aMinOfCbPair[];
+extern const uint8_t aMaxOfCbPair[];
 
-extern const UCHAR aMaxCwLen[];
-extern const UCHAR aDimCb[];
-extern const UCHAR aDimCbShift[];
-extern const UCHAR aSignCb[];
-extern const UCHAR aCbPriority[];
+extern const uint8_t aMaxCwLen[];
+extern const uint8_t aDimCb[];
+extern const uint8_t aDimCbShift[];
+extern const uint8_t aSignCb[];
+extern const uint8_t aCbPriority[];
 
 extern const uint32_t *aHuffTable[];
-extern const SCHAR *aQuantTable[];
+extern const int8_t *aQuantTable[];
 
 extern const uint16_t aLargestAbsoluteValue[];
 
 extern const uint32_t aHuffTreeRvlcEscape[];
 extern const uint32_t aHuffTreeRvlCodewds[];
 
-extern const UCHAR tns_max_bands_tbl[13][2];
+extern const uint8_t tns_max_bands_tbl[13][2];
 
-extern const UCHAR tns_max_bands_tbl_480[13];
-extern const UCHAR tns_max_bands_tbl_512[13];
+extern const uint8_t tns_max_bands_tbl_480[13];
+extern const uint8_t tns_max_bands_tbl_512[13];
 
 #define FIXP_TCC int32_t
 
 extern const FIXP_TCC FDKaacDec_tnsCoeff3[8];
 extern const FIXP_TCC FDKaacDec_tnsCoeff4[16];
 
-extern const UCHAR FDKaacDec_tnsCoeff3_gain_ld[];
-extern const UCHAR FDKaacDec_tnsCoeff4_gain_ld[];
+extern const uint8_t FDKaacDec_tnsCoeff3_gain_ld[];
+extern const uint8_t FDKaacDec_tnsCoeff4_gain_ld[];
 
 extern const uint16_t AacDec_randomSign[AAC_NF_NO_RANDOM_VAL / 16];
 
@@ -205,8 +205,8 @@ extern const int32_t offsetTab[2][16];
 
 /* Channel mapping indices for time domain I/O.
    The first dimension is the channel configuration index. */
-extern const UCHAR channelMappingTablePassthrough[15][8];
-extern const UCHAR channelMappingTableWAV[15][8];
+extern const uint8_t channelMappingTablePassthrough[15][8];
+extern const uint8_t channelMappingTableWAV[15][8];
 
 /* Lookup tables for elements in ER bitstream */
 extern const MP4_ELEMENT_ID elementsTab[AACDEC_MAX_CH_CONF]

@@ -131,23 +131,23 @@ typedef struct {
   uint32_t m_otherDataLength;
   uint32_t m_audioMuxLengthBytes; /* Length of LOAS payload */
 
-  UCHAR m_useSameStreamMux;
-  UCHAR m_AudioMuxVersion;
-  UCHAR m_AudioMuxVersionA;
-  UCHAR m_allStreamsSameTimeFraming;
-  UCHAR m_noSubFrames;
-  UCHAR m_numProgram;
-  UCHAR m_numLayer[LATM_MAX_PROG];
+  uint8_t m_useSameStreamMux;
+  uint8_t m_AudioMuxVersion;
+  uint8_t m_AudioMuxVersionA;
+  uint8_t m_allStreamsSameTimeFraming;
+  uint8_t m_noSubFrames;
+  uint8_t m_numProgram;
+  uint8_t m_numLayer[LATM_MAX_PROG];
 
-  UCHAR m_otherDataPresent;
-  UCHAR m_crcCheckPresent;
+  uint8_t m_otherDataPresent;
+  uint8_t m_crcCheckPresent;
 
-  SCHAR BufferFullnessAchieved;
-  UCHAR
+  int8_t BufferFullnessAchieved;
+  uint8_t
   usacExplicitCfgChanged;      /* explicit config in case of USAC and LOAS/LATM
                                   must be compared to IPF cfg */
-  UCHAR applyAsc;              /* apply ASC immediate without flushing */
-  UCHAR newCfgHasAudioPreRoll; /* the new (dummy parsed) config has an
+  uint8_t applyAsc;              /* apply ASC immediate without flushing */
+  uint8_t newCfgHasAudioPreRoll; /* the new (dummy parsed) config has an
                                   AudioPreRoll */
 } CLatmDemux;
 
@@ -176,7 +176,7 @@ TRANSPORTDEC_ERROR CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
 TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
     HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux,
     CSTpCallBacks *pTpDecCallbacks, CSAudioSpecificConfig *pAsc,
-    int32_t *pfConfigFound, UCHAR configMode, UCHAR configChanged);
+    int32_t *pfConfigFound, uint8_t configMode, uint8_t configChanged);
 
 TRANSPORTDEC_ERROR CLatmDemux_ReadPayloadLengthInfo(HANDLE_FDK_BITSTREAM bs,
                                                     CLatmDemux *pLatmDemux);

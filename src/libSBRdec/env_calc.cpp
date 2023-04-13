@@ -160,47 +160,47 @@ typedef struct {
   int32_t noiseLevel[MAX_FREQ_COEFFS];
   int32_t nrgSine[MAX_FREQ_COEFFS];
 
-  SCHAR nrgRef_e[MAX_FREQ_COEFFS];
-  SCHAR nrgEst_e[MAX_FREQ_COEFFS];
-  SCHAR nrgGain_e[MAX_FREQ_COEFFS];
-  SCHAR noiseLevel_e[MAX_FREQ_COEFFS];
-  SCHAR nrgSine_e[MAX_FREQ_COEFFS];
+  int8_t nrgRef_e[MAX_FREQ_COEFFS];
+  int8_t nrgEst_e[MAX_FREQ_COEFFS];
+  int8_t nrgGain_e[MAX_FREQ_COEFFS];
+  int8_t noiseLevel_e[MAX_FREQ_COEFFS];
+  int8_t nrgSine_e[MAX_FREQ_COEFFS];
   /* yet another exponent [0]: for ts < no_cols; [1]: for ts >= no_cols */
-  SCHAR exponent[2];
+  int8_t exponent[2];
 } ENV_CALC_NRGS;
 
-static void equalizeFiltBufferExp(int32_t *filtBuffer, SCHAR *filtBuffer_e,
-                                  int32_t *NrgGain, SCHAR *NrgGain_e,
+static void equalizeFiltBufferExp(int32_t *filtBuffer, int8_t *filtBuffer_e,
+                                  int32_t *NrgGain, int8_t *NrgGain_e,
                                   int32_t subbands);
 
 static void calcNrgPerSubband(int32_t **analysBufferReal,
                               int32_t **analysBufferImag, int32_t lowSubband,
                               int32_t highSubband, int32_t start_pos, int32_t next_pos,
-                              SCHAR frameExp, int32_t *nrgEst,
-                              SCHAR *nrgEst_e);
+                              int8_t frameExp, int32_t *nrgEst,
+                              int8_t *nrgEst_e);
 
 static void calcNrgPerSfb(int32_t **analysBufferReal,
                           int32_t **analysBufferImag, int32_t nSfb,
-                          UCHAR *freqBandTable, int32_t start_pos, int32_t next_pos,
-                          SCHAR input_e, int32_t *nrg_est, SCHAR *nrg_est_e);
+                          uint8_t *freqBandTable, int32_t start_pos, int32_t next_pos,
+                          int8_t input_e, int32_t *nrg_est, int8_t *nrg_est_e);
 
-static void calcSubbandGain(int32_t nrgRef, SCHAR nrgRef_e,
+static void calcSubbandGain(int32_t nrgRef, int8_t nrgRef_e,
                             ENV_CALC_NRGS *nrgs, int32_t c, int32_t tmpNoise,
-                            SCHAR tmpNoise_e, UCHAR sinePresentFlag,
-                            UCHAR sineMapped, int32_t noNoiseFlag);
+                            int8_t tmpNoise_e, uint8_t sinePresentFlag,
+                            uint8_t sineMapped, int32_t noNoiseFlag);
 
 static void calcAvgGain(ENV_CALC_NRGS *nrgs, int32_t lowSubband, int32_t highSubband,
-                        int32_t *sumRef_m, SCHAR *sumRef_e,
-                        int32_t *ptrAvgGain_m, SCHAR *ptrAvgGain_e);
+                        int32_t *sumRef_m, int8_t *sumRef_e,
+                        int32_t *ptrAvgGain_m, int8_t *ptrAvgGain_e);
 
 static void adjustTimeSlot_EldGrid(int32_t *ptrReal, ENV_CALC_NRGS *nrgs,
-                                   UCHAR *ptrHarmIndex, int32_t lowSubbands,
+                                   uint8_t *ptrHarmIndex, int32_t lowSubbands,
                                    int32_t noSubbands, int32_t scale_change,
                                    int32_t noNoiseFlag, int32_t *ptrPhaseIndex,
                                    int32_t scale_diff_low);
 
 static void adjustTimeSlotLC(int32_t *ptrReal, ENV_CALC_NRGS *nrgs,
-                             UCHAR *ptrHarmIndex, int32_t lowSubbands,
+                             uint8_t *ptrHarmIndex, int32_t lowSubbands,
                              int32_t noSubbands, int32_t scale_change, int32_t noNoiseFlag,
                              int32_t *ptrPhaseIndex);
 
@@ -242,7 +242,7 @@ static void adjustTimeSlotHQ(int32_t *ptrReal, int32_t *ptrImag,
   flags in harmFlagsPrev are being updated by this function for the next frame.
 */
 static void mapSineFlags(
-    UCHAR *freqBandTable, /*!< Band borders (there's only 1 flag per band) */
+    uint8_t *freqBandTable, /*!< Band borders (there's only 1 flag per band) */
     int32_t nSfb,             /*!< Number of bands in the table */
     uint32_t *addHarmonics,  /*!< Packed addHarmonics of current frame (aligned to
                              the MSB) */
@@ -251,7 +251,7 @@ static void mapSineFlags(
     uint32_t *harmFlagsPrevActive, /*!< Packed sineMapped of previous frame
                                    (aligned to the LSB) */
     int32_t tranEnv,                /*!< Transient position */
-    SCHAR *sineMapped) /*!< Resulting vector of sine start positions for each
+    int8_t *sineMapped) /*!< Resulting vector of sine start positions for each
                           QMF band */
 
 {
@@ -277,7 +277,7 @@ static void mapSineFlags(
 
   /* Reset the output vector first */
   FDKmemset(sineMapped, 32,
-            MAX_FREQ_COEFFS * sizeof(SCHAR)); /* 32 means 'no sine' */
+            MAX_FREQ_COEFFS * sizeof(int8_t)); /* 32 means 'no sine' */
   FDKmemclear(harmFlagsPrevActive, ADD_HARMONICS_FLAGS_SIZE * sizeof(uint32_t));
   for (i = 0; i < nSfb; i++) {
     uint32_t maskSfb =
@@ -325,17 +325,17 @@ static void mapSineFlags(
   the previous SBR frame needs to be used for the overlapping time slots.
 */
 /*static*/ void mapSineFlagsPvc(
-    UCHAR *freqBandTable,       /*!< Band borders (there's only 1 flag per
+    uint8_t *freqBandTable,       /*!< Band borders (there's only 1 flag per
                                    band) */
     int32_t nSfb,                   /*!< Number of bands in the table */
     uint32_t *harmFlagsPrev,       /*!< Packed addHarmonics of previous frame
                                    (aligned to the MSB) */
     uint32_t *harmFlagsPrevActive, /*!< Packed sineMapped of previous
                                    frame (aligned to the LSB) */
-    SCHAR *sineMapped,          /*!< Resulting vector of sine start positions
+    int8_t *sineMapped,          /*!< Resulting vector of sine start positions
                                    for each QMF band */
     int32_t sinusoidalPos,          /*!< sinusoidal position */
-    SCHAR *sinusoidalPosPrev,   /*!< sinusoidal position of previous
+    int8_t *sinusoidalPosPrev,   /*!< sinusoidal position of previous
                                    frame */
     int32_t trailingSbrFrame)       /*!< indication if the SBR framing is
                                    trailing the PVC framing */
@@ -377,15 +377,15 @@ static void mapSineFlags(
     int32_t *degreeAlias, /*!< estimated aliasing for each QMF
                               channel */
     ENV_CALC_NRGS *nrgs,
-    UCHAR *useAliasReduction, /*!< synthetic sine energy for each
+    uint8_t *useAliasReduction, /*!< synthetic sine energy for each
                                  subband, used as flag */
     int32_t noSubbands)           /*!< number of QMF channels to process */
 {
   int32_t *nrgGain = nrgs->nrgGain; /*!< subband gains to be modified */
-  SCHAR *nrgGain_e =
+  int8_t *nrgGain_e =
       nrgs->nrgGain_e; /*!< subband gains to be modified (exponents) */
   int32_t *nrgEst = nrgs->nrgEst; /*!< subband energy before amplification */
-  SCHAR *nrgEst_e =
+  int8_t *nrgEst_e =
       nrgs->nrgEst_e; /*!< subband energy before amplification (exponents) */
   int32_t grouping = 0, index = 0, noGroups, k;
   int32_t groupVector[MAX_FREQ_COEFFS];
@@ -422,18 +422,18 @@ static void mapSineFlags(
   for (int32_t group = 0; group < noGroups; group++) {
     int32_t nrgOrig = FL2FXCONST_DBL(
         0.0f); /* Original signal energy in current group of bands */
-    SCHAR nrgOrig_e = 0;
+    int8_t nrgOrig_e = 0;
     int32_t nrgAmp = FL2FXCONST_DBL(
         0.0f); /* Amplified signal energy in group (using current gains) */
-    SCHAR nrgAmp_e = 0;
+    int8_t nrgAmp_e = 0;
     int32_t nrgMod = FL2FXCONST_DBL(
         0.0f); /* Signal energy in group when applying modified gains */
-    SCHAR nrgMod_e = 0;
+    int8_t nrgMod_e = 0;
     int32_t groupGain; /* Total energy gain in group */
-    SCHAR groupGain_e;
+    int8_t groupGain_e;
     int32_t compensation; /* Compensation factor for the energy change when
                               applying modified gains */
-    SCHAR compensation_e;
+    int8_t compensation_e;
 
     int32_t startGroup = groupVector[2 * group];
     int32_t stopGroup = groupVector[2 * group + 1];
@@ -443,7 +443,7 @@ static void mapSineFlags(
     for (k = startGroup; k < stopGroup; k++) {
       /* Get original band energy */
       int32_t tmp = nrgEst[k];
-      SCHAR tmp_e = nrgEst_e[k];
+      int8_t tmp_e = nrgEst_e[k];
 
       FDK_add_MantExp(tmp, tmp_e, nrgOrig, nrgOrig_e, &nrgOrig, &nrgOrig_e);
 
@@ -460,7 +460,7 @@ static void mapSineFlags(
 
     for (k = startGroup; k < stopGroup; k++) {
       int32_t tmp;
-      SCHAR tmp_e;
+      int8_t tmp_e;
 
       int32_t alpha = degreeAlias[k];
       if (k < noSubbands - 1) {
@@ -501,19 +501,19 @@ typedef struct {
   int32_t subsample_power_low[(((1024) / (32) * (4) / 2) + (3 * (4)))];
   int32_t subsample_power_high[(((1024) / (32) * (4) / 2) + (3 * (4)))];
   int32_t gain[(((1024) / (32) * (4) / 2) + (3 * (4)))];
-  SCHAR subsample_power_low_sf[(((1024) / (32) * (4) / 2) + (3 * (4)))];
-  SCHAR subsample_power_high_sf[(((1024) / (32) * (4) / 2) + (3 * (4)))];
+  int8_t subsample_power_low_sf[(((1024) / (32) * (4) / 2) + (3 * (4)))];
+  int8_t subsample_power_high_sf[(((1024) / (32) * (4) / 2) + (3 * (4)))];
 } ITES_TEMP;
 
 static void apply_inter_tes(int32_t **qmfReal, int32_t **qmfImag,
                             const QMF_SCALE_FACTOR *sbrScaleFactor,
-                            const SCHAR exp[2], const int32_t RATE,
+                            const int8_t exp[2], const int32_t RATE,
                             const int32_t startPos, const int32_t stopPos,
                             const int32_t lowSubband, const int32_t nbSubband,
-                            const UCHAR gamma_idx) {
+                            const uint8_t gamma_idx) {
   int32_t highSubband = lowSubband + nbSubband;
   int32_t *subsample_power_high, *subsample_power_low;
-  SCHAR *subsample_power_high_sf, *subsample_power_low_sf;
+  int8_t *subsample_power_high_sf, *subsample_power_low_sf;
   int32_t total_power_high = (int32_t)0;
   int32_t total_power_low = (int32_t)0;
   int32_t *gain;
@@ -864,9 +864,9 @@ static void apply_inter_tes(int32_t **qmfReal, int32_t **qmfImag,
   \par
   \code
     fract*        nrgRef_m = timeOutPtr;
-    SCHAR*        nrgRef_e = nrgRef_m + MAX_FREQ_COEFFS;
+    int8_t*        nrgRef_e = nrgRef_m + MAX_FREQ_COEFFS;
     fract*        nrgEst_m = nrgRef_e + MAX_FREQ_COEFFS;
-    SCHAR*        nrgEst_e = nrgEst_m + MAX_FREQ_COEFFS;
+    int8_t*        nrgEst_e = nrgEst_m + MAX_FREQ_COEFFS;
     fract*        noiseLevel_m = nrgEst_e + MAX_FREQ_COEFFS;
   \endcode
 
@@ -887,15 +887,15 @@ void calculateSbrEnvelope(
     int32_t *degreeAlias, /*!< Estimated aliasing for each QMF channel */
     const uint32_t flags, const int32_t frameErrorFlag) {
   int32_t c, i, i_stop, j, envNoise = 0;
-  UCHAR *borders = hFrameData->frameInfo.borders;
-  UCHAR *bordersPvc = hFrameData->frameInfo.pvcBorders;
+  uint8_t *borders = hFrameData->frameInfo.borders;
+  uint8_t *bordersPvc = hFrameData->frameInfo.pvcBorders;
   int32_t pvc_mode = pPvcDynamicData->pvc_mode;
   int32_t first_start =
       ((pvc_mode > 0) ? bordersPvc[0] : borders[0]) * hHeaderData->timeStep;
   FIXP_SGL *noiseLevels = hFrameData->sbrNoiseFloorLevel;
   HANDLE_FREQ_BAND_DATA hFreq = &hHeaderData->freqBandData;
-  UCHAR **pFreqBandTable = hFreq->freqBandTable;
-  UCHAR *pFreqBandTableNoise = hFreq->freqBandTableNoise;
+  uint8_t **pFreqBandTable = hFreq->freqBandTable;
+  uint8_t *pFreqBandTableNoise = hFreq->freqBandTableNoise;
 
   int32_t lowSubband = hFreq->lowSubband;
   int32_t highSubband = hFreq->highSubband;
@@ -906,24 +906,24 @@ void calculateSbrEnvelope(
   int32_t ov_highSubband = hFreq->highSubband;
 
   int32_t noNoiseBands = hFreq->nNfb;
-  UCHAR *noSubFrameBands = hFreq->nSfb;
+  uint8_t *noSubFrameBands = hFreq->nSfb;
   int32_t no_cols = hHeaderData->numberTimeSlots * hHeaderData->timeStep;
 
-  SCHAR sineMapped[MAX_FREQ_COEFFS];
-  SCHAR ov_adj_e = SCALE2EXP(sbrScaleFactor->ov_hb_scale);
-  SCHAR adj_e = 0;
-  SCHAR output_e;
-  SCHAR final_e = 0;
+  int8_t sineMapped[MAX_FREQ_COEFFS];
+  int8_t ov_adj_e = SCALE2EXP(sbrScaleFactor->ov_hb_scale);
+  int8_t adj_e = 0;
+  int8_t output_e;
+  int8_t final_e = 0;
   /* inter-TES is active in one or more envelopes of the current SBR frame */
   const int32_t iTES_enable = hFrameData->iTESactive;
   const int32_t iTES_scale_change = (iTES_enable) ? INTER_TES_SF_CHANGE : 0;
-  SCHAR maxGainLimit_e = (frameErrorFlag) ? MAX_GAIN_CONCEAL_EXP : MAX_GAIN_EXP;
+  int8_t maxGainLimit_e = (frameErrorFlag) ? MAX_GAIN_CONCEAL_EXP : MAX_GAIN_EXP;
 
-  UCHAR smooth_length = 0;
+  uint8_t smooth_length = 0;
 
   FIXP_SGL *pIenv = hFrameData->iEnvelope;
 
-  C_ALLOC_SCRATCH_START(useAliasReduction, UCHAR, 64)
+  C_ALLOC_SCRATCH_START(useAliasReduction, uint8_t, 64)
 
   /* if values differ we had a headerchange; if old highband is bigger then new
      one we need to patch overlap-highband-scaling for this frame (see use of
@@ -1055,7 +1055,7 @@ void calculateSbrEnvelope(
   }
   for (; i < i_stop; i++) {
     int32_t k, noNoiseFlag;
-    SCHAR noise_e, input_e = SCALE2EXP(sbrScaleFactor->hb_scale);
+    int8_t noise_e, input_e = SCALE2EXP(sbrScaleFactor->hb_scale);
     C_ALLOC_SCRATCH_START(pNrgs, ENV_CALC_NRGS, 1);
 
     /*
@@ -1170,8 +1170,8 @@ void calculateSbrEnvelope(
       Calculate subband gains
     */
     {
-      UCHAR *table = pFreqBandTable[freq_res];
-      UCHAR *pUiNoise =
+      uint8_t *table = pFreqBandTable[freq_res];
+      uint8_t *pUiNoise =
           &pFreqBandTableNoise[1]; /*! Upper limit of the current noise floor
                                       band. */
 
@@ -1179,14 +1179,14 @@ void calculateSbrEnvelope(
 
       int32_t tmpNoise =
           FX_SGL2FX_DBL((FIXP_SGL)((int32_t)(*pNoiseLevels) & MASK_M));
-      SCHAR tmpNoise_e =
-          (UCHAR)((int32_t)(*pNoiseLevels++) & MASK_E) - NOISE_EXP_OFFSET;
+      int8_t tmpNoise_e =
+          (uint8_t)((int32_t)(*pNoiseLevels++) & MASK_E) - NOISE_EXP_OFFSET;
 
       int32_t cc = 0;
       c = 0;
       if (pvc_mode > 0) {
         for (j = 0; j < noSubFrameBands[freq_res]; j++) {
-          UCHAR sinePresentFlag = 0;
+          uint8_t sinePresentFlag = 0;
           int32_t li = table[j];
           int32_t ui = table[j + 1];
 
@@ -1197,13 +1197,13 @@ void calculateSbrEnvelope(
 
           for (k = li; k < ui; k++) {
             int32_t refNrg = pNrgs->nrgRef[k - lowSubband];
-            SCHAR refNrg_e = pNrgs->nrgRef_e[k - lowSubband];
+            int8_t refNrg_e = pNrgs->nrgRef_e[k - lowSubband];
 
             if (k >= *pUiNoise) {
               tmpNoise =
                   FX_SGL2FX_DBL((FIXP_SGL)((int32_t)(*pNoiseLevels) & MASK_M));
               tmpNoise_e =
-                  (SCHAR)((int32_t)(*pNoiseLevels++) & MASK_E) - NOISE_EXP_OFFSET;
+                  (int8_t)((int32_t)(*pNoiseLevels++) & MASK_E) - NOISE_EXP_OFFSET;
 
               pUiNoise++;
             }
@@ -1224,9 +1224,9 @@ void calculateSbrEnvelope(
       } else {
         for (j = 0; j < noSubFrameBands[freq_res]; j++) {
           int32_t refNrg = FX_SGL2FX_DBL((FIXP_SGL)((int32_t)(*pIenv) & MASK_M));
-          SCHAR refNrg_e = (SCHAR)((int32_t)(*pIenv) & MASK_E) - NRG_EXP_OFFSET;
+          int8_t refNrg_e = (int8_t)((int32_t)(*pIenv) & MASK_E) - NRG_EXP_OFFSET;
 
-          UCHAR sinePresentFlag = 0;
+          uint8_t sinePresentFlag = 0;
           int32_t li = table[j];
           int32_t ui = table[j + 1];
 
@@ -1240,7 +1240,7 @@ void calculateSbrEnvelope(
               tmpNoise =
                   FX_SGL2FX_DBL((FIXP_SGL)((int32_t)(*pNoiseLevels) & MASK_M));
               tmpNoise_e =
-                  (SCHAR)((int32_t)(*pNoiseLevels++) & MASK_E) - NOISE_EXP_OFFSET;
+                  (int8_t)((int32_t)(*pNoiseLevels++) & MASK_E) - NOISE_EXP_OFFSET;
 
               pUiNoise++;
             }
@@ -1272,7 +1272,7 @@ void calculateSbrEnvelope(
     for (c = 0; c < hFreq->noLimiterBands; c++) {
       int32_t sumRef, boostGain, maxGain;
       int32_t accu = FL2FXCONST_DBL(0.0f);
-      SCHAR sumRef_e, boostGain_e, maxGain_e, accu_e = 0;
+      int8_t sumRef_e, boostGain_e, maxGain_e, accu_e = 0;
       int32_t maxGainLimGainSum_e = 0;
 
       calcAvgGain(pNrgs, hFreq->limiterBandTable[c],
@@ -1286,20 +1286,20 @@ void calculateSbrEnvelope(
       /* maxGain_e +=
        * FDK_sbrDecoder_sbr_limGains_e[hHeaderData->bs_data.limiterGains]; */
       /* The addition of maxGain_e and FDK_sbrDecoder_sbr_limGains_e[3] might
-         yield values greater than 127 which doesn't fit into an SCHAR! In these
+         yield values greater than 127 which doesn't fit into an int8_t! In these
          rare situations limit maxGain_e to 127.
       */
       maxGainLimGainSum_e =
           maxGain_e +
           FDK_sbrDecoder_sbr_limGains_e[hHeaderData->bs_data.limiterGains];
       maxGain_e =
-          (maxGainLimGainSum_e > 127) ? (SCHAR)127 : (SCHAR)maxGainLimGainSum_e;
+          (maxGainLimGainSum_e > 127) ? (int8_t)127 : (int8_t)maxGainLimGainSum_e;
 
       /* Scale mantissa of MaxGain into range between 0.5 and 1: */
       if (maxGain == FL2FXCONST_DBL(0.0f))
         maxGain_e = -FRACT_BITS;
       else {
-        SCHAR charTemp = CountLeadingBits(maxGain);
+        int8_t charTemp = CountLeadingBits(maxGain);
         maxGain_e -= charTemp;
         maxGain <<= (int32_t)charTemp;
       }
@@ -1316,7 +1316,7 @@ void calculateSbrEnvelope(
         if ((pNrgs->nrgGain_e[k] > maxGain_e) ||
             (pNrgs->nrgGain_e[k] == maxGain_e && pNrgs->nrgGain[k] > maxGain)) {
           int32_t noiseAmp;
-          SCHAR noiseAmp_e;
+          int8_t noiseAmp_e;
 
           FDK_divide_MantExp(maxGain, maxGain_e, pNrgs->nrgGain[k],
                              pNrgs->nrgGain_e[k], &noiseAmp, &noiseAmp_e);
@@ -1337,7 +1337,7 @@ void calculateSbrEnvelope(
            k++) {
         /* 1.a  Add energy of adjusted signal (using preliminary gain) */
         int32_t tmp = fMult(pNrgs->nrgGain[k], pNrgs->nrgEst[k]);
-        SCHAR tmp_e = pNrgs->nrgGain_e[k] + pNrgs->nrgEst_e[k];
+        int8_t tmp_e = pNrgs->nrgGain_e[k] + pNrgs->nrgEst_e[k];
         FDK_add_MantExp(tmp, tmp_e, accu, accu_e, &accu, &accu_e);
 
         /* 1.b  Add sine energy (if present) */
@@ -1424,7 +1424,7 @@ void calculateSbrEnvelope(
           h_sbr_cal_env->filtBufferNoise_e = noise_e;
 
           FDKmemcpy(h_sbr_cal_env->filtBuffer_e, pNrgs->nrgGain_e,
-                    noSubbands * sizeof(SCHAR));
+                    noSubbands * sizeof(int8_t));
           FDKmemcpy(h_sbr_cal_env->filtBufferNoise, pNrgs->noiseLevel,
                     noSubbands * sizeof(int32_t));
           FDKmemcpy(h_sbr_cal_env->filtBuffer, pNrgs->nrgGain,
@@ -1590,7 +1590,7 @@ void calculateSbrEnvelope(
         /* nrgGain_e[0...(noSubbands-1)] are equalized by
          * equalizeFiltBufferExp() */
         pNrgs->exponent[(j < no_cols) ? 0 : 1] =
-            (SCHAR)((15 - sbrScaleFactor->hb_scale) + pNrgs->nrgGain_e[0] + 1 -
+            (int8_t)((15 - sbrScaleFactor->hb_scale) + pNrgs->nrgGain_e[0] + 1 -
                     scale_change);
       } /* for */
 
@@ -1635,7 +1635,7 @@ void calculateSbrEnvelope(
         FDKmemcpy(h_sbr_cal_env->filtBuffer, pNrgs->nrgGain,
                   noSubbands * sizeof(int32_t));
         FDKmemcpy(h_sbr_cal_env->filtBuffer_e, pNrgs->nrgGain_e,
-                  noSubbands * sizeof(SCHAR));
+                  noSubbands * sizeof(int8_t));
         FDKmemcpy(h_sbr_cal_env->filtBufferNoise, pNrgs->noiseLevel,
                   noSubbands * sizeof(int32_t));
       }
@@ -1726,7 +1726,7 @@ void calculateSbrEnvelope(
     }
   }
 
-  C_ALLOC_SCRATCH_END(useAliasReduction, UCHAR, 64)
+  C_ALLOC_SCRATCH_END(useAliasReduction, uint8_t, 64)
 }
 
 /*!
@@ -1814,9 +1814,9 @@ void resetSbrEnvelopeCalc(
 */
 static void equalizeFiltBufferExp(
     int32_t *filtBuffer, /*!< bufferd gains */
-    SCHAR *filtBuffer_e,  /*!< exponents of bufferd gains */
+    int8_t *filtBuffer_e,  /*!< exponents of bufferd gains */
     int32_t *nrgGain,    /*!< gains for current envelope */
-    SCHAR *nrgGain_e,     /*!< exponents of gains for current envelope */
+    int8_t *nrgGain_e,     /*!< exponents of gains for current envelope */
     int32_t subbands)         /*!< Number of QMF subbands */
 {
   int32_t band;
@@ -1989,13 +1989,13 @@ static void calcNrgPerSubband(
     int32_t highSubband,             /*!< High end of the SBR frequency range */
     int32_t start_pos,               /*!< First QMF-slot of current envelope */
     int32_t next_pos,                /*!< Last QMF-slot of current envelope + 1 */
-    SCHAR frameExp,              /*!< Common exponent for all input samples */
+    int8_t frameExp,              /*!< Common exponent for all input samples */
     int32_t *nrgEst,            /*!< resulting Energy (0..1) */
-    SCHAR *nrgEst_e)             /*!< Exponent of resulting Energy */
+    int8_t *nrgEst_e)             /*!< Exponent of resulting Energy */
 {
   FIXP_SGL invWidth;
-  SCHAR preShift;
-  SCHAR shift;
+  int8_t preShift;
+  int8_t shift;
   int32_t sum;
   int32_t k;
 
@@ -2046,7 +2046,7 @@ static void calcNrgPerSubband(
          exceptional situations where the signal in the analysis-buffer is very
          small (small maxVal).
       */
-      preShift = fMin(preShift, (SCHAR)25);
+      preShift = fMin(preShift, (int8_t)25);
 
       accu = FL2FXCONST_DBL(0.0f);
       if (preShift >= 0) {
@@ -2114,17 +2114,17 @@ static void calcNrgPerSfb(
     int32_t **analysBufferReal, /*!< Real part of subband samples */
     int32_t **analysBufferImag, /*!< Imaginary part of subband samples */
     int32_t nSfb,                    /*!< Number of scale factor bands */
-    UCHAR *freqBandTable,        /*!< First Subband for each Sfb */
+    uint8_t *freqBandTable,        /*!< First Subband for each Sfb */
     int32_t start_pos,               /*!< First QMF-slot of current envelope */
     int32_t next_pos,                /*!< Last QMF-slot of current envelope + 1 */
-    SCHAR input_e,               /*!< Common exponent for all input samples */
+    int8_t input_e,               /*!< Common exponent for all input samples */
     int32_t *nrgEst,            /*!< resulting Energy (0..1) */
-    SCHAR *nrgEst_e)             /*!< Exponent of resulting Energy */
+    int8_t *nrgEst_e)             /*!< Exponent of resulting Energy */
 {
   FIXP_SGL invWidth;
   int32_t temp;
-  SCHAR preShift;
-  SCHAR shift, sum_e;
+  int8_t preShift;
+  int8_t shift, sum_e;
   int32_t sum;
 
   int32_t j, k, l, li, ui;
@@ -2237,30 +2237,30 @@ static void calcNrgPerSfb(
 */
 static void calcSubbandGain(
     int32_t nrgRef, /*!< Reference Energy according to envelope data */
-    SCHAR
+    int8_t
         nrgRef_e, /*!< Reference Energy according to envelope data (exponent) */
     ENV_CALC_NRGS *nrgs, int32_t i, int32_t tmpNoise, /*!< Relative noise level */
-    SCHAR tmpNoise_e,      /*!< Relative noise level (exponent) */
-    UCHAR sinePresentFlag, /*!< Indicates if sine is present on band */
-    UCHAR sineMapped,      /*!< Indicates if sine must be added */
+    int8_t tmpNoise_e,      /*!< Relative noise level (exponent) */
+    uint8_t sinePresentFlag, /*!< Indicates if sine is present on band */
+    uint8_t sineMapped,      /*!< Indicates if sine must be added */
     int32_t noNoiseFlag)       /*!< Flag to suppress noise addition */
 {
   int32_t nrgEst = nrgs->nrgEst[i]; /*!< Energy in transposed signal */
-  SCHAR nrgEst_e =
+  int8_t nrgEst_e =
       nrgs->nrgEst_e[i]; /*!< Energy in transposed signal (exponent) */
   int32_t *ptrNrgGain = &nrgs->nrgGain[i]; /*!< Resulting energy gain */
-  SCHAR *ptrNrgGain_e =
+  int8_t *ptrNrgGain_e =
       &nrgs->nrgGain_e[i]; /*!< Resulting energy gain (exponent) */
   int32_t *ptrNoiseLevel =
       &nrgs->noiseLevel[i]; /*!< Resulting absolute noise energy */
-  SCHAR *ptrNoiseLevel_e =
+  int8_t *ptrNoiseLevel_e =
       &nrgs->noiseLevel_e[i]; /*!< Resulting absolute noise energy (exponent) */
   int32_t *ptrNrgSine = &nrgs->nrgSine[i]; /*!< Additional sine energy */
-  SCHAR *ptrNrgSine_e =
+  int8_t *ptrNrgSine_e =
       &nrgs->nrgSine_e[i]; /*!< Additional sine energy (exponent) */
 
   int32_t a, b, c;
-  SCHAR a_e, b_e, c_e;
+  int8_t a_e, b_e, c_e;
 
   /*
      This addition of 1 prevents divisions by zero in the reference code.
@@ -2324,7 +2324,7 @@ static void calcSubbandGain(
     /*  gain = nrgRef / B */
     int32_t result_exp = 0;
     *ptrNrgGain = fDivNorm(nrgRef, b, &result_exp);
-    *ptrNrgGain_e = (SCHAR)result_exp + (nrgRef_e - b_e);
+    *ptrNrgGain_e = (int8_t)result_exp + (nrgRef_e - b_e);
 
     /* There could be a one bit diffs. This is important to compensate,
        because later in the code values are compared by exponent only. */
@@ -2345,23 +2345,23 @@ static void calcSubbandGain(
 static void calcAvgGain(
     ENV_CALC_NRGS *nrgs, int32_t lowSubband, /*!< Begin of the limiter band */
     int32_t highSubband,                     /*!< High end of the limiter band */
-    int32_t *ptrSumRef, SCHAR *ptrSumRef_e,
+    int32_t *ptrSumRef, int8_t *ptrSumRef_e,
     int32_t *ptrAvgGain, /*!< Resulting overall gain (mantissa) */
-    SCHAR *ptrAvgGain_e)  /*!< Resulting overall gain (exponent) */
+    int8_t *ptrAvgGain_e)  /*!< Resulting overall gain (exponent) */
 {
   int32_t *nrgRef =
       nrgs->nrgRef; /*!< Reference Energy according to envelope data */
-  SCHAR *nrgRef_e =
+  int8_t *nrgRef_e =
       nrgs->nrgRef_e; /*!< Reference Energy according to envelope data
                          (exponent) */
   int32_t *nrgEst = nrgs->nrgEst; /*!< Energy in transposed signal */
-  SCHAR *nrgEst_e =
+  int8_t *nrgEst_e =
       nrgs->nrgEst_e; /*!< Energy in transposed signal (exponent) */
 
   int32_t sumRef = 1;
   int32_t sumEst = 1;
-  SCHAR sumRef_e = -FRACT_BITS;
-  SCHAR sumEst_e = -FRACT_BITS;
+  int8_t sumRef_e = -FRACT_BITS;
+  int8_t sumEst_e = -FRACT_BITS;
   int32_t k;
 
   for (k = lowSubband; k < highSubband; k++) {
@@ -2384,7 +2384,7 @@ static void calcAvgGain(
 static void adjustTimeSlot_EldGrid(
     int32_t *RESTRICT
         ptrReal, /*!< Subband samples to be adjusted, real part */
-    ENV_CALC_NRGS *nrgs, UCHAR *ptrHarmIndex, /*!< Harmonic index */
+    ENV_CALC_NRGS *nrgs, uint8_t *ptrHarmIndex, /*!< Harmonic index */
     int32_t lowSubband, /*!< Lowest QMF-channel in the currently used SBR range. */
     int32_t noSubbands, /*!< Number of QMF subbands */
     int32_t scale_change,   /*!< Number of bits to shift adjusted samples */
@@ -2403,7 +2403,7 @@ static void adjustTimeSlot_EldGrid(
   int32_t *RESTRICT pSineLevel = nrgs->nrgSine; /*!< Sine levels */
 
   int32_t phaseIndex = *ptrPhaseIndex;
-  UCHAR harmIndex = *ptrHarmIndex;
+  uint8_t harmIndex = *ptrHarmIndex;
 
   static const int32_t harmonicPhase[4][2] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
 
@@ -2492,7 +2492,7 @@ static void adjustTimeSlot_EldGrid(
 
 static void adjustTimeSlotLC(
     int32_t *ptrReal, /*!< Subband samples to be adjusted, real part */
-    ENV_CALC_NRGS *nrgs, UCHAR *ptrHarmIndex, /*!< Harmonic index */
+    ENV_CALC_NRGS *nrgs, uint8_t *ptrHarmIndex, /*!< Harmonic index */
     int32_t lowSubband, /*!< Lowest QMF-channel in the currently used SBR range. */
     int32_t noSubbands, /*!< Number of QMF subbands */
     int32_t scale_change,   /*!< Number of bits to shift adjusted samples */
@@ -2506,8 +2506,8 @@ static void adjustTimeSlotLC(
 
   int32_t k;
   int32_t index = *ptrPhaseIndex;
-  UCHAR harmIndex = *ptrHarmIndex;
-  UCHAR freqInvFlag = (lowSubband & 1);
+  uint8_t harmIndex = *ptrHarmIndex;
+  uint8_t freqInvFlag = (lowSubband & 1);
   int32_t signalReal, sineLevel, sineLevelNext, sineLevelPrev;
   int32_t tone_count = 0;
   int32_t sineSign = 1;
@@ -2811,12 +2811,12 @@ static void adjustTimeSlotHQ_AddHarmonics(
                         exponent. */
 ) {
   int32_t *RESTRICT pSineLevel = nrgs->nrgSine; /*!< Sine levels */
-  UCHAR *RESTRICT ptrHarmIndex =
+  uint8_t *RESTRICT ptrHarmIndex =
       &h_sbr_cal_env->harmIndex; /*!< Harmonic index */
 
   int32_t k;
   int32_t signalReal, signalImag;
-  UCHAR harmIndex = *ptrHarmIndex;
+  uint8_t harmIndex = *ptrHarmIndex;
   int32_t freqInvFlag = (lowSubband & 1);
   int32_t sineLevel;
 
@@ -2867,7 +2867,7 @@ static void adjustTimeSlotHQ(
       h_sbr_cal_env->filtBuffer; /*!< Gains of last envelope */
   int32_t *RESTRICT filtBufferNoise =
       h_sbr_cal_env->filtBufferNoise; /*!< Noise levels of last envelope */
-  UCHAR *RESTRICT ptrHarmIndex =
+  uint8_t *RESTRICT ptrHarmIndex =
       &h_sbr_cal_env->harmIndex; /*!< Harmonic index */
   int32_t *RESTRICT ptrPhaseIndex =
       &h_sbr_cal_env->phaseIndex; /*!< Start index to random number array */
@@ -2879,7 +2879,7 @@ static void adjustTimeSlotHQ(
   FIXP_SGL direct_ratio =
       /*FL2FXCONST_SGL(1.0f) */ (FIXP_SGL)MAXVAL_SGL - smooth_ratio;
   int32_t index = *ptrPhaseIndex;
-  UCHAR harmIndex = *ptrHarmIndex;
+  uint8_t harmIndex = *ptrHarmIndex;
   int32_t freqInvFlag = (lowSubband & 1);
   int32_t sineLevel;
   int32_t shift;
@@ -3054,16 +3054,16 @@ static void adjustTimeSlotHQ(
 */
 SBR_ERROR
 ResetLimiterBands(
-    UCHAR *limiterBandTable, /*!< Resulting band borders in QMF channels */
-    UCHAR *noLimiterBands,   /*!< Resulting number of limiter band */
-    UCHAR *freqBandTable,    /*!< Table with possible band borders */
+    uint8_t *limiterBandTable, /*!< Resulting band borders in QMF channels */
+    uint8_t *noLimiterBands,   /*!< Resulting number of limiter band */
+    uint8_t *freqBandTable,    /*!< Table with possible band borders */
     int32_t noFreqBands,         /*!< Number of bands in freqBandTable */
     const PATCH_PARAM *patchParam, /*!< Transposer patch parameters */
     int32_t noPatches,                 /*!< Number of transposer patches */
     int32_t limiterBands, /*!< Selected 'band density' from bitstream */
-    UCHAR sbrPatchingMode, int32_t xOverQmf[MAX_NUM_PATCHES], int32_t b41Sbr) {
+    uint8_t sbrPatchingMode, int32_t xOverQmf[MAX_NUM_PATCHES], int32_t b41Sbr) {
   int32_t i, k, isPatchBorder[2], loLimIndex, hiLimIndex, tempNoLim, nBands;
-  UCHAR workLimiterBandTable[MAX_FREQ_COEFFS / 2 + MAX_NUM_PATCHES + 1];
+  uint8_t workLimiterBandTable[MAX_FREQ_COEFFS / 2 + MAX_NUM_PATCHES + 1];
   int32_t patchBorders[MAX_NUM_PATCHES + 1];
   int32_t kx, k2;
 

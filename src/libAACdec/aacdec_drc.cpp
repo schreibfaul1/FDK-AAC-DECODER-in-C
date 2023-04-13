@@ -276,9 +276,9 @@ AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
       if (value < 0) {
         self->params.targetRefLevel = -1;
       } else {
-        if (self->params.targetRefLevel != (SCHAR)value) {
-          self->params.targetRefLevel = (SCHAR)value;
-          self->progRefLevel = (SCHAR)value; /* Always set the program reference
+        if (self->params.targetRefLevel != (int8_t)value) {
+          self->params.targetRefLevel = (int8_t)value;
+          self->progRefLevel = (int8_t)value; /* Always set the program reference
                                                 level equal to the target level
                                                 according to 4.5.2.7.3 of
                                                 ISO/IEC 14496-3. */
@@ -294,7 +294,7 @@ AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
         return AAC_DEC_INVALID_HANDLE;
       }
       /* Store new parameter value */
-      self->params.usrApplyHeavyCompression = (UCHAR)value;
+      self->params.usrApplyHeavyCompression = (uint8_t)value;
       self->update = 1;
       break;
     case DEFAULT_PRESENTATION_MODE:
@@ -316,7 +316,7 @@ AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
       if (self == NULL) {
         return AAC_DEC_INVALID_HANDLE;
       }
-      self->params.encoderTargetLevel = (UCHAR)value;
+      self->params.encoderTargetLevel = (uint8_t)value;
       self->update = 1;
       break;
     case DRC_BS_DELAY:
@@ -345,7 +345,7 @@ AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
       if (self == NULL) {
         return AAC_DEC_INVALID_HANDLE;
       }
-      self->uniDrcPrecedence = (UCHAR)value;
+      self->uniDrcPrecedence = (uint8_t)value;
       break;
     default:
       return AAC_DEC_SET_PARAM_FAIL;
@@ -639,14 +639,14 @@ static int32_t aacDecoder_drcReadCompression(HANDLE_FDK_BITSTREAM bs,
 
   /* audio_coding_mode_and_compression_status */
   if (compressionPresent) {
-    UCHAR compressionOn, compressionValue;
+    uint8_t compressionOn, compressionValue;
 
     /* audio_coding_mode */
     if (FDKreadBits(bs, 7) != 0) { /* The reserved bits shall be set to "0". */
       return 0;
     }
-    compressionOn = (UCHAR)FDKreadBits(bs, 1);    /* compression_on */
-    compressionValue = (UCHAR)FDKreadBits(bs, 8); /* Compression_value */
+    compressionOn = (uint8_t)FDKreadBits(bs, 1);    /* compression_on */
+    compressionValue = (uint8_t)FDKreadBits(bs, 8); /* Compression_value */
 
     if (compressionOn) {
       /* A compression value is available so store the data just like MPEG DRC
@@ -679,8 +679,8 @@ static int32_t aacDecoder_drcReadCompression(HANDLE_FDK_BITSTREAM bs,
 static int32_t aacDecoder_drcExtractAndMap(
     HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
-    UCHAR pceInstanceTag,
-    UCHAR channelMapping[], /* Channel mapping translating drcChannel index to
+    uint8_t pceInstanceTag,
+    uint8_t channelMapping[], /* Channel mapping translating drcChannel index to
                                canonical channel index */
     int32_t validChannels) {
   CDrcPayload threadBs[MAX_DRC_THREADS];
@@ -919,7 +919,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
 
   /* calc scale factors */
   for (band = 0; band < numBands; band++) {
-    UCHAR drcVal = pDrcChData->drcValue[band];
+    uint8_t drcVal = pDrcChData->drcValue[band];
 
     fact_mantissa[band] = FL2FXCONST_DBL(0.5f);
     fact_exponent[band] = 1;
@@ -1077,8 +1077,8 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
  */
 static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
                                             int32_t aacNumChannels,
-                                            SCHAR prevDrcProgRefLevel,
-                                            SCHAR prevDrcPresMode) {
+                                            int8_t prevDrcProgRefLevel,
+                                            int8_t prevDrcPresMode) {
   int32_t isDownmix, isMonoDownmix, isStereoDownmix;
   int32_t dDmx, dHr;
   AACDEC_DRC_PARAMETER_HANDLING drcParameterHandling;
@@ -1262,8 +1262,8 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
 int32_t aacDecoder_drcProlog(
     HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
-    UCHAR pceInstanceTag,
-    UCHAR channelMapping[], /* Channel mapping translating drcChannel index to
+    uint8_t pceInstanceTag,
+    uint8_t channelMapping[], /* Channel mapping translating drcChannel index to
                                canonical channel index */
     int32_t validChannels) {
   int32_t result = 0;
@@ -1304,8 +1304,8 @@ int32_t aacDecoder_drcProlog(
 int32_t aacDecoder_drcEpilog(
     HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
-    UCHAR pceInstanceTag,
-    UCHAR channelMapping[], /* Channel mapping translating drcChannel index to
+    uint8_t pceInstanceTag,
+    uint8_t channelMapping[], /* Channel mapping translating drcChannel index to
                                canonical channel index */
     int32_t validChannels) {
   int32_t result = 0;
@@ -1339,8 +1339,8 @@ int32_t aacDecoder_drcEpilog(
 /*
  * Export relevant metadata info from bitstream payload.
  */
-void aacDecoder_drcGetInfo(HANDLE_AAC_DRC self, SCHAR *pPresMode,
-                           SCHAR *pProgRefLevel) {
+void aacDecoder_drcGetInfo(HANDLE_AAC_DRC self, int8_t *pPresMode,
+                           int8_t *pProgRefLevel) {
   if (self != NULL) {
     if (pPresMode != NULL) {
       *pPresMode = self->presMode;

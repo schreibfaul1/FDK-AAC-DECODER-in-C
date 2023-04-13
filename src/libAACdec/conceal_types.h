@@ -174,11 +174,11 @@ typedef struct {
   int32_t attGrpOffset[2]; /* State for faster signal fade-out of frames with
                           transient signal parts */
 
-  SCHAR lastRenderMode;
+  int8_t lastRenderMode;
 
-  UCHAR windowShape;
+  uint8_t windowShape;
   BLOCK_TYPE windowSequence;
-  UCHAR lastWinGrpLen;
+  uint8_t lastWinGrpLen;
 
   CConcealmentState concealState;
   CConcealmentState concealState_old;
@@ -186,9 +186,9 @@ typedef struct {
   TDfadingType lastFadingType; /* last fading type */
 
   int16_t aRvlcPreviousScaleFactor[RVLC_MAX_SFB]; /* needed once per channel */
-  UCHAR aRvlcPreviousCodebook[RVLC_MAX_SFB];    /* needed once per channel */
-  SCHAR rvlcPreviousScaleFactorOK;
-  SCHAR rvlcPreviousBlockType;
+  uint8_t aRvlcPreviousCodebook[RVLC_MAX_SFB];    /* needed once per channel */
+  int8_t rvlcPreviousScaleFactorOK;
+  int8_t rvlcPreviousBlockType;
 
   FIXP_LPC lsf4[M_LP_FILTER_ORDER];
   int32_t last_tcx_gain;

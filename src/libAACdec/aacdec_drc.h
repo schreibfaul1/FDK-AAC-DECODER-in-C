@@ -155,7 +155,7 @@ int32_t aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
 int32_t aacDecoder_drcProlog(
     HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
-    UCHAR pceInstanceTag, UCHAR channelMapping[], int32_t validChannels);
+    uint8_t pceInstanceTag, uint8_t channelMapping[], int32_t validChannels);
 
 /**
  * \brief Apply DRC. If SBR is present, DRC data is handed over to the SBR
@@ -181,7 +181,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
 int32_t aacDecoder_drcEpilog(
     HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
-    UCHAR pceInstanceTag, UCHAR channelMapping[], int32_t validChannels);
+    uint8_t pceInstanceTag, uint8_t channelMapping[], int32_t validChannels);
 
 /**
  * \brief Get metadata information found in bitstream.
@@ -192,8 +192,8 @@ int32_t aacDecoder_drcEpilog(
  * be written to.
  * \return Nothing.
  */
-void aacDecoder_drcGetInfo(HANDLE_AAC_DRC self, SCHAR *pPresMode,
-                           SCHAR *pProgRefLevel);
+void aacDecoder_drcGetInfo(HANDLE_AAC_DRC self, int8_t *pPresMode,
+                           int8_t *pProgRefLevel);
 
 /**
  * \brief  Apply DRC Level Normalization.

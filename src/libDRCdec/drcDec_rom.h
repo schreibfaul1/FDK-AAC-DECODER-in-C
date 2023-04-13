@@ -103,11 +103,11 @@ amm-info@iis.fraunhofer.de
 #ifndef DRCDEC_ROM_H
 #define DRCDEC_ROM_H
 #include <stdint.h>
-extern const SCHAR deltaGain_codingProfile_0_1_huffman[24][2];
-extern const SCHAR deltaGain_codingProfile_2_huffman[48][2];
+extern const int8_t deltaGain_codingProfile_0_1_huffman[24][2];
+extern const int8_t deltaGain_codingProfile_2_huffman[48][2];
 
 extern const FIXP_SGL slopeSteepness[];
-extern const SCHAR slopeSteepness_huffman[14][2];
+extern const int8_t slopeSteepness_huffman[14][2];
 
 extern const int32_t downmixCoeff[];
 extern const int32_t downmixCoeffV1[];

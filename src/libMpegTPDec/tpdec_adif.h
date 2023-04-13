@@ -110,10 +110,10 @@ amm-info@iis.fraunhofer.de
 typedef struct {
   int32_t NumProgramConfigElements;
   uint32_t BitRate;
-  UCHAR CopyrightIdPresent;
-  UCHAR OriginalCopy;
-  UCHAR Home;
-  UCHAR BitstreamType;
+  uint8_t CopyrightIdPresent;
+  uint8_t OriginalCopy;
+  uint8_t Home;
+  uint8_t BitstreamType;
 } CAdifHeader;
 
 /**

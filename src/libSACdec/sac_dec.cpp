@@ -298,44 +298,44 @@ spatialDec *FDK_SpatialDecOpen(const SPATIAL_DEC_CONFIG *config,
 
   FDK_ALLOCATE_MEMORY_1D(self->smgTime, MAX_PARAMETER_SETS, int32_t)
   FDK_ALLOCATE_MEMORY_2D(self->smgData, MAX_PARAMETER_SETS, MAX_PARAMETER_BANDS,
-                         UCHAR)
+                         uint8_t)
 
   FDK_ALLOCATE_MEMORY_3D(self->ottCLD__FDK, setup.maxNumOttBoxes,
-                         MAX_PARAMETER_SETS, MAX_PARAMETER_BANDS, SCHAR)
+                         MAX_PARAMETER_SETS, MAX_PARAMETER_BANDS, int8_t)
   FDK_ALLOCATE_MEMORY_3D(self->ottICC__FDK, setup.maxNumOttBoxes,
-                         MAX_PARAMETER_SETS, MAX_PARAMETER_BANDS, SCHAR)
+                         MAX_PARAMETER_SETS, MAX_PARAMETER_BANDS, int8_t)
   FDK_ALLOCATE_MEMORY_3D(self->ottIPD__FDK, setup.maxNumOttBoxes,
-                         MAX_PARAMETER_SETS, MAX_PARAMETER_BANDS, SCHAR)
+                         MAX_PARAMETER_SETS, MAX_PARAMETER_BANDS, int8_t)
 
   /* Last parameters from prev frame */
   FDK_ALLOCATE_MEMORY_2D(self->ottCLDidxPrev, setup.maxNumOttBoxes,
-                         MAX_PARAMETER_BANDS, SCHAR)
+                         MAX_PARAMETER_BANDS, int8_t)
   FDK_ALLOCATE_MEMORY_2D(self->ottICCidxPrev, setup.maxNumOttBoxes,
-                         MAX_PARAMETER_BANDS, SCHAR)
+                         MAX_PARAMETER_BANDS, int8_t)
   FDK_ALLOCATE_MEMORY_3D(self->ottICCdiffidx, setup.maxNumOttBoxes,
-                         MAX_PARAMETER_SETS, MAX_PARAMETER_BANDS, SCHAR)
+                         MAX_PARAMETER_SETS, MAX_PARAMETER_BANDS, int8_t)
   FDK_ALLOCATE_MEMORY_2D(self->ottIPDidxPrev, setup.maxNumOttBoxes,
-                         MAX_PARAMETER_BANDS, SCHAR)
+                         MAX_PARAMETER_BANDS, int8_t)
   FDK_ALLOCATE_MEMORY_2D(self->arbdmxGainIdxPrev, setup.maxNumInputChannels,
-                         MAX_PARAMETER_BANDS, SCHAR)
+                         MAX_PARAMETER_BANDS, int8_t)
   FDK_ALLOCATE_MEMORY_2D(self->cmpOttCLDidxPrev, setup.maxNumOttBoxes,
-                         MAX_PARAMETER_BANDS, SCHAR)
+                         MAX_PARAMETER_BANDS, int8_t)
   FDK_ALLOCATE_MEMORY_2D(self->cmpOttICCidxPrev, setup.maxNumOttBoxes,
-                         MAX_PARAMETER_BANDS, SCHAR)
+                         MAX_PARAMETER_BANDS, int8_t)
   FDK_ALLOCATE_MEMORY_3D(self->outIdxData, setup.maxNumOttBoxes,
-                         MAX_PARAMETER_SETS, MAX_PARAMETER_BANDS, SCHAR)
+                         MAX_PARAMETER_SETS, MAX_PARAMETER_BANDS, int8_t)
 
   FDK_ALLOCATE_MEMORY_3D(self->arbdmxGain__FDK, setup.maxNumInputChannels,
-                         MAX_PARAMETER_SETS, MAX_PARAMETER_BANDS, SCHAR)
+                         MAX_PARAMETER_SETS, MAX_PARAMETER_BANDS, int8_t)
   FDK_ALLOCATE_MEMORY_1D(self->arbdmxAlpha__FDK, setup.maxNumInputChannels,
                          int32_t)
   FDK_ALLOCATE_MEMORY_1D(self->arbdmxAlphaPrev__FDK, setup.maxNumInputChannels,
                          int32_t)
   FDK_ALLOCATE_MEMORY_2D(self->cmpArbdmxGainIdxPrev, setup.maxNumInputChannels,
-                         MAX_PARAMETER_BANDS, SCHAR)
+                         MAX_PARAMETER_BANDS, int8_t)
 
   FDK_ALLOCATE_MEMORY_2D(self->cmpOttIPDidxPrev, setup.maxNumOttBoxes,
-                         MAX_PARAMETER_BANDS, SCHAR)
+                         MAX_PARAMETER_BANDS, int8_t)
 
   FDK_ALLOCATE_MEMORY_3D_INT(self->M2Real__FDK, setup.maxNumOutputChannels,
                              setup.maxNumVChannels, MAX_PARAMETER_BANDS,
@@ -850,7 +850,7 @@ SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
        256, 512} to avoid division by zero in calcFilterCoeff__FDK() */
     self->smoothState->prevSmgTime = smgTimeTable[2]; /* == 256 */
     FDKmemclear(self->smoothState->prevSmgData,
-                MAX_PARAMETER_BANDS * sizeof(UCHAR));
+                MAX_PARAMETER_BANDS * sizeof(uint8_t));
     FDKmemclear(self->smoothState->opdLeftState__FDK,
                 MAX_PARAMETER_BANDS * sizeof(int32_t));
     FDKmemclear(self->smoothState->opdRightState__FDK,
@@ -871,7 +871,7 @@ bail:
 
 void SpatialDecChannelProperties(spatialDec *self,
                                  AUDIO_CHANNEL_TYPE channelType[],
-                                 UCHAR channelIndices[],
+                                 uint8_t channelIndices[],
                                  const FDK_channelMapDescr *const mapDescr) {
   if ((self == NULL) || (channelType == NULL) || (channelIndices == NULL) ||
       (mapDescr == NULL)) {

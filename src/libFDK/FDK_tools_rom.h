@@ -361,8 +361,8 @@ typedef struct element_list element_list_t;
  * \return element_list_t parser guidance structure.
  */
 const element_list_t *getBitstreamElementList(AUDIO_OBJECT_TYPE aot,
-                                              SCHAR epConfig, UCHAR nChannels,
-                                              UCHAR layer, uint32_t elFlags);
+                                              int8_t epConfig, uint8_t nChannels,
+                                              uint8_t layer, uint32_t elFlags);
 
 typedef enum {
   /* n.a. */

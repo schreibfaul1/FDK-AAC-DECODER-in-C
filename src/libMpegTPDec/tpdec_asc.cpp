@@ -156,10 +156,10 @@ static const MP4_ELEMENT_ID *channel_configuration_array[] = {
 
 /* channel config structure used for sanity check */
 typedef struct {
-  SCHAR nCh;  /* number of channels */
-  SCHAR nSCE; /* number of SCE's */
-  SCHAR nCPE; /* number of CPE's */
-  SCHAR nLFE; /* number of LFE's */
+  int8_t nCh;  /* number of channels */
+  int8_t nSCE; /* number of SCE's */
+  int8_t nCPE; /* number of CPE's */
+  int8_t nLFE; /* number of LFE's */
 } SC_CHANNEL_CONFIG;
 
 static const SC_CHANNEL_CONFIG sc_chan_config_tab[SC_CHANNEL_CONFIG_TAB_SIZE] =
@@ -220,19 +220,19 @@ static int32_t CProgramConfig_ReadHeightExt(CProgramConfig *pPce,
     int32_t i;
 
     for (i = 0; i < pPce->NumFrontChannelElements; i++) {
-      if ((pPce->FrontElementHeightInfo[i] = (UCHAR)FDKreadBits(bs, 2)) >=
+      if ((pPce->FrontElementHeightInfo[i] = (uint8_t)FDKreadBits(bs, 2)) >=
           PC_NUM_HEIGHT_LAYER) {
         err = -2; /* height information is out of the valid range */
       }
     }
     for (i = 0; i < pPce->NumSideChannelElements; i++) {
-      if ((pPce->SideElementHeightInfo[i] = (UCHAR)FDKreadBits(bs, 2)) >=
+      if ((pPce->SideElementHeightInfo[i] = (uint8_t)FDKreadBits(bs, 2)) >=
           PC_NUM_HEIGHT_LAYER) {
         err = -2; /* height information is out of the valid range */
       }
     }
     for (i = 0; i < pPce->NumBackChannelElements; i++) {
-      if ((pPce->BackElementHeightInfo[i] = (UCHAR)FDKreadBits(bs, 2)) >=
+      if ((pPce->BackElementHeightInfo[i] = (uint8_t)FDKreadBits(bs, 2)) >=
           PC_NUM_HEIGHT_LAYER) {
         err = -2; /* height information is out of the valid range */
       }
@@ -273,75 +273,75 @@ void CProgramConfig_Read(CProgramConfig *pPce, HANDLE_FDK_BITSTREAM bs,
 
   pPce->NumEffectiveChannels = 0;
   pPce->NumChannels = 0;
-  pPce->ElementInstanceTag = (UCHAR)FDKreadBits(bs, 4);
-  pPce->Profile = (UCHAR)FDKreadBits(bs, 2);
-  pPce->SamplingFrequencyIndex = (UCHAR)FDKreadBits(bs, 4);
-  pPce->NumFrontChannelElements = (UCHAR)FDKreadBits(bs, 4);
-  pPce->NumSideChannelElements = (UCHAR)FDKreadBits(bs, 4);
-  pPce->NumBackChannelElements = (UCHAR)FDKreadBits(bs, 4);
-  pPce->NumLfeChannelElements = (UCHAR)FDKreadBits(bs, 2);
-  pPce->NumAssocDataElements = (UCHAR)FDKreadBits(bs, 3);
-  pPce->NumValidCcElements = (UCHAR)FDKreadBits(bs, 4);
+  pPce->ElementInstanceTag = (uint8_t)FDKreadBits(bs, 4);
+  pPce->Profile = (uint8_t)FDKreadBits(bs, 2);
+  pPce->SamplingFrequencyIndex = (uint8_t)FDKreadBits(bs, 4);
+  pPce->NumFrontChannelElements = (uint8_t)FDKreadBits(bs, 4);
+  pPce->NumSideChannelElements = (uint8_t)FDKreadBits(bs, 4);
+  pPce->NumBackChannelElements = (uint8_t)FDKreadBits(bs, 4);
+  pPce->NumLfeChannelElements = (uint8_t)FDKreadBits(bs, 2);
+  pPce->NumAssocDataElements = (uint8_t)FDKreadBits(bs, 3);
+  pPce->NumValidCcElements = (uint8_t)FDKreadBits(bs, 4);
 
-  if ((pPce->MonoMixdownPresent = (UCHAR)FDKreadBits(bs, 1)) != 0) {
-    pPce->MonoMixdownElementNumber = (UCHAR)FDKreadBits(bs, 4);
+  if ((pPce->MonoMixdownPresent = (uint8_t)FDKreadBits(bs, 1)) != 0) {
+    pPce->MonoMixdownElementNumber = (uint8_t)FDKreadBits(bs, 4);
   }
 
-  if ((pPce->StereoMixdownPresent = (UCHAR)FDKreadBits(bs, 1)) != 0) {
-    pPce->StereoMixdownElementNumber = (UCHAR)FDKreadBits(bs, 4);
+  if ((pPce->StereoMixdownPresent = (uint8_t)FDKreadBits(bs, 1)) != 0) {
+    pPce->StereoMixdownElementNumber = (uint8_t)FDKreadBits(bs, 4);
   }
 
-  if ((pPce->MatrixMixdownIndexPresent = (UCHAR)FDKreadBits(bs, 1)) != 0) {
-    pPce->MatrixMixdownIndex = (UCHAR)FDKreadBits(bs, 2);
-    pPce->PseudoSurroundEnable = (UCHAR)FDKreadBits(bs, 1);
+  if ((pPce->MatrixMixdownIndexPresent = (uint8_t)FDKreadBits(bs, 1)) != 0) {
+    pPce->MatrixMixdownIndex = (uint8_t)FDKreadBits(bs, 2);
+    pPce->PseudoSurroundEnable = (uint8_t)FDKreadBits(bs, 1);
   }
 
   for (i = 0; i < pPce->NumFrontChannelElements; i++) {
-    pPce->FrontElementIsCpe[i] = (UCHAR)FDKreadBits(bs, 1);
-    pPce->FrontElementTagSelect[i] = (UCHAR)FDKreadBits(bs, 4);
+    pPce->FrontElementIsCpe[i] = (uint8_t)FDKreadBits(bs, 1);
+    pPce->FrontElementTagSelect[i] = (uint8_t)FDKreadBits(bs, 4);
     pPce->NumChannels += pPce->FrontElementIsCpe[i] ? 2 : 1;
   }
 
   for (i = 0; i < pPce->NumSideChannelElements; i++) {
-    pPce->SideElementIsCpe[i] = (UCHAR)FDKreadBits(bs, 1);
-    pPce->SideElementTagSelect[i] = (UCHAR)FDKreadBits(bs, 4);
+    pPce->SideElementIsCpe[i] = (uint8_t)FDKreadBits(bs, 1);
+    pPce->SideElementTagSelect[i] = (uint8_t)FDKreadBits(bs, 4);
     pPce->NumChannels += pPce->SideElementIsCpe[i] ? 2 : 1;
   }
 
   for (i = 0; i < pPce->NumBackChannelElements; i++) {
-    pPce->BackElementIsCpe[i] = (UCHAR)FDKreadBits(bs, 1);
-    pPce->BackElementTagSelect[i] = (UCHAR)FDKreadBits(bs, 4);
+    pPce->BackElementIsCpe[i] = (uint8_t)FDKreadBits(bs, 1);
+    pPce->BackElementTagSelect[i] = (uint8_t)FDKreadBits(bs, 4);
     pPce->NumChannels += pPce->BackElementIsCpe[i] ? 2 : 1;
   }
 
   pPce->NumEffectiveChannels = pPce->NumChannels;
 
   for (i = 0; i < pPce->NumLfeChannelElements; i++) {
-    pPce->LfeElementTagSelect[i] = (UCHAR)FDKreadBits(bs, 4);
+    pPce->LfeElementTagSelect[i] = (uint8_t)FDKreadBits(bs, 4);
     pPce->NumChannels += 1;
   }
 
   for (i = 0; i < pPce->NumAssocDataElements; i++) {
-    pPce->AssocDataElementTagSelect[i] = (UCHAR)FDKreadBits(bs, 4);
+    pPce->AssocDataElementTagSelect[i] = (uint8_t)FDKreadBits(bs, 4);
   }
 
   for (i = 0; i < pPce->NumValidCcElements; i++) {
-    pPce->CcElementIsIndSw[i] = (UCHAR)FDKreadBits(bs, 1);
-    pPce->ValidCcElementTagSelect[i] = (UCHAR)FDKreadBits(bs, 4);
+    pPce->CcElementIsIndSw[i] = (uint8_t)FDKreadBits(bs, 1);
+    pPce->ValidCcElementTagSelect[i] = (uint8_t)FDKreadBits(bs, 4);
   }
 
   FDKbyteAlign(bs, alignmentAnchor);
 
-  pPce->CommentFieldBytes = (UCHAR)FDKreadBits(bs, 8);
+  pPce->CommentFieldBytes = (uint8_t)FDKreadBits(bs, 8);
   commentBytes = pPce->CommentFieldBytes;
 
   /* Search for height info extension and read it if available */
   err = CProgramConfig_ReadHeightExt(pPce, bs, &commentBytes, alignmentAnchor);
 
   for (i = 0; i < commentBytes; i++) {
-    UCHAR text;
+    uint8_t text;
 
-    text = (UCHAR)FDKreadBits(bs, 8);
+    text = (uint8_t)FDKreadBits(bs, 8);
 
     if (i < PC_COMMENTLENGTH) {
       pPce->Comment[i] = text;
@@ -559,7 +559,7 @@ void CProgramConfig_GetDefault(CProgramConfig *pPce, const uint32_t channelConfi
  * \return audio channel type.
  */
 static void getImplicitAudioChannelTypeAndIndex(AUDIO_CHANNEL_TYPE *chType,
-                                                UCHAR *chIndex,
+                                                uint8_t *chIndex,
                                                 uint32_t channelConfig,
                                                 uint32_t index) {
   if (index < 3) {
@@ -645,9 +645,9 @@ static void getImplicitAudioChannelTypeAndIndex(AUDIO_CHANNEL_TYPE *chType,
 
 int32_t CProgramConfig_LookupElement(CProgramConfig *pPce, uint32_t channelConfig,
                                  const uint32_t tag, const uint32_t channelIdx,
-                                 UCHAR chMapping[], AUDIO_CHANNEL_TYPE chType[],
-                                 UCHAR chIndex[], const uint32_t chDescrLen,
-                                 UCHAR *elMapping, MP4_ELEMENT_ID elList[],
+                                 uint8_t chMapping[], AUDIO_CHANNEL_TYPE chType[],
+                                 uint8_t chIndex[], const uint32_t chDescrLen,
+                                 uint8_t *elMapping, MP4_ELEMENT_ID elList[],
                                  MP4_ELEMENT_ID elType) {
   if (channelConfig > 0) {
     /* Constant channel mapping must have
@@ -966,7 +966,7 @@ int32_t CProgramConfig_LookupElement(CProgramConfig *pPce, uint32_t channelConfi
 void CProgramConfig_GetChannelDescription(const uint32_t chConfig,
                                           const CProgramConfig *pPce,
                                           AUDIO_CHANNEL_TYPE chType[],
-                                          UCHAR chIndex[]) {
+                                          uint8_t chIndex[]) {
   FDK_ASSERT(chType != NULL);
   FDK_ASSERT(chIndex != NULL);
 
@@ -1026,10 +1026,10 @@ void CProgramConfig_GetChannelDescription(const uint32_t chConfig,
   }
 }
 
-int32_t CProgramConfig_GetPceChMap(const CProgramConfig *pPce, UCHAR pceChMap[],
+int32_t CProgramConfig_GetPceChMap(const CProgramConfig *pPce, uint8_t pceChMap[],
                                const uint32_t pceChMapLen) {
-  const UCHAR *nElements = &pPce->NumFrontChannelElements;
-  const UCHAR *elHeight[3], *elIsCpe[3];
+  const uint8_t *nElements = &pPce->NumFrontChannelElements;
+  const uint8_t *elHeight[3], *elIsCpe[3];
   unsigned chIdx, plane, grp, offset, totCh[3], numCh[3][4];
 
   FDK_ASSERT(pPce != NULL);
@@ -1098,7 +1098,7 @@ int32_t CProgramConfig_GetPceChMap(const CProgramConfig *pPce, UCHAR pceChMap[],
 
 int32_t CProgramConfig_GetElementTable(const CProgramConfig *pPce,
                                    MP4_ELEMENT_ID elList[],
-                                   const int32_t elListSize, UCHAR *pChMapIdx) {
+                                   const int32_t elListSize, uint8_t *pChMapIdx) {
   int32_t i, el = 0;
 
   FDK_ASSERT(elList != NULL);
@@ -1165,7 +1165,7 @@ int32_t CProgramConfig_GetElementTable(const CProgramConfig *pPce,
     } break;
     case 8: { /* Try the four possible 7.1ch configurations. One after the
                  other. */
-      UCHAR testCfg[4] = {32, 14, 12, 7};
+      uint8_t testCfg[4] = {32, 14, 12, 7};
       C_ALLOC_SCRATCH_START(tmpPce, CProgramConfig, 1);
       for (i = 0; i < 4; i += 1) {
         /* Create a PCE for the config to test ... */
@@ -1202,7 +1202,7 @@ static AUDIO_OBJECT_TYPE getAOT(HANDLE_FDK_BITSTREAM bs) {
   return (AUDIO_OBJECT_TYPE)tmp;
 }
 
-static int32_t getSampleRate(HANDLE_FDK_BITSTREAM bs, UCHAR *index, int32_t nBits) {
+static int32_t getSampleRate(HANDLE_FDK_BITSTREAM bs, uint8_t *index, int32_t nBits) {
   int32_t sampleRate;
   int32_t idx;
 
@@ -1436,7 +1436,7 @@ static TRANSPORTDEC_ERROR EldSpecificConfig_Parse(CSAudioSpecificConfig *asc,
         break;
 
       case ELDEXT_DOWNSCALEINFO:
-        UCHAR tmpDownscaleFreqIdx;
+        uint8_t tmpDownscaleFreqIdx;
         esc->m_downscaledSamplingFrequency =
             getSampleRate(hBs, &tmpDownscaleFreqIdx, 4);
         if (esc->m_downscaledSamplingFrequency == 0 ||
@@ -1492,14 +1492,14 @@ static TRANSPORTDEC_ERROR EldSpecificConfig_Parse(CSAudioSpecificConfig *asc,
 }
 
 /*
-Subroutine to store config in UCHAR buffer. Bit stream position does not change.
+Subroutine to store config in uint8_t buffer. Bit stream position does not change.
 */
 static uint32_t StoreConfigAsBitstream(
     HANDLE_FDK_BITSTREAM hBs, const int32_t configSize_bits, /* If < 0 (> 0) config
                                                             to read is before
                                                             (after) current bit
                                                             stream position. */
-    UCHAR *configTargetBuffer, const uint16_t configTargetBufferSize_bytes) {
+    uint8_t *configTargetBuffer, const uint16_t configTargetBufferSize_bytes) {
   FDK_BITSTREAM usacConf;
   uint32_t const nBits = fAbs(configSize_bits);
   uint32_t j, tmp;
@@ -1533,7 +1533,7 @@ static uint32_t StoreConfigAsBitstream(
 /* maps coreSbrFrameLengthIndex to coreCoderFrameLength */
 static const uint16_t usacFrameLength[8] = {768, 1024, 2048, 2048, 4096, 0, 0, 0};
 /* maps coreSbrFrameLengthIndex to sbrRatioIndex */
-static const UCHAR sbrRatioIndex[8] = {0, 0, 2, 3, 1, 0, 0, 0};
+static const uint8_t sbrRatioIndex[8] = {0, 0, 2, 3, 1, 0, 0, 0};
 
 /*
   subroutine for parsing extension element configuration:
@@ -1543,7 +1543,7 @@ static const UCHAR sbrRatioIndex[8] = {0, 0, 2, 3, 1, 0, 0, 0};
 static TRANSPORTDEC_ERROR extElementConfig(CSUsacExtElementConfig *extElement,
                                            HANDLE_FDK_BITSTREAM hBs,
                                            const CSTpCallBacks *cb,
-                                           const UCHAR numSignalsInGroup,
+                                           const uint8_t numSignalsInGroup,
                                            const uint32_t coreFrameLength,
                                            const int32_t subStreamIndex,
                                            const AUDIO_OBJECT_TYPE aot) {
@@ -1708,7 +1708,7 @@ static TRANSPORTDEC_ERROR UsacRsv60DecoderConfig_Parse(
   if (asc->m_aot == AOT_USAC) {
     sc_chan_config = sc_chan_config_tab[usc->m_channelConfigurationIndex];
 
-    if (sc_chan_config.nCh > (SCHAR)TP_USAC_MAX_SPEAKERS) {
+    if (sc_chan_config.nCh > (int8_t)TP_USAC_MAX_SPEAKERS) {
       return TRANSPORTDEC_PARSE_ERROR;
     }
   }
@@ -1851,9 +1851,9 @@ static TRANSPORTDEC_ERROR UsacRsv60DecoderConfig_Parse(
         if (usc->m_sbrRatioIndex > 0) {
           /* Use SBR for upsampling */
           if (cb->cbSbr == NULL) return ErrorStatus = TRANSPORTDEC_UNKOWN_ERROR;
-          usc->element[i].m_harmonicSBR = (UCHAR)0;
-          usc->element[i].m_interTes = (UCHAR)0;
-          usc->element[i].m_pvc = (UCHAR)0;
+          usc->element[i].m_harmonicSBR = (uint8_t)0;
+          usc->element[i].m_interTes = (uint8_t)0;
+          usc->element[i].m_pvc = (uint8_t)0;
           if (cb->cbSbr(cb->cbSbrData, hBs, asc->m_samplingFrequency,
                         asc->m_extensionSamplingFrequency,
                         asc->m_samplesPerFrame, asc->m_aot, ID_LFE,
@@ -2118,8 +2118,8 @@ void AudioSpecificConfig_Init(CSAudioSpecificConfig *asc) {
 
 TRANSPORTDEC_ERROR AudioSpecificConfig_Parse(
     CSAudioSpecificConfig *self, HANDLE_FDK_BITSTREAM bs,
-    int32_t fExplicitBackwardCompatible, CSTpCallBacks *cb, UCHAR configMode,
-    UCHAR configChanged, AUDIO_OBJECT_TYPE m_aot) {
+    int32_t fExplicitBackwardCompatible, CSTpCallBacks *cb, uint8_t configMode,
+    uint8_t configChanged, AUDIO_OBJECT_TYPE m_aot) {
   TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
   uint32_t ascStartAnchor = FDKgetValidBits(bs);
   int32_t frameLengthFlag = -1;
@@ -2451,7 +2451,7 @@ TRANSPORTDEC_ERROR Drm_xHEAACStaticConfig(
 
 /* Mapping of DRM audio sampling rate field to MPEG usacSamplingFrequencyIndex
  */
-const UCHAR mapSr2MPEGIdx[8] = {
+const uint8_t mapSr2MPEGIdx[8] = {
     0x1b, /*  9.6 kHz */
     0x09, /* 12.0 kHz */
     0x08, /* 16.0 kHz */
@@ -2465,7 +2465,7 @@ const UCHAR mapSr2MPEGIdx[8] = {
 TRANSPORTDEC_ERROR DrmRawSdcAudioConfig_Parse(
     CSAudioSpecificConfig *self, HANDLE_FDK_BITSTREAM bs,
     CSTpCallBacks *cb, /* use cb == NULL to signal config check only mode */
-    UCHAR configMode, UCHAR configChanged) {
+    uint8_t configMode, uint8_t configChanged) {
   TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
 
   AudioSpecificConfig_Init(self);

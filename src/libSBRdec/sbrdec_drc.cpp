@@ -106,7 +106,7 @@ amm-info@iis.fraunhofer.de
    The table defines the (int16_t) window borders rounded to the nearest QMF
    timeslot. It has the size 16 because it is accessed with the
    drcInterpolationScheme that is read from the bitstream with 4 bit. */
-static const UCHAR winBorderToColMappingTab[2][16] = {
+static const uint8_t winBorderToColMappingTab[2][16] = {
     /*-1, 0, 1, 2,  3,  4,  5,  6,  7,  8 */
     {0, 0, 4, 8, 12, 16, 20, 24, 28, 32, 32, 32, 32, 32, 32,
      32}, /* 1024 framing */
@@ -199,7 +199,7 @@ void sbrDecoder_drcUpdateChannel(HANDLE_SBR_DRC_CHANNEL hDrcData) {
 void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
                              int32_t *qmfRealSlot, int32_t *qmfImagSlot,
                              int32_t col, int32_t numQmfSubSamples, int32_t maxShift) {
-  const UCHAR *winBorderToColMap;
+  const uint8_t *winBorderToColMap;
 
   int32_t band, bottomMdct, topMdct, bin, useLP;
   int32_t indx = numQmfSubSamples - (numQmfSubSamples >> 1) - 10; /* l_border */

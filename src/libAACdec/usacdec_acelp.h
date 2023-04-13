@@ -121,7 +121,7 @@ typedef struct {
   FIXP_SGL past_gpit;
   int32_t past_gcode;
   uint16_t old_T0;
-  UCHAR old_T0_frac;
+  uint8_t old_T0_frac;
   int32_t deemph_mem_wsyn;
   int32_t wsyn_rms;
   int16_t seed_ace;
@@ -130,17 +130,17 @@ typedef struct {
 /** Structure which holds the parameter data needed to decode one ACELP frame.
  */
 typedef struct {
-  UCHAR
+  uint8_t
   acelp_core_mode;   /**< mean excitation energy index for whole ACELP frame
                       */
-  UCHAR mean_energy; /**< acelp core mode for whole ACELP frame */
+  uint8_t mean_energy; /**< acelp core mode for whole ACELP frame */
   uint16_t T0[NB_SUBFR];
-  UCHAR T0_frac[NB_SUBFR];
-  UCHAR ltp_filtering_flag[NB_SUBFR]; /**< controlls whether LTP postfilter is
+  uint8_t T0_frac[NB_SUBFR];
+  uint8_t ltp_filtering_flag[NB_SUBFR]; /**< controlls whether LTP postfilter is
                                          active for each ACELP subframe */
   int16_t icb_index[NB_SUBFR]
                  [8]; /**< innovative codebook index for each ACELP subframe */
-  UCHAR gains[NB_SUBFR]; /**< gain index for each ACELP subframe */
+  uint8_t gains[NB_SUBFR]; /**< gain index for each ACELP subframe */
 } CAcelpChannelData;
 
 /**
@@ -233,13 +233,13 @@ void CLpd_AcelpReset(CAcelpStaticMem *acelp_mem);
  * \param[in,out] acelp_mem pointer to ACELP memory structure
  * \param[in] coreCoderFrameLength length of core coder frame (1024|768)
  */
-void CLpd_AcelpPrepareInternalMem(const int32_t *synth, UCHAR last_lpd_mode,
-                                  UCHAR last_last_lpd_mode,
+void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode,
+                                  uint8_t last_last_lpd_mode,
                                   const FIXP_LPC *A_new, const int32_t A_new_exp,
                                   const FIXP_LPC *A_old, const int32_t A_old_exp,
                                   CAcelpStaticMem *acelp_mem,
                                   int32_t coreCoderFrameLength, int32_t clearOldExc,
-                                  UCHAR lpd_mode);
+                                  uint8_t lpd_mode);
 
 /**
  * \brief Calculate zero input response (zir) of the acelp synthesis filter
@@ -271,7 +271,7 @@ void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, int16_t *pitch,
                        const FIXP_LPC lsp_new[M_LP_FILTER_ORDER],
                        const FIXP_SGL stab_fac, int32_t numLostSubframes,
                        int32_t synth[], int32_t coreCoderFrameLength,
-                       UCHAR last_tcx_noise_factor);
+                       uint8_t last_tcx_noise_factor);
 
 inline int16_t E_UTIL_random(int16_t *seed) {
   *seed = (int16_t)((((int32_t)*seed * (int32_t)31821) >> 1) + (int32_t)13849);

@@ -103,13 +103,13 @@ amm-info@iis.fraunhofer.de
 #include "drcDec_types.h"
 #include "drcDec_rom.h"
 
-const SCHAR deltaGain_codingProfile_0_1_huffman[24][2] = {
+const int8_t deltaGain_codingProfile_0_1_huffman[24][2] = {
     {1, 2},    {3, 4},     {-63, -65}, {5, -66},   {-64, 6},   {-80, 7},
     {8, 9},    {-68, 10},  {11, 12},   {-56, -67}, {-61, 13},  {-62, -69},
     {14, 15},  {16, -72},  {-71, 17},  {-70, -60}, {18, -59},  {19, 20},
     {21, -79}, {-57, -73}, {22, -58},  {-76, 23},  {-75, -74}, {-78, -77}};
 
-const SCHAR deltaGain_codingProfile_2_huffman[48][2] = {
+const int8_t deltaGain_codingProfile_2_huffman[48][2] = {
     {1, 2},     {3, 4},     {5, 6},     {7, 8},     {9, 10},    {11, 12},
     {13, -65},  {14, -64},  {15, -66},  {16, -67},  {17, 18},   {19, -68},
     {20, -63},  {-69, 21},  {-59, 22},  {-61, -62}, {-60, 23},  {24, -58},
@@ -135,7 +135,7 @@ const FIXP_SGL slopeSteepness[] = {FL2FXCONST_SGL(-3.0518f / (float)(1 << 2)),
                                    FL2FXCONST_SGL(1.2207f / (float)(1 << 2)),
                                    FL2FXCONST_SGL(3.0518f / (float)(1 << 2))};
 
-const SCHAR slopeSteepness_huffman[14][2] = {
+const int8_t slopeSteepness_huffman[14][2] = {
     {1, -57},  {-58, 2},   {3, 4},    {5, 6},    {7, -56},
     {8, -60},  {-61, -55}, {9, -59},  {10, -54}, {-64, 11},
     {-51, 12}, {-62, -50}, {-63, 13}, {-52, -53}};

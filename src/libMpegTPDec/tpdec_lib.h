@@ -240,9 +240,9 @@ void CProgramConfig_GetDefault(CProgramConfig *pPce, const uint32_t channelConfi
  */
 int32_t CProgramConfig_LookupElement(CProgramConfig *pPce, uint32_t chConfig,
                                  const uint32_t tag, const uint32_t channelIdx,
-                                 UCHAR chMapping[], AUDIO_CHANNEL_TYPE chType[],
-                                 UCHAR chIndex[], const uint32_t chDescrLen,
-                                 UCHAR *elMapping, MP4_ELEMENT_ID elList[],
+                                 uint8_t chMapping[], AUDIO_CHANNEL_TYPE chType[],
+                                 uint8_t chIndex[], const uint32_t chDescrLen,
+                                 uint8_t *elMapping, MP4_ELEMENT_ID elList[],
                                  MP4_ELEMENT_ID elType);
 
 /**
@@ -255,7 +255,7 @@ int32_t CProgramConfig_LookupElement(CProgramConfig *pPce, uint32_t chConfig,
  *
  * \return            Non-zero if any error occured otherwise zero.
  */
-int32_t CProgramConfig_GetPceChMap(const CProgramConfig *pPce, UCHAR pceChMap[],
+int32_t CProgramConfig_GetPceChMap(const CProgramConfig *pPce, uint8_t pceChMap[],
                                const uint32_t pceChMapLen);
 
 /**
@@ -271,7 +271,7 @@ int32_t CProgramConfig_GetPceChMap(const CProgramConfig *pPce, UCHAR pceChMap[],
  */
 int32_t CProgramConfig_GetElementTable(const CProgramConfig *pPce,
                                    MP4_ELEMENT_ID table[], const int32_t elListSize,
-                                   UCHAR *pChMapIdx);
+                                   uint8_t *pChMapIdx);
 
 /**
  * \brief          Get channel description (type and index) for implicit
@@ -284,7 +284,7 @@ int32_t CProgramConfig_GetElementTable(const CProgramConfig *pPce,
 void CProgramConfig_GetChannelDescription(const uint32_t chConfig,
                                           const CProgramConfig *pPce,
                                           AUDIO_CHANNEL_TYPE chType[],
-                                          UCHAR chIndex[]);
+                                          uint8_t chIndex[]);
 
 /**
  * \brief       Initialize a given AudioSpecificConfig structure.
@@ -312,8 +312,8 @@ void AudioSpecificConfig_Init(CSAudioSpecificConfig *pAsc);
  */
 TRANSPORTDEC_ERROR AudioSpecificConfig_Parse(
     CSAudioSpecificConfig *pAsc, HANDLE_FDK_BITSTREAM hBs,
-    int32_t fExplicitBackwardCompatible, CSTpCallBacks *cb, UCHAR configMode,
-    UCHAR configChanged, AUDIO_OBJECT_TYPE m_aot);
+    int32_t fExplicitBackwardCompatible, CSTpCallBacks *cb, uint8_t configMode,
+    uint8_t configChanged, AUDIO_OBJECT_TYPE m_aot);
 
 /* CELP stuff */
 enum { MPE = 0, RPE = 1, fs8KHz = 0, fs16KHz = 1 };
@@ -342,13 +342,13 @@ typedef struct TRANSPORTDEC *HANDLE_TRANSPORTDEC;
  * LOAS/LATM transport format, and an ASC elseways.
  *
  * \param hTp     Handle of a transport decoder.
- * \param conf    UCHAR buffer of the binary coded config (ASC or SMC).
+ * \param conf    uint8_t buffer of the binary coded config (ASC or SMC).
  * \param length  The length in bytes of the conf buffer.
  *
  * \return        Error code.
  */
 TRANSPORTDEC_ERROR transportDec_OutOfBandConfig(const HANDLE_TRANSPORTDEC hTp,
-                                                UCHAR *conf, const uint32_t length,
+                                                uint8_t *conf, const uint32_t length,
                                                 const uint32_t layer);
 
 /**
@@ -367,9 +367,9 @@ TRANSPORTDEC_ERROR transportDec_OutOfBandConfig(const HANDLE_TRANSPORTDEC hTp,
  * \return        Error code.
  */
 TRANSPORTDEC_ERROR transportDec_InBandConfig(
-    const HANDLE_TRANSPORTDEC hTp, UCHAR *newConfig, const uint32_t newConfigLength,
-    const UCHAR buildUpStatus, UCHAR *configChanged, const uint32_t layer,
-    UCHAR *implicitExplicitCfgDiff);
+    const HANDLE_TRANSPORTDEC hTp, uint8_t *newConfig, const uint32_t newConfigLength,
+    const uint8_t buildUpStatus, uint8_t *configChanged, const uint32_t layer,
+    uint8_t *implicitExplicitCfgDiff);
 
 /**
  * \brief Open Transport medium for reading.
@@ -498,7 +498,7 @@ int32_t transportDec_RegisterUniDrcConfigCallback(HANDLE_TRANSPORTDEC hTpDec,
  * \return            Error code.
  */
 TRANSPORTDEC_ERROR transportDec_FillData(const HANDLE_TRANSPORTDEC hTp,
-                                         UCHAR *pBuffer, const uint32_t bufferSize,
+                                         uint8_t *pBuffer, const uint32_t bufferSize,
                                          uint32_t *pBytesValid, const int32_t layer);
 
 /**
@@ -653,12 +653,12 @@ TRANSPORTDEC_ERROR transportDec_CrcCheck(const HANDLE_TRANSPORTDEC hTp);
  * \brief Only check whether a given config seems to be valid without modifying
  * internal states.
  *
- * \param conf    UCHAR buffer of the binary coded config (SDC type 9).
+ * \param conf    uint8_t buffer of the binary coded config (SDC type 9).
  * \param length  The length in bytes of the conf buffer.
  *
  * \return        Error code.
  */
-TRANSPORTDEC_ERROR transportDec_DrmRawSdcAudioConfig_Check(UCHAR *conf,
+TRANSPORTDEC_ERROR transportDec_DrmRawSdcAudioConfig_Check(uint8_t *conf,
                                                            const uint32_t length);
 
 #endif /* #ifndef TPDEC_LIB_H */

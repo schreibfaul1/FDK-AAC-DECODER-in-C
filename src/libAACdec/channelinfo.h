@@ -152,30 +152,30 @@ typedef enum { FD_LONG, FD_SHORT, LPD } USAC_COREMODE;
 typedef struct {
   const int16_t *ScaleFactorBands_Long;
   const int16_t *ScaleFactorBands_Short;
-  UCHAR NumberOfScaleFactorBands_Long;
-  UCHAR NumberOfScaleFactorBands_Short;
+  uint8_t NumberOfScaleFactorBands_Long;
+  uint8_t NumberOfScaleFactorBands_Short;
   uint32_t samplingRateIndex;
   uint32_t samplingRate;
 } SamplingRateInfo;
 
 typedef struct {
-  UCHAR CommonWindow;
-  UCHAR GlobalGain;
+  uint8_t CommonWindow;
+  uint8_t GlobalGain;
 
 } CRawDataInfo;
 
 typedef struct {
-  UCHAR WindowGroupLength[8];
-  UCHAR WindowGroups;
-  UCHAR Valid;
+  uint8_t WindowGroupLength[8];
+  uint8_t WindowGroups;
+  uint8_t Valid;
 
-  UCHAR WindowShape;         /* 0: sine window, 1: KBD, 2: low overlap */
+  uint8_t WindowShape;         /* 0: sine window, 1: KBD, 2: low overlap */
   BLOCK_TYPE WindowSequence; /* mdct.h; 0: int32_t, 1: start, 2: int16_t, 3: stop */
-  UCHAR MaxSfBands;
-  UCHAR max_sfb_ste;
-  UCHAR ScaleFactorGrouping;
+  uint8_t MaxSfBands;
+  uint8_t max_sfb_ste;
+  uint8_t ScaleFactorGrouping;
 
-  UCHAR TotalSfBands;
+  uint8_t TotalSfBands;
 
 } CIcsInfo;
 
@@ -212,7 +212,7 @@ typedef struct {
   int32_t old_T_pf[SYN_SFD];
   int32_t old_gain_pf[SYN_SFD];
   int32_t mem_bpf[L_FILT + L_SUBFR];
-  UCHAR
+  uint8_t
   old_bpf_control_info; /* (1: enable, 0: disable) bpf for past superframe
                          */
 
@@ -220,12 +220,12 @@ typedef struct {
                                    frame. (not signalled by the bitstream, see
                                    CAacDecoderChannelInfo::core_mode_last !! )
                                  */
-  UCHAR last_lpd_mode;      /* LPD mode used by the decoder in last LPD subframe
+  uint8_t last_lpd_mode;      /* LPD mode used by the decoder in last LPD subframe
                                 (not signalled by the bitstream, see
                                CAacDecoderChannelInfo::lpd_mode_last !! ) */
-  UCHAR last_last_lpd_mode; /* LPD mode used in second last LPD subframe
+  uint8_t last_last_lpd_mode; /* LPD mode used in second last LPD subframe
                                 (not signalled by the bitstream) */
-  UCHAR last_lpc_lost;      /* Flag indicating that the previous LPC is lost */
+  uint8_t last_lpc_lost;      /* Flag indicating that the previous LPC is lost */
 
   FIXP_LPC
   lpc4_lsf[M_LP_FILTER_ORDER]; /* Last LPC4 coefficients in LSF domain. */
@@ -249,7 +249,7 @@ typedef struct {
   int32_t last_tcx_gain_e;
   int32_t last_alfd_gains[32]; /* Scaled by one bit. */
   int16_t last_tcx_pitch;
-  UCHAR last_tcx_noise_factor;
+  uint8_t last_tcx_noise_factor;
 
   /* ACELP memory */
   CAcelpStaticMem acelp;
@@ -271,9 +271,9 @@ typedef struct {
   int16_t aScaleFactor[(
       8 * 16)]; /* Spectral scale factors for each sfb in each window. */
   int16_t aSfbScale[(8 * 16)]; /* could be free after ApplyTools() */
-  UCHAR
+  uint8_t
   aCodeBook[(8 * 16)]; /* section data: codebook for each window and sfb. */
-  UCHAR band_is_noise[(8 * 16)];
+  uint8_t band_is_noise[(8 * 16)];
   CTnsData TnsData;
   CRawDataInfo RawDataInfo;
 
@@ -282,21 +282,21 @@ typedef struct {
       CPulseData PulseData;
       int16_t aNumLineInSec4Hcr[MAX_SFB_HCR]; /* needed once for all channels
                                                except for Drm syntax */
-      UCHAR
+      uint8_t
       aCodeBooks4Hcr[MAX_SFB_HCR]; /* needed once for all channels except for
                                       Drm syntax. Same as "aCodeBook" ? */
       int16_t lenOfReorderedSpectralData;
-      SCHAR lenOfLongestCodeword;
-      SCHAR numberSection;
-      SCHAR rvlcCurrentScaleFactorOK;
-      SCHAR rvlcIntensityUsed;
+      int8_t lenOfLongestCodeword;
+      int8_t numberSection;
+      int8_t rvlcCurrentScaleFactorOK;
+      int8_t rvlcIntensityUsed;
     } aac;
     struct {
-      UCHAR fd_noise_level_and_offset;
-      UCHAR tns_active;
-      UCHAR tns_on_lr;
-      UCHAR tcx_noise_factor[4];
-      UCHAR tcx_global_gain[4];
+      uint8_t fd_noise_level_and_offset;
+      uint8_t tns_active;
+      uint8_t tns_on_lr;
+      uint8_t tcx_noise_factor[4];
+      uint8_t tcx_global_gain[4];
     } usac;
   }
   specificTo;
@@ -304,7 +304,7 @@ typedef struct {
 } CAacDecoderDynamicData;
 
 typedef shouldBeUnion {
-  UCHAR DrmBsBuffer[DRM_BS_BUFFER_SIZE];
+  uint8_t DrmBsBuffer[DRM_BS_BUFFER_SIZE];
 
   /* Common signal data, can be used once the bit stream data from above is not
    * used anymore. */
@@ -359,20 +359,20 @@ typedef struct {
   shouldBeUnion {
     struct {
       int32_t fac_data0[LFAC];
-      SCHAR fac_data_e[4];
+      int8_t fac_data_e[4];
       int32_t
       *fac_data[4]; /* Pointers to unused parts of pSpectralCoefficient */
 
-      UCHAR core_mode; /* current core mode */
+      uint8_t core_mode; /* current core mode */
       USAC_COREMODE
       core_mode_last;      /* previous core mode, signalled in the bitstream
                               (not done by the decoder, see
                               CAacDecoderStaticChannelInfo::last_core_mode !!)*/
-      UCHAR lpd_mode_last; /* previous LPD mode, signalled in the bitstream
+      uint8_t lpd_mode_last; /* previous LPD mode, signalled in the bitstream
                               (not done by the decoder, see
                               CAacDecoderStaticChannelInfo::last_core_mode !!)*/
-      UCHAR mod[4];
-      UCHAR bpf_control_info; /* (1: enable, 0: disable) bpf for current
+      uint8_t mod[4];
+      uint8_t bpf_control_info; /* (1: enable, 0: disable) bpf for current
                                  superframe */
 
       FIXP_LPC lsp_coeff[5][M_LP_FILTER_ORDER]; /* linear prediction
@@ -391,7 +391,7 @@ typedef struct {
       CAcelpChannelData acelp[4];
 
       int32_t tcx_gain[4];
-      SCHAR tcx_gain_e[4];
+      int8_t tcx_gain_e[4];
     } usac;
 
     struct {
@@ -404,7 +404,7 @@ typedef struct {
   int16_t specScale[8]; /* Scale shift values of each spectrum window */
   CIcsInfo icsInfo;
   int32_t granuleLength; /* Size of smallest spectrum piece */
-  UCHAR ElementInstanceTag;
+  uint8_t ElementInstanceTag;
 
   AACDEC_RENDER_MODE renderMode; /* Output signal rendering mode */
 
@@ -462,7 +462,7 @@ void CJointStereo_ApplyMS(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[2],
     int32_t *spectrumL, int32_t *spectrumR, int16_t *SFBleftScale,
     int16_t *SFBrightScale, int16_t *specScaleL, int16_t *specScaleR,
-    const int16_t *pScaleFactorBandOffsets, const UCHAR *pWindowGroupLength,
+    const int16_t *pScaleFactorBandOffsets, const uint8_t *pWindowGroupLength,
     const int32_t windowGroups, const int32_t max_sfb_ste_outside,
     const int32_t scaleFactorBandsTransmittedL,
     const int32_t scaleFactorBandsTransmittedR, int32_t *store_dmx_re_prev,
@@ -482,7 +482,7 @@ void CJointStereo_ApplyMS(
 */
 void CJointStereo_ApplyIS(CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
                           const int16_t *pScaleFactorBandOffsets,
-                          const UCHAR *pWindowGroupLength,
+                          const uint8_t *pWindowGroupLength,
                           const int32_t windowGroups,
                           const int32_t scaleFactorBandsTransmitted);
 
@@ -494,13 +494,13 @@ void CPns_SetCorrelation(CPnsData *pPnsData, const int32_t group, const int32_t 
 
 /****************** inline functions ******************/
 
-inline UCHAR IsValid(const CIcsInfo *pIcsInfo) { return pIcsInfo->Valid; }
+inline uint8_t IsValid(const CIcsInfo *pIcsInfo) { return pIcsInfo->Valid; }
 
-inline UCHAR IsLongBlock(const CIcsInfo *pIcsInfo) {
+inline uint8_t IsLongBlock(const CIcsInfo *pIcsInfo) {
   return (pIcsInfo->WindowSequence != BLOCK_SHORT);
 }
 
-inline UCHAR GetWindowShape(const CIcsInfo *pIcsInfo) {
+inline uint8_t GetWindowShape(const CIcsInfo *pIcsInfo) {
   return pIcsInfo->WindowShape;
 }
 
@@ -517,7 +517,7 @@ inline const int16_t *GetScaleFactorBandOffsets(
   }
 }
 
-inline UCHAR GetNumberOfScaleFactorBands(
+inline uint8_t GetNumberOfScaleFactorBands(
     const CIcsInfo *pIcsInfo, const SamplingRateInfo *samplingRateInfo) {
   if (IsLongBlock(pIcsInfo)) {
     return samplingRateInfo->NumberOfScaleFactorBands_Long;
@@ -530,33 +530,33 @@ inline int32_t GetWindowsPerFrame(const CIcsInfo *pIcsInfo) {
   return (pIcsInfo->WindowSequence == BLOCK_SHORT) ? 8 : 1;
 }
 
-inline UCHAR GetWindowGroups(const CIcsInfo *pIcsInfo) {
+inline uint8_t GetWindowGroups(const CIcsInfo *pIcsInfo) {
   return pIcsInfo->WindowGroups;
 }
 
-inline UCHAR GetWindowGroupLength(const CIcsInfo *pIcsInfo, const int32_t index) {
+inline uint8_t GetWindowGroupLength(const CIcsInfo *pIcsInfo, const int32_t index) {
   return pIcsInfo->WindowGroupLength[index];
 }
 
-inline const UCHAR *GetWindowGroupLengthTable(const CIcsInfo *pIcsInfo) {
+inline const uint8_t *GetWindowGroupLengthTable(const CIcsInfo *pIcsInfo) {
   return pIcsInfo->WindowGroupLength;
 }
 
-inline UCHAR GetScaleFactorBandsTransmitted(const CIcsInfo *pIcsInfo) {
+inline uint8_t GetScaleFactorBandsTransmitted(const CIcsInfo *pIcsInfo) {
   return pIcsInfo->MaxSfBands;
 }
 
-inline UCHAR GetScaleMaxFactorBandsTransmitted(const CIcsInfo *pIcsInfo0,
+inline uint8_t GetScaleMaxFactorBandsTransmitted(const CIcsInfo *pIcsInfo0,
                                                const CIcsInfo *pIcsInfo1) {
   return fMax(pIcsInfo0->MaxSfBands, pIcsInfo1->MaxSfBands);
 }
 
-inline UCHAR GetScaleFactorBandsTotal(const CIcsInfo *pIcsInfo) {
+inline uint8_t GetScaleFactorBandsTotal(const CIcsInfo *pIcsInfo) {
   return pIcsInfo->TotalSfBands;
 }
 
 /* Note: This function applies to AAC-LC only ! */
-inline UCHAR GetMaximumTnsBands(const CIcsInfo *pIcsInfo,
+inline uint8_t GetMaximumTnsBands(const CIcsInfo *pIcsInfo,
                                 const int32_t samplingRateIndex) {
   return tns_max_bands_tbl[samplingRateIndex][!IsLongBlock(pIcsInfo)];
 }

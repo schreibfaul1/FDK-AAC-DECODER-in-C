@@ -4249,11 +4249,11 @@ const int32_t samplingFreqTable[16] = {96000, 88200, 64000, 48000, 44100, 32000,
                                    24000, 22050, 16000, 12000, 11025, 8000,
                                    7350,  0,     0,     0};
 
-const UCHAR freqResTable[] = {0, 28, 20, 14, 10, 7, 5, 4};
+const uint8_t freqResTable[] = {0, 28, 20, 14, 10, 7, 5, 4};
 
-const UCHAR freqResTable_LD[] = {0, 23, 15, 12, 9, 7, 5, 4};
+const uint8_t freqResTable_LD[] = {0, 23, 15, 12, 9, 7, 5, 4};
 
-const UCHAR tempShapeChanTable[][8] = {{5, 5, 4, 6, 6, 4, 4, 2},
+const uint8_t tempShapeChanTable[][8] = {{5, 5, 4, 6, 6, 4, 4, 2},
                                        {5, 5, 5, 7, 7, 4, 4, 2}};
 
 const TREEPROPERTIES treePropertyTable[] = {
@@ -4262,7 +4262,7 @@ const TREEPROPERTIES treePropertyTable[] = {
     {2, 8, 5, 1, {1, 0, 0, 0, 0}}, {6, 8, 2, 0, {0, 0, 0, 0, 0}},
     {6, 8, 2, 0, {0, 0, 0, 0, 0}}, {1, 2, 1, 0, {0, 0, 0, 0, 0}}};
 
-const SCHAR kernels_4_to_71[MAX_HYBRID_BANDS] = {
+const int8_t kernels_4_to_71[MAX_HYBRID_BANDS] = {
     0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
     2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -4270,7 +4270,7 @@ const SCHAR kernels_4_to_71[MAX_HYBRID_BANDS] = {
     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
 
-const SCHAR kernels_5_to_71[MAX_HYBRID_BANDS] = {
+const int8_t kernels_5_to_71[MAX_HYBRID_BANDS] = {
     0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3,
     3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
@@ -4278,7 +4278,7 @@ const SCHAR kernels_5_to_71[MAX_HYBRID_BANDS] = {
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4};
 
-const SCHAR kernels_7_to_71[MAX_HYBRID_BANDS] = {
+const int8_t kernels_7_to_71[MAX_HYBRID_BANDS] = {
     0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5,
     5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
     6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
@@ -4286,7 +4286,7 @@ const SCHAR kernels_7_to_71[MAX_HYBRID_BANDS] = {
     6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
     6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6};
 
-const SCHAR kernels_10_to_71[MAX_HYBRID_BANDS] = {
+const int8_t kernels_10_to_71[MAX_HYBRID_BANDS] = {
     0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 7, 7, 7, 8, 8,
     8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
     9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
@@ -4294,7 +4294,7 @@ const SCHAR kernels_10_to_71[MAX_HYBRID_BANDS] = {
     9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,
     9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9};
 
-const SCHAR kernels_14_to_71[MAX_HYBRID_BANDS] = {
+const int8_t kernels_14_to_71[MAX_HYBRID_BANDS] = {
     0,  0,  0,  0,  1,  1,  2,  3,  4,  4,  5,  6,  6,  7,  7,  8,  8,
     8,  9,  9,  9,  10, 10, 10, 10, 11, 11, 11, 11, 11, 12, 12, 12, 12,
     12, 12, 12, 12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 13, 13, 13, 13,
@@ -4304,7 +4304,7 @@ const SCHAR kernels_14_to_71[MAX_HYBRID_BANDS] = {
     13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
     13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13};
 
-const SCHAR kernels_20_to_71[MAX_HYBRID_BANDS] = {
+const int8_t kernels_20_to_71[MAX_HYBRID_BANDS] = {
     0,  0,  1,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14,
     14, 15, 15, 15, 16, 16, 16, 16, 17, 17, 17, 17, 17, 18, 18, 18, 18,
     18, 18, 18, 18, 18, 18, 18, 18, 19, 19, 19, 19, 19, 19, 19, 19, 19,
@@ -4314,7 +4314,7 @@ const SCHAR kernels_20_to_71[MAX_HYBRID_BANDS] = {
     19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
     19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19};
 
-const SCHAR kernels_28_to_71[MAX_HYBRID_BANDS] = {
+const int8_t kernels_28_to_71[MAX_HYBRID_BANDS] = {
     0,  0,  1,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14,
     15, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 21, 22, 22, 22, 23,
     23, 23, 23, 24, 24, 24, 24, 24, 25, 25, 25, 25, 25, 25, 26, 26, 26,
@@ -4324,7 +4324,7 @@ const SCHAR kernels_28_to_71[MAX_HYBRID_BANDS] = {
     27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27,
     27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27};
 
-const SCHAR kernels_4_to_64[MAX_HYBRID_BANDS] = {
+const int8_t kernels_4_to_64[MAX_HYBRID_BANDS] = {
     0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
     2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -4332,7 +4332,7 @@ const SCHAR kernels_4_to_64[MAX_HYBRID_BANDS] = {
     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
 
-const SCHAR kernels_5_to_64[MAX_HYBRID_BANDS] = {
+const int8_t kernels_5_to_64[MAX_HYBRID_BANDS] = {
     0, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
     3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
@@ -4340,7 +4340,7 @@ const SCHAR kernels_5_to_64[MAX_HYBRID_BANDS] = {
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
     4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4};
 
-const SCHAR kernels_7_to_64[MAX_HYBRID_BANDS] = {
+const int8_t kernels_7_to_64[MAX_HYBRID_BANDS] = {
     0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5,
     5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
     6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
@@ -4348,7 +4348,7 @@ const SCHAR kernels_7_to_64[MAX_HYBRID_BANDS] = {
     6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
     6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6};
 
-const SCHAR kernels_9_to_64[MAX_HYBRID_BANDS] = {
+const int8_t kernels_9_to_64[MAX_HYBRID_BANDS] = {
     0, 1, 2, 3, 3, 4, 4, 5, 5, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7,
     7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
     8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
@@ -4356,7 +4356,7 @@ const SCHAR kernels_9_to_64[MAX_HYBRID_BANDS] = {
     8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,
     8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8};
 
-const SCHAR kernels_12_to_64[MAX_HYBRID_BANDS] = {
+const int8_t kernels_12_to_64[MAX_HYBRID_BANDS] = {
     0,  1,  2,  3,  4,  4,  5,  5,  6,  6,  6,  7,  7,  7,  8,  8,  8,  8,  9,
     9,  9,  9,  9,  10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 11, 11, 11,
     11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
@@ -4365,7 +4365,7 @@ const SCHAR kernels_12_to_64[MAX_HYBRID_BANDS] = {
     11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
     11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11};
 
-const SCHAR kernels_15_to_64[MAX_HYBRID_BANDS] = {
+const int8_t kernels_15_to_64[MAX_HYBRID_BANDS] = {
     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  9,  10, 10, 10, 11, 11, 11, 11, 12,
     12, 12, 12, 12, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 14, 14, 14,
     14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
@@ -4374,7 +4374,7 @@ const SCHAR kernels_15_to_64[MAX_HYBRID_BANDS] = {
     14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
     14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14};
 
-const SCHAR kernels_23_to_64[MAX_HYBRID_BANDS] = {
+const int8_t kernels_23_to_64[MAX_HYBRID_BANDS] = {
     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 12, 13, 13, 14, 14, 15,
     15, 16, 16, 16, 17, 17, 17, 18, 18, 18, 18, 19, 19, 19, 19, 19, 20, 20, 20,
     20, 20, 20, 21, 21, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 22, 22, 22, 22,
@@ -4383,23 +4383,23 @@ const SCHAR kernels_23_to_64[MAX_HYBRID_BANDS] = {
     22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22,
     22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22};
 
-const UCHAR mapping_15_to_23[MAX_PARAMETER_BANDS_LD] = {
+const uint8_t mapping_15_to_23[MAX_PARAMETER_BANDS_LD] = {
     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  9, 10,
     10, 11, 11, 12, 12, 13, 13, 13, 14, 14, 14};
 
-const UCHAR mapping_12_to_23[MAX_PARAMETER_BANDS_LD] = {
+const uint8_t mapping_12_to_23[MAX_PARAMETER_BANDS_LD] = {
     0, 1, 2, 3, 4, 4, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 10, 11, 11, 11};
 
-const UCHAR mapping_9_to_23[MAX_PARAMETER_BANDS_LD] = {
+const uint8_t mapping_9_to_23[MAX_PARAMETER_BANDS_LD] = {
     0, 1, 2, 3, 3, 4, 4, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8};
 
-const UCHAR mapping_7_to_23[MAX_PARAMETER_BANDS_LD] = {
+const uint8_t mapping_7_to_23[MAX_PARAMETER_BANDS_LD] = {
     0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6};
 
-const UCHAR mapping_5_to_23[MAX_PARAMETER_BANDS_LD] = {
+const uint8_t mapping_5_to_23[MAX_PARAMETER_BANDS_LD] = {
     0, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4};
 
-const UCHAR mapping_4_to_23[MAX_PARAMETER_BANDS_LD] = {
+const uint8_t mapping_4_to_23[MAX_PARAMETER_BANDS_LD] = {
     0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3};
 
 const FIXP_CFG clipGainTable__FDK[] = {
@@ -4412,9 +4412,9 @@ const FIXP_CFG clipGainTable__FDK[] = {
     CLIP_PROTECT_GAIN_2(2.828427f),
     /*CLIP_PROTECT_GAIN_2(4.000000f)*/ FX_DBL2FX_CFG(MAXVAL_DBL)};
 
-const UCHAR clipGainSFTable__FDK[] = {0, 1, 1, 1, 1, 2, 2, 2};
+const uint8_t clipGainSFTable__FDK[] = {0, 1, 1, 1, 1, 2, 2, 2};
 
-const UCHAR pbStrideTable[] = {1, 2, 5, 28};
+const uint8_t pbStrideTable[] = {1, 2, 5, 28};
 
 const int32_t smgTimeTable[] = {64, 128, 256, 512};
 
@@ -4428,13 +4428,13 @@ const FIXP_CFG envShapeDataTable__FDK[5][2] = {
      FL2FXCONST_CFG(0.62996052494744f)}};
 
 /* sac_calcM1andM2 */
-const SCHAR row2channelSTP[][MAX_M2_INPUT] = {{0, 1}, {0, 3}, {0, 2},  {0, 4},
+const int8_t row2channelSTP[][MAX_M2_INPUT] = {{0, 1}, {0, 3}, {0, 2},  {0, 4},
                                               {0, 4}, {0, 2}, {-1, 2}, {0, 1}};
 
-const SCHAR row2channelGES[][MAX_M2_INPUT] = {{0, 1}, {0, 3}, {0, 3},  {0, 5},
+const int8_t row2channelGES[][MAX_M2_INPUT] = {{0, 1}, {0, 3}, {0, 3},  {0, 5},
                                               {0, 5}, {0, 2}, {-1, 2}, {0, 1}};
 
-const SCHAR row2residual[][MAX_M2_INPUT] = {{-1, 0},  {-1, 0},  {-1, -1},
+const int8_t row2residual[][MAX_M2_INPUT] = {{-1, 0},  {-1, 0},  {-1, -1},
                                             {-1, -1}, {-1, -1}, {-1, -1},
                                             {-1, -1}, {-1, 0}};
 

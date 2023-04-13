@@ -130,7 +130,7 @@ typedef struct {
   int32_t bufferHFpos; /*!< Delay line positioning. */
   int32_t nrBands;     /*!< Number of QMF bands. */
   int32_t cplxBands;   /*!< Number of complex QMF bands.*/
-  UCHAR hfMode;    /*!< Flag signalizes treatment of HF bands. */
+  uint8_t hfMode;    /*!< Flag signalizes treatment of HF bands. */
 
   int32_t *pLFmemory; /*!< Pointer to LF states buffer. */
   int32_t *pHFmemory; /*!< Pointer to HF states buffer. */

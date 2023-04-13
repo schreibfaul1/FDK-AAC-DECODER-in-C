@@ -123,7 +123,7 @@ amm-info@iis.fraunhofer.de
 int32_t DecodeHuffmanCW(Huffman h, /*!< pointer to huffman codebook table */
                     HANDLE_FDK_BITSTREAM hBs) /*!< Handle to Bitbuffer */
 {
-  SCHAR index = 0;
+  int8_t index = 0;
   int32_t value, bit;
 
   while (index >= 0) {

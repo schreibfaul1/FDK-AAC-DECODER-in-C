@@ -109,13 +109,13 @@ amm-info@iis.fraunhofer.de
 /*** Tables ***/
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
-static const UCHAR nBitsTsdCW_32slots[32] = {
+static const uint8_t nBitsTsdCW_32slots[32] = {
     5,  9,  13, 16, 18, 20, 22, 24, 25, 26, 27, 28, 29, 29, 30, 30,
     30, 29, 29, 28, 27, 26, 25, 24, 22, 20, 18, 16, 13, 9,  5,  0};
 
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
-static const UCHAR nBitsTsdCW_64slots[64] = {
+static const uint8_t nBitsTsdCW_64slots[64] = {
     6,  11, 16, 20, 23, 27, 30, 33, 35, 38, 40, 42, 44, 46, 48, 49,
     51, 52, 53, 55, 56, 57, 58, 58, 59, 60, 60, 60, 61, 61, 61, 61,
     61, 61, 61, 60, 60, 60, 59, 58, 58, 57, 56, 55, 53, 52, 51, 49,
@@ -209,7 +209,7 @@ FDK_INLINE int32_t isTrSlot(const TSD_DATA *pTsdData, const int32_t ts) {
 int32_t TsdRead(HANDLE_FDK_BITSTREAM hBs, const int32_t numSlots, TSD_DATA *pTsdData) {
   int32_t nBitsTrSlots = 0;
   int32_t bsTsdNumTrSlots;
-  const UCHAR *nBitsTsdCW_tab = NULL;
+  const uint8_t *nBitsTsdCW_tab = NULL;
 
   switch (numSlots) {
     case 32:
@@ -238,7 +238,7 @@ int32_t TsdRead(HANDLE_FDK_BITSTREAM hBs, const int32_t numSlots, TSD_DATA *pTsd
   /* Decode transient slot positions */
   {
     int32_t nBitsTsdCW = (int32_t)nBitsTsdCW_tab[bsTsdNumTrSlots];
-    SCHAR *phaseData = pTsdData->bsTsdTrPhaseData;
+    int8_t *phaseData = pTsdData->bsTsdTrPhaseData;
     int32_t p = bsTsdNumTrSlots + 1;
     int32_t k, h;
     uint16_t s[SIZE_S] = {0};

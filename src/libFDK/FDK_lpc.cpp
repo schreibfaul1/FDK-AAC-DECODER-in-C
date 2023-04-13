@@ -105,7 +105,7 @@ amm-info@iis.fraunhofer.de
 /* Internal scaling of LPC synthesis to avoid overflow of filte states.
    This depends on the LPC order, because the LPC order defines the amount
    of MAC operations. */
-static SCHAR order_ld[LPC_MAX_ORDER] = {
+static int8_t order_ld[LPC_MAX_ORDER] = {
     /* Assume that Synthesis filter output does not clip and filter
        accu does change no more than 1.0 for each iteration.
        ceil(0.5*log((1:24))/log(2)) */

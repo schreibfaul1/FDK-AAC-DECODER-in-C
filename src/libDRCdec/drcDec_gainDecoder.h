@@ -161,12 +161,12 @@ typedef struct {
   DRC_COEFFICIENTS_UNI_DRC* pCoef;
 
   DUCKING_MODIFICATION duckingModificationForChannelGroup[8];
-  SCHAR channelGroupForChannel[8];
+  int8_t channelGroupForChannel[8];
 
-  UCHAR bandCountForChannelGroup[8];
-  UCHAR gainElementForGroup[8];
-  UCHAR channelGroupIsParametricDrc[8];
-  UCHAR gainElementCount; /* number of different DRC gains inluding all DRC
+  uint8_t bandCountForChannelGroup[8];
+  uint8_t gainElementForGroup[8];
+  uint8_t channelGroupIsParametricDrc[8];
+  uint8_t gainElementCount; /* number of different DRC gains inluding all DRC
                              bands */
   int32_t lnbIndexForChannel[8][NUM_LNB_FRAMES];
   int32_t subbandGainsReady;
@@ -214,9 +214,9 @@ drcDec_GainDecoder_SetCodecDependentParameters(
 DRC_ERROR
 drcDec_GainDecoder_Config(HANDLE_DRC_GAIN_DECODER hGainDec,
                           HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
-                          const UCHAR numSelectedDrcSets,
-                          const SCHAR* selectedDrcSetIds,
-                          const UCHAR* selectedDownmixIds);
+                          const uint8_t numSelectedDrcSets,
+                          const int8_t* selectedDrcSetIds,
+                          const uint8_t* selectedDownmixIds);
 
 /* close functions */
 DRC_ERROR

@@ -120,38 +120,38 @@ amm-info@iis.fraunhofer.de
 */
 //@{
 /* tables were created with ../addon/octave/sbr_start_freq_table.m */
-const UCHAR FDK_sbrDecoder_sbr_start_freq_16[][16] = {
+const uint8_t FDK_sbrDecoder_sbr_start_freq_16[][16] = {
     {16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31},
     {4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}};
-const UCHAR FDK_sbrDecoder_sbr_start_freq_22[][16] = {
+const uint8_t FDK_sbrDecoder_sbr_start_freq_22[][16] = {
     {12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 30},
     {4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22}};
-const UCHAR FDK_sbrDecoder_sbr_start_freq_24[][16] = {
+const uint8_t FDK_sbrDecoder_sbr_start_freq_24[][16] = {
     {11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 27, 29, 32},
     {3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 19, 21, 24}};
-const UCHAR FDK_sbrDecoder_sbr_start_freq_32[][16] = {
+const uint8_t FDK_sbrDecoder_sbr_start_freq_32[][16] = {
     {10, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 27, 29, 32},
     {2, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 19, 21, 24}};
-const UCHAR FDK_sbrDecoder_sbr_start_freq_40[][16] = {
+const uint8_t FDK_sbrDecoder_sbr_start_freq_40[][16] = {
     {12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 24, 26, 28, 30, 32},
     {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 19, 21, 23, 25}};
-const UCHAR FDK_sbrDecoder_sbr_start_freq_44[][16] = {
+const uint8_t FDK_sbrDecoder_sbr_start_freq_44[][16] = {
     {8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 23, 25, 28, 32},
     {2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 17, 19, 22, 26}};
-const UCHAR FDK_sbrDecoder_sbr_start_freq_48[][16] = {
+const uint8_t FDK_sbrDecoder_sbr_start_freq_48[][16] = {
     {7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 22, 24, 27, 31},
     {1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 21, 25}};
-const UCHAR FDK_sbrDecoder_sbr_start_freq_64[][16] = {
+const uint8_t FDK_sbrDecoder_sbr_start_freq_64[][16] = {
     {6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 19, 21, 23, 26, 30},
     {1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 21, 25}};
-const UCHAR FDK_sbrDecoder_sbr_start_freq_88[][16] = {
+const uint8_t FDK_sbrDecoder_sbr_start_freq_88[][16] = {
     {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 23, 27, 31},
     {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 20, 24, 28}};
-const UCHAR FDK_sbrDecoder_sbr_start_freq_192[16] = {
+const uint8_t FDK_sbrDecoder_sbr_start_freq_192[16] = {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 19, 23, 27};
-const UCHAR FDK_sbrDecoder_sbr_start_freq_176[16] = {
+const uint8_t FDK_sbrDecoder_sbr_start_freq_176[16] = {
     2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 20, 24, 28};
-const UCHAR FDK_sbrDecoder_sbr_start_freq_128[16] = {
+const uint8_t FDK_sbrDecoder_sbr_start_freq_128[16] = {
     1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 21, 25};
 
 //@}
@@ -218,7 +218,7 @@ const FIXP_SGL FDK_sbrDecoder_sbr_limGains_m[4] = {
 };
 
 /*! Exponents of gain limits */
-const UCHAR FDK_sbrDecoder_sbr_limGains_e[4] = {0, 1, 1, 67};
+const uint8_t FDK_sbrDecoder_sbr_limGains_e[4] = {0, 1, 1, 67};
 
 /*! Constants for calculating the number of limiter bands */
 const FIXP_SGL FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4[4] = {
@@ -908,7 +908,7 @@ const FRAME_INFO FDK_sbrDecoder_sbr_frame_info8_16 = {
 
 */
 //@{
-const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvLevel10T[120][2] = {
+const int8_t FDK_sbrDecoder_sbr_huffBook_EnvLevel10T[120][2] = {
     {1, 2},       {-64, -65},   {3, 4},       {-63, -66},   {5, 6},
     {-62, -67},   {7, 8},       {-61, -68},   {9, 10},      {-60, -69},
     {11, 12},     {-59, -70},   {13, 14},     {-58, -71},   {15, 16},
@@ -934,7 +934,7 @@ const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvLevel10T[120][2] = {
     {111, 112},   {-15, -14},   {-13, -12},   {114, 117},   {115, 116},
     {-11, -10},   {-9, -8},     {118, 119},   {-7, -6},     {-5, -4}};
 
-const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvLevel10F[120][2] = {
+const int8_t FDK_sbrDecoder_sbr_huffBook_EnvLevel10F[120][2] = {
     {1, 2},       {-64, -65},   {3, 4},       {-63, -66},   {5, 6},
     {-67, -62},   {7, 8},       {-68, -61},   {9, 10},      {-69, -60},
     {11, 13},     {-70, 12},    {-59, -71},   {14, 16},     {-58, 15},
@@ -960,7 +960,7 @@ const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvLevel10F[120][2] = {
     {111, 112},   {-15, -14},   {-13, -12},   {114, 117},   {115, 116},
     {-11, -10},   {-9, -8},     {118, 119},   {-7, -6},     {-5, -4}};
 
-const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvBalance10T[48][2] = {
+const int8_t FDK_sbrDecoder_sbr_huffBook_EnvBalance10T[48][2] = {
     {-64, 1},   {-63, 2},   {-65, 3},   {-62, 4},   {-66, 5},   {-61, 6},
     {-67, 7},   {-60, 8},   {-68, 9},   {10, 11},   {-69, -59}, {12, 13},
     {-70, -58}, {14, 28},   {15, 21},   {16, 18},   {-57, 17},  {-71, -56},
@@ -970,7 +970,7 @@ const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvBalance10T[48][2] = {
     {37, 41},   {38, 39},   {-52, -51}, {-50, 40},  {-49, -48}, {42, 45},
     {43, 44},   {-47, -46}, {-45, -44}, {46, 47},   {-43, -42}, {-41, -40}};
 
-const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvBalance10F[48][2] = {
+const int8_t FDK_sbrDecoder_sbr_huffBook_EnvBalance10F[48][2] = {
     {-64, 1},   {-65, 2},   {-63, 3},   {-66, 4},   {-62, 5},   {-61, 6},
     {-67, 7},   {-68, 8},   {-60, 9},   {10, 11},   {-69, -59}, {-70, 12},
     {-58, 13},  {14, 17},   {-71, 15},  {-57, 16},  {-56, -73}, {18, 32},
@@ -980,7 +980,7 @@ const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvBalance10F[48][2] = {
     {-54, -53}, {38, 39},   {-52, -51}, {-50, -49}, {41, 44},   {42, 43},
     {-48, -47}, {-46, -45}, {45, 46},   {-44, -43}, {-42, 47},  {-41, -40}};
 
-const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvLevel11T[62][2] = {
+const int8_t FDK_sbrDecoder_sbr_huffBook_EnvLevel11T[62][2] = {
     {-64, 1},   {-65, 2},   {-63, 3},   {-66, 4},   {-62, 5},   {-67, 6},
     {-61, 7},   {-68, 8},   {-60, 9},   {10, 11},   {-69, -59}, {12, 14},
     {-70, 13},  {-71, -58}, {15, 18},   {16, 17},   {-72, -57}, {-73, -74},
@@ -993,7 +993,7 @@ const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvLevel11T[62][2] = {
     {-42, -41}, {56, 59},   {57, 58},   {-40, -39}, {-38, -37}, {60, 61},
     {-36, -35}, {-34, -33}};
 
-const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvLevel11F[62][2] = {
+const int8_t FDK_sbrDecoder_sbr_huffBook_EnvLevel11F[62][2] = {
     {-64, 1},   {-65, 2},   {-63, 3},   {-66, 4},   {-62, 5},   {-67, 6},
     {7, 8},     {-61, -68}, {9, 10},    {-60, -69}, {11, 12},   {-59, -70},
     {13, 14},   {-58, -71}, {15, 16},   {-57, -72}, {17, 19},   {-56, 18},
@@ -1006,19 +1006,19 @@ const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvLevel11F[62][2] = {
     {-89, -81}, {56, 59},   {57, 58},   {-45, -41}, {-38, -37}, {60, 61},
     {-36, -35}, {-34, -33}};
 
-const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvBalance11T[24][2] = {
+const int8_t FDK_sbrDecoder_sbr_huffBook_EnvBalance11T[24][2] = {
     {-64, 1},   {-63, 2},   {-65, 3},   {-66, 4},   {-62, 5},  {-61, 6},
     {-67, 7},   {-68, 8},   {-60, 9},   {10, 16},   {11, 13},  {-69, 12},
     {-76, -75}, {14, 15},   {-74, -73}, {-72, -71}, {17, 20},  {18, 19},
     {-70, -59}, {-58, -57}, {21, 22},   {-56, -55}, {-54, 23}, {-53, -52}};
 
-const SCHAR FDK_sbrDecoder_sbr_huffBook_EnvBalance11F[24][2] = {
+const int8_t FDK_sbrDecoder_sbr_huffBook_EnvBalance11F[24][2] = {
     {-64, 1},   {-65, 2},   {-63, 3},   {-66, 4},   {-62, 5},   {-61, 6},
     {-67, 7},   {-68, 8},   {-60, 9},   {10, 13},   {-69, 11},  {-59, 12},
     {-58, -76}, {14, 17},   {15, 16},   {-75, -74}, {-73, -72}, {18, 21},
     {19, 20},   {-71, -70}, {-57, -56}, {22, 23},   {-55, -54}, {-53, -52}};
 
-const SCHAR FDK_sbrDecoder_sbr_huffBook_NoiseLevel11T[62][2] = {
+const int8_t FDK_sbrDecoder_sbr_huffBook_NoiseLevel11T[62][2] = {
     {-64, 1},   {-63, 2},   {-65, 3},   {-66, 4},   {-62, 5},   {-67, 6},
     {7, 8},     {-61, -68}, {9, 30},    {10, 15},   {-60, 11},  {-69, 12},
     {13, 14},   {-59, -53}, {-95, -94}, {16, 23},   {17, 20},   {18, 19},
@@ -1031,7 +1031,7 @@ const SCHAR FDK_sbrDecoder_sbr_huffBook_NoiseLevel11T[62][2] = {
     {55, 58},   {56, 57},   {-41, -40}, {-39, -38}, {59, 60},   {-37, -36},
     {-35, 61},  {-34, -33}};
 
-const SCHAR FDK_sbrDecoder_sbr_huffBook_NoiseBalance11T[24][2] = {
+const int8_t FDK_sbrDecoder_sbr_huffBook_NoiseBalance11T[24][2] = {
     {-64, 1},   {-65, 2},   {-63, 3},   {4, 9},     {-66, 5},   {-62, 6},
     {7, 8},     {-76, -75}, {-74, -73}, {10, 17},   {11, 14},   {12, 13},
     {-72, -71}, {-70, -69}, {15, 16},   {-68, -67}, {-61, -60}, {18, 21},
@@ -1047,34 +1047,34 @@ const SCHAR FDK_sbrDecoder_sbr_huffBook_NoiseBalance11T[24][2] = {
 /* constants used in psbitdec.cpp */
 
 /* FIX_BORDER can have 0, 1, 2, 4 envelopes */
-const UCHAR FDK_sbrDecoder_aFixNoEnvDecode[4] = {0, 1, 2, 4};
+const uint8_t FDK_sbrDecoder_aFixNoEnvDecode[4] = {0, 1, 2, 4};
 
 /* IID & ICC Huffman codebooks */
-const SCHAR aBookPsIidTimeDecode[28][2] = {
+const int8_t aBookPsIidTimeDecode[28][2] = {
     {-64, 1},   {-65, 2},   {-63, 3},   {-66, 4},  {-62, 5},   {-67, 6},
     {-61, 7},   {-68, 8},   {-60, 9},   {-69, 10}, {-59, 11},  {-70, 12},
     {-58, 13},  {-57, 14},  {-71, 15},  {16, 17},  {-56, -72}, {18, 21},
     {19, 20},   {-55, -78}, {-77, -76}, {22, 25},  {23, 24},   {-75, -74},
     {-73, -54}, {26, 27},   {-53, -52}, {-51, -50}};
 
-const SCHAR aBookPsIidFreqDecode[28][2] = {
+const int8_t aBookPsIidFreqDecode[28][2] = {
     {-64, 1},   {2, 3},     {-63, -65}, {4, 5},    {-62, -66}, {6, 7},
     {-61, -67}, {8, 9},     {-68, -60}, {-59, 10}, {-69, 11},  {-58, 12},
     {-70, 13},  {-71, 14},  {-57, 15},  {16, 17},  {-56, -72}, {18, 19},
     {-55, -54}, {20, 21},   {-73, -53}, {22, 24},  {-74, 23},  {-75, -78},
     {25, 26},   {-77, -76}, {-52, 27},  {-51, -50}};
 
-const SCHAR aBookPsIccTimeDecode[14][2] = {
+const int8_t aBookPsIccTimeDecode[14][2] = {
     {-64, 1}, {-63, 2}, {-65, 3},  {-62, 4},  {-66, 5},  {-61, 6},  {-67, 7},
     {-60, 8}, {-68, 9}, {-59, 10}, {-69, 11}, {-58, 12}, {-70, 13}, {-71, -57}};
 
-const SCHAR aBookPsIccFreqDecode[14][2] = {
+const int8_t aBookPsIccFreqDecode[14][2] = {
     {-64, 1}, {-63, 2}, {-65, 3},  {-62, 4},  {-66, 5},  {-61, 6},  {-67, 7},
     {-60, 8}, {-59, 9}, {-68, 10}, {-58, 11}, {-69, 12}, {-57, 13}, {-70, -71}};
 
 /* IID-fine Huffman codebooks */
 
-const SCHAR aBookPsIidFineTimeDecode[60][2] = {
+const int8_t aBookPsIidFineTimeDecode[60][2] = {
     {1, -64},   {-63, 2},   {3, -65},   {4, 59},    {5, 7},     {6, -67},
     {-68, -60}, {-61, 8},   {9, 11},    {-59, 10},  {-70, -58}, {12, 41},
     {13, 20},   {14, -71},  {-55, 15},  {-53, 16},  {17, -77},  {18, 19},
@@ -1086,7 +1086,7 @@ const SCHAR aBookPsIidFineTimeDecode[60][2] = {
     {-47, 49},  {-87, -41}, {-52, 51},  {-78, -50}, {53, -73},  {54, -75},
     {55, 57},   {56, -80},  {-86, -42}, {-48, 58},  {-44, -43}, {-66, -62}};
 
-const SCHAR aBookPsIidFineFreqDecode[60][2] = {
+const int8_t aBookPsIidFineFreqDecode[60][2] = {
     {1, -64},   {2, 4},     {3, -65},   {-66, -62}, {-63, 5},   {6, 7},
     {-67, -61}, {8, 9},     {-68, -60}, {10, 11},   {-69, -59}, {12, 13},
     {-70, -58}, {14, 18},   {-57, 15},  {16, -72},  {-54, 17},  {-75, -53},
@@ -1120,13 +1120,13 @@ const int32_t Alphas[NO_ICC_LEVELS] = {
     0x00000000, 0x0b6b5be0, 0x12485f80, 0x1da2fa40,
     0x2637ebc0, 0x3243f6c0, 0x466b7480, 0x6487ed80};
 
-const UCHAR bins2groupMap20[NO_IID_GROUPS] = {
+const uint8_t bins2groupMap20[NO_IID_GROUPS] = {
     0, 0, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
 
-const UCHAR FDK_sbrDecoder_aNoIidBins[3] = {
+const uint8_t FDK_sbrDecoder_aNoIidBins[3] = {
     NO_LOW_RES_IID_BINS, NO_MID_RES_IID_BINS, NO_HI_RES_IID_BINS};
 
-const UCHAR FDK_sbrDecoder_aNoIccBins[3] = {
+const uint8_t FDK_sbrDecoder_aNoIccBins[3] = {
     NO_LOW_RES_ICC_BINS, NO_MID_RES_ICC_BINS, NO_HI_RES_ICC_BINS};
 
 /************************************************************************/

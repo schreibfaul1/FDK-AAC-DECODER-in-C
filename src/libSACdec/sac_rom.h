@@ -154,55 +154,55 @@ extern const int32_t dequantCLD_c1[31];
 
 extern const FIXP_CFG BP__FDK[];
 extern const FIXP_CFG BP_GF__FDK[];
-extern const SCHAR row2channelSTP[][MAX_M2_INPUT];
+extern const int8_t row2channelSTP[][MAX_M2_INPUT];
 
 /* sac_bitdec */
 extern const int32_t samplingFreqTable[16];
-extern const UCHAR freqResTable[];
-extern const UCHAR freqResTable_LD[];
-extern const UCHAR tempShapeChanTable[2][8];
+extern const uint8_t freqResTable[];
+extern const uint8_t freqResTable_LD[];
+extern const uint8_t tempShapeChanTable[2][8];
 extern const TREEPROPERTIES treePropertyTable[];
 
-extern const SCHAR kernels_4_to_71[MAX_HYBRID_BANDS];
-extern const SCHAR kernels_5_to_71[MAX_HYBRID_BANDS];
-extern const SCHAR kernels_7_to_71[MAX_HYBRID_BANDS];
-extern const SCHAR kernels_10_to_71[MAX_HYBRID_BANDS];
-extern const SCHAR kernels_14_to_71[MAX_HYBRID_BANDS];
-extern const SCHAR kernels_20_to_71[MAX_HYBRID_BANDS];
-extern const SCHAR kernels_28_to_71[MAX_HYBRID_BANDS];
+extern const int8_t kernels_4_to_71[MAX_HYBRID_BANDS];
+extern const int8_t kernels_5_to_71[MAX_HYBRID_BANDS];
+extern const int8_t kernels_7_to_71[MAX_HYBRID_BANDS];
+extern const int8_t kernels_10_to_71[MAX_HYBRID_BANDS];
+extern const int8_t kernels_14_to_71[MAX_HYBRID_BANDS];
+extern const int8_t kernels_20_to_71[MAX_HYBRID_BANDS];
+extern const int8_t kernels_28_to_71[MAX_HYBRID_BANDS];
 
-extern const UCHAR mapping_4_to_28[MAX_PARAMETER_BANDS];
-extern const UCHAR mapping_5_to_28[MAX_PARAMETER_BANDS];
-extern const UCHAR mapping_7_to_28[MAX_PARAMETER_BANDS];
-extern const UCHAR mapping_10_to_28[MAX_PARAMETER_BANDS];
-extern const UCHAR mapping_14_to_28[MAX_PARAMETER_BANDS];
-extern const UCHAR mapping_20_to_28[MAX_PARAMETER_BANDS];
-extern const SCHAR kernels_4_to_64[MAX_HYBRID_BANDS];
-extern const SCHAR kernels_5_to_64[MAX_HYBRID_BANDS];
-extern const SCHAR kernels_7_to_64[MAX_HYBRID_BANDS];
-extern const SCHAR kernels_9_to_64[MAX_HYBRID_BANDS];
-extern const SCHAR kernels_12_to_64[MAX_HYBRID_BANDS];
-extern const SCHAR kernels_15_to_64[MAX_HYBRID_BANDS];
-extern const SCHAR kernels_23_to_64[MAX_HYBRID_BANDS];
+extern const uint8_t mapping_4_to_28[MAX_PARAMETER_BANDS];
+extern const uint8_t mapping_5_to_28[MAX_PARAMETER_BANDS];
+extern const uint8_t mapping_7_to_28[MAX_PARAMETER_BANDS];
+extern const uint8_t mapping_10_to_28[MAX_PARAMETER_BANDS];
+extern const uint8_t mapping_14_to_28[MAX_PARAMETER_BANDS];
+extern const uint8_t mapping_20_to_28[MAX_PARAMETER_BANDS];
+extern const int8_t kernels_4_to_64[MAX_HYBRID_BANDS];
+extern const int8_t kernels_5_to_64[MAX_HYBRID_BANDS];
+extern const int8_t kernels_7_to_64[MAX_HYBRID_BANDS];
+extern const int8_t kernels_9_to_64[MAX_HYBRID_BANDS];
+extern const int8_t kernels_12_to_64[MAX_HYBRID_BANDS];
+extern const int8_t kernels_15_to_64[MAX_HYBRID_BANDS];
+extern const int8_t kernels_23_to_64[MAX_HYBRID_BANDS];
 
-extern const UCHAR mapping_15_to_23[MAX_PARAMETER_BANDS_LD];
-extern const UCHAR mapping_12_to_23[MAX_PARAMETER_BANDS_LD];
-extern const UCHAR mapping_9_to_23[MAX_PARAMETER_BANDS_LD];
-extern const UCHAR mapping_7_to_23[MAX_PARAMETER_BANDS_LD];
-extern const UCHAR mapping_5_to_23[MAX_PARAMETER_BANDS_LD];
-extern const UCHAR mapping_4_to_23[MAX_PARAMETER_BANDS_LD];
+extern const uint8_t mapping_15_to_23[MAX_PARAMETER_BANDS_LD];
+extern const uint8_t mapping_12_to_23[MAX_PARAMETER_BANDS_LD];
+extern const uint8_t mapping_9_to_23[MAX_PARAMETER_BANDS_LD];
+extern const uint8_t mapping_7_to_23[MAX_PARAMETER_BANDS_LD];
+extern const uint8_t mapping_5_to_23[MAX_PARAMETER_BANDS_LD];
+extern const uint8_t mapping_4_to_23[MAX_PARAMETER_BANDS_LD];
 
 extern const FIXP_CFG clipGainTable__FDK[];
-extern const UCHAR clipGainSFTable__FDK[];
+extern const uint8_t clipGainSFTable__FDK[];
 
-extern const UCHAR pbStrideTable[];
+extern const uint8_t pbStrideTable[];
 extern const int32_t smgTimeTable[];
 
 extern const FIXP_CFG envShapeDataTable__FDK[5][2];
-extern const SCHAR row2channelGES[][MAX_M2_INPUT];
+extern const int8_t row2channelGES[][MAX_M2_INPUT];
 
 /* sac_calcM1andM2 */
-extern const SCHAR row2residual[][MAX_M2_INPUT];
+extern const int8_t row2residual[][MAX_M2_INPUT];
 
 void SpatialDequantGetCLDValues(int32_t index, int32_t* cu, int32_t* cl);
 

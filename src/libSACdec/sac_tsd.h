@@ -110,9 +110,9 @@ amm-info@iis.fraunhofer.de
 
 /** Structure which holds the data needed to apply TSD to current frame. */
 typedef struct {
-  UCHAR bsTsdEnable; /**< for current frame TSD is (0:disabled, 1:enabled) */
-  UCHAR numSlots;    /**< total number of QMF slots per frame */
-  SCHAR
+  uint8_t bsTsdEnable; /**< for current frame TSD is (0:disabled, 1:enabled) */
+  uint8_t numSlots;    /**< total number of QMF slots per frame */
+  int8_t
   bsTsdTrPhaseData[MAX_TSD_TIME_SLOTS]; /**< -1 => TsdSepData[ts]=0; 0-7:
                                            values of bsTsdTrPhaseData[ts]
                                            and TsdSepData[ts]=1 */

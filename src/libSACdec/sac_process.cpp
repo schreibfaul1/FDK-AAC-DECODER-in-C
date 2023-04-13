@@ -137,7 +137,7 @@ FDK_INLINE int32_t interpolateParameter(const FIXP_SGL alpha, const int32_t a,
  * Surround channel index.
  */
 static uint32_t mapChannel(spatialDec *self, uint32_t ch) {
-  static const UCHAR chanelIdx[][8] = {
+  static const uint8_t chanelIdx[][8] = {
       {0, 1, 2, 3, 4, 5, 6, 7}, /*  binaural, TREE_212, arbitrary tree */
   };
 
@@ -605,7 +605,7 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, int32_t ps, const FIXP_SGL alph
     int32_t scale_param_m2 = 0;
     int32_t toolsDisabled;
 
-    UCHAR activParamBands;
+    uint8_t activParamBands;
     int32_t *RESTRICT pWReal, *RESTRICT pWImag, *RESTRICT pHybOutRealDry,
         *RESTRICT pHybOutImagDry, *RESTRICT pHybOutRealWet,
         *RESTRICT pHybOutImagWet;
@@ -1020,7 +1020,7 @@ void SpatialDecApplyPhase(spatialDec *self, FIXP_SGL alpha__FDK,
 
   /* sign is -1 for qs = 0,2 and +1 for qs = 1 */
 
-  const SCHAR *kernels = &self->kernels[0];
+  const int8_t *kernels = &self->kernels[0];
 
   int32_t *Dry_real0 = &self->hybOutputRealDry__FDK[0][0];
   int32_t *Dry_imag0 = &self->hybOutputImagDry__FDK[0][0];

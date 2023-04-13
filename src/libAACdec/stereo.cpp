@@ -123,10 +123,10 @@ int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
                       int32_t windowSequence, const uint32_t flags) {
   int32_t group, band;
 
-  pJointStereoData->MsMaskPresent = (UCHAR)FDKreadBits(bs, 2);
+  pJointStereoData->MsMaskPresent = (uint8_t)FDKreadBits(bs, 2);
 
   FDKmemclear(pJointStereoData->MsUsed,
-              scaleFactorBandsTransmitted * sizeof(UCHAR));
+              scaleFactorBandsTransmitted * sizeof(uint8_t));
 
   pJointStereoData->cplx_pred_flag = 0;
   if (cplxPredictionActiv) {
@@ -168,7 +168,7 @@ int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
 
           if (cplx_pred_all) {
             for (group = 0; group < windowGroups; group++) {
-              UCHAR groupmask = ((UCHAR)1 << group);
+              uint8_t groupmask = ((uint8_t)1 << group);
               for (band = 0; band < scaleFactorBandsTransmitted; band++) {
                 pJointStereoData->MsUsed[band] |= groupmask;
               }
@@ -180,7 +180,7 @@ int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
                 pJointStereoData->MsUsed[band] |= (FDKreadBits(bs, 1) << group);
                 if ((band + 1) < scaleFactorBandsTotal) {
                   pJointStereoData->MsUsed[band + 1] |=
-                      (pJointStereoData->MsUsed[band] & ((UCHAR)1 << group));
+                      (pJointStereoData->MsUsed[band] & ((uint8_t)1 << group));
                 }
               }
             }
@@ -284,7 +284,7 @@ int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
 
               } /* if (delta_code_time == 1) */
 
-              if (pJointStereoData->MsUsed[band] & ((UCHAR)1 << group)) {
+              if (pJointStereoData->MsUsed[band] & ((uint8_t)1 << group)) {
                 int32_t dpcm_alpha_re, dpcm_alpha_im;
 
                 dpcm_alpha_re = CBlock_DecodeHuffmanWord(bs, hcb);
@@ -308,7 +308,7 @@ int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
               } else {
                 cplxPredictionData->alpha_q_re[group][band] = 0;
                 cplxPredictionData->alpha_q_im[group][band] = 0;
-              } /* if (pJointStereoData->MsUsed[band] & ((UCHAR)1 << group)) */
+              } /* if (pJointStereoData->MsUsed[band] & ((uint8_t)1 << group)) */
 
               if ((band + 1) <
                   scaleFactorBandsTransmitted) { /* <= this should be the
@@ -354,7 +354,7 @@ int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
 
 static void CJointStereo_filterAndAdd(
     int32_t *in, int32_t len, int32_t windowLen, const FIXP_FILT *coeff, int32_t *out,
-    UCHAR isCurrent /* output values with even index get a
+    uint8_t isCurrent /* output values with even index get a
                        positve addon (=1) or a negative addon
                        (=0) */
 ) {
@@ -546,13 +546,13 @@ void CJointStereo_ApplyMS(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[2],
     int32_t *spectrumL, int32_t *spectrumR, int16_t *SFBleftScale,
     int16_t *SFBrightScale, int16_t *specScaleL, int16_t *specScaleR,
-    const int16_t *pScaleFactorBandOffsets, const UCHAR *pWindowGroupLength,
+    const int16_t *pScaleFactorBandOffsets, const uint8_t *pWindowGroupLength,
     const int32_t windowGroups, const int32_t max_sfb_ste_outside,
     const int32_t scaleFactorBandsTransmittedL,
     const int32_t scaleFactorBandsTransmittedR, int32_t *store_dmx_re_prev,
     int16_t *store_dmx_re_prev_e, const int32_t mainband_flag) {
   int32_t window, group, band;
-  UCHAR groupMask;
+  uint8_t groupMask;
   CJointStereoData *pJointStereoData =
       &pAacDecoderChannelInfo[L]->pComData->jointStereoData;
   CCplxPredictionData *cplxPredictionData =
@@ -1157,23 +1157,23 @@ void CJointStereo_ApplyMS(
        calling CJointStereo_ApplyMS(). */
     if (pJointStereoData->MsMaskPresent == 2) {
       FDKmemclear(pJointStereoData->MsUsed,
-                  JointStereoMaximumBands * sizeof(UCHAR));
+                  JointStereoMaximumBands * sizeof(uint8_t));
     }
   }
 }
 
 void CJointStereo_ApplyIS(CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
                           const int16_t *pScaleFactorBandOffsets,
-                          const UCHAR *pWindowGroupLength,
+                          const uint8_t *pWindowGroupLength,
                           const int32_t windowGroups,
                           const int32_t scaleFactorBandsTransmitted) {
   CJointStereoData *pJointStereoData =
       &pAacDecoderChannelInfo[L]->pComData->jointStereoData;
 
   for (int32_t window = 0, group = 0; group < windowGroups; group++) {
-    UCHAR *CodeBook;
+    uint8_t *CodeBook;
     int16_t *ScaleFactor;
-    UCHAR groupMask = 1 << group;
+    uint8_t groupMask = 1 << group;
 
     CodeBook = &pAacDecoderChannelInfo[R]->pDynData->aCodeBook[group * 16];
     ScaleFactor =

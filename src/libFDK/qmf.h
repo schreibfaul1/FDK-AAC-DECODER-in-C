@@ -197,7 +197,7 @@ struct QMF_FILTER_BANK {
   int32_t outGain_e;      /*!< Exponent of gain output data (syn only) */
 
   uint32_t flags;     /*!< flags */
-  UCHAR p_stride; /*!< Stride Factor of polyphase filters */
+  uint8_t p_stride; /*!< Stride Factor of polyphase filters */
 };
 
 typedef struct QMF_FILTER_BANK *HANDLE_QMF_FILTER_BANK;

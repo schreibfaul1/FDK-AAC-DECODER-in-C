@@ -112,8 +112,8 @@ static DRC_ERROR _generateDrcInstructionsDerivedData(
   DRC_ERROR err = DE_OK;
   int32_t g;
   int32_t gainElementCount = 0;
-  UCHAR nDrcChannelGroups = 0;
-  SCHAR gainSetIndexForChannelGroup[8];
+  uint8_t nDrcChannelGroups = 0;
+  int8_t gainSetIndexForChannelGroup[8];
 
   err = deriveDrcChannelGroups(
       pInst->drcSetEffect, pInst->drcChannelCount, pInst->gainSetIndex,

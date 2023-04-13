@@ -116,7 +116,7 @@ AAC_DECODER_ERROR IcsReadMaxSfb(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
     nbits = 4;
     pIcsInfo->TotalSfBands = pSamplingRateInfo->NumberOfScaleFactorBands_Short;
   }
-  pIcsInfo->MaxSfBands = (UCHAR)FDKreadBits(bs, nbits);
+  pIcsInfo->MaxSfBands = (uint8_t)FDKreadBits(bs, nbits);
 
   if (pIcsInfo->MaxSfBands > pIcsInfo->TotalSfBands) {
     ErrorStatus = AAC_DEC_PARSE_ERROR;
@@ -140,7 +140,7 @@ AAC_DECODER_ERROR IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
       FDKreadBits(bs, 1);
     }
     pIcsInfo->WindowSequence = (BLOCK_TYPE)FDKreadBits(bs, 2);
-    pIcsInfo->WindowShape = (UCHAR)FDKreadBits(bs, 1);
+    pIcsInfo->WindowShape = (uint8_t)FDKreadBits(bs, 1);
     if (flags & AC_LD) {
       if (pIcsInfo->WindowShape) {
         pIcsInfo->WindowShape = 2; /* select low overlap instead of KBD */
@@ -165,7 +165,7 @@ AAC_DECODER_ERROR IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
                    AC_RSV603DA))) /* If not ELD nor Scalable nor BSAC nor USAC
                                      syntax then ... */
     {
-      if ((UCHAR)FDKreadBits(bs, 1) != 0) /* UCHAR PredictorDataPresent */
+      if ((uint8_t)FDKreadBits(bs, 1) != 0) /* uint8_t PredictorDataPresent */
       {
         ErrorStatus = AAC_DEC_UNSUPPORTED_PREDICTION;
         goto bail;
@@ -178,7 +178,7 @@ AAC_DECODER_ERROR IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
     int32_t i;
     uint32_t mask;
 
-    pIcsInfo->ScaleFactorGrouping = (UCHAR)FDKreadBits(bs, 7);
+    pIcsInfo->ScaleFactorGrouping = (uint8_t)FDKreadBits(bs, 7);
 
     pIcsInfo->WindowGroups = 0;
 

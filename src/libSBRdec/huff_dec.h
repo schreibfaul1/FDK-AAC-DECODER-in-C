@@ -110,7 +110,7 @@ amm-info@iis.fraunhofer.de
 #include "sbrdecoder.h"
 #include "../libFDK/FDK_bitstream.h"
 
-typedef const SCHAR (*Huffman)[2];
+typedef const int8_t (*Huffman)[2];
 
 int32_t DecodeHuffmanCW(Huffman h, HANDLE_FDK_BITSTREAM hBitBuf);
 

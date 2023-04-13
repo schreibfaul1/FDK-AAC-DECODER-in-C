@@ -112,7 +112,7 @@ amm-info@iis.fraunhofer.de
 /* PNS (of block) */
 void CPns_Read(CPnsData *pPnsData, HANDLE_FDK_BITSTREAM bs,
                const CodeBookDescription *hcb, int16_t *pScaleFactor,
-               UCHAR global_gain, int32_t band, int32_t group);
+               uint8_t global_gain, int32_t band, int32_t group);
 
 void CPns_Apply(const CPnsData *pPnsData, const CIcsInfo *pIcsInfo,
                 SPECTRAL_PTR pSpectrum, const int16_t *pSpecScale,
@@ -122,7 +122,7 @@ void CPns_Apply(const CPnsData *pPnsData, const CIcsInfo *pIcsInfo,
 
 void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                        SamplingRateInfo *pSamplingRateInfo, uint32_t *nfRandomSeed,
-                       UCHAR *band_is_noise);
+                       uint8_t *band_is_noise);
 
 /* TNS (of block) */
 /*!
@@ -136,7 +136,7 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
 void CTns_ReadDataPresentFlag(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData);
 
 void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData *pTnsData0,
-                              CTnsData *pTnsData1, UCHAR *ptns_on_lr,
+                              CTnsData *pTnsData1, uint8_t *ptns_on_lr,
                               const CIcsInfo *pIcsInfo, const uint32_t flags,
                               const uint32_t elFlags, const int32_t fCommonWindow);
 
@@ -146,8 +146,8 @@ AAC_DECODER_ERROR CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData,
 void CTns_Apply(CTnsData *RESTRICT pTnsData, /*!< pointer to aac decoder info */
                 const CIcsInfo *pIcsInfo, SPECTRAL_PTR pSpectralCoefficient,
                 const SamplingRateInfo *pSamplingRateInfo,
-                const int32_t granuleLength, const UCHAR nbands,
-                const UCHAR igf_active, const uint32_t flags);
+                const int32_t granuleLength, const uint8_t nbands,
+                const uint8_t igf_active, const uint32_t flags);
 
 /* Block */
 
@@ -199,12 +199,12 @@ AAC_DECODER_ERROR CBlock_ReadSectionData(
  * \brief find a common exponent (shift factor) for all sfb in each Spectral
  * window, and store them into CAacDecoderChannelInfo::specScale.
  * \param pAacDecoderChannelInfo channel context info.
- * \param UCHAR maxSfbs maximum number of SFBs to be processed (might differ
+ * \param uint8_t maxSfbs maximum number of SFBs to be processed (might differ
  * from pAacDecoderChannelInfo->icsInfo.MaxSfBands)
  * \param pSamplingRateInfo sampling rate info (sfb offsets).
  */
 void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                              UCHAR maxSfbs,
+                              uint8_t maxSfbs,
                               SamplingRateInfo *pSamplingRateInfo);
 
 /**
@@ -233,8 +233,8 @@ void CBlock_FrequencyToTimeLowDelay(
 
 AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    SamplingRateInfo *pSamplingRateInfo, UCHAR *band_is_noise,
-    UCHAR active_band_search);
+    SamplingRateInfo *pSamplingRateInfo, uint8_t *band_is_noise,
+    uint8_t active_band_search);
 
 /**
  * \brief Calculate 2^(lsb/4) * value^(4/3)

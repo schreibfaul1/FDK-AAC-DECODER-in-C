@@ -157,11 +157,11 @@ typedef struct {
   int16_t *pRvlBitCnt_RVL;
   int32_t *pBitstrIndxRvl_RVL;
 
-  UCHAR numWindowGroups;
-  UCHAR maxSfbTransmitted;
-  UCHAR first_noise_group;
-  UCHAR first_noise_band;
-  UCHAR direction;
+  uint8_t numWindowGroups;
+  uint8_t maxSfbTransmitted;
+  uint8_t first_noise_group;
+  uint8_t first_noise_band;
+  uint8_t direction;
 
   /* bitstream indices */
   int32_t bsAnchor;             /* hcr bit buffer reference index */
@@ -176,13 +176,13 @@ typedef struct {
   const uint32_t *pHuffTreeRvlcEscape;
 
   /* escape counters */
-  UCHAR numDecodedEscapeWordsFwd; /* when decoding RVL-codes forward  */
-  UCHAR numDecodedEscapeWordsBwd; /* when decoding RVL-codes backward */
-  UCHAR numDecodedEscapeWordsEsc; /* when decoding the escape-Words */
+  uint8_t numDecodedEscapeWordsFwd; /* when decoding RVL-codes forward  */
+  uint8_t numDecodedEscapeWordsBwd; /* when decoding RVL-codes backward */
+  uint8_t numDecodedEscapeWordsEsc; /* when decoding the escape-Words */
 
-  SCHAR noise_used;
-  SCHAR intensity_used;
-  SCHAR sf_used;
+  int8_t noise_used;
+  int8_t intensity_used;
+  int8_t sf_used;
 
   int16_t firstScf;
   int16_t lastScf;

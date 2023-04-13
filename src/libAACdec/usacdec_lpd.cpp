@@ -962,7 +962,7 @@ static void CLpd_TcxDecode(
                  pAacDecoderChannelInfo->granuleLength, isFullBandLpd);
     int32_t scale = pAacDecoderChannelInfo->specScale[frame];
     int32_t i, nfBgn, nfEnd;
-    UCHAR tcx_noise_factor = pAacDecoderChannelInfo->pDynData->specificTo.usac
+    uint8_t tcx_noise_factor = pAacDecoderChannelInfo->pDynData->specificTo.usac
                                  .tcx_noise_factor[frame];
 
     /* find pitch for bfi case */
@@ -1118,7 +1118,7 @@ static AAC_DECODER_ERROR CLpd_TCX_Read(
  * \param lpd_mode the lpd_mode field read from the lpd_channel_stream
  */
 static AAC_DECODER_ERROR CLpd_ReadAndMapLpdModeToModArray(
-    UCHAR mod[4], HANDLE_FDK_BITSTREAM hBs, uint32_t elFlags) {
+    uint8_t mod[4], HANDLE_FDK_BITSTREAM hBs, uint32_t elFlags) {
   int32_t lpd_mode;
 
   {
@@ -1212,7 +1212,7 @@ AAC_DECODER_ERROR CLpdChannelStream_Read(
   int32_t first_tcx_flag;
   int32_t k, nbDiv, fFacDataPresent, first_lpd_flag, acelp_core_mode,
       facGetMemState = 0;
-  UCHAR *mod = pAacDecoderChannelInfo->data.usac.mod;
+  uint8_t *mod = pAacDecoderChannelInfo->data.usac.mod;
   int32_t lpd_mode_last, prev_frame_was_lpd;
   USAC_COREMODE core_mode_last;
   const int32_t lg_table_offset = 0;
@@ -1494,9 +1494,9 @@ bail:
 void CLpdChannelStream_Decode(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo, uint32_t flags) {
-  UCHAR *mod = pAacDecoderChannelInfo->data.usac.mod;
+  uint8_t *mod = pAacDecoderChannelInfo->data.usac.mod;
   int32_t k;
-  UCHAR last_lpd_mode;
+  uint8_t last_lpd_mode;
   int32_t nbDiv = NB_DIV;
 
   /* k is the frame index. If a frame is of size 40MS or 80MS,
@@ -1560,7 +1560,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t *pTimeData,
     int32_t lFrame, SamplingRateInfo *pSamplingRateInfo, uint32_t frameOk,
     const int32_t aacOutDataHeadroom, uint32_t flags, uint32_t strmFlags) {
-  UCHAR *mod = pAacDecoderChannelInfo->data.usac.mod;
+  uint8_t *mod = pAacDecoderChannelInfo->data.usac.mod;
   AAC_DECODER_ERROR error = AAC_DEC_OK;
   int32_t k, i_offset;
   int32_t last_k;
@@ -1585,7 +1585,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
   int32_t *synth_buf =
       pAacDecoderChannelInfo->pComStaticData->pWorkBufferCore1->synth_buf;
   int32_t *synth = synth_buf + PIT_MAX_MAX - BPF_DELAY;
-  UCHAR last_lpd_mode, last_last_lpd_mode, last_lpc_lost, last_frame_lost;
+  uint8_t last_lpd_mode, last_last_lpd_mode, last_lpc_lost, last_frame_lost;
 
   int32_t pitch[NB_SUBFR_SUPERFR + SYN_SFD];
   int32_t pit_gain[NB_SUBFR_SUPERFR + SYN_SFD];
@@ -1627,7 +1627,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
   if (!frameOk) {
     int32_t old_tcx_gain;
     FIXP_SGL old_stab;
-    SCHAR old_tcx_gain_e;
+    int8_t old_tcx_gain_e;
     int32_t nLostSf;
 
     last_lpd_mode = pAacDecoderStaticChannelInfo->last_lpd_mode;

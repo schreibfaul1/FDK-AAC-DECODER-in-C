@@ -140,7 +140,7 @@ int32_t CConcealment_Apply(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
     const SamplingRateInfo *pSamplingRateInfo, const int32_t samplesPerFrame,
-    const UCHAR lastLpdMode, const int32_t FrameOk, const uint32_t flags);
+    const uint8_t lastLpdMode, const int32_t FrameOk, const uint32_t flags);
 
 int32_t CConcealment_GetLastFrameOk(CConcealmentInfo *hConcealmentInfo,
                                 const int32_t fBeforeApply);

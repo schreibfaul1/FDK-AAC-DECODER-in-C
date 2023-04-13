@@ -157,7 +157,7 @@ typedef struct {
 
   int32_t **codecQMFBufferReal;
   int32_t **codecQMFBufferImag;
-  UCHAR savedStates;
+  uint8_t savedStates;
   int32_t applySbrProc_old;
 } SBR_DEC;
 

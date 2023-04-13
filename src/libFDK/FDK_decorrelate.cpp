@@ -141,27 +141,27 @@ amm-info@iis.fraunhofer.de
    bands. Within each reverb band the same processing is applied. Instead of QMF
    split frequencies the corresponding hybrid band offsets are stored directly
  */
-static const UCHAR REV_bandOffset_MPS_HQ[NUM_DECORR_CONFIGS][(4)] = {
+static const uint8_t REV_bandOffset_MPS_HQ[NUM_DECORR_CONFIGS][(4)] = {
     {8, 21, 30, 71}, {8, 56, 71, 71}, {0, 21, 71, 71}};
 /* REV_bandOffset_USAC[] are equivalent to REV_bandOffset_MPS_HQ */
-static const UCHAR REV_bandOffset_PS_HQ[(4)] = {30, 42, 71, 71};
-static const UCHAR REV_bandOffset_PS_LP[(4)] = {14, 42, 71, 71};
-static const UCHAR REV_bandOffset_LD[NUM_DECORR_CONFIGS][(4)] = {
+static const uint8_t REV_bandOffset_PS_HQ[(4)] = {30, 42, 71, 71};
+static const uint8_t REV_bandOffset_PS_LP[(4)] = {14, 42, 71, 71};
+static const uint8_t REV_bandOffset_LD[NUM_DECORR_CONFIGS][(4)] = {
     {0, 14, 23, 64}, {0, 49, 64, 64}, {0, 14, 64, 64}};
 
 /* REV_delay_... tables define the number of delay elements within each reverb
  * band */
 /* REV_filterOrder_... tables define the filter order within each reverb band */
-static const UCHAR REV_delay_MPS[(4)] = {8, 7, 2, 1};
-static const SCHAR REV_filterOrder_MPS[(4)] = {
+static const uint8_t REV_delay_MPS[(4)] = {8, 7, 2, 1};
+static const int8_t REV_filterOrder_MPS[(4)] = {
     DECORR_FILTER_ORDER_BAND_0_MPS, DECORR_FILTER_ORDER_BAND_1_MPS,
     DECORR_FILTER_ORDER_BAND_2_MPS, DECORR_FILTER_ORDER_BAND_3_MPS};
-static const UCHAR REV_delay_PS_HQ[(4)] = {2, 14, 1, 0};
-static const UCHAR REV_delay_PS_LP[(4)] = {8, 14, 1, 0};
-static const SCHAR REV_filterOrder_PS[(4)] = {DECORR_FILTER_ORDER_PS, -1, -1,
+static const uint8_t REV_delay_PS_HQ[(4)] = {2, 14, 1, 0};
+static const uint8_t REV_delay_PS_LP[(4)] = {8, 14, 1, 0};
+static const int8_t REV_filterOrder_PS[(4)] = {DECORR_FILTER_ORDER_PS, -1, -1,
                                               -1};
-static const UCHAR REV_delay_USAC[(4)] = {11, 10, 5, 2};
-static const SCHAR REV_filterOrder_USAC[(4)] = {
+static const uint8_t REV_delay_USAC[(4)] = {11, 10, 5, 2};
+static const int8_t REV_filterOrder_USAC[(4)] = {
     DECORR_FILTER_ORDER_BAND_0_USAC, DECORR_FILTER_ORDER_BAND_1_USAC,
     DECORR_FILTER_ORDER_BAND_2_USAC, DECORR_FILTER_ORDER_BAND_3_USAC};
 
@@ -176,14 +176,14 @@ static const REVBAND_FILT_TYPE REV_filtType_PS[(4)] = {INDEP_CPLX_PS, DELAY,
 
 /* initialization values of ring buffer offsets for the 3 concatenated allpass
  * filters (PS type decorrelator). */
-static const UCHAR stateBufferOffsetInit[(3)] = {0, 6, 14};
+static const uint8_t stateBufferOffsetInit[(3)] = {0, 6, 14};
 
 static const REVBAND_FILT_TYPE REV_filtType_LD[(4)] = {
     NOT_EXIST, COMMON_REAL, COMMON_REAL, COMMON_REAL};
 
 /*** mapping of hybrid bands to processing (/parameter?) bands ***/
 /* table for PS decorr running in legacy PS decoder. */
-static const UCHAR kernels_20_to_71_PS[(71) + 1] = {
+static const uint8_t kernels_20_to_71_PS[(71) + 1] = {
     0,  0,  1,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 14,
     15, 15, 15, 16, 16, 16, 16, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 18,
     18, 18, 18, 18, 18, 18, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
@@ -191,38 +191,38 @@ static const UCHAR kernels_20_to_71_PS[(71) + 1] = {
 
 /*** mapping of processing (/parameter?) bands to hybrid bands ***/
 /* table for PS decorr running in legacy PS decoder. */
-static const UCHAR kernels_20_to_71_offset_PS[(20) + 1] = {
+static const uint8_t kernels_20_to_71_offset_PS[(20) + 1] = {
     0, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 21, 25, 30, 42, 71};
 
-static const UCHAR kernels_28_to_71[(71) + 1] = {
+static const uint8_t kernels_28_to_71[(71) + 1] = {
     0,  0,  1,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15,
     16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 21, 22, 22, 22, 23, 23, 23,
     23, 24, 24, 24, 24, 24, 25, 25, 25, 25, 25, 25, 26, 26, 26, 26, 26, 26,
     26, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27};
 
-static const UCHAR kernels_28_to_71_offset[(28) + 1] = {
+static const uint8_t kernels_28_to_71_offset[(28) + 1] = {
     0,  2,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16,
     17, 18, 19, 21, 23, 25, 27, 30, 33, 37, 42, 48, 55, 71};
 
 /* LD-MPS defined in SAOC standart (mapping qmf -> param bands)*/
-static const UCHAR kernels_23_to_64[(64) + 1] = {
+static const uint8_t kernels_23_to_64[(64) + 1] = {
     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 12, 13, 13, 14,
     14, 15, 15, 16, 16, 16, 17, 17, 17, 18, 18, 18, 18, 19, 19, 19, 19,
     19, 20, 20, 20, 20, 20, 20, 21, 21, 21, 21, 21, 21, 21, 22, 22, 22,
     22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22,
 };
 
-static const UCHAR kernels_23_to_64_offset[(23) + 1] = {
+static const uint8_t kernels_23_to_64_offset[(23) + 1] = {
     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11,
     12, 14, 16, 18, 20, 23, 26, 30, 35, 41, 48, 64};
 
 static inline int32_t SpatialDecGetProcessingBand(int32_t hybridBand,
-                                              const UCHAR *tab) {
+                                              const uint8_t *tab) {
   return tab[hybridBand];
 }
 
 /* helper inline function */
-static inline int32_t SpatialDecGetQmfBand(int32_t paramBand, const UCHAR *tab) {
+static inline int32_t SpatialDecGetQmfBand(int32_t paramBand, const uint8_t *tab) {
   return (int32_t)tab[paramBand];
 }
 
@@ -812,7 +812,7 @@ static int32_t DecorrFilterApplyCPLX_PS(
     DECORR_FILTER_INSTANCE const filter[], int32_t *dataRealIn,
     int32_t *dataImagIn, int32_t *dataRealOut, int32_t *dataImagOut,
     int32_t start, int32_t stop, int32_t reverbFilterOrder, int32_t reverbBandNoSampleDelay,
-    int32_t reverbBandDelayBufferIndex, UCHAR *stateBufferOffset) {
+    int32_t reverbBandDelayBufferIndex, uint8_t *stateBufferOffset) {
   /* r = real, j = imaginary */
   int32_t r_data_a, j_data_a, r_data_b, j_data_b, r_stage_mult, j_stage_mult;
   FIXP_STP rj_coeff;
@@ -1040,7 +1040,7 @@ static int32_t DuckerCalcEnergy(DUCKER_INSTANCE *const self,
                             int32_t const inputReal[(71)],
                             int32_t const inputImag[(71)],
                             int32_t energy[(28)], int32_t inputMaxVal,
-                            SCHAR *nrgScale, int32_t mode, /* 1:(ps) 0:(else) */
+                            int8_t *nrgScale, int32_t mode, /* 1:(ps) 0:(else) */
                             int32_t startHybBand) {
   int32_t err = 0;
   int32_t qs, maxHybBand;
@@ -1065,7 +1065,7 @@ static int32_t DuckerCalcEnergy(DUCKER_INSTANCE *const self,
     }
 
     clz = fMin(fMax(0, clz - DUCKER_HEADROOM_BITS), DUCKER_MAX_NRG_SCALE);
-    *nrgScale = (SCHAR)clz << 1;
+    *nrgScale = (int8_t)clz << 1;
 
     /* Initialize pb since it would stay uninitialized for the case startHybBand
      * > maxHybBand. */
@@ -1108,7 +1108,7 @@ static int32_t DuckerCalcEnergy(DUCKER_INSTANCE *const self,
     }
 
     clz = fMin(fMax(0, clz - DUCKER_HEADROOM_BITS), DUCKER_MAX_NRG_SCALE);
-    *nrgScale = (SCHAR)clz << 1;
+    *nrgScale = (int8_t)clz << 1;
 
     for (qs = startHybBand; qs <= maxHybBand; qs++) {
       int32_t pb = SpatialDecGetProcessingBand(qs, self->mapHybBands2ProcBands);
@@ -1186,7 +1186,7 @@ static int32_t DuckerApply(DUCKER_INSTANCE *const self,
         fMax(fMin(self->scaleSmoothDirRevNrg - scale, (DFRACT_BITS - 1)),
              -(DFRACT_BITS - 1));
 
-    self->scaleSmoothDirRevNrg = (SCHAR)scale;
+    self->scaleSmoothDirRevNrg = (int8_t)scale;
 
     doScaleNrg = 1;
   }
@@ -1282,7 +1282,7 @@ static int32_t DuckerApply(DUCKER_INSTANCE *const self,
   } /* pb */
 
   self->headroomSmoothDirRevNrg =
-      (SCHAR)fixMax(0, CntLeadingZeros(maxDirRevNrg) - 1);
+      (int8_t)fixMax(0, CntLeadingZeros(maxDirRevNrg) - 1);
 
   C_ALLOC_SCRATCH_END(reverbNrg, int32_t, (28));
 
@@ -1318,7 +1318,7 @@ static int32_t DuckerApplyPS(DUCKER_INSTANCE *const self,
         fMax(fMin(self->scaleSmoothDirRevNrg - scale, (DFRACT_BITS - 1)),
              -(DFRACT_BITS - 1));
 
-    self->scaleSmoothDirRevNrg = (SCHAR)scale;
+    self->scaleSmoothDirRevNrg = (int8_t)scale;
 
     doScaleNrg = 1;
   }
@@ -1417,7 +1417,7 @@ static int32_t DuckerApplyPS(DUCKER_INSTANCE *const self,
   } /* pb */
 
   self->headroomSmoothDirRevNrg =
-      (SCHAR)fixMax(0, CntLeadingZeros(maxDirRevNrg) - 1);
+      (int8_t)fixMax(0, CntLeadingZeros(maxDirRevNrg) - 1);
 
   return 0;
 }
@@ -1465,9 +1465,9 @@ int32_t FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const int32_t nrHybBand
   int32_t offsetStateBuffer = 0;
   int32_t offsetDelayBuffer = 0;
 
-  const UCHAR *REV_bandOffset;
+  const uint8_t *REV_bandOffset;
 
-  const SCHAR *REV_filterOrder;
+  const int8_t *REV_filterOrder;
 
   hDecorrDec->partiallyComplex = partiallyComplex;
   hDecorrDec->numbins = nrHybBands;
@@ -1656,7 +1656,7 @@ int32_t FDKdecorrelateApply(HANDLE_DECORR_DEC hDecorrDec, int32_t *dataRealIn,
     /* complex-valued hybrid bands */
     for (stop = 0, rb = 0; rb < (4); rb++) {
       start = fMax(stop, startHybBand);
-      stop = fMin(self->REV_bandOffset[rb], (UCHAR)nHybBands);
+      stop = fMin(self->REV_bandOffset[rb], (uint8_t)nHybBands);
 
       if (start < stop) {
         switch (hDecorrDec->REV_filtType[rb]) {

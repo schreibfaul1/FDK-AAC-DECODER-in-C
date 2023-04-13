@@ -295,18 +295,18 @@ static void sbr_envelope_unmapping(
 {
   int32_t i;
   FIXP_SGL tempL_m, tempR_m, tempRplus1_m, newL_m, newR_m;
-  SCHAR tempL_e, tempR_e, tempRplus1_e, newL_e, newR_e;
+  int8_t tempL_e, tempR_e, tempRplus1_e, newL_e, newR_e;
 
   /* 1. Unmap (already dequantized) coupled envelope energies */
 
   for (i = 0; i < h_data_left->nScaleFactors; i++) {
     tempR_m = (FIXP_SGL)((int32_t)h_data_right->iEnvelope[i] & MASK_M);
-    tempR_e = (SCHAR)((int32_t)h_data_right->iEnvelope[i] & MASK_E);
+    tempR_e = (int8_t)((int32_t)h_data_right->iEnvelope[i] & MASK_E);
 
     tempR_e -= (18 + NRG_EXP_OFFSET); /* -18 = ld(UNMAPPING_SCALE /
                                          h_data_right->nChannels) */
     tempL_m = (FIXP_SGL)((int32_t)h_data_left->iEnvelope[i] & MASK_M);
-    tempL_e = (SCHAR)((int32_t)h_data_left->iEnvelope[i] & MASK_E);
+    tempL_e = (int8_t)((int32_t)h_data_left->iEnvelope[i] & MASK_E);
 
     tempL_e -= NRG_EXP_OFFSET;
 
@@ -338,8 +338,8 @@ static void sbr_envelope_unmapping(
   for (i = 0; i < hHeaderData->freqBandData.nNfb *
                       h_data_left->frameInfo.nNoiseEnvelopes;
        i++) {
-    tempL_e = (SCHAR)(6 - (int32_t)h_data_left->sbrNoiseFloorLevel[i]);
-    tempR_e = (SCHAR)((int32_t)h_data_right->sbrNoiseFloorLevel[i] -
+    tempL_e = (int8_t)(6 - (int32_t)h_data_left->sbrNoiseFloorLevel[i]);
+    tempR_e = (int8_t)((int32_t)h_data_right->sbrNoiseFloorLevel[i] -
                       12) /*SBR_ENERGY_PAN_OFFSET*/;
 
     /* Calculate tempR+1 */
@@ -629,7 +629,7 @@ static void timeCompensateFirstEnvelope(
 {
   int32_t i, nScalefactors;
   FRAME_INFO *pFrameInfo = &h_sbr_data->frameInfo;
-  UCHAR *nSfb = hHeaderData->freqBandData.nSfb;
+  uint8_t *nSfb = hHeaderData->freqBandData.nSfb;
   int32_t estimatedStartPos =
       fMax(0, h_prev_data->stopPos - hHeaderData->numberTimeSlots);
   int32_t refLen, newLen, shift;

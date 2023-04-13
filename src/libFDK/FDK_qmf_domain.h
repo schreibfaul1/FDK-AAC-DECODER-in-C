@@ -165,56 +165,56 @@ H_ALLOC_MEM(QmfOverlapBuffer32, int32_t)
  * instance.
  */
 typedef struct {
-  UCHAR qmfDomainExplicitConfig;   /*!< Flag to signal that QMF domain is set
+  uint8_t qmfDomainExplicitConfig;   /*!< Flag to signal that QMF domain is set
                                       explicitly instead of SBR and MPS init
                                       routines. */
-  UCHAR nInputChannels;            /*!< Number of QMF input channels. */
-  UCHAR nInputChannels_requested;  /*!< Corresponding requested not yet active
+  uint8_t nInputChannels;            /*!< Number of QMF input channels. */
+  uint8_t nInputChannels_requested;  /*!< Corresponding requested not yet active
                                       configuration parameter. */
-  UCHAR nOutputChannels;           /*!< Number of QMF output channels. */
-  UCHAR nOutputChannels_requested; /*!< Corresponding requested not yet active
+  uint8_t nOutputChannels;           /*!< Number of QMF output channels. */
+  uint8_t nOutputChannels_requested; /*!< Corresponding requested not yet active
                                       configuration parameter. */
-  UCHAR
+  uint8_t
   parkChannel; /*!< signal to automatically allocate additional memory to
                   park a channel if only one processing channel is
                   available. */
-  UCHAR parkChannel_requested;
+  uint8_t parkChannel_requested;
   int32_t *
       pWorkBuffer[QMF_MAX_WB_SECTIONS]; /*!< Pointerarray to volatile memory. */
   uint32_t flags; /*!< Flags to be set on all QMF analysis/synthesis filter
                  instances. */
   uint32_t flags_requested; /*!< Corresponding requested not yet active
                            configuration parameter. */
-  UCHAR nBandsAnalysis; /*!< Number of QMF analysis bands for all input
+  uint8_t nBandsAnalysis; /*!< Number of QMF analysis bands for all input
                            channels. */
-  UCHAR nBandsAnalysis_requested; /*!< Corresponding requested not yet active
+  uint8_t nBandsAnalysis_requested; /*!< Corresponding requested not yet active
                                      configuration parameter. */
   uint16_t nBandsSynthesis; /*!< Number of QMF synthesis bands for all output
                              channels. */
   uint16_t
   nBandsSynthesis_requested; /*!< Corresponding requested not yet active
                                 configuration parameter. */
-  UCHAR nQmfTimeSlots; /*!< Number of QMF time slots (stored in work buffer
+  uint8_t nQmfTimeSlots; /*!< Number of QMF time slots (stored in work buffer
                           memory). */
-  UCHAR nQmfTimeSlots_requested; /*!< Corresponding requested not yet active
+  uint8_t nQmfTimeSlots_requested; /*!< Corresponding requested not yet active
                                     configuration parameter. */
-  UCHAR
+  uint8_t
   nQmfOvTimeSlots; /*!< Number of QMF overlap/delay time slots (stored in
                       persistent memory). */
-  UCHAR nQmfOvTimeSlots_requested; /*!< Corresponding requested not yet active
+  uint8_t nQmfOvTimeSlots_requested; /*!< Corresponding requested not yet active
                                       configuration parameter. */
-  UCHAR nQmfProcBands; /*!< Number of QMF bands which are processed by the
+  uint8_t nQmfProcBands; /*!< Number of QMF bands which are processed by the
                           decoder. Typically this is equal to nBandsSynthesis
                           but it may differ if the QMF based resampler is being
                           used. */
-  UCHAR nQmfProcBands_requested; /*!< Corresponding requested not yet active
+  uint8_t nQmfProcBands_requested; /*!< Corresponding requested not yet active
                                     configuration parameter. */
-  UCHAR
+  uint8_t
   nQmfProcChannels; /*!< Number of complete QMF channels which need to
                        coexist in memory at the same time. For most cases
                        this is 1 which means the work buffer can be shared
                        between audio channels. */
-  UCHAR
+  uint8_t
   nQmfProcChannels_requested; /*!< Corresponding requested not yet active
                                  configuration parameter. */
 } FDK_QMF_DOMAIN_GC;
@@ -231,10 +231,10 @@ typedef struct {
   pGlobalConf;               /*!< Pointer to global configuration structure. */
   QMF_FILTER_BANK fb;        /*!< QMF (analysis) filter bank structure. */
   QMF_SCALE_FACTOR scaling;  /*!< Structure with scaling information. */
-  UCHAR workBuf_nTimeSlots;  /*!< Work buffer dimension for this channel is
+  uint8_t workBuf_nTimeSlots;  /*!< Work buffer dimension for this channel is
                                 (workBuf_nTimeSlots * workBuf_nBands *
                                 CMPLX_MOD). */
-  UCHAR workBuf_nBands;      /*!< Work buffer dimension for this channel is
+  uint8_t workBuf_nBands;      /*!< Work buffer dimension for this channel is
                                 (workBuf_nTimeSlots * workBuf_nBands * CMPLX_MOD). */
   uint16_t workBufferOffset;   /*!< Offset within work buffer. */
   uint16_t workBufferSectSize; /*!< Size of work buffer section. */

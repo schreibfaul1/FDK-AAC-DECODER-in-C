@@ -382,7 +382,7 @@ PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self,
  *MPEG-1/2 or a MPEG-4 stream.
  * @returns                 Returns an error code of type ::PCMDMX_ERROR.
  **/
-PCMDMX_ERROR pcmDmx_ReadDvbAncData(HANDLE_PCM_DOWNMIX self, UCHAR *pAncDataBuf,
+PCMDMX_ERROR pcmDmx_ReadDvbAncData(HANDLE_PCM_DOWNMIX self, uint8_t *pAncDataBuf,
                                    uint32_t ancDataBytes, int32_t isMpeg2);
 
 /** Set the matrix mixdown information extracted from the PCE of an AAC
@@ -436,7 +436,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
                                const int32_t pcmBufSize, uint32_t frameSize,
                                int32_t *nChannels, int32_t fInterleaved,
                                AUDIO_CHANNEL_TYPE channelType[],
-                               UCHAR channelIndices[],
+                               uint8_t channelIndices[],
                                const FDK_channelMapDescr *const mapDescr,
                                int32_t *pDmxOutScale);
 

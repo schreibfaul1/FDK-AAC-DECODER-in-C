@@ -188,22 +188,22 @@ static inline int32_t isTwoChMode(UPMIXTYPE upmixType) {
 typedef struct STP_DEC *HANDLE_STP_DEC;
 
 typedef struct {
-  SCHAR bsQuantCoarseXXXprev;
-  SCHAR bsQuantCoarseXXXprevParse;
+  int8_t bsQuantCoarseXXXprev;
+  int8_t bsQuantCoarseXXXprevParse;
 } LOSSLESSSTATE;
 
 typedef struct {
-  SCHAR bsXXXDataMode[MAX_PARAMETER_SETS];
-  SCHAR bsQuantCoarseXXX[MAX_PARAMETER_SETS];
-  SCHAR bsFreqResStrideXXX[MAX_PARAMETER_SETS];
-  SCHAR nocmpQuantCoarseXXX[MAX_PARAMETER_SETS];
+  int8_t bsXXXDataMode[MAX_PARAMETER_SETS];
+  int8_t bsQuantCoarseXXX[MAX_PARAMETER_SETS];
+  int8_t bsFreqResStrideXXX[MAX_PARAMETER_SETS];
+  int8_t nocmpQuantCoarseXXX[MAX_PARAMETER_SETS];
   LOSSLESSSTATE *state; /* Link to persistent state information */
 } LOSSLESSDATA;
 
 struct SPATIAL_BS_FRAME_struct {
-  UCHAR bsIndependencyFlag;
-  UCHAR newBsData;
-  UCHAR numParameterSets;
+  uint8_t bsIndependencyFlag;
+  uint8_t newBsData;
+  uint8_t numParameterSets;
 
   /*
   If bsFramingType == 0, then the paramSlot[ps] for 0 <= ps < numParamSets is
@@ -217,20 +217,20 @@ struct SPATIAL_BS_FRAME_struct {
    * paramsets actually containing data. */
   /* These values are written from the parser in ecDataDec() and read during
    * decode in mapIndexData() */
-  SCHAR cmpOttCLDidx[MAX_NUM_OTT + MAX_NUM_OTT_AT][MAX_PARAMETER_SETS]
+  int8_t cmpOttCLDidx[MAX_NUM_OTT + MAX_NUM_OTT_AT][MAX_PARAMETER_SETS]
                     [MAX_PARAMETER_BANDS];
-  SCHAR cmpOttICCidx[MAX_NUM_OTT][MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS];
+  int8_t cmpOttICCidx[MAX_NUM_OTT][MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS];
 
   /* Smoothing */
-  UCHAR bsSmoothMode[MAX_PARAMETER_SETS];
-  UCHAR bsSmoothTime[MAX_PARAMETER_SETS];
-  UCHAR bsFreqResStrideSmg[MAX_PARAMETER_SETS];
-  UCHAR bsSmgData[MAX_PARAMETER_SETS]
+  uint8_t bsSmoothMode[MAX_PARAMETER_SETS];
+  uint8_t bsSmoothTime[MAX_PARAMETER_SETS];
+  uint8_t bsFreqResStrideSmg[MAX_PARAMETER_SETS];
+  uint8_t bsSmgData[MAX_PARAMETER_SETS]
                  [MAX_PARAMETER_BANDS]; /* smoothing flags, one if band is
                                            smoothed, otherwise zero */
 
   /* Arbitrary Downmix */
-  SCHAR (*cmpArbdmxGainIdx)[MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS];
+  int8_t (*cmpArbdmxGainIdx)[MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS];
 
   /* Lossless control */
   LOSSLESSDATA *CLDLosslessData;
@@ -238,15 +238,15 @@ struct SPATIAL_BS_FRAME_struct {
   /* LOSSLESSDATA *ADGLosslessData; -> is stored in CLDLosslessData[offset] */
 
   LOSSLESSDATA *IPDLosslessData;
-  SCHAR (*cmpOttIPDidx)[MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS];
+  int8_t (*cmpOttIPDidx)[MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS];
   int32_t phaseMode;
   int32_t OpdSmoothingMode;
 
-  UCHAR tempShapeEnableChannelGES[MAX_OUTPUT_CHANNELS]; /*!< GES side info. */
-  UCHAR bsEnvShapeData[MAX_OUTPUT_CHANNELS]
+  uint8_t tempShapeEnableChannelGES[MAX_OUTPUT_CHANNELS]; /*!< GES side info. */
+  uint8_t bsEnvShapeData[MAX_OUTPUT_CHANNELS]
                       [MAX_TIME_SLOTS]; /*!< GES side info (quantized). */
 
-  UCHAR tempShapeEnableChannelSTP[MAX_OUTPUT_CHANNELS]; /*!< STP side info. */
+  uint8_t tempShapeEnableChannelSTP[MAX_OUTPUT_CHANNELS]; /*!< STP side info. */
 
   TSD_DATA TsdData[1]; /*!< TSD data structure. */
 };
@@ -261,7 +261,7 @@ typedef struct {
 typedef struct {
   int32_t prevParamSlot;
   int32_t prevSmgTime;
-  UCHAR prevSmgData[MAX_PARAMETER_BANDS];
+  uint8_t prevSmgData[MAX_PARAMETER_BANDS];
 
   int32_t opdLeftState__FDK[MAX_PARAMETER_BANDS];
   int32_t opdRightState__FDK[MAX_PARAMETER_BANDS];
@@ -332,8 +332,8 @@ struct spatialDec_struct {
                            present, 2 arbitrary downmix residual data present*/
   int32_t residualCoding;   /* (residualCoding != 0) => residual coding data present
                          */
-  UCHAR nrResidualFrame;
-  UCHAR nrArbDownmixResidualFrame;
+  uint8_t nrResidualFrame;
+  uint8_t nrArbDownmixResidualFrame;
   FDK_BITSTREAM **hResidualBitstreams;
   int32_t tempShapeConfig; /* */
   int32_t decorrType;      /* Indicates to use PS or none PS decorrelator. */
@@ -370,7 +370,7 @@ struct spatialDec_struct {
   /* FREQUENCY MAPPING */
   int32_t qmfBands;
   int32_t hybridBands;
-  const SCHAR *kernels; /* Mapping hybrid band to parameter band. */
+  const int8_t *kernels; /* Mapping hybrid band to parameter band. */
 
   int32_t TsdTs; /**< TSD QMF slot counter 0<= ts < numSlots */
 
@@ -380,10 +380,10 @@ struct spatialDec_struct {
 
   /* Residual coding */
   int32_t residualSamplingFreq;
-  UCHAR residualPresent[MAX_NUM_OTT + MAX_NUM_TTT];
-  UCHAR residualBands[MAX_NUM_OTT + MAX_NUM_TTT];    /* 0, if no residual data
+  uint8_t residualPresent[MAX_NUM_OTT + MAX_NUM_TTT];
+  uint8_t residualBands[MAX_NUM_OTT + MAX_NUM_TTT];    /* 0, if no residual data
                                                         present for this box */
-  UCHAR residualQMFBands[MAX_NUM_OTT + MAX_NUM_TTT]; /* needed for optimized
+  uint8_t residualQMFBands[MAX_NUM_OTT + MAX_NUM_TTT]; /* needed for optimized
                                                         mdct2qmf calculation */
   SPATIAL_SPECIFIC_CONFIG *pConfigCurrent;
 
@@ -397,45 +397,45 @@ struct spatialDec_struct {
                        LFEs */
 
   /* 1 MAPPING */
-  UCHAR extendFrame;
-  UCHAR numParameterSetsPrev;
+  uint8_t extendFrame;
+  uint8_t numParameterSetsPrev;
 
   int32_t *smgTime;
-  UCHAR **smgData;
+  uint8_t **smgData;
 
   /* PARAMETER DATA decoded and dequantized */
 
   /* Last parameters from prev frame required during decode in mapIndexData()
    * and not touched during parse */
-  SCHAR **ottCLDidxPrev;
-  SCHAR **ottICCidxPrev;
-  SCHAR **arbdmxGainIdxPrev;
-  SCHAR **ottIPDidxPrev;
-  SCHAR ***outIdxData; /* is this really persistent memory ? */
+  int8_t **ottCLDidxPrev;
+  int8_t **ottICCidxPrev;
+  int8_t **arbdmxGainIdxPrev;
+  int8_t **ottIPDidxPrev;
+  int8_t ***outIdxData; /* is this really persistent memory ? */
 
   /* State mem required during parse in SpatialDecParseFrameData() */
-  SCHAR **cmpOttCLDidxPrev;
-  SCHAR **cmpOttICCidxPrev;
-  SCHAR ***ottICCdiffidx;
-  SCHAR **cmpOttIPDidxPrev;
+  int8_t **cmpOttCLDidxPrev;
+  int8_t **cmpOttICCidxPrev;
+  int8_t ***ottICCdiffidx;
+  int8_t **cmpOttIPDidxPrev;
 
   /* State mem required in parseArbitraryDownmixData */
-  SCHAR **cmpArbdmxGainIdxPrev;
+  int8_t **cmpArbdmxGainIdxPrev;
 
-  SCHAR ***ottCLD__FDK;
-  SCHAR ***ottICC__FDK;
+  int8_t ***ottCLD__FDK;
+  int8_t ***ottICC__FDK;
 
-  SCHAR ***arbdmxGain__FDK; /* Holds the artistic downmix correction index.*/
+  int8_t ***arbdmxGain__FDK; /* Holds the artistic downmix correction index.*/
 
   int32_t *arbdmxAlpha__FDK;
   int32_t *arbdmxAlphaPrev__FDK;
 
-  UCHAR stereoConfigIndex;
+  uint8_t stereoConfigIndex;
   int32_t highRateMode;
 
   int32_t phaseCoding;
 
-  SCHAR ***ottIPD__FDK;
+  int8_t ***ottIPD__FDK;
 
   int32_t PhaseLeft__FDK[MAX_PARAMETER_BANDS];
   int32_t PhaseRight__FDK[MAX_PARAMETER_BANDS];
@@ -513,11 +513,11 @@ struct spatialDec_struct {
   SMOOTHING_STATE *smoothState; /*!< Pointer to smoothing states. */
 
   RESHAPE_BBENV_STATE *reshapeBBEnvState; /*!< GES handle. */
-  SCHAR row2channelDmxGES[MAX_OUTPUT_CHANNELS];
+  int8_t row2channelDmxGES[MAX_OUTPUT_CHANNELS];
 
   HANDLE_STP_DEC hStpDec; /*!< STP handle. */
 
-  const UCHAR *pActivM2ParamBands;
+  const uint8_t *pActivM2ParamBands;
 
   int32_t bOverwriteM1M2prev; /* Overwrite previous M2/M2 params with first set of
                              new frame after SSC change (aka

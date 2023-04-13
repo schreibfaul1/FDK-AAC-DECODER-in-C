@@ -144,7 +144,7 @@ int32_t CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *lsfq, int32_t nk_mode,
 int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
               FIXP_LPC lpc4_lsf[M_LP_FILTER_ORDER],
               FIXP_LPC lsf_adaptive_mean_cand[M_LP_FILTER_ORDER],
-              FIXP_SGL pStability[], UCHAR *mod, int32_t first_lpd_flag,
+              FIXP_SGL pStability[], uint8_t *mod, int32_t first_lpd_flag,
               int32_t last_lpc_lost, int32_t last_frame_ok);
 
 /**

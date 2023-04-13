@@ -218,9 +218,9 @@ drcDec_GainDecoder_SetCodecDependentParameters(
 DRC_ERROR
 drcDec_GainDecoder_Config(HANDLE_DRC_GAIN_DECODER hGainDec,
                           HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
-                          const UCHAR numSelectedDrcSets,
-                          const SCHAR* selectedDrcSetIds,
-                          const UCHAR* selectedDownmixIds) {
+                          const uint8_t numSelectedDrcSets,
+                          const int8_t* selectedDrcSetIds,
+                          const uint8_t* selectedDownmixIds) {
   DRC_ERROR err = DE_OK;
   int32_t a;
 
@@ -298,7 +298,7 @@ drcDec_GainDecoder_Conceal(HANDLE_DRC_GAIN_DECODER hGainDec,
   DRC_COEFFICIENTS_UNI_DRC* pCoef =
       selectDrcCoefficients(hUniDrcConfig, LOCATION_SELECTED);
   if (pCoef && pCoef->gainSequenceCount) {
-    gainSequenceCount = fMin(pCoef->gainSequenceCount, (UCHAR)12);
+    gainSequenceCount = fMin(pCoef->gainSequenceCount, (uint8_t)12);
   } else {
     gainSequenceCount = 1;
   }

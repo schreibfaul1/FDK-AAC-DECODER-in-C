@@ -165,7 +165,7 @@ aacDecoder_GetFreeBytes(const HANDLE_AACDECODER self, uint32_t *pFreeBytes) {
  * Config Decoder using a CSAudioSpecificConfig struct.
  */
 static AAC_DECODER_ERROR aacDecoder_Config(HANDLE_AACDECODER self, const CSAudioSpecificConfig *pAscStruct,
-										   UCHAR configMode, UCHAR *configChanged) {
+										   uint8_t configMode, uint8_t *configChanged) {
 	AAC_DECODER_ERROR err;
 
 	/* Initialize AAC core decoder, and update self->streaminfo */
@@ -176,7 +176,7 @@ static AAC_DECODER_ERROR aacDecoder_Config(HANDLE_AACDECODER self, const CSAudio
 	return err;
 }
 
-AAC_DECODER_ERROR aacDecoder_ConfigRaw(HANDLE_AACDECODER self, UCHAR *conf[], const uint32_t length[]) {
+AAC_DECODER_ERROR aacDecoder_ConfigRaw(HANDLE_AACDECODER self, uint8_t *conf[], const uint32_t length[]) {
 	AAC_DECODER_ERROR  err = AAC_DEC_OK;
 	TRANSPORTDEC_ERROR errTp;
 	uint32_t               layer, nrOfLayers = self->nrOfLayers;
@@ -209,7 +209,7 @@ AAC_DECODER_ERROR aacDecoder_ConfigRaw(HANDLE_AACDECODER self, UCHAR *conf[], co
 	return err;
 }
 
-AAC_DECODER_ERROR aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self, UCHAR *buffer, uint32_t length) {
+AAC_DECODER_ERROR aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self, uint8_t *buffer, uint32_t length) {
 	FDK_BITSTREAM        bs;
 	HANDLE_FDK_BITSTREAM hBs = &bs;
 	AAC_DECODER_ERROR    err = AAC_DEC_OK;
@@ -247,8 +247,8 @@ AAC_DECODER_ERROR aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self, UCHAR *buffe
 	return err;
 }
 
-static int32_t aacDecoder_ConfigCallback(void *handle, const CSAudioSpecificConfig *pAscStruct, UCHAR configMode,
-									 UCHAR *configChanged) {
+static int32_t aacDecoder_ConfigCallback(void *handle, const CSAudioSpecificConfig *pAscStruct, uint8_t configMode,
+									 uint8_t *configChanged) {
 	HANDLE_AACDECODER  self = (HANDLE_AACDECODER)handle;
 	AAC_DECODER_ERROR  err = AAC_DEC_OK;
 	TRANSPORTDEC_ERROR errTp;
@@ -330,8 +330,8 @@ static int32_t aacDecoder_CtrlCFGChangeCallback(void *handle, const CCtrlCFGChan
 
 static int32_t aacDecoder_SbrCallback(void *handle, HANDLE_FDK_BITSTREAM hBs, const int32_t sampleRateIn,
 								  const int32_t sampleRateOut, const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE coreCodec,
-								  const MP4_ELEMENT_ID elementID, const int32_t elementIndex, const UCHAR harmonicSBR,
-								  const UCHAR stereoConfigIndex, const UCHAR configMode, UCHAR *configChanged,
+								  const MP4_ELEMENT_ID elementID, const int32_t elementIndex, const uint8_t harmonicSBR,
+								  const uint8_t stereoConfigIndex, const uint8_t configMode, uint8_t *configChanged,
 								  const int32_t downscaleFactor) {
 	HANDLE_SBRDECODER self = (HANDLE_SBRDECODER)handle;
 
@@ -344,8 +344,8 @@ static int32_t aacDecoder_SbrCallback(void *handle, HANDLE_FDK_BITSTREAM hBs, co
 
 static int32_t aacDecoder_SscCallback(void *handle, HANDLE_FDK_BITSTREAM hBs, const AUDIO_OBJECT_TYPE coreCodec,
 								  const int32_t samplingRate, const int32_t frameSize, const int32_t stereoConfigIndex,
-								  const int32_t coreSbrFrameLengthIndex, const int32_t configBytes, const UCHAR configMode,
-								  UCHAR *configChanged) {
+								  const int32_t coreSbrFrameLengthIndex, const int32_t configBytes, const uint8_t configMode,
+								  uint8_t *configChanged) {
 	SACDEC_ERROR       err;
 	TRANSPORTDEC_ERROR errTp;
 	HANDLE_AACDECODER  hAacDecoder = (HANDLE_AACDECODER)handle;
@@ -417,13 +417,13 @@ static int32_t aacDecoder_UniDrcCallback(void *handle, HANDLE_FDK_BITSTREAM hBs,
 	return (int32_t)errTp;
 }
 
-AAC_DECODER_ERROR aacDecoder_AncDataInit(HANDLE_AACDECODER self, UCHAR *buffer, int32_t size) {
+AAC_DECODER_ERROR aacDecoder_AncDataInit(HANDLE_AACDECODER self, uint8_t *buffer, int32_t size) {
 	CAncData *ancData = &self->ancData;
 
 	return CAacDecoder_AncDataInit(ancData, buffer, size);
 }
 
-AAC_DECODER_ERROR aacDecoder_AncDataGet(HANDLE_AACDECODER self, int32_t index, UCHAR **ptr, int32_t *size) {
+AAC_DECODER_ERROR aacDecoder_AncDataGet(HANDLE_AACDECODER self, int32_t index, uint8_t **ptr, int32_t *size) {
 	CAncData *ancData = &self->ancData;
 
 	return CAacDecoder_AncDataGet(ancData, index, ptr, size);
@@ -759,7 +759,7 @@ AAC_DECODER_ERROR aacDecoder_SetParam(const HANDLE_AACDECODER self,  /*!< Handle
 			uniDrcErr =
 				FDK_drcDec_SetParam(self->hUniDrcDecoder, DRC_DEC_LOUDNESS_NORMALIZATION_ON, (int32_t)(value >= 0));
 			/* set target loudness also for MPEG-D DRC */
-			self->defaultTargetLoudness = (SCHAR)value;
+			self->defaultTargetLoudness = (int8_t)value;
 			break;
 
 		case AAC_DRC_HEAVY_COMPRESSION:
@@ -899,7 +899,7 @@ HANDLE_AACDECODER aacDecoder_Open(TRANSPORT_TYPE transportFmt, uint32_t nrOfLaye
 	aacDec->mpsEnableUser = 0;
 	aacDec->mpsEnableCurr = 0;
 	aacDec->mpsApplicable = 0;
-	aacDec->mpsOutputMode = (SCHAR)SACDEC_OUT_MODE_NORMAL;
+	aacDec->mpsOutputMode = (int8_t)SACDEC_OUT_MODE_NORMAL;
 	transportDec_RegisterSscCallback(pIn, aacDecoder_SscCallback, (void *)aacDec);
 
 	{
@@ -911,7 +911,7 @@ HANDLE_AACDECODER aacDecoder_Open(TRANSPORT_TYPE transportFmt, uint32_t nrOfLaye
 
 	transportDec_RegisterUniDrcConfigCallback(pIn, aacDecoder_UniDrcCallback, (void *)aacDec,
 											  aacDec->loudnessInfoSetPosition);
-	aacDec->defaultTargetLoudness = (SCHAR)96;
+	aacDec->defaultTargetLoudness = (int8_t)96;
 
 	pcmDmx_Open(&aacDec->hPcmUtils);
 	if(aacDec->hPcmUtils == NULL) {
@@ -925,7 +925,7 @@ HANDLE_AACDECODER aacDecoder_Open(TRANSPORT_TYPE transportFmt, uint32_t nrOfLaye
 		err = -1;
 		goto bail;
 	}
-	aacDec->limiterEnableUser = (UCHAR)-1;
+	aacDec->limiterEnableUser = (uint8_t)-1;
 	aacDec->limiterEnableCurr = 0;
 
 	/* Assure that all modules have same delay */
@@ -942,7 +942,7 @@ bail:
 	return aacDec;
 }
 
-AAC_DECODER_ERROR aacDecoder_Fill(HANDLE_AACDECODER self, UCHAR *pBuffer, const uint32_t bufferSize, uint32_t *pBytesValid) {
+AAC_DECODER_ERROR aacDecoder_Fill(HANDLE_AACDECODER self, uint8_t *pBuffer, const uint32_t bufferSize, uint32_t *pBytesValid) {
 	TRANSPORTDEC_ERROR tpErr;
 	/* loop counter for layers; if not TT_MP4_RAWPACKETS used as index for only
 	   available layer */
@@ -1167,11 +1167,11 @@ AAC_DECODER_ERROR aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeD
 		 * after another. */
 		self->streamInfo.outputDelay = 0;
 
-		if(self->limiterEnableUser == (UCHAR)-2) {
+		if(self->limiterEnableUser == (uint8_t)-2) {
 			/* Enable limiter only for RSVD60. */
 			self->limiterEnableCurr = (self->flags[0] & AC_RSV603DA) ? 1 : 0;
 		}
-		else if(self->limiterEnableUser == (UCHAR)-1) {
+		else if(self->limiterEnableUser == (uint8_t)-1) {
 			/* Enable limiter for all non-lowdelay AOT's. */
 			self->limiterEnableCurr = (self->flags[0] & (AC_LD | AC_ELD)) ? 0 : 1;
 		}
@@ -1500,11 +1500,11 @@ AAC_DECODER_ERROR aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeD
 					drcDelay += CConcealment_GetDelay(&self->concealCommonData) * self->streamInfo.frameSize;
 
 					for(ch = 0; ch < self->streamInfo.numChannels; ch++) {
-						UCHAR mapValue = FDK_chMapDescr_getMapValue(&self->mapDescr, (UCHAR)ch, self->chMapIndex);
+						uint8_t mapValue = FDK_chMapDescr_getMapValue(&self->mapDescr, (uint8_t)ch, self->chMapIndex);
 						if(mapValue < (8)) reverseInChannelMap[mapValue] = ch;
 					}
 					for(ch = 0; ch < (int32_t)numDrcOutChannels; ch++) {
-						UCHAR mapValue = FDK_chMapDescr_getMapValue(&self->mapDescr, (UCHAR)ch, numDrcOutChannels);
+						uint8_t mapValue = FDK_chMapDescr_getMapValue(&self->mapDescr, (uint8_t)ch, numDrcOutChannels);
 						if(mapValue < (8)) reverseOutChannelMap[mapValue] = ch;
 					}
 

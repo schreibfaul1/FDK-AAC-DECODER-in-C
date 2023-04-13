@@ -525,7 +525,7 @@ SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
 
   /* combine 'direct' and scaled 'diffuse' signal */
   FDK_ASSERT((HP_SIZE - 3 + 10 - 1) == PC_NUM_HYB_BANDS);
-  const SCHAR *channlIndex = row2channelSTP[self->treeConfig];
+  const int8_t *channlIndex = row2channelSTP[self->treeConfig];
 
   for (ch = 0; ch < self->numOutputChannels; ch++) {
     int32_t no_scaling;

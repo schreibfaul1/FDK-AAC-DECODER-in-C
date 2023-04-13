@@ -116,7 +116,7 @@ amm-info@iis.fraunhofer.de
  * \param isFullbandLPD is 1 if fullband LPD mode is on, otherwise it is 0.
  */
 int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                             UCHAR mod[NB_SUBFR], int32_t *pState);
+                             uint8_t mod[NB_SUBFR], int32_t *pState);
 
 /**
  * \brief read a fac bitstream data block.
@@ -131,7 +131,7 @@ int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
  * Always 0 for FD case.
  * \return 0 on success, -1 on error.
  */
-int32_t CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, int32_t *pFac, SCHAR *pFacScale,
+int32_t CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, int32_t *pFac, int8_t *pFacScale,
                   int32_t length, int32_t use_gain, int32_t frame);
 
 /**
@@ -153,7 +153,7 @@ void CFac_ApplyGains(int32_t fac_data[LFAC], const int32_t fac_length,
 int32_t CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac_data,
                         const int32_t fac_data_e, FIXP_LPC *A, int32_t A_exp,
                         int32_t nrOutSamples, const int32_t fac_length,
-                        const int32_t isFdFac, UCHAR prevWindowShape);
+                        const int32_t isFdFac, uint8_t prevWindowShape);
 
 /**
  * \brief Do FAC transition from ACELP domain to frequency domain.
@@ -185,7 +185,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *pSpec,
                         const FIXP_WTP *wrs, const int32_t fr, FIXP_LPC A[16],
                         int32_t A_exp, CAcelpStaticMem *acelp_mem,
                         const int32_t gain, const int32_t last_frame_lost,
-                        const int32_t isFdFac, const UCHAR last_lpd, const int32_t k,
+                        const int32_t isFdFac, const uint8_t last_lpd, const int32_t k,
                         int32_t currAliasingSymmetry);
 
 #endif /* USACDEC_FAC_H */

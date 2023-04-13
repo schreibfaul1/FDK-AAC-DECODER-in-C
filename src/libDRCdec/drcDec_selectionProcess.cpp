@@ -160,39 +160,39 @@ typedef enum {
 
 typedef shouldBeUnion {
   struct {
-    UCHAR numRequests;
-    UCHAR numRequestsDesired;
+    uint8_t numRequests;
+    uint8_t numRequestsDesired;
     DRC_EFFECT_TYPE_REQUEST request[MAX_REQUESTS_DRC_EFFECT_TYPE];
   } drcEffectType;
   struct {
     DYN_RANGE_MEASUREMENT_REQUEST_TYPE measurementRequestType;
-    UCHAR requestedIsRange;
+    uint8_t requestedIsRange;
     int32_t requestValue;    /* e = 7 */
     int32_t requestValueMin; /* e = 7 */
     int32_t requestValueMax; /* e = 7 */
   } dynamicRange;
-  UCHAR drcCharacteristic;
+  uint8_t drcCharacteristic;
 }
 DRC_FEATURE_REQUEST;
 
 typedef struct {
   /* system parameters */
-  SCHAR baseChannelCount;
-  SCHAR baseLayout; /* not supported */
+  int8_t baseChannelCount;
+  int8_t baseLayout; /* not supported */
   TARGET_CONFIG_REQUEST_TYPE targetConfigRequestType;
-  UCHAR numDownmixIdRequests;
-  UCHAR downmixIdRequested[MAX_REQUESTS_DOWNMIX_ID];
-  UCHAR targetLayoutRequested;
-  UCHAR targetChannelCountRequested;
+  uint8_t numDownmixIdRequests;
+  uint8_t downmixIdRequested[MAX_REQUESTS_DOWNMIX_ID];
+  uint8_t targetLayoutRequested;
+  uint8_t targetChannelCountRequested;
   int32_t audioSampleRate; /* needed for complexity estimation, currently not
                            supported */
 
   /* loudness normalization parameters */
-  UCHAR loudnessNormalizationOn;
+  uint8_t loudnessNormalizationOn;
   int32_t targetLoudness; /* e = 7 */
-  UCHAR albumMode;
-  UCHAR peakLimiterPresent;
-  UCHAR loudnessDeviationMax; /* resolution: 1 dB */
+  uint8_t albumMode;
+  uint8_t peakLimiterPresent;
+  uint8_t loudnessDeviationMax; /* resolution: 1 dB */
   METHOD_DEFINITION_REQUEST loudnessMeasurementMethod;
   MEASUREMENT_SYSTEM_REQUEST loudnessMeasurementSystem;
   LOUDNESS_PREPROCESSING_REQUEST loudnessMeasurementPreProc; /* not supported */
@@ -202,15 +202,15 @@ typedef struct {
   int32_t outputPeakLevelMax;                               /* e = 7 */
 
   /* dynamic range control parameters */
-  UCHAR dynamicRangeControlOn;
-  UCHAR numDrcFeatureRequests;
+  uint8_t dynamicRangeControlOn;
+  uint8_t numDrcFeatureRequests;
   DRC_FEATURE_REQUEST_TYPE drcFeatureRequestType[MAX_REQUESTS_DRC_FEATURE];
   DRC_FEATURE_REQUEST drcFeatureRequest[MAX_REQUESTS_DRC_FEATURE];
 
   /* other */
   FIXP_SGL boost;                /* e = 1 */
   FIXP_SGL compress;             /* e = 1 */
-  UCHAR drcCharacteristicTarget; /* not supported */
+  uint8_t drcCharacteristicTarget; /* not supported */
 } SEL_PROC_INPUT, *HANDLE_SEL_PROC_INPUT;
 
 /* Table E.1 of ISO/IEC DIS 23003-4: Recommended order of fallback effect type
@@ -231,8 +231,8 @@ static DRC_EFFECT_TYPE_REQUEST fallbackEffectTypeRequests[6][5] = {
 
 /*******************************************/
 typedef struct {
-  UCHAR selectionFlag;
-  UCHAR downmixIdRequestIndex;
+  uint8_t selectionFlag;
+  uint8_t downmixIdRequestIndex;
   int32_t outputPeakLevel;                     /* e = 7 */
   int32_t loudnessNormalizationGainDbAdjusted; /* e = 7 */
   int32_t outputLoudness;                      /* e = 7 */
@@ -241,7 +241,7 @@ typedef struct {
 } DRCDEC_SELECTION_DATA;
 
 typedef struct {
-  UCHAR numData;
+  uint8_t numData;
   DRCDEC_SELECTION_DATA data[(12 + 1 + 6)];
 
 } DRCDEC_SELECTION;
@@ -259,14 +259,14 @@ static int32_t _isError(int32_t x) {
 }
 
 /* compare and assign */
-static inline int32_t _compAssign(UCHAR* dest, const UCHAR src) {
+static inline int32_t _compAssign(uint8_t* dest, const uint8_t src) {
   int32_t diff = 0;
   if (*dest != src) diff = 1;
   *dest = src;
   return diff;
 }
 
-static inline int32_t _compAssign(SCHAR* dest, const SCHAR src) {
+static inline int32_t _compAssign(int8_t* dest, const int8_t src) {
   int32_t diff = 0;
   if (*dest != src) diff = 1;
   *dest = src;
@@ -358,7 +358,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetFinalSelection_peakValue0(
 
 static DRCDEC_SELECTION_PROCESS_RETURN _dynamicRangeMeasurement(
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, DRC_INSTRUCTIONS_UNI_DRC* pInst,
-    UCHAR downmixIdRequested,
+    uint8_t downmixIdRequested,
     DYN_RANGE_MEASUREMENT_REQUEST_TYPE dynamicRangeMeasurementType,
     int32_t albumMode, int32_t* peakToAveragePresent, int32_t* peakToAverage);
 
@@ -1507,7 +1507,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectEffectTypeFeature(
 static DRCDEC_SELECTION_PROCESS_RETURN _selectDynamicRange(
     HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet,
-    DRC_FEATURE_REQUEST drcFeatureRequest, UCHAR* pDownmixIdRequested,
+    DRC_FEATURE_REQUEST drcFeatureRequest, uint8_t* pDownmixIdRequested,
     int32_t albumMode, DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* ppCandidatesSelected) {
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
@@ -1780,8 +1780,8 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectSmallestTargetLoudnessValueUpper(
     DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected) {
   int32_t i;
-  SCHAR minVal = 0x7F;
-  SCHAR val = 0;
+  int8_t minVal = 0x7F;
+  int8_t val = 0;
   DRCDEC_SELECTION_DATA* pCandidate = NULL;
 
   for (i = 0; i < _drcdec_selection_getNumber(pCandidatesPotential); i++) {
@@ -2054,7 +2054,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _generateOutputInfo(
   int32_t selectedDownmixIds;
   int32_t mixingLevel = 0;
   int32_t albumMode = hSelProcInput->albumMode;
-  UCHAR* pDownmixIdRequested = hSelProcInput->downmixIdRequested;
+  uint8_t* pDownmixIdRequested = hSelProcInput->downmixIdRequested;
   FIXP_SGL boost = hSelProcInput->boost;
   FIXP_SGL compress = hSelProcInput->compress;
 
@@ -2381,7 +2381,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetRequestSelection(
 /*******************************************/
 static DRCDEC_SELECTION_PROCESS_RETURN _dynamicRangeMeasurement(
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, DRC_INSTRUCTIONS_UNI_DRC* pInst,
-    UCHAR downmixIdRequested,
+    uint8_t downmixIdRequested,
     DYN_RANGE_MEASUREMENT_REQUEST_TYPE dynamicRangeMeasurementType,
     int32_t albumMode, int32_t* pPeakToAveragePresent, int32_t* pPeakToAverage) {
   int32_t i;

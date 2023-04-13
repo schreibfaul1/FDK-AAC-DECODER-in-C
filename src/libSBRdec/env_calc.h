@@ -115,8 +115,8 @@ typedef struct {
                                                 smoothing) */
   int32_t filtBufferNoise[MAX_FREQ_COEFFS]; /*!< previous noise levels
                                                 (required for smoothing) */
-  SCHAR filtBuffer_e[MAX_FREQ_COEFFS];       /*!< Exponents of previous gains */
-  SCHAR filtBufferNoise_e; /*!< Common exponent of previous noise levels */
+  int8_t filtBuffer_e[MAX_FREQ_COEFFS];       /*!< Exponents of previous gains */
+  int8_t filtBufferNoise_e; /*!< Common exponent of previous noise levels */
 
   int32_t startUp;     /*!< flag to signal initial conditions in buffers */
   int32_t phaseIndex;  /*!< Index for randomPase array */
@@ -125,20 +125,20 @@ typedef struct {
   uint32_t harmFlagsPrev[ADD_HARMONICS_FLAGS_SIZE];
   /*!< Words with 16 flags each indicating where a sine was added in the
    * previous frame.*/
-  UCHAR harmIndex;     /*!< Current phase of synthetic sine */
+  uint8_t harmIndex;     /*!< Current phase of synthetic sine */
   int32_t sbrPatchingMode; /*!< Current patching mode           */
 
   FIXP_SGL prevSbrNoiseFloorLevel[MAX_NOISE_COEFFS];
-  UCHAR prevNNfb;
-  UCHAR prevNSfb[2];
-  UCHAR prevLoSubband;
-  UCHAR prevHiSubband;
-  UCHAR prev_ov_highSubband;
-  UCHAR *prevFreqBandTable[2];
-  UCHAR prevFreqBandTableLo[MAX_FREQ_COEFFS / 2 + 1];
-  UCHAR prevFreqBandTableHi[MAX_FREQ_COEFFS + 1];
-  UCHAR prevFreqBandTableNoise[MAX_NOISE_COEFFS + 1];
-  SCHAR sinusoidal_positionPrev;
+  uint8_t prevNNfb;
+  uint8_t prevNSfb[2];
+  uint8_t prevLoSubband;
+  uint8_t prevHiSubband;
+  uint8_t prev_ov_highSubband;
+  uint8_t *prevFreqBandTable[2];
+  uint8_t prevFreqBandTableLo[MAX_FREQ_COEFFS / 2 + 1];
+  uint8_t prevFreqBandTableHi[MAX_FREQ_COEFFS + 1];
+  uint8_t prevFreqBandTableNoise[MAX_NOISE_COEFFS + 1];
+  int8_t sinusoidal_positionPrev;
   uint32_t harmFlagsPrevActive[ADD_HARMONICS_FLAGS_SIZE];
 } SBR_CALCULATE_ENVELOPE;
 
@@ -165,10 +165,10 @@ int32_t deleteSbrEnvelopeCalc(HANDLE_SBR_CALCULATE_ENVELOPE hSbrCalculateEnvelop
 void resetSbrEnvelopeCalc(HANDLE_SBR_CALCULATE_ENVELOPE hCalEnv);
 
 SBR_ERROR
-ResetLimiterBands(UCHAR *limiterBandTable, UCHAR *noLimiterBands,
-                  UCHAR *freqBandTable, int32_t noFreqBands,
+ResetLimiterBands(uint8_t *limiterBandTable, uint8_t *noLimiterBands,
+                  uint8_t *freqBandTable, int32_t noFreqBands,
                   const PATCH_PARAM *patchParam, int32_t noPatches,
-                  int32_t limiterBands, UCHAR sbrPatchingMode,
+                  int32_t limiterBands, uint8_t sbrPatchingMode,
                   int32_t xOverQmf[MAX_NUM_PATCHES], int32_t sbrRatio);
 
 void rescaleSubbandSamples(int32_t **re, int32_t **im, int32_t lowSubband,

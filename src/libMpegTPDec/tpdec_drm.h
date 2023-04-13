@@ -196,7 +196,7 @@ TRANSPORTDEC_ERROR drmRead_DecodeHeader(HANDLE_DRM pDrm,
 TRANSPORTDEC_ERROR DrmRawSdcAudioConfig_Parse(CSAudioSpecificConfig *pAsc,
                                               HANDLE_FDK_BITSTREAM hBs,
                                               CSTpCallBacks *cb,
-                                              const UCHAR configMode,
-                                              const UCHAR configChanged);
+                                              const uint8_t configMode,
+                                              const uint8_t configChanged);
 
 #endif /* TPDEC_DRM_H */

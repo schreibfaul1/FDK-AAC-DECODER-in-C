@@ -137,17 +137,17 @@ typedef struct {
   uint32_t numBands;
   uint16_t bandTop[MAX_DRC_BANDS];
   int16_t drcInterpolationScheme;
-  UCHAR drcValue[MAX_DRC_BANDS];
-  SCHAR drcDataType;
+  uint8_t drcValue[MAX_DRC_BANDS];
+  int8_t drcDataType;
 
 } CDrcChannelData;
 
 typedef struct {
   uint32_t excludedChnsMask;
-  SCHAR progRefLevel;
-  SCHAR presMode; /* Presentation mode: 0 (not indicated), 1, 2, and 3
+  int8_t progRefLevel;
+  int8_t presMode; /* Presentation mode: 0 (not indicated), 1, 2, and 3
                      (reserved). */
-  SCHAR pceInstanceTag;
+  int8_t pceInstanceTag;
 
   CDrcChannelData channelData;
 
@@ -157,20 +157,20 @@ typedef struct {
   /* DRC parameters: Latest user requests */
   int32_t usrCut;
   int32_t usrBoost;
-  UCHAR usrApplyHeavyCompression;
+  uint8_t usrApplyHeavyCompression;
 
   /* DRC parameters: Currently used, possibly changed by
    * aacDecoder_drcParameterHandling */
   int32_t cut;         /* attenuation scale factor */
   int32_t boost;       /* boost scale factor  */
-  SCHAR targetRefLevel; /* target reference level for loudness normalization */
-  UCHAR applyHeavyCompression; /* heavy compression (DVB) flag */
+  int8_t targetRefLevel; /* target reference level for loudness normalization */
+  uint8_t applyHeavyCompression; /* heavy compression (DVB) flag */
 
   uint32_t expiryFrame;
-  UCHAR bsDelayEnable;
+  uint8_t bsDelayEnable;
 
   AACDEC_DRC_PARAMETER_HANDLING defaultPresentationMode;
-  UCHAR encoderTargetLevel;
+  uint8_t encoderTargetLevel;
 
 } CDrcParams;
 
@@ -179,11 +179,11 @@ typedef struct {
       params; /* Module parameters that can be set by user (via SetParam API
                  function) */
 
-  UCHAR enable;      /* Switch that controls dynamic range processing */
-  UCHAR digitalNorm; /* Switch to en-/disable reference level normalization in
+  uint8_t enable;      /* Switch that controls dynamic range processing */
+  uint8_t digitalNorm; /* Switch to en-/disable reference level normalization in
                         digital domain */
 
-  UCHAR update; /* Flag indicating the change of a user or bitstream parameter
+  uint8_t update; /* Flag indicating the change of a user or bitstream parameter
                    which affects aacDecoder_drcParameterHandling */
   int32_t numOutChannels;     /* Number of output channels */
   int32_t prevAacNumChannels; /* Previous number of channels of aac bitstream, used
@@ -194,25 +194,25 @@ typedef struct {
   uint16_t
   numThreads;         /* The number of DRC data threads extracted from the found
                          payload elements */
-  SCHAR progRefLevel; /* Program reference level for all channels */
-  UCHAR progRefLevelPresent; /* Program reference level found in bitstream */
+  int8_t progRefLevel; /* Program reference level for all channels */
+  uint8_t progRefLevelPresent; /* Program reference level found in bitstream */
 
   uint32_t prlExpiryCount; /* Counter that can be used to monitor the life time of
                           the program reference level. */
 
-  SCHAR presMode; /* Presentation mode as defined in ETSI TS 101 154 */
-  UCHAR dvbAncDataAvailable; /* Flag that indicates whether DVB ancillary data
+  int8_t presMode; /* Presentation mode as defined in ETSI TS 101 154 */
+  uint8_t dvbAncDataAvailable; /* Flag that indicates whether DVB ancillary data
                                 is present or not */
   uint32_t dvbAncDataPosition;   /* Used to store the DVB ancillary data payload
                                 position in the bitstream (only one per frame) */
   uint32_t drcPayloadPosition[MAX_DRC_THREADS]; /* Used to store the DRC payload
                                                positions in the bitstream */
 
-  UCHAR
+  uint8_t
   uniDrcPrecedence; /* Flag for signalling that uniDrc is active and takes
                        precedence over legacy DRC */
 
-  UCHAR applyExtGain; /* Flag is 1 if extGain has to be applied, otherwise 0. */
+  uint8_t applyExtGain; /* Flag is 1 if extGain has to be applied, otherwise 0. */
 
   int32_t additionalGainPrev; /* Gain of previous frame to be applied to the
                                   time data */

@@ -403,7 +403,7 @@ void sbr_dec(
   saveLbScale = hSbrDec->qmfDomainInCh->scaling.lb_scale;
 
   if (applyProcessing) {
-    UCHAR *borders = hFrameData->frameInfo.borders;
+    uint8_t *borders = hFrameData->frameInfo.borders;
     lastSlotOffs = borders[hFrameData->frameInfo.nEnvelopes] -
                    hHeaderData->numberTimeSlots;
 

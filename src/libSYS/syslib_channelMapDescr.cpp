@@ -117,22 +117,22 @@ amm-info@iis.fraunhofer.de
  * The i-th channel will be mapped to the postion a[i-1]+1
  * with i>0 and a[] is one of the following mapping arrays.
  */
-static const UCHAR mapFallback[] = {0,  1,  2,  3,  4,  5,  6,  7,
+static const uint8_t mapFallback[] = {0,  1,  2,  3,  4,  5,  6,  7,
                                     8,  9,  10, 11, 12, 13, 14, 15,
                                     16, 17, 18, 19, 20, 21, 22, 23};
-static const UCHAR mapCfg1[] = {0, 1};
-static const UCHAR mapCfg2[] = {0, 1};
-static const UCHAR mapCfg3[] = {2, 0, 1};
-static const UCHAR mapCfg4[] = {2, 0, 1, 3};
-static const UCHAR mapCfg5[] = {2, 0, 1, 3, 4};
-static const UCHAR mapCfg6[] = {2, 0, 1, 4, 5, 3};
-static const UCHAR mapCfg7[] = {2, 6, 7, 0, 1, 4, 5, 3};
-static const UCHAR mapCfg11[] = {2, 0, 1, 4, 5, 6, 3};
-static const UCHAR mapCfg12[] = {2, 0, 1, 6, 7, 4, 5, 3};
-static const UCHAR mapCfg13[] = {2,  6,  7,  0,  1,  10, 11, 4,
+static const uint8_t mapCfg1[] = {0, 1};
+static const uint8_t mapCfg2[] = {0, 1};
+static const uint8_t mapCfg3[] = {2, 0, 1};
+static const uint8_t mapCfg4[] = {2, 0, 1, 3};
+static const uint8_t mapCfg5[] = {2, 0, 1, 3, 4};
+static const uint8_t mapCfg6[] = {2, 0, 1, 4, 5, 3};
+static const uint8_t mapCfg7[] = {2, 6, 7, 0, 1, 4, 5, 3};
+static const uint8_t mapCfg11[] = {2, 0, 1, 4, 5, 6, 3};
+static const uint8_t mapCfg12[] = {2, 0, 1, 6, 7, 4, 5, 3};
+static const uint8_t mapCfg13[] = {2,  6,  7,  0,  1,  10, 11, 4,
                                  5,  8,  3,  9,  14, 12, 13, 18,
                                  19, 15, 16, 17, 20, 21, 22, 23};
-static const UCHAR mapCfg14[] = {2, 0, 1, 4, 5, 3, 6, 7};
+static const uint8_t mapCfg14[] = {2, 0, 1, 4, 5, 3, 6, 7};
 
 /**
  * \brief  Default table comprising channel map information for each channel
@@ -157,14 +157,14 @@ static const CHANNEL_MAP_INFO mapInfoTabDflt[DFLT_CH_MAP_TAB_LEN] =
      /* 14 */ {mapCfg14, 8}};
 
 
-static const UCHAR mapWg4Cfg1[]  = {0, 1};
-static const UCHAR mapWg4Cfg2[]  = {0, 1};
-static const UCHAR mapWg4Cfg3[]  = {2, 0, 1};
-static const UCHAR mapWg4Cfg4[]  = {3, 0, 1, 2};
-static const UCHAR mapWg4Cfg5[]  = {4, 0, 1, 2, 3};
-static const UCHAR mapWg4Cfg6[]  = {4, 0, 1, 2, 3, 5};
-static const UCHAR mapWg4Cfg7[]  = {6, 0, 1, 2, 3, 4, 5, 7};
-static const UCHAR mapWg4Cfg14[] = {6, 0, 1, 2, 3, 4, 5, 7};
+static const uint8_t mapWg4Cfg1[]  = {0, 1};
+static const uint8_t mapWg4Cfg2[]  = {0, 1};
+static const uint8_t mapWg4Cfg3[]  = {2, 0, 1};
+static const uint8_t mapWg4Cfg4[]  = {3, 0, 1, 2};
+static const uint8_t mapWg4Cfg5[]  = {4, 0, 1, 2, 3};
+static const uint8_t mapWg4Cfg6[]  = {4, 0, 1, 2, 3, 5};
+static const uint8_t mapWg4Cfg7[]  = {6, 0, 1, 2, 3, 4, 5, 7};
+static const uint8_t mapWg4Cfg14[] = {6, 0, 1, 2, 3, 4, 5, 7};
 
 const CHANNEL_MAP_INFO FDK_mapInfoTabWg4[] =
     {/* chCfg,  map,         numCh */
@@ -190,9 +190,9 @@ const uint32_t FDK_mapInfoTabLenWg4 = sizeof(FDK_mapInfoTabWg4)/sizeof(FDK_mapIn
 /**
  * Get the mapping value for a specific channel and map index.
  */
-UCHAR FDK_chMapDescr_getMapValue(const FDK_channelMapDescr* const pMapDescr,
-                                 const UCHAR chIdx, const uint32_t mapIdx) {
-  UCHAR mapValue = chIdx; /* Pass through by default. */
+uint8_t FDK_chMapDescr_getMapValue(const FDK_channelMapDescr* const pMapDescr,
+                                 const uint8_t chIdx, const uint32_t mapIdx) {
+  uint8_t mapValue = chIdx; /* Pass through by default. */
 
   FDK_ASSERT(pMapDescr != NULL);
 
@@ -237,7 +237,7 @@ static int32_t fdk_chMapDescr_isValidMap(const CHANNEL_MAP_INFO* const pMapInfo)
                 one more loop. */
       for (i = 0; (i < numChannels) && result; i += 1) {
         uint32_t j;
-        UCHAR value0 = pMapInfo->pChannelMap[i];
+        uint8_t value0 = pMapInfo->pChannelMap[i];
 
         if (value0 > numChannels - 1) { /* out of range? */
           result = 0;

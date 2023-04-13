@@ -170,7 +170,7 @@ static int32_t extractPvcFrameInfo(
     HANDLE_SBR_PREV_FRAME_DATA h_prev_frame_data, /*!< pointer to memory where
                                                      the previous frame-info
                                                      will be stored */
-    UCHAR pvc_mode_last,                          /**< PVC mode of last frame */
+    uint8_t pvc_mode_last,                          /**< PVC mode of last frame */
     const uint32_t flags);
 static int32_t extractFrameInfo(HANDLE_FDK_BITSTREAM hBs,
                             HANDLE_SBR_HEADER_DATA hHeaderData,
@@ -375,7 +375,7 @@ void initSbrPrevFrameData(
 SBR_HEADER_STATUS
 sbrGetHeaderData(HANDLE_SBR_HEADER_DATA hHeaderData, HANDLE_FDK_BITSTREAM hBs,
                  const uint32_t flags, const int32_t fIsSbrData,
-                 const UCHAR configMode) {
+                 const uint8_t configMode) {
   SBR_HEADER_DATA_BS *pBsData;
   SBR_HEADER_DATA_BS lastHeader;
   SBR_HEADER_DATA_BS_INFO lastInfo;
@@ -616,7 +616,7 @@ int32_t sbrGetChannelElement(HANDLE_SBR_HEADER_DATA hHeaderData,
                          HANDLE_SBR_FRAME_DATA hFrameDataLeft,
                          HANDLE_SBR_FRAME_DATA hFrameDataRight,
                          HANDLE_SBR_PREV_FRAME_DATA hFrameDataLeftPrev,
-                         UCHAR pvc_mode_last, HANDLE_FDK_BITSTREAM hBs,
+                         uint8_t pvc_mode_last, HANDLE_FDK_BITSTREAM hBs,
                          HANDLE_PS_DEC hParametricStereoDec, const uint32_t flags,
                          const int32_t overlap) {
   int32_t i, bs_coupling = COUPLING_OFF;
@@ -917,7 +917,7 @@ void sbrGetNoiseFloorData(
 }
 
 /* ns = mapNsMode2ns[pvcMode-1][nsMode] */
-static const UCHAR mapNsMode2ns[2][2] = {
+static const uint8_t mapNsMode2ns[2][2] = {
     {16, 4}, /* pvcMode = 1 */
     {12, 3}  /* pvcMode = 2 */
 };
@@ -929,7 +929,7 @@ static int32_t sbrGetPvcEnvelope(
     const uint32_t flags, const uint32_t pvcMode) {
   int32_t divMode, nsMode;
   int32_t indepFlag = flags & SBRDEC_USAC_INDEP;
-  UCHAR *pvcID = h_frame_data->pvcID;
+  uint8_t *pvcID = h_frame_data->pvcID;
 
   divMode = FDKreadBits(hBs, PVC_DIVMODE_BITS);
   nsMode = FDKreadBit(hBs);
@@ -1010,7 +1010,7 @@ static int32_t sbrGetPvcEnvelope(
   hHeaderData->pvcIDprev = pvcID[PVC_NTIMESLOT - 1];
 
   /* usage of PVC excludes inter-TES tool */
-  h_frame_data->iTESactive = (UCHAR)0;
+  h_frame_data->iTESactive = (uint8_t)0;
 
   return 1;
 }
@@ -1023,7 +1023,7 @@ static int32_t sbrGetEnvelope(
     HANDLE_FDK_BITSTREAM hBs,           /*!< handle to struct BIT_BUF */
     const uint32_t flags) {
   int32_t i, j;
-  UCHAR no_band[MAX_ENVELOPES];
+  uint8_t no_band[MAX_ENVELOPES];
   int32_t delta = 0;
   int32_t offset = 0;
   COUPLING_MODE coupling = h_frame_data->coupling;
@@ -1087,7 +1087,7 @@ static int32_t sbrGetEnvelope(
     }
   }
 
-  h_frame_data->iTESactive = (UCHAR)0; /* disable inter-TES by default */
+  h_frame_data->iTESactive = (uint8_t)0; /* disable inter-TES by default */
   /*
     Now read raw envelope data
   */
@@ -1116,7 +1116,7 @@ static int32_t sbrGetEnvelope(
     if ((flags & SBRDEC_SYNTAX_USAC) && (flags & SBRDEC_USAC_ITES)) {
       int32_t bs_temp_shape = FDKreadBit(hBs);
       FDK_ASSERT(j < 8);
-      h_frame_data->iTESactive |= (UCHAR)(bs_temp_shape << j);
+      h_frame_data->iTESactive |= (uint8_t)(bs_temp_shape << j);
       if (bs_temp_shape) {
         h_frame_data->interTempShapeMode[j] =
             FDKread2Bits(hBs); /* bs_inter_temp_shape_mode */
@@ -1240,7 +1240,7 @@ static int32_t extractLowDelayGrid(
   /* decode freq res: */
   for (k = 0; k < pFrameInfo->nEnvelopes; k++) {
     pFrameInfo->freqRes[k] =
-        (UCHAR)FDKreadBits(hBitBuf, 1); /* f = F [1 bits] */
+        (uint8_t)FDKreadBits(hBitBuf, 1); /* f = F [1 bits] */
   }
 
   return 1;
@@ -1258,7 +1258,7 @@ int32_t extractPvcFrameInfo(
     HANDLE_SBR_PREV_FRAME_DATA h_prev_frame_data, /*!< pointer to memory where
                                                      the previous frame-info
                                                      will be stored */
-    UCHAR pvc_mode_last,                          /**< PVC mode of last frame */
+    uint8_t pvc_mode_last,                          /**< PVC mode of last frame */
     const uint32_t flags) {
   FRAME_INFO *pFrameInfo = &h_frame_data->frameInfo;
   FRAME_INFO *pPrevFrameInfo = &h_prev_frame_data->prevFrameInfo;
@@ -1350,7 +1350,7 @@ int32_t extractFrameInfo(
   int32_t numberTimeSlots = hHeaderData->numberTimeSlots;
   int32_t pointer_bits = 0, nEnv = 0, b = 0, border, i, n = 0, k, p, aL, aR, nL, nR,
       temp = 0, staticFreqRes;
-  UCHAR frameClass;
+  uint8_t frameClass;
 
   if (flags & SBRDEC_ELD_GRID) {
     /* CODEC_AACLD (LD+SBR) only uses the normal 0 Grid for non-transient Frames

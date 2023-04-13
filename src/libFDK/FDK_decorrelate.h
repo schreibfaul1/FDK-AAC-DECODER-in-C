@@ -171,9 +171,9 @@ typedef struct DUCKER_INSTANCE {
   int32_t partiallyComplex;
   FDK_DUCKER_TYPE duckerType;
 
-  const UCHAR *qs_next;
-  const UCHAR *mapProcBands2HybBands;
-  const UCHAR *mapHybBands2ProcBands;
+  const uint8_t *qs_next;
+  const uint8_t *mapProcBands2HybBands;
+  const uint8_t *mapHybBands2ProcBands;
   /* interleaved     SmoothDirectNrg[] and SmoothReverbNrg[],
      non-interleaved SmoothDirectNrg[] in case of parametric stereo */
   FIXP_MPS SmoothDirRevNrg[2 * (28)];
@@ -185,10 +185,10 @@ typedef struct DUCKER_INSTANCE {
   FIXP_MPS peakDiff[(28)];
   int32_t maxValDirectData;
   int32_t maxValReverbData;
-  SCHAR scaleDirectNrg;
-  SCHAR scaleReverbNrg;
-  SCHAR scaleSmoothDirRevNrg;
-  SCHAR headroomSmoothDirRevNrg;
+  int8_t scaleDirectNrg;
+  int8_t scaleReverbNrg;
+  int8_t scaleSmoothDirRevNrg;
+  int8_t headroomSmoothDirRevNrg;
 
 } DUCKER_INSTANCE;
 
@@ -208,11 +208,11 @@ typedef struct DECORR_DEC {
   int32_t *delayBufferCplx;
 
   const REVBAND_FILT_TYPE *REV_filtType;
-  const UCHAR *REV_bandOffset;
-  const UCHAR *REV_delay;
-  const SCHAR *REV_filterOrder;
+  const uint8_t *REV_bandOffset;
+  const uint8_t *REV_delay;
+  const int8_t *REV_filterOrder;
   int32_t reverbBandDelayBufferIndex[(4)];
-  UCHAR stateBufferOffset[(3)];
+  uint8_t stateBufferOffset[(3)];
 
   DECORR_FILTER_INSTANCE Filter[(71)];
   DUCKER_INSTANCE ducker;

@@ -244,10 +244,10 @@ DPCM value (which has a absolute value of 7)
 --------------------------------------------------------------------------------------------
 */
 
-static SCHAR rvlcDecodeEscapeWord(CErRvlcInfo *pRvlc, HANDLE_FDK_BITSTREAM bs) {
+static int8_t rvlcDecodeEscapeWord(CErRvlcInfo *pRvlc, HANDLE_FDK_BITSTREAM bs) {
   int32_t i;
-  SCHAR value;
-  UCHAR carryBit;
+  int8_t value;
+  uint8_t carryBit;
   uint32_t treeNode;
   uint32_t branchValue;
   uint32_t branchNode;
@@ -271,7 +271,7 @@ static SCHAR rvlcDecodeEscapeWord(CErRvlcInfo *pRvlc, HANDLE_FDK_BITSTREAM bs) {
     if ((branchNode & TEST_BIT_10) ==
         TEST_BIT_10) { /* test bit 10 ; if set --> a RVLC-escape-word is
                           completely decoded */
-      value = (SCHAR)branchNode & CLR_BIT_10;
+      value = (int8_t)branchNode & CLR_BIT_10;
       pRvlc->length_of_rvlc_escapes -= (MAX_LEN_RVLC_ESCAPE_WORD - i);
 
       if (pRvlc->length_of_rvlc_escapes < 0) {
@@ -321,8 +321,8 @@ escape is needed, then it is just taken out of the array in ascending order.
 
 static void rvlcDecodeEscapes(CErRvlcInfo *pRvlc, int16_t *pEsc,
                               HANDLE_FDK_BITSTREAM bs) {
-  SCHAR escWord;
-  SCHAR escCnt = 0;
+  int8_t escWord;
+  int8_t escCnt = 0;
   int16_t *pEscBitCntSum;
 
   pEscBitCntSum = &(pRvlc->length_of_rvlc_escapes);
@@ -359,15 +359,15 @@ value. In case of errors a forbidden codeword is detected --> returning -1
 --------------------------------------------------------------------------------------------
 */
 
-SCHAR decodeRVLCodeword(HANDLE_FDK_BITSTREAM bs, CErRvlcInfo *pRvlc) {
+int8_t decodeRVLCodeword(HANDLE_FDK_BITSTREAM bs, CErRvlcInfo *pRvlc) {
   int32_t i;
-  SCHAR value;
-  UCHAR carryBit;
+  int8_t value;
+  uint8_t carryBit;
   uint32_t branchValue;
   uint32_t branchNode;
 
   const uint32_t *pRvlCodeTree = pRvlc->pHuffTreeRvlCodewds;
-  UCHAR direction = pRvlc->direction;
+  uint8_t direction = pRvlc->direction;
   int32_t *pBitstrIndxRvl = pRvlc->pBitstrIndxRvl_RVL;
   uint32_t treeNode = *pRvlCodeTree;
 
@@ -384,7 +384,7 @@ SCHAR decodeRVLCodeword(HANDLE_FDK_BITSTREAM bs, CErRvlcInfo *pRvlc) {
         TEST_BIT_10) { /* test bit 10 ; if set --> a
                           RVLC-codeword is completely decoded
                         */
-      value = (SCHAR)(branchNode & CLR_BIT_10);
+      value = (int8_t)(branchNode & CLR_BIT_10);
       *pRvlc->pRvlBitCnt_RVL -= (MAX_LEN_RVLC_CODE_WORD - i);
 
       /* check available bits for decoding */
@@ -450,7 +450,7 @@ static void rvlcDecodeForward(CErRvlcInfo *pRvlc,
 
   int16_t *pScfFwd = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd;
   int16_t *pScfEsc = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfEsc;
-  UCHAR *pEscFwdCnt = &(pRvlc->numDecodedEscapeWordsFwd);
+  uint8_t *pEscFwdCnt = &(pRvlc->numDecodedEscapeWordsFwd);
 
   pRvlc->pRvlBitCnt_RVL = &(pRvlc->length_of_rvlc_sf_fwd);
   pRvlc->pBitstrIndxRvl_RVL = &(pRvlc->bitstreamIndexRvlFwd);
@@ -628,8 +628,8 @@ static void rvlcDecodeBackward(CErRvlcInfo *pRvlc,
 
   int16_t *pScfBwd = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd;
   int16_t *pScfEsc = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfEsc;
-  UCHAR *pEscEscCnt = &(pRvlc->numDecodedEscapeWordsEsc);
-  UCHAR *pEscBwdCnt = &(pRvlc->numDecodedEscapeWordsBwd);
+  uint8_t *pEscEscCnt = &(pRvlc->numDecodedEscapeWordsEsc);
+  uint8_t *pEscBwdCnt = &(pRvlc->numDecodedEscapeWordsBwd);
 
   pRvlc->pRvlBitCnt_RVL = &(pRvlc->length_of_rvlc_sf_bwd);
   pRvlc->pBitstrIndxRvl_RVL = &(pRvlc->bitstreamIndexRvlBwd);
@@ -805,22 +805,22 @@ static void rvlcFinalErrorDetection(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo) {
   CErRvlcInfo *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
-  UCHAR ErrorStatusComplete = 0;
-  UCHAR ErrorStatusLengthFwd = 0;
-  UCHAR ErrorStatusLengthBwd = 0;
-  UCHAR ErrorStatusLengthEscapes = 0;
-  UCHAR ErrorStatusFirstScf = 0;
-  UCHAR ErrorStatusLastScf = 0;
-  UCHAR ErrorStatusFirstNrg = 0;
-  UCHAR ErrorStatusLastNrg = 0;
-  UCHAR ErrorStatusFirstIs = 0;
-  UCHAR ErrorStatusLastIs = 0;
-  UCHAR ErrorStatusForbiddenCwFwd = 0;
-  UCHAR ErrorStatusForbiddenCwBwd = 0;
-  UCHAR ErrorStatusNumEscapesFwd = 0;
-  UCHAR ErrorStatusNumEscapesBwd = 0;
-  UCHAR ConcealStatus = 1;
-  UCHAR currentBlockType; /* int16_t: 0, not int16_t: 1*/
+  uint8_t ErrorStatusComplete = 0;
+  uint8_t ErrorStatusLengthFwd = 0;
+  uint8_t ErrorStatusLengthBwd = 0;
+  uint8_t ErrorStatusLengthEscapes = 0;
+  uint8_t ErrorStatusFirstScf = 0;
+  uint8_t ErrorStatusLastScf = 0;
+  uint8_t ErrorStatusFirstNrg = 0;
+  uint8_t ErrorStatusLastNrg = 0;
+  uint8_t ErrorStatusFirstIs = 0;
+  uint8_t ErrorStatusLastIs = 0;
+  uint8_t ErrorStatusForbiddenCwFwd = 0;
+  uint8_t ErrorStatusForbiddenCwBwd = 0;
+  uint8_t ErrorStatusNumEscapesFwd = 0;
+  uint8_t ErrorStatusNumEscapesBwd = 0;
+  uint8_t ConcealStatus = 1;
+  uint8_t currentBlockType; /* int16_t: 0, not int16_t: 1*/
 
   pAacDecoderChannelInfo->pDynData->specificTo.aac.rvlcCurrentScaleFactorOK = 1;
 

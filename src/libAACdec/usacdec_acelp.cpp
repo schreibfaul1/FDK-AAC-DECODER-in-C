@@ -645,13 +645,13 @@ void E_UTIL_residu(const FIXP_LPC *a, const int32_t a_exp, int32_t *x, int32_t *
 }
 
 /* use to map subfr number to number of bits used for acb_index */
-static const UCHAR num_acb_idx_bits_table[2][NB_SUBFR] = {
+static const uint8_t num_acb_idx_bits_table[2][NB_SUBFR] = {
     {9, 6, 9, 6}, /* coreCoderFrameLength == 1024 */
     {9, 6, 6, 0}  /* coreCoderFrameLength == 768  */
 };
 
 static int32_t DecodePitchLag(HANDLE_FDK_BITSTREAM hBs,
-                          const UCHAR num_acb_idx_bits,
+                          const uint8_t num_acb_idx_bits,
                           const int32_t PIT_MIN, /* TMIN */
                           const int32_t PIT_FR2, /* TFR2 */
                           const int32_t PIT_FR1, /* TFR1 */
@@ -716,16 +716,16 @@ static int32_t DecodePitchLag(HANDLE_FDK_BITSTREAM hBs,
 static void ConcealPitchLag(CAcelpStaticMem *acelp_mem, const int32_t PIT_MAX,
                             int32_t *pT0, int32_t *pT0_frac) {
   uint16_t *pold_T0 = &acelp_mem->old_T0;
-  UCHAR *pold_T0_frac = &acelp_mem->old_T0_frac;
+  uint8_t *pold_T0_frac = &acelp_mem->old_T0_frac;
 
   if ((int32_t)*pold_T0 >= PIT_MAX) {
-    *pold_T0 = (UCHAR)(PIT_MAX - 5);
+    *pold_T0 = (uint8_t)(PIT_MAX - 5);
   }
   *pT0 = (int32_t)*pold_T0;
   *pT0_frac = (int32_t)*pold_T0_frac;
 }
 
-static UCHAR tab_coremode2nbits[8] = {20, 28, 36, 44, 52, 64, 12, 16};
+static uint8_t tab_coremode2nbits[8] = {20, 28, 36, 44, 52, 64, 12, 16};
 
 static int32_t MapCoreMode2NBits(int32_t core_mode) {
   return (int32_t)tab_coremode2nbits[core_mode];
@@ -942,7 +942,7 @@ void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, int16_t *pitch,
                        const FIXP_LPC lsp_old[M_LP_FILTER_ORDER],
                        const FIXP_LPC lsp_new[M_LP_FILTER_ORDER],
                        const FIXP_SGL stab_fac, int32_t nLostSf, int32_t synth[],
-                       int32_t coreCoderFrameLength, UCHAR last_tcx_noise_factor) {
+                       int32_t coreCoderFrameLength, uint8_t last_tcx_noise_factor) {
   /* repeat past excitation with pitch from previous decoded TCX frame */
   C_ALLOC_SCRATCH_START(
       exc_buf, int32_t,
@@ -1114,13 +1114,13 @@ void CLpd_Acelp_Zir(const FIXP_LPC A[], const int32_t A_exp,
   C_ALLOC_SCRATCH_END(tmp_buf, int32_t, L_FAC_ZIR + M_LP_FILTER_ORDER);
 }
 
-void CLpd_AcelpPrepareInternalMem(const int32_t *synth, UCHAR last_lpd_mode,
-                                  UCHAR last_last_lpd_mode,
+void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode,
+                                  uint8_t last_last_lpd_mode,
                                   const FIXP_LPC *A_new, const int32_t A_new_exp,
                                   const FIXP_LPC *A_old, const int32_t A_old_exp,
                                   CAcelpStaticMem *acelp_mem,
                                   int32_t coreCoderFrameLength, int32_t clearOldExc,
-                                  UCHAR lpd_mode) {
+                                  uint8_t lpd_mode) {
   int32_t l_div =
       coreCoderFrameLength / NB_DIV; /* length of one ACELP/TCX20 frame */
   int32_t l_div_partial;
@@ -1201,7 +1201,7 @@ int32_t CLpd_AcelpRead(HANDLE_FDK_BITSTREAM hBs, CAcelpChannelData *acelp,
                    int32_t acelp_core_mode, int32_t coreCoderFrameLength,
                    int32_t i_offset) {
   int32_t nb_subfr = coreCoderFrameLength / L_DIV;
-  const UCHAR *num_acb_index_bits =
+  const uint8_t *num_acb_index_bits =
       (nb_subfr == 4) ? num_acb_idx_bits_table[0] : num_acb_idx_bits_table[1];
   int32_t nbits;
   int32_t error = 0;
@@ -1232,7 +1232,7 @@ int32_t CLpd_AcelpRead(HANDLE_FDK_BITSTREAM hBs, CAcelpChannelData *acelp,
       goto bail;
     }
     acelp->T0[sfr] = (uint16_t)T0;
-    acelp->T0_frac[sfr] = (UCHAR)T0_frac;
+    acelp->T0_frac[sfr] = (uint8_t)T0_frac;
     acelp->ltp_filtering_flag[sfr] = FDKreadBits(hBs, 1);
     switch (nbits) {
       case 12: /* 12 bits AMR-WB codebook is used */

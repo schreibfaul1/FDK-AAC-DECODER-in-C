@@ -122,11 +122,11 @@ DRC_ERROR
 deriveDrcChannelGroups(
     const int32_t drcSetEffect,                                    /* in */
     const int32_t channelCount,                                    /* in */
-    const SCHAR* gainSetIndex,                                 /* in */
+    const int8_t* gainSetIndex,                                 /* in */
     const DUCKING_MODIFICATION* duckingModificationForChannel, /* in */
-    UCHAR* nDrcChannelGroups,                                  /* out */
-    SCHAR* uniqueIndex,     /* out (gainSetIndexForChannelGroup) */
-    SCHAR* groupForChannel, /* out */
+    uint8_t* nDrcChannelGroups,                                  /* out */
+    int8_t* uniqueIndex,     /* out (gainSetIndexForChannelGroup) */
+    int8_t* groupForChannel, /* out */
     DUCKING_MODIFICATION* duckingModificationForChannelGroup); /* out */
 
 int32_t

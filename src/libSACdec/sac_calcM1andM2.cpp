@@ -123,7 +123,7 @@ static void param2UMX_PS__FDK(spatialDec* self,
                               int32_t parameterSetIndx, int32_t resBands);
 
 static void param2UMX_PS_Core__FDK(
-    const SCHAR cld[MAX_PARAMETER_BANDS], const SCHAR icc[MAX_PARAMETER_BANDS],
+    const int8_t cld[MAX_PARAMETER_BANDS], const int8_t icc[MAX_PARAMETER_BANDS],
     const int32_t numOttBands, const int32_t resBands,
     int32_t H11[MAX_PARAMETER_BANDS], int32_t H12[MAX_PARAMETER_BANDS],
     int32_t H21[MAX_PARAMETER_BANDS], int32_t H22[MAX_PARAMETER_BANDS],
@@ -317,7 +317,7 @@ static SACDEC_ERROR SpatialDecCalculateM1andM2_212(
 
 *******************************************************************************/
 static void param2UMX_PS_Core__FDK(
-    const SCHAR cld[MAX_PARAMETER_BANDS], const SCHAR icc[MAX_PARAMETER_BANDS],
+    const int8_t cld[MAX_PARAMETER_BANDS], const int8_t icc[MAX_PARAMETER_BANDS],
     const int32_t numOttBands, const int32_t resBands,
     int32_t H11[MAX_PARAMETER_BANDS], int32_t H12[MAX_PARAMETER_BANDS],
     int32_t H21[MAX_PARAMETER_BANDS], int32_t H22[MAX_PARAMETER_BANDS],
@@ -402,7 +402,7 @@ static const FIXP_SGL sqrt_one_minus_ICC2[8] = {
 };
 
 /* exponent of sqrt(CLD) */
-static const SCHAR sqrt_CLD_e[N_CLD] = {
+static const int8_t sqrt_CLD_e[N_CLD] = {
     -24, -7, -6, -5, -4, -4, -3, -3, -2, -2, -1, -1, 0, 0, 0, 1,
     1,   1,  1,  2,  2,  3,  3,  4,  4,  5,  5,  6,  7, 8, 25};
 

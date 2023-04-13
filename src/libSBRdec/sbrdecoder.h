@@ -230,8 +230,8 @@ SBR_ERROR sbrDecoder_InitElement(
     HANDLE_SBRDECODER self, const int32_t sampleRateIn, const int32_t sampleRateOut,
     const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE coreCodec,
     const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
-    const UCHAR harmonicSBR, const UCHAR stereoConfigIndex,
-    const UCHAR configMode, UCHAR *configChanged, const int32_t downscaleFactor);
+    const uint8_t harmonicSBR, const uint8_t stereoConfigIndex,
+    const uint8_t configMode, uint8_t *configChanged, const int32_t downscaleFactor);
 
 /**
  * \brief Free config dependent SBR memory.
@@ -260,8 +260,8 @@ int32_t sbrDecoder_Header(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
                       const int32_t samplesPerFrame,
                       const AUDIO_OBJECT_TYPE coreCodec,
                       const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
-                      const UCHAR harmonicSBR, const UCHAR stereoConfigIndex,
-                      const UCHAR configMode, UCHAR *configChanged,
+                      const uint8_t harmonicSBR, const uint8_t stereoConfigIndex,
+                      const uint8_t configMode, uint8_t *configChanged,
                       const int32_t downscaleFactor);
 
 /**
@@ -296,7 +296,7 @@ SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, int32_t ch,
                                     uint32_t numBands, int32_t *pNextFact_mag,
                                     int32_t nextFact_exp,
                                     int16_t drcInterpolationScheme,
-                                    UCHAR winSequence, uint16_t *pBandTop);
+                                    uint8_t winSequence, uint16_t *pBandTop);
 
 /**
  * \brief  Disable SBR DRC for a certain channel.
@@ -332,7 +332,7 @@ void sbrDecoder_drcDisable(HANDLE_SBRDECODER self, int32_t ch);
  * \return  Error code.
  */
 SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
-                           UCHAR *pDrmBsBuffer, uint16_t drmBsBufferSize,
+                           uint8_t *pDrmBsBuffer, uint16_t drmBsBufferSize,
                            int32_t *count, int32_t bsPayLen, int32_t crcFlag,
                            MP4_ELEMENT_ID prev_element, int32_t element_index,
                            uint32_t acFlags, uint32_t acElFlags[]);
@@ -373,7 +373,7 @@ SBR_ERROR sbrDecoder_Apply(HANDLE_SBRDECODER self, int32_t *input, int32_t *time
                            int32_t *sampleRate,
                            const FDK_channelMapDescr *const mapDescr,
                            const int32_t mapIdx, const int32_t coreDecodedOk,
-                           UCHAR *psDecoded, const int32_t inDataHeadroom,
+                           uint8_t *psDecoded, const int32_t inDataHeadroom,
                            int32_t *outDataHeadroom);
 
 /**

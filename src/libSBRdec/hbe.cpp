@@ -1044,7 +1044,7 @@ QmfTransposerCreate(HANDLE_HBE_TRANSPOSER* hQmfTransposer, const int32_t frameSi
 }
 
 SBR_ERROR QmfTransposerReInit(HANDLE_HBE_TRANSPOSER hQmfTransposer,
-                              UCHAR* FreqBandTable[2], UCHAR NSfb[2])
+                              uint8_t* FreqBandTable[2], uint8_t NSfb[2])
 /* removed bSbr41 from parameterlist:
    don't know where to get this value from
    at call-side */

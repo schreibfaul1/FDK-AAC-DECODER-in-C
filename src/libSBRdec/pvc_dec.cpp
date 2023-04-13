@@ -166,7 +166,7 @@ static const FIXP_SGL pvc_SC_3[] = {
     FX_DBL2FXCONST_SGL(0x44a09e62),
 };
 
-static const UCHAR g_3a_pvcTab1_mode1[PVC_NTAB1][PVC_NBLOW][PVC_NBHIGH_MODE1] =
+static const uint8_t g_3a_pvcTab1_mode1[PVC_NTAB1][PVC_NBLOW][PVC_NBHIGH_MODE1] =
     {{{0x4F, 0x5B, 0x57, 0x52, 0x4D, 0x65, 0x45, 0x57},
       {0xF3, 0x0F, 0x18, 0x20, 0x19, 0x4F, 0x3D, 0x23},
       {0x78, 0x57, 0x55, 0x50, 0x50, 0x20, 0x36, 0x37}},
@@ -177,7 +177,7 @@ static const UCHAR g_3a_pvcTab1_mode1[PVC_NTAB1][PVC_NBLOW][PVC_NBHIGH_MODE1] =
       {0xFA, 0x13, 0x23, 0x4E, 0x44, 0x7C, 0x34, 0x38},
       {0x63, 0x43, 0x41, 0x3D, 0x35, 0x19, 0x3D, 0x33}}};
 
-static const UCHAR g_2a_pvcTab2_mode1[PVC_NTAB2][PVC_NBHIGH_MODE1] = {
+static const uint8_t g_2a_pvcTab2_mode1[PVC_NTAB2][PVC_NBHIGH_MODE1] = {
     {0xCB, 0xD1, 0xCC, 0xD2, 0xE2, 0xEB, 0xE7, 0xE8},
     {0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80},
     {0x84, 0x8C, 0x88, 0x83, 0x90, 0x93, 0x86, 0x80},
@@ -307,7 +307,7 @@ static const UCHAR g_2a_pvcTab2_mode1[PVC_NTAB2][PVC_NBHIGH_MODE1] = {
     {0xF7, 0xFB, 0xFB, 0xF7, 0xF9, 0xF9, 0xF5, 0xF0},
     {0xFD, 0xFF, 0xF2, 0xEE, 0xF2, 0xF5, 0xF1, 0xF3}};
 
-static const UCHAR g_3a_pvcTab1_mode2[PVC_NTAB1][PVC_NBLOW][PVC_NBHIGH_MODE2] =
+static const uint8_t g_3a_pvcTab1_mode2[PVC_NTAB1][PVC_NBLOW][PVC_NBHIGH_MODE2] =
     {{{0x11, 0x27, 0x0F, 0xFD, 0x04, 0xFC},
       {0x00, 0xBE, 0xE3, 0xF4, 0xDB, 0xF0},
       {0x09, 0x1E, 0x18, 0x1A, 0x21, 0x1B}},
@@ -318,7 +318,7 @@ static const UCHAR g_3a_pvcTab1_mode2[PVC_NTAB1][PVC_NBLOW][PVC_NBHIGH_MODE2] =
       {0xE4, 0xC6, 0xE5, 0xF4, 0xDC, 0xDC},
       {0x0F, 0x1B, 0x18, 0x14, 0x1E, 0x1A}}};
 
-static const UCHAR g_2a_pvcTab2_mode2[PVC_NTAB2][PVC_NBHIGH_MODE2] = {
+static const uint8_t g_2a_pvcTab2_mode2[PVC_NTAB2][PVC_NBHIGH_MODE2] = {
     {0x26, 0x25, 0x11, 0x0C, 0xFA, 0x15}, {0x1B, 0x18, 0x11, 0x0E, 0x0E, 0x0E},
     {0x12, 0x10, 0x10, 0x10, 0x11, 0x10}, {0x1E, 0x24, 0x19, 0x15, 0x14, 0x12},
     {0x24, 0x16, 0x12, 0x13, 0x15, 0x1C}, {0xEA, 0xED, 0xEB, 0xEA, 0xEC, 0xEB},
@@ -384,18 +384,18 @@ static const UCHAR g_2a_pvcTab2_mode2[PVC_NTAB2][PVC_NBHIGH_MODE2] = {
     {0x24, 0x1C, 0x19, 0x1A, 0x18, 0x19}, {0x2D, 0x15, 0x27, 0x2B, 0x24, 0x23},
     {0x2C, 0x12, 0x1F, 0x23, 0x1F, 0x20}, {0x25, 0x0F, 0x22, 0x27, 0x1F, 0x21}};
 
-static const UCHAR g_a_pvcTab1_dp_mode1[PVC_NTAB1 - 1] = {17, 68};
-static const UCHAR g_a_pvcTab1_dp_mode2[PVC_NTAB1 - 1] = {16, 52};
+static const uint8_t g_a_pvcTab1_dp_mode1[PVC_NTAB1 - 1] = {17, 68};
+static const uint8_t g_a_pvcTab1_dp_mode2[PVC_NTAB1 - 1] = {16, 52};
 /* fractional exponent which corresponds to Q representation value */
-static const SCHAR g_a_scalingCoef_mode1[PVC_NBLOW + 1] = {
+static const int8_t g_a_scalingCoef_mode1[PVC_NBLOW + 1] = {
     -1, -1, 0, 6}; /* { 8, 8, 7, 1 }; Q scaling */
-static const SCHAR g_a_scalingCoef_mode2[PVC_NBLOW + 1] = {
+static const int8_t g_a_scalingCoef_mode2[PVC_NBLOW + 1] = {
     0, 0, 1, 7}; /* { 7, 7, 6, 0 }; Q scaling */
 
 int32_t pvcInitFrame(PVC_STATIC_DATA *pPvcStaticData,
-                 PVC_DYNAMIC_DATA *pPvcDynamicData, const UCHAR pvcMode,
-                 const UCHAR ns, const int32_t RATE, const int32_t kx,
-                 const int32_t pvcBorder0, const UCHAR *pPvcID) {
+                 PVC_DYNAMIC_DATA *pPvcDynamicData, const uint8_t pvcMode,
+                 const uint8_t ns, const int32_t RATE, const int32_t kx,
+                 const int32_t pvcBorder0, const uint8_t *pPvcID) {
   int32_t lbw, hbw, i, temp;
   pPvcDynamicData->pvc_mode = pvcMode;
   pPvcDynamicData->kx = kx;
@@ -407,16 +407,16 @@ int32_t pvcInitFrame(PVC_STATIC_DATA *pPvcStaticData,
       return 0;
     case 1:
       pPvcDynamicData->nbHigh = 8;
-      pPvcDynamicData->pPVCTab1 = (const UCHAR *)g_3a_pvcTab1_mode1;
-      pPvcDynamicData->pPVCTab2 = (const UCHAR *)g_2a_pvcTab2_mode1;
+      pPvcDynamicData->pPVCTab1 = (const uint8_t *)g_3a_pvcTab1_mode1;
+      pPvcDynamicData->pPVCTab2 = (const uint8_t *)g_2a_pvcTab2_mode1;
       pPvcDynamicData->pPVCTab1_dp = g_a_pvcTab1_dp_mode1;
       pPvcDynamicData->pScalingCoef = g_a_scalingCoef_mode1;
       hbw = 8 / RATE;
       break;
     case 2:
       pPvcDynamicData->nbHigh = 6;
-      pPvcDynamicData->pPVCTab1 = (const UCHAR *)g_3a_pvcTab1_mode2;
-      pPvcDynamicData->pPVCTab2 = (const UCHAR *)g_2a_pvcTab2_mode2;
+      pPvcDynamicData->pPVCTab1 = (const uint8_t *)g_3a_pvcTab1_mode2;
+      pPvcDynamicData->pPVCTab2 = (const uint8_t *)g_2a_pvcTab2_mode2;
       pPvcDynamicData->pPVCTab1_dp = g_a_pvcTab1_dp_mode2;
       pPvcDynamicData->pScalingCoef = g_a_scalingCoef_mode2;
       hbw = 12 / RATE;
@@ -427,7 +427,7 @@ int32_t pvcInitFrame(PVC_STATIC_DATA *pPvcStaticData,
   }
 
   pPvcDynamicData->pvcBorder0 = pvcBorder0;
-  UCHAR pvcBorder0_last = pPvcStaticData->pvcBorder0;
+  uint8_t pvcBorder0_last = pPvcStaticData->pvcBorder0;
   pPvcStaticData->pvcBorder0 = pvcBorder0;
   pPvcDynamicData->pPvcID = pPvcID;
 
@@ -512,7 +512,7 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
   int32_t i, band, ksg, ksg_start = 0;
   int32_t RATE = pPvcDynamicData->RATE;
   int32_t Esg_index = pPvcStaticData->Esg_slot_index;
-  const SCHAR *sg_borders = pPvcDynamicData->sg_offset_low;
+  const int8_t *sg_borders = pPvcDynamicData->sg_offset_low;
   int32_t *pEsg = pPvcStaticData->Esg[Esg_index];
   int32_t E[PVC_NBLOW] = {0};
 
@@ -586,7 +586,7 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
     int32_t E_high_exp_max = 0;
     int32_t pvcTab1ID;
     int32_t pvcTab2ID = (int32_t)pPvcDynamicData->pPvcID[timeSlotNumber];
-    const UCHAR *pTab1, *pTab2;
+    const uint8_t *pTab1, *pTab2;
     if (pvcTab2ID < pPvcDynamicData->pPVCTab1_dp[0]) {
       pvcTab1ID = 0;
     } else if (pvcTab2ID < pPvcDynamicData->pPVCTab1_dp[1]) {
@@ -604,13 +604,13 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
       E_high_exp[ksg] = 0;
 
       /* residual part */
-      accu = ((int32_t)(SCHAR)*pTab2++) << (DFRACT_BITS - 8 - PVC_ESG_EXP - 2 +
+      accu = ((int32_t)(int8_t)*pTab2++) << (DFRACT_BITS - 8 - PVC_ESG_EXP - 2 +
                                          pPvcDynamicData->pScalingCoef[3]);
 
       /* linear combination of lower grouped energies part */
       for (kb = 0; kb < PVC_NBLOW; kb++) {
         predCoeff = (FIXP_SGL)(
-            (int16_t)(SCHAR)pTab1[kb * pPvcDynamicData->nbHigh + ksg] << 8);
+            (int16_t)(int8_t)pTab1[kb * pPvcDynamicData->nbHigh + ksg] << 8);
         predCoeff_exp = -(pPvcDynamicData->pScalingCoef[kb] + 1 -
                           2); /* +1 to compensate for Div2; -2 for accu */
         accu += fMultDiv2(E[kb], predCoeff) >> predCoeff_exp;
@@ -664,20 +664,20 @@ void pvcEndFrame(PVC_STATIC_DATA *pPvcStaticData,
 
 void expandPredEsg(const PVC_DYNAMIC_DATA *pPvcDynamicData, const int32_t timeSlot,
                    const int32_t lengthOutputVector, int32_t *pOutput,
-                   SCHAR *pOutput_exp) {
+                   int8_t *pOutput_exp) {
   int32_t k = 0, ksg;
   const int32_t *predEsg = pPvcDynamicData->predEsg[timeSlot];
 
   for (ksg = 0; ksg < pPvcDynamicData->nbHigh; ksg++) {
     for (; k < pPvcDynamicData->sg_offset_high_kx[ksg + 1]; k++) {
       pOutput[k] = predEsg[ksg];
-      pOutput_exp[k] = (SCHAR)pPvcDynamicData->predEsg_exp[timeSlot];
+      pOutput_exp[k] = (int8_t)pPvcDynamicData->predEsg_exp[timeSlot];
     }
   }
   ksg--;
   for (; k < lengthOutputVector; k++) {
     pOutput[k] = predEsg[ksg];
-    pOutput_exp[k] = (SCHAR)pPvcDynamicData->predEsg_exp[timeSlot];
+    pOutput_exp[k] = (int8_t)pPvcDynamicData->predEsg_exp[timeSlot];
   }
 
   return;

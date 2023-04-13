@@ -264,19 +264,19 @@ typedef struct T_SPATIAL_SPECIFIC_CONFIG {
 
   AUDIO_OBJECT_TYPE coreCodec;
 
-  UCHAR stereoConfigIndex;
-  UCHAR coreSbrFrameLengthIndex; /* Table 70 in ISO/IEC FDIS 23003-3:2011 */
-  UCHAR bsHighRateMode;
-  UCHAR bsDecorrType;
-  UCHAR bsPseudoLr;
-  UCHAR bsPhaseCoding;
-  UCHAR bsOttBandsPhasePresent;
+  uint8_t stereoConfigIndex;
+  uint8_t coreSbrFrameLengthIndex; /* Table 70 in ISO/IEC FDIS 23003-3:2011 */
+  uint8_t bsHighRateMode;
+  uint8_t bsDecorrType;
+  uint8_t bsPseudoLr;
+  uint8_t bsPhaseCoding;
+  uint8_t bsOttBandsPhasePresent;
   int32_t bsOttBandsPhase;
 
-  SCHAR ottCLDdefault[MAX_NUM_OTT];
-  UCHAR numOttBandsIPD;
-  UCHAR bitstreamOttBands[MAX_NUM_OTT];
-  UCHAR numOttBands[MAX_NUM_OTT];
+  int8_t ottCLDdefault[MAX_NUM_OTT];
+  uint8_t numOttBandsIPD;
+  uint8_t bitstreamOttBands[MAX_NUM_OTT];
+  uint8_t numOttBands[MAX_NUM_OTT];
 
 } SPATIAL_SPECIFIC_CONFIG;
 
