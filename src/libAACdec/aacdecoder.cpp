@@ -1150,7 +1150,7 @@ HANDLE_AACDECODER CAacDecoder_Open(TRANSPORT_TYPE bsFormat) /*!< bitstream forma
     CWorkBufferCore1* WBC1;
     UINT GRMWBC5 = 0; // GetRequiredMemWorkBufferCore5
 
-	self = GetAacDecoder();
+	self = (struct AAC_DECODER_INSTANCE *)FDKcalloc(1, sizeof(struct AAC_DECODER_INSTANCE));
 	if(self == NULL) { goto bail; }
 
 	FDK_QmfDomain_ClearRequested(&self->qmfDomain.globalConf);
@@ -1378,7 +1378,7 @@ void CAacDecoder_Close(HANDLE_AACDECODER self) {
 
 	FDK_QmfDomain_Close(&self->qmfDomain);
 
-	FreeAacDecoder(&self);
+    FDKfree(self);
 }
 //----------------------------------------------------------------------------------------------------------------------
 /*!
@@ -1863,7 +1863,8 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, UCHAR
 			int ch = aacChannelsOffset;
 			for(int _ch = 0; _ch < ascChannels; _ch++) {
 				if(ch >= (8)) { goto bail; }
-				self->pAacDecoderChannelInfo[ch] = GetAacDecoderChannelInfo(ch);
+				self->pAacDecoderChannelInfo[ch] =
+                                (CAacDecoderChannelInfo *) FDKaalloc((1) * sizeof(CAacDecoderChannelInfo), 8);
 				/* This is temporary until the DynamicData is split into two or more
 				   regions! The memory could be reused after completed core decoding. */
 				if(self->pAacDecoderChannelInfo[ch] == NULL) { goto bail; }

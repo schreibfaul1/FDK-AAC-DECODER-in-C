@@ -118,21 +118,10 @@ amm-info@iis.fraunhofer.de
 #define MAX_SYNCHS 10
 #define SAMPL_FREQS 12
 
-AAC_DECODER_INSTANCE *GetAacDecoder(int n = 0);
-void FreeAacDecoder(AAC_DECODER_INSTANCE **p);
-
-
-
-
-
-
-
-CAacDecoderChannelInfo *GetAacDecoderChannelInfo(int n = 0);
-
-
-
-
-
+#define WORKBUFFER1_TAG 0
+#define WORKBUFFER2_TAG 1
+#define WORKBUFFER5_TAG 6
+#define WORKBUFFER6_TAG 7
 
 FIXP_DBL *GetSpectralCoeffs(int n = 0);
 void FreeSpectralCoeffs(FIXP_DBL **p);
@@ -142,22 +131,7 @@ SHORT *GetSpecScale(int n = 0);
 void FreeSpecScale(SHORT **p);
 UINT GetRequiredMemSpecScale(void);
 
-
-
-
-
-
 UINT GetRequiredMemWorkBufferCore1(void);
-
-
-
-
-
-
-
-
-
-
 
 CArcoData *GetArcoData(int n = 0);
 void FreeArcoData(CArcoData **p);
