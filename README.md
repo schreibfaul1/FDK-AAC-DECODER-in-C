@@ -1,8 +1,8 @@
 # FDK-AAC-DECODER-in-C
 
 
-Advanced Audio Coding Decoder
-Library
+Advanced Audio Coding Decoder Library
+
 MPEG-2 and MPEG-4
 AAC Low-Complexity (AAC-LC),
 High-Efficiency AAC v2 (HE-AAC v2),
