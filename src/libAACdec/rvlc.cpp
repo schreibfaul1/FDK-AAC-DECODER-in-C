@@ -133,10 +133,10 @@ static void rvlcInit(CErRvlcInfo *pRvlc,
                      CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                      HANDLE_FDK_BITSTREAM bs) {
   /* RVLC common initialization part 2 of 2 */
-  SHORT *pScfEsc = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfEsc;
-  SHORT *pScfFwd = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd;
-  SHORT *pScfBwd = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd;
-  SHORT *pScaleFactor = pAacDecoderChannelInfo->pDynData->aScaleFactor;
+  int16_t *pScfEsc = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfEsc;
+  int16_t *pScfFwd = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd;
+  int16_t *pScfBwd = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd;
+  int16_t *pScaleFactor = pAacDecoderChannelInfo->pDynData->aScaleFactor;
   int32_t bnds;
 
   pAacDecoderChannelInfo->pDynData->specificTo.aac.rvlcIntensityUsed = 0;
@@ -319,11 +319,11 @@ escape is needed, then it is just taken out of the array in ascending order.
 --------------------------------------------------------------------------------------------
 */
 
-static void rvlcDecodeEscapes(CErRvlcInfo *pRvlc, SHORT *pEsc,
+static void rvlcDecodeEscapes(CErRvlcInfo *pRvlc, int16_t *pEsc,
                               HANDLE_FDK_BITSTREAM bs) {
   SCHAR escWord;
   SCHAR escCnt = 0;
-  SHORT *pEscBitCntSum;
+  int16_t *pEscBitCntSum;
 
   pEscBitCntSum = &(pRvlc->length_of_rvlc_escapes);
 
@@ -440,16 +440,16 @@ static void rvlcDecodeForward(CErRvlcInfo *pRvlc,
   int32_t group = 0;
   int32_t bnds = 0;
 
-  SHORT dpcm;
+  int16_t dpcm;
 
-  SHORT factor =
+  int16_t factor =
       pAacDecoderChannelInfo->pDynData->RawDataInfo.GlobalGain - SF_OFFSET;
-  SHORT position = -SF_OFFSET;
-  SHORT noisenrg = pAacDecoderChannelInfo->pDynData->RawDataInfo.GlobalGain -
+  int16_t position = -SF_OFFSET;
+  int16_t noisenrg = pAacDecoderChannelInfo->pDynData->RawDataInfo.GlobalGain -
                    SF_OFFSET - 90 - 256;
 
-  SHORT *pScfFwd = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd;
-  SHORT *pScfEsc = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfEsc;
+  int16_t *pScfFwd = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd;
+  int16_t *pScfEsc = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfEsc;
   UCHAR *pEscFwdCnt = &(pRvlc->numDecodedEscapeWordsFwd);
 
   pRvlc->pRvlBitCnt_RVL = &(pRvlc->length_of_rvlc_sf_fwd);
@@ -465,7 +465,7 @@ static void rvlcDecodeForward(CErRvlcInfo *pRvlc,
 
   rvlcCheckIntensityCb(pRvlc, pAacDecoderChannelInfo);
 
-  /* main loop fwd long */
+  /* main loop fwd int32_t */
   for (group = 0; group < pRvlc->numWindowGroups; group++) {
     for (band = 0; band < pRvlc->maxSfbTransmitted; band++) {
       bnds = 16 * group + band;
@@ -574,7 +574,7 @@ static void rvlcDecodeForward(CErRvlcInfo *pRvlc,
     }
   }
 
-  /* postfetch fwd long */
+  /* postfetch fwd int32_t */
   if (pRvlc->intensity_used) {
     dpcm = decodeRVLCodeword(bs, pRvlc); /* dpcm_is_last_position */
     if (dpcm < 0) {
@@ -618,16 +618,16 @@ static void rvlcDecodeForward(CErRvlcInfo *pRvlc,
 static void rvlcDecodeBackward(CErRvlcInfo *pRvlc,
                                CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                                HANDLE_FDK_BITSTREAM bs) {
-  SHORT band, group, dpcm, offset;
-  SHORT bnds = pRvlc->maxSfbTransmitted - 1;
+  int16_t band, group, dpcm, offset;
+  int16_t bnds = pRvlc->maxSfbTransmitted - 1;
 
-  SHORT factor = pRvlc->rev_global_gain - SF_OFFSET;
-  SHORT position = pRvlc->dpcm_is_last_position - SF_OFFSET;
-  SHORT noisenrg = pRvlc->rev_global_gain + pRvlc->dpcm_noise_last_position -
+  int16_t factor = pRvlc->rev_global_gain - SF_OFFSET;
+  int16_t position = pRvlc->dpcm_is_last_position - SF_OFFSET;
+  int16_t noisenrg = pRvlc->rev_global_gain + pRvlc->dpcm_noise_last_position -
                    SF_OFFSET - 90 - 256;
 
-  SHORT *pScfBwd = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd;
-  SHORT *pScfEsc = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfEsc;
+  int16_t *pScfBwd = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd;
+  int16_t *pScfEsc = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfEsc;
   UCHAR *pEscEscCnt = &(pRvlc->numDecodedEscapeWordsEsc);
   UCHAR *pEscBwdCnt = &(pRvlc->numDecodedEscapeWordsBwd);
 
@@ -641,7 +641,7 @@ static void rvlcDecodeBackward(CErRvlcInfo *pRvlc,
   pRvlc->firstNrg = 0;
   pRvlc->firstIs = 0;
 
-  /* prefetch long BWD */
+  /* prefetch int32_t BWD */
   if (pRvlc->intensity_used) {
     dpcm = decodeRVLCodeword(bs, pRvlc); /* dpcm_is_last_position */
     if (dpcm < 0) {
@@ -669,7 +669,7 @@ static void rvlcDecodeBackward(CErRvlcInfo *pRvlc,
     pRvlc->dpcm_is_last_position = dpcm;
   }
 
-  /* main loop long BWD */
+  /* main loop int32_t BWD */
   for (group = pRvlc->numWindowGroups - 1; group >= 0; group--) {
     for (band = pRvlc->maxSfbTransmitted - 1; band >= 0; band--) {
       bnds = 16 * group + band;
@@ -820,7 +820,7 @@ static void rvlcFinalErrorDetection(
   UCHAR ErrorStatusNumEscapesFwd = 0;
   UCHAR ErrorStatusNumEscapesBwd = 0;
   UCHAR ConcealStatus = 1;
-  UCHAR currentBlockType; /* short: 0, not short: 1*/
+  UCHAR currentBlockType; /* int16_t: 0, not int16_t: 1*/
 
   pAacDecoderChannelInfo->pDynData->specificTo.aac.rvlcCurrentScaleFactorOK = 1;
 
@@ -1064,7 +1064,7 @@ void CRvlc_Read(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
 
   int32_t group, band;
 
-  /* RVLC long specific initialization  Init part 1 of 2 */
+  /* RVLC int32_t specific initialization  Init part 1 of 2 */
   pRvlc->numWindowGroups = GetWindowGroups(&pAacDecoderChannelInfo->icsInfo);
   pRvlc->maxSfbTransmitted =
       GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);

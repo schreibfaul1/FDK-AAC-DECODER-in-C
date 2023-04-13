@@ -119,13 +119,13 @@ typedef struct {
 
   uint32_t numBandsCurr;
   uint32_t numBandsNext;
-  USHORT bandTopCurr[SBRDEC_MAX_DRC_BANDS];
-  USHORT bandTopNext[SBRDEC_MAX_DRC_BANDS];
+  uint16_t bandTopCurr[SBRDEC_MAX_DRC_BANDS];
+  uint16_t bandTopNext[SBRDEC_MAX_DRC_BANDS];
 
-  SHORT drcInterpolationSchemeCurr;
-  SHORT drcInterpolationSchemeNext;
+  int16_t drcInterpolationSchemeCurr;
+  int16_t drcInterpolationSchemeNext;
 
-  SHORT enable;
+  int16_t enable;
 
   UCHAR winSequenceCurr;
   UCHAR winSequenceNext;

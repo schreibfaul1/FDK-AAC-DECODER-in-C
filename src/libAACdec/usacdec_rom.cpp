@@ -168,7 +168,7 @@ const UCHAR fdk_dec_Ia[NB_LEADER] = {
     186, 194, 198, 201, 205, 207, 211, 214, 218, 222, 224};
 
 /* Is - Cardinalite offset of signed leaders */
-const USHORT fdk_dec_Is[NB_LDSIGN] = {
+const uint16_t fdk_dec_Is[NB_LDSIGN] = {
     0,     1,     29,    99,    127,   128,   156,   212,   256,   326,   606,
     1026,  1306,  1376,  1432,  1712,  1880,  1888,  1896,  2064,  2344,  240,
     248,   0,     28,    196,   616,   1176,  1596,  1764,  1792,  1820,  2240,
@@ -200,11 +200,11 @@ const UCHAR fdk_dec_A4[NB_LDQ4] = {5,  6,  8,  9,  10, 12, 13, 14, 15, 16,
                                    29, 30, 31, 32, 33, 34, 35, 36};
 
 /* I3 - Cardinality offsets for absolute leaders in Q3 */
-const USHORT fdk_dec_I3[NB_LDQ3] = {0,    128,  240,  256, 1376,
+const uint16_t fdk_dec_I3[NB_LDQ3] = {0,    128,  240,  256, 1376,
                                     2400, 3744, 3856, 4080};
 
 /* I4 - Cardinality offset for absolute leaders in Q4 */
-const USHORT fdk_dec_I4[NB_LDQ4] = {
+const uint16_t fdk_dec_I4[NB_LDQ4] = {
     0,     1792,  5376,  5632,  12800, 21760, 22784, 31744, 38912, 45632,
     52800, 53248, 57728, 60416, 61440, 61552, 62896, 63120, 64144, 64368,
     64480, 64704, 64720, 64944, 65056, 65280, 65504, 65520};

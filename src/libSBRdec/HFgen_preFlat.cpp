@@ -727,7 +727,7 @@ static void choleskySolve(const int32_t numBands, int32_t *RESTRICT b,
 static void polyfit(const int32_t numBands, const int32_t *const y, const int32_t y_sf,
                     int32_t *RESTRICT p, int32_t *RESTRICT p_sf) {
   int32_t i, k;
-  LONG v[POLY_ORDER + 1];
+  int32_t v[POLY_ORDER + 1];
   int32_t sum_saftey = getLog2[numBands - 1];
 
   FDK_ASSERT((numBands >= BSD_IDX_OFFSET) && (numBands <= MAXLOWBANDS));
@@ -739,7 +739,7 @@ static void polyfit(const int32_t numBands, const int32_t *const y, const int32_
   for (i = 0; i <= POLY_ORDER; ++i) p_sf[i] = 1 - DFRACT_BITS;
 
   for (k = 0; k < numBands; k++) {
-    v[0] = (LONG)1;
+    v[0] = (int32_t)1;
     for (i = 1; i <= POLY_ORDER; i++) {
       v[i] = k * v[i - 1];
     }
@@ -896,11 +896,11 @@ void sbrDecoder_calculateGainVec(int32_t **sourceBufferReal,
 
     for (i = startSample; i < stopSample; i++) {
       maxVal |=
-          (int32_t)((LONG)(sourceBufferReal[i][loBand]) ^
-                     ((LONG)sourceBufferReal[i][loBand] >> (DFRACT_BITS - 1)));
+          (int32_t)((int32_t)(sourceBufferReal[i][loBand]) ^
+                     ((int32_t)sourceBufferReal[i][loBand] >> (DFRACT_BITS - 1)));
       maxVal |=
-          (int32_t)((LONG)(sourceBufferImag[i][loBand]) ^
-                     ((LONG)sourceBufferImag[i][loBand] >> (DFRACT_BITS - 1)));
+          (int32_t)((int32_t)(sourceBufferImag[i][loBand]) ^
+                     ((int32_t)sourceBufferImag[i][loBand] >> (DFRACT_BITS - 1)));
     }
 
     if (maxVal != FL2FX_DBL(0.0f)) {

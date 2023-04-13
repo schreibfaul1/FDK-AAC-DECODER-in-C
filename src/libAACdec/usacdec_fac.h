@@ -179,7 +179,7 @@ int32_t CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac_data,
  * \param isFacForFullband indicates that fac is processed for fullband LPD.
  */
 int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *pSpec,
-                        const SHORT spec_scale[], const int32_t nSpec,
+                        const int16_t spec_scale[], const int32_t nSpec,
                         int32_t *pFac_data, const int32_t fac_data_e,
                         const int32_t fac_length, int32_t nrSamples, const int32_t tl,
                         const FIXP_WTP *wrs, const int32_t fr, FIXP_LPC A[16],

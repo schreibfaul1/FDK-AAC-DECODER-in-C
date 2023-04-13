@@ -134,23 +134,23 @@ static const FIXP_DPK phiTsd[8] = {
     {{(int32_t)0x5a82799a, (int32_t)0xa57d8666}}};
 
 /*** Static Functions ***/
-static void longmult1(USHORT a[], USHORT b, USHORT d[], int32_t len) {
+static void longmult1(uint16_t a[], uint16_t b, uint16_t d[], int32_t len) {
   int32_t k;
-  ULONG tmp;
-  ULONG b0 = (ULONG)b;
+  uint32_t tmp;
+  uint32_t b0 = (uint32_t)b;
 
-  tmp = ((ULONG)a[0]) * b0;
-  d[0] = (USHORT)tmp;
+  tmp = ((uint32_t)a[0]) * b0;
+  d[0] = (uint16_t)tmp;
 
   for (k = 1; k < len; k++) {
-    tmp = (tmp >> 16) + ((ULONG)a[k]) * b0;
-    d[k] = (USHORT)tmp;
+    tmp = (tmp >> 16) + ((uint32_t)a[k]) * b0;
+    d[k] = (uint16_t)tmp;
   }
 }
 
-static void longdiv(USHORT b[], USHORT a, USHORT d[], USHORT *pr, int32_t len) {
-  ULONG r;
-  ULONG tmp;
+static void longdiv(uint16_t b[], uint16_t a, uint16_t d[], uint16_t *pr, int32_t len) {
+  uint32_t r;
+  uint32_t tmp;
   int32_t k;
 
   FDK_ASSERT(a != 0);
@@ -158,32 +158,32 @@ static void longdiv(USHORT b[], USHORT a, USHORT d[], USHORT *pr, int32_t len) {
   r = 0;
 
   for (k = len - 1; k >= 0; k--) {
-    tmp = ((ULONG)b[k]) + (r << 16);
+    tmp = ((uint32_t)b[k]) + (r << 16);
 
     if (tmp) {
-      d[k] = (USHORT)(tmp / a);
+      d[k] = (uint16_t)(tmp / a);
       r = tmp - d[k] * a;
     } else {
       d[k] = 0;
     }
   }
-  *pr = (USHORT)r;
+  *pr = (uint16_t)r;
 }
 
-static void longsub(USHORT a[], USHORT b[], int32_t lena, int32_t lenb) {
+static void longsub(uint16_t a[], uint16_t b[], int32_t lena, int32_t lenb) {
   int32_t h;
-  LONG carry = 0;
+  int32_t carry = 0;
 
   FDK_ASSERT(lena >= lenb);
   for (h = 0; h < lenb; h++) {
-    carry += ((LONG)a[h]) - ((LONG)b[h]);
-    a[h] = (USHORT)carry;
+    carry += ((int32_t)a[h]) - ((int32_t)b[h]);
+    a[h] = (uint16_t)carry;
     carry = carry >> 16;
   }
 
   for (; h < lena; h++) {
-    carry = ((LONG)a[h]) + carry;
-    a[h] = (USHORT)carry;
+    carry = ((int32_t)a[h]) + carry;
+    a[h] = (uint16_t)carry;
     carry = carry >> 16;
   }
 
@@ -192,7 +192,7 @@ static void longsub(USHORT a[], USHORT b[], int32_t lena, int32_t lenb) {
   return;
 }
 
-static int32_t longcompare(USHORT a[], USHORT b[], int32_t len) {
+static int32_t longcompare(uint16_t a[], uint16_t b[], int32_t len) {
   int32_t i;
 
   for (i = len - 1; i > 0; i--) {
@@ -241,9 +241,9 @@ int32_t TsdRead(HANDLE_FDK_BITSTREAM hBs, const int32_t numSlots, TSD_DATA *pTsd
     SCHAR *phaseData = pTsdData->bsTsdTrPhaseData;
     int32_t p = bsTsdNumTrSlots + 1;
     int32_t k, h;
-    USHORT s[SIZE_S] = {0};
-    USHORT c[SIZE_C] = {0};
-    USHORT r[1];
+    uint16_t s[SIZE_S] = {0};
+    uint16_t c[SIZE_C] = {0};
+    uint16_t r[1];
 
     /* Init with TsdSepData[k] = 0 */
     for (k = 0; k < numSlots; k++) {
@@ -252,7 +252,7 @@ int32_t TsdRead(HANDLE_FDK_BITSTREAM hBs, const int32_t numSlots, TSD_DATA *pTsd
 
     for (h = (SIZE_S - 1); h >= 0; h--) {
       if (nBitsTsdCW > h * 16) {
-        s[h] = (USHORT)FDKreadBits(hBs, nBitsTsdCW - h * 16);
+        s[h] = (uint16_t)FDKreadBits(hBs, nBitsTsdCW - h * 16);
         nBitsTsdCW = h * 16;
       }
     }

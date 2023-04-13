@@ -134,7 +134,7 @@ void adtsRead_CrcEndReg(
 
 TRANSPORTDEC_ERROR adtsRead_CrcCheck(HANDLE_ADTS pAdts) {
   TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
-  USHORT crc;
+  uint16_t crc;
 
   if (pAdts->bs.protection_absent) return TRANSPORTDEC_OK;
 
@@ -225,7 +225,7 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
       goto bail;
     }
     for (i = 0; i < bs.num_raw_blocks; i++) {
-      pAdts->rawDataBlockDist[i] = (USHORT)FDKreadBits(hBs, 16);
+      pAdts->rawDataBlockDist[i] = (uint16_t)FDKreadBits(hBs, 16);
       adtsHeaderLength += 16;
     }
     /* Change raw data blocks to delta values */
@@ -238,7 +238,7 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
 
   /* adts_error_check */
   if (!bs.protection_absent) {
-    USHORT crc_check;
+    uint16_t crc_check;
 
     FDKcrcEndReg(&pAdts->crcInfo, hBs, crcReg);
 

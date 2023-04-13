@@ -128,7 +128,7 @@ void fft(int32_t length, int32_t *pInput, int32_t *scalefactor);
 void ifft(int32_t length, int32_t *pInput, int32_t *scalefactor);
 
 /*
- * Frequently used and fixed short length FFTs.
+ * Frequently used and fixed int16_t length FFTs.
  */
 
 #ifndef FUNCTION_fft_4

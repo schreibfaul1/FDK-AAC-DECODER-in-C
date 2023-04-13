@@ -220,7 +220,7 @@ void dct_III(int32_t *pDat, /*!< pointer to input/output */
     pTmp_1[1] = -((xr >> 1) + accu6);
 
     /* Create index helper variables for (4*i)*inc indexed equivalent values of
-     * short tables. */
+     * int16_t tables. */
     if (2 * i < ((M / 2) - 1)) {
       index += 4 * inc;
     } else if (2 * i >= ((M / 2))) {
@@ -348,7 +348,7 @@ void dct_II(
     pDat[M - i] = accu3;
 
     /* Create index helper variables for (4*i)*inc indexed equivalent values of
-     * short tables. */
+     * int16_t tables. */
     if (2 * i < ((M / 2) - 1)) {
       index += 4 * inc;
     } else if (2 * i >= ((M / 2))) {

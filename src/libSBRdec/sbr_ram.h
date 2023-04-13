@@ -158,7 +158,7 @@ struct SBR_DECODER_INSTANCE {
                         the transposer input sampling rate. */
   int32_t sampleRateOut; /* Sampling rate of the SBR decoder output audio samples.
                       */
-  USHORT codecFrameSize;
+  uint16_t codecFrameSize;
   UCHAR synDownsampleFac;
   int32_t downscaleFactor;
   UCHAR numDelayFrames; /* The current number of additional delay frames used

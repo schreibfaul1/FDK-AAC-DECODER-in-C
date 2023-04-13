@@ -228,10 +228,10 @@ void nearest_neighbor_2D8(FIXP_ZF x[8], int32_t y[8]) {
   --------------------------------------------------------------
 */
 /* static */
-void RE8_PPV(FIXP_ZF x[], SHORT y[], int32_t r) {
+void RE8_PPV(FIXP_ZF x[], int16_t y[], int32_t r) {
   int32_t i, y0[8], y1[8];
   FIXP_ZF x1[8], tmp;
-  INT64 e;
+  int64_t e;
 
   /* find the nearest neighbor y0 of x in 2D8 */
   nearest_neighbor_2D8(x, y0);
@@ -248,10 +248,10 @@ void RE8_PPV(FIXP_ZF x[], SHORT y[], int32_t r) {
   e = 0;
   for (i = 0; i < 8; i++) {
     tmp = x[i] - INT2ZF(y0[i], 0);
-    e += (INT64)fPow2Div2(
+    e += (int64_t)fPow2Div2(
         tmp << r); /* shift left to ensure that no fract part bits get lost. */
     tmp = x[i] - INT2ZF(y1[i], 0);
-    e -= (INT64)fPow2Div2(tmp << r);
+    e -= (int64_t)fPow2Div2(tmp << r);
   }
   /* select best candidate y0 or y1 to minimize distortion */
   if (e < 0) {
@@ -267,7 +267,7 @@ void RE8_PPV(FIXP_ZF x[], SHORT y[], int32_t r) {
 
 /* table look-up of unsigned value: find i where index >= table[i]
    Note: range must be >= 2, index must be >= table[0] */
-static int32_t table_lookup(const USHORT *table, uint32_t index, int32_t range) {
+static int32_t table_lookup(const uint16_t *table, uint32_t index, int32_t range) {
   int32_t i;
 
   for (i = 4; i < range; i += 4) {
@@ -298,7 +298,7 @@ static int32_t table_lookup(const USHORT *table, uint32_t index, int32_t range) 
   (o) x:    point in RE8 (8-dimensional integer vector)
   --------------------------------------------------------------------------
  */
-static void re8_decode_rank_of_permutation(int32_t rank, int32_t *xs, SHORT x[8]) {
+static void re8_decode_rank_of_permutation(int32_t rank, int32_t *xs, int16_t x[8]) {
   int32_t a[8], w[8], B, fac, fac_B, target;
   int32_t i, j;
 
@@ -369,10 +369,10 @@ static void re8_decode_rank_of_permutation(int32_t rank, int32_t *xs, SHORT x[8]
   (i) I: index of c (pointer to unsigned 16-bit word)
   (o) y: point in RE8 (8-dimensional integer vector)
   note: the index I is defined as a 32-bit word, but only
-  16 bits are required (long can be replaced by unsigned integer)
+  16 bits are required (int32_t can be replaced by unsigned integer)
   --------------------------------------------------------------------------
  */
-static void re8_decode_base_index(int32_t *n, uint32_t index, SHORT y[8]) {
+static void re8_decode_base_index(int32_t *n, uint32_t index, int16_t y[8]) {
   int32_t i, im, t, sign_code, ka, ks, rank, leader[8];
 
   if (*n < 2) {
@@ -431,9 +431,9 @@ static void re8_decode_base_index(int32_t *n, uint32_t index, SHORT y[8]) {
    (i) r: Voronoi order  (m = 2^r = 1<<r, where r is integer >=2)
    (o) y: 8-dimensional point y[0..7] in RE8
  */
-static void re8_k2y(int32_t *k, int32_t r, SHORT *y) {
+static void re8_k2y(int32_t *k, int32_t r, int16_t *y) {
   int32_t i, tmp, sum;
-  SHORT v[8];
+  int16_t v[8];
   FIXP_ZF zf[8];
 
   FDK_ASSERT(r <= ZF_SCALE);
@@ -464,7 +464,7 @@ static void re8_k2y(int32_t *k, int32_t r, SHORT *y) {
   RE8_PPV(zf, v, r);
   /* compute y -= m v */
   for (i = 0; i < 8; i++) {
-    y[i] -= (SHORT)(v[i] << r);
+    y[i] -= (int16_t)(v[i] << r);
   }
 }
 
@@ -475,14 +475,14 @@ static void re8_k2y(int32_t *k, int32_t r, SHORT *y) {
   = 36 (i) I: index of c (pointer to unsigned 16-bit word) (i) k: index of v
   (8-dimensional vector of binary indices) = Voronoi index (o) y: point in RE8
   (8-dimensional integer vector) note: the index I is defined as a 32-bit word,
-  but only 16 bits are required (long can be replaced by unsigned integer)
+  but only 16 bits are required (int32_t can be replaced by unsigned integer)
 
   return 0 on success, -1 on error.
   --------------------------------------------------------------------------
  */
 static int32_t RE8_dec(int32_t n, int32_t I, int32_t *k, int32_t *y) {
-  SHORT v[8];
-  SHORT _y[8];
+  int16_t v[8];
+  int16_t _y[8];
   uint32_t r;
   int32_t i;
 
@@ -497,7 +497,7 @@ static int32_t RE8_dec(int32_t n, int32_t I, int32_t *k, int32_t *y) {
   if (n <= 4) {
     re8_decode_base_index(&n, I, _y);
     for (i = 0; i < 8; i++) {
-      y[i] = (LONG)_y[i];
+      y[i] = (int32_t)_y[i];
     }
   } else {
     /* compute the Voronoi modulo m = 2^r where r is extension order */
@@ -513,7 +513,7 @@ static int32_t RE8_dec(int32_t n, int32_t I, int32_t *k, int32_t *y) {
     re8_k2y(k, r, v);
     /* reconstruct y as y = m c + v (with m=2^r, r integer >=1) */
     for (i = 0; i < 8; i++) {
-      y[i] = (LONG)((_y[i] << r) + v[i]);
+      y[i] = (int32_t)((_y[i] << r) + v[i]);
     }
   }
   return 0;
@@ -537,7 +537,7 @@ static int32_t RE8_dec(int32_t n, int32_t I, int32_t *k, int32_t *y) {
 static void lsf_weight_2st(FIXP_LPC *lsfq, int32_t *xq, int32_t nk_mode) {
   FIXP_LPC d[M_LP_FILTER_ORDER + 1];
   FIXP_SGL factor;
-  LONG w; /* inverse weight factor */
+  int32_t w; /* inverse weight factor */
   int32_t i;
 
   /* compute lsf distance */
@@ -564,9 +564,9 @@ static void lsf_weight_2st(FIXP_LPC *lsfq, int32_t *xq, int32_t nk_mode) {
   }
   /* add non-weighted residual LSF vector to LSF1st */
   for (i = 0; i < M_LP_FILTER_ORDER; i++) {
-    w = (LONG)fMultDiv2(factor, sqrtFixp(fMult(d[i], d[i + 1])));
+    w = (int32_t)fMultDiv2(factor, sqrtFixp(fMult(d[i], d[i + 1])));
     lsfq[i] = fAddSaturate(lsfq[i],
-                           FX_DBL2FX_LPC((int32_t)((INT64)w * (LONG)xq[i])));
+                           FX_DBL2FX_LPC((int32_t)((int64_t)w * (int32_t)xq[i])));
   }
 
   return;

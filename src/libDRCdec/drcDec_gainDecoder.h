@@ -139,7 +139,7 @@ typedef enum { GAIN_DEC_FRAME_SIZE, GAIN_DEC_SAMPLE_RATE } GAIN_DEC_PARAM;
 
 typedef struct {
   int32_t gainLin; /* e = 7 */
-  SHORT time;
+  int16_t time;
 } NODE_LIN;
 
 typedef struct {

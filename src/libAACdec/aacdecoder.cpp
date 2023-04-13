@@ -129,7 +129,7 @@ amm-info@iis.fraunhofer.de
   similar, except that CPE always processes to independent channels while SCE
   only processes one channel.
 
-  Often there is the distinction between long blocks and short blocks. However,
+  Often there is the distinction between int32_t blocks and int16_t blocks. However,
   computational expensive functions that ususally require optimization are being
   shared by these two groups,
 
@@ -2038,10 +2038,10 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, UCHAR
 						}
 					}
 					if(elCh > 0) {
-						self->pAacDecoderStaticChannelInfo[ch - elCh]->nfRandomSeed = (ULONG)0x3039;
+						self->pAacDecoderStaticChannelInfo[ch - elCh]->nfRandomSeed = (uint32_t)0x3039;
 						if(self->elements[el2] == ID_USAC_CPE) {
 							if(asc->m_sc.m_usacConfig.element[el2].m_stereoConfigIndex != 1) {
-								self->pAacDecoderStaticChannelInfo[ch - elCh + 1]->nfRandomSeed = (ULONG)0x10932;
+								self->pAacDecoderStaticChannelInfo[ch - elCh + 1]->nfRandomSeed = (uint32_t)0x10932;
 							}
 						}
 					}
@@ -2055,7 +2055,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, UCHAR
 		}
 
 		if(usacResidualDelayCompSamples) {
-			int32_t delayErr = FDK_Delay_Create(&self->usacResidualDelay, (USHORT)usacResidualDelayCompSamples, 1);
+			int32_t delayErr = FDK_Delay_Create(&self->usacResidualDelay, (uint16_t)usacResidualDelayCompSamples, 1);
 			if(delayErr) { goto bail; }
 		}
 

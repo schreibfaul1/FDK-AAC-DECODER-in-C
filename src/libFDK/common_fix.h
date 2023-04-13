@@ -148,8 +148,8 @@ amm-info@iis.fraunhofer.de
 
 /* Scale factor from/to float/fixpoint values. DO NOT USE THESE VALUES AS
  * SATURATION LIMITS !! */
-#define FRACT_FIX_SCALE ((INT64(1) << (FRACT_BITS - 1)))
-#define DFRACT_FIX_SCALE ((INT64(1) << (DFRACT_BITS - 1)))
+#define FRACT_FIX_SCALE ((int64_t(1) << (FRACT_BITS - 1)))
+#define DFRACT_FIX_SCALE ((int64_t(1) << (DFRACT_BITS - 1)))
 
 /* Max and Min values for saturation purposes. DO NOT USE THESE VALUES AS SCALE
  * VALUES !! */
@@ -164,15 +164,15 @@ amm-info@iis.fraunhofer.de
 
 #define FX_DBL2FXCONST_SGL(val)                                               \
   ((((((val) >> (DFRACT_BITS - FRACT_BITS - 1)) + 1) >                        \
-     (((LONG)1 << FRACT_BITS) - 1)) &&                                        \
-    ((LONG)(val) > 0))                                                        \
-       ? (FIXP_SGL)(SHORT)(((LONG)1 << (FRACT_BITS - 1)) - 1)                 \
-       : (FIXP_SGL)(SHORT)((((val) >> (DFRACT_BITS - FRACT_BITS - 1)) + 1) >> \
+     (((int32_t)1 << FRACT_BITS) - 1)) &&                                        \
+    ((int32_t)(val) > 0))                                                        \
+       ? (FIXP_SGL)(int16_t)(((int32_t)1 << (FRACT_BITS - 1)) - 1)                 \
+       : (FIXP_SGL)(int16_t)((((val) >> (DFRACT_BITS - FRACT_BITS - 1)) + 1) >> \
                            1))
 
 #define shouldBeUnion union /* unions are possible */
 
-typedef SHORT FIXP_SGL;
+typedef int16_t FIXP_SGL;
 
 
 /* macros for compile-time conversion of constant float values to fixedpoint */
@@ -186,42 +186,42 @@ typedef SHORT FIXP_SGL;
       ((val) >= 0)                                                           \
           ? ((((double)(val) * (FRACT_FIX_SCALE) + 0.5) >=                   \
               (double)(MAXVAL_SGL))                                          \
-                 ? (SHORT)(MAXVAL_SGL)                                       \
-                 : (SHORT)((double)(val) * (double)(FRACT_FIX_SCALE) + 0.5)) \
+                 ? (int16_t)(MAXVAL_SGL)                                       \
+                 : (int16_t)((double)(val) * (double)(FRACT_FIX_SCALE) + 0.5)) \
           : ((((double)(val) * (FRACT_FIX_SCALE)-0.5) <=                     \
               (double)(MINVAL_SGL_CONST))                                    \
-                 ? (SHORT)(MINVAL_SGL_CONST)                                 \
-                 : (SHORT)((double)(val) * (double)(FRACT_FIX_SCALE)-0.5)))
+                 ? (int16_t)(MINVAL_SGL_CONST)                                 \
+                 : (int16_t)((double)(val) * (double)(FRACT_FIX_SCALE)-0.5)))
 
 #define FL2FXCONST_DBL(val)                                                  \
   (int32_t)(                                                                \
       ((val) >= 0)                                                           \
           ? ((((double)(val) * (DFRACT_FIX_SCALE) + 0.5) >=                  \
               (double)(MAXVAL_DBL))                                          \
-                 ? (LONG)(MAXVAL_DBL)                                        \
-                 : (LONG)((double)(val) * (double)(DFRACT_FIX_SCALE) + 0.5)) \
+                 ? (int32_t)(MAXVAL_DBL)                                        \
+                 : (int32_t)((double)(val) * (double)(DFRACT_FIX_SCALE) + 0.5)) \
           : ((((double)(val) * (DFRACT_FIX_SCALE)-0.5) <=                    \
               (double)(MINVAL_DBL_CONST))                                    \
-                 ? (LONG)(MINVAL_DBL_CONST)                                  \
-                 : (LONG)((double)(val) * (double)(DFRACT_FIX_SCALE)-0.5)))
+                 ? (int32_t)(MINVAL_DBL_CONST)                                  \
+                 : (int32_t)((double)(val) * (double)(DFRACT_FIX_SCALE)-0.5)))
 
 /* macros for runtime conversion of float values to integer fixedpoint. NO
  * OVERFLOW CHECK!!! */
 #define FL2FX_SPC FL2FX_DBL
 #define FL2FX_SGL(val)                                             \
-  ((val) > 0.0f ? (SHORT)((val) * (float)(FRACT_FIX_SCALE) + 0.5f) \
-                : (SHORT)((val) * (float)(FRACT_FIX_SCALE)-0.5f))
+  ((val) > 0.0f ? (int16_t)((val) * (float)(FRACT_FIX_SCALE) + 0.5f) \
+                : (int16_t)((val) * (float)(FRACT_FIX_SCALE)-0.5f))
 #define FL2FX_DBL(val)                                             \
-  ((val) > 0.0f ? (LONG)((val) * (float)(DFRACT_FIX_SCALE) + 0.5f) \
-                : (LONG)((val) * (float)(DFRACT_FIX_SCALE)-0.5f))
+  ((val) > 0.0f ? (int32_t)((val) * (float)(DFRACT_FIX_SCALE) + 0.5f) \
+                : (int32_t)((val) * (float)(DFRACT_FIX_SCALE)-0.5f))
 
 /* macros for runtime conversion of fixedpoint values to other fixedpoint. NO
  * ROUNDING!!! */
 #define FX_ACC2FX_SGL(val) ((FIXP_SGL)((val) >> (ACCU_BITS - FRACT_BITS)))
 #define FX_ACC2FX_DBL(val) ((int32_t)((val) >> (ACCU_BITS - DFRACT_BITS)))
-#define FX_SGL2FX_ACC(val) ((FIXP_ACC)((LONG)(val) << (ACCU_BITS - FRACT_BITS)))
+#define FX_SGL2FX_ACC(val) ((FIXP_ACC)((int32_t)(val) << (ACCU_BITS - FRACT_BITS)))
 #define FX_SGL2FX_DBL(val) \
-  ((int32_t)((LONG)(val) << (DFRACT_BITS - FRACT_BITS)))
+  ((int32_t)((int32_t)(val) << (DFRACT_BITS - FRACT_BITS)))
 #define FX_DBL2FX_SGL(val) ((FIXP_SGL)((val) >> (DFRACT_BITS - FRACT_BITS)))
 
 /* ############################################################# */
@@ -240,36 +240,36 @@ typedef SHORT FIXP_SGL;
 /* ############################################################# */
 #include "fixmul.h"
 
-FDK_INLINE LONG fMult(SHORT a, SHORT b) { return fixmul_SS(a, b); }
-FDK_INLINE LONG fMult(SHORT a, LONG b) { return fixmul_SD(a, b); }
-FDK_INLINE LONG fMult(LONG a, SHORT b) { return fixmul_DS(a, b); }
-FDK_INLINE LONG fMult(LONG a, LONG b) { return fixmul_DD(a, b); }
-FDK_INLINE LONG fPow2(LONG a) { return fixpow2_D(a); }
-FDK_INLINE LONG fPow2(SHORT a) { return fixpow2_S(a); }
+FDK_INLINE int32_t fMult(int16_t a, int16_t b) { return fixmul_SS(a, b); }
+FDK_INLINE int32_t fMult(int16_t a, int32_t b) { return fixmul_SD(a, b); }
+FDK_INLINE int32_t fMult(int32_t a, int16_t b) { return fixmul_DS(a, b); }
+FDK_INLINE int32_t fMult(int32_t a, int32_t b) { return fixmul_DD(a, b); }
+FDK_INLINE int32_t fPow2(int32_t a) { return fixpow2_D(a); }
+FDK_INLINE int32_t fPow2(int16_t a) { return fixpow2_S(a); }
 
-FDK_INLINE LONG fMultDiv2(SHORT a, SHORT b) { return fixmuldiv2_SS(a, b); }
-FDK_INLINE LONG fMultDiv2(SHORT a, LONG b) { return fixmuldiv2_SD(a, b); }
-FDK_INLINE LONG fMultDiv2(LONG a, SHORT b) { return fixmuldiv2_DS(a, b); }
-FDK_INLINE LONG fMultDiv2(LONG a, LONG b) { return fixmuldiv2_DD(a, b); }
-FDK_INLINE LONG fPow2Div2(LONG a) { return fixpow2div2_D(a); }
-FDK_INLINE LONG fPow2Div2(SHORT a) { return fixpow2div2_S(a); }
+FDK_INLINE int32_t fMultDiv2(int16_t a, int16_t b) { return fixmuldiv2_SS(a, b); }
+FDK_INLINE int32_t fMultDiv2(int16_t a, int32_t b) { return fixmuldiv2_SD(a, b); }
+FDK_INLINE int32_t fMultDiv2(int32_t a, int16_t b) { return fixmuldiv2_DS(a, b); }
+FDK_INLINE int32_t fMultDiv2(int32_t a, int32_t b) { return fixmuldiv2_DD(a, b); }
+FDK_INLINE int32_t fPow2Div2(int32_t a) { return fixpow2div2_D(a); }
+FDK_INLINE int32_t fPow2Div2(int16_t a) { return fixpow2div2_S(a); }
 
-FDK_INLINE LONG fMultDiv2BitExact(LONG a, LONG b) {
+FDK_INLINE int32_t fMultDiv2BitExact(int32_t a, int32_t b) {
   return fixmuldiv2BitExact_DD(a, b);
 }
-FDK_INLINE LONG fMultDiv2BitExact(SHORT a, LONG b) {
+FDK_INLINE int32_t fMultDiv2BitExact(int16_t a, int32_t b) {
   return fixmuldiv2BitExact_SD(a, b);
 }
-FDK_INLINE LONG fMultDiv2BitExact(LONG a, SHORT b) {
+FDK_INLINE int32_t fMultDiv2BitExact(int32_t a, int16_t b) {
   return fixmuldiv2BitExact_DS(a, b);
 }
-FDK_INLINE LONG fMultBitExact(LONG a, LONG b) {
+FDK_INLINE int32_t fMultBitExact(int32_t a, int32_t b) {
   return fixmulBitExact_DD(a, b);
 }
-FDK_INLINE LONG fMultBitExact(SHORT a, LONG b) {
+FDK_INLINE int32_t fMultBitExact(int16_t a, int32_t b) {
   return fixmulBitExact_SD(a, b);
 }
-FDK_INLINE LONG fMultBitExact(LONG a, SHORT b) {
+FDK_INLINE int32_t fMultBitExact(int32_t a, int16_t b) {
   return fixmulBitExact_DS(a, b);
 }
 
@@ -289,7 +289,7 @@ FDK_INLINE int32_t fAbs(int32_t x) { return fixabs_I(x); }
 
 #include "clz.h"
 
-FDK_INLINE int32_t fNormz(INT64 x) {
+FDK_INLINE int32_t fNormz(int64_t x) {
   int32_t clz = fixnormz_D((int32_t)(x >> 32));
   if (clz == 32) clz += fixnormz_D((int32_t)x);
   return clz;
@@ -431,7 +431,7 @@ typedef shouldBeUnion {
     FIXP_SGL im;
   } v;
   /* word representation for memory move */
-  LONG w;
+  int32_t w;
 }
 FIXP_SPK;
 
@@ -442,7 +442,7 @@ typedef shouldBeUnion {
     int32_t im;
   } v;
   /* word representation for memory move */
-  INT64 w;
+  int64_t w;
 }
 FIXP_DPK;
 

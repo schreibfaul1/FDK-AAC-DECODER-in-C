@@ -304,11 +304,11 @@ void CChannelElement_Decode(
         FDKmemclear(
             pAacDecoderStaticChannelInfo[L]
                 ->pCpeStaticData->jointStereoPersistentData.alpha_q_re_prev,
-            JointStereoMaximumGroups * JointStereoMaximumBands * sizeof(SHORT));
+            JointStereoMaximumGroups * JointStereoMaximumBands * sizeof(int16_t));
         FDKmemclear(
             pAacDecoderStaticChannelInfo[L]
                 ->pCpeStaticData->jointStereoPersistentData.alpha_q_im_prev,
-            JointStereoMaximumGroups * JointStereoMaximumBands * sizeof(SHORT));
+            JointStereoMaximumGroups * JointStereoMaximumBands * sizeof(int16_t));
       }
     }
 
@@ -611,7 +611,7 @@ AAC_DECODER_ERROR CChannelElement_Read(
                 &pAacDecoderChannelInfo[ch]->pDynData->specificTo.aac.PulseData,
                 pSamplingRateInfo->ScaleFactorBands_Long, /* pulse data is only
                                                              allowed to be
-                                                             present in long
+                                                             present in int32_t
                                                              blocks! */
                 (void *)&pAacDecoderChannelInfo[ch]->icsInfo,
                 frame_length) != 0) {

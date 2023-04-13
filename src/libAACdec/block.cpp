@@ -96,7 +96,7 @@ amm-info@iis.fraunhofer.de
 
    Author(s):   Josef Hoepfl
 
-   Description: long/short-block decoding
+   Description: int32_t/int16_t-block decoding
 
 *******************************************************************************/
 
@@ -135,12 +135,12 @@ amm-info@iis.fraunhofer.de
 
   \return  quantized coefficient
 */
-LONG CBlock_GetEscape(HANDLE_FDK_BITSTREAM bs, /*!< pointer to bitstream */
-                      const LONG q)            /*!< quantized coefficient */
+int32_t CBlock_GetEscape(HANDLE_FDK_BITSTREAM bs, /*!< pointer to bitstream */
+                      const int32_t q)            /*!< quantized coefficient */
 {
   if (fAbs(q) != 16) return (q);
 
-  LONG i, off;
+  int32_t i, off;
   for (i = 4; i < 13; i++) {
     if (FDKreadBit(bs) == 0) break;
   }
@@ -165,10 +165,10 @@ AAC_DECODER_ERROR CBlock_ReadScaleFactorData(
   int32_t factor = pAacDecoderChannelInfo->pDynData->RawDataInfo
                    .GlobalGain; /* accu for scale factor delta coding */
   UCHAR *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
-  SHORT *pScaleFactor = pAacDecoderChannelInfo->pDynData->aScaleFactor;
+  int16_t *pScaleFactor = pAacDecoderChannelInfo->pDynData->aScaleFactor;
   const CodeBookDescription *hcb = &AACcodeBookDescriptionTable[BOOKSCL];
 
-  const USHORT(*CodeBook)[HuffmanEntries] = hcb->CodeBook;
+  const uint16_t(*CodeBook)[HuffmanEntries] = hcb->CodeBook;
 
   int32_t ScaleFactorBandsTransmitted =
       GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);
@@ -219,15 +219,15 @@ void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                               SamplingRateInfo *pSamplingRateInfo) {
   int32_t band;
   int32_t window;
-  const SHORT *RESTRICT pSfbScale = pAacDecoderChannelInfo->pDynData->aSfbScale;
-  SHORT *RESTRICT pSpecScale = pAacDecoderChannelInfo->specScale;
+  const int16_t *RESTRICT pSfbScale = pAacDecoderChannelInfo->pDynData->aSfbScale;
+  int16_t *RESTRICT pSpecScale = pAacDecoderChannelInfo->specScale;
   int32_t groupwin, group;
-  const SHORT *RESTRICT BandOffsets = GetScaleFactorBandOffsets(
+  const int16_t *RESTRICT BandOffsets = GetScaleFactorBandOffsets(
       &pAacDecoderChannelInfo->icsInfo, pSamplingRateInfo);
   SPECTRAL_PTR RESTRICT pSpectralCoefficient =
       pAacDecoderChannelInfo->pSpectralCoefficient;
 
-  FDKmemclear(pSpecScale, 8 * sizeof(SHORT));
+  FDKmemclear(pSpecScale, 8 * sizeof(int16_t));
 
   for (window = 0, group = 0;
        group < GetWindowGroups(&pAacDecoderChannelInfo->icsInfo); group++) {
@@ -331,13 +331,13 @@ AAC_DECODER_ERROR CBlock_ReadSectionData(
   int32_t group;
   UCHAR sect_cb;
   UCHAR *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
-  /* HCR input (long) */
-  SHORT *pNumLinesInSec =
+  /* HCR input (int32_t) */
+  int16_t *pNumLinesInSec =
       pAacDecoderChannelInfo->pDynData->specificTo.aac.aNumLineInSec4Hcr;
   int32_t numLinesInSecIdx = 0;
   UCHAR *pHcrCodeBook =
       pAacDecoderChannelInfo->pDynData->specificTo.aac.aCodeBooks4Hcr;
-  const SHORT *BandOffsets = GetScaleFactorBandOffsets(
+  const int16_t *BandOffsets = GetScaleFactorBandOffsets(
       &pAacDecoderChannelInfo->icsInfo, pSamplingRateInfo);
   pAacDecoderChannelInfo->pDynData->specificTo.aac.numberSection = 0;
   AAC_DECODER_ERROR ErrorStatus = AAC_DEC_OK;
@@ -376,7 +376,7 @@ AAC_DECODER_ERROR CBlock_ReadSectionData(
       top = band + sect_len;
 
       if (flags & AC_ER_HCR) {
-        /* HCR input (long) -- collecting sideinfo (for HCR-_long_ only) */
+        /* HCR input (int32_t) -- collecting sideinfo (for HCR-_long_ only) */
         if (numLinesInSecIdx >= MAX_SFB_HCR) {
           return AAC_DEC_PARSE_ERROR;
         }
@@ -399,7 +399,7 @@ AAC_DECODER_ERROR CBlock_ReadSectionData(
         if (top > 64) {
           return AAC_DEC_DECODE_FRAME_ERROR;
         }
-      } else { /* short block */
+      } else { /* int16_t block */
         if (top + group * 16 > (8 * 16)) {
           return AAC_DEC_DECODE_FRAME_ERROR;
         }
@@ -448,13 +448,13 @@ static inline void InverseQuantizeBand(
       uint32_t freeBits = CntLeadingZeros(value);
       uint32_t exponent = 32 - freeBits;
 
-      uint32_t x = (uint32_t)(LONG)value << (int32_t)freeBits;
+      uint32_t x = (uint32_t)(int32_t)value << (int32_t)freeBits;
       x <<= 1; /* shift out sign bit to avoid masking later on */
       uint32_t tableIndex = x >> 24;
       x = (x >> 20) & 0x0F;
 
-      uint32_t r0 = (uint32_t)(LONG)InverseQuantTabler[tableIndex + 0];
-      uint32_t r1 = (uint32_t)(LONG)InverseQuantTabler[tableIndex + 1];
+      uint32_t r0 = (uint32_t)(int32_t)InverseQuantTabler[tableIndex + 0];
+      uint32_t r1 = (uint32_t)(int32_t)InverseQuantTabler[tableIndex + 1];
       uint32_t temp = (r1 - r0) * x + (r0 << 4);
 
       value = fMultDiv2((int32_t)temp, MantissaTabler[exponent]);
@@ -492,15 +492,15 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
   int32_t ScaleFactorBandsTransmitted =
       GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);
   UCHAR *RESTRICT pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
-  SHORT *RESTRICT pSfbScale = pAacDecoderChannelInfo->pDynData->aSfbScale;
-  SHORT *RESTRICT pScaleFactor = pAacDecoderChannelInfo->pDynData->aScaleFactor;
-  const SHORT *RESTRICT BandOffsets = GetScaleFactorBandOffsets(
+  int16_t *RESTRICT pSfbScale = pAacDecoderChannelInfo->pDynData->aSfbScale;
+  int16_t *RESTRICT pScaleFactor = pAacDecoderChannelInfo->pDynData->aScaleFactor;
+  const int16_t *RESTRICT BandOffsets = GetScaleFactorBandOffsets(
       &pAacDecoderChannelInfo->icsInfo, pSamplingRateInfo);
-  const SHORT total_bands =
+  const int16_t total_bands =
       GetScaleFactorBandsTotal(&pAacDecoderChannelInfo->icsInfo);
 
   FDKmemclear(pAacDecoderChannelInfo->pDynData->aSfbScale,
-              (8 * 16) * sizeof(SHORT));
+              (8 * 16) * sizeof(int16_t));
 
   for (window = 0, group = 0;
        group < GetWindowGroups(&pAacDecoderChannelInfo->icsInfo); group++) {
@@ -599,8 +599,8 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
       } /* for (band=0; band < ScaleFactorBandsTransmitted; band++) */
 
       /* Make sure the array is cleared to the end */
-      SHORT start_clear = BandOffsets[ScaleFactorBandsTransmitted];
-      SHORT end_clear = BandOffsets[total_bands];
+      int16_t start_clear = BandOffsets[ScaleFactorBandsTransmitted];
+      int16_t end_clear = BandOffsets[total_bands];
       int32_t diff_clear = (int32_t)(end_clear - start_clear);
       int32_t *pSpectralCoefficient =
           SPEC(pAacDecoderChannelInfo->pSpectralCoefficient, window,
@@ -621,7 +621,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
     HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     const SamplingRateInfo *pSamplingRateInfo, const uint32_t flags) {
   int32_t index, i;
-  const SHORT *RESTRICT BandOffsets = GetScaleFactorBandOffsets(
+  const int16_t *RESTRICT BandOffsets = GetScaleFactorBandOffsets(
       &pAacDecoderChannelInfo->icsInfo, pSamplingRateInfo);
 
   SPECTRAL_PTR pSpectralCoefficient =
@@ -641,7 +641,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
 
     groupoffset = 0;
 
-    /* plain huffman decoder  short */
+    /* plain huffman decoder  int16_t */
     int32_t max_group = GetWindowGroups(&pAacDecoderChannelInfo->icsInfo);
 
     for (group = 0; group < max_group; group++) {
@@ -671,7 +671,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
           int32_t offset = hcb->Offset;
           int32_t bits = hcb->numBits;
           int32_t mask = (1 << bits) - 1;
-          const USHORT(*CodeBook)[HuffmanEntries] = hcb->CodeBook;
+          const uint16_t(*CodeBook)[HuffmanEntries] = hcb->CodeBook;
           int32_t groupwin;
 
           int32_t *mdctSpectrum =
@@ -690,7 +690,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
                 if (currentCB == ESCBOOK) {
                   for (int32_t j = 0; j < 2; j++)
                     mdctSpectrum[index + j] = (int32_t)CBlock_GetEscape(
-                        bs, (LONG)mdctSpectrum[index + j]);
+                        bs, (int32_t)mdctSpectrum[index + j]);
                 }
               }
               mdctSpectrum += granuleLength;
@@ -705,7 +705,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
                 if (currentCB == ESCBOOK) {
                   for (int32_t j = 0; j < 2; j++)
                     mdctSpectrum[index + j] = (int32_t)CBlock_GetEscape(
-                        bs, (LONG)mdctSpectrum[index + j]);
+                        bs, (int32_t)mdctSpectrum[index + j]);
                 }
               }
               mdctSpectrum += granuleLength;
@@ -715,10 +715,10 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
       }
       groupoffset += max_groupwin;
     }
-    /* plain huffman decoding (short) finished */
+    /* plain huffman decoding (int16_t) finished */
   }
 
-  /* HCR - Huffman Codeword Reordering  short */
+  /* HCR - Huffman Codeword Reordering  int16_t */
   else /* if ( flags & AC_ER_HCR ) */
 
   {
@@ -729,14 +729,14 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
     /* advanced Huffman decoding starts here (HCR decoding :) */
     if (pAacDecoderChannelInfo->pDynData->specificTo.aac
             .lenOfReorderedSpectralData != 0) {
-      /* HCR initialization short */
+      /* HCR initialization int16_t */
       hcrStatus = HcrInit(hHcr, pAacDecoderChannelInfo, pSamplingRateInfo, bs);
 
       if (hcrStatus != 0) {
         return AAC_DEC_DECODE_FRAME_ERROR;
       }
 
-      /* HCR decoding short */
+      /* HCR decoding int16_t */
       hcrStatus =
           HcrDecoder(hHcr, pAacDecoderChannelInfo, pSamplingRateInfo, bs);
 
@@ -752,7 +752,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
                          .lenOfReorderedSpectralData);
     }
   }
-  /* HCR - Huffman Codeword Reordering short finished */
+  /* HCR - Huffman Codeword Reordering int16_t finished */
 
   if (IsLongBlock(&pAacDecoderChannelInfo->icsInfo) &&
       !(flags & (AC_ELD | AC_SCALABLE))) {
@@ -781,9 +781,9 @@ static const FIXP_SGL noise_level_tab[8] = {
     FX_DBL2FXCONST_SGL(0x32cbfd33)};
 
 void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                       SamplingRateInfo *pSamplingRateInfo, ULONG *nfRandomSeed,
+                       SamplingRateInfo *pSamplingRateInfo, uint32_t *nfRandomSeed,
                        UCHAR *band_is_noise) {
-  const SHORT *swb_offset = GetScaleFactorBandOffsets(
+  const int16_t *swb_offset = GetScaleFactorBandOffsets(
       &pAacDecoderChannelInfo->icsInfo, pSamplingRateInfo);
   int32_t g, win, gwin, sfb, noiseFillingStartOffset, nfStartOffset_sfb;
 
@@ -843,7 +843,7 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
           }
         }
 
-        ULONG seed = *nfRandomSeed;
+        uint32_t seed = *nfRandomSeed;
         /* + 1 because exponent of MantissaTable[lsb][0] is always 1. */
         int32_t scale =
             (pAacDecoderChannelInfo->pDynData->aScaleFactor[g * 16 + sfb] >>
@@ -867,8 +867,8 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
           /* If the whole band is zero, just fill without checking */
           if (flagN) {
             for (int32_t bin = bin_start; bin < bin_stop; bin++) {
-              seed = (ULONG)(
-                  (UINT64)seed * 69069 +
+              seed = (uint32_t)(
+                  (uint64_t)seed * 69069 +
                   5); /* Inlined: UsacRandomSign - origin in usacdec_lpd.h */
               pSpec[bin] =
                   (seed & 0x10000) ? scaled_noiseVal_neg : scaled_noiseVal_pos;
@@ -878,8 +878,8 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
           else {
             for (int32_t bin = bin_start; bin < bin_stop; bin++) {
               if (pSpec[bin] == (int32_t)0) {
-                seed = (ULONG)(
-                    (UINT64)seed * 69069 +
+                seed = (uint32_t)(
+                    (uint64_t)seed * 69069 +
                     5); /* Inlined: UsacRandomSign - origin in usacdec_lpd.h */
                 pSpec[bin] = (seed & 0x10000) ? scaled_noiseVal_neg
                                               : scaled_noiseVal_pos;
@@ -904,7 +904,7 @@ AAC_DECODER_ERROR CBlock_ReadAcSpectralData(
   AAC_DECODER_ERROR errorAAC = AAC_DEC_OK;
   ARITH_CODING_ERROR error = ARITH_CODER_OK;
   int32_t arith_reset_flag, lg, numWin, win, winLen;
-  const SHORT *RESTRICT BandOffsets;
+  const int16_t *RESTRICT BandOffsets;
 
   /* number of transmitted spectral coefficients */
   BandOffsets = GetScaleFactorBandOffsets(&pAacDecoderChannelInfo->icsInfo,
@@ -920,7 +920,7 @@ AAC_DECODER_ERROR CBlock_ReadAcSpectralData(
   if (flags & AC_INDEP) {
     arith_reset_flag = 1;
   } else {
-    arith_reset_flag = (USHORT)FDKreadBits(hBs, 1);
+    arith_reset_flag = (uint16_t)FDKreadBits(hBs, 1);
   }
 
   for (win = 0; win < numWin; win++) {
@@ -1016,12 +1016,12 @@ int32_t get_gain(const int32_t *x, const int32_t *y, int32_t n) {
 void CBlock_FrequencyToTime(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
     CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t outSamples[],
-    const SHORT frameLen, const int32_t frameOk, int32_t *pWorkBuffer1,
+    const int16_t frameLen, const int32_t frameOk, int32_t *pWorkBuffer1,
     const int32_t aacOutDataHeadroom, uint32_t elFlags, int32_t elCh) {
   int32_t fr, fl, tl, nSpec;
 
 #if defined(FDK_ASSERT_ENABLE)
-  LONG nSamples;
+  int32_t nSamples;
 #endif
 
   /* Determine left slope length (fl), right slope length (fr) and transform
@@ -1254,7 +1254,7 @@ void CBlock_FrequencyToTime(
 void CBlock_FrequencyToTimeLowDelay(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
     CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t outSamples[],
-    const short frameLen) {
+    const int16_t frameLen) {
   InvMdctTransformLowDelay_fdk(
       SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient),
       pAacDecoderChannelInfo->specScale[0], outSamples,

@@ -300,13 +300,13 @@ static void sbr_envelope_unmapping(
   /* 1. Unmap (already dequantized) coupled envelope energies */
 
   for (i = 0; i < h_data_left->nScaleFactors; i++) {
-    tempR_m = (FIXP_SGL)((LONG)h_data_right->iEnvelope[i] & MASK_M);
-    tempR_e = (SCHAR)((LONG)h_data_right->iEnvelope[i] & MASK_E);
+    tempR_m = (FIXP_SGL)((int32_t)h_data_right->iEnvelope[i] & MASK_M);
+    tempR_e = (SCHAR)((int32_t)h_data_right->iEnvelope[i] & MASK_E);
 
     tempR_e -= (18 + NRG_EXP_OFFSET); /* -18 = ld(UNMAPPING_SCALE /
                                          h_data_right->nChannels) */
-    tempL_m = (FIXP_SGL)((LONG)h_data_left->iEnvelope[i] & MASK_M);
-    tempL_e = (SCHAR)((LONG)h_data_left->iEnvelope[i] & MASK_E);
+    tempL_m = (FIXP_SGL)((int32_t)h_data_left->iEnvelope[i] & MASK_M);
+    tempL_e = (SCHAR)((int32_t)h_data_left->iEnvelope[i] & MASK_E);
 
     tempL_e -= NRG_EXP_OFFSET;
 
@@ -326,11 +326,11 @@ static void sbr_envelope_unmapping(
     newL_e = tempR_e + newR_e;
 
     h_data_right->iEnvelope[i] =
-        ((FIXP_SGL)((SHORT)(FIXP_SGL)(newR_m + ROUNDING) & MASK_M)) +
-        (FIXP_SGL)((SHORT)(FIXP_SGL)(newR_e + NRG_EXP_OFFSET) & MASK_E);
+        ((FIXP_SGL)((int16_t)(FIXP_SGL)(newR_m + ROUNDING) & MASK_M)) +
+        (FIXP_SGL)((int16_t)(FIXP_SGL)(newR_e + NRG_EXP_OFFSET) & MASK_E);
     h_data_left->iEnvelope[i] =
-        ((FIXP_SGL)((SHORT)(FIXP_SGL)(newL_m + ROUNDING) & MASK_M)) +
-        (FIXP_SGL)((SHORT)(FIXP_SGL)(newL_e + NRG_EXP_OFFSET) & MASK_E);
+        ((FIXP_SGL)((int16_t)(FIXP_SGL)(newL_m + ROUNDING) & MASK_M)) +
+        (FIXP_SGL)((int16_t)(FIXP_SGL)(newL_e + NRG_EXP_OFFSET) & MASK_E);
   }
 
   /* 2. Dequantize and unmap coupled noise floor levels */
@@ -338,8 +338,8 @@ static void sbr_envelope_unmapping(
   for (i = 0; i < hHeaderData->freqBandData.nNfb *
                       h_data_left->frameInfo.nNoiseEnvelopes;
        i++) {
-    tempL_e = (SCHAR)(6 - (LONG)h_data_left->sbrNoiseFloorLevel[i]);
-    tempR_e = (SCHAR)((LONG)h_data_right->sbrNoiseFloorLevel[i] -
+    tempL_e = (SCHAR)(6 - (int32_t)h_data_left->sbrNoiseFloorLevel[i]);
+    tempR_e = (SCHAR)((int32_t)h_data_right->sbrNoiseFloorLevel[i] -
                       12) /*SBR_ENERGY_PAN_OFFSET*/;
 
     /* Calculate tempR+1 */
@@ -360,11 +360,11 @@ static void sbr_envelope_unmapping(
     newL_m = newR_m;
     newL_e = newR_e + tempR_e;
     h_data_right->sbrNoiseFloorLevel[i] =
-        ((FIXP_SGL)((SHORT)(FIXP_SGL)(newR_m + ROUNDING) & MASK_M)) +
-        (FIXP_SGL)((SHORT)(FIXP_SGL)(newR_e + NOISE_EXP_OFFSET) & MASK_E);
+        ((FIXP_SGL)((int16_t)(FIXP_SGL)(newR_m + ROUNDING) & MASK_M)) +
+        (FIXP_SGL)((int16_t)(FIXP_SGL)(newR_e + NOISE_EXP_OFFSET) & MASK_E);
     h_data_left->sbrNoiseFloorLevel[i] =
-        ((FIXP_SGL)((SHORT)(FIXP_SGL)(newL_m + ROUNDING) & MASK_M)) +
-        (FIXP_SGL)((SHORT)(FIXP_SGL)(newL_e + NOISE_EXP_OFFSET) & MASK_E);
+        ((FIXP_SGL)((int16_t)(FIXP_SGL)(newL_m + ROUNDING) & MASK_M)) +
+        (FIXP_SGL)((int16_t)(FIXP_SGL)(newL_e + NOISE_EXP_OFFSET) & MASK_E);
   }
 }
 
@@ -439,7 +439,7 @@ static void leanSbrConcealment(
 
   /* ... and so are the sines */
   FDKmemclear(h_sbr_data->addHarmonics,
-              sizeof(ULONG) * ADD_HARMONICS_FLAGS_SIZE);
+              sizeof(uint32_t) * ADD_HARMONICS_FLAGS_SIZE);
 }
 
 /*!
@@ -712,7 +712,7 @@ static void requantizeEnvelopeData(HANDLE_SBR_FRAME_DATA h_sbr_data,
 #endif
 
   for (i = 0; i < h_sbr_data->nScaleFactors; i++) {
-    exponent = (LONG)h_sbr_data->iEnvelope[i];
+    exponent = (int32_t)h_sbr_data->iEnvelope[i];
 
 #if ENV_EXP_FRACT
 
@@ -755,8 +755,8 @@ static void requantizeEnvelopeData(HANDLE_SBR_FRAME_DATA h_sbr_data,
 
     /* Combine mantissa and exponent and write back the result */
     h_sbr_data->iEnvelope[i] =
-        ((FIXP_SGL)((SHORT)(FIXP_SGL)mantissa & MASK_M)) +
-        (FIXP_SGL)((SHORT)(FIXP_SGL)exponent & MASK_E);
+        ((FIXP_SGL)((int16_t)(FIXP_SGL)mantissa & MASK_M)) +
+        (FIXP_SGL)((int16_t)(FIXP_SGL)exponent & MASK_E);
   }
 }
 
@@ -861,11 +861,11 @@ static void decodeNoiseFloorlevels(
     int32_t nf_e;
 
     for (i = 0; i < nNoiseFloorEnvelopes * nNfb; i++) {
-      nf_e = 6 - (LONG)h_sbr_data->sbrNoiseFloorLevel[i] + 1 + NOISE_EXP_OFFSET;
+      nf_e = 6 - (int32_t)h_sbr_data->sbrNoiseFloorLevel[i] + 1 + NOISE_EXP_OFFSET;
       /* +1 to compensate for a mantissa of 0.5 instead of 1.0 */
 
       h_sbr_data->sbrNoiseFloorLevel[i] =
-          (FIXP_SGL)(((LONG)FL2FXCONST_SGL(0.5f)) + /* mantissa */
+          (FIXP_SGL)(((int32_t)FL2FXCONST_SGL(0.5f)) + /* mantissa */
                      (nf_e & MASK_E));              /* exponent */
     }
   }

@@ -119,9 +119,9 @@ amm-info@iis.fraunhofer.de
  * Returns:
  *    void
  */
-static void D_ACELP_add_pulse(SHORT pos[], SHORT nb_pulse, SHORT track,
+static void D_ACELP_add_pulse(int16_t pos[], int16_t nb_pulse, int16_t track,
                               FIXP_COD code[]) {
-  SHORT i, k;
+  int16_t i, k;
   for (k = 0; k < nb_pulse; k++) {
     /* i = ((pos[k] & (16-1))*NB_TRACK) + track; */
     i = ((pos[k] & (16 - 1)) << 2) + track;
@@ -148,16 +148,16 @@ static void D_ACELP_add_pulse(SHORT pos[], SHORT nb_pulse, SHORT track,
  * Returns:
  *    void
  */
-static void D_ACELP_decode_1p_N1(LONG index, SHORT N, SHORT offset,
-                                 SHORT pos[]) {
-  SHORT pos1;
-  LONG i, mask;
+static void D_ACELP_decode_1p_N1(int32_t index, int16_t N, int16_t offset,
+                                 int16_t pos[]) {
+  int16_t pos1;
+  int32_t i, mask;
 
   mask = ((1 << N) - 1);
   /*
    * Decode 1 pulse with N+1 bits
    */
-  pos1 = (SHORT)((index & mask) + offset);
+  pos1 = (int16_t)((index & mask) + offset);
   i = ((index >> N) & 1);
   if (i == 1) {
     pos1 += 16;
@@ -180,17 +180,17 @@ static void D_ACELP_decode_1p_N1(LONG index, SHORT N, SHORT offset,
  * Returns:
  *    void
  */
-static void D_ACELP_decode_2p_2N1(LONG index, SHORT N, SHORT offset,
-                                  SHORT pos[]) {
-  SHORT pos1, pos2;
-  LONG mask, i;
+static void D_ACELP_decode_2p_2N1(int32_t index, int16_t N, int16_t offset,
+                                  int16_t pos[]) {
+  int16_t pos1, pos2;
+  int32_t mask, i;
   mask = ((1 << N) - 1);
   /*
    * Decode 2 pulses with 2*N+1 bits
    */
-  pos1 = (SHORT)(((index >> N) & mask) + offset);
+  pos1 = (int16_t)(((index >> N) & mask) + offset);
   i = (index >> (2 * N)) & 1;
-  pos2 = (SHORT)((index & mask) + offset);
+  pos2 = (int16_t)((index & mask) + offset);
   if ((pos2 - pos1) < 0) {
     if (i == 1) {
       pos1 += 16;
@@ -222,10 +222,10 @@ static void D_ACELP_decode_2p_2N1(LONG index, SHORT N, SHORT offset,
  * Returns:
  *    void
  */
-static void D_ACELP_decode_3p_3N1(LONG index, SHORT N, SHORT offset,
-                                  SHORT pos[]) {
-  SHORT j;
-  LONG mask, idx;
+static void D_ACELP_decode_3p_3N1(int32_t index, int16_t N, int16_t offset,
+                                  int16_t pos[]) {
+  int16_t j;
+  int32_t mask, idx;
 
   /*
    * Decode 3 pulses with 3*N+1 bits
@@ -257,10 +257,10 @@ static void D_ACELP_decode_3p_3N1(LONG index, SHORT N, SHORT offset,
  * Returns:
  *    void
  */
-static void D_ACELP_decode_4p_4N1(LONG index, SHORT N, SHORT offset,
-                                  SHORT pos[]) {
-  SHORT j;
-  LONG mask, idx;
+static void D_ACELP_decode_4p_4N1(int32_t index, int16_t N, int16_t offset,
+                                  int16_t pos[]) {
+  int16_t j;
+  int32_t mask, idx;
   /*
    * Decode 4 pulses with 4*N+1 bits
    */
@@ -291,9 +291,9 @@ static void D_ACELP_decode_4p_4N1(LONG index, SHORT N, SHORT offset,
  * Returns:
  *    void
  */
-static void D_ACELP_decode_4p_4N(LONG index, SHORT N, SHORT offset,
-                                 SHORT pos[]) {
-  SHORT j, n_1;
+static void D_ACELP_decode_4p_4N(int32_t index, int16_t N, int16_t offset,
+                                 int16_t pos[]) {
+  int16_t j, n_1;
   /*
    * Decode 4 pulses with 4*N bits
    */
@@ -353,9 +353,9 @@ static void D_ACELP_decode_4p_4N(LONG index, SHORT N, SHORT offset,
  * Returns:
  *    void
  */
-void D_ACELP_decode_4t64(SHORT index[], int32_t nbits, FIXP_COD code[]) {
-  LONG L_index;
-  SHORT k, pos[6];
+void D_ACELP_decode_4t64(int16_t index[], int32_t nbits, FIXP_COD code[]) {
+  int32_t L_index;
+  int16_t k, pos[6];
 
   FDKmemclear(code, L_SUBFR * sizeof(FIXP_COD));
 
@@ -382,52 +382,52 @@ void D_ACELP_decode_4t64(SHORT index[], int32_t nbits, FIXP_COD code[]) {
     } break;
     case 20:
       for (k = 0; k < 4; k++) {
-        L_index = (LONG)index[k];
+        L_index = (int32_t)index[k];
         D_ACELP_decode_1p_N1(L_index, 4, 0, pos);
         D_ACELP_add_pulse(pos, 1, k, code);
       }
       break;
     case 28:
       for (k = 0; k < 4 - 2; k++) {
-        L_index = (LONG)index[k];
+        L_index = (int32_t)index[k];
         D_ACELP_decode_2p_2N1(L_index, 4, 0, pos);
         D_ACELP_add_pulse(pos, 2, k, code);
       }
       for (k = 2; k < 4; k++) {
-        L_index = (LONG)index[k];
+        L_index = (int32_t)index[k];
         D_ACELP_decode_1p_N1(L_index, 4, 0, pos);
         D_ACELP_add_pulse(pos, 1, k, code);
       }
       break;
     case 36:
       for (k = 0; k < 4; k++) {
-        L_index = (LONG)index[k];
+        L_index = (int32_t)index[k];
         D_ACELP_decode_2p_2N1(L_index, 4, 0, pos);
         D_ACELP_add_pulse(pos, 2, k, code);
       }
       break;
     case 44:
       for (k = 0; k < 4 - 2; k++) {
-        L_index = (LONG)index[k];
+        L_index = (int32_t)index[k];
         D_ACELP_decode_3p_3N1(L_index, 4, 0, pos);
         D_ACELP_add_pulse(pos, 3, k, code);
       }
       for (k = 2; k < 4; k++) {
-        L_index = (LONG)index[k];
+        L_index = (int32_t)index[k];
         D_ACELP_decode_2p_2N1(L_index, 4, 0, pos);
         D_ACELP_add_pulse(pos, 2, k, code);
       }
       break;
     case 52:
       for (k = 0; k < 4; k++) {
-        L_index = (LONG)index[k];
+        L_index = (int32_t)index[k];
         D_ACELP_decode_3p_3N1(L_index, 4, 0, pos);
         D_ACELP_add_pulse(pos, 3, k, code);
       }
       break;
     case 64:
       for (k = 0; k < 4; k++) {
-        L_index = (((LONG)index[k] << 14) + (LONG)index[k + 4]);
+        L_index = (((int32_t)index[k] << 14) + (int32_t)index[k + 4]);
         D_ACELP_decode_4p_4N(L_index, 4, 0, pos);
         D_ACELP_add_pulse(pos, 4, k, code);
       }

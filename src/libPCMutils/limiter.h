@@ -144,7 +144,7 @@ typedef enum {
 struct TDLimiter;
 typedef struct TDLimiter* TDLimiterPtr;
 
-#define PCM_LIM LONG
+#define PCM_LIM int32_t
 #define FIXP_DBL2PCM_LIM(x) (x)
 #define PCM_LIM2FIXP_DBL(x) (x)
 #define PCM_LIM_BITS 32

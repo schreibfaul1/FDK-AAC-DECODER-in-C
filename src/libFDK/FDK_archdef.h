@@ -249,7 +249,7 @@ amm-info@iis.fraunhofer.de
 #else
 #define FIXP_STB int32_t
 #define FIXP_STP FIXP_DPK
-#define STC(a) ((int32_t)(LONG)(a))
+#define STC(a) ((int32_t)(int32_t)(a))
 #endif /* defined(SINETABLE_16BIT) */
 
 #define STCP(cos, sin)     \

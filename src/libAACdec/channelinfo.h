@@ -150,8 +150,8 @@ enum { MAX_QUANTIZED_VALUE = 8191 };
 typedef enum { FD_LONG, FD_SHORT, LPD } USAC_COREMODE;
 
 typedef struct {
-  const SHORT *ScaleFactorBands_Long;
-  const SHORT *ScaleFactorBands_Short;
+  const int16_t *ScaleFactorBands_Long;
+  const int16_t *ScaleFactorBands_Short;
   UCHAR NumberOfScaleFactorBands_Long;
   UCHAR NumberOfScaleFactorBands_Short;
   uint32_t samplingRateIndex;
@@ -170,7 +170,7 @@ typedef struct {
   UCHAR Valid;
 
   UCHAR WindowShape;         /* 0: sine window, 1: KBD, 2: low overlap */
-  BLOCK_TYPE WindowSequence; /* mdct.h; 0: long, 1: start, 2: short, 3: stop */
+  BLOCK_TYPE WindowSequence; /* mdct.h; 0: int32_t, 1: start, 2: int16_t, 3: stop */
   UCHAR MaxSfBands;
   UCHAR max_sfb_ste;
   UCHAR ScaleFactorGrouping;
@@ -248,13 +248,13 @@ typedef struct {
   int32_t last_tcx_gain;
   int32_t last_tcx_gain_e;
   int32_t last_alfd_gains[32]; /* Scaled by one bit. */
-  SHORT last_tcx_pitch;
+  int16_t last_tcx_pitch;
   UCHAR last_tcx_noise_factor;
 
   /* ACELP memory */
   CAcelpStaticMem acelp;
 
-  ULONG nfRandomSeed; /* seed value for USAC noise filling random generator */
+  uint32_t nfRandomSeed; /* seed value for USAC noise filling random generator */
 
   CDrcChannelData drcData;
   CConcealmentInfo concealmentInfo;
@@ -268,9 +268,9 @@ typedef struct {
  */
 typedef struct {
   /* Common bit stream data */
-  SHORT aScaleFactor[(
+  int16_t aScaleFactor[(
       8 * 16)]; /* Spectral scale factors for each sfb in each window. */
-  SHORT aSfbScale[(8 * 16)]; /* could be free after ApplyTools() */
+  int16_t aSfbScale[(8 * 16)]; /* could be free after ApplyTools() */
   UCHAR
   aCodeBook[(8 * 16)]; /* section data: codebook for each window and sfb. */
   UCHAR band_is_noise[(8 * 16)];
@@ -280,12 +280,12 @@ typedef struct {
   shouldBeUnion {
     struct {
       CPulseData PulseData;
-      SHORT aNumLineInSec4Hcr[MAX_SFB_HCR]; /* needed once for all channels
+      int16_t aNumLineInSec4Hcr[MAX_SFB_HCR]; /* needed once for all channels
                                                except for Drm syntax */
       UCHAR
       aCodeBooks4Hcr[MAX_SFB_HCR]; /* needed once for all channels except for
                                       Drm syntax. Same as "aCodeBook" ? */
-      SHORT lenOfReorderedSpectralData;
+      int16_t lenOfReorderedSpectralData;
       SCHAR lenOfLongestCodeword;
       SCHAR numberSection;
       SCHAR rvlcCurrentScaleFactorOK;
@@ -329,9 +329,9 @@ typedef struct {
     struct {
       CErHcrInfo erHcrInfo;
       CErRvlcInfo erRvlcInfo;
-      SHORT aRvlcScfEsc[RVLC_MAX_SFB]; /* needed once for all channels */
-      SHORT aRvlcScfFwd[RVLC_MAX_SFB]; /* needed once for all channels */
-      SHORT aRvlcScfBwd[RVLC_MAX_SFB]; /* needed once for all channels */
+      int16_t aRvlcScfEsc[RVLC_MAX_SFB]; /* needed once for all channels */
+      int16_t aRvlcScfFwd[RVLC_MAX_SFB]; /* needed once for all channels */
+      int16_t aRvlcScfBwd[RVLC_MAX_SFB]; /* needed once for all channels */
     } aac;
   }
   overlay;
@@ -401,7 +401,7 @@ typedef struct {
   data;
 
   SPECTRAL_PTR pSpectralCoefficient; /* Spectral coefficients of each window */
-  SHORT specScale[8]; /* Scale shift values of each spectrum window */
+  int16_t specScale[8]; /* Scale shift values of each spectrum window */
   CIcsInfo icsInfo;
   int32_t granuleLength; /* Size of smallest spectrum piece */
   UCHAR ElementInstanceTag;
@@ -460,13 +460,13 @@ AAC_DECODER_ERROR IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
 void CJointStereo_ApplyMS(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[2],
-    int32_t *spectrumL, int32_t *spectrumR, SHORT *SFBleftScale,
-    SHORT *SFBrightScale, SHORT *specScaleL, SHORT *specScaleR,
-    const SHORT *pScaleFactorBandOffsets, const UCHAR *pWindowGroupLength,
+    int32_t *spectrumL, int32_t *spectrumR, int16_t *SFBleftScale,
+    int16_t *SFBrightScale, int16_t *specScaleL, int16_t *specScaleR,
+    const int16_t *pScaleFactorBandOffsets, const UCHAR *pWindowGroupLength,
     const int32_t windowGroups, const int32_t max_sfb_ste_outside,
     const int32_t scaleFactorBandsTransmittedL,
     const int32_t scaleFactorBandsTransmittedR, int32_t *store_dmx_re_prev,
-    SHORT *store_dmx_re_prev_e, const int32_t mainband_flag);
+    int16_t *store_dmx_re_prev_e, const int32_t mainband_flag);
 
 /*!
   \brief Applies intensity stereo
@@ -481,7 +481,7 @@ void CJointStereo_ApplyMS(
   \return  none
 */
 void CJointStereo_ApplyIS(CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
-                          const short *pScaleFactorBandOffsets,
+                          const int16_t *pScaleFactorBandOffsets,
                           const UCHAR *pWindowGroupLength,
                           const int32_t windowGroups,
                           const int32_t scaleFactorBandsTransmitted);
@@ -508,7 +508,7 @@ inline BLOCK_TYPE GetWindowSequence(const CIcsInfo *pIcsInfo) {
   return pIcsInfo->WindowSequence;
 }
 
-inline const SHORT *GetScaleFactorBandOffsets(
+inline const int16_t *GetScaleFactorBandOffsets(
     const CIcsInfo *pIcsInfo, const SamplingRateInfo *samplingRateInfo) {
   if (IsLongBlock(pIcsInfo)) {
     return samplingRateInfo->ScaleFactorBands_Long;

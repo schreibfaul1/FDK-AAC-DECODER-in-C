@@ -121,10 +121,10 @@ amm-info@iis.fraunhofer.de
 extern const uint32_t fdk_dec_tab_factorial[8];
 extern const UCHAR fdk_dec_Ia[NB_LEADER];
 extern const UCHAR fdk_dec_Ds[NB_LDSIGN];
-extern const USHORT fdk_dec_Is[NB_LDSIGN];
+extern const uint16_t fdk_dec_Is[NB_LDSIGN];
 extern const UCHAR fdk_dec_Ns[], fdk_dec_A3[], fdk_dec_A4[];
 extern const UCHAR fdk_dec_Da[][8];
-extern const USHORT fdk_dec_I3[], fdk_dec_I4[];
+extern const uint16_t fdk_dec_I3[], fdk_dec_I4[];
 
 /* temp float tables for LPC decoding */
 extern const FIXP_LPC fdk_dec_lsf_init[16];

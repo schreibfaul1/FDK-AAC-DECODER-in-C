@@ -111,7 +111,7 @@ amm-info@iis.fraunhofer.de
 
 #if defined(__ANDROID__) && (__GNUC__ == 4) && (__GNUC_MINOR__ == 4) && \
     (__GNUC_GNU_INLINE__ == 1)
-typedef unsigned long long uint64_t;
+typedef unsigned int32_t int32_t uint64_t;
 #include <sys/types.h>
 #endif
 
@@ -137,32 +137,32 @@ typedef unsigned long long uint64_t;
  *        Data type representing at least 4 byte unsigned integer on all
  * supported platforms.
  */
-/** \var  LONG
+/** \var  int32_t
  *        Data type representing 4 byte signed integer on all supported
  * platforms.
  */
-/** \var  ULONG
+/** \var  uint32_t
  *        Data type representing 4 byte unsigned integer on all supported
  * platforms.
  */
-/** \var  SHORT
+/** \var  int16_t
  *        Data type representing 2 byte signed integer on all supported
  * platforms.
  */
-/** \var  USHORT
+/** \var  uint16_t
  *        Data type representing 2 byte unsigned integer on all supported
  * platforms.
  */
-/** \var  INT64
+/** \var  int64_t
  *        Data type representing 8 byte signed integer on all supported
  * platforms.
  */
-/** \var  UINT64
+/** \var  uint64_t
  *        Data type representing 8 byte unsigned integer on all supported
  * platforms.
  */
 /** \def  SHORT_BITS
- *        Number of bits the data type short represents. sizeof() is not suited
+ *        Number of bits the data type int16_t represents. sizeof() is not suited
  * to get this info, because a byte is not always defined as 8 bits.
  */
 /** \def  CHAR_BITS
@@ -173,19 +173,13 @@ typedef unsigned long long uint64_t;
  *        Data type representing the width of input and output PCM samples.
  */
 
-typedef signed int INT;
-typedef unsigned int UINT;
-#ifdef __LP64__
-/* force FDK long-datatypes to 4 byte  */
-/* Use defines to avoid type alias problems on 64 bit machines. */
-#define LONG INT
-#define ULONG UINT
-#else  /* __LP64__ */
-typedef signed long LONG;
-typedef unsigned long ULONG;
-#endif /* __LP64__ */
-typedef signed short SHORT;
-typedef unsigned short USHORT;
+
+#include <stdint.h>
+
+
+
+
+
 typedef signed char SCHAR;
 typedef unsigned char UCHAR;
 
@@ -194,11 +188,11 @@ typedef unsigned char UCHAR;
 
 /* Define 64 bit base integer type. */
 #ifdef _MSC_VER
-typedef __int64 INT64;
-typedef unsigned __int64 UINT64;
+typedef __int64 int64_t;
+typedef unsigned __int64 uint64_t;
 #else
-typedef long long INT64;
-typedef unsigned long long UINT64;
+
+
 #endif
 
 #ifndef NULL
@@ -223,12 +217,12 @@ typedef unsigned long long UINT64;
 #define FDK_ASSERT(ignore)
 #endif
 
-typedef SHORT INT_PCM;
+typedef int16_t INT_PCM;
 #define MAXVAL_PCM MAXVAL_SGL
 #define MINVAL_PCM MINVAL_SGL
 #define WAV_BITS 16
 #define SAMPLE_BITS 16
-#define SAMPLE_MAX ((INT_PCM)(((ULONG)1 << (SAMPLE_BITS - 1)) - 1))
+#define SAMPLE_MAX ((INT_PCM)(((uint32_t)1 << (SAMPLE_BITS - 1)) - 1))
 #define SAMPLE_MIN (~SAMPLE_MAX)
 
 /*!
@@ -302,7 +296,7 @@ it. Hence, a fully platform-independant way to use alignment is not supported.
  * - ALIGN_SIZE(9) returns 16
  */
 #define ALIGN_SIZE(a)                                                          \
-  ((a) + (((INT)ALIGNMENT_DEFAULT - ((size_t)(a) & (ALIGNMENT_DEFAULT - 1))) & \
+  ((a) + (((int32_t)ALIGNMENT_DEFAULT - ((size_t)(a) & (ALIGNMENT_DEFAULT - 1))) & \
           (ALIGNMENT_DEFAULT - 1)))
 
 /*!
@@ -310,14 +304,14 @@ it. Hence, a fully platform-independant way to use alignment is not supported.
  */
 #define ALIGN_PTR(a)                                      \
   ((void *)((unsigned char *)(a) +                        \
-            ((((INT)ALIGNMENT_DEFAULT -                   \
+            ((((int32_t)ALIGNMENT_DEFAULT -                   \
                ((size_t)(a) & (ALIGNMENT_DEFAULT - 1))) & \
               (ALIGNMENT_DEFAULT - 1)))))
 
 /* Alignment macro for libSYS heap implementation */
 #define ALIGNMENT_EXTRES (ALIGNMENT_DEFAULT)
 #define ALGN_SIZE_EXTRES(a)                                               \
-  ((a) + (((INT)ALIGNMENT_EXTRES - ((INT)(a) & (ALIGNMENT_EXTRES - 1))) & \
+  ((a) + (((int32_t)ALIGNMENT_EXTRES - ((int32_t)(a) & (ALIGNMENT_EXTRES - 1))) & \
           (ALIGNMENT_EXTRES - 1)))
 
 /*!

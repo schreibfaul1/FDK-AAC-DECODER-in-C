@@ -184,7 +184,7 @@ typedef struct {
   UCHAR downmixIdRequested[MAX_REQUESTS_DOWNMIX_ID];
   UCHAR targetLayoutRequested;
   UCHAR targetChannelCountRequested;
-  LONG audioSampleRate; /* needed for complexity estimation, currently not
+  int32_t audioSampleRate; /* needed for complexity estimation, currently not
                            supported */
 
   /* loudness normalization parameters */
@@ -196,7 +196,7 @@ typedef struct {
   METHOD_DEFINITION_REQUEST loudnessMeasurementMethod;
   MEASUREMENT_SYSTEM_REQUEST loudnessMeasurementSystem;
   LOUDNESS_PREPROCESSING_REQUEST loudnessMeasurementPreProc; /* not supported */
-  LONG deviceCutOffFrequency;                                /* not supported */
+  int32_t deviceCutOffFrequency;                                /* not supported */
   int32_t loudnessNormalizationGainDbMax;                   /* e = 7 */
   int32_t loudnessNormalizationGainModificationDb;          /* e = 7 */
   int32_t outputPeakLevelMax;                               /* e = 7 */

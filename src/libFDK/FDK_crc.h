@@ -125,18 +125,18 @@ typedef struct {
  */
 typedef struct {
   CCrcRegData crcRegData[MAX_CRC_REGS]; /*!< Multiple crc region description. */
-  const USHORT*
+  const uint16_t*
       pCrcLookup; /*!< Pointer to lookup table filled in FDK_crcInit(). */
 
-  USHORT crcPoly;    /*!< CRC generator polynom. */
-  USHORT crcMask;    /*!< CRC mask. */
-  USHORT startValue; /*!< CRC start value. */
+  uint16_t crcPoly;    /*!< CRC generator polynom. */
+  uint16_t crcMask;    /*!< CRC mask. */
+  uint16_t startValue; /*!< CRC start value. */
   UCHAR crcLen;      /*!< CRC length. */
 
   uint32_t regStart; /*!< Start region marker for synchronization. */
   uint32_t regStop;  /*!< Stop region marker for synchronization. */
 
-  USHORT crcValue; /*!< Crc value to be calculated. */
+  uint16_t crcValue; /*!< Crc value to be calculated. */
 
 } FDK_CRCINFO;
 
@@ -220,6 +220,6 @@ int32_t FDKcrcEndReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs
  *
  * \return  CRC value masked with crc length.
  */
-USHORT FDKcrcGetCRC(const HANDLE_FDK_CRCINFO hCrcInfo);
+uint16_t FDKcrcGetCRC(const HANDLE_FDK_CRCINFO hCrcInfo);
 
 #endif /* FDK_CRC_H */

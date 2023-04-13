@@ -114,7 +114,7 @@ amm-info@iis.fraunhofer.de
 extern "C" {
 #endif
 
-#define DRC_DEC_LOUDNESS_NOT_PRESENT (LONG)0x7FFFFFFE
+#define DRC_DEC_LOUDNESS_NOT_PRESENT (int32_t)0x7FFFFFFE
 
 typedef struct s_drc_decoder* HANDLE_DRC_DECODER;
 typedef struct s_uni_drc_interface* HANDLE_UNI_DRC_INTERFACE;
@@ -215,7 +215,7 @@ FDK_drcDec_SetParam(HANDLE_DRC_DECODER hDrcDec,
                     const DRC_DEC_USERPARAM requestType,
                     const int32_t requestValue);
 
-LONG FDK_drcDec_GetParam(HANDLE_DRC_DECODER hDrcDec,
+int32_t FDK_drcDec_GetParam(HANDLE_DRC_DECODER hDrcDec,
                          const DRC_DEC_USERPARAM requestType);
 
 DRC_DEC_ERROR
@@ -239,7 +239,7 @@ void FDK_drcDec_SetSelectionProcessOutput(
 HANDLE_SEL_PROC_OUTPUT
 FDK_drcDec_GetSelectionProcessOutput(HANDLE_DRC_DECODER hDrcDec);
 
-LONG /* int32_t, e = 7 */
+int32_t /* int32_t, e = 7 */
 FDK_drcDec_GetGroupLoudness(HANDLE_SEL_PROC_OUTPUT hSelProcOutput,
                             const int32_t groupID, int32_t* groupLoudnessAvailable);
 

@@ -604,13 +604,13 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
       E_high_exp[ksg] = 0;
 
       /* residual part */
-      accu = ((LONG)(SCHAR)*pTab2++) << (DFRACT_BITS - 8 - PVC_ESG_EXP - 2 +
+      accu = ((int32_t)(SCHAR)*pTab2++) << (DFRACT_BITS - 8 - PVC_ESG_EXP - 2 +
                                          pPvcDynamicData->pScalingCoef[3]);
 
       /* linear combination of lower grouped energies part */
       for (kb = 0; kb < PVC_NBLOW; kb++) {
         predCoeff = (FIXP_SGL)(
-            (SHORT)(SCHAR)pTab1[kb * pPvcDynamicData->nbHigh + ksg] << 8);
+            (int16_t)(SCHAR)pTab1[kb * pPvcDynamicData->nbHigh + ksg] << 8);
         predCoeff_exp = -(pPvcDynamicData->pScalingCoef[kb] + 1 -
                           2); /* +1 to compensate for Div2; -2 for accu */
         accu += fMultDiv2(E[kb], predCoeff) >> predCoeff_exp;

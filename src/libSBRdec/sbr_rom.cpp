@@ -162,7 +162,7 @@ const UCHAR FDK_sbrDecoder_sbr_start_freq_128[16] = {
 */
 //@{
 /*! Assignment of whitening tuning depending on the crossover frequency */
-const USHORT FDK_sbrDecoder_sbr_whFactorsIndex[NUM_WHFACTOR_TABLE_ENTRIES] = {
+const uint16_t FDK_sbrDecoder_sbr_whFactorsIndex[NUM_WHFACTOR_TABLE_ENTRIES] = {
     0, 5000, 6000, 6500, 7000, 7500, 8000, 9000, 10000};
 
 /*!

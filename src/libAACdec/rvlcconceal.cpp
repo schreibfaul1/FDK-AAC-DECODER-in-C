@@ -438,7 +438,7 @@ void BidirectionalEstimation_UseScfOfPrevFrameAsReference(
   int32_t conceal_min, conceal_max;
   int32_t conceal_group_min, conceal_group_max;
   int32_t MaximumScaleFactorBands;
-  SHORT commonMin;
+  int16_t commonMin;
 
   if (GetWindowSequence(&pAacDecoderChannelInfo->icsInfo) == BLOCK_SHORT) {
     MaximumScaleFactorBands = 16;
@@ -718,7 +718,7 @@ void PredictiveInterpolation(
   CErRvlcInfo *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
   int32_t band, bnds, group;
-  SHORT commonMin;
+  int16_t commonMin;
 
   for (group = 0; group < pRvlc->numWindowGroups; group++) {
     for (band = 0; band < pRvlc->maxSfbTransmitted; band++) {

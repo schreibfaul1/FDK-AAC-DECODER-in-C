@@ -824,10 +824,10 @@ void qmfChangeOutGain(
 #undef FIXP_QAS
 #undef QAS_BITS
 #undef INT_PCM_QMFIN
-#define INT_PCM_QMFOUT LONG
+#define INT_PCM_QMFOUT int32_t
 #define SAMPLE_BITS_QMFOUT 32
 #define FIXP_QAS int32_t
 #define QAS_BITS 32
-#define INT_PCM_QMFIN LONG
+#define INT_PCM_QMFIN int32_t
 #include "qmf_pcm.h"
 #endif

@@ -137,7 +137,7 @@ void drmRead_CrcEndReg(
 
 TRANSPORTDEC_ERROR drmRead_CrcCheck(HANDLE_DRM pDrm) {
   TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
-  USHORT crc;
+  uint16_t crc;
 
   crc = FDKcrcGetCRC(&pDrm->crcInfo) ^ 0xFF;
   if (crc != pDrm->crcReadValue) {

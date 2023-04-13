@@ -106,61 +106,61 @@ change
 /* library version */
 #include "version.h"
 
-void FDK_interleave(const int32_t *RESTRICT pIn, LONG *RESTRICT pOut,
+void FDK_interleave(const int32_t *RESTRICT pIn, int32_t *RESTRICT pOut,
                     const uint32_t channels, const uint32_t frameSize,
                     const uint32_t length) {
   for (uint32_t sample = 0; sample < length; sample++) {
     const int32_t *In = &pIn[sample];
     for (uint32_t ch = 0; ch < channels; ch++) {
-      *pOut++ = (LONG)In[0];
+      *pOut++ = (int32_t)In[0];
       In += frameSize;
     }
   }
 }
 
-void FDK_interleave(const int32_t *RESTRICT pIn, SHORT *RESTRICT pOut,
+void FDK_interleave(const int32_t *RESTRICT pIn, int16_t *RESTRICT pOut,
                     const uint32_t channels, const uint32_t frameSize,
                     const uint32_t length) {
   for (uint32_t sample = 0; sample < length; sample++) {
     const int32_t *In = &pIn[sample];
     for (uint32_t ch = 0; ch < channels; ch++) {
-      *pOut++ = (SHORT)FX_DBL2FX_SGL(In[0]);
+      *pOut++ = (int16_t)FX_DBL2FX_SGL(In[0]);
       In += frameSize;
     }
   }
 }
 
-void FDK_interleave(const FIXP_SGL *RESTRICT pIn, SHORT *RESTRICT pOut,
+void FDK_interleave(const FIXP_SGL *RESTRICT pIn, int16_t *RESTRICT pOut,
                     const uint32_t channels, const uint32_t frameSize,
                     const uint32_t length) {
   for (uint32_t sample = 0; sample < length; sample++) {
     const FIXP_SGL *In = &pIn[sample];
     for (uint32_t ch = 0; ch < channels; ch++) {
-      *pOut++ = (SHORT)In[0];
+      *pOut++ = (int16_t)In[0];
       In += frameSize;
     }
   }
 }
 
-void FDK_deinterleave(const LONG *RESTRICT pIn, SHORT *RESTRICT _pOut,
+void FDK_deinterleave(const int32_t *RESTRICT pIn, int16_t *RESTRICT _pOut,
                       const uint32_t channels, const uint32_t frameSize,
                       const uint32_t length) {
   for (uint32_t ch = 0; ch < channels; ch++) {
-    SHORT *pOut = _pOut + length * ch;
-    const LONG *In = &pIn[ch];
+    int16_t *pOut = _pOut + length * ch;
+    const int32_t *In = &pIn[ch];
     for (uint32_t sample = 0; sample < frameSize; sample++) {
-      *pOut++ = (SHORT)(In[0] >> 16);
+      *pOut++ = (int16_t)(In[0] >> 16);
       In += channels;
     }
   }
 }
 
-void FDK_deinterleave(const LONG *RESTRICT pIn, LONG *RESTRICT _pOut,
+void FDK_deinterleave(const int32_t *RESTRICT pIn, int32_t *RESTRICT _pOut,
                       const uint32_t channels, const uint32_t frameSize,
                       const uint32_t length) {
   for (uint32_t ch = 0; ch < channels; ch++) {
-    LONG *pOut = _pOut + length * ch;
-    const LONG *In = &pIn[ch];
+    int32_t *pOut = _pOut + length * ch;
+    const int32_t *In = &pIn[ch];
     for (uint32_t sample = 0; sample < frameSize; sample++) {
       *pOut++ = In[0];
       In += channels;
@@ -168,12 +168,12 @@ void FDK_deinterleave(const LONG *RESTRICT pIn, LONG *RESTRICT _pOut,
   }
 }
 
-void FDK_deinterleave(const SHORT *RESTRICT pIn, SHORT *RESTRICT _pOut,
+void FDK_deinterleave(const int16_t *RESTRICT pIn, int16_t *RESTRICT _pOut,
                       const uint32_t channels, const uint32_t frameSize,
                       const uint32_t length) {
   for (uint32_t ch = 0; ch < channels; ch++) {
-    SHORT *pOut = _pOut + length * ch;
-    const SHORT *In = &pIn[ch];
+    int16_t *pOut = _pOut + length * ch;
+    const int16_t *In = &pIn[ch];
     for (uint32_t sample = 0; sample < frameSize; sample++) {
       *pOut++ = In[0];
       In += channels;
@@ -181,14 +181,14 @@ void FDK_deinterleave(const SHORT *RESTRICT pIn, SHORT *RESTRICT _pOut,
   }
 }
 
-void FDK_deinterleave(const SHORT *RESTRICT pIn, LONG *RESTRICT _pOut,
+void FDK_deinterleave(const int16_t *RESTRICT pIn, int32_t *RESTRICT _pOut,
                       const uint32_t channels, const uint32_t frameSize,
                       const uint32_t length) {
   for (uint32_t ch = 0; ch < channels; ch++) {
-    LONG *pOut = _pOut + length * ch;
-    const SHORT *In = &pIn[ch];
+    int32_t *pOut = _pOut + length * ch;
+    const int16_t *In = &pIn[ch];
     for (uint32_t sample = 0; sample < frameSize; sample++) {
-      *pOut++ = (LONG)In[0] << 16;
+      *pOut++ = (int32_t)In[0] << 16;
       In += channels;
     }
   }

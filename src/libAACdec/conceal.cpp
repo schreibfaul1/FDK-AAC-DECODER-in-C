@@ -198,11 +198,11 @@ static void CConcealment_CalcBandEnergy(
     const int32_t blockType, CConcealmentExpandType ex, int32_t *sfbEnergy);
 
 static void CConcealment_InterpolateBuffer(int32_t *spectrum,
-                                           SHORT *pSpecScalePrev,
-                                           SHORT *pSpecScaleAct,
-                                           SHORT *pSpecScaleOut, int32_t *enPrv,
+                                           int16_t *pSpecScalePrev,
+                                           int16_t *pSpecScaleAct,
+                                           int16_t *pSpecScaleOut, int32_t *enPrv,
                                            int32_t *enAct, int32_t sfbCnt,
-                                           const SHORT *pSfbOffset);
+                                           const int16_t *pSfbOffset);
 
 static int32_t CConcealment_ApplyInter(
     CConcealmentInfo *pConcealmentInfo,
@@ -241,7 +241,7 @@ static int32_t CConcealment_ApplyFadeOut(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
     const int32_t samplesPerFrame, CAacDecoderChannelInfo *pAacDecoderChannelInfo);
 
-static int32_t CConcealment_TDNoise_Random(ULONG *seed);
+static int32_t CConcealment_TDNoise_Random(uint32_t *seed);
 static void CConcealment_TDNoise_Apply(CConcealmentInfo *const pConcealmentInfo,
                                        const int32_t len,
                                        const int32_t aacOutDataHeadroom,
@@ -250,7 +250,7 @@ static void CConcealment_TDNoise_Apply(CConcealmentInfo *const pConcealmentInfo,
 static BLOCK_TYPE CConcealment_GetWinSeq(int32_t prevWinSeq) {
   BLOCK_TYPE newWinSeq = BLOCK_LONG;
 
-  /* Try to have only long blocks */
+  /* Try to have only int32_t blocks */
   if (prevWinSeq == BLOCK_START || prevWinSeq == BLOCK_SHORT) {
     newWinSeq = BLOCK_STOP;
   }
@@ -464,8 +464,8 @@ CConcealment_SetParams(CConcealParams *concealParams, int32_t method,
 */
 AAC_DECODER_ERROR
 CConcealment_SetAttenuation(CConcealParams *concealParams,
-                            const SHORT *fadeOutAttenuationVector,
-                            const SHORT *fadeInAttenuationVector) {
+                            const int16_t *fadeOutAttenuationVector,
+                            const int16_t *fadeInAttenuationVector) {
   if ((fadeOutAttenuationVector == NULL) && (fadeInAttenuationVector == NULL)) {
     return AAC_DEC_SET_PARAM_FAIL;
   }
@@ -558,10 +558,10 @@ void CConcealment_Store(
   {
     int32_t *pSpectralCoefficient =
         SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
-    SHORT *pSpecScale = pAacDecoderChannelInfo->specScale;
+    int16_t *pSpecScale = pAacDecoderChannelInfo->specScale;
     CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
 
-    SHORT tSpecScale[8];
+    int16_t tSpecScale[8];
     UCHAR tWindowShape;
     BLOCK_TYPE tWindowSequence;
 
@@ -570,7 +570,7 @@ void CConcealment_Store(
     tWindowShape = hConcealmentInfo->windowShape;
 
     /* store old scale factors for swapping */
-    FDKmemcpy(tSpecScale, hConcealmentInfo->specScale, 8 * sizeof(SHORT));
+    FDKmemcpy(tSpecScale, hConcealmentInfo->specScale, 8 * sizeof(int16_t));
 
     /* store new window infos */
     hConcealmentInfo->windowSequence = GetWindowSequence(pIcsInfo);
@@ -579,7 +579,7 @@ void CConcealment_Store(
         *(GetWindowGroupLengthTable(pIcsInfo) + GetWindowGroups(pIcsInfo) - 1);
 
     /* store new scale factors */
-    FDKmemcpy(hConcealmentInfo->specScale, pSpecScale, 8 * sizeof(SHORT));
+    FDKmemcpy(hConcealmentInfo->specScale, pSpecScale, 8 * sizeof(int16_t));
 
     if (hConcealmentInfo->pConcealParams->method < ConcealMethodInter) {
     /* store new spectral bins */
@@ -623,7 +623,7 @@ void CConcealment_Store(
       pIcsInfo->WindowShape = tWindowShape;
 
       /* complete swapping of scale factors */
-      FDKmemcpy(pSpecScale, tSpecScale, 8 * sizeof(SHORT));
+      FDKmemcpy(pSpecScale, tSpecScale, 8 * sizeof(int16_t));
     }
   }
 
@@ -750,7 +750,7 @@ int32_t CConcealment_Apply(
       /* simply restore the buffer */
       int32_t *pSpectralCoefficient =
           SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
-      SHORT *pSpecScale = pAacDecoderChannelInfo->specScale;
+      int16_t *pSpecScale = pAacDecoderChannelInfo->specScale;
       CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
 #if (CNCL_FRACT_BITS != DFRACT_BITS)
       FIXP_CNCL *RESTRICT pCncl =
@@ -765,7 +765,7 @@ int32_t CConcealment_Apply(
 
       if (hConcealmentInfo->concealState != ConcealState_Mute) {
         /* restore scale factors */
-        FDKmemcpy(pSpecScale, hConcealmentInfo->specScale, 8 * sizeof(SHORT));
+        FDKmemcpy(pSpecScale, hConcealmentInfo->specScale, 8 * sizeof(int16_t));
 
         /* restore spectral bins */
 #if (CNCL_FRACT_BITS == DFRACT_BITS)
@@ -778,7 +778,7 @@ int32_t CConcealment_Apply(
 #endif
       } else {
         /* clear scale factors */
-        FDKmemclear(pSpecScale, 8 * sizeof(SHORT));
+        FDKmemclear(pSpecScale, 8 * sizeof(int16_t));
 
         /* clear buffer */
         FDKmemclear(pSpectralCoefficient, 1024 * sizeof(FIXP_CNCL));
@@ -882,7 +882,7 @@ static int32_t CConcealment_ApplyInter(
   int32_t *pSpectralCoefficient =
       SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
   CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
-  SHORT *pSpecScale = pAacDecoderChannelInfo->specScale;
+  int16_t *pSpecScale = pAacDecoderChannelInfo->specScale;
 
   int32_t sfbEnergyPrev[64];
   int32_t sfbEnergyAct[64];
@@ -905,7 +905,7 @@ static int32_t CConcealment_ApplyInter(
     }
 
     /* Restore scale factors */
-    FDKmemcpy(pSpecScale, pConcealmentInfo->specScale, 8 * sizeof(SHORT));
+    FDKmemcpy(pSpecScale, pConcealmentInfo->specScale, 8 * sizeof(int16_t));
   }
 
   /* if previous frame was not ok */
@@ -921,18 +921,18 @@ static int32_t CConcealment_ApplyInter(
        * (f_(n-1)). */
       if (pIcsInfo->WindowSequence == BLOCK_SHORT) {
         /* f_(n-2) == BLOCK_SHORT */
-        /* short--??????--short, short--??????--long interpolation */
-        /* short--short---short, short---long---long interpolation */
+        /* int16_t--??????--int16_t, int16_t--??????--int32_t interpolation */
+        /* int16_t--int16_t---int16_t, int16_t---int32_t---int32_t interpolation */
 
         int32_t wnd;
 
         if (pConcealmentInfo->windowSequence ==
             BLOCK_SHORT) { /* f_n == BLOCK_SHORT */
-          /* short--short---short interpolation */
+          /* int16_t--int16_t---int16_t interpolation */
 
           int32_t scaleFactorBandsTotal =
               pSamplingRateInfo->NumberOfScaleFactorBands_Short;
-          const SHORT *pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Short;
+          const int16_t *pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Short;
           pIcsInfo->WindowShape = (samplesPerFrame <= 512) ? 2 : 1;
           pIcsInfo->WindowSequence = BLOCK_SHORT;
 
@@ -957,12 +957,12 @@ static int32_t CConcealment_ApplyInter(
                 scaleFactorBandsTotal, pSfbOffset);
           }
         } else { /* f_n != BLOCK_SHORT */
-          /* short---long---long interpolation */
+          /* int16_t---int32_t---int32_t interpolation */
 
           int32_t scaleFactorBandsTotal =
               pSamplingRateInfo->NumberOfScaleFactorBands_Long;
-          const SHORT *pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
-          SHORT specScaleOut;
+          const int16_t *pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
+          int16_t specScaleOut;
 
           CConcealment_CalcBandEnergy(
               &pSpectralCoefficient[samplesPerFrame -
@@ -998,13 +998,13 @@ static int32_t CConcealment_ApplyInter(
           pSpecScale[0] = specScaleOut;
         }
       } else {
-        /* long--??????--short, long--??????--long interpolation */
-        /* long---long---short, long---long---long interpolation */
+        /* int32_t--??????--int16_t, int32_t--??????--int32_t interpolation */
+        /* int32_t---int32_t---int16_t, int32_t---int32_t---int32_t interpolation */
 
         int32_t scaleFactorBandsTotal =
             pSamplingRateInfo->NumberOfScaleFactorBands_Long;
-        const SHORT *pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
-        SHORT specScaleAct = pConcealmentInfo->specScale[0];
+        const int16_t *pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
+        int16_t specScaleAct = pConcealmentInfo->specScale[0];
 
         CConcealment_CalcBandEnergy(pSpectralCoefficient, /* spec_(n-2) */
                                     pSamplingRateInfo, BLOCK_LONG,
@@ -1012,7 +1012,7 @@ static int32_t CConcealment_ApplyInter(
 
         if (pConcealmentInfo->windowSequence ==
             BLOCK_SHORT) { /* f_n == BLOCK_SHORT */
-          /* long---long---short interpolation */
+          /* int32_t---int32_t---int16_t interpolation */
 
           pIcsInfo->WindowShape = (samplesPerFrame <= 512) ? 2 : 1;
           pIcsInfo->WindowSequence = BLOCK_START;
@@ -1023,13 +1023,13 @@ static int32_t CConcealment_ApplyInter(
             }
           }
 
-          /* Expand first short spectrum */
+          /* Expand first int16_t spectrum */
           CConcealment_CalcBandEnergy(
               pConcealmentInfo->spectralCoefficient,               /* spec_n */
               pSamplingRateInfo, BLOCK_SHORT, CConcealment_Expand, /* !!! */
               sfbEnergyAct);
         } else {
-          /* long---long---long interpolation */
+          /* int32_t---int32_t---int32_t interpolation */
 
           pIcsInfo->WindowShape = 0;
           pIcsInfo->WindowSequence = BLOCK_LONG;
@@ -1124,7 +1124,7 @@ static int32_t CConcealment_ApplyInter(
 static void CConcealment_CalcBandEnergy(
     int32_t *spectrum, const SamplingRateInfo *pSamplingRateInfo,
     const int32_t blockType, CConcealmentExpandType expandType, int32_t *sfbEnergy) {
-  const SHORT *pSfbOffset;
+  const int16_t *pSfbOffset;
   int32_t line, sfb, scaleFactorBandsTotal = 0;
 
   /* In the following calculations, enAccu is initialized with LSB-value in
@@ -1138,15 +1138,15 @@ static void CConcealment_CalcBandEnergy(
     case BLOCK_STOP:
 
       if (expandType == CConcealment_NoExpand) {
-        /* standard long calculation */
+        /* standard int32_t calculation */
         scaleFactorBandsTotal =
             pSamplingRateInfo->NumberOfScaleFactorBands_Long;
         pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
 
         for (sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
-          int32_t enAccu = (int32_t)(LONG)1;
+          int32_t enAccu = (int32_t)(int32_t)1;
           int32_t sfbScale =
-              (sizeof(LONG) << 3) -
+              (sizeof(int32_t) << 3) -
               CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
           /* scaling depends on sfb width. */
           for (; line < pSfbOffset[sfb + 1]; line++) {
@@ -1155,15 +1155,15 @@ static void CConcealment_CalcBandEnergy(
           *(sfbEnergy + sfb) = CntLeadingZeros(enAccu) - 1;
         }
       } else {
-        /* compress long to short */
+        /* compress int32_t to int16_t */
         scaleFactorBandsTotal =
             pSamplingRateInfo->NumberOfScaleFactorBands_Short;
         pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Short;
 
         for (sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
-          int32_t enAccu = (int32_t)(LONG)1;
+          int32_t enAccu = (int32_t)(int32_t)1;
           int32_t sfbScale =
-              (sizeof(LONG) << 3) -
+              (sizeof(int32_t) << 3) -
               CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
           /* scaling depends on sfb width. */
           for (; line < pSfbOffset[sfb + 1] << 3; line++) {
@@ -1178,15 +1178,15 @@ static void CConcealment_CalcBandEnergy(
     case BLOCK_SHORT:
 
       if (expandType == CConcealment_NoExpand) {
-        /*   standard short calculation */
+        /*   standard int16_t calculation */
         scaleFactorBandsTotal =
             pSamplingRateInfo->NumberOfScaleFactorBands_Short;
         pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Short;
 
         for (sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
-          int32_t enAccu = (int32_t)(LONG)1;
+          int32_t enAccu = (int32_t)(int32_t)1;
           int32_t sfbScale =
-              (sizeof(LONG) << 3) -
+              (sizeof(int32_t) << 3) -
               CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
           /* scaling depends on sfb width. */
           for (; line < pSfbOffset[sfb + 1]; line++) {
@@ -1195,15 +1195,15 @@ static void CConcealment_CalcBandEnergy(
           *(sfbEnergy + sfb) = CntLeadingZeros(enAccu) - 1;
         }
       } else {
-        /*  expand short to long spectrum */
+        /*  expand int16_t to int32_t spectrum */
         scaleFactorBandsTotal =
             pSamplingRateInfo->NumberOfScaleFactorBands_Long;
         pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
 
         for (sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
-          int32_t enAccu = (int32_t)(LONG)1;
+          int32_t enAccu = (int32_t)(int32_t)1;
           int32_t sfbScale =
-              (sizeof(LONG) << 3) -
+              (sizeof(int32_t) << 3) -
               CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
           /* scaling depends on sfb width. */
           for (; line < pSfbOffset[sfb + 1]; line++) {
@@ -1223,11 +1223,11 @@ static void CConcealment_CalcBandEnergy(
   energy of the last good frame and the current (good) frame.
 */
 static void CConcealment_InterpolateBuffer(int32_t *spectrum,
-                                           SHORT *pSpecScalePrv,
-                                           SHORT *pSpecScaleAct,
-                                           SHORT *pSpecScaleOut, int32_t *enPrv,
+                                           int16_t *pSpecScalePrv,
+                                           int16_t *pSpecScaleAct,
+                                           int16_t *pSpecScaleOut, int32_t *enPrv,
                                            int32_t *enAct, int32_t sfbCnt,
-                                           const SHORT *pSfbOffset) {
+                                           const int16_t *pSfbOffset) {
   int32_t sfb, line = 0;
   int32_t fac_shift;
   int32_t fac_mod;
@@ -1601,7 +1601,7 @@ static void CConcealment_UpdateState(
 static void CConcealment_ApplyRandomSign(int32_t randomPhase, int32_t *spec,
                                          int32_t samplesPerFrame) {
   int32_t i;
-  USHORT packedSign = 0;
+  uint16_t packedSign = 0;
 
   /* random table 512x16bit has been reduced to 512 packed sign bits = 32x16 bit
    */
@@ -1685,7 +1685,7 @@ static int32_t CConcealment_ApplyFadeOut(
   CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
   int32_t *pSpectralCoefficient =
       SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
-  SHORT *pSpecScale = pAacDecoderChannelInfo->specScale;
+  int16_t *pSpecScale = pAacDecoderChannelInfo->specScale;
 
   /* set old window parameters */
   if (pConcealmentInfo->lastRenderMode == AACDEC_RENDER_LPD) {
@@ -1714,7 +1714,7 @@ static int32_t CConcealment_ApplyFadeOut(
     pIcsInfo->WindowSequence = pConcealmentInfo->windowSequence;
 
     if (pConcealmentInfo->windowSequence == BLOCK_SHORT) {
-      /* short block handling */
+      /* int16_t block handling */
       numWindows = 8;
       windowLen = samplesPerFrame >> 3;
       srcGrpStart = numWindows - pConcealmentInfo->lastWinGrpLen;
@@ -2047,8 +2047,8 @@ static void CConcealment_TDFading_doLinearFadingSteps(int32_t *fadingSteps) {
 /* end of TimeDomainFading functions */
 
 /* derived from int32_t UsacRandomSign() */
-static int32_t CConcealment_TDNoise_Random(ULONG *seed) {
-  *seed = (ULONG)(((UINT64)(*seed) * 69069) + 5);
+static int32_t CConcealment_TDNoise_Random(uint32_t *seed) {
+  *seed = (uint32_t)(((uint64_t)(*seed) * 69069) + 5);
   return (int32_t)(*seed);
 }
 
@@ -2061,8 +2061,8 @@ static void CConcealment_TDNoise_Apply(CConcealmentInfo *const pConcealmentInfo,
   int32_t noiseValLong;
   FIXP_SGL *coef = pConcealmentInfo->TDNoiseCoef;
   int32_t TDNoiseAtt;
-  ULONG seed = pConcealmentInfo->TDNoiseSeed =
-      (ULONG)CConcealment_TDNoise_Random(&pConcealmentInfo->TDNoiseSeed) + 1;
+  uint32_t seed = pConcealmentInfo->TDNoiseSeed =
+      (uint32_t)CConcealment_TDNoise_Random(&pConcealmentInfo->TDNoiseSeed) + 1;
 
   TDNoiseAtt = pConcealmentInfo->pConcealParams->comfortNoiseLevel;
 

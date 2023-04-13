@@ -147,7 +147,7 @@ struct hbeTransposer {
   int32_t stopBand;
   int32_t bSbr41;
 
-  LONG *inBuf_F;
+  int32_t *inBuf_F;
   int32_t **qmfInBufReal_F;
   int32_t **qmfInBufImag_F;
 

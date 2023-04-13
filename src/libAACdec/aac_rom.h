@@ -143,8 +143,8 @@ extern const FIXP_WTB LowDelaySynthesis128[384];
 extern const FIXP_WTB LowDelaySynthesis120[360];
 
 typedef struct {
-  const SHORT *sfbOffsetLong;
-  const SHORT *sfbOffsetShort;
+  const int16_t *sfbOffsetLong;
+  const int16_t *sfbOffsetShort;
   UCHAR numberOfSfbLong;
   UCHAR numberOfSfbShort;
 } SFB_INFO;
@@ -155,7 +155,7 @@ extern const SFB_INFO sfbOffsetTables[5][16];
 enum { HuffmanBits = 2, HuffmanEntries = (1 << HuffmanBits) };
 
 typedef struct {
-  const USHORT (*CodeBook)[HuffmanEntries];
+  const uint16_t (*CodeBook)[HuffmanEntries];
   UCHAR Dimension;
   UCHAR numBits;
   UCHAR Offset;
@@ -180,7 +180,7 @@ extern const UCHAR aCbPriority[];
 extern const uint32_t *aHuffTable[];
 extern const SCHAR *aQuantTable[];
 
-extern const USHORT aLargestAbsoluteValue[];
+extern const uint16_t aLargestAbsoluteValue[];
 
 extern const uint32_t aHuffTreeRvlcEscape[];
 extern const uint32_t aHuffTreeRvlCodewds[];
@@ -198,7 +198,7 @@ extern const FIXP_TCC FDKaacDec_tnsCoeff4[16];
 extern const UCHAR FDKaacDec_tnsCoeff3_gain_ld[];
 extern const UCHAR FDKaacDec_tnsCoeff4_gain_ld[];
 
-extern const USHORT AacDec_randomSign[AAC_NF_NO_RANDOM_VAL / 16];
+extern const uint16_t AacDec_randomSign[AAC_NF_NO_RANDOM_VAL / 16];
 
 extern const int32_t pow2_div24minus1[47];
 extern const int32_t offsetTab[2][16];

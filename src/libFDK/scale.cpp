@@ -600,14 +600,14 @@ void scaleValuesWithFactor(int32_t *vector, int32_t factor, int32_t len,
  */
 #define FUNCTION_getScalefactorShort
 SCALE_INLINE
-int32_t getScalefactorShort(const SHORT *vector, /*!< Pointer to input vector */
+int32_t getScalefactorShort(const int16_t *vector, /*!< Pointer to input vector */
                         int32_t len              /*!< Length of input vector */
 ) {
   int32_t i;
-  SHORT temp, maxVal = 0;
+  int16_t temp, maxVal = 0;
 
   for (i = len; i != 0; i--) {
-    temp = (SHORT)(*vector++);
+    temp = (int16_t)(*vector++);
     maxVal |= (temp ^ (temp >> (SHORT_BITS - 1)));
   }
 
@@ -652,14 +652,14 @@ int32_t getScalefactorPCM(const INT_PCM *vector, /*!< Pointer to input vector */
  */
 #define FUNCTION_getScalefactorShort
 SCALE_INLINE
-int32_t getScalefactorShort(const SHORT *vector, /*!< Pointer to input vector */
+int32_t getScalefactorShort(const int16_t *vector, /*!< Pointer to input vector */
                         int32_t len,             /*!< Length of input vector */
                         int32_t stride) {
   int32_t i;
-  SHORT temp, maxVal = 0;
+  int16_t temp, maxVal = 0;
 
   for (i = len; i != 0; i--) {
-    temp = (SHORT)(*vector);
+    temp = (int16_t)(*vector);
     vector += stride;
     maxVal |= (temp ^ (temp >> (SHORT_BITS - 1)));
   }
@@ -693,8 +693,8 @@ int32_t getScalefactor(const int32_t *vector, /*!< Pointer to input vector */
   int32_t temp, maxVal = (int32_t)0;
 
   for (i = len; i != 0; i--) {
-    temp = (LONG)(*vector++);
-    maxVal |= (int32_t)((LONG)temp ^ (LONG)(temp >> (DFRACT_BITS - 1)));
+    temp = (int32_t)(*vector++);
+    maxVal |= (int32_t)((int32_t)temp ^ (int32_t)(temp >> (DFRACT_BITS - 1)));
   }
 
   return fixmax_I((int32_t)0, (int32_t)(fixnormz_D(maxVal) - 1));
@@ -708,10 +708,10 @@ int32_t getScalefactor(const FIXP_SGL *vector, /*!< Pointer to input vector */
                    int32_t len)                /*!< Length of input vector */
 {
   int32_t i;
-  SHORT temp, maxVal = (FIXP_SGL)0;
+  int16_t temp, maxVal = (FIXP_SGL)0;
 
   for (i = len; i != 0; i--) {
-    temp = (SHORT)(*vector++);
+    temp = (int16_t)(*vector++);
     maxVal |= (temp ^ (temp >> (FRACT_BITS - 1)));
   }
 

@@ -189,9 +189,9 @@ typedef struct {
                            channels. */
   UCHAR nBandsAnalysis_requested; /*!< Corresponding requested not yet active
                                      configuration parameter. */
-  USHORT nBandsSynthesis; /*!< Number of QMF synthesis bands for all output
+  uint16_t nBandsSynthesis; /*!< Number of QMF synthesis bands for all output
                              channels. */
-  USHORT
+  uint16_t
   nBandsSynthesis_requested; /*!< Corresponding requested not yet active
                                 configuration parameter. */
   UCHAR nQmfTimeSlots; /*!< Number of QMF time slots (stored in work buffer
@@ -236,8 +236,8 @@ typedef struct {
                                 CMPLX_MOD). */
   UCHAR workBuf_nBands;      /*!< Work buffer dimension for this channel is
                                 (workBuf_nTimeSlots * workBuf_nBands * CMPLX_MOD). */
-  USHORT workBufferOffset;   /*!< Offset within work buffer. */
-  USHORT workBufferSectSize; /*!< Size of work buffer section. */
+  uint16_t workBufferOffset;   /*!< Offset within work buffer. */
+  uint16_t workBufferSectSize; /*!< Size of work buffer section. */
   int32_t *
       pAnaQmfStates; /*!< Pointer to QMF analysis states (persistent memory). */
   int32_t

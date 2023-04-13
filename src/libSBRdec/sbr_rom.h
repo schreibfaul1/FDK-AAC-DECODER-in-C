@@ -137,7 +137,7 @@ extern const UCHAR FDK_sbrDecoder_sbr_start_freq_128[16];
   Low-Power-Profile Transposer
 */
 #define NUM_WHFACTOR_TABLE_ENTRIES 9
-extern const USHORT
+extern const uint16_t
     FDK_sbrDecoder_sbr_whFactorsIndex[NUM_WHFACTOR_TABLE_ENTRIES];
 extern const int32_t
     FDK_sbrDecoder_sbr_whFactorsTable[NUM_WHFACTOR_TABLE_ENTRIES][6];

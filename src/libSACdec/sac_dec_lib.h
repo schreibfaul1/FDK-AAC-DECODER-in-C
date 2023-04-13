@@ -252,7 +252,7 @@ typedef enum {
                 scenario. Default parameter value is 3 frames. */
 } SACDEC_PARAM;
 
-#define PCM_MPS LONG
+#define PCM_MPS int32_t
 
 /**
  * \brief MPEG Surround decoder handle.

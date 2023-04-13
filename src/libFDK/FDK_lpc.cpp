@@ -449,8 +449,8 @@ void CLpc_AutoToParcor(int32_t acorr[], const int32_t acorr_e,
 
   FDKmemcpy(workBuffer, acorr + 1, numOfCoeff * sizeof(int32_t));
   for (i = 0; i < numOfCoeff; i++) {
-    LONG sign = ((LONG)workBuffer[0] >> (DFRACT_BITS - 1));
-    int32_t tmp = (int32_t)((LONG)workBuffer[0] ^ sign);
+    int32_t sign = ((int32_t)workBuffer[0] >> (DFRACT_BITS - 1));
+    int32_t tmp = (int32_t)((int32_t)workBuffer[0] ^ sign);
 
     /* Check preconditions for division function: num<=denum             */
     /* For 1st iteration acorr[0] cannot be 0, it is checked before loop */
@@ -458,7 +458,7 @@ void CLpc_AutoToParcor(int32_t acorr[], const int32_t acorr_e,
     if (acorr[0] < tmp) break;
 
     /* tmp = div(num, denum, 16) */
-    tmp = (int32_t)((LONG)schur_div(tmp, acorr[0], FRACT_BITS) ^ (~sign));
+    tmp = (int32_t)((int32_t)schur_div(tmp, acorr[0], FRACT_BITS) ^ (~sign));
 
     reflCoeff[i] = FX_DBL2FX_LPC(tmp);
 

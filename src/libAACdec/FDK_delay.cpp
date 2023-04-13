@@ -106,7 +106,7 @@ amm-info@iis.fraunhofer.de
 
 #define MAX_FRAME_LENGTH (1024)
 
-int32_t FDK_Delay_Create(FDK_SignalDelay* data, const USHORT delay,
+int32_t FDK_Delay_Create(FDK_SignalDelay* data, const uint16_t delay,
                      const UCHAR num_channels) {
   FDK_ASSERT(data != NULL);
   FDK_ASSERT(num_channels > 0);

@@ -373,7 +373,7 @@ void drcDec_GainDecoder_SetChannelGains(HANDLE_DRC_GAIN_DECODER hGainDec,
         if (frameSize == 1024)
           stepsize = stepsize >> 10;
         else
-          stepsize = (LONG)stepsize / frameSize;
+          stepsize = (int32_t)stepsize / frameSize;
       }
       n_min = 9 - n_min;
 #ifdef FUNCTION_drcDec_GainDecoder_SetChannelGains_func1

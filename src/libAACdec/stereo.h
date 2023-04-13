@@ -139,8 +139,8 @@ typedef struct {
   UCHAR use_prev_frame;  // 0 = use current frame for MDST estimation, 1 = use
                          // current and previous frame
 
-  SHORT alpha_q_re[JointStereoMaximumGroups][JointStereoMaximumBands];
-  SHORT alpha_q_im[JointStereoMaximumGroups][JointStereoMaximumBands];
+  int16_t alpha_q_re[JointStereoMaximumGroups][JointStereoMaximumBands];
+  int16_t alpha_q_im[JointStereoMaximumGroups][JointStereoMaximumBands];
 } CCplxPredictionData;
 
 /* joint stereo scratch memory (valid for this frame) */
@@ -159,7 +159,7 @@ typedef struct {
   /* The following array and variable are needed for the case  when INF is
    * active */
   int32_t store_dmx_re_prev[1024];
-  SHORT store_dmx_re_prev_e;
+  int16_t store_dmx_re_prev_e;
 
 } CJointStereoData;
 
@@ -175,10 +175,10 @@ typedef struct {
   int32_t
   *spectralCoeffs[2]; /* spectral coefficients of this channel utilized by
                          complex stereo prediction */
-  SHORT *specScale[2];
+  int16_t *specScale[2];
 
-  SHORT alpha_q_re_prev[JointStereoMaximumGroups][JointStereoMaximumBands];
-  SHORT alpha_q_im_prev[JointStereoMaximumGroups][JointStereoMaximumBands];
+  int16_t alpha_q_re_prev[JointStereoMaximumGroups][JointStereoMaximumBands];
+  int16_t alpha_q_im_prev[JointStereoMaximumGroups][JointStereoMaximumBands];
 
   UCHAR winSeqPrev;
   UCHAR winShapePrev;

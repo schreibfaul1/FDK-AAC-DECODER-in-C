@@ -108,6 +108,7 @@ amm-info@iis.fraunhofer.de
 #ifndef TRANSCENDENT_H
 #define TRANSCENDENT_H
 
+#include <stdint.h>
 #include "sbrdecoder.h"
 #include "sbr_rom.h"
 
@@ -124,7 +125,7 @@ amm-info@iis.fraunhofer.de
 static inline FIXP_SGL FDK_getNumOctavesDiv8(int32_t a, /*!< lower band */
                                              int32_t b) /*!< upper band */
 {
-  return ((SHORT)((LONG)(CalcLdInt(b) - CalcLdInt(a)) >> (FRACT_BITS - 3)));
+  return ((int16_t)((int32_t)(CalcLdInt(b) - CalcLdInt(a)) >> (FRACT_BITS - 3)));
 }
 
 /************************************************************************/
@@ -256,7 +257,7 @@ static inline void FDK_divide_MantExp(
   */
   shift = (FRACT_BITS - 2 - INV_TABLE_BITS - preShift);
 
-  index = (shift < 0) ? (LONG)b_m << (-shift) : (LONG)b_m >> shift;
+  index = (shift < 0) ? (int32_t)b_m << (-shift) : (int32_t)b_m >> shift;
 
   /* The index has INV_TABLE_BITS +1 valid bits here. Clear the other bits. */
   index &= (1 << (INV_TABLE_BITS + 1)) - 1;
@@ -312,7 +313,7 @@ static inline void FDK_divide_MantExp(
   */
   shift = (DFRACT_BITS - 2 - INV_TABLE_BITS - preShift);
 
-  index = (shift < 0) ? (LONG)b_m << (-shift) : (LONG)b_m >> shift;
+  index = (shift < 0) ? (int32_t)b_m << (-shift) : (int32_t)b_m >> shift;
 
   /* The index has INV_TABLE_BITS +1 valid bits here. Clear the other bits. */
   index &= (1 << (INV_TABLE_BITS + 1)) - 1;

@@ -106,26 +106,26 @@ change
 
 #include "../libFDK/common_fix.h"
 
-void FDK_interleave(const int32_t *RESTRICT pIn, LONG *RESTRICT pOut,
+void FDK_interleave(const int32_t *RESTRICT pIn, int32_t *RESTRICT pOut,
                     const uint32_t channels, const uint32_t frameSize,
                     const uint32_t length);
-void FDK_interleave(const int32_t *RESTRICT pIn, SHORT *RESTRICT pOut,
+void FDK_interleave(const int32_t *RESTRICT pIn, int16_t *RESTRICT pOut,
                     const uint32_t channels, const uint32_t frameSize,
                     const uint32_t length);
-void FDK_interleave(const FIXP_SGL *RESTRICT pIn, SHORT *RESTRICT pOut,
+void FDK_interleave(const FIXP_SGL *RESTRICT pIn, int16_t *RESTRICT pOut,
                     const uint32_t channels, const uint32_t frameSize,
                     const uint32_t length);
 
-void FDK_deinterleave(const LONG *RESTRICT pIn, SHORT *RESTRICT pOut,
+void FDK_deinterleave(const int32_t *RESTRICT pIn, int16_t *RESTRICT pOut,
                       const uint32_t channels, const uint32_t frameSize,
                       const uint32_t length);
-void FDK_deinterleave(const LONG *RESTRICT pIn, LONG *RESTRICT pOut,
+void FDK_deinterleave(const int32_t *RESTRICT pIn, int32_t *RESTRICT pOut,
                       const uint32_t channels, const uint32_t frameSize,
                       const uint32_t length);
-void FDK_deinterleave(const SHORT *RESTRICT pIn, SHORT *RESTRICT pOut,
+void FDK_deinterleave(const int16_t *RESTRICT pIn, int16_t *RESTRICT pOut,
                       const uint32_t channels, const uint32_t frameSize,
                       const uint32_t length);
-void FDK_deinterleave(const SHORT *RESTRICT pIn, LONG *RESTRICT pOut,
+void FDK_deinterleave(const int16_t *RESTRICT pIn, int32_t *RESTRICT pOut,
                       const uint32_t channels, const uint32_t frameSize,
                       const uint32_t length);
 #endif /* !defined(PCM_UTILS_H) */

@@ -188,7 +188,7 @@ AAC_DECODER_ERROR CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData,
         nextstopband = filter->StartBand;
 
         if (flags & (AC_USAC | AC_RSVD50 | AC_RSV603DA)) {
-          /* max(Order) = 15 (long), 7 (short) */
+          /* max(Order) = 15 (int32_t), 7 (int16_t) */
           filter->Order = order = (UCHAR)FDKreadBits(bs, isLongFlag ? 4 : 3);
         } else {
           filter->Order = order = (UCHAR)FDKreadBits(bs, isLongFlag ? 5 : 3);

@@ -135,7 +135,7 @@ the DCT IV for processing.
 int32_t mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
                const int32_t noInSamples, int32_t *RESTRICT mdctData,
                const int32_t nSpec, const int32_t tl, const FIXP_WTP *pRightWindowPart,
-               const int32_t fr, SHORT *pMdctData_e) {
+               const int32_t fr, int16_t *pMdctData_e) {
   int32_t i, n;
   /* tl: transform length
      fl: left window slope length
@@ -256,7 +256,7 @@ int32_t mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
     /* We pass the shortened folded data (-D-Cr,A-Br) to the MDCT function */
     dct_IV(mdctData, tl, &mdctData_e);
 
-    pMdctData_e[n] = (SHORT)mdctData_e;
+    pMdctData_e[n] = (int16_t)mdctData_e;
 
     timeData += tl;
     mdctData += tl;
@@ -463,7 +463,7 @@ Once we have obtained the C and D segments the overlap buffer is emptied and the
 current buffer is sent in it, so that the E and F segments are available for
 decoding in the next algorithm pass.*/
 int32_t imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
-               const SHORT scalefactor[], const int32_t nSpec,
+               const int16_t scalefactor[], const int32_t nSpec,
                const int32_t noOutSamples, const int32_t tl, const FIXP_WTP *wls,
                int32_t fl, const FIXP_WTP *wrs, const int32_t fr, int32_t gain,
                int32_t flags) {
@@ -565,7 +565,7 @@ int32_t imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
 
     /* NR output samples 0 .. NR. -overlap[TL/2..TL/2-NR] */
     if ((hMdct->pFacZir != 0) && (hMdct->prev_nr == fl / 2)) {
-      /* In the case of ACELP -> TCX20 -> FD short add FAC ZIR on nr signal part
+      /* In the case of ACELP -> TCX20 -> FD int16_t add FAC ZIR on nr signal part
        */
       for (i = 0; i < hMdct->prev_nr; i++) {
         int32_t x = -(*pOvl--);

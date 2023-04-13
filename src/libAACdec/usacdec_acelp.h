@@ -120,11 +120,11 @@ typedef struct {
   int32_t de_emph_mem;
   FIXP_SGL past_gpit;
   int32_t past_gcode;
-  USHORT old_T0;
+  uint16_t old_T0;
   UCHAR old_T0_frac;
   int32_t deemph_mem_wsyn;
   int32_t wsyn_rms;
-  SHORT seed_ace;
+  int16_t seed_ace;
 } CAcelpStaticMem;
 
 /** Structure which holds the parameter data needed to decode one ACELP frame.
@@ -134,11 +134,11 @@ typedef struct {
   acelp_core_mode;   /**< mean excitation energy index for whole ACELP frame
                       */
   UCHAR mean_energy; /**< acelp core mode for whole ACELP frame */
-  USHORT T0[NB_SUBFR];
+  uint16_t T0[NB_SUBFR];
   UCHAR T0_frac[NB_SUBFR];
   UCHAR ltp_filtering_flag[NB_SUBFR]; /**< controlls whether LTP postfilter is
                                          active for each ACELP subframe */
-  SHORT icb_index[NB_SUBFR]
+  int16_t icb_index[NB_SUBFR]
                  [8]; /**< innovative codebook index for each ACELP subframe */
   UCHAR gains[NB_SUBFR]; /**< gain index for each ACELP subframe */
 } CAcelpChannelData;
@@ -266,15 +266,15 @@ void CLpd_Acelp_Zir(const FIXP_LPC A[], const int32_t A_exp,
  */
 int32_t *CLpd_ACELP_GetFreeExcMem(CAcelpStaticMem *acelp_mem, int32_t length);
 
-void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, SHORT *pitch,
+void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, int16_t *pitch,
                        const FIXP_LPC lsp_old[M_LP_FILTER_ORDER],
                        const FIXP_LPC lsp_new[M_LP_FILTER_ORDER],
                        const FIXP_SGL stab_fac, int32_t numLostSubframes,
                        int32_t synth[], int32_t coreCoderFrameLength,
                        UCHAR last_tcx_noise_factor);
 
-inline SHORT E_UTIL_random(SHORT *seed) {
-  *seed = (SHORT)((((LONG)*seed * (LONG)31821) >> 1) + (LONG)13849);
+inline int16_t E_UTIL_random(int16_t *seed) {
+  *seed = (int16_t)((((int32_t)*seed * (int32_t)31821) >> 1) + (int32_t)13849);
   return (*seed);
 }
 

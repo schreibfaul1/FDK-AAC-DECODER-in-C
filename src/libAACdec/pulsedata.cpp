@@ -105,8 +105,8 @@ amm-info@iis.fraunhofer.de
 #include "channelinfo.h"
 
 int32_t CPulseData_Read(HANDLE_FDK_BITSTREAM bs, CPulseData *const PulseData,
-                    const SHORT *sfb_startlines, const void *pIcsInfo,
-                    const SHORT frame_length) {
+                    const int16_t *sfb_startlines, const void *pIcsInfo,
+                    const int16_t frame_length) {
   int32_t i, k = 0;
   const uint32_t MaxSfBands =
       GetScaleFactorBandsTransmitted((const CIcsInfo *)pIcsInfo);
@@ -144,7 +144,7 @@ int32_t CPulseData_Read(HANDLE_FDK_BITSTREAM bs, CPulseData *const PulseData,
 
 void CPulseData_Apply(
     CPulseData *PulseData, /*!< pointer to pulse data side info */
-    const short
+    const int16_t
         *pScaleFactorBandOffsets, /*!< pointer to scalefactor band offsets */
     int32_t *coef)               /*!< pointer to spectrum */
 {

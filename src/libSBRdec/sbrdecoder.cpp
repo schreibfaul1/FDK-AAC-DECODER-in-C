@@ -1048,8 +1048,8 @@ static SBRDEC_DRC_CHANNEL *sbrDecoder_drcGetChannel(
 SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, int32_t ch,
                                     uint32_t numBands, int32_t *pNextFact_mag,
                                     int32_t nextFact_exp,
-                                    SHORT drcInterpolationScheme,
-                                    UCHAR winSequence, USHORT *pBandTop) {
+                                    int16_t drcInterpolationScheme,
+                                    UCHAR winSequence, uint16_t *pBandTop) {
   SBRDEC_DRC_CHANNEL *pSbrDrcChannelData = NULL;
   int32_t band, isValidData = 0;
 
@@ -1113,7 +1113,7 @@ void sbrDecoder_drcDisable(HANDLE_SBRDECODER self, int32_t ch) {
 }
 
 SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
-                           UCHAR *pDrmBsBuffer, USHORT drmBsBufferSize,
+                           UCHAR *pDrmBsBuffer, uint16_t drmBsBufferSize,
                            int32_t *count, int32_t bsPayLen, int32_t crcFlag,
                            MP4_ELEMENT_ID prevElement, int32_t elementIndex,
                            uint32_t acFlags, uint32_t acElFlags[]) {
@@ -1132,7 +1132,7 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
   int32_t startPos = FDKgetValidBits(hBs);
   FDK_CRCINFO crcInfo;
   int32_t crcReg = 0;
-  USHORT sbrCrc = 0;
+  uint16_t sbrCrc = 0;
   uint32_t crcPoly;
   uint32_t crcStartValue = 0;
   uint32_t crcLen;
@@ -1289,7 +1289,7 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
           crcStartValue = 0x00000000;
           break;
       }
-      sbrCrc = (USHORT)FDKreadBits(hBs, crcLen);
+      sbrCrc = (uint16_t)FDKreadBits(hBs, crcLen);
       /* Setup CRC decoder */
       FDKcrcInit(&crcInfo, crcPoly, crcStartValue, crcLen);
       /* Start CRC region */
@@ -1568,7 +1568,7 @@ bail:
  * \return SBRDEC_OK if successfull, else error code
  */
 static SBR_ERROR sbrDecoder_DecodeElement(
-    HANDLE_SBRDECODER self, LONG *input, LONG *timeData, const int32_t timeDataSize,
+    HANDLE_SBRDECODER self, int32_t *input, int32_t *timeData, const int32_t timeDataSize,
     const FDK_channelMapDescr *const mapDescr, const int32_t mapIdx,
     int32_t channelIndex, const int32_t elementIndex, const int32_t numInChannels,
     int32_t *numOutChannels, const int32_t psPossible) {
@@ -1769,13 +1769,13 @@ static SBR_ERROR sbrDecoder_DecodeElement(
       int32_t copyFrameSize =
           codecFrameSize * self->pQmfDomain->QmfDomainOut->fb.no_channels;
       copyFrameSize /= self->pQmfDomain->QmfDomainIn->fb.no_channels;
-      LONG *ptr;
+      int32_t *ptr;
       int32_t i;
       FDK_ASSERT(strideOut == 2);
 
       ptr = timeData;
       for (i = copyFrameSize >> 1; i--;) {
-        LONG tmp; /* This temporal variable is required because some compilers
+        int32_t tmp; /* This temporal variable is required because some compilers
                      can't do *ptr++ = *ptr++ correctly. */
         tmp = *ptr++;
         *ptr++ = tmp;
@@ -1789,7 +1789,7 @@ static SBR_ERROR sbrDecoder_DecodeElement(
   return errorStatus;
 }
 
-SBR_ERROR sbrDecoder_Apply(HANDLE_SBRDECODER self, LONG *input, LONG *timeData,
+SBR_ERROR sbrDecoder_Apply(HANDLE_SBRDECODER self, int32_t *input, int32_t *timeData,
                            const int32_t timeDataSize, int32_t *numChannels,
                            int32_t *sampleRate,
                            const FDK_channelMapDescr *const mapDescr,

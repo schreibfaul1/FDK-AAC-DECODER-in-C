@@ -106,74 +106,74 @@ amm-info@iis.fraunhofer.de
 #include "../libSYS/genericStds.h"
 
 typedef struct {
-  SHORT nodeTab[39][2];
+  int16_t nodeTab[39][2];
 
 } HUFF_RES_NODES;
 
 /* 1D Nodes */
 typedef struct {
-  SHORT nodeTab[30][2];
+  int16_t nodeTab[30][2];
 
 } HUFF_CLD_NOD_1D;
 
 typedef struct {
-  SHORT nodeTab[7][2];
+  int16_t nodeTab[7][2];
 
 } HUFF_ICC_NOD_1D;
 
 typedef struct {
-  SHORT nodeTab[50][2];
+  int16_t nodeTab[50][2];
 
 } HUFF_CPC_NOD_1D;
 
 typedef struct {
-  SHORT nodeTab[15][2];
+  int16_t nodeTab[15][2];
 
 } HUFF_OLD_NOD_1D;
 
 typedef struct {
-  SHORT nodeTab[63][2];
+  int16_t nodeTab[63][2];
 
 } HUFF_NRG_NOD_1D;
 
 /* 2D Nodes */
 typedef struct {
-  SHORT lav3[15][2];
-  SHORT lav5[35][2];
-  SHORT lav7[63][2];
-  SHORT lav9[99][2];
+  int16_t lav3[15][2];
+  int16_t lav5[35][2];
+  int16_t lav7[63][2];
+  int16_t lav9[99][2];
 
 } HUFF_CLD_NOD_2D;
 
 typedef struct {
-  SHORT lav1[3][2];
-  SHORT lav3[15][2];
-  SHORT lav5[35][2];
-  SHORT lav7[63][2];
+  int16_t lav1[3][2];
+  int16_t lav3[15][2];
+  int16_t lav5[35][2];
+  int16_t lav7[63][2];
 
 } HUFF_ICC_NOD_2D;
 
 typedef struct {
-  SHORT lav3[15][2];
-  SHORT lav6[48][2];
-  SHORT lav9[99][2];
-  SHORT lav12[168][2];
+  int16_t lav3[15][2];
+  int16_t lav6[48][2];
+  int16_t lav9[99][2];
+  int16_t lav12[168][2];
 
 } HUFF_OLD_NOD_2D;
 
 typedef struct {
-  SHORT lav3[15][2];
-  SHORT lav5[35][2];
-  SHORT lav7[63][2];
-  SHORT lav9[99][2];
+  int16_t lav3[15][2];
+  int16_t lav5[35][2];
+  int16_t lav7[63][2];
+  int16_t lav9[99][2];
 
 } HUFF_NRG_NOD_2D_df;
 
 typedef struct {
-  SHORT lav3[15][2];
-  SHORT lav6[48][2];
-  SHORT lav9[99][2];
-  SHORT lav12[168][2];
+  int16_t lav3[15][2];
+  int16_t lav6[48][2];
+  int16_t lav9[99][2];
+  int16_t lav12[168][2];
 
 } HUFF_NRG_NOD_2D_dt;
 
@@ -211,29 +211,29 @@ typedef struct {
 
 /* parameter instance */
 typedef struct {
-  SHORT cld[30][2];
-  SHORT icc[7][2];
-  SHORT ipd[7][2];
-  SHORT old[15][2];
-  SHORT nrg[63][2];
+  int16_t cld[30][2];
+  int16_t icc[7][2];
+  int16_t ipd[7][2];
+  int16_t old[15][2];
+  int16_t nrg[63][2];
 } HUFF_PT0_NODES;
 
 typedef struct {
-  SHORT nodeTab[3][2];
+  int16_t nodeTab[3][2];
 
 } HUFF_LAV_NODES;
 
 /* USAC specific */
 typedef struct {
-  SHORT nodeTab[7][2];
+  int16_t nodeTab[7][2];
 
 } HUFF_IPD_NOD_1D;
 
 typedef struct {
-  SHORT lav1[3][2];
-  SHORT lav3[15][2];
-  SHORT lav5[35][2];
-  SHORT lav7[63][2];
+  int16_t lav1[3][2];
+  int16_t lav3[15][2];
+  int16_t lav5[35][2];
+  int16_t lav7[63][2];
 
 } HUFF_IPD_NOD_2D;
 

@@ -486,19 +486,19 @@ FDK_drcDec_SetParam(HANDLE_DRC_DECODER hDrcDec,
   return DRC_DEC_OK;
 }
 
-LONG FDK_drcDec_GetParam(HANDLE_DRC_DECODER hDrcDec,
+int32_t FDK_drcDec_GetParam(HANDLE_DRC_DECODER hDrcDec,
                          const DRC_DEC_USERPARAM requestType) {
   if (hDrcDec == NULL) return DRC_DEC_NOT_OPENED;
 
   switch (requestType) {
     case DRC_DEC_BOOST:
-      return (LONG)hDrcDec->selProcOutput.boost;
+      return (int32_t)hDrcDec->selProcOutput.boost;
     case DRC_DEC_COMPRESS:
-      return (LONG)hDrcDec->selProcOutput.compress;
+      return (int32_t)hDrcDec->selProcOutput.compress;
     case DRC_DEC_IS_MULTIBAND_DRC_1:
-      return (LONG)bitstreamContainsMultibandDrc(&hDrcDec->uniDrcConfig, 0);
+      return (int32_t)bitstreamContainsMultibandDrc(&hDrcDec->uniDrcConfig, 0);
     case DRC_DEC_IS_MULTIBAND_DRC_2:
-      return (LONG)bitstreamContainsMultibandDrc(&hDrcDec->uniDrcConfig, 0x7F);
+      return (int32_t)bitstreamContainsMultibandDrc(&hDrcDec->uniDrcConfig, 0x7F);
     case DRC_DEC_IS_ACTIVE: {
       /* MPEG-D DRC is considered active (and overrides MPEG-4 DRC), if
        * uniDrc payload is present (loudnessInfoSet and/or uniDrcConfig)
@@ -515,12 +515,12 @@ LONG FDK_drcDec_GetParam(HANDLE_DRC_DECODER hDrcDec,
           (hDrcDec->uniDrcConfig.drcInstructionsUniDrcCount > 0);
       uniDrcPayloadPresent |=
           (hDrcDec->uniDrcConfig.downmixInstructionsCount > 0);
-      return (LONG)(uniDrcPayloadPresent && (drcOn || lnOn));
+      return (int32_t)(uniDrcPayloadPresent && (drcOn || lnOn));
     }
     case DRC_DEC_TARGET_CHANNEL_COUNT_SELECTED:
-      return (LONG)hDrcDec->selProcOutput.targetChannelCount;
+      return (int32_t)hDrcDec->selProcOutput.targetChannelCount;
     case DRC_DEC_OUTPUT_LOUDNESS:
-      return (LONG)hDrcDec->selProcOutput.outputLoudness;
+      return (int32_t)hDrcDec->selProcOutput.outputLoudness;
     default:
       return 0;
   }
@@ -557,10 +557,10 @@ FDK_drcDec_GetSelectionProcessOutput(HANDLE_DRC_DECODER hDrcDec) {
   return &(hDrcDec->selProcOutput);
 }
 
-LONG /* int32_t, e = 7 */
+int32_t /* int32_t, e = 7 */
 FDK_drcDec_GetGroupLoudness(HANDLE_SEL_PROC_OUTPUT hSelProcOutput,
                             const int32_t groupID, int32_t* groupLoudnessAvailable) {
-  return (LONG)0;
+  return (int32_t)0;
 }
 
 void FDK_drcDec_SetChannelGains(HANDLE_DRC_DECODER hDrcDec,

@@ -115,13 +115,13 @@ amm-info@iis.fraunhofer.de
 
 typedef struct {
   FIXP_SGL gainDb; /* e = 7 */
-  SHORT time;
+  int16_t time;
 } GAIN_NODE;
 
 /* uniDrcGainExtension() (Table 56) */
 typedef struct {
   UCHAR uniDrcGainExtType[8];
-  ULONG extBitSize[8 - 1];
+  uint32_t extBitSize[8 - 1];
 } UNI_DRC_GAIN_EXTENSION;
 
 /* uniDrcGain() (Table 55) */
@@ -197,7 +197,7 @@ typedef struct {
 
 typedef union {
   UCHAR crossoverFreqIndex;
-  USHORT startSubBandIndex;
+  uint16_t startSubBandIndex;
 } BAND_BORDER;
 
 typedef struct {
@@ -220,7 +220,7 @@ typedef struct {
   UCHAR fullFrame;
   UCHAR timeAlignment;
   UCHAR timeDeltaMinPresent;
-  USHORT timeDeltaMin;
+  uint16_t timeDeltaMin;
   UCHAR bandCount;
   UCHAR drcBandType;
   UCHAR gainSequenceIndex[4];
@@ -251,7 +251,7 @@ CUSTOM_DRC_CHAR;
 typedef struct {
   UCHAR drcLocation;
   UCHAR drcFrameSizePresent;
-  USHORT drcFrameSize;
+  uint16_t drcFrameSize;
   UCHAR characteristicLeftCount;
   UCHAR characteristicLeftFormat[16];
   CUSTOM_DRC_CHAR customCharacteristicLeft[16];
@@ -274,7 +274,7 @@ typedef struct {
   UCHAR drcApplyToDownmix;
   UCHAR downmixIdCount;
   UCHAR downmixId[8];
-  USHORT drcSetEffect;
+  uint16_t drcSetEffect;
   UCHAR limiterPeakTargetPresent;
   FIXP_SGL limiterPeakTarget; /* e = 5 */
   UCHAR drcSetTargetLoudnessPresent;
@@ -318,13 +318,13 @@ typedef struct {
 
 typedef struct {
   UCHAR uniDrcConfigExtType[8];
-  ULONG extBitSize[8 - 1];
+  uint32_t extBitSize[8 - 1];
 } UNI_DRC_CONFIG_EXTENSION;
 
 /* uniDrcConfig() (Table 57) */
 typedef struct {
   UCHAR sampleRatePresent;
-  ULONG sampleRate;
+  uint32_t sampleRate;
   UCHAR downmixInstructionsCountV0;
   UCHAR downmixInstructionsCountV1;
   UCHAR downmixInstructionsCount; /* saturated to 6 */
@@ -410,7 +410,7 @@ typedef struct {
 /* loudnessInfoSetExtension() (Table 61) */
 typedef struct {
   UCHAR loudnessInfoSetExtType[8];
-  ULONG extBitSize[8 - 1];
+  uint32_t extBitSize[8 - 1];
 } LOUDNESS_INFO_SET_EXTENSION;
 
 /* loudnessInfoSet() (Table 58) */

@@ -139,22 +139,22 @@ typedef struct {
                                          bitstream */
   int32_t sf_concealment;                 /* 1          */
   int32_t rev_global_gain;                /* 2          */
-  SHORT length_of_rvlc_sf; /* 3          */ /* original value, gets modified
+  int16_t length_of_rvlc_sf; /* 3          */ /* original value, gets modified
                                                (subtract 9) in case of noise
                                                (PNS); is kept for later use */
   int32_t dpcm_noise_nrg;                       /* 4 optional */
   int32_t sf_escapes_present;                   /* 5          */
-  SHORT length_of_rvlc_escapes;             /* 6 optional */
+  int16_t length_of_rvlc_escapes;             /* 6 optional */
   int32_t dpcm_noise_last_position;             /* 7 optional */
 
   int32_t dpcm_is_last_position;
 
-  SHORT length_of_rvlc_sf_fwd; /* length_of_rvlc_sf used for forward decoding */
-  SHORT
+  int16_t length_of_rvlc_sf_fwd; /* length_of_rvlc_sf used for forward decoding */
+  int16_t
   length_of_rvlc_sf_bwd; /* length_of_rvlc_sf used for backward decoding */
 
   /* for RVL-Codeword decoder to distinguish between fwd and bwd decoding */
-  SHORT *pRvlBitCnt_RVL;
+  int16_t *pRvlBitCnt_RVL;
   int32_t *pBitstrIndxRvl_RVL;
 
   UCHAR numWindowGroups;
@@ -184,19 +184,19 @@ typedef struct {
   SCHAR intensity_used;
   SCHAR sf_used;
 
-  SHORT firstScf;
-  SHORT lastScf;
-  SHORT firstNrg;
-  SHORT lastNrg;
-  SHORT firstIs;
-  SHORT lastIs;
+  int16_t firstScf;
+  int16_t lastScf;
+  int16_t firstNrg;
+  int16_t lastNrg;
+  int16_t firstIs;
+  int16_t lastIs;
 
   /* ------ RVLC error detection ------ */
   uint32_t errorLogRvlc;     /* store RVLC errors  */
-  SHORT conceal_min;     /* is set at backward decoding  */
-  SHORT conceal_max;     /* is set at forward  decoding  */
-  SHORT conceal_min_esc; /* is set at backward decoding  */
-  SHORT conceal_max_esc; /* is set at forward  decoding  */
+  int16_t conceal_min;     /* is set at backward decoding  */
+  int16_t conceal_max;     /* is set at forward  decoding  */
+  int16_t conceal_min_esc; /* is set at backward decoding  */
+  int16_t conceal_max_esc; /* is set at forward  decoding  */
 } CErRvlcInfo;
 
 typedef CErRvlcInfo RVLC_INFO; /* temp */

@@ -138,7 +138,7 @@ codec.
 - Lutzky, Schuller, Gayer, Kr&auml;mer, Wabnik, "A guideline to audio codec
 delay", 116th AES Convention, May 8, 2004
 
-In short, MPEG Advanced Audio Coding is based on a time-to-frequency mapping of
+In int16_t, MPEG Advanced Audio Coding is based on a time-to-frequency mapping of
 the signal. The signal is partitioned into overlapping time portions and
 transformed into frequency domain. The spectral components are then quantized
 and coded using a highly efficient coding scheme.\n Encoded MPEG-2 and MPEG-4
@@ -849,15 +849,15 @@ typedef struct {
                                returns AAC_DEC_TRANSPORT_SYNC_ERROR. It will be
                              < 0 if the estimation failed. */
 
-  INT64 numTotalBytes; /*!< This is the number of total bytes that have passed
+  int64_t numTotalBytes; /*!< This is the number of total bytes that have passed
                           through the decoder. */
-  INT64
+  int64_t
   numBadBytes; /*!< This is the number of total bytes that were considered
                   with errors from numTotalBytes. */
-  INT64
+  int64_t
   numTotalAccessUnits;     /*!< This is the number of total access units that
                               have passed through the decoder. */
-  INT64 numBadAccessUnits; /*!< This is the number of total access units that
+  int64_t numBadAccessUnits; /*!< This is the number of total access units that
                               were considered with errors from numTotalBytes. */
 
   /* Metadata */
@@ -988,7 +988,7 @@ AAC_DECODER_ERROR aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self,
 
 /**
  * \brief Fill AAC decoder's internal input buffer with bitstream data from the
- * external input buffer. The function only copies such data as long as the
+ * external input buffer. The function only copies such data as int32_t as the
  * decoder-internal input buffer is not full. So it grabs whatever it can from
  * pBuffer and returns information (bytesValid) so that at a subsequent call of
  * %aacDecoder_Fill(), the right position in pBuffer can be determined to grab

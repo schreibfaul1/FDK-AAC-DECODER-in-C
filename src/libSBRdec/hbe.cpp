@@ -665,7 +665,7 @@ static
    * (1-fract)fract*(t[i+2]-t[i+1])/2 */
   if (fract != (int32_t)0) {
     /* fract = fract * (1 - fract) */
-    fract = fMultDiv2(fract, (int32_t)((LONG)0x80000000 - (LONG)fract)) << 1;
+    fract = fMultDiv2(fract, (int32_t)((int32_t)0x80000000 - (int32_t)fract)) << 1;
     diff = diff - (invCubeRootTab[index + 2] - invCubeRootTab[index + 1]);
     op_m = fMultAddDiv2(op_m, fract, diff);
   }
@@ -788,7 +788,7 @@ static
    * (1-fract)fract*(t[i+2]-t[i+1])/2 */
   if (fract != (int32_t)0) {
     /* fract = fract * (1 - fract) */
-    fract = fMultDiv2(fract, (int32_t)((LONG)0x80000000 - (LONG)fract)) << 1;
+    fract = fMultDiv2(fract, (int32_t)((int32_t)0x80000000 - (int32_t)fract)) << 1;
     diff = diff - (invFourthRootTab[index + 2] - invFourthRootTab[index + 1]);
     op_m = fMultAddDiv2(op_m, fract, diff);
   }
@@ -904,7 +904,7 @@ static
    * (1-fract)fract*(t[i+2]-t[i+1])/2 */
   if (fract != (int32_t)0) {
     /* fract = fract * (1 - fract) */
-    fract = fMultDiv2(fract, (int32_t)((LONG)0x80000000 - (LONG)fract)) << 1;
+    fract = fMultDiv2(fract, (int32_t)((int32_t)0x80000000 - (int32_t)fract)) << 1;
     diff = diff - (inv3EigthRootTab[index + 2] - inv3EigthRootTab[index + 1]);
     op_m = fMultAddDiv2(op_m, fract, diff);
   }
@@ -957,7 +957,7 @@ QmfTransposerCreate(HANDLE_HBE_TRANSPOSER* hQmfTransposer, const int32_t frameSi
     hQmfTran->qmfOutBufSize = 2 * (hQmfTran->noCols / 2 + QMF_WIN_LEN - 1);
 
     hQmfTran->inBuf_F =
-        (LONG*)FDKcalloc(QMF_SYNTH_CHANNELS + 20 + 1, sizeof(LONG));
+        (int32_t*)FDKcalloc(QMF_SYNTH_CHANNELS + 20 + 1, sizeof(int32_t));
     /* buffered time signal needs to be delayed by synthesis_size; max
      * synthesis_size = 20; */
     if (hQmfTran->inBuf_F == NULL) {

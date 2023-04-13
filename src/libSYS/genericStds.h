@@ -527,7 +527,7 @@ uint32_t TO_LITTLE_ENDIAN(uint32_t val);
  *         Standard fopen() wrapper.
  * \fn     int32_t FDKfclose(FDKFILE *FP);
  *         Standard fclose() wrapper.
- * \fn     int32_t FDKfseek(FDKFILE *FP, LONG OFFSET, int32_t WHENCE);
+ * \fn     int32_t FDKfseek(FDKFILE *FP, int32_t OFFSET, int32_t WHENCE);
  *         Standard fseek() wrapper.
  * \fn     int32_t FDKftell(FDKFILE *FP);
  *         Standard ftell() wrapper.
@@ -543,7 +543,7 @@ extern const int32_t FDKSEEK_SET, FDKSEEK_CUR, FDKSEEK_END;
 
 FDKFILE *FDKfopen(const char *filename, const char *mode);
 int32_t FDKfclose(FDKFILE *FP);
-int32_t FDKfseek(FDKFILE *FP, LONG OFFSET, int32_t WHENCE);
+int32_t FDKfseek(FDKFILE *FP, int32_t OFFSET, int32_t WHENCE);
 int32_t FDKftell(FDKFILE *FP);
 int32_t FDKfflush(FDKFILE *fp);
 uint32_t FDKfwrite(const void *ptrf, int32_t size, uint32_t nmemb, FDKFILE *fp);

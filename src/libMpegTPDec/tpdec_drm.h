@@ -109,7 +109,7 @@ amm-info@iis.fraunhofer.de
 
 typedef struct {
   FDK_CRCINFO crcInfo; /* CRC state info */
-  USHORT crcReadValue; /* CRC value read from bitstream data */
+  uint16_t crcReadValue; /* CRC value read from bitstream data */
 
 } STRUCT_DRM;
 

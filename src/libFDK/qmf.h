@@ -239,7 +239,7 @@ void qmfAnalysisFiltering(
     int32_t **qmfReal,            /*!< Pointer to real subband slots */
     int32_t **qmfImag,            /*!< Pointer to imag subband slots */
     QMF_SCALE_FACTOR *scaleFactor, /*!< Scale factors of QMF data     */
-    const LONG *timeIn,            /*!< Time signal */
+    const int32_t *timeIn,            /*!< Time signal */
     const int32_t timeIn_e,            /*!< Exponent of audio data        */
     const int32_t stride,              /*!< Stride factor of audio data   */
     int32_t *pWorkBuffer          /*!< pointer to temporary working buffer */
@@ -260,7 +260,7 @@ void qmfAnalysisFilteringSlot(
     HANDLE_QMF_FILTER_BANK anaQmf, /*!< Handle of Qmf Synthesis Bank  */
     int32_t *qmfReal,             /*!< Low and High band, real */
     int32_t *qmfImag,             /*!< Low and High band, imag */
-    const LONG *timeIn,            /*!< Pointer to input */
+    const int32_t *timeIn,            /*!< Pointer to input */
     const int32_t stride,              /*!< stride factor of input */
     int32_t *pWorkBuffer          /*!< pointer to temporary working buffer */
 );
@@ -294,7 +294,7 @@ void qmfSynthesisFiltering(
     int32_t **QmfBufferImag,            /*!< Pointer to imag subband slots */
     const QMF_SCALE_FACTOR *scaleFactor, /*!< Scale factors of QMF data     */
     const int32_t ov_len,                    /*!< Length of band overlap        */
-    LONG *timeOut,                       /*!< Time signal */
+    int32_t *timeOut,                       /*!< Time signal */
     const int32_t timeOut_e,                 /*!< Target exponent for timeOut  */
     int32_t *pWorkBuffer /*!< pointer to temporary working buffer */
 );
@@ -312,7 +312,7 @@ void qmfSynthesisFilteringSlot(HANDLE_QMF_FILTER_BANK synQmf,
                                const int32_t *realSlot,
                                const int32_t *imagSlot,
                                const int32_t scaleFactorLowBand,
-                               const int32_t scaleFactorHighBand, LONG *timeOut,
+                               const int32_t scaleFactorHighBand, int32_t *timeOut,
                                const int32_t timeOut_e, int32_t *pWorkBuffer);
 #endif
 

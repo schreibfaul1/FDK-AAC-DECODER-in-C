@@ -112,6 +112,6 @@ amm-info@iis.fraunhofer.de
 #define FX_SGL2FX_COD(x) (x)
 #define COD_BITS FRACT_BITS
 
-void D_ACELP_decode_4t64(SHORT index[], int32_t nbits, FIXP_COD code[]);
+void D_ACELP_decode_4t64(int16_t index[], int32_t nbits, FIXP_COD code[]);
 
 #endif /* USACDEC_ACE_D4T64_H */

@@ -110,7 +110,7 @@ amm-info@iis.fraunhofer.de
  */
 typedef struct {
   int32_t* delay_line; /*!< Pointer which stores allocated delay line. */
-  USHORT delay;        /*!< Delay required in samples (per channel). */
+  uint16_t delay;        /*!< Delay required in samples (per channel). */
   UCHAR num_channels;  /*!< Number of channels to delay. */
 } FDK_SignalDelay;
 
@@ -123,7 +123,7 @@ typedef struct {
  *
  * \return -1 on out of memory, else 0
  */
-int32_t FDK_Delay_Create(FDK_SignalDelay* data, const USHORT delay,
+int32_t FDK_Delay_Create(FDK_SignalDelay* data, const uint16_t delay,
                      const UCHAR num_channels);
 
 /**

@@ -364,7 +364,7 @@ FDKFILE *FDKfopen(const char *filename, const char *mode) {
   return fopen(filename, mode);
 }
 int32_t FDKfclose(FDKFILE *fp) { return fclose((FILE *)fp); }
-int32_t FDKfseek(FDKFILE *fp, LONG OFFSET, int32_t WHENCE) {
+int32_t FDKfseek(FDKFILE *fp, int32_t OFFSET, int32_t WHENCE) {
   return fseek((FILE *)fp, OFFSET, WHENCE);
 }
 int32_t FDKftell(FDKFILE *fp) { return ftell((FILE *)fp); }
@@ -426,7 +426,7 @@ uint32_t FDKfread_EL(void *dst, int32_t size, uint32_t nmemb, FDKFILE *fp) {
       }
     }
     err = nmemb;
-    size = sizeof(LONG);
+    size = sizeof(int32_t);
   } else {
     if ((err = FDKfread(dst, size, nmemb, fp)) != nmemb) {
       return err;

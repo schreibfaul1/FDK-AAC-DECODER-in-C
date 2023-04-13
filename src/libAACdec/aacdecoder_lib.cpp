@@ -1560,7 +1560,7 @@ AAC_DECODER_ERROR aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeD
 			}
 			if(FDK_drcDec_GetParam(self->hUniDrcDecoder, DRC_DEC_IS_ACTIVE)) {
 				/* return output loudness information for MPEG-D DRC */
-				LONG outputLoudness = FDK_drcDec_GetParam(self->hUniDrcDecoder, DRC_DEC_OUTPUT_LOUDNESS);
+				int32_t outputLoudness = FDK_drcDec_GetParam(self->hUniDrcDecoder, DRC_DEC_OUTPUT_LOUDNESS);
 				if(outputLoudness == DRC_DEC_LOUDNESS_NOT_PRESENT) {
 					/* no valid MPEG-D DRC loudness value contained */
 					self->streamInfo.outputLoudness = -1;

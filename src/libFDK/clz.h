@@ -128,14 +128,14 @@ amm-info@iis.fraunhofer.de
 
 #if !defined(FUNCTION_fixnormz_S)
 #ifdef FUNCTION_fixnormz_D
-inline int32_t fixnormz_S(SHORT a) {
+inline int32_t fixnormz_S(int16_t a) {
   if (a < 0) {
     return 0;
   }
   return fixnormz_D((int32_t)(a)) - 16;
 }
 #else
-inline int32_t fixnormz_S(SHORT a) {
+inline int32_t fixnormz_S(int16_t a) {
   int32_t leadingBits = 0;
   a = ~a;
   while (a & 0x8000) {
@@ -149,7 +149,7 @@ inline int32_t fixnormz_S(SHORT a) {
 #endif
 
 #if !defined(FUNCTION_fixnormz_D)
-inline int32_t fixnormz_D(LONG a) {
+inline int32_t fixnormz_D(int32_t a) {
   int32_t leadingBits = 0;
   a = ~a;
   while (a & 0x80000000) {
@@ -164,7 +164,7 @@ inline int32_t fixnormz_D(LONG a) {
 /*****************************************************************************
 
     functionname: fixnorm_D
-    description:  Count leading ones or zeros of operand val for dfract/LONG int32_t
+    description:  Count leading ones or zeros of operand val for dfract/int32_t int32_t
 values. Return this value minus 1. Return 0 if operand==0.
 *****************************************************************************/
 #if !defined(FUNCTION_fixnorm_S)

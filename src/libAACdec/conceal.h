@@ -127,8 +127,8 @@ CConcealmentState CConcealment_GetState(CConcealmentInfo *hConcealmentInfo);
 
 AAC_DECODER_ERROR
 CConcealment_SetAttenuation(CConcealParams *concealParams,
-                            const SHORT *fadeOutAttenuationVector,
-                            const SHORT *fadeInAttenuationVector);
+                            const int16_t *fadeOutAttenuationVector,
+                            const int16_t *fadeInAttenuationVector);
 
 void CConcealment_Store(
     CConcealmentInfo *hConcealmentInfo,

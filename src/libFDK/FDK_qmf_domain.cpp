@@ -373,8 +373,8 @@ QMF_DOMAIN_ERROR FDK_QmfDomain_ClearPersistentMemory(HANDLE_FDK_QMF_DOMAIN hqd) 
 
 	address to workbuffer
 */
-static int32_t *FDK_getWorkBuffer(int32_t **pWorkBuffer, USHORT workBufferOffset, USHORT workBufferSectSize,
-								   USHORT memSize) {
+static int32_t *FDK_getWorkBuffer(int32_t **pWorkBuffer, uint16_t workBufferOffset, uint16_t workBufferSectSize,
+								   uint16_t memSize) {
 	int32_t       idx1;
 	int32_t       idx2;
 	int32_t *pwb;
@@ -403,7 +403,7 @@ static int32_t *FDK_getWorkBuffer(int32_t **pWorkBuffer, USHORT workBufferOffset
 }
 
 static int32_t FDK_QmfDomain_FeedWorkBuffer(HANDLE_FDK_QMF_DOMAIN qd, int32_t ch, int32_t **pWorkBuffer,
-										USHORT workBufferOffset, USHORT workBufferSectSize, int32_t size) {
+										uint16_t workBufferOffset, uint16_t workBufferSectSize, int32_t size) {
 	int32_t err = 0;
 	int32_t mem_needed;
 
@@ -447,8 +447,8 @@ int32_t FDK_QmfDomain_InitFilterBank(HANDLE_FDK_QMF_DOMAIN qd, uint32_t extra_fl
 		 * hold one full frame of QMF data. */
 		int32_t **ptr = qd->QmfDomainIn[fMin(ch, fMax((int32_t)gc->nQmfProcChannels - 1, 0))]
 							 .pWorkBuffer; /* non-persistent workbuffer */
-		USHORT workBufferOffset = qd->QmfDomainIn[fMin(ch, fMax((int32_t)gc->nQmfProcChannels - 1, 0))].workBufferOffset;
-		USHORT workBufferSectSize =
+		uint16_t workBufferOffset = qd->QmfDomainIn[fMin(ch, fMax((int32_t)gc->nQmfProcChannels - 1, 0))].workBufferOffset;
+		uint16_t workBufferSectSize =
 			qd->QmfDomainIn[fMin(ch, fMax((int32_t)gc->nQmfProcChannels - 1, 0))].workBufferSectSize;
 
 		if((ptr == NULL) && (gc->nQmfTimeSlots != 0)) {
@@ -581,8 +581,8 @@ void FDK_QmfDomain_GetWorkBuffer(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int
 	FDK_ASSERT(ppQmfImag != NULL);
 	const int32_t  bands = qd_ch->workBuf_nBands;
 	int32_t **pWorkBuf = qd_ch->pWorkBuffer;
-	USHORT     workBufferOffset = qd_ch->workBufferOffset;
-	USHORT     workBufferSectSize = qd_ch->workBufferSectSize;
+	uint16_t     workBufferOffset = qd_ch->workBufferOffset;
+	uint16_t     workBufferSectSize = qd_ch->workBufferSectSize;
 
 	FDK_ASSERT(bands > 0);
 	FDK_ASSERT(ts < qd_ch->workBuf_nTimeSlots);
@@ -597,8 +597,8 @@ void FDK_QmfDomain_WorkBuffer2ProcChannel(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch) 
 	FDK_ASSERT(qd_ch != NULL);
 	HANDLE_FDK_QMF_DOMAIN_GC gc = qd_ch->pGlobalConf;
 	int32_t               **pWorkBuf = qd_ch->pWorkBuffer;
-	USHORT                   workBufferOffset = qd_ch->workBufferOffset;
-	USHORT                   workBufferSectSize = qd_ch->workBufferSectSize;
+	uint16_t                   workBufferOffset = qd_ch->workBufferOffset;
+	uint16_t                   workBufferSectSize = qd_ch->workBufferSectSize;
 
 	if(FDK_getWorkBuffer(pWorkBuf, workBufferOffset, workBufferSectSize, qd_ch->workBuf_nBands) ==
 	   qd_ch->hQmfSlotsReal[gc->nQmfOvTimeSlots]) {
@@ -629,8 +629,8 @@ void FDK_QmfDomain_QmfData2HBE(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int32_t **ppQmfRe
 	FDK_ASSERT(ppQmfImag != NULL);
 	HANDLE_FDK_QMF_DOMAIN_GC gc = qd_ch->pGlobalConf;
 	int32_t               **pWorkBuf = qd_ch->pWorkBuffer;
-	USHORT                   workBufferOffset = qd_ch->workBufferOffset;
-	USHORT                   workBufferSectSize = qd_ch->workBufferSectSize;
+	uint16_t                   workBufferOffset = qd_ch->workBufferOffset;
+	uint16_t                   workBufferSectSize = qd_ch->workBufferSectSize;
 
 	if(FDK_getWorkBuffer(pWorkBuf, workBufferOffset, workBufferSectSize,
 						 qd_ch->workBuf_nBands) ==

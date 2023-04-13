@@ -132,8 +132,8 @@ typedef struct {
   UCHAR home;
   UCHAR copyright_id;
   UCHAR copyright_start;
-  USHORT frame_length;
-  USHORT adts_fullness;
+  uint16_t frame_length;
+  uint16_t adts_fullness;
   UCHAR num_raw_blocks;
   UCHAR num_pce_bits;
 } STRUCT_ADTS_BS;
@@ -145,8 +145,8 @@ struct STRUCT_ADTS {
   UCHAR BufferFullnesStartFlag;
 
   FDK_CRCINFO crcInfo;        /* CRC state info */
-  USHORT crcReadValue;        /* CRC value read from bitstream data */
-  USHORT rawDataBlockDist[4]; /* distance between each raw data block. Not the
+  uint16_t crcReadValue;        /* CRC value read from bitstream data */
+  uint16_t rawDataBlockDist[4]; /* distance between each raw data block. Not the
                                  same as found in the bitstream */
 };
 

@@ -208,7 +208,7 @@ static int32_t CPns_IsOutOfPhase(const CPnsData *pPnsData, const int32_t group,
   The function reads the PNS information from the bitstream
 */
 void CPns_Read(CPnsData *pPnsData, HANDLE_FDK_BITSTREAM bs,
-               const CodeBookDescription *hcb, SHORT *pScaleFactor,
+               const CodeBookDescription *hcb, int16_t *pScaleFactor,
                UCHAR global_gain, int32_t band, int32_t group /* = 0 */) {
   int32_t delta;
   uint32_t pns_band = group * 16 + band;
@@ -251,7 +251,7 @@ static int32_t GenerateRandomVector(int32_t *RESTRICT spec, int32_t size,
   /* Generate noise and calculate energy. */
   for (i = 0; i < size; i++) {
     randomState =
-        (((INT64)1664525 * randomState) + (INT64)1013904223) & 0xFFFFFFFF;
+        (((int64_t)1664525 * randomState) + (int64_t)1013904223) & 0xFFFFFFFF;
     nrg_m = fPow2AddDiv2(nrg_m, (int32_t)randomState >> GEN_NOISE_NRG_SCALE);
     *ptr++ = (int32_t)randomState;
   }
@@ -311,12 +311,12 @@ static void ScaleBand(int32_t *RESTRICT spec, int32_t size, int32_t scaleFactor,
 
 */
 void CPns_Apply(const CPnsData *pPnsData, const CIcsInfo *pIcsInfo,
-                SPECTRAL_PTR pSpectrum, const SHORT *pSpecScale,
-                const SHORT *pScaleFactor,
+                SPECTRAL_PTR pSpectrum, const int16_t *pSpecScale,
+                const int16_t *pScaleFactor,
                 const SamplingRateInfo *pSamplingRateInfo,
                 const int32_t granuleLength, const int32_t channel) {
   if (pPnsData->PnsActive) {
-    const short *BandOffsets =
+    const int16_t *BandOffsets =
         GetScaleFactorBandOffsets(pIcsInfo, pSamplingRateInfo);
 
     int32_t ScaleFactorBandsTransmitted = GetScaleFactorBandsTransmitted(pIcsInfo);

@@ -108,7 +108,7 @@ amm-info@iis.fraunhofer.de
 #include "FDK_tools_rom.h"
 
 /* Fixed point precision definitions */
-#define Q(format) ((int32_t)(((LONG)1) << (format)))
+#define Q(format) ((int32_t)(((int32_t)1) << (format)))
 
 #ifndef M_PI
 #define M_PI (3.14159265358979323846f)
@@ -162,7 +162,7 @@ static inline int32_t fixp_sin_cos_residual_inline(int32_t x, int32_t scale,
   int32_t csign = 1;
 
   residual = fMult(x, FL2FXCONST_DBL(1.0 / M_PI));
-  s = ((LONG)residual) >> shift;
+  s = ((int32_t)residual) >> shift;
 
   residual &= ((1 << shift) - 1);
   residual = fMult(residual, FL2FXCONST_DBL(M_PI / 4.0)) << 2;
@@ -186,20 +186,20 @@ static inline int32_t fixp_sin_cos_residual_inline(int32_t x, int32_t scale,
   }
 
   {
-    LONG sl, cl;
+    int32_t sl, cl;
     /* Because of packed table */
     if (s > (1 << (LD - 1))) {
       FIXP_STP tmp;
       /* Cosine/Sine simetry for angles greater than PI/4 */
       s = (1 << LD) - s;
       tmp = SINETAB[s];
-      sl = (LONG)tmp.v.re;
-      cl = (LONG)tmp.v.im;
+      sl = (int32_t)tmp.v.re;
+      cl = (int32_t)tmp.v.im;
     } else {
       FIXP_STP tmp;
       tmp = SINETAB[s];
-      sl = (LONG)tmp.v.im;
-      cl = (LONG)tmp.v.re;
+      sl = (int32_t)tmp.v.im;
+      cl = (int32_t)tmp.v.re;
     }
 
 #ifdef SINETABLE_16BIT

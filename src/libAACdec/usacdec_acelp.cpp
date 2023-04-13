@@ -715,7 +715,7 @@ static int32_t DecodePitchLag(HANDLE_FDK_BITSTREAM hBs,
 }
 static void ConcealPitchLag(CAcelpStaticMem *acelp_mem, const int32_t PIT_MAX,
                             int32_t *pT0, int32_t *pT0_frac) {
-  USHORT *pold_T0 = &acelp_mem->old_T0;
+  uint16_t *pold_T0 = &acelp_mem->old_T0;
   UCHAR *pold_T0_frac = &acelp_mem->old_T0_frac;
 
   if ((int32_t)*pold_T0 >= PIT_MAX) {
@@ -938,7 +938,7 @@ void CLpd_AcelpReset(CAcelpStaticMem *acelp) {
 
 /* TCX time domain concealment */
 /*   Compare to figure 13a on page 54 in 3GPP TS 26.290 */
-void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, SHORT *pitch,
+void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, int16_t *pitch,
                        const FIXP_LPC lsp_old[M_LP_FILTER_ORDER],
                        const FIXP_LPC lsp_new[M_LP_FILTER_ORDER],
                        const FIXP_SGL stab_fac, int32_t nLostSf, int32_t synth[],
@@ -955,7 +955,7 @@ void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, SHORT *pitch,
   int32_t *exc = exc_buf + PIT_MAX_MAX + L_INTERPOL;
   int32_t *ns = ns_buf + 1;
   int32_t tmp, fact_exc;
-  int32_t T = fMin(*pitch, (SHORT)PIT_MAX_MAX);
+  int32_t T = fMin(*pitch, (int16_t)PIT_MAX_MAX);
   int32_t i, i_subfr, subfr_nr;
   int32_t lDiv = coreCoderFrameLength / NB_DIV;
 
@@ -1231,7 +1231,7 @@ int32_t CLpd_AcelpRead(HANDLE_FDK_BITSTREAM hBs, CAcelpChannelData *acelp,
     if (error) {
       goto bail;
     }
-    acelp->T0[sfr] = (USHORT)T0;
+    acelp->T0[sfr] = (uint16_t)T0;
     acelp->T0_frac[sfr] = (UCHAR)T0_frac;
     acelp->ltp_filtering_flag[sfr] = FDKreadBits(hBs, 1);
     switch (nbits) {

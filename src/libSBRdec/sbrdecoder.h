@@ -285,8 +285,8 @@ SBR_ERROR sbrDecoder_SetParam(HANDLE_SBRDECODER self, const SBRDEC_PARAM param,
  * magnitudes.
  * \param nextFact_exp            Exponent for all DRC factors.
  * \param drcInterpolationScheme  DRC interpolation scheme.
- * \param winSequence             Window sequence from core coder (eight short
- * or one long window).
+ * \param winSequence             Window sequence from core coder (eight int16_t
+ * or one int32_t window).
  * \param pBandTop                Pointer to a table with the top borders for
  * all DRC bands.
  *
@@ -295,8 +295,8 @@ SBR_ERROR sbrDecoder_SetParam(HANDLE_SBRDECODER self, const SBRDEC_PARAM param,
 SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, int32_t ch,
                                     uint32_t numBands, int32_t *pNextFact_mag,
                                     int32_t nextFact_exp,
-                                    SHORT drcInterpolationScheme,
-                                    UCHAR winSequence, USHORT *pBandTop);
+                                    int16_t drcInterpolationScheme,
+                                    UCHAR winSequence, uint16_t *pBandTop);
 
 /**
  * \brief  Disable SBR DRC for a certain channel.
@@ -332,7 +332,7 @@ void sbrDecoder_drcDisable(HANDLE_SBRDECODER self, int32_t ch);
  * \return  Error code.
  */
 SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
-                           UCHAR *pDrmBsBuffer, USHORT drmBsBufferSize,
+                           UCHAR *pDrmBsBuffer, uint16_t drmBsBufferSize,
                            int32_t *count, int32_t bsPayLen, int32_t crcFlag,
                            MP4_ELEMENT_ID prev_element, int32_t element_index,
                            uint32_t acFlags, uint32_t acElFlags[]);
@@ -368,7 +368,7 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
  *
  * \return  Error code.
  */
-SBR_ERROR sbrDecoder_Apply(HANDLE_SBRDECODER self, LONG *input, LONG *timeData,
+SBR_ERROR sbrDecoder_Apply(HANDLE_SBRDECODER self, int32_t *input, int32_t *timeData,
                            const int32_t timeDataSize, int32_t *numChannels,
                            int32_t *sampleRate,
                            const FDK_channelMapDescr *const mapDescr,

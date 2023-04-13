@@ -119,7 +119,7 @@ amm-info@iis.fraunhofer.de
 #define MAX_SFB_HCR                                                          \
   (((1024 / 8) / LINES_PER_UNIT) * 8) /* (8 * 16) is not enough because sfbs \
                                          are split in units for blocktype    \
-                                         short */
+                                         int16_t */
 #define NUMBER_OF_UNIT_GROUPS (LINES_PER_UNIT * 8)
 #define LINES_PER_UNIT_GROUP (1024 / NUMBER_OF_UNIT_GROUPS) /* 15 16 30 32 */
 
@@ -225,7 +225,7 @@ amm-info@iis.fraunhofer.de
 
 /* -----------------------------------------------------------------------------------------------------
    This error check could be set to zero because due to a test within
-   RVLC-Escape-huffman-Decoder a too long codeword could not be detected -- it
+   RVLC-Escape-huffman-Decoder a too int32_t codeword could not be detected -- it
    seems that for RVLC-Escape-Codeword the coderoom is used to 100%. Therefore I
    assume that the coderoom is used to 100% also for the codebooks 1..11 used at
    HCR Therefore this test is deactivated pending further notice
@@ -314,22 +314,22 @@ amm-info@iis.fraunhofer.de
               //   less than lenghtOfReorderedSpectralData
 #define NUM_SECT_OUT_OF_RANGE_SHORT_BLOCK \
   0x00000080  //   7   yes   Init-Dec    The number of sections is not within
-              //   the allowed range (short block)
+              //   the allowed range (int16_t block)
 #define NUM_SECT_OUT_OF_RANGE_LONG_BLOCK \
   0x00000040  //   6   yes   Init-Dec    The number of sections is not within
-              //   the allowed range (long block)
+              //   the allowed range (int32_t block)
 #define LINE_IN_SECT_OUT_OF_RANGE_SHORT_BLOCK \
   0x00000020  //   5   yes   Init-Dec    The number of lines per section is not
-              //   within the allowed range (short block)
+              //   within the allowed range (int16_t block)
 #define CB_OUT_OF_RANGE_SHORT_BLOCK \
   0x00000010  //   4   yes   Init-Dec    The codebook is not within the allowed
-              //   range (short block)
+              //   range (int16_t block)
 #define LINE_IN_SECT_OUT_OF_RANGE_LONG_BLOCK \
   0x00000008  //   3   yes   Init-Dec    The number of lines per section is not
-              //   within the allowed range (long block)
+              //   within the allowed range (int32_t block)
 #define CB_OUT_OF_RANGE_LONG_BLOCK \
   0x00000004  //   2   yes   Init-Dec    The codebook is not within the allowed
-              //   range (long block)
+              //   range (int32_t block)
 #define LAV_VIOLATION \
   0x00000002  //   1   no    Final       The absolute value of at least one
               //   decoded line was too high for the according codebook.
@@ -347,9 +347,9 @@ typedef struct {
   uint32_t errorLog;
   SPECTRAL_PTR pQuantizedSpectralCoefficientsBase;
   int32_t quantizedSpectralCoefficientsIdx;
-  SHORT lengthOfReorderedSpectralData;
-  SHORT numSection;
-  SHORT *pNumLineInSect;
+  int16_t lengthOfReorderedSpectralData;
+  int16_t numSection;
+  int16_t *pNumLineInSect;
   int32_t bitstreamAnchor;
   SCHAR lengthOfLongestCodeword;
   UCHAR *pCodebook;
@@ -361,7 +361,7 @@ typedef struct {
 } HCR_CB_PAIRS;
 
 typedef struct {
-  const USHORT *pLargestAbsVal;
+  const uint16_t *pLargestAbsVal;
   const UCHAR *pMaxCwLength;
   const UCHAR *pCbDimension;
   const UCHAR *pCbDimShift;
@@ -379,19 +379,19 @@ typedef struct {
   SCHAR pRemainingBitsInSegment[1024 >> 1];
   UCHAR readDirection;
   UCHAR numWordForBitfield;
-  USHORT pNumBitValidInLastWord;
+  uint16_t pNumBitValidInLastWord;
 } HCR_SEGMENT_INFO;
 
 typedef struct {
   uint32_t numCodeword;
   uint32_t numSortedSection;
-  USHORT pNumCodewordInSection[MAX_SFB_HCR];
-  USHORT pNumSortedCodewordInSection[MAX_SFB_HCR];
-  USHORT pNumExtendedSortedCodewordInSection[MAX_SFB_HCR + MAX_HCR_SETS];
+  uint16_t pNumCodewordInSection[MAX_SFB_HCR];
+  uint16_t pNumSortedCodewordInSection[MAX_SFB_HCR];
+  uint16_t pNumExtendedSortedCodewordInSection[MAX_SFB_HCR + MAX_HCR_SETS];
   int32_t numExtendedSortedCodewordInSectionIdx;
-  USHORT pNumExtendedSortedSectionsInSets[MAX_HCR_SETS];
+  uint16_t pNumExtendedSortedSectionsInSets[MAX_HCR_SETS];
   int32_t numExtendedSortedSectionsInSetsIdx;
-  USHORT pReorderOffset[MAX_SFB_HCR];
+  uint16_t pReorderOffset[MAX_SFB_HCR];
   UCHAR pSortedCodebook[MAX_SFB_HCR];
 
   UCHAR pExtendedSortedCodebook[MAX_SFB_HCR + MAX_HCR_SETS];
@@ -408,7 +408,7 @@ typedef struct {
   int32_t
   *pResultBase; /* Base address for spectral data output target buffer */
   uint32_t iNode[1024 >> 2]; /* Helper indices for code books */
-  USHORT
+  uint16_t
   iResultPointer[1024 >> 2]; /* Helper indices for accessing pResultBase */
   uint32_t pEscapeSequenceInfo[1024 >> 2];
   uint32_t codewordOffset;

@@ -129,12 +129,12 @@ typedef struct {
   PVC_STATIC_DATA PvcStaticData;
 
   /* do scale handling in sbr an not in qmf */
-  SHORT scale_ov;
-  SHORT scale_lb;
-  SHORT scale_hbe;
+  int16_t scale_ov;
+  int16_t scale_lb;
+  int16_t scale_hbe;
 
-  SHORT prev_frame_lSbr;
-  SHORT prev_frame_hbeSbr;
+  int16_t prev_frame_lSbr;
+  int16_t prev_frame_hbeSbr;
 
   int32_t codecFrameSize;
 
@@ -173,10 +173,10 @@ typedef SBR_CHANNEL *HANDLE_SBR_CHANNEL;
 
 void sbr_dec(
     HANDLE_SBR_DEC hSbrDec,             /*!< handle to Decoder channel */
-    LONG *timeIn,                       /*!< pointer to input time signal */
-    LONG *timeOut,                      /*!< pointer to output time signal */
+    int32_t *timeIn,                       /*!< pointer to input time signal */
+    int32_t *timeOut,                      /*!< pointer to output time signal */
     HANDLE_SBR_DEC hSbrDecRight,        /*!< handle to Decoder channel right */
-    LONG *timeOutRight,                 /*!< pointer to output time signal */
+    int32_t *timeOutRight,                 /*!< pointer to output time signal */
     int32_t strideOut,                      /*!< Time data traversal strideOut */
     HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Static control data */
     HANDLE_SBR_FRAME_DATA hFrameData,   /*!< Control data of current frame */

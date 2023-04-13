@@ -244,11 +244,11 @@ static void adjustTimeSlotHQ(int32_t *ptrReal, int32_t *ptrImag,
 static void mapSineFlags(
     UCHAR *freqBandTable, /*!< Band borders (there's only 1 flag per band) */
     int32_t nSfb,             /*!< Number of bands in the table */
-    ULONG *addHarmonics,  /*!< Packed addHarmonics of current frame (aligned to
+    uint32_t *addHarmonics,  /*!< Packed addHarmonics of current frame (aligned to
                              the MSB) */
-    ULONG *harmFlagsPrev, /*!< Packed addHarmonics of previous frame (aligned to
+    uint32_t *harmFlagsPrev, /*!< Packed addHarmonics of previous frame (aligned to
                              the LSB) */
-    ULONG *harmFlagsPrevActive, /*!< Packed sineMapped of previous frame
+    uint32_t *harmFlagsPrevActive, /*!< Packed sineMapped of previous frame
                                    (aligned to the LSB) */
     int32_t tranEnv,                /*!< Transient position */
     SCHAR *sineMapped) /*!< Resulting vector of sine start positions for each
@@ -257,8 +257,8 @@ static void mapSineFlags(
 {
   int32_t i;
   int32_t bitcount = 31;
-  ULONG harmFlagsQmfBands[ADD_HARMONICS_FLAGS_SIZE] = {0};
-  ULONG *curFlags = addHarmonics;
+  uint32_t harmFlagsQmfBands[ADD_HARMONICS_FLAGS_SIZE] = {0};
+  uint32_t *curFlags = addHarmonics;
 
   /*
     Format of addHarmonics (aligned to MSB):
@@ -278,9 +278,9 @@ static void mapSineFlags(
   /* Reset the output vector first */
   FDKmemset(sineMapped, 32,
             MAX_FREQ_COEFFS * sizeof(SCHAR)); /* 32 means 'no sine' */
-  FDKmemclear(harmFlagsPrevActive, ADD_HARMONICS_FLAGS_SIZE * sizeof(ULONG));
+  FDKmemclear(harmFlagsPrevActive, ADD_HARMONICS_FLAGS_SIZE * sizeof(uint32_t));
   for (i = 0; i < nSfb; i++) {
-    ULONG maskSfb =
+    uint32_t maskSfb =
         1 << bitcount; /* mask to extract addHarmonics flag of current Sfb */
 
     if (*curFlags & maskSfb) {          /* There is a sine in this band */
@@ -313,7 +313,7 @@ static void mapSineFlags(
     }
   }
   FDKmemcpy(harmFlagsPrev, harmFlagsQmfBands,
-            sizeof(ULONG) * ADD_HARMONICS_FLAGS_SIZE);
+            sizeof(uint32_t) * ADD_HARMONICS_FLAGS_SIZE);
 }
 
 /*!
@@ -328,9 +328,9 @@ static void mapSineFlags(
     UCHAR *freqBandTable,       /*!< Band borders (there's only 1 flag per
                                    band) */
     int32_t nSfb,                   /*!< Number of bands in the table */
-    ULONG *harmFlagsPrev,       /*!< Packed addHarmonics of previous frame
+    uint32_t *harmFlagsPrev,       /*!< Packed addHarmonics of previous frame
                                    (aligned to the MSB) */
-    ULONG *harmFlagsPrevActive, /*!< Packed sineMapped of previous
+    uint32_t *harmFlagsPrevActive, /*!< Packed sineMapped of previous
                                    frame (aligned to the LSB) */
     SCHAR *sineMapped,          /*!< Resulting vector of sine start positions
                                    for each QMF band */
@@ -551,11 +551,11 @@ static void apply_inter_tes(int32_t **qmfReal, int32_t **qmfImag,
 
       for (j = 0; j < lowSubband; ++j) {
         bufferImag[j] = qmfImag[startPos + i][j];
-        maxVal |= (int32_t)((LONG)(bufferImag[j]) ^
-                             ((LONG)bufferImag[j] >> (DFRACT_BITS - 1)));
+        maxVal |= (int32_t)((int32_t)(bufferImag[j]) ^
+                             ((int32_t)bufferImag[j] >> (DFRACT_BITS - 1)));
         bufferReal[j] = qmfReal[startPos + i][j];
-        maxVal |= (int32_t)((LONG)(bufferReal[j]) ^
-                             ((LONG)bufferReal[j] >> (DFRACT_BITS - 1)));
+        maxVal |= (int32_t)((int32_t)(bufferReal[j]) ^
+                             ((int32_t)bufferReal[j] >> (DFRACT_BITS - 1)));
       }
 
       subsample_power_low[i] = (int32_t)0;
@@ -590,11 +590,11 @@ static void apply_inter_tes(int32_t **qmfReal, int32_t **qmfImag,
 
       for (j = lowSubband; j < highSubband; ++j) {
         bufferImag[j] = qmfImag[startPos + i][j];
-        maxVal |= (int32_t)((LONG)(bufferImag[j]) ^
-                             ((LONG)bufferImag[j] >> (DFRACT_BITS - 1)));
+        maxVal |= (int32_t)((int32_t)(bufferImag[j]) ^
+                             ((int32_t)bufferImag[j] >> (DFRACT_BITS - 1)));
         bufferReal[j] = qmfReal[startPos + i][j];
-        maxVal |= (int32_t)((LONG)(bufferReal[j]) ^
-                             ((LONG)bufferReal[j] >> (DFRACT_BITS - 1)));
+        maxVal |= (int32_t)((int32_t)(bufferReal[j]) ^
+                             ((int32_t)bufferReal[j] >> (DFRACT_BITS - 1)));
       }
 
       subsample_power_high[i] = (int32_t)0;
@@ -833,7 +833,7 @@ static void apply_inter_tes(int32_t **qmfReal, int32_t **qmfImag,
   compared to the total gain over all subbands. \li Boost gain: Calculate and
   apply boost factor for each limiter band in order to compensate for the energy
   loss imposed by the limiting. \li Apply gains and add noise: The gains and
-  noise levels are applied to all timeslots of the current envelope. A short
+  noise levels are applied to all timeslots of the current envelope. A int16_t
   FIR-filter (length 4 QMF-timeslots) can be used to smooth the sudden change at
   the envelope borders. Each complex subband sample of the current timeslot is
   multiplied by the smoothed gain, then random noise with the calculated level
@@ -1011,7 +1011,7 @@ void calculateSbrEnvelope(
 
       /* Fetch frequency resolution for current envelope: */
       for (j = noSubFrameBands[hFrameData->frameInfo.freqRes[i]]; j != 0; j--) {
-        maxSfbNrg_e = fixMax(maxSfbNrg_e, (int32_t)((LONG)(*pIenv++) & MASK_E));
+        maxSfbNrg_e = fixMax(maxSfbNrg_e, (int32_t)((int32_t)(*pIenv++) & MASK_E));
       }
       maxSfbNrg_e -= NRG_EXP_OFFSET;
 
@@ -1178,9 +1178,9 @@ void calculateSbrEnvelope(
       FIXP_SGL *pNoiseLevels = noiseLevels;
 
       int32_t tmpNoise =
-          FX_SGL2FX_DBL((FIXP_SGL)((LONG)(*pNoiseLevels) & MASK_M));
+          FX_SGL2FX_DBL((FIXP_SGL)((int32_t)(*pNoiseLevels) & MASK_M));
       SCHAR tmpNoise_e =
-          (UCHAR)((LONG)(*pNoiseLevels++) & MASK_E) - NOISE_EXP_OFFSET;
+          (UCHAR)((int32_t)(*pNoiseLevels++) & MASK_E) - NOISE_EXP_OFFSET;
 
       int32_t cc = 0;
       c = 0;
@@ -1201,9 +1201,9 @@ void calculateSbrEnvelope(
 
             if (k >= *pUiNoise) {
               tmpNoise =
-                  FX_SGL2FX_DBL((FIXP_SGL)((LONG)(*pNoiseLevels) & MASK_M));
+                  FX_SGL2FX_DBL((FIXP_SGL)((int32_t)(*pNoiseLevels) & MASK_M));
               tmpNoise_e =
-                  (SCHAR)((LONG)(*pNoiseLevels++) & MASK_E) - NOISE_EXP_OFFSET;
+                  (SCHAR)((int32_t)(*pNoiseLevels++) & MASK_E) - NOISE_EXP_OFFSET;
 
               pUiNoise++;
             }
@@ -1223,8 +1223,8 @@ void calculateSbrEnvelope(
         }
       } else {
         for (j = 0; j < noSubFrameBands[freq_res]; j++) {
-          int32_t refNrg = FX_SGL2FX_DBL((FIXP_SGL)((LONG)(*pIenv) & MASK_M));
-          SCHAR refNrg_e = (SCHAR)((LONG)(*pIenv) & MASK_E) - NRG_EXP_OFFSET;
+          int32_t refNrg = FX_SGL2FX_DBL((FIXP_SGL)((int32_t)(*pIenv) & MASK_M));
+          SCHAR refNrg_e = (SCHAR)((int32_t)(*pIenv) & MASK_E) - NRG_EXP_OFFSET;
 
           UCHAR sinePresentFlag = 0;
           int32_t li = table[j];
@@ -1238,9 +1238,9 @@ void calculateSbrEnvelope(
           for (k = li; k < ui; k++) {
             if (k >= *pUiNoise) {
               tmpNoise =
-                  FX_SGL2FX_DBL((FIXP_SGL)((LONG)(*pNoiseLevels) & MASK_M));
+                  FX_SGL2FX_DBL((FIXP_SGL)((int32_t)(*pNoiseLevels) & MASK_M));
               tmpNoise_e =
-                  (SCHAR)((LONG)(*pNoiseLevels++) & MASK_E) - NOISE_EXP_OFFSET;
+                  (SCHAR)((int32_t)(*pNoiseLevels++) & MASK_E) - NOISE_EXP_OFFSET;
 
               pUiNoise++;
             }
@@ -1892,7 +1892,7 @@ static inline int32_t FDK_get_maxval_real(int32_t maxVal, int32_t *reTmp,
   maxVal = (int32_t)0;
   while (width-- != 0) {
     int32_t tmp = *(reTmp++);
-    maxVal |= (int32_t)((LONG)(tmp) ^ ((LONG)tmp >> (DFRACT_BITS - 1)));
+    maxVal |= (int32_t)((int32_t)(tmp) ^ ((int32_t)tmp >> (DFRACT_BITS - 1)));
   }
 
   return maxVal;
@@ -1930,9 +1930,9 @@ int32_t maxSubbandSample(
           int32_t tmp1 = *(reTmp++);
           int32_t tmp2 = *(imTmp++);
           maxVal |=
-              (int32_t)((LONG)(tmp1) ^ ((LONG)tmp1 >> (DFRACT_BITS - 1)));
+              (int32_t)((int32_t)(tmp1) ^ ((int32_t)tmp1 >> (DFRACT_BITS - 1)));
           maxVal |=
-              (int32_t)((LONG)(tmp2) ^ ((LONG)tmp2 >> (DFRACT_BITS - 1)));
+              (int32_t)((int32_t)(tmp2) ^ ((int32_t)tmp2 >> (DFRACT_BITS - 1)));
         } while (--k != 0);
       }
     } else {
@@ -2015,19 +2015,19 @@ static void calcNrgPerSubband(
       maxVal = FL2FX_DBL(0.0f);
       for (l = start_pos; l < next_pos; l++) {
         bufferImag[l] = analysBufferImag[l][k];
-        maxVal |= (int32_t)((LONG)(bufferImag[l]) ^
-                             ((LONG)bufferImag[l] >> (DFRACT_BITS - 1)));
+        maxVal |= (int32_t)((int32_t)(bufferImag[l]) ^
+                             ((int32_t)bufferImag[l] >> (DFRACT_BITS - 1)));
         bufferReal[l] = analysBufferReal[l][k];
-        maxVal |= (int32_t)((LONG)(bufferReal[l]) ^
-                             ((LONG)bufferReal[l] >> (DFRACT_BITS - 1)));
+        maxVal |= (int32_t)((int32_t)(bufferReal[l]) ^
+                             ((int32_t)bufferReal[l] >> (DFRACT_BITS - 1)));
       }
     } else {
       int32_t l;
       maxVal = FL2FX_DBL(0.0f);
       for (l = start_pos; l < next_pos; l++) {
         bufferReal[l] = analysBufferReal[l][k];
-        maxVal |= (int32_t)((LONG)(bufferReal[l]) ^
-                             ((LONG)bufferReal[l] >> (DFRACT_BITS - 1)));
+        maxVal |= (int32_t)((int32_t)(bufferReal[l]) ^
+                             ((int32_t)bufferReal[l] >> (DFRACT_BITS - 1)));
       }
     }
 

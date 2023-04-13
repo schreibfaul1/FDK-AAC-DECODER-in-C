@@ -346,7 +346,7 @@ typedef struct {
   int32_t ampResolutionCurrentFrame; /*!< Amplitude resolution of envelope values
                                     (0: 1.5dB, 1: 3dB) */
 
-  ULONG addHarmonics[ADD_HARMONICS_FLAGS_SIZE]; /*!< Flags for synthetic sine
+  uint32_t addHarmonics[ADD_HARMONICS_FLAGS_SIZE]; /*!< Flags for synthetic sine
                                                    addition (aligned to MSB) */
 
   FIXP_SGL iEnvelope[MAX_NUM_ENVELOPE_VALUES];       /*!< Envelope data */

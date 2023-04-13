@@ -475,7 +475,7 @@ int32_t transportDec_RegisterUniDrcConfigCallback(HANDLE_TRANSPORTDEC hTpDec,
 
 /**
  * \brief Fill internal input buffer with bitstream data from the external input
- * buffer. The function only copies such data as long as the decoder-internal
+ * buffer. The function only copies such data as int32_t as the decoder-internal
  * input buffer is not full. So it grabs whatever it can from pBuffer and
  * returns information (bytesValid) so that at a subsequent call of
  * %transportDec_FillData(), the right position in pBuffer can be determined to

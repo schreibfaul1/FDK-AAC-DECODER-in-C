@@ -135,8 +135,8 @@ typedef enum {
 typedef struct {
   uint32_t expiryCount;
   uint32_t numBands;
-  USHORT bandTop[MAX_DRC_BANDS];
-  SHORT drcInterpolationScheme;
+  uint16_t bandTop[MAX_DRC_BANDS];
+  int16_t drcInterpolationScheme;
   UCHAR drcValue[MAX_DRC_BANDS];
   SCHAR drcDataType;
 
@@ -189,9 +189,9 @@ typedef struct {
   int32_t prevAacNumChannels; /* Previous number of channels of aac bitstream, used
                              for update flag */
 
-  USHORT numPayloads; /* The number of DRC data payload elements found within
+  uint16_t numPayloads; /* The number of DRC data payload elements found within
                          frame */
-  USHORT
+  uint16_t
   numThreads;         /* The number of DRC data threads extracted from the found
                          payload elements */
   SCHAR progRefLevel; /* Program reference level for all channels */

@@ -1129,7 +1129,7 @@ static int32_t DuckerCalcEnergy(DUCKER_INSTANCE *const self,
      * assertion failures later. */
     int32_t pb;
     for (pb = 0; pb < (28); pb++) {
-      energy[pb] = (int32_t)((LONG)energy[pb] & (LONG)MAXVAL_DBL);
+      energy[pb] = (int32_t)((int32_t)energy[pb] & (int32_t)MAXVAL_DBL);
     }
   }
   return err;

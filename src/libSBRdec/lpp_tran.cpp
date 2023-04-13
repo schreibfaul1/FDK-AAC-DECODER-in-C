@@ -316,7 +316,7 @@ void lppTransposer(
   if (pSettings->noOfPatches > 0) {
     /* Set upper subbands to zero:
        This is required in case that the patches do not cover the complete
-       highband (because the last patch would be too short). Possible
+       highband (because the last patch would be too int16_t). Possible
        optimization: Clearing bands up to usb would be sufficient here. */
     int32_t targetStopBand =
         patchParam[pSettings->noOfPatches - 1].targetStartBand +
@@ -920,7 +920,7 @@ void lppTransposerHBE(
   if (pSettings->noOfPatches > 0) {
     /* Set upper subbands to zero:
        This is required in case that the patches do not cover the complete
-       highband (because the last patch would be too short). Possible
+       highband (because the last patch would be too int16_t). Possible
        optimization: Clearing bands up to usb would be sufficient here. */
     int32_t targetStopBand =
         patchParam[pSettings->noOfPatches - 1].targetStartBand +

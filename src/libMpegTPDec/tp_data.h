@@ -255,8 +255,8 @@ typedef struct {
 
 typedef struct {
   USAC_EXT_ELEMENT_TYPE usacExtElementType;
-  USHORT usacExtElementConfigLength;
-  USHORT usacExtElementDefaultLength;
+  uint16_t usacExtElementConfigLength;
+  uint16_t usacExtElementDefaultLength;
   UCHAR usacExtElementPayloadFrag;
   UCHAR usacExtElementHasAudioPreRoll;
 } CSUsacExtElementConfig;
@@ -286,7 +286,7 @@ typedef struct {
   UCHAR m_usacConfigExtensionPresent;
   UCHAR elementLengthPresent;
   UCHAR UsacConfig[TP_USAC_MAX_CONFIG_LEN];
-  USHORT UsacConfigBits;
+  uint16_t UsacConfigBits;
 } CSUsacConfig;
 
 /**

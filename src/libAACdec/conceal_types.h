@@ -160,7 +160,7 @@ typedef struct {
   CConcealParams *pConcealParams;
 
   FIXP_CNCL spectralCoefficient[1024];
-  SHORT specScale[8];
+  int16_t specScale[8];
 
   int32_t iRandomPhase;
   int32_t prevFrameOk[2];
@@ -185,7 +185,7 @@ typedef struct {
   int32_t fade_old;           /* last fading factor */
   TDfadingType lastFadingType; /* last fading type */
 
-  SHORT aRvlcPreviousScaleFactor[RVLC_MAX_SFB]; /* needed once per channel */
+  int16_t aRvlcPreviousScaleFactor[RVLC_MAX_SFB]; /* needed once per channel */
   UCHAR aRvlcPreviousCodebook[RVLC_MAX_SFB];    /* needed once per channel */
   SCHAR rvlcPreviousScaleFactorOK;
   SCHAR rvlcPreviousBlockType;
@@ -193,7 +193,7 @@ typedef struct {
   FIXP_LPC lsf4[M_LP_FILTER_ORDER];
   int32_t last_tcx_gain;
   int32_t last_tcx_gain_e;
-  ULONG TDNoiseSeed;
+  uint32_t TDNoiseSeed;
   int32_t TDNoiseStates[3];
   FIXP_SGL TDNoiseCoef[3];
   FIXP_SGL TDNoiseAtt;

@@ -350,7 +350,7 @@ sbrdecUpdateFreqScale(
     /* Ref: ISO/IEC 23003-3, Figure 12 - Flowchart calculation of fMaster for
      * 4:1 system when bs_freq_scale > 0 */
     if (flags & SBRDEC_QUAD_RATE) {
-      if ((SHORT)k0 < (SHORT)(bpo_div16 >> ((FRACT_BITS - 1) - 4))) {
+      if ((int16_t)k0 < (int16_t)(bpo_div16 >> ((FRACT_BITS - 1) - 4))) {
         bpo_div16 = (FIXP_SGL)(k0 & (UCHAR)0xfe)
                     << ((FRACT_BITS - 1) - 4); /* bpo_div16 = floor(k0/2)*2 */
       }
@@ -511,11 +511,11 @@ static FIXP_SGL calcFactorPerBand(int32_t k_start, int32_t k_stop, int32_t num_b
       if (direction == 0)
         /* Halfen step. Right shift is not done as fract because otherwise the
            lowest bit cannot be cleared due to rounding */
-        step = (int32_t)((LONG)step >> 1);
+        step = (int32_t)((int32_t)step >> 1);
       direction = 1;
       bandfactor = bandfactor + step;
     } else { /* Factor is too weak: make it stronger */
-      if (direction == 1) step = (int32_t)((LONG)step >> 1);
+      if (direction == 1) step = (int32_t)((int32_t)step >> 1);
       direction = 0;
       bandfactor = bandfactor - step;
     }
@@ -562,7 +562,7 @@ static int32_t numberOfBands(
   /* add scaled 1 for rounding to even numbers: */
   num_bands_div128 = num_bands_div128 + FL2FXCONST_SGL(1.0f / 128.0f);
   /* scale back to right aligned integer and double the value: */
-  num_bands = 2 * ((LONG)num_bands_div128 >> (FRACT_BITS - 7));
+  num_bands = 2 * ((int32_t)num_bands_div128 >> (FRACT_BITS - 7));
 
   return (num_bands);
 }
@@ -599,7 +599,7 @@ static void CalcBands(UCHAR *diff,     /*!< Vector of widths to be calculated */
     temp = exact + FL2FXCONST_SGL(128.0 / 32768.0);
 
     /* scale back to right alinged integer: */
-    current = (LONG)temp >> (FRACT_BITS - 8);
+    current = (int32_t)temp >> (FRACT_BITS - 8);
 
     /* Save width of band i */
     diff[i] = previous - current;
@@ -800,13 +800,13 @@ resetFreqBandTables(HANDLE_SBR_HEADER_DATA hHeaderData, const uint32_t flags) {
   } else /* Calculate no of noise bands 1,2 or 3 bands/octave */
   {
     /* Fetch number of octaves divided by 32 */
-    intTemp = (LONG)FDK_getNumOctavesDiv8(kx, k2) >> 2;
+    intTemp = (int32_t)FDK_getNumOctavesDiv8(kx, k2) >> 2;
 
     /* Integer-Multiplication with number of bands: */
     intTemp = intTemp * hHeaderData->bs_data.noise_bands;
 
     /* Add scaled 0.5 for rounding: */
-    intTemp = intTemp + (LONG)FL2FXCONST_SGL(0.5f / 32.0f);
+    intTemp = intTemp + (int32_t)FL2FXCONST_SGL(0.5f / 32.0f);
 
     /* Convert to right-aligned integer: */
     intTemp = intTemp >> (FRACT_BITS - 1 /*sign*/ - 5 /* rescale */);

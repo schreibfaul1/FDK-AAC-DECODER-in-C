@@ -259,10 +259,10 @@ static void copyHarmonicSpectrum(int32_t *xOverQmf, int32_t **qmfReal,
 
 void sbr_dec(
     HANDLE_SBR_DEC hSbrDec,             /*!< handle to Decoder channel */
-    LONG *timeIn,                       /*!< pointer to input time signal */
-    LONG *timeOut,                      /*!< pointer to output time signal */
+    int32_t *timeIn,                       /*!< pointer to input time signal */
+    int32_t *timeOut,                      /*!< pointer to output time signal */
     HANDLE_SBR_DEC hSbrDecRight,        /*!< handle to Decoder channel right */
-    LONG *timeOutRight,                 /*!< pointer to output time signal */
+    int32_t *timeOutRight,                 /*!< pointer to output time signal */
     const int32_t strideOut,                /*!< Time data traversal strideOut */
     HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Static control data */
     HANDLE_SBR_FRAME_DATA hFrameData,   /*!< Control data of current frame */
@@ -279,7 +279,7 @@ void sbr_dec(
   /* temporary pointer / variable for QMF;
      required as we want to use temporary buffer
      creating one frame delay for HBE in LP mode */
-  LONG *pTimeInQmf = timeIn;
+  int32_t *pTimeInQmf = timeIn;
 
   /* Number of QMF timeslots in the overlap buffer: */
   int32_t ov_len = hSbrDec->LppTrans.pSettings->overlap;
@@ -1192,7 +1192,7 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
         maxSubbandSample(OverlapBufferReal, (useLP) ? NULL : OverlapBufferImag,
                          startBand, stopBand, 0, startSlot);
 
-    reserve = ((LONG)maxVal != 0 ? CntLeadingZeros(maxVal) - 1 : 0);
+    reserve = ((int32_t)maxVal != 0 ? CntLeadingZeros(maxVal) - 1 : 0);
     reserve = fixMin(
         reserve,
         DFRACT_BITS - 1 -

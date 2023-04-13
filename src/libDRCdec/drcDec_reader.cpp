@@ -143,7 +143,7 @@ static inline int32_t _compAssign(UCHAR* dest, const UCHAR src) {
   return diff;
 }
 
-static inline int32_t _compAssign(ULONG* dest, const ULONG src) {
+static inline int32_t _compAssign(uint32_t* dest, const uint32_t src) {
   int32_t diff = 0;
   if (*dest != src) diff = 1;
   *dest = src;
@@ -408,7 +408,7 @@ static void _readNodes(HANDLE_FDK_BITSTREAM hBs, GAIN_SET* gainSet,
 static void _readDrcGainSequence(HANDLE_FDK_BITSTREAM hBs, GAIN_SET* gainSet,
                                  const int32_t frameSize, const int32_t timeDeltaMin,
                                  UCHAR* pNNodes, GAIN_NODE pNodes[16]) {
-  SHORT timeBufPrevFrame[16], timeBufCurFrame[16];
+  int16_t timeBufPrevFrame[16], timeBufCurFrame[16];
   int32_t nNodesNodeRes, nNodesCur, k, m;
 
   if (gainSet->gainCodingProfile == GCP_CONSTANT) {

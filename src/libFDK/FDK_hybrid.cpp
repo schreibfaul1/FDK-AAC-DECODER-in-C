@@ -132,7 +132,7 @@ amm-info@iis.fraunhofer.de
 #else
 #define FIXP_HTB int32_t            /* SGL data type. */
 #define FIXP_HTP FIXP_DPK            /* Packed DBL data type. */
-#define HTC(a) ((int32_t)(LONG)(a)) /* Cast to DBL */
+#define HTC(a) ((int32_t)(int32_t)(a)) /* Cast to DBL */
 #define FL2FXCONST_HTB FL2FXCONST_DBL
 #endif
 

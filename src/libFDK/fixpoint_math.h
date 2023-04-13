@@ -229,10 +229,10 @@ FDK_INLINE int32_t CalcInvLdData(const int32_t x) {
   int32_t set_zero = (x < FL2FXCONST_DBL(-31.0 / 64.0)) ? 0 : 1;
   int32_t set_max = (x >= FL2FXCONST_DBL(31.0 / 64.0)) | (x == FL2FXCONST_DBL(0.0));
 
-  FIXP_SGL frac = (FIXP_SGL)((LONG)x & 0x3FF);
-  uint32_t index3 = (uint32_t)(LONG)(x >> 10) & 0x1F;
-  uint32_t index2 = (uint32_t)(LONG)(x >> 15) & 0x1F;
-  uint32_t index1 = (uint32_t)(LONG)(x >> 20) & 0x1F;
+  FIXP_SGL frac = (FIXP_SGL)((int32_t)x & 0x3FF);
+  uint32_t index3 = (uint32_t)(int32_t)(x >> 10) & 0x1F;
+  uint32_t index2 = (uint32_t)(int32_t)(x >> 15) & 0x1F;
+  uint32_t index1 = (uint32_t)(int32_t)(x >> 20) & 0x1F;
   int32_t exp = fMin(31, ((x > FL2FXCONST_DBL(0.0f)) ? (31 - (int32_t)(x >> 25))
                                                  : (int32_t)(-(x >> 25))));
 
@@ -240,10 +240,10 @@ FDK_INLINE int32_t CalcInvLdData(const int32_t x) {
   uint32_t lookup2 = exp2w_tab_long[index2];
   uint32_t lookup3 = exp2x_tab_long[index3];
   uint32_t lookup3f =
-      lookup3 + (uint32_t)(LONG)fMultDiv2((int32_t)(0x0016302F), (FIXP_SGL)frac);
+      lookup3 + (uint32_t)(int32_t)fMultDiv2((int32_t)(0x0016302F), (FIXP_SGL)frac);
 
-  uint32_t lookup12 = (uint32_t)(LONG)fMult((int32_t)lookup1, (int32_t)lookup2);
-  uint32_t lookup = (uint32_t)(LONG)fMult((int32_t)lookup12, (int32_t)lookup3f);
+  uint32_t lookup12 = (uint32_t)(int32_t)fMult((int32_t)lookup1, (int32_t)lookup2);
+  uint32_t lookup = (uint32_t)(int32_t)fMult((int32_t)lookup12, (int32_t)lookup3f);
 
   int32_t retVal = (lookup << 3) >> exp;
 
@@ -257,7 +257,7 @@ FDK_INLINE int32_t CalcInvLdData(const int32_t x) {
 void InitLdInt();
 int32_t CalcLdInt(int32_t i);
 
-extern const USHORT sqrt_tab[49];
+extern const uint16_t sqrt_tab[49];
 
 inline int32_t sqrtFixp_lookup(int32_t x) {
   uint32_t y = (int32_t)x;
@@ -265,8 +265,8 @@ inline int32_t sqrtFixp_lookup(int32_t x) {
   int32_t zeros = fixnormz_D(y) & 0x1e;
   y <<= zeros;
   uint32_t idx = (y >> 26) - 16;
-  USHORT frac = (y >> 10) & 0xffff;
-  USHORT nfrac = 0xffff ^ frac;
+  uint16_t frac = (y >> 10) & 0xffff;
+  uint16_t nfrac = 0xffff ^ frac;
   uint32_t t = (uint32_t)nfrac * sqrt_tab[idx] + (uint32_t)frac * sqrt_tab[idx + 1];
   t = t >> (zeros >> 1);
   return (is_zero ? 0 : t);
@@ -292,13 +292,13 @@ inline int32_t sqrtFixp_lookup(int32_t x, int32_t *x_e) {
   }
   /* Get square root */
   uint32_t idx = (y >> 26) - 16;
-  USHORT frac = (y >> 10) & 0xffff;
-  USHORT nfrac = 0xffff ^ frac;
+  uint16_t frac = (y >> 10) & 0xffff;
+  uint16_t nfrac = 0xffff ^ frac;
   uint32_t t = (uint32_t)nfrac * sqrt_tab[idx] + (uint32_t)frac * sqrt_tab[idx + 1];
 
   /* Write back exponent */
   *x_e = e >> 1;
-  return (int32_t)(LONG)(t >> 1);
+  return (int32_t)(int32_t)(t >> 1);
 }
 
 void InitInvSqrtTab();
@@ -323,7 +323,7 @@ static FDK_FORCEINLINE int32_t invSqrtNorm2(int32_t op, int32_t *shift) {
 
   if (val == FL2FXCONST_DBL(0.0)) {
     *shift = 16;
-    return ((LONG)MAXVAL_DBL); /* maximum positive value */
+    return ((int32_t)MAXVAL_DBL); /* maximum positive value */
   }
 
 #define INVSQRTNORM2_LINEAR_INTERPOLATE
@@ -348,7 +348,7 @@ static FDK_FORCEINLINE int32_t invSqrtNorm2(int32_t op, int32_t *shift) {
                                        + (1-fract)fract*(t[i+2]-t[i+1])/2 */
   if (Fract != (int32_t)0) {
     /* fract = fract * (1 - fract) */
-    Fract = fMultDiv2(Fract, (int32_t)((ULONG)0x80000000 - (ULONG)Fract)) << 1;
+    Fract = fMultDiv2(Fract, (int32_t)((uint32_t)0x80000000 - (uint32_t)Fract)) << 1;
     diff = diff - (invSqrtTab[index + 2] - invSqrtTab[index + 1]);
     reg1 = fMultAddDiv2(reg1, Fract, diff);
   }
@@ -392,7 +392,7 @@ static FDK_FORCEINLINE int32_t sqrtFixp(int32_t op) {
  */
 static inline int32_t invFixp(int32_t op) {
   if ((op == (int32_t)0x00000000) || (op == (int32_t)0x00000001)) {
-    return ((LONG)MAXVAL_DBL);
+    return ((int32_t)MAXVAL_DBL);
   }
   int32_t tmp_exp;
   int32_t tmp_inv = invSqrtNorm2(op, &tmp_exp);
@@ -415,7 +415,7 @@ static inline int32_t invFixp(int32_t op) {
 static inline int32_t invFixp(int32_t op_m, int32_t *op_e) {
   if ((op_m == (int32_t)0x00000000) || (op_m == (int32_t)0x00000001)) {
     *op_e = 31 - *op_e;
-    return ((LONG)MAXVAL_DBL);
+    return ((int32_t)MAXVAL_DBL);
   }
 
   int32_t tmp_exp;
@@ -573,7 +573,7 @@ inline int32_t fMultIceil(int32_t a, int32_t b) {
   if (m_e < (int32_t)0) {
     if (m_e > (int32_t) - (DFRACT_BITS - 1)) {
       mi = (m >> (-m_e));
-      if ((LONG)m & ((1 << (-m_e)) - 1)) {
+      if ((int32_t)m & ((1 << (-m_e)) - 1)) {
         mi = mi + (int32_t)1;
       }
     } else {
@@ -807,7 +807,7 @@ int32_t CalcLog2(int32_t arg, int32_t arg_e, int32_t *result_e);
 FDK_INLINE int32_t fLog2(int32_t x_m, int32_t x_e, int32_t *result_e) {
   int32_t result_m;
 
-  /* Short cut for zero and negative numbers. */
+  /* int16_t cut for zero and negative numbers. */
   if (x_m <= FL2FXCONST_DBL(0.0f)) {
     *result_e = DFRACT_BITS - 1;
     return FL2FXCONST_DBL(-1.0f);
@@ -894,11 +894,11 @@ FDK_INLINE int32_t fLog2(int32_t x_m, int32_t x_e) {
  * \return saturated sum of a and b.
  */
 inline FIXP_SGL fAddSaturate(const FIXP_SGL a, const FIXP_SGL b) {
-  LONG sum;
+  int32_t sum;
 
-  sum = (LONG)(SHORT)a + (LONG)(SHORT)b;
+  sum = (int32_t)(int16_t)a + (int32_t)(int16_t)b;
   sum = fMax(fMin((int32_t)sum, (int32_t)MAXVAL_SGL), (int32_t)MINVAL_SGL);
-  return (FIXP_SGL)(SHORT)sum;
+  return (FIXP_SGL)(int16_t)sum;
 }
 
 /**
@@ -908,11 +908,11 @@ inline FIXP_SGL fAddSaturate(const FIXP_SGL a, const FIXP_SGL b) {
  * \return saturated sum of a and b.
  */
 inline int32_t fAddSaturate(const int32_t a, const int32_t b) {
-  LONG sum;
+  int32_t sum;
 
-  sum = (LONG)(a >> 1) + (LONG)(b >> 1);
+  sum = (int32_t)(a >> 1) + (int32_t)(b >> 1);
   sum = fMax(fMin((int32_t)sum, (int32_t)(MAXVAL_DBL >> 1)), (int32_t)(MINVAL_DBL >> 1));
-  return (int32_t)(LONG)(sum << 1);
+  return (int32_t)(int32_t)(sum << 1);
 }
 #endif /* FUNCTION_fAddSaturate */
 

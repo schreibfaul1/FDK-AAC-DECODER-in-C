@@ -190,8 +190,8 @@ void bass_pf_1sf_delay(int32_t syn[], const int32_t T_sf[], int32_t *pit_gain,
  * "UsacRandomSign"
  */
 FDK_INLINE
-int32_t UsacRandomSign(ULONG *seed) {
-  *seed = (ULONG)((UINT64)(*seed) * 69069 + 5);
+int32_t UsacRandomSign(uint32_t *seed) {
+  *seed = (uint32_t)((uint64_t)(*seed) * 69069 + 5);
 
   return (int32_t)((*seed) & 0x10000);
 }

@@ -96,7 +96,7 @@ amm-info@iis.fraunhofer.de
 
    Author(s):   Josef Hoepfl
 
-   Description: long/short-block decoding
+   Description: int32_t/int16_t-block decoding
 
 *******************************************************************************/
 
@@ -111,17 +111,17 @@ amm-info@iis.fraunhofer.de
 
 /* PNS (of block) */
 void CPns_Read(CPnsData *pPnsData, HANDLE_FDK_BITSTREAM bs,
-               const CodeBookDescription *hcb, SHORT *pScaleFactor,
+               const CodeBookDescription *hcb, int16_t *pScaleFactor,
                UCHAR global_gain, int32_t band, int32_t group);
 
 void CPns_Apply(const CPnsData *pPnsData, const CIcsInfo *pIcsInfo,
-                SPECTRAL_PTR pSpectrum, const SHORT *pSpecScale,
-                const SHORT *pScaleFactor,
+                SPECTRAL_PTR pSpectrum, const int16_t *pSpecScale,
+                const int16_t *pScaleFactor,
                 const SamplingRateInfo *pSamplingRateInfo,
                 const int32_t granuleLength, const int32_t channel);
 
 void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                       SamplingRateInfo *pSamplingRateInfo, ULONG *nfRandomSeed,
+                       SamplingRateInfo *pSamplingRateInfo, uint32_t *nfRandomSeed,
                        UCHAR *band_is_noise);
 
 /* TNS (of block) */
@@ -151,7 +151,7 @@ void CTns_Apply(CTnsData *RESTRICT pTnsData, /*!< pointer to aac decoder info */
 
 /* Block */
 
-LONG CBlock_GetEscape(HANDLE_FDK_BITSTREAM bs, const LONG q);
+int32_t CBlock_GetEscape(HANDLE_FDK_BITSTREAM bs, const int32_t q);
 
 /**
  * \brief Read scale factor data. See chapter 4.6.2.3.2 of ISO/IEC 14496-3.
@@ -220,7 +220,7 @@ void ApplyTools(CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
 void CBlock_FrequencyToTime(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
     CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t outSamples[],
-    const SHORT frameLen, const int32_t frameOk, int32_t *pWorkBuffer1,
+    const int16_t frameLen, const int32_t frameOk, int32_t *pWorkBuffer1,
     const int32_t aacOutDataHeadroom, uint32_t elFlags, int32_t elCh);
 
 /**
@@ -229,7 +229,7 @@ void CBlock_FrequencyToTime(
 void CBlock_FrequencyToTimeLowDelay(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
     CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t outSamples[],
-    const short frameLen);
+    const int16_t frameLen);
 
 AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo,
@@ -261,9 +261,9 @@ int32_t EvaluatePower43(int32_t *pValue, uint32_t lsb) {
 
   x = x & 0x0F;
 
-  uint32_t r0 = (LONG)InverseQuantTable[tableIndex + 0];
-  uint32_t r1 = (LONG)InverseQuantTable[tableIndex + 1];
-  USHORT nx = 16 - x;
+  uint32_t r0 = (int32_t)InverseQuantTable[tableIndex + 0];
+  uint32_t r1 = (int32_t)InverseQuantTable[tableIndex + 1];
+  uint16_t nx = 16 - x;
   uint32_t temp = (r0)*nx + (r1)*x;
   invQVal = (int32_t)temp;
 
@@ -304,7 +304,7 @@ inline int32_t CBlock_DecodeHuffmanWord(
 {
   uint32_t val;
   uint32_t index = 0;
-  const USHORT(*CodeBook)[HuffmanEntries] = hcb->CodeBook;
+  const uint16_t(*CodeBook)[HuffmanEntries] = hcb->CodeBook;
 
   while (1) {
     val = CodeBook[index]
@@ -327,7 +327,7 @@ inline int32_t CBlock_DecodeHuffmanWord(
 }
 inline int32_t CBlock_DecodeHuffmanWordCB(
     HANDLE_FDK_BITSTREAM bs, /*!< pointer to bitstream */
-    const USHORT (
+    const uint16_t (
         *CodeBook)[HuffmanEntries]) /*!< pointer to codebook description */
 {
   uint32_t index = 0;

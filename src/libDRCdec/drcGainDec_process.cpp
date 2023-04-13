@@ -149,9 +149,9 @@ static DRC_ERROR _prepareLnbIndex(ACTIVE_DRC* pActiveDrc,
 
 static DRC_ERROR _interpolateDrcGain(
     const GAIN_INTERPOLATION_TYPE gainInterpolationType,
-    const SHORT timePrev,  /* time0 */
-    const SHORT tGainStep, /* time1 - time0 */
-    const SHORT start, const SHORT stop, const SHORT stepsize,
+    const int16_t timePrev,  /* time0 */
+    const int16_t tGainStep, /* time1 - time0 */
+    const int16_t start, const int16_t stop, const int16_t stepsize,
     const int32_t gainLeft, const int32_t gainRight, const int32_t slopeLeft,
     const int32_t slopeRight, int32_t* buffer) {
   int32_t n, n_buf;
@@ -172,17 +172,17 @@ static DRC_ERROR _interpolateDrcGain(
   n_buf = (start + timePrev + start_offset) >> (15 - fixnormz_S(stepsize));
 
   { /* gainInterpolationType == GIT_LINEAR */
-    LONG a;
+    int32_t a;
     /* runs = ceil((stop - start - start_offset)/stepsize). This works for
      * stepsize = 2^N only. */
     int32_t runs = (int32_t)(stop - start - start_offset + stepsize - 1) >>
                (30 - CountLeadingBits(stepsize));
     int32_t n_min = fMin(
         fMin(CntLeadingZeros(gainRight), CntLeadingZeros(gainLeft)) - 1, 8);
-    a = (LONG)((gainRight << n_min) - (gainLeft << n_min)) / tGainStep;
-    LONG a_step = a * stepsize;
+    a = (int32_t)((gainRight << n_min) - (gainLeft << n_min)) / tGainStep;
+    int32_t a_step = a * stepsize;
     n = start + start_offset;
-    a = a * n + (LONG)(gainLeft << n_min);
+    a = a * n + (int32_t)(gainLeft << n_min);
     buffer += n_buf;
 #if defined(FUNCTION_interpolateDrcGain_func1)
     interpolateDrcGain_func1(buffer, a, a_step, n_min, runs);
@@ -201,11 +201,11 @@ static DRC_ERROR _interpolateDrcGain(
 static DRC_ERROR _processNodeSegments(
     const int32_t frameSize, const GAIN_INTERPOLATION_TYPE gainInterpolationType,
     const int32_t nNodes, const NODE_LIN* pNodeLin, const int32_t offset,
-    const SHORT stepsize,
+    const int16_t stepsize,
     const NODE_LIN nodePrevious, /* the last node of the previous frame */
     const int32_t channelGain, int32_t* buffer) {
   DRC_ERROR err = DE_OK;
-  SHORT timePrev, duration, start, stop, time;
+  int16_t timePrev, duration, start, stop, time;
   int32_t n;
   int32_t gainLin = FL2FXCONST_DBL(1.0f / (float)(1 << 7)), gainLinPrev;
   int32_t slopeLin = (int32_t)0, slopeLinPrev = (int32_t)0;
@@ -233,7 +233,7 @@ static DRC_ERROR _processNodeSegments(
        within this audio frame. Their values are relative to the beginning of
        this segment. stop is the first sample that isn't processed any more. */
     start = fMax(-timePrev, 1);
-    stop = fMin(time, (SHORT)(frameSize - 1)) - timePrev + 1;
+    stop = fMin(time, (int16_t)(frameSize - 1)) - timePrev + 1;
 
     err = _interpolateDrcGain(gainInterpolationType, timePrev, duration, start,
                               stop, stepsize, gainLinPrev, gainLin,
@@ -372,7 +372,7 @@ processDrcSubband(HANDLE_DRC_GAIN_DECODER hGainDec, const int32_t activeDrcIndex
   int32_t signalIndex = 0;
   int32_t frameSizeSb = 0;
   int32_t nDecoderSubbands;
-  SHORT L = 0; /* L: downsampling factor */
+  int16_t L = 0; /* L: downsampling factor */
   int32_t offset = 0;
   int32_t *audioReal = NULL, *audioImag = NULL;
 

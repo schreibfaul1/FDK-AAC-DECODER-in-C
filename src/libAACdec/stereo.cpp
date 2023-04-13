@@ -200,7 +200,7 @@ int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
 
         /* set pointer to Huffman codebooks */
         const CodeBookDescription *hcb = &AACcodeBookDescriptionTable[BOOKSCL];
-        /* set predictors to zero in case of a transition from long to short
+        /* set predictors to zero in case of a transition from int32_t to int16_t
          * window sequences and vice versa */
         if (((windowSequence == BLOCK_SHORT) &&
              (pJointStereoPersistentData->winSeqPrev != BLOCK_SHORT)) ||
@@ -208,18 +208,18 @@ int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
              (windowSequence != BLOCK_SHORT))) {
           FDKmemclear(pJointStereoPersistentData->alpha_q_re_prev,
                       JointStereoMaximumGroups * JointStereoMaximumBands *
-                          sizeof(SHORT));
+                          sizeof(int16_t));
           FDKmemclear(pJointStereoPersistentData->alpha_q_im_prev,
                       JointStereoMaximumGroups * JointStereoMaximumBands *
-                          sizeof(SHORT));
+                          sizeof(int16_t));
         }
         {
           FDKmemclear(cplxPredictionData->alpha_q_re,
                       JointStereoMaximumGroups * JointStereoMaximumBands *
-                          sizeof(SHORT));
+                          sizeof(int16_t));
           FDKmemclear(cplxPredictionData->alpha_q_im,
                       JointStereoMaximumGroups * JointStereoMaximumBands *
-                          sizeof(SHORT));
+                          sizeof(int16_t));
         }
 
         /* 0 = mid->side prediction, 1 = side->mid prediction */
@@ -544,13 +544,13 @@ static inline void CJointStereo_GenerateMSOutput(int32_t *pSpecLCurrBand,
 void CJointStereo_ApplyMS(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[2],
-    int32_t *spectrumL, int32_t *spectrumR, SHORT *SFBleftScale,
-    SHORT *SFBrightScale, SHORT *specScaleL, SHORT *specScaleR,
-    const SHORT *pScaleFactorBandOffsets, const UCHAR *pWindowGroupLength,
+    int32_t *spectrumL, int32_t *spectrumR, int16_t *SFBleftScale,
+    int16_t *SFBrightScale, int16_t *specScaleL, int16_t *specScaleR,
+    const int16_t *pScaleFactorBandOffsets, const UCHAR *pWindowGroupLength,
     const int32_t windowGroups, const int32_t max_sfb_ste_outside,
     const int32_t scaleFactorBandsTransmittedL,
     const int32_t scaleFactorBandsTransmittedR, int32_t *store_dmx_re_prev,
-    SHORT *store_dmx_re_prev_e, const int32_t mainband_flag) {
+    int16_t *store_dmx_re_prev_e, const int32_t mainband_flag) {
   int32_t window, group, band;
   UCHAR groupMask;
   CJointStereoData *pJointStereoData =
@@ -575,10 +575,10 @@ void CJointStereo_ApplyMS(
     int32_t *const staticSpectralCoeffsR =
         pAacDecoderStaticChannelInfo[L]
             ->pCpeStaticData->jointStereoPersistentData.spectralCoeffs[R];
-    SHORT *const staticSpecScaleL =
+    int16_t *const staticSpecScaleL =
         pAacDecoderStaticChannelInfo[L]
             ->pCpeStaticData->jointStereoPersistentData.specScale[L];
-    SHORT *const staticSpecScaleR =
+    int16_t *const staticSpecScaleR =
         pAacDecoderStaticChannelInfo[L]
             ->pCpeStaticData->jointStereoPersistentData.specScale[R];
 
@@ -592,7 +592,7 @@ void CJointStereo_ApplyMS(
 
     /* When MS is applied over the main band this value gets computed. Otherwise
      * (for the tiles) it uses the assigned value */
-    SHORT dmx_re_prev_e = *store_dmx_re_prev_e;
+    int16_t dmx_re_prev_e = *store_dmx_re_prev_e;
 
     const FIXP_FILT *pCoeff;
     const FIXP_FILT *pCoeffPrev;
@@ -610,12 +610,12 @@ void CJointStereo_ApplyMS(
 
     /* 0.1. window lengths */
 
-    /* get length of short window for current configuration */
+    /* get length of int16_t window for current configuration */
     windowLen =
         pAacDecoderChannelInfo[L]->granuleLength; /* framelength 768 => 96,
                                                      framelength 1024 => 128 */
 
-    /* if this is no short-block set length for long-block */
+    /* if this is no int16_t-block set length for int32_t-block */
     if (pAacDecoderChannelInfo[L]->icsInfo.WindowSequence != BLOCK_SHORT) {
       windowLen *= 8;
     }
@@ -638,7 +638,7 @@ void CJointStereo_ApplyMS(
         case BLOCK_START:
           if ((pJointStereoPersistentData->winSeqPrev == BLOCK_SHORT) ||
               (pJointStereoPersistentData->winSeqPrev == BLOCK_START)) {
-            /* a stop-start-sequence can only follow on an eight-short-sequence
+            /* a stop-start-sequence can only follow on an eight-int16_t-sequence
              * or a start-sequence */
             pCoeffPrev = mdst_filt_coef_prev[2 + previousShape];
           } else {
@@ -684,7 +684,7 @@ void CJointStereo_ApplyMS(
       case BLOCK_START:
         if ((pJointStereoPersistentData->winSeqPrev == BLOCK_SHORT) ||
             (pJointStereoPersistentData->winSeqPrev == BLOCK_START)) {
-          /* a stop-start-sequence can only follow on an eight-short-sequence or
+          /* a stop-start-sequence can only follow on an eight-int16_t-sequence or
            * a start-sequence */
           pCoeff = mdst_filt_coef_curr[12 + coeffPointerOffset];
         } else {
@@ -706,8 +706,8 @@ void CJointStereo_ApplyMS(
     for (window = 0, group = 0; group < windowGroups; group++) {
       for (groupwin = 0; groupwin < pWindowGroupLength[group];
            groupwin++, window++) {
-        SHORT *leftScale = &SFBleftScale[window * 16];
-        SHORT *rightScale = &SFBrightScale[window * 16];
+        int16_t *leftScale = &SFBleftScale[window * 16];
+        int16_t *rightScale = &SFBrightScale[window * 16];
         int32_t windowMaxScale = 0;
 
         /* find maximum scaling factor of all bands in this window */
@@ -762,7 +762,7 @@ void CJointStereo_ApplyMS(
          * Main band. */
         if (cplxPredictionData->complex_coef == 1) {
           if ((cplxPredictionData->use_prev_frame == 1) && (mainband_flag)) {
-            /* if this is a long-block or the first window of a short-block
+            /* if this is a int32_t-block or the first window of a int16_t-block
                calculate the downmix MDCT of the previous frame.
                use_prev_frame is assumed not to change during a frame!
             */
@@ -777,7 +777,7 @@ void CJointStereo_ApplyMS(
               if (pAacDecoderChannelInfo[L]->icsInfo.WindowSequence ==
                   BLOCK_SHORT) {
                 /* use the last window of the previous frame for MDCT
-                 * calculation if this is a short-block. */
+                 * calculation if this is a int16_t-block. */
                 index_offset = windowLen * 7;
                 if (staticSpecScaleL[7] > staticSpecScaleR[7]) {
                   srRightChan = staticSpecScaleL[7] - staticSpecScaleR[7];
@@ -843,8 +843,8 @@ void CJointStereo_ApplyMS(
         /* 2. calculate downmix MDCT of current frame */
 
         /* set pointer to scale-factor-bands of current window */
-        SHORT *leftScale = &SFBleftScale[window * 16];
-        SHORT *rightScale = &SFBrightScale[window * 16];
+        int16_t *leftScale = &SFBleftScale[window * 16];
+        int16_t *rightScale = &SFBrightScale[window * 16];
 
         specScaleL[window] = specScaleR[window] = frameMaxScale;
 
@@ -948,9 +948,9 @@ void CJointStereo_ApplyMS(
         /* 3. calculate MDST-portion corresponding to the current frame. */
         if (cplxPredictionData->complex_coef == 1) {
           {
-            /* 3.1 move pointer in filter-coefficient table in case of short
+            /* 3.1 move pointer in filter-coefficient table in case of int16_t
              * window sequence */
-            /*     (other coefficients are utilized for the last 7 short
+            /*     (other coefficients are utilized for the last 7 int16_t
              * windows)            */
             if ((pAacDecoderChannelInfo[L]->icsInfo.WindowSequence ==
                  BLOCK_SHORT) &&
@@ -990,7 +990,7 @@ void CJointStereo_ApplyMS(
         }   /* if ( pJointStereoData->complex_coef == 1 ) */
 
         /* 4. upmix process */
-        LONG pred_dir = cplxPredictionData->pred_dir ? -1 : 1;
+        int32_t pred_dir = cplxPredictionData->pred_dir ? -1 : 1;
         /* 0.1 in Q-3.34 */
         const int32_t pointOne = 0x66666666; /* 0.8 */
         /* Shift value for the downmix */
@@ -1054,7 +1054,7 @@ void CJointStereo_ApplyMS(
 
               left = ((*p2CoeffL) >> 2) + side;
               right = ((*p2CoeffL) >> 2) - side;
-              right = (int32_t)((LONG)right * pred_dir);
+              right = (int32_t)((int32_t)right * pred_dir);
 
               *p2CoeffL++ = SATURATE_LEFT_SHIFT_ALT(left, 2, DFRACT_BITS);
               *p2CoeffR++ = SATURATE_LEFT_SHIFT_ALT(right, 2, DFRACT_BITS);
@@ -1079,8 +1079,8 @@ void CJointStereo_ApplyMS(
       for (int32_t groupwin = 0; groupwin < pWindowGroupLength[group];
            groupwin++, window++) {
         int32_t *leftSpectrum, *rightSpectrum;
-        SHORT *leftScale = &SFBleftScale[window * 16];
-        SHORT *rightScale = &SFBrightScale[window * 16];
+        int16_t *leftScale = &SFBleftScale[window * 16];
+        int16_t *rightScale = &SFBrightScale[window * 16];
 
         leftSpectrum =
             SPEC(spectrumL, window, pAacDecoderChannelInfo[L]->granuleLength);
@@ -1163,7 +1163,7 @@ void CJointStereo_ApplyMS(
 }
 
 void CJointStereo_ApplyIS(CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
-                          const SHORT *pScaleFactorBandOffsets,
+                          const int16_t *pScaleFactorBandOffsets,
                           const UCHAR *pWindowGroupLength,
                           const int32_t windowGroups,
                           const int32_t scaleFactorBandsTransmitted) {
@@ -1172,7 +1172,7 @@ void CJointStereo_ApplyIS(CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
 
   for (int32_t window = 0, group = 0; group < windowGroups; group++) {
     UCHAR *CodeBook;
-    SHORT *ScaleFactor;
+    int16_t *ScaleFactor;
     UCHAR groupMask = 1 << group;
 
     CodeBook = &pAacDecoderChannelInfo[R]->pDynData->aCodeBook[group * 16];
@@ -1182,9 +1182,9 @@ void CJointStereo_ApplyIS(CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
     for (int32_t groupwin = 0; groupwin < pWindowGroupLength[group];
          groupwin++, window++) {
       int32_t *leftSpectrum, *rightSpectrum;
-      SHORT *leftScale =
+      int16_t *leftScale =
           &pAacDecoderChannelInfo[L]->pDynData->aSfbScale[window * 16];
-      SHORT *rightScale =
+      int16_t *rightScale =
           &pAacDecoderChannelInfo[R]->pDynData->aSfbScale[window * 16];
       int32_t band;
 

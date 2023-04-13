@@ -122,7 +122,7 @@ typedef struct {
   int32_t phaseIndex;  /*!< Index for randomPase array */
   int32_t prevTranEnv; /*!< The transient envelope of the previous frame. */
 
-  ULONG harmFlagsPrev[ADD_HARMONICS_FLAGS_SIZE];
+  uint32_t harmFlagsPrev[ADD_HARMONICS_FLAGS_SIZE];
   /*!< Words with 16 flags each indicating where a sine was added in the
    * previous frame.*/
   UCHAR harmIndex;     /*!< Current phase of synthetic sine */
@@ -139,7 +139,7 @@ typedef struct {
   UCHAR prevFreqBandTableHi[MAX_FREQ_COEFFS + 1];
   UCHAR prevFreqBandTableNoise[MAX_NOISE_COEFFS + 1];
   SCHAR sinusoidal_positionPrev;
-  ULONG harmFlagsPrevActive[ADD_HARMONICS_FLAGS_SIZE];
+  uint32_t harmFlagsPrevActive[ADD_HARMONICS_FLAGS_SIZE];
 } SBR_CALCULATE_ENVELOPE;
 
 typedef SBR_CALCULATE_ENVELOPE *HANDLE_SBR_CALCULATE_ENVELOPE;

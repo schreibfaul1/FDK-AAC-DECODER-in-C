@@ -163,7 +163,7 @@ typedef enum {
 #define PAIR_MASK 0xf
 
 #define MAX_ENTRIES 168
-#define HANDLE_HUFF_NODE const SHORT(*)[MAX_ENTRIES][2]
+#define HANDLE_HUFF_NODE const int16_t(*)[MAX_ENTRIES][2]
 
 #endif /* HUFFDECPARAMS */
 

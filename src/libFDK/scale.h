@@ -136,7 +136,7 @@ void scaleValuesSaturate(FIXP_SGL *dst, const int32_t *src, int32_t len,
 void scaleValuesSaturate(FIXP_SGL *vector, int32_t len, int32_t scalefactor);
 void scaleValuesSaturate(FIXP_SGL *dst, const FIXP_SGL *src, int32_t len,
                          int32_t scalefactor);
-int32_t getScalefactorShort(const SHORT *vector, int32_t len);
+int32_t getScalefactorShort(const int16_t *vector, int32_t len);
 int32_t getScalefactorPCM(const INT_PCM *vector, int32_t len, int32_t stride);
 int32_t getScalefactor(const int32_t *vector, int32_t len);
 int32_t getScalefactor(const FIXP_SGL *vector, int32_t len);
@@ -239,20 +239,20 @@ inline void scaleValueInPlace(int32_t *value, /*!< Value */
 
 #ifndef SATURATE_RIGHT_SHIFT
 #define SATURATE_RIGHT_SHIFT(src, scale, dBits)                            \
-  ((((LONG)(src) >> (scale)) > (LONG)(((1U) << ((dBits)-1)) - 1))          \
-       ? (LONG)(((1U) << ((dBits)-1)) - 1)                                 \
-       : (((LONG)(src) >> (scale)) < ~((LONG)(((1U) << ((dBits)-1)) - 1))) \
-             ? ~((LONG)(((1U) << ((dBits)-1)) - 1))                        \
-             : ((LONG)(src) >> (scale)))
+  ((((int32_t)(src) >> (scale)) > (int32_t)(((1U) << ((dBits)-1)) - 1))          \
+       ? (int32_t)(((1U) << ((dBits)-1)) - 1)                                 \
+       : (((int32_t)(src) >> (scale)) < ~((int32_t)(((1U) << ((dBits)-1)) - 1))) \
+             ? ~((int32_t)(((1U) << ((dBits)-1)) - 1))                        \
+             : ((int32_t)(src) >> (scale)))
 #endif
 
 #ifndef SATURATE_LEFT_SHIFT
 #define SATURATE_LEFT_SHIFT(src, scale, dBits)                           \
-  (((LONG)(src) > ((LONG)(((1U) << ((dBits)-1)) - 1) >> (scale)))        \
-       ? (LONG)(((1U) << ((dBits)-1)) - 1)                               \
-       : ((LONG)(src) < ~((LONG)(((1U) << ((dBits)-1)) - 1) >> (scale))) \
-             ? ~((LONG)(((1U) << ((dBits)-1)) - 1))                      \
-             : ((LONG)(src) << (scale)))
+  (((int32_t)(src) > ((int32_t)(((1U) << ((dBits)-1)) - 1) >> (scale)))        \
+       ? (int32_t)(((1U) << ((dBits)-1)) - 1)                               \
+       : ((int32_t)(src) < ~((int32_t)(((1U) << ((dBits)-1)) - 1) >> (scale))) \
+             ? ~((int32_t)(((1U) << ((dBits)-1)) - 1))                      \
+             : ((int32_t)(src) << (scale)))
 #endif
 
 #ifndef SATURATE_SHIFT
@@ -267,20 +267,20 @@ inline void scaleValueInPlace(int32_t *value, /*!< Value */
  */
 #ifndef SATURATE_LEFT_SHIFT_ALT
 #define SATURATE_LEFT_SHIFT_ALT(src, scale, dBits)                        \
-  (((LONG)(src) > ((LONG)(((1U) << ((dBits)-1)) - 1) >> (scale)))         \
-       ? (LONG)(((1U) << ((dBits)-1)) - 1)                                \
-       : ((LONG)(src) <= ~((LONG)(((1U) << ((dBits)-1)) - 1) >> (scale))) \
-             ? ~((LONG)(((1U) << ((dBits)-1)) - 2))                       \
-             : ((LONG)(src) << (scale)))
+  (((int32_t)(src) > ((int32_t)(((1U) << ((dBits)-1)) - 1) >> (scale)))         \
+       ? (int32_t)(((1U) << ((dBits)-1)) - 1)                                \
+       : ((int32_t)(src) <= ~((int32_t)(((1U) << ((dBits)-1)) - 1) >> (scale))) \
+             ? ~((int32_t)(((1U) << ((dBits)-1)) - 2))                       \
+             : ((int32_t)(src) << (scale)))
 #endif
 
 #ifndef SATURATE_RIGHT_SHIFT_ALT
 #define SATURATE_RIGHT_SHIFT_ALT(src, scale, dBits)                        \
-  ((((LONG)(src) >> (scale)) > (LONG)(((1U) << ((dBits)-1)) - 1))          \
-       ? (LONG)(((1U) << ((dBits)-1)) - 1)                                 \
-       : (((LONG)(src) >> (scale)) < ~((LONG)(((1U) << ((dBits)-1)) - 2))) \
-             ? ~((LONG)(((1U) << ((dBits)-1)) - 2))                        \
-             : ((LONG)(src) >> (scale)))
+  ((((int32_t)(src) >> (scale)) > (int32_t)(((1U) << ((dBits)-1)) - 1))          \
+       ? (int32_t)(((1U) << ((dBits)-1)) - 1)                                 \
+       : (((int32_t)(src) >> (scale)) < ~((int32_t)(((1U) << ((dBits)-1)) - 2))) \
+             ? ~((int32_t)(((1U) << ((dBits)-1)) - 2))                        \
+             : ((int32_t)(src) >> (scale)))
 #endif
 
 #ifndef SATURATE_INT_PCM_RIGHT_SHIFT

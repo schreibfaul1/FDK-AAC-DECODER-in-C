@@ -108,9 +108,9 @@ amm-info@iis.fraunhofer.de
    Should only be included by qmf.cpp, but not compiled separately, please
    exclude compilation from project, if done otherwise. Is optional included
    twice to duplicate all functions with two different pre-definitions, as:
-        #define INT_PCM_QMFOUT LONG
+        #define INT_PCM_QMFOUT int32_t
     and ...
-        #define INT_PCM_QMFOUT SHORT
+        #define INT_PCM_QMFOUT int16_t
     needed to run QMF synthesis in both 16bit and 32bit sample output format.
 */
 

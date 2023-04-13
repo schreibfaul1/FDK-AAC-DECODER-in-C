@@ -250,10 +250,10 @@ typedef struct {
 
 } MEM_REQUIREMENTS;
 
-#define PCM_MPS LONG
+#define PCM_MPS int32_t
 #define PCM_MPSF int32_t
 
-#define FIXP_DBL2PCM_MPS(x) ((LONG)(x))
+#define FIXP_DBL2PCM_MPS(x) ((int32_t)(x))
 
 /* exposed functions (library interface) */
 

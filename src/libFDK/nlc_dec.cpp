@@ -122,7 +122,7 @@ ERROR_t sym_restoreIPD(HANDLE_FDK_BITSTREAM strm, int32_t lav, SCHAR data[2]) {
   }
 
   if (data[0] - data[1] != 0) {
-    ULONG sym_bit;
+    uint32_t sym_bit;
     sym_bit = FDKreadBits(strm, 1);
     if (sym_bit) {
       int32_t tmp;
@@ -152,7 +152,7 @@ static ERROR_t pcm_decode(HANDLE_FDK_BITSTREAM strm, SCHAR* out_data_1,
                           int32_t num_levels) {
   int32_t i = 0, j = 0, idx = 0;
   int32_t max_grp_len = 0, next_val = 0;
-  ULONG tmp;
+  uint32_t tmp;
 
   int32_t pcm_chunk_size[7] = {0};
 
@@ -227,13 +227,13 @@ static ERROR_t pcm_decode(HANDLE_FDK_BITSTREAM strm, SCHAR* out_data_1,
 }
 
 static ERROR_t huff_read(HANDLE_FDK_BITSTREAM strm,
-                         const SHORT (*nodeTab)[MAX_ENTRIES][2],
+                         const int16_t (*nodeTab)[MAX_ENTRIES][2],
                          int32_t* out_data) {
   int32_t node = 0;
   int32_t len = 0;
 
   do {
-    ULONG next_bit;
+    uint32_t next_bit;
     next_bit = FDKreadBits(strm, 1);
     len++;
     node = (*nodeTab)[node][next_bit];
@@ -245,7 +245,7 @@ static ERROR_t huff_read(HANDLE_FDK_BITSTREAM strm,
 }
 
 static ERROR_t huff_read_2D(HANDLE_FDK_BITSTREAM strm,
-                            const SHORT (*nodeTab)[MAX_ENTRIES][2],
+                            const int16_t (*nodeTab)[MAX_ENTRIES][2],
                             SCHAR out_data[2], int32_t* escape) {
   ERROR_t err = HUFFDEC_OK;
 
@@ -271,7 +271,7 @@ bail:
 }
 
 static ERROR_t sym_restore(HANDLE_FDK_BITSTREAM strm, int32_t lav, SCHAR data[2]) {
-  ULONG sym_bit = 0;
+  uint32_t sym_bit = 0;
 
   int32_t sum_val = data[0] + data[1];
   int32_t diff_val = data[0] - data[1];
@@ -313,11 +313,11 @@ static ERROR_t huff_dec_1D(HANDLE_FDK_BITSTREAM strm, const DATA_TYPE data_type,
   ERROR_t err = HUFFDEC_OK;
   int32_t i = 0, node = 0, offset = 0;
   int32_t od = 0, od_sign = 0;
-  ULONG data = 0;
+  uint32_t data = 0;
   int32_t bitsAvail = 0;
 
-  const SHORT(*partTab)[MAX_ENTRIES][2] = NULL;
-  const SHORT(*nodeTab)[MAX_ENTRIES][2] = NULL;
+  const int16_t(*partTab)[MAX_ENTRIES][2] = NULL;
+  const int16_t(*nodeTab)[MAX_ENTRIES][2] = NULL;
 
   switch (data_type) {
     case t_CLD:
@@ -392,11 +392,11 @@ static ERROR_t huff_dec_2D(HANDLE_FDK_BITSTREAM strm, const DATA_TYPE data_type,
   ERROR_t err = HUFFDEC_OK;
   int32_t i = 0, lav = 0, escape = 0, escCntr = 0;
   int32_t node = 0;
-  unsigned long data = 0;
+  uint32_t data = 0;
 
   SCHAR esc_data[2][28] = {{0}};
   int32_t escIdx[28] = {0};
-  const SHORT(*nodeTab)[MAX_ENTRIES][2] = NULL;
+  const int16_t(*nodeTab)[MAX_ENTRIES][2] = NULL;
 
   /* LAV */
   if ((err =
@@ -573,7 +573,7 @@ static ERROR_t huff_decode(HANDLE_FDK_BITSTREAM strm, SCHAR* out_data_1,
   DIFF_TYPE diff_type;
 
   int32_t i = 0;
-  ULONG data = 0;
+  uint32_t data = 0;
 
   SCHAR pair_vec[28][2];
 
@@ -800,7 +800,7 @@ static ERROR_t attach_lsb(HANDLE_FDK_BITSTREAM strm, SCHAR* in_data_msb,
                           int32_t offset, int32_t num_lsb, int32_t num_val,
                           SCHAR* out_data) {
   int32_t i = 0, lsb = 0;
-  ULONG data = 0;
+  uint32_t data = 0;
 
   for (i = 0; i < num_val; i++) {
     int32_t msb;
@@ -833,7 +833,7 @@ ERROR_t EcDataPairDec(DECODER_TYPE DECODER, HANDLE_FDK_BITSTREAM strm,
 
   int32_t mixed_time_pair = 0, numValPcm = 0;
   int32_t quant_levels = 0, quant_offset = 0;
-  ULONG data = 0;
+  uint32_t data = 0;
 
   SCHAR aaDataPair[2][28] = {{0}};
   SCHAR aaDataDiff[2][28] = {{0}};

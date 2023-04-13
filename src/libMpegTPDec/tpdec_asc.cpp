@@ -240,7 +240,7 @@ static int32_t CProgramConfig_ReadHeightExt(CProgramConfig *pPce,
     FDKbyteAlign(bs, alignmentAnchor);
 
     FDKcrcEndReg(&crcInfo, bs, crcReg);
-    if ((USHORT)FDKreadBits(bs, 8) != FDKcrcGetCRC(&crcInfo)) {
+    if ((uint16_t)FDKreadBits(bs, 8) != FDKcrcGetCRC(&crcInfo)) {
       /* CRC failed */
       err = -1;
     }
@@ -1499,7 +1499,7 @@ static uint32_t StoreConfigAsBitstream(
                                                             to read is before
                                                             (after) current bit
                                                             stream position. */
-    UCHAR *configTargetBuffer, const USHORT configTargetBufferSize_bytes) {
+    UCHAR *configTargetBuffer, const uint16_t configTargetBufferSize_bytes) {
   FDK_BITSTREAM usacConf;
   uint32_t const nBits = fAbs(configSize_bits);
   uint32_t j, tmp;
@@ -1531,7 +1531,7 @@ static uint32_t StoreConfigAsBitstream(
 }
 
 /* maps coreSbrFrameLengthIndex to coreCoderFrameLength */
-static const USHORT usacFrameLength[8] = {768, 1024, 2048, 2048, 4096, 0, 0, 0};
+static const uint16_t usacFrameLength[8] = {768, 1024, 2048, 2048, 4096, 0, 0, 0};
 /* maps coreSbrFrameLengthIndex to sbrRatioIndex */
 static const UCHAR sbrRatioIndex[8] = {0, 0, 2, 3, 1, 0, 0, 0};
 
@@ -1568,7 +1568,7 @@ static TRANSPORTDEC_ERROR extElementConfig(CSUsacExtElementConfig *extElement,
 
   extElement->usacExtElementType = (USAC_EXT_ELEMENT_TYPE)usacExtElementType;
   int32_t usacExtElementConfigLength = escapedValue(hBs, 4, 8, 16);
-  extElement->usacExtElementConfigLength = (USHORT)usacExtElementConfigLength;
+  extElement->usacExtElementConfigLength = (uint16_t)usacExtElementConfigLength;
   int32_t bsAnchor;
 
   if (FDKreadBit(hBs)) /* usacExtElementDefaultLengthPresent */
@@ -2475,7 +2475,7 @@ TRANSPORTDEC_ERROR DrmRawSdcAudioConfig_Parse(
     goto bail;
   } else {
     /* DRM - Audio information data entity - type 9
-       - Short Id            2 bits (not part of the config buffer)
+       - int16_t Id            2 bits (not part of the config buffer)
        - Stream Id           2 bits (not part of the config buffer)
        - audio coding        2 bits
        - SBR flag            1 bit

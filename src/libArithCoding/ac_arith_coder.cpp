@@ -106,7 +106,7 @@ amm-info@iis.fraunhofer.de
 
 #define cbitsnew     16
 #define stat_bitsnew 14
-#define ari_q4new    (((long)1 << cbitsnew) - 1) /* 0xFFFF */
+#define ari_q4new    (((int32_t)1 << cbitsnew) - 1) /* 0xFFFF */
 #define ari_q1new    (ari_q4new / 4 + 1)         /* 0x4000 */
 #define ari_q2new    (2 * ari_q1new)             /* 0x8000 */
 #define ari_q3new    (3 * ari_q1new)             /* 0xC000 */
@@ -126,7 +126,7 @@ amm-info@iis.fraunhofer.de
 	#define AC_LIB_BUILD_TIME __TIME__
 #endif
 
-const SHORT ari_lsb2[3][4] = {{12571, 10569, 3696, 0}, {12661, 5700, 3751, 0}, {10827, 6884, 2929, 0}};
+const int16_t ari_lsb2[3][4] = {{12571, 10569, 3696, 0}, {12661, 5700, 3751, 0}, {10827, 6884, 2929, 0}};
 
 
 
@@ -137,7 +137,7 @@ const SHORT ari_lsb2[3][4] = {{12571, 10569, 3696, 0}, {12661, 5700, 3751, 0}, {
    entries of ari_merged_hash_ps that are no more referenced.
 */
 
-static const ULONG ari_merged_hash_ps[742] = {
+static const uint32_t ari_merged_hash_ps[742] = {
 	0x00001044UL, 0x00003D0AUL, 0x00005350UL, 0x000074D6UL, 0x0000A49FUL, 0x0000F96EUL, 0x00111000UL, 0x01111E83UL,
 	0x01113146UL, 0x01114036UL, 0x01116863UL, 0x011194E9UL, 0x0111F7EEUL, 0x0112269BUL, 0x01124775UL, 0x01126DA1UL,
 	0x0112D912UL, 0x01131AF0UL, 0x011336DDUL, 0x01135CF5UL, 0x01139DF8UL, 0x01141A5BUL, 0x01144773UL, 0x01146CF5UL,
@@ -232,7 +232,7 @@ static const ULONG ari_merged_hash_ps[742] = {
 	0x4CE549E7UL, 0x4CFFF5EFUL, 0x4DE359E7UL, 0x4DFFF5D7UL, 0x4EE469E7UL, 0x4EFFF5D7UL, 0x4FEF39E7UL, 0x4FFFF5EFUL,
 	0x6000F9E7UL, 0x69FFF557UL, 0x6FFFF9D7UL, 0x811009D7UL, 0x8EFFF555UL, 0xFFFFF9E7UL};
 
-static const SHORT ari_pk[64][17] = {
+static const int16_t ari_pk[64][17] = {
 	{708, 706, 579, 569, 568, 567, 479, 469, 297, 138, 97, 91, 72, 52, 38, 34, 0},
 	{7619, 6917, 6519, 6412, 5514, 5003, 4683, 4563, 3907, 3297, 3125, 3060, 2904, 2718, 2631, 2590, 0},
 	{7263, 4888, 4810, 4803, 1889, 415, 335, 327, 195, 72, 52, 49, 36, 20, 15, 14, 0},
@@ -307,11 +307,11 @@ typedef struct
 
 static inline int32_t mul_sbc_14bits(int32_t r, int32_t c) { return (((int32_t)r) * ((int32_t)c)) >> stat_bitsnew; }
 
-static inline int32_t ari_decode_14bits(HANDLE_FDK_BITSTREAM hBs, Tastat *s, const SHORT *RESTRICT c_freq, int32_t cfl) {
+static inline int32_t ari_decode_14bits(HANDLE_FDK_BITSTREAM hBs, Tastat *s, const int16_t *RESTRICT c_freq, int32_t cfl) {
 	int32_t          symbol;
 	int32_t          low, high, range, value;
 	int32_t          c;
-	const SHORT *p;
+	const int16_t *p;
 
 	low = s->low;
 	high = s->high;
@@ -319,7 +319,7 @@ static inline int32_t ari_decode_14bits(HANDLE_FDK_BITSTREAM hBs, Tastat *s, con
 
 	range = high - low + 1;
 	c = (((int32_t)(value - low + 1)) << stat_bitsnew) - ((int32_t)1);
-	p = (const SHORT *)(c_freq - 1);
+	p = (const int16_t *)(c_freq - 1);
 
 	if(cfl == (VAL_ESC + 1)) {
 		/* In 50% of all cases, the first entry is the right one, so we check it
@@ -340,7 +340,7 @@ static inline int32_t ari_decode_14bits(HANDLE_FDK_BITSTREAM hBs, Tastat *s, con
 		if((p[1] * range) > c) { p += 1; }
 	}
 	else if(cfl == 27) {
-		const SHORT *p_24 = p + 24;
+		const int16_t *p_24 = p + 24;
 
 		if((p[16] * range) > c) { p += 16; }
 		if((p[8] * range) > c) { p += 8; }
@@ -354,14 +354,14 @@ static inline int32_t ari_decode_14bits(HANDLE_FDK_BITSTREAM hBs, Tastat *s, con
 		}
 	}
 
-	symbol = (int32_t)(p - (const SHORT *)(c_freq - 1));
+	symbol = (int32_t)(p - (const int16_t *)(c_freq - 1));
 
 	if(symbol) { high = low + mul_sbc_14bits(range, c_freq[symbol - 1]) - 1; }
 
 	low += mul_sbc_14bits(range, c_freq[symbol]);
 
-	USHORT us_high = (USHORT)high;
-	USHORT us_low = (USHORT)low;
+	uint16_t us_high = (uint16_t)high;
+	uint16_t us_low = (uint16_t)low;
 	while(1) {
 		if(us_high & 0x8000) {
 			if(!(us_low & 0x8000)) {
@@ -424,9 +424,9 @@ static inline void copyTableAmrwbArith2(UCHAR tab[], int32_t sizeIn, int32_t siz
 	}
 }
 
-static inline ULONG get_pk_v2(ULONG s) {
-	const ULONG *p = ari_merged_hash_ps;
-	ULONG        s12 = (fMax((uint32_t)s, (uint32_t)1) << 12) - 1;
+static inline uint32_t get_pk_v2(uint32_t s) {
+	const uint32_t *p = ari_merged_hash_ps;
+	uint32_t        s12 = (fMax((uint32_t)s, (uint32_t)1) << 12) - 1;
 	if(s12 > p[485]) { p += 486; /* 742 - 256 = 486 */ }
 	else {
 		if(s12 > p[255]) p += 256;
@@ -439,7 +439,7 @@ static inline ULONG get_pk_v2(ULONG s) {
 	if(s12 > p[7]) { p += 8; }
 	if(s12 > p[3]) { p += 4; }
 	if(s12 > p[1]) { p += 2; }
-	ULONG j = p[0];
+	uint32_t j = p[0];
 	if(s12 > j) j = p[1];
 	if(s != (j >> 12)) j >>= 6;
 	return (j & 0x3F);
@@ -450,7 +450,7 @@ static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf, UCHAR *RESTRICT c_p
 	Tastat             as;
 	int32_t                i, l, r;
 	int32_t                lev, esc_nb, pki;
-	USHORT             state_inc;
+	uint16_t             state_inc;
 	uint32_t               s;
 	ARITH_CODING_ERROR ErrorStatus = ARITH_CODER_OK;
 
@@ -582,7 +582,7 @@ ARITH_CODING_ERROR CArco_DecodeArithData(CArcoData *pArcoData, HANDLE_FDK_BITSTR
 				return ARITH_CODER_ERROR;
 			}
 
-			/* short-to-long or long-to-short block transition */
+			/* int16_t-to-int32_t or int32_t-to-int16_t block transition */
 			/* Current length differs compared to previous - perform up/downmix of
 			 * m_qbuf */
 			copyTableAmrwbArith2(pArcoData->c_prev, pArcoData->m_numberLinesPrev >> 1, lg_max >> 1);

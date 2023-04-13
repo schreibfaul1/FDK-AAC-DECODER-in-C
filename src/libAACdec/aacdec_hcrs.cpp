@@ -114,7 +114,7 @@ static uint32_t InitSegmentBitfield(uint32_t *pNumSegment,
                                 SCHAR *pRemainingBitsInSegment,
                                 uint32_t *pSegmentBitfield,
                                 UCHAR *pNumWordForBitfield,
-                                USHORT *pNumBitValidInLastWord);
+                                uint16_t *pNumBitValidInLastWord);
 
 static void InitNonPCWSideInformationForCurrentSet(H_HCR_INFO pHcr);
 
@@ -139,7 +139,7 @@ void DecodeNonPCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO pHcr) {
   SCHAR *pRemainingBitsInSegment;
   uint32_t *pSegmentBitfield;
   UCHAR *pNumWordForBitfield;
-  USHORT *pNumBitValidInLastWord;
+  uint16_t *pNumBitValidInLastWord;
   uint32_t *pCodewordBitfield;
   int32_t bitfieldWord;
   int32_t bitInWord;
@@ -361,12 +361,12 @@ static uint32_t InitSegmentBitfield(uint32_t *pNumSegment,
                                 SCHAR *pRemainingBitsInSegment,
                                 uint32_t *pSegmentBitfield,
                                 UCHAR *pNumWordForBitfield,
-                                USHORT *pNumBitValidInLastWord) {
-  SHORT i;
-  USHORT r;
+                                uint16_t *pNumBitValidInLastWord) {
+  int16_t i;
+  uint16_t r;
   UCHAR bitfieldWord;
   uint32_t tempWord;
-  USHORT numValidSegment;
+  uint16_t numValidSegment;
 
   *pNumWordForBitfield =
       (*pNumSegment == 0)
@@ -428,23 +428,23 @@ static uint32_t InitSegmentBitfield(uint32_t *pNumSegment,
 current set).
 ---------------------------------------------------------------------------------------------*/
 static void InitNonPCWSideInformationForCurrentSet(H_HCR_INFO pHcr) {
-  USHORT i, k;
+  uint16_t i, k;
   UCHAR codebookDim;
   uint32_t startNode;
 
   UCHAR *pCodebook = pHcr->nonPcwSideinfo.pCodebook;
   uint32_t *iNode = pHcr->nonPcwSideinfo.iNode;
   UCHAR *pCntSign = pHcr->nonPcwSideinfo.pCntSign;
-  USHORT *iResultPointer = pHcr->nonPcwSideinfo.iResultPointer;
+  uint16_t *iResultPointer = pHcr->nonPcwSideinfo.iResultPointer;
   uint32_t *pEscapeSequenceInfo = pHcr->nonPcwSideinfo.pEscapeSequenceInfo;
   SCHAR *pSta = pHcr->nonPcwSideinfo.pSta;
-  USHORT *pNumExtendedSortedCodewordInSection =
+  uint16_t *pNumExtendedSortedCodewordInSection =
       pHcr->sectionInfo.pNumExtendedSortedCodewordInSection;
   int32_t numExtendedSortedCodewordInSectionIdx =
       pHcr->sectionInfo.numExtendedSortedCodewordInSectionIdx;
   UCHAR *pExtendedSortedCodebook = pHcr->sectionInfo.pExtendedSortedCodebook;
   int32_t extendedSortedCodebookIdx = pHcr->sectionInfo.extendedSortedCodebookIdx;
-  USHORT *pNumExtendedSortedSectionsInSets =
+  uint16_t *pNumExtendedSortedSectionsInSets =
       pHcr->sectionInfo.pNumExtendedSortedSectionsInSets;
   int32_t numExtendedSortedSectionsInSetsIdx =
       pHcr->sectionInfo.numExtendedSortedSectionsInSetsIdx;
@@ -580,7 +580,7 @@ uint32_t Hcr_State_BODY_ONLY(HANDLE_FDK_BITSTREAM bs, void *ptr) {
   uint32_t segmentOffset;
   int32_t *pResultBase;
   uint32_t *iNode;
-  USHORT *iResultPointer;
+  uint16_t *iResultPointer;
   uint32_t codewordOffset;
   uint32_t branchNode;
   uint32_t branchValue;
@@ -714,7 +714,7 @@ uint32_t Hcr_State_BODY_SIGN__BODY(HANDLE_FDK_BITSTREAM bs, void *ptr) {
   uint32_t *iNode;
   UCHAR *pCntSign;
   int32_t *pResultBase;
-  USHORT *iResultPointer;
+  uint16_t *iResultPointer;
   uint32_t codewordOffset;
 
   uint32_t iQSC;
@@ -861,7 +861,7 @@ uint32_t Hcr_State_BODY_SIGN__SIGN(HANDLE_FDK_BITSTREAM bs, void *ptr) {
 
   UCHAR *pCntSign;
   int32_t *pResultBase;
-  USHORT *iResultPointer;
+  uint16_t *iResultPointer;
   uint32_t codewordOffset;
 
   UCHAR carryBit;
@@ -966,7 +966,7 @@ uint32_t Hcr_State_BODY_SIGN_ESC__BODY(HANDLE_FDK_BITSTREAM bs, void *ptr) {
   uint32_t *iNode;
   UCHAR *pCntSign;
   int32_t *pResultBase;
-  USHORT *iResultPointer;
+  uint16_t *iResultPointer;
   uint32_t codewordOffset;
 
   UCHAR carryBit;
@@ -1129,7 +1129,7 @@ uint32_t Hcr_State_BODY_SIGN_ESC__SIGN(HANDLE_FDK_BITSTREAM bs, void *ptr) {
   uint32_t *iNode;
   UCHAR *pCntSign;
   int32_t *pResultBase;
-  USHORT *iResultPointer;
+  uint16_t *iResultPointer;
   uint32_t *pEscapeSequenceInfo;
   uint32_t codewordOffset;
 
@@ -1407,7 +1407,7 @@ uint32_t Hcr_State_BODY_SIGN_ESC__ESC_WORD(HANDLE_FDK_BITSTREAM bs, void *ptr) {
   uint32_t segmentOffset;
 
   int32_t *pResultBase;
-  USHORT *iResultPointer;
+  uint16_t *iResultPointer;
   uint32_t *pEscapeSequenceInfo;
   uint32_t codewordOffset;
 

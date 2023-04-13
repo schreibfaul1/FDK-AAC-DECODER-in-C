@@ -376,7 +376,7 @@ int32_t CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac,
 }
 
 int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
-                        const SHORT spec_scale[], const int32_t nSpec,
+                        const int16_t spec_scale[], const int32_t nSpec,
                         int32_t *pFac, const int32_t fac_scale,
                         const int32_t fac_length, int32_t noOutSamples, const int32_t tl,
                         const FIXP_WTP *wrs, const int32_t fr, FIXP_LPC A[16],
@@ -598,7 +598,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
   pOvl = pSpec + tl / 2 - 1;
   pOut0 = pOut1;
 
-  for (w = 1; w < nSpec; w++) /* for ACELP -> FD short */
+  for (w = 1; w < nSpec; w++) /* for ACELP -> FD int16_t */
   {
     const FIXP_WTP *pWindow_prev;
 
@@ -610,7 +610,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
 
     scale = total_gain_e;
 
-    /* For the second, third, etc. short frames the alisaing symmetry is equal,
+    /* For the second, third, etc. int16_t frames the alisaing symmetry is equal,
      * either (0,0) or (1,1) */
     if (currAliasingSymmetry == 0) {
       /* DCT IV of current spectrum */

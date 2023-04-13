@@ -400,8 +400,8 @@ int32_t CalcLdInt(int32_t i) {
 *****************************************************************************/
 
 int32_t schur_div(int32_t num, int32_t denum, int32_t count) {
-  int32_t L_num = (LONG)num >> 1;
-  int32_t L_denum = (LONG)denum >> 1;
+  int32_t L_num = (int32_t)num >> 1;
+  int32_t L_denum = (int32_t)denum >> 1;
   int32_t div = 0;
   int32_t k = count;
 
@@ -799,7 +799,7 @@ int32_t fixp_ceil(int32_t f_inp, int32_t sf) {
   FDK_ASSERT(sf >= 0);
   int32_t sx = (DFRACT_BITS - 1) - sf;
   int32_t ceilInt = fixp_ceilToInt(f_inp, sf);
-  ULONG mask = (ULONG)0x1 << (DFRACT_BITS - 1);  // 0x80000000
+  uint32_t mask = (uint32_t)0x1 << (DFRACT_BITS - 1);  // 0x80000000
   ceilInt = ceilInt
             << sx;  // no fract warn bec. shift into saturation done on int32_t side
 
@@ -894,7 +894,7 @@ int32_t fixp_round(int32_t f_inp, int32_t sf) {
   FDK_ASSERT(sf >= 0);
   int32_t sx = DFRACT_BITS - 1 - sf;
   int32_t r = fixp_roundToInt(f_inp, sf);
-  ULONG mask = (ULONG)0x1 << (DFRACT_BITS - 1);  // 0x80000000
+  uint32_t mask = (uint32_t)0x1 << (DFRACT_BITS - 1);  // 0x80000000
   r = r << sx;
 
   if ((f_inp > FL2FXCONST_DBL(0.0f)) && (r & mask)) {

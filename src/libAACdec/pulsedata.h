@@ -129,8 +129,8 @@ typedef struct {
  * \return 0 on success, != 0 on parse error.
  */
 int32_t CPulseData_Read(const HANDLE_FDK_BITSTREAM bs, CPulseData *const PulseData,
-                    const SHORT *sfb_startlines, const void *pIcsInfo,
-                    const SHORT frame_length);
+                    const int16_t *sfb_startlines, const void *pIcsInfo,
+                    const int16_t frame_length);
 
 /**
  * \brief Apply pulse data to spectral lines
@@ -145,6 +145,6 @@ int32_t CPulseData_Read(const HANDLE_FDK_BITSTREAM bs, CPulseData *const PulseDa
  * \return  none
  */
 void CPulseData_Apply(CPulseData *PulseData,
-                      const short *pScaleFactorBandOffsets, int32_t *coef);
+                      const int16_t *pScaleFactorBandOffsets, int32_t *coef);
 
 #endif /* #ifndef PULSEDATA_H */

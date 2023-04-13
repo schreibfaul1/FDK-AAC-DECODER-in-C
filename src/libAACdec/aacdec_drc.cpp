@@ -139,9 +139,9 @@ static int32_t convert_drcParam(int32_t param_dbl) {
   /* converts an internal DRC boost/cut scaling factor in int32_t
      (which is downscaled by DRC_PARAM_SCALE)
      back to an integer value between 0 and 127. */
-  LONG param_long;
+  int32_t param_long;
 
-  param_long = (LONG)param_dbl >> 7;
+  param_long = (int32_t)param_dbl >> 7;
   param_long = param_long * (int32_t)DRC_MAX_QUANT_FACTOR;
   param_long >>= 31 - 7 - DRC_PARAM_SCALE - 1;
   param_long += 1; /* for rounding */
@@ -858,7 +858,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
   int32_t *pSpectralCoefficient =
       SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
   CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
-  SHORT *pSpecScale = pAacDecoderChannelInfo->specScale;
+  int16_t *pSpecScale = pAacDecoderChannelInfo->specScale;
 
   int32_t winSeq = pIcsInfo->WindowSequence;
 
@@ -1018,7 +1018,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
   }
 
   /*  apply factor to spectral lines
-   *  short blocks must take care that bands fall on
+   *  int16_t blocks must take care that bands fall on
    *  block boundaries!
    */
   if (!bSbrPresent) {

@@ -123,7 +123,7 @@ amm-info@iis.fraunhofer.de
 #define FX_DBL2FX_DMX(x) FX_DBL2FX_SGL(x)
 #define FL2FXCONST_DMX(x) FL2FXCONST_SGL(x)
 #define MAXVAL_DMX MAXVAL_SGL
-#define FX_DMX2SHRT(x) ((SHORT)(x))
+#define FX_DMX2SHRT(x) ((int16_t)(x))
 #define FX_DMX2FL(x) FX_DBL2FL(FX_DMX2FX_DBL(x))
 
 /* Fixed and unique channel group indices.
@@ -365,8 +365,8 @@ typedef struct {
   DUAL_CHANNEL_MODE dualChannelMode; /*!< Linked to DMX_DUAL_CHANNEL_MODE */
   PSEUDO_SURROUND_MODE
   pseudoSurrMode;          /*!< Linked to DMX_PSEUDO_SURROUND_MODE       */
-  SHORT numOutChannelsMin; /*!< Linked to MIN_NUMBER_OF_OUTPUT_CHANNELS  */
-  SHORT numOutChannelsMax; /*!< Linked to MAX_NUMBER_OF_OUTPUT_CHANNELS  */
+  int16_t numOutChannelsMin; /*!< Linked to MIN_NUMBER_OF_OUTPUT_CHANNELS  */
+  int16_t numOutChannelsMax; /*!< Linked to MAX_NUMBER_OF_OUTPUT_CHANNELS  */
   UCHAR frameDelay;        /*!< Linked to DMX_BS_DATA_DELAY              */
 
 } PCM_DMX_USER_PARAMS;
@@ -1138,7 +1138,7 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
       /* 10^(dmx_gain_5/80) */
       dmxGain = FX_DBL2FX_DMX(
           fLdPow(FL2FXCONST_DBL(0.830482023721841f), 2, /* log2(10) */
-                 (int32_t)(sign * val * (LONG)FL2FXCONST_DBL(0.0125f)), 0,
+                 (int32_t)(sign * val * (int32_t)FL2FXCONST_DBL(0.0125f)), 0,
                  &dmxScale));
       /* Currently only positive scale factors supported! */
       if (dmxScale < 0) {
@@ -1381,7 +1381,7 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
               /* 10^(dmx_gain_2/80) */
               dmxGain = FX_DBL2FX_DMX(
                   fLdPow(FL2FXCONST_DBL(0.830482023721841f), 2, /* log2(10) */
-                         (int32_t)(sign * val * (LONG)FL2FXCONST_DBL(0.0125f)),
+                         (int32_t)(sign * val * (int32_t)FL2FXCONST_DBL(0.0125f)),
                          0, &dmxScale));
               /* Currently only positive scale factors supported! */
               if (dmxScale < 0) {
@@ -1508,7 +1508,7 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
 #define MAX_SEARCH_START_VAL (-7)
 
   {
-    LONG chSum[(8)];
+    int32_t chSum[(8)];
     int32_t chSumMax = MAX_SEARCH_START_VAL;
 
     /* Determine the current maximum scale factor */
@@ -1533,7 +1533,7 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
         /* Accumulate all factors for each output channel */
         chSum[outCh] = 0;
         for (inCh = 0; inCh < (8); inCh += 1) {
-          SHORT addFact = FX_DMX2SHRT(mixFactors[outCh][inCh]);
+          int16_t addFact = FX_DMX2SHRT(mixFactors[outCh][inCh]);
           if (mixScales[outCh][inCh] <= maxScale) {
             addFact >>= maxScale - mixScales[outCh][inCh];
           } else {
@@ -1541,13 +1541,13 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
           }
           chSum[outCh] += addFact;
         }
-        if (chSum[outCh] > (LONG)MAXVAL_SGL) {
-          while (chSum[outCh] > (LONG)MAXVAL_SGL) {
+        if (chSum[outCh] > (int32_t)MAXVAL_SGL) {
+          while (chSum[outCh] > (int32_t)MAXVAL_SGL) {
             ovrflwProtScale += 1;
             chSum[outCh] >>= 1;
           }
         } else if (chSum[outCh] > 0) {
-          while ((chSum[outCh] << 1) <= (LONG)MAXVAL_SGL) {
+          while ((chSum[outCh] << 1) <= (int32_t)MAXVAL_SGL) {
             ovrflwProtScale -= 1;
             chSum[outCh] <<= 1;
           }
@@ -1702,7 +1702,7 @@ PCMDMX_ERROR pcmDmx_SetParam(HANDLE_PCM_DOWNMIX self, const PCMDMX_PARAM param,
       }
       if (self == NULL) return (PCMDMX_INVALID_HANDLE);
       /* Store the new value */
-      self->userParams.numOutChannelsMin = (value > 0) ? (SHORT)value : -1;
+      self->userParams.numOutChannelsMin = (value > 0) ? (int16_t)value : -1;
       if ((value > 0) && (self->userParams.numOutChannelsMax > 0) &&
           (value > self->userParams
                        .numOutChannelsMax)) { /* MIN > MAX would be an invalid
@@ -1726,7 +1726,7 @@ PCMDMX_ERROR pcmDmx_SetParam(HANDLE_PCM_DOWNMIX self, const PCMDMX_PARAM param,
       }
       if (self == NULL) return (PCMDMX_INVALID_HANDLE);
       /* Store the new value */
-      self->userParams.numOutChannelsMax = (value > 0) ? (SHORT)value : -1;
+      self->userParams.numOutChannelsMax = (value > 0) ? (int16_t)value : -1;
       if ((value > 0) &&
           (value < self->userParams
                        .numOutChannelsMin)) { /* MAX < MIN would be an invalid

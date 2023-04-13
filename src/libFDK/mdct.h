@@ -122,10 +122,10 @@ amm-info@iis.fraunhofer.de
 #define MLT_FLAG_CURR_ALIAS_SYMMETRY 1
 
 typedef enum {
-  BLOCK_LONG = 0, /* normal long block */
-  BLOCK_START,    /* long start block */
-  BLOCK_SHORT,    /* 8 short blocks sequence */
-  BLOCK_STOP      /* long stop block*/
+  BLOCK_LONG = 0, /* normal int32_t block */
+  BLOCK_START,    /* int32_t start block */
+  BLOCK_SHORT,    /* 8 int16_t blocks sequence */
+  BLOCK_STOP      /* int32_t stop block*/
 } BLOCK_TYPE;
 
 typedef enum { SHAPE_SINE = 0, SHAPE_KBD, SHAPE_LOL } WINDOW_SHAPE;
@@ -182,7 +182,7 @@ void mdct_init(H_MDCT hMdct, int32_t *overlap, int32_t overlapBufferSize);
 int32_t mdct_block(H_MDCT hMdct, const INT_PCM *pTimeData, const int32_t noInSamples,
                int32_t *RESTRICT mdctData, const int32_t nSpec, const int32_t tl,
                const FIXP_WTP *pRightWindowPart, const int32_t fr,
-               SHORT *pMdctData_e);
+               int16_t *pMdctData_e);
 
 /**
  * \brief add/multiply 2/N transform gain and MPEG4 part 3 defined output gain
@@ -243,7 +243,7 @@ void imdct_adapt_parameters(H_MDCT hMdct, int32_t *pfl, int32_t *pnl, int32_t tl
  * \return number of output samples returned.
  */
 int32_t imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
-               const SHORT scalefactor[], const int32_t nSpec,
+               const int16_t scalefactor[], const int32_t nSpec,
                const int32_t noOutSamples, const int32_t tl, const FIXP_WTP *wls,
                int32_t fl, const FIXP_WTP *wrs, const int32_t fr, int32_t gain,
                int32_t flags);

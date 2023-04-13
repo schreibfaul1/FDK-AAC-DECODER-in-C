@@ -285,7 +285,7 @@ This structure is allocated once for each CPE. */
 
   UCHAR *pDrmBsBuffer; /*!< Pointer to dynamic buffer which is used to reverse
                           the bits of the DRM SBR payload */
-  USHORT drmBsBufferSize; /*!< Size of the dynamic buffer which is used to
+  uint16_t drmBsBufferSize; /*!< Size of the dynamic buffer which is used to
                              reverse the bits of the DRM SBR payload */
   FDK_QMF_DOMAIN
   qmfDomain; /*!< Instance of module for QMF domain data handling */
