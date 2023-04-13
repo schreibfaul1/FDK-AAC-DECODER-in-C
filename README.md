@@ -15,8 +15,8 @@ Fraunhofer Institute for Integrated Circuits IIS<br>
 http://www.iis.fraunhofer.de/amm
 
 
-A development of the Fraunhofer Institute
-this example converts a aac file into a wav file
+A development of the Fraunhofer Institute<br>
+this example converts a aac file into a wav file<br>
 
 
 (Linux)<br>
