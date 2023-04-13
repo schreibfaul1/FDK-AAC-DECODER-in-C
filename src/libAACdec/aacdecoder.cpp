@@ -1147,6 +1147,8 @@ static void CStreamInfoInit(CStreamInfo *pStreamInfo) {
 HANDLE_AACDECODER CAacDecoder_Open(TRANSPORT_TYPE bsFormat) /*!< bitstream format (adif,adts,loas,...). */
 {
 	HANDLE_AACDECODER self;
+    CWorkBufferCore1* WBC1;
+    UINT GRMWBC5 = 0; // GetRequiredMemWorkBufferCore5
 
 	self = GetAacDecoder();
 	if(self == NULL) { goto bail; }
@@ -1179,14 +1181,20 @@ HANDLE_AACDECODER CAacDecoder_Open(TRANSPORT_TYPE bsFormat) /*!< bitstream forma
 	aacDecoder_drcInit(self->hDrcInfo);
 	/* Set default frame delay */
 	aacDecoder_drcSetParam(self->hDrcInfo, DRC_BS_DELAY, CConcealment_GetDelay(&self->concealCommonData));
-	self->workBufferCore1 = (FIXP_DBL *)GetWorkBufferCore1();
 
-	self->workBufferCore2 = GetWorkBufferCore2();
+    WBC1 = ((CWorkBufferCore1 *)FDKaalloc_L((1) * sizeof(CWorkBufferCore1), 8, SECT_DATA_L1));
+	self->workBufferCore1 = (FIXP_DBL *)WBC1;
+
+	self->workBufferCore2 = (FIXP_DBL *) FDKaalloc_L(8 * 1024 * sizeof(FIXP_DBL), 8, SECT_DATA_L2);
 	if(self->workBufferCore2 == NULL) goto bail;
 
 	/* When RSVD60 is active use dedicated memory for core decoding */
-	self->pTimeData2 = GetWorkBufferCore5();
-	self->timeData2Size = GetRequiredMemWorkBufferCore5();
+	self->pTimeData2 = (FIXP_DBL *)FDKaalloc_L(((8) * (1024 * 4) * 2) * sizeof(FIXP_DBL), 8, SECT_DATA_EXTERN);
+
+    GRMWBC5  = 64 * 1024 * sizeof(FIXP_DBL) + 8 + sizeof(void *);
+    GRMWBC5 += ((8 - (64 * 1024) * sizeof(FIXP_DBL) + 8 + sizeof(void *) & 7) & 7);
+	self->timeData2Size = GRMWBC5;
+
 	if(self->pTimeData2 == NULL) { goto bail; }
 
 	return self;
@@ -1215,11 +1223,13 @@ static void CAacDecoder_DeInit(HANDLE_AACDECODER self, const int subStreamIndex)
 			if(self->pAacDecoderChannelInfo[ch]->pComStaticData != NULL) {
 				if(self->pAacDecoderChannelInfo[ch]->pComStaticData->pWorkBufferCore1 != NULL) {
 					if(ch == aacChannelOffset) {
-						FreeWorkBufferCore1(&self->pAacDecoderChannelInfo[ch]->pComStaticData->pWorkBufferCore1);
+                        FDKafree_L(self->pAacDecoderChannelInfo[ch]->pComStaticData->pWorkBufferCore1);
+						self->pAacDecoderChannelInfo[ch]->pComStaticData->pWorkBufferCore1 = NULL;
 					}
 				}
 				if(self->pAacDecoderChannelInfo[ch]->pComStaticData->cplxPredictionData != NULL) {
-					FreeCplxPredictionData(&self->pAacDecoderChannelInfo[ch]->pComStaticData->cplxPredictionData);
+                    FDKfree(self->pAacDecoderChannelInfo[ch]->pComStaticData->cplxPredictionData);
+                    self->pAacDecoderChannelInfo[ch]->pComStaticData->cplxPredictionData = NULL;
 				}
 				/* Avoid double free of linked pComStaticData in case of CPE by settings
 				 * pointer to NULL. */
@@ -1243,7 +1253,10 @@ static void CAacDecoder_DeInit(HANDLE_AACDECODER self, const int subStreamIndex)
 					}
 				}
 				if(ch == aacChannelOffset) {
-					FreeWorkBufferCore6((SCHAR **)&self->pAacDecoderChannelInfo[ch]->pComData);
+                    if(self->pAacDecoderChannelInfo[ch]->pComData){
+                        FDKafree_L((SCHAR *)self->pAacDecoderChannelInfo[ch]->pComData);
+                        self->pAacDecoderChannelInfo[ch]->pComData = NULL;
+                    }
 				}
 				else { FDKafree(self->pAacDecoderChannelInfo[ch]->pComData); }
 				self->pAacDecoderChannelInfo[ch]->pComData = NULL;
@@ -1272,7 +1285,10 @@ static void CAacDecoder_DeInit(HANDLE_AACDECODER self, const int subStreamIndex)
 	{
 		int el;
 		for(el = elementOffset; el < elementOffset + numElements; el++) {
-			if(self->cpeStaticData[el] != NULL) { FreeCpePersistentData(&self->cpeStaticData[el]); }
+			if(self->cpeStaticData[el] != NULL) {
+                FDKfree(self->cpeStaticData[el]);
+                self->cpeStaticData[el] = NULL;
+            }
 		}
 	}
 
@@ -1333,7 +1349,10 @@ void CAacDecoder_Close(HANDLE_AACDECODER self) {
 	{
 		int ch;
 		for(ch = 0; ch < (8); ch++) {
-			if(self->pTimeDataFlush[ch] != NULL) { FreeTimeDataFlush(&self->pTimeDataFlush[ch]); }
+			if(self->pTimeDataFlush[ch] != NULL) {
+                FDKfree(self->pTimeDataFlush[ch]);
+                self->pTimeDataFlush[ch] = NULL;
+            }
 		}
 	}
 
@@ -1342,24 +1361,32 @@ void CAacDecoder_Close(HANDLE_AACDECODER self) {
 		self->hDrcInfo = NULL;
 	}
 
-	if(self->workBufferCore1 != NULL) { FreeWorkBufferCore1((CWorkBufferCore1 **)&self->workBufferCore1); }
+	if(self->workBufferCore1 != NULL) {
+        FDKafree_L(self->workBufferCore1);
+        self->workBufferCore1 = NULL;
+    }
 
 	/* Free WorkBufferCore2 */
-	if(self->workBufferCore2 != NULL) { FreeWorkBufferCore2(&self->workBufferCore2); }
-	if(self->pTimeData2 != NULL) { FreeWorkBufferCore5(&self->pTimeData2); }
+	if(self->workBufferCore2 != NULL) {
+        FDKafree_L(self->workBufferCore2);
+        self->workBufferCore2 = NULL;
+    }
+	if(self->pTimeData2 != NULL) {
+        FDKafree_L(self->pTimeData2);
+        self->pTimeData2 = NULL;
+    }
 
 	FDK_QmfDomain_Close(&self->qmfDomain);
 
 	FreeAacDecoder(&self);
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 /*!
   \brief Initialization of decoder instance
-
   The function initializes the decoder.
-
   \return  error status: 0 for success, <>0 for unsupported configurations
 */
+
 AAC_DECODER_ERROR
 CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, UCHAR configMode, UCHAR *configChanged) {
 	AAC_DECODER_ERROR  err = AAC_DEC_OK;
@@ -1873,10 +1900,12 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, UCHAR
 								(CAacDecoderCommonStaticData *)FDKcalloc(1, sizeof(CAacDecoderCommonStaticData));
 							if(self->pAacDecoderChannelInfo[ch]->pComStaticData == NULL) { goto bail; }
 							if(ch == aacChannelsOffset) {
+                                UINT a = fMax((UINT)sizeof(FIXP_DBL) * 1024 * 2, (UINT)sizeof(CAacDecoderCommonData));
 								self->pAacDecoderChannelInfo[ch]->pComData =
-									(CAacDecoderCommonData *)GetWorkBufferCore6();
-								self->pAacDecoderChannelInfo[ch]->pComStaticData->pWorkBufferCore1 =
-									GetWorkBufferCore1();
+									(CAacDecoderCommonData *)(SCHAR *)FDKaalloc_L(a * sizeof(SCHAR), 8, SECT_DATA_L2);
+
+                                CWorkBufferCore1* ap = ((CWorkBufferCore1 *)FDKaalloc_L((1) * sizeof(CWorkBufferCore1), 8, SECT_DATA_L1));
+								self->pAacDecoderChannelInfo[ch]->pComStaticData->pWorkBufferCore1 = ap;
 							}
 							else {
 								self->pAacDecoderChannelInfo[ch]->pComData = (CAacDecoderCommonData *)FDKaalloc(
@@ -1955,7 +1984,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, UCHAR
 				for(int _ch = 0; _ch < flushChannels; _ch++) {
 					ch = aacChannelsOffset + _ch;
 					if(self->pTimeDataFlush[ch] == NULL) {
-						self->pTimeDataFlush[ch] = GetTimeDataFlush(ch);
+						self->pTimeDataFlush[ch] = (INT_PCM *)FDKcalloc((128), sizeof(INT_PCM));
 						if(self->pTimeDataFlush[ch] == NULL) { goto bail; }
 					}
 				}
@@ -1975,7 +2004,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, UCHAR
 					if(self->elFlags[el2] & AC_EL_USAC_CP_POSSIBLE) {
 						complexStereoPredPossible = 1;
 						if(self->cpeStaticData[el2] == NULL) {
-							self->cpeStaticData[el2] = GetCpePersistentData();
+							self->cpeStaticData[el2] = (CpePersistentData *)FDKcalloc(1, sizeof(CpePersistentData));
 							if(self->cpeStaticData[el2] == NULL) { goto bail; }
 						}
 					}
@@ -2002,7 +2031,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, UCHAR
 						/* needed once for all channels */
 						if(self->pAacDecoderChannelInfo[ch - 1]->pComStaticData->cplxPredictionData == NULL) {
 							self->pAacDecoderChannelInfo[ch - 1]->pComStaticData->cplxPredictionData =
-								GetCplxPredictionData();
+								(CCplxPredictionData *) FDKcalloc(1, sizeof(CCplxPredictionData));
 						}
 						if(self->pAacDecoderChannelInfo[ch - 1]->pComStaticData->cplxPredictionData == NULL) {
 							goto bail;

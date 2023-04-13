@@ -131,13 +131,8 @@ CAacDecoderChannelInfo *GetAacDecoderChannelInfo(int n = 0);
 
 
 
-CpePersistentData *GetCpePersistentData(int n = 0);
-void FreeCpePersistentData(CpePersistentData **p);
-UINT GetRequiredMemCpePersistentData(void);
 
-CCplxPredictionData *GetCplxPredictionData(int n = 0);
-void FreeCplxPredictionData(CCplxPredictionData **p);
-UINT GetRequiredMemCplxPredictionData(void);
+
 
 FIXP_DBL *GetSpectralCoeffs(int n = 0);
 void FreeSpectralCoeffs(FIXP_DBL **p);
@@ -147,25 +142,22 @@ SHORT *GetSpecScale(int n = 0);
 void FreeSpecScale(SHORT **p);
 UINT GetRequiredMemSpecScale(void);
 
-INT_PCM *GetTimeDataFlush(int n = 0);
-void FreeTimeDataFlush(INT_PCM **p);
-UINT GetRequiredMemTimeDataFlush(void);
 
-CWorkBufferCore1 *GetWorkBufferCore1(int n = 0);
-void FreeWorkBufferCore1(CWorkBufferCore1 **p);
+
+
+
+
 UINT GetRequiredMemWorkBufferCore1(void);
 
-FIXP_DBL *GetWorkBufferCore2(int n = 0);
-void FreeWorkBufferCore2(FIXP_DBL **p);
-UINT GetRequiredMemWorkBufferCore2(void);
 
-FIXP_DBL *GetWorkBufferCore5(int n = 0);
-void FreeWorkBufferCore5(FIXP_DBL **p);
-UINT GetRequiredMemWorkBufferCore5(void);
 
-SCHAR *GetWorkBufferCore6(int n = 0);
-void FreeWorkBufferCore6(SCHAR **p);
-UINT GetRequiredMemWorkBufferCore6(void);
+
+
+
+
+
+
+
 
 CArcoData *GetArcoData(int n = 0);
 void FreeArcoData(CArcoData **p);
