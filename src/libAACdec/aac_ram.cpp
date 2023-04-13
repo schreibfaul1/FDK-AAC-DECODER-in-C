@@ -101,8 +101,8 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include "aac_ram.h"
-#include "aac_rom.h"
 #include <stdio.h>
+#include "aac_rom.h"
 
 #define WORKBUFFER1_TAG 0
 #define WORKBUFFER2_TAG 1
@@ -112,42 +112,28 @@ amm-info@iis.fraunhofer.de
 /*! The structure AAC_DECODER_INSTANCE is the top level structure holding all
    decoder configurations, handles and structs.
  */
-struct AAC_DECODER_INSTANCE *GetAacDecoder(int n) {
-//   assert(n != 0);
-   return ((struct AAC_DECODER_INSTANCE *)FDKcalloc(1, sizeof(struct AAC_DECODER_INSTANCE)));
+struct AAC_DECODER_INSTANCE *GetAacDecoder(int n)
+{
+	return ((struct AAC_DECODER_INSTANCE *)FDKcalloc(1, sizeof(struct AAC_DECODER_INSTANCE)));
 }
 
 void FreeAacDecoder(struct AAC_DECODER_INSTANCE **p) {
-   if (p != __null) { FDKfree(*p); *p = __null; }
+	if(p != __null) {
+		FDKfree(*p);
+		*p = __null;
+	}
+}
+
+CAacDecoderChannelInfo *GetAacDecoderChannelInfo(int n) {
+	CAacDecoderChannelInfo *ap;
+	ap = ((CAacDecoderChannelInfo *)FDKaalloc((1) * sizeof(CAacDecoderChannelInfo), 8));
+	return ap;
 }
 
 
-
-/*!
-  \name StaticAacData
-
-  Static memory areas, must not be overwritten in other sections of the decoder
-*/
-/* @{ */
-
-/*! The structure CAacDecoderStaticChannelInfo contains the static sideinfo
-   which is needed for the decoding of one aac channel. <br> Dimension:
-   #AacDecoderChannels                                                      */
-C_ALLOC_MEM2(AacDecoderStaticChannelInfo, CAacDecoderStaticChannelInfo, 1, (8))
-
-/*! The structure CAacDecoderChannelInfo contains the dynamic sideinfo which is
-   needed for the decoding of one aac channel. <br> Dimension:
-   #AacDecoderChannels                                                      */
-C_AALLOC_MEM2(AacDecoderChannelInfo, CAacDecoderChannelInfo, 1, (8))
-
-/*! Overlap buffer */
-C_AALLOC_MEM2(OverlapBuffer, FIXP_DBL, OverlapBufferSize, (8))
-
-C_ALLOC_MEM(DrcInfo, CDrcInfo, 1)
-
 /*! The structure CpePersistentData holds the persistent data shared by both
    channels of a CPE. <br> It needs to be allocated for each CPE. <br>
-    Dimension: 1 */
+	Dimension: 1 */
 C_ALLOC_MEM(CpePersistentData, CpePersistentData, 1)
 
 /*! The structure CCplxPredictionData holds data for complex stereo prediction.
@@ -171,17 +157,13 @@ C_ALLOC_MEM2(TimeDataFlush, INT_PCM, TIME_DATA_FLUSH_SIZE, (8))
 
 /* Take into consideration to make use of the WorkBufferCore[3/4] for decoder
  * configurations with more than 2 channels */
-C_ALLOC_MEM_OVERLAY(WorkBufferCore2, FIXP_DBL, ((8) * 1024), SECT_DATA_L2,
-                    WORKBUFFER2_TAG)
+C_ALLOC_MEM_OVERLAY(WorkBufferCore2, FIXP_DBL, ((8) * 1024), SECT_DATA_L2, WORKBUFFER2_TAG)
 
 C_ALLOC_MEM_OVERLAY(WorkBufferCore6, SCHAR,
-                    fMax((INT)(sizeof(FIXP_DBL) * WB_SECTION_SIZE),
-                         (INT)sizeof(CAacDecoderCommonData)),
-                    SECT_DATA_L2, WORKBUFFER6_TAG)
+					fMax((INT)(sizeof(FIXP_DBL) * WB_SECTION_SIZE), (INT)sizeof(CAacDecoderCommonData)), SECT_DATA_L2,
+					WORKBUFFER6_TAG)
 
-C_ALLOC_MEM_OVERLAY(WorkBufferCore1, CWorkBufferCore1, 1, SECT_DATA_L1,
-                    WORKBUFFER1_TAG)
+C_ALLOC_MEM_OVERLAY(WorkBufferCore1, CWorkBufferCore1, 1, SECT_DATA_L1, WORKBUFFER1_TAG)
 
 /* double buffer size needed for de-/interleaving */
-C_ALLOC_MEM_OVERLAY(WorkBufferCore5, PCM_DEC, (8) * (1024 * 4) * 2,
-                    SECT_DATA_EXTERN, WORKBUFFER5_TAG)
+C_ALLOC_MEM_OVERLAY(WorkBufferCore5, PCM_DEC, (8) * (1024 * 4) * 2, SECT_DATA_EXTERN, WORKBUFFER5_TAG)

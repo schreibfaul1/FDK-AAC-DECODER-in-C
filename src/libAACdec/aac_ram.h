@@ -121,21 +121,15 @@ amm-info@iis.fraunhofer.de
 AAC_DECODER_INSTANCE *GetAacDecoder(int n = 0);
 void FreeAacDecoder(AAC_DECODER_INSTANCE **p);
 
-CDrcInfo *GetDrcInfo(int n = 0);
-void FreeDrcInfo(CDrcInfo **p);
-UINT GetRequiredMemDrcInfo(void);
 
-CAacDecoderStaticChannelInfo *GetAacDecoderStaticChannelInfo(int n = 0);
-void FreeAacDecoderStaticChannelInfo(CAacDecoderStaticChannelInfo **p);
-UINT GetRequiredMemAacDecoderStaticChannelInfo(void);
+
+
+
+
 
 CAacDecoderChannelInfo *GetAacDecoderChannelInfo(int n = 0);
-void FreeAacDecoderChannelInfo(CAacDecoderChannelInfo **p);
-UINT GetRequiredMemAacDecoderChannelInfo(void);
 
-FIXP_DBL *GetOverlapBuffer(int n = 0);
-void FreeOverlapBuffer(FIXP_DBL **p);
-UINT GetRequiredMemOverlapBuffer(void);
+
 
 CpePersistentData *GetCpePersistentData(int n = 0);
 void FreeCpePersistentData(CpePersistentData **p);
