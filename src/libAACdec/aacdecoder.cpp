@@ -159,7 +159,6 @@ amm-info@iis.fraunhofer.de
 #include "../libSACdec/sac_dec_lib.h"
 #include "../libSBRdec/sbrdecoder.h"
 #include "../libSYS/FDK_audio.h"
-#include "aac_ram.h"
 #include "aac_rom.h"
 #include "aacdec_hcr.h"
 #include "aacdec_pns.h"

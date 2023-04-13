@@ -107,7 +107,7 @@ amm-info@iis.fraunhofer.de
 
 #include "aacdec_hcr_bit.h"
 #include "aac_rom.h"
-#include "aac_ram.h"
+
 
 static UINT InitSegmentBitfield(UINT *pNumSegment,
                                 SCHAR *pRemainingBitsInSegment,

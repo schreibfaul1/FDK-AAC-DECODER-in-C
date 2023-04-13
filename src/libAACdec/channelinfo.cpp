@@ -102,7 +102,6 @@ amm-info@iis.fraunhofer.de
 
 #include "channelinfo.h"
 #include "aac_rom.h"
-#include "aac_ram.h"
 #include "../libFDK/FDK_bitstream.h"
 
 AAC_DECODER_ERROR IcsReadMaxSfb(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,

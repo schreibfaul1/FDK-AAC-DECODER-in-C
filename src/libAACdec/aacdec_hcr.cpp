@@ -106,7 +106,7 @@ amm-info@iis.fraunhofer.de
 #include "aacdec_hcr_types.h"
 #include "aacdec_hcr_bit.h"
 #include "aacdec_hcrs.h"
-#include "aac_ram.h"
+
 #include "aac_rom.h"
 #include "channel.h"
 #include "block.h"
