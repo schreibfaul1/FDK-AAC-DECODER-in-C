@@ -379,7 +379,7 @@ int32_t CalcLdInt(int32_t i) {
   /* calculates ld(op)/LD_DATA_SCALING */
   /* op is assumed to be an integer value between 1 and LD_INT_TAB_LEN */
 
-  FDK_ASSERT((LD_INT_TAB_LEN > 0) &&
+  assert((LD_INT_TAB_LEN > 0) &&
              ((int32_t)ldIntCoeff[0] ==
               (int32_t)0x80000001)); /* tab has to be initialized */
 
@@ -405,9 +405,9 @@ int32_t schur_div(int32_t num, int32_t denum, int32_t count) {
   int32_t div = 0;
   int32_t k = count;
 
-  FDK_ASSERT(num >= (int32_t)0);
-  FDK_ASSERT(denum > (int32_t)0);
-  FDK_ASSERT(num <= denum);
+  assert(num >= (int32_t)0);
+  assert(denum > (int32_t)0);
+  assert(num <= denum);
 
   if (L_num != 0)
     while (--k) {
@@ -454,8 +454,8 @@ int32_t fDivNorm(int32_t L_num, int32_t L_denum, int32_t *result_e) {
   int32_t div;
   int32_t norm_num, norm_den;
 
-  FDK_ASSERT(L_num >= (int32_t)0);
-  FDK_ASSERT(L_denum > (int32_t)0);
+  assert(L_num >= (int32_t)0);
+  assert(L_denum > (int32_t)0);
 
   if (L_num == (int32_t)0) {
     *result_e = 0;
@@ -482,7 +482,7 @@ int32_t fDivNorm(int32_t num, int32_t denom) {
   int32_t e;
   int32_t res;
 
-  FDK_ASSERT(denom >= num);
+  assert(denom >= num);
 
   res = fDivNorm(num, denom, &e);
 
@@ -567,8 +567,8 @@ int32_t fDivNormHighPrec(int32_t num, int32_t denom, int32_t *result_e) {
   int32_t div;
   int32_t norm_num, norm_den;
 
-  FDK_ASSERT(num >= (int32_t)0);
-  FDK_ASSERT(denom > (int32_t)0);
+  assert(num >= (int32_t)0);
+  assert(denom > (int32_t)0);
 
   if (num == (int32_t)0) {
     *result_e = 0;
@@ -766,13 +766,13 @@ int32_t CalcLog2(int32_t base_m, int32_t base_e, int32_t *result_e) {
 #endif /* FUNCTION_fLog2 */
 
 int32_t fixp_floorToInt(int32_t f_inp, int32_t sf) {
-  FDK_ASSERT(sf >= 0);
+  assert(sf >= 0);
   int32_t floorInt = (int32_t)(f_inp >> ((DFRACT_BITS - 1) - sf));
   return floorInt;
 }
 
 int32_t fixp_floor(int32_t f_inp, int32_t sf) {
-  FDK_ASSERT(sf >= 0);
+  assert(sf >= 0);
   int32_t floorInt = fixp_floorToInt(f_inp, sf);
   int32_t f_floor = (int32_t)(floorInt << ((DFRACT_BITS - 1) - sf));
   return f_floor;
@@ -780,7 +780,7 @@ int32_t fixp_floor(int32_t f_inp, int32_t sf) {
 
 int32_t fixp_ceilToInt(int32_t f_inp, int32_t sf)  // sf  mantissaBits left of dot
 {
-  FDK_ASSERT(sf >= 0);
+  assert(sf >= 0);
   int32_t sx = (DFRACT_BITS - 1) - sf;  // sx  mantissaBits right of dot
   int32_t inpINT = (int32_t)f_inp;
 
@@ -796,7 +796,7 @@ int32_t fixp_ceilToInt(int32_t f_inp, int32_t sf)  // sf  mantissaBits left of d
 }
 
 int32_t fixp_ceil(int32_t f_inp, int32_t sf) {
-  FDK_ASSERT(sf >= 0);
+  assert(sf >= 0);
   int32_t sx = (DFRACT_BITS - 1) - sf;
   int32_t ceilInt = fixp_ceilToInt(f_inp, sf);
   uint32_t mask = (uint32_t)0x1 << (DFRACT_BITS - 1);  // 0x80000000
@@ -824,7 +824,7 @@ int32_t fixp_truncateToInt(int32_t f_inp, int32_t sf)  // sf  mantissaBits left 
                                                 // 32 this would be [sign]7.
                                                 // supposed sf equals 8.
 {
-  FDK_ASSERT(sf >= 0);
+  assert(sf >= 0);
   int32_t sx = (DFRACT_BITS - 1) - sf;  // sx  mantissaBits right of dot
                                     // at width 32 this would be        .24
                                     // supposed sf equals 8.
@@ -846,7 +846,7 @@ int32_t fixp_truncateToInt(int32_t f_inp, int32_t sf)  // sf  mantissaBits left 
    returns int32_t
 *****************************************************************************/
 int32_t fixp_truncate(int32_t f_inp, int32_t sf) {
-  FDK_ASSERT(sf >= 0);
+  assert(sf >= 0);
   int32_t truncateInt = fixp_truncateToInt(f_inp, sf);
   int32_t f_truncate = (int32_t)(truncateInt << ((DFRACT_BITS - 1) - sf));
   return f_truncate;
@@ -860,7 +860,7 @@ int32_t fixp_truncate(int32_t f_inp, int32_t sf) {
   returns int32_t
 *****************************************************************************/
 int32_t fixp_roundToInt(int32_t f_inp, int32_t sf) {
-  FDK_ASSERT(sf >= 0);
+  assert(sf >= 0);
   int32_t sx = DFRACT_BITS - 1 - sf;
   int32_t inp = (int32_t)f_inp;
   int32_t mask1 = (0x1 << (sx - 1));
@@ -891,7 +891,7 @@ int32_t fixp_roundToInt(int32_t f_inp, int32_t sf) {
   returns int32_t
 *****************************************************************************/
 int32_t fixp_round(int32_t f_inp, int32_t sf) {
-  FDK_ASSERT(sf >= 0);
+  assert(sf >= 0);
   int32_t sx = DFRACT_BITS - 1 - sf;
   int32_t r = fixp_roundToInt(f_inp, sf);
   uint32_t mask = (uint32_t)0x1 << (DFRACT_BITS - 1);  // 0x80000000

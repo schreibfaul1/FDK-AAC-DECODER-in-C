@@ -316,7 +316,7 @@ void imdct_gain(int32_t *pGain_m, int32_t *pGain_e, int32_t tl) {
       break;
     default:
       /* unsupported */
-      FDK_ASSERT(0);
+      assert(0);
       break;
   }
 
@@ -330,7 +330,7 @@ int32_t imdct_drain(H_MDCT hMdct, int32_t *output, int32_t nrSamplesRoom) {
   if (nrSamplesRoom > 0) {
     buffered_samples = hMdct->ov_offset;
 
-    FDK_ASSERT(buffered_samples <= nrSamplesRoom);
+    assert(buffered_samples <= nrSamplesRoom);
 
     if (buffered_samples > 0) {
       FDKmemcpy(output, hMdct->overlap.time,
@@ -676,7 +676,7 @@ int32_t imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
     if (hMdct->pFacZir != 0) {
       /* add FAC ZIR of previous ACELP -> mdct transition */
       int32_t *pOut = pOut0 - fl / 2;
-      FDK_ASSERT(fl / 2 <= 128);
+      assert(fl / 2 <= 128);
       for (i = 0; i < fl / 2; i++) {
         pOut[i] = fAddSaturate(pOut[i], IMDCT_SCALE_DBL(hMdct->pFacZir[i]));
       }

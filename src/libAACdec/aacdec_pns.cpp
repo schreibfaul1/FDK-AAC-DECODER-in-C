@@ -118,8 +118,8 @@ amm-info@iis.fraunhofer.de
 */
 void CPns_ResetData(CPnsData *pPnsData,
                     CPnsInterChannelData *pPnsInterChannelData) {
-  FDK_ASSERT(pPnsData != NULL);
-  FDK_ASSERT(pPnsInterChannelData != NULL);
+  assert(pPnsData != NULL);
+  assert(pPnsInterChannelData != NULL);
   /* Assign pointer always, since pPnsData is not persistent data */
   pPnsData->pPnsInterChannelData = pPnsInterChannelData;
   pPnsData->PnsActive = 0;
@@ -334,7 +334,7 @@ void CPns_Apply(const CPnsData *pPnsData, const CIcsInfo *pIcsInfo,
             int32_t bandWidth = BandOffsets[band + 1] - BandOffsets[band];
             int32_t noise_e;
 
-            FDK_ASSERT(bandWidth >= 0);
+            assert(bandWidth >= 0);
 
             if (channel > 0 && CPns_IsCorrelated(pPnsData, group, band)) {
               noise_e =

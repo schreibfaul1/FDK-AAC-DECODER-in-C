@@ -304,7 +304,7 @@ void lppTransposer(
 
   startSample = firstSlotOffs * timeStep;
   stopSample = pSettings->nCols + lastSlotOffs * timeStep;
-  FDK_ASSERT((lastSlotOffs * timeStep) <= pSettings->overlap);
+  assert((lastSlotOffs * timeStep) <= pSettings->overlap);
 
   inverseFilteringLevelEmphasis(hLppTrans, nInvfBands, sbr_invf_mode,
                                 sbr_invf_mode_prev, bwVector);
@@ -409,7 +409,7 @@ void lppTransposer(
       }
     } else {
       /* pSettings->overlap is always even */
-      FDK_ASSERT((pSettings->overlap & 1) == 0);
+      assert((pSettings->overlap & 1) == 0);
       for (i = 0; i < ((pSettings->nCols + pSettings->overlap -
                         firstSlotOffs * timeStep) >>
                        1);
@@ -715,7 +715,7 @@ void lppTransposer(
         continue;
       }
 
-      FDK_ASSERT(hiBand < (64));
+      assert(hiBand < (64));
 
       /* bwIndex[patch] is already initialized with value from previous band
        * inside this patch */
@@ -810,7 +810,7 @@ void lppTransposer(
           }
 #endif
         } else {
-          FDK_ASSERT(dynamicScale >= 0);
+          assert(dynamicScale >= 0);
           calc_qmfBufferReal(
               qmfBufferReal, &(lowBandReal[LPC_ORDER + startSample - 2]),
               startSample, stopSample, hiBand, dynamicScale,

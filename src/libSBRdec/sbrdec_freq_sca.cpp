@@ -145,7 +145,7 @@ static uint8_t getStartBand(
     fsMapped = sbrdec_mapToStdSampleRate(fs, 1);
   }
 
-  FDK_ASSERT(2 * (rate + 1) <= (4));
+  assert(2 * (rate + 1) <= (4));
 
   switch (fsMapped) {
     case 192000:

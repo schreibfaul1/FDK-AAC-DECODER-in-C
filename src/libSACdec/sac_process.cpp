@@ -299,7 +299,7 @@ SACDEC_ERROR SpatialDecHybridAnalysis(spatialDec *self, int32_t **qmfInputReal,
       self->hybridAnalysis[ch].hfMode = self->bShareDelayWithSBR;
 
       if (self->stereoConfigIndex == 3)
-        FDK_ASSERT(self->hybridAnalysis[ch].hfMode == 0);
+        assert(self->hybridAnalysis[ch].hfMode == 0);
       FDKhybridAnalysisApply(&self->hybridAnalysis[ch], qmfInputReal[ch],
                              qmfInputImag[ch], hybOutputReal[ch],
                              hybOutputImag[ch]);
@@ -369,9 +369,9 @@ SACDEC_ERROR SpatialDecApplyM1_CreateW_Mode212(
   int32_t *decorrInImag = vImag[0];
 
   /* M1 does not do anything in 212 mode, so use simplified processing */
-  FDK_ASSERT(self->numVChannels == 2);
-  FDK_ASSERT(self->numDirektSignals == 1);
-  FDK_ASSERT(self->numDecorSignals == 1);
+  assert(self->numVChannels == 2);
+  assert(self->numDirektSignals == 1);
+  assert(self->numDecorSignals == 1);
   FDKmemcpy(vReal[0], xReal[0], self->hybridBands * sizeof(int32_t));
   FDKmemcpy(vImag[0], xImag[0], self->hybridBands * sizeof(int32_t));
 
@@ -498,8 +498,8 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
     int32_t *RESTRICT pHybOutRealDry = hybOutputRealDry[row];
     int32_t *RESTRICT pHybOutImagDry = hybOutputImagDry[row];
 
-    FDK_ASSERT(!(self->pConfigCurrent->syntaxFlags & SACDEC_SYNTAX_LD));
-    FDK_ASSERT((pWidth[0] + pWidth[1]) >= 3);
+    assert(!(self->pConfigCurrent->syntaxFlags & SACDEC_SYNTAX_LD));
+    assert((pWidth[0] + pWidth[1]) >= 3);
 
     for (pb = 0, qs = 3; pb < 2; pb++) {
       int32_t s;
@@ -910,7 +910,7 @@ SACDEC_ERROR SpatialDecSynthesis(spatialDec *self, const int32_t ts,
 
     /* Map channel indices from MPEG Surround -> PCE style -> channelMapping[]
      */
-    FDK_ASSERT(self->numOutputChannelsAT <= 6);
+    assert(self->numOutputChannelsAT <= 6);
     int32_t outCh = FDK_chMapDescr_getMapValue(mapDescr, mapChannel(self, ch),
                                            self->numOutputChannelsAT);
 
@@ -919,12 +919,12 @@ SACDEC_ERROR SpatialDecSynthesis(spatialDec *self, const int32_t ts,
         /* MPS -> SBR */
         int32_t i;
         int32_t *pWorkBufReal, *pWorkBufImag;
-        FDK_ASSERT((self->pQmfDomain->QmfDomainOut[outCh].fb.outGain_m ==
+        assert((self->pQmfDomain->QmfDomainOut[outCh].fb.outGain_m ==
                     (int32_t)0x80000000) &&
                    (self->pQmfDomain->QmfDomainOut[outCh].fb.outGain_e == 0));
         FDK_QmfDomain_GetWorkBuffer(&self->pQmfDomain->QmfDomainIn[outCh], ts,
                                     &pWorkBufReal, &pWorkBufImag);
-        FDK_ASSERT(self->qmfBands <=
+        assert(self->qmfBands <=
                    self->pQmfDomain->QmfDomainIn[outCh].workBuf_nBands);
         for (i = 0; i < self->qmfBands; i++) {
           pWorkBufReal[i] = pQmfReal[i];

@@ -285,9 +285,9 @@ AAC_DECODER_ERROR getSamplingRateInfo(SamplingRateInfo *t, uint32_t samplesPerFr
     return AAC_DEC_UNSUPPORTED_FORMAT;
   }
 
-  FDK_ASSERT((uint32_t)t->ScaleFactorBands_Long[t->NumberOfScaleFactorBands_Long] ==
+  assert((uint32_t)t->ScaleFactorBands_Long[t->NumberOfScaleFactorBands_Long] ==
              samplesPerFrame);
-  FDK_ASSERT(
+  assert(
       t->ScaleFactorBands_Short == NULL ||
       (uint32_t)t->ScaleFactorBands_Short[t->NumberOfScaleFactorBands_Short] * 8 ==
           samplesPerFrame);

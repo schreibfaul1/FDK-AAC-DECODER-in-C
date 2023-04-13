@@ -620,9 +620,9 @@ int32_t SpatialDecDefaultSpecificConfig(
   int32_t err = MPS_OK;
   int32_t i;
 
-  FDK_ASSERT(coreCodec != AOT_NONE);
-  FDK_ASSERT(nTimeSlots > 0);
-  FDK_ASSERT(samplingFreq > 0);
+  assert(coreCodec != AOT_NONE);
+  assert(nTimeSlots > 0);
+  assert(samplingFreq > 0);
 
   pSpatialSpecificConfig->coreCodec = coreCodec;
   pSpatialSpecificConfig->samplingFreq = samplingFreq;
@@ -955,7 +955,7 @@ static int32_t nBitsParamSlot(int32_t i) {
   if ((1 << bitsParamSlot) < i) {
     bitsParamSlot++;
   }
-  FDK_ASSERT((bitsParamSlot >= 0) && (bitsParamSlot <= 32));
+  assert((bitsParamSlot >= 0) && (bitsParamSlot <= 32));
 
   return bitsParamSlot;
 }
@@ -1334,7 +1334,7 @@ static int32_t deqIdx(int32_t value, int32_t paramType) {
       break;
 
     default:
-      FDK_ASSERT(0);
+      assert(0);
   }
 
   return idx;
@@ -1382,7 +1382,7 @@ static int32_t factorFunct(int32_t ottVsTotDb, int32_t quantMode) {
       break;
     case 2:
       if (ottVsTotDb >= FL2FXCONST_DBL(25.0f / SCALE_CLD_C1C2)) {
-        FDK_ASSERT(SF_FACTOR == 3);
+        assert(SF_FACTOR == 3);
         factor = (int32_t)
             MAXVAL_DBL; /* avoid warning: FL2FXCONST_DBL(8.0f/SCALE_FACTOR) */
       } else if (ottVsTotDb <= FL2FXCONST_DBL(1.0f / SCALE_CLD_C1C2))

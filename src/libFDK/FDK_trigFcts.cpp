@@ -249,7 +249,7 @@ int32_t fixp_atan(int32_t x) {
   } else {
     sign = 0;
   }
-  FDK_ASSERT(FL2FXCONST_DBL(1.0 / 64.0) == Q(Q_ATANINP));
+  assert(FL2FXCONST_DBL(1.0 / 64.0) == Q(Q_ATANINP));
   /* calc of arctan */
   if (x < FL2FXCONST_DBL(1.0 / 64.0))
   /*

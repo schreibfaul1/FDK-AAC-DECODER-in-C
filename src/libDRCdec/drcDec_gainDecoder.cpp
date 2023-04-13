@@ -134,7 +134,7 @@ static void _setChannelGains(HANDLE_DRC_GAIN_DECODER hGainDec,
                              const int32_t* channelGainDb) {
   int32_t i, channelGain_e;
   int32_t channelGain;
-  FDK_ASSERT(numChannelGains <= 8);
+  assert(numChannelGains <= 8);
   for (i = 0; i < numChannelGains; i++) {
     if (channelGainDb[i] == (int32_t)MINVAL_DBL) {
       hGainDec->channelGain[i] = (int32_t)0;

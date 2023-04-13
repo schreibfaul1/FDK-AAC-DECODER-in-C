@@ -870,7 +870,7 @@ void CJointStereo_ApplyMS(
               specScaleR[0] = dmx_re_prev_e;
             }
           } else { /* window != 0 */
-            FDK_ASSERT(pAacDecoderChannelInfo[L]->icsInfo.WindowSequence ==
+            assert(pAacDecoderChannelInfo[L]->icsInfo.WindowSequence ==
                        BLOCK_SHORT);
             if (specScaleL[window - 1] < frameMaxScale) {
               scaleValues(&dmx_re[windowLen * (window - 1)], windowLen,
@@ -884,7 +884,7 @@ void CJointStereo_ApplyMS(
         } /* if ( pJointStereoData->use_prev_frame == 1 ) */
 
         /* scaling factors of both channels ought to be equal now */
-        FDK_ASSERT(specScaleL[window] == specScaleR[window]);
+        assert(specScaleL[window] == specScaleR[window]);
 
         /* rescale signal and calculate downmix MDCT */
         for (band = 0; band < max_sfb_ste; band++) {
@@ -1011,7 +1011,7 @@ void CJointStereo_ApplyMS(
             int32_t val = fMin(alpha_re_headroom, alpha_im_headroom);
 
             /* Multiply alpha by 0.1 with maximum precision */
-            FDK_ASSERT(val >= 0);
+            assert(val >= 0);
             int32_t alpha_re_tmp = fMult((FIXP_SGL)(tempRe << val), pointOne);
             int32_t alpha_im_tmp = fMult((FIXP_SGL)(tempIm << val), pointOne);
 
@@ -1097,9 +1097,9 @@ void CJointStereo_ApplyMS(
             /* ISO/IEC 14496-3 Chapter 4.6.8.1.1 :
                M/S joint channel coding can only be used if common_window is 1.
              */
-            FDK_ASSERT(GetWindowSequence(&pAacDecoderChannelInfo[L]->icsInfo) ==
+            assert(GetWindowSequence(&pAacDecoderChannelInfo[L]->icsInfo) ==
                        GetWindowSequence(&pAacDecoderChannelInfo[R]->icsInfo));
-            FDK_ASSERT(GetWindowShape(&pAacDecoderChannelInfo[L]->icsInfo) ==
+            assert(GetWindowShape(&pAacDecoderChannelInfo[L]->icsInfo) ==
                        GetWindowShape(&pAacDecoderChannelInfo[R]->icsInfo));
 
             commonScale++;
@@ -1109,7 +1109,7 @@ void CJointStereo_ApplyMS(
             lScale = fMin(DFRACT_BITS - 1, commonScale - lScale);
             rScale = fMin(DFRACT_BITS - 1, commonScale - rScale);
 
-            FDK_ASSERT(lScale >= 0 && rScale >= 0);
+            assert(lScale >= 0 && rScale >= 0);
 
             offsetCurrBand = pScaleFactorBandOffsets[band];
             offsetNextBand = pScaleFactorBandOffsets[band + 1];
@@ -1209,9 +1209,9 @@ void CJointStereo_ApplyIS(CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
              pseudo codebooks INTENSITY_HCB and INTENSITY_HCB2 (15 and 14) only
              in the right channel of a channel_pair_element() having a common
              ics_info() (common_window == 1). */
-          FDK_ASSERT(GetWindowSequence(&pAacDecoderChannelInfo[L]->icsInfo) ==
+          assert(GetWindowSequence(&pAacDecoderChannelInfo[L]->icsInfo) ==
                      GetWindowSequence(&pAacDecoderChannelInfo[R]->icsInfo));
-          FDK_ASSERT(GetWindowShape(&pAacDecoderChannelInfo[L]->icsInfo) ==
+          assert(GetWindowShape(&pAacDecoderChannelInfo[L]->icsInfo) ==
                      GetWindowShape(&pAacDecoderChannelInfo[R]->icsInfo));
 
           rightScale[band] = leftScale[band] + msb + 1;

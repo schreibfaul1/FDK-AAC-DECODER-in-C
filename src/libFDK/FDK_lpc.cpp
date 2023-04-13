@@ -121,8 +121,8 @@ void CLpc_SynthesisLattice(int32_t *signal, const int32_t signal_size,
   int32_t *pSignal;
   int32_t shift;
 
-  FDK_ASSERT(order <= LPC_MAX_ORDER);
-  FDK_ASSERT(order > 0);
+  assert(order <= LPC_MAX_ORDER);
+  assert(order > 0);
 
   if (inc == -1)
     pSignal = &signal[signal_size - 1];
@@ -172,15 +172,15 @@ void CLpc_SynthesisLattice(int32_t *signal, const int32_t signal_size,
   int32_t i, j;
   int32_t *pSignal;
 
-  FDK_ASSERT(order <= LPC_MAX_ORDER);
-  FDK_ASSERT(order > 0);
+  assert(order <= LPC_MAX_ORDER);
+  assert(order > 0);
 
   if (inc == -1)
     pSignal = &signal[signal_size - 1];
   else
     pSignal = &signal[0];
 
-  FDK_ASSERT(signal_size > 0);
+  assert(signal_size > 0);
   for (i = signal_size; i != 0; i--) {
     int32_t *pState = state + order - 1;
     const int32_t *pCoeff = coeff + order - 1;
@@ -223,8 +223,8 @@ void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t si
   FDKmemcpy(&coeff[0], lpcCoeff_m, order * sizeof(FIXP_LPC_TNS));
   FDKmemcpy(&coeff[order], lpcCoeff_m, order * sizeof(FIXP_LPC_TNS));
 
-  FDK_ASSERT(order <= LPC_MAX_ORDER);
-  FDK_ASSERT(stateIndex < order);
+  assert(order <= LPC_MAX_ORDER);
+  assert(stateIndex < order);
 
   if (inc == -1)
     pSignal = &signal[signal_size - 1];
@@ -266,8 +266,8 @@ void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t si
   FDKmemcpy(&coeff[0], lpcCoeff_m, order * sizeof(FIXP_LPC));
   FDKmemcpy(&coeff[order], lpcCoeff_m, order * sizeof(FIXP_LPC));
 
-  FDK_ASSERT(order <= LPC_MAX_ORDER);
-  FDK_ASSERT(stateIndex < order);
+  assert(order <= LPC_MAX_ORDER);
+  assert(stateIndex < order);
 
   if (inc == -1)
     pSignal = &signal[signal_size - 1];
@@ -329,7 +329,7 @@ void CLpc_Analysis(int32_t *RESTRICT signal, const int32_t signal_size,
       endfor
    */
 
-  FDK_ASSERT(shift >= 0);
+  assert(shift >= 0);
 
   for (j = 0; j < signal_size; j++) {
     pCoeff = &coeff[(order - stateIndex)];

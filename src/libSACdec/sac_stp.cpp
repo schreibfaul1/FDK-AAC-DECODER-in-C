@@ -337,7 +337,7 @@ SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
   hStpDec = self->hStpDec;
 
   /* set scalefactor and loop counter */
-  FDK_ASSERT(SF_DRY >= 1);
+  assert(SF_DRY >= 1);
   {
     cplxBands = BP_GF_SIZE;
     cplxHybBands = self->hybridBands;
@@ -477,7 +477,7 @@ SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
       WetEnerX = scaleValueSaturate(
           WetEnerX, fMax(fMin(sNorm, DFRACT_BITS - 1), -(DFRACT_BITS - 1)));
     } else
-      FDK_ASSERT(self->treeConfig == TREE_212);
+      assert(self->treeConfig == TREE_212);
 
     hStpDec->runWetEner[ch] =
         fMult(STP_LPF_COEFF1__FDK, hStpDec->runWetEner[ch]) +
@@ -524,7 +524,7 @@ SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
   }
 
   /* combine 'direct' and scaled 'diffuse' signal */
-  FDK_ASSERT((HP_SIZE - 3 + 10 - 1) == PC_NUM_HYB_BANDS);
+  assert((HP_SIZE - 3 + 10 - 1) == PC_NUM_HYB_BANDS);
   const int8_t *channlIndex = row2channelSTP[self->treeConfig];
 
   for (ch = 0; ch < self->numOutputChannels; ch++) {

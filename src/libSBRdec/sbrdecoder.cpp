@@ -182,7 +182,7 @@ static uint8_t getHeaderSlot(uint8_t currentSlot, uint8_t hdrSlotUsage[(1) + 1])
   int32_t s;
   uint8_t slot = hdrSlotUsage[currentSlot];
 
-  FDK_ASSERT((1) + 1 < 32);
+  assert((1) + 1 < 32);
 
   for (s = 0; s < (1) + 1; s++) {
     if ((hdrSlotUsage[s] == slot) && (s != slot)) {
@@ -429,7 +429,7 @@ static void sbrDecoder_AssignQmfChannels2SbrChannels(HANDLE_SBRDECODER self) {
   for (el = 0; el < self->numSbrElements; el++) {
     if (self->pSbrElement[el] != NULL) {
       for (ch = 0; ch < self->pSbrElement[el]->nChannels; ch++) {
-        FDK_ASSERT(((absCh_offset + ch) < ((8) + (1))) &&
+        assert(((absCh_offset + ch) < ((8) + (1))) &&
                    ((absCh_offset + ch) < ((8) + (1))));
         self->pSbrElement[el]->pSbrChannel[ch]->SbrDec.qmfDomainInCh =
             &self->pQmfDomain->QmfDomainIn[absCh_offset + ch];
@@ -1164,7 +1164,7 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
   if ((self->flags & SBRDEC_SYNTAX_DRM) && *count > 0) {
     int32_t dataBytes, dataBits;
 
-    FDK_ASSERT(drmBsBufferSize >= (512));
+    assert(drmBsBufferSize >= (512));
     dataBits = *count;
 
     if (dataBits > ((512) * 8)) {
@@ -1761,7 +1761,7 @@ static SBR_ERROR sbrDecoder_DecodeElement(
   }
 
   if (psPossible && !(self->flags & SBRDEC_SKIP_QMF_SYN)) {
-    FDK_ASSERT(strideOut > 1);
+    assert(strideOut > 1);
     if (!(self->flags & SBRDEC_PS_DECODED)) {
       /* A decoder which is able to decode PS has to produce a stereo output
        * even if no PS data is available. */
@@ -1771,7 +1771,7 @@ static SBR_ERROR sbrDecoder_DecodeElement(
       copyFrameSize /= self->pQmfDomain->QmfDomainIn->fb.no_channels;
       int32_t *ptr;
       int32_t i;
-      FDK_ASSERT(strideOut == 2);
+      assert(strideOut == 2);
 
       ptr = timeData;
       for (i = copyFrameSize >> 1; i--;) {

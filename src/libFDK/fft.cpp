@@ -1588,7 +1588,7 @@ static inline void fftN2_func(int32_t *pInput, const int32_t length,
   int32_t *pSrc, *pDst, *pDstOut;
   int32_t i;
 
-  FDK_ASSERT(length == dim1 * dim2);
+  assert(length == dim1 * dim2);
 
   /* Perform dim2 times the fft of length dim1. The input samples are at the
   address of pSrc and the output samples are at the address of pDst. The input
@@ -1907,7 +1907,7 @@ void fft(int32_t length, int32_t *pInput, int32_t *pScalefactor) {
         *pScalefactor += SCALEFACTOR512;
         break;
       default:
-        FDK_ASSERT(0); /* FFT length not supported! */
+        assert(0); /* FFT length not supported! */
         break;
     }
   }
@@ -1916,7 +1916,7 @@ void fft(int32_t length, int32_t *pInput, int32_t *pScalefactor) {
 void ifft(int32_t length, int32_t *pInput, int32_t *scalefactor) {
   switch (length) {
     default:
-      FDK_ASSERT(0); /* IFFT length not supported! */
+      assert(0); /* IFFT length not supported! */
       break;
   }
 }

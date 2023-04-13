@@ -199,7 +199,7 @@ AAC_DECODER_ERROR CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData,
           }
         }
 
-        FDK_ASSERT(order <=
+        assert(order <=
                    TNS_MAXIMUM_ORDER); /* avoid illegal memory access */
         if (order) {
           uint8_t coef, s_mask;

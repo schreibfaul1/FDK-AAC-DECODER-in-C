@@ -135,14 +135,14 @@ void FDK_InitBitBuffer(HANDLE_FDK_BITBUF hBitBuf, uint8_t *pBuffer, uint32_t buf
   hBitBuf->bufSize = bufSize;
   hBitBuf->bufBits = (bufSize << 3);
   /*assure bufsize (2^n) */
-  FDK_ASSERT(hBitBuf->ValidBits <= hBitBuf->bufBits);
-  FDK_ASSERT((bufSize > 0) && (bufSize <= MAX_BUFSIZE_BYTES));
+  assert(hBitBuf->ValidBits <= hBitBuf->bufBits);
+  assert((bufSize > 0) && (bufSize <= MAX_BUFSIZE_BYTES));
   {
     uint32_t x = 0, n = bufSize;
     for (x = 0; n > 0; x++, n >>= 1) {
     }
     if (bufSize != ((uint32_t)1 << (x - 1))) {
-      FDK_ASSERT(0);
+      assert(0);
     }
   }
 }

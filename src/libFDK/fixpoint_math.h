@@ -102,7 +102,7 @@ amm-info@iis.fraunhofer.de
 
 #ifndef FIXPOINT_MATH_H
 #define FIXPOINT_MATH_H
-
+#include <assert.h>
 #include "common_fix.h"
 #include "scale.h"
 
@@ -330,7 +330,7 @@ static FDK_FORCEINLINE int32_t invSqrtNorm2(int32_t op, int32_t *shift) {
 #define INVSQRTNORM2_LINEAR_INTERPOLATE_HQ
 
   /* normalize input, calculate shift value */
-  FDK_ASSERT(val > FL2FXCONST_DBL(0.0));
+  assert(val > FL2FXCONST_DBL(0.0));
   *shift = fNormz(val) - 1; /* CountLeadingBits() is not necessary here since
                                test value is always > 0 */
   val <<= *shift;           /* normalized input V */
@@ -378,7 +378,7 @@ static FDK_FORCEINLINE int32_t sqrtFixp(int32_t op) {
   int32_t tmp_exp = 0;
   int32_t tmp_inv = invSqrtNorm2(op, &tmp_exp);
 
-  FDK_ASSERT(tmp_exp > 0);
+  assert(tmp_exp > 0);
   return ((int32_t)(fMultDiv2((op << (tmp_exp - 1)), tmp_inv) << 2));
 }
 #endif /* FUNCTION_sqrtFixp */
@@ -396,7 +396,7 @@ static inline int32_t invFixp(int32_t op) {
   }
   int32_t tmp_exp;
   int32_t tmp_inv = invSqrtNorm2(op, &tmp_exp);
-  FDK_ASSERT((31 - (2 * tmp_exp + 1)) >= 0);
+  assert((31 - (2 * tmp_exp + 1)) >= 0);
   int32_t shift = 31 - (2 * tmp_exp + 1);
   tmp_inv = fPow2Div2(tmp_inv);
   if (shift) {

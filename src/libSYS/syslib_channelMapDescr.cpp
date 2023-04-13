@@ -104,6 +104,7 @@ amm-info@iis.fraunhofer.de
  *  \brief  Implementation of routines that handle the channel map descriptor.
  */
 
+#include <assert.h>
 #include <stdint.h>
 #include "syslib_channelMapDescr.h"
 
@@ -194,7 +195,7 @@ uint8_t FDK_chMapDescr_getMapValue(const FDK_channelMapDescr* const pMapDescr,
                                  const uint8_t chIdx, const uint32_t mapIdx) {
   uint8_t mapValue = chIdx; /* Pass through by default. */
 
-  FDK_ASSERT(pMapDescr != NULL);
+  assert(pMapDescr != NULL);
 
   if ((pMapDescr->fPassThrough == 0) && (pMapDescr->pMapInfoTab != NULL) &&
       (pMapDescr->mapInfoTabLen > mapIdx)) { /* Nest sanity check to avoid

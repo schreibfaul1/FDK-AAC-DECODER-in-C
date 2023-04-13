@@ -153,7 +153,7 @@ static void longdiv(uint16_t b[], uint16_t a, uint16_t d[], uint16_t *pr, int32_
   uint32_t tmp;
   int32_t k;
 
-  FDK_ASSERT(a != 0);
+  assert(a != 0);
 
   r = 0;
 
@@ -174,7 +174,7 @@ static void longsub(uint16_t a[], uint16_t b[], int32_t lena, int32_t lenb) {
   int32_t h;
   int32_t carry = 0;
 
-  FDK_ASSERT(lena >= lenb);
+  assert(lena >= lenb);
   for (h = 0; h < lenb; h++) {
     carry += ((int32_t)a[h]) - ((int32_t)b[h]);
     a[h] = (uint16_t)carry;
@@ -187,7 +187,7 @@ static void longsub(uint16_t a[], uint16_t b[], int32_t lena, int32_t lenb) {
     carry = carry >> 16;
   }
 
-  FDK_ASSERT(carry ==
+  assert(carry ==
              0); /* carry != 0 indicates subtraction underflow, e.g. b > a */
   return;
 }
@@ -263,7 +263,7 @@ int32_t TsdRead(HANDLE_FDK_BITSTREAM hBs, const int32_t numSlots, TSD_DATA *pTsd
     for (h = 2; h <= p; h++) {
       longmult1(c, (k - p + h), c, 5); /* c *= k - p + h; */
       longdiv(c, h, c, r, 5);          /* c /= h; */
-      FDK_ASSERT(*r == 0);
+      assert(*r == 0);
     }
 
     /* go through all slots */
@@ -288,7 +288,7 @@ int32_t TsdRead(HANDLE_FDK_BITSTREAM hBs, const int32_t numSlots, TSD_DATA *pTsd
         longmult1(c, (k - p), c, 5);
       }
       longdiv(c, k, c, r, 5);
-      FDK_ASSERT(*r == 0);
+      assert(*r == 0);
     }
 
     /* Read phase data */
@@ -337,7 +337,7 @@ void TsdApply(const int32_t numHybridBands, const TSD_DATA *pTsdData, int32_t *p
   if (isTrSlot(pTsdData, ts)) {
     int32_t k;
     const FIXP_DPK *phi = &phiTsd[pTsdData->bsTsdTrPhaseData[ts]];
-    FDK_ASSERT((pTsdData->bsTsdTrPhaseData[ts] >= 0) &&
+    assert((pTsdData->bsTsdTrPhaseData[ts] >= 0) &&
                (pTsdData->bsTsdTrPhaseData[ts] < 8));
 
     /* d = d_nonTr + v_direct * exp(j * bsTsdTrPhaseData[ts]/4 * pi ) */

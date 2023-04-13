@@ -429,7 +429,7 @@ noise_enhancer(/* (o) : smoothed gain g_sc                     SF_GAIN_C */
   fac = (FX_SGL2FX_DBL(stab_fac) >> (SF_PFAC + 1)) -
         fMultDiv2(stab_fac, period_fac);
   /* fac_e = SF_PFAC + SF_STAB */
-  FDK_ASSERT(fac >= (int32_t)0);
+  assert(fac >= (int32_t)0);
 
   /* gain_code = (float)((fac*tmp) + ((1.0-fac)*gain_code)); */
   gain_code = fMult(fac, L_tmp) -
@@ -544,7 +544,7 @@ void int_lpc_acelp(
   FIXP_LPC lsp_interpol[M_LP_FILTER_ORDER];
   FIXP_SGL fac_old, fac_new;
 
-  FDK_ASSERT((nb_subfr == 3) || (nb_subfr == 4));
+  assert((nb_subfr == 3) || (nb_subfr == 4));
 
   fac_old = lsp_interpol_factor[nb_subfr & 0x1][(nb_subfr - 1) - subfr_nr];
   fac_new = lsp_interpol_factor[nb_subfr & 0x1][subfr_nr];
@@ -661,7 +661,7 @@ static int32_t DecodePitchLag(HANDLE_FDK_BITSTREAM hBs,
   int32_t error = 0;
   int32_t T0, T0_frac;
 
-  FDK_ASSERT((num_acb_idx_bits == 9) || (num_acb_idx_bits == 6));
+  assert((num_acb_idx_bits == 9) || (num_acb_idx_bits == 6));
 
   acb_idx = FDKreadBits(hBs, num_acb_idx_bits);
 
@@ -1095,7 +1095,7 @@ void CLpd_Acelp_Zir(const FIXP_LPC A[], const int32_t A_exp,
                     CAcelpStaticMem *acelp_mem, const int32_t length,
                     int32_t zir[], int32_t doDeemph) {
   C_ALLOC_SCRATCH_START(tmp_buf, int32_t, L_FAC_ZIR + M_LP_FILTER_ORDER);
-  FDK_ASSERT(length <= L_FAC_ZIR);
+  assert(length <= L_FAC_ZIR);
 
   FDKmemcpy(tmp_buf, acelp_mem->old_syn_mem,
             M_LP_FILTER_ORDER * sizeof(int32_t));
@@ -1193,7 +1193,7 @@ void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode,
 }
 
 int32_t *CLpd_ACELP_GetFreeExcMem(CAcelpStaticMem *acelp_mem, int32_t length) {
-  FDK_ASSERT(length <= PIT_MAX_MAX + L_INTERPOL);
+  assert(length <= PIT_MAX_MAX + L_INTERPOL);
   return acelp_mem->old_exc_mem;
 }
 
@@ -1288,7 +1288,7 @@ int32_t CLpd_AcelpRead(HANDLE_FDK_BITSTREAM hBs, CAcelpChannelData *acelp,
         acelp->icb_index[sfr][7] = FDKreadBits(hBs, 14);
         break;
       default:
-        FDK_ASSERT(0);
+        assert(0);
         break;
     }
     acelp->gains[sfr] = FDKreadBits(hBs, 7);

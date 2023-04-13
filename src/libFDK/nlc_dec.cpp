@@ -337,7 +337,7 @@ static ERROR_t huff_dec_1D(HANDLE_FDK_BITSTREAM strm, const DATA_TYPE data_type,
       nodeTab = (HANDLE_HUFF_NODE)&FDK_huffIPDNodes.h1D[dim1].nodeTab[0][0];
       break;
     default:
-      FDK_ASSERT(0);
+      assert(0);
       err = HUFFDEC_NOTOK;
       goto bail;
   }
@@ -428,7 +428,7 @@ static ERROR_t huff_dec_2D(HANDLE_FDK_BITSTREAM strm, const DATA_TYPE data_type,
       nodeTab = (HANDLE_HUFF_NODE)&FDK_huffPart0Nodes.ipd[0][0];
       break;
     default:
-      FDK_ASSERT(0);
+      assert(0);
       err = HUFFDEC_NOTOK;
       goto bail;
   }

@@ -249,7 +249,7 @@ void decodeSbrData(
     decodeEnvelope(hHeaderData, h_data_left, h_prev_data_left,
                    h_prev_data_right);
   } else {
-    FDK_ASSERT(h_data_right == NULL);
+    assert(h_data_right == NULL);
   }
   decodeNoiseFloorlevels(hHeaderData, h_data_left, h_prev_data_left);
 
@@ -780,11 +780,11 @@ static void deltaToLinearPcmEnvelopeDecoding(
     domain = h_sbr_data->domain_vec[i];
     freqRes = h_sbr_data->frameInfo.freqRes[i];
 
-    FDK_ASSERT(freqRes >= 0 && freqRes <= 1);
+    assert(freqRes >= 0 && freqRes <= 1);
 
     no_of_bands = hHeaderData->freqBandData.nSfb[freqRes];
 
-    FDK_ASSERT(no_of_bands < (64));
+    assert(no_of_bands < (64));
 
     if (domain == 0) {
       mapLowResEnergyVal(*ptr_nrg, sfb_nrg_prev, offset, 0, freqRes);

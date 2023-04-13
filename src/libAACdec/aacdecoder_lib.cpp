@@ -253,7 +253,7 @@ static int32_t aacDecoder_ConfigCallback(void *handle, const CSAudioSpecificConf
 	AAC_DECODER_ERROR  err = AAC_DEC_OK;
 	TRANSPORTDEC_ERROR errTp;
 
-	FDK_ASSERT(self != NULL);
+	assert(self != NULL);
 	{
 		{ err = aacDecoder_Config(self, pAscStruct, configMode, configChanged); }
 	}
@@ -292,7 +292,7 @@ static int32_t aacDecoder_FreeMemCallback(void *handle, const CSAudioSpecificCon
 
 	const int32_t subStreamIndex = 0;
 
-	FDK_ASSERT(self != NULL);
+	assert(self != NULL);
 
 	if(CAacDecoder_FreeMem(self, subStreamIndex) != AAC_DEC_OK) { errTp = TRANSPORTDEC_UNKOWN_ERROR; }
 

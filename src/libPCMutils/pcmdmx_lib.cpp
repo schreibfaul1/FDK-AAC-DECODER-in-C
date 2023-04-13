@@ -100,7 +100,7 @@ amm-info@iis.fraunhofer.de
                 expansion in the PCM time domain.
 
 *******************************************************************************/
-
+#include <assert.h>
 #include "pcmdmx_lib.h"
 
 #include "../libSYS/genericStds.h"
@@ -409,7 +409,7 @@ static PCM_DMX_SPEAKER_POSITION getSpeakerPos(AUDIO_CHANNEL_TYPE chType,
   unsigned fIsLfe = (chType == ACT_LFE) ? 1 : 0;
   int32_t offset = 0;
 
-  FDK_ASSERT(chIndex < numChInGrp);
+  assert(chIndex < numChInGrp);
 
   if ((chGrp == ACT_FRONT) && fHasCenter) {
     if (chIndex == 0) fIsCenter = 1;
@@ -532,10 +532,10 @@ static PCMDMX_ERROR getChannelMode(
   unsigned startSlot;
   unsigned stopSlot = LOW_FREQUENCY_CHANNEL;
 
-  FDK_ASSERT(channelType != NULL);
-  FDK_ASSERT(channelIndices != NULL);
-  FDK_ASSERT(offsetTable != NULL);
-  FDK_ASSERT(chMode != NULL);
+  assert(channelType != NULL);
+  assert(channelIndices != NULL);
+  assert(offsetTable != NULL);
+  assert(chMode != NULL);
 
   /* For details see ISO/IEC 13818-7:2005(E), 8.5.3 Channel configuration */
   FDKmemclear(idxSum, (3) * (4) * sizeof(uint32_t));
@@ -703,10 +703,10 @@ static void getChannelDescription(
   int32_t grpIdx, plainIdx, numPlains = 1, numTotalChannels = 0;
   int32_t chCfg, ch = 0;
 
-  FDK_ASSERT(channelType != NULL);
-  FDK_ASSERT(channelIndices != NULL);
-  FDK_ASSERT(mapDescr != NULL);
-  FDK_ASSERT(offsetTable != NULL);
+  assert(channelType != NULL);
+  assert(channelIndices != NULL);
+  assert(mapDescr != NULL);
+  assert(offsetTable != NULL);
 
   /* Init output arrays */
   FDKmemclear(channelType, (8) * sizeof(AUDIO_CHANNEL_TYPE));
@@ -825,7 +825,7 @@ static void getChannelDescription(
               255) { /* Use the multipurpose group: */
             chMapPos = LEFT_MULTIPRPS_CHANNEL;
           } else {
-            FDK_ASSERT(0);
+            assert(0);
           }
         }
         offsetTable[chMapPos] = (uint8_t)mappedIdx;
@@ -870,7 +870,7 @@ static void dmxInitChannel(FIXP_DMX mixFactors[(8)][(8)],
  **/
 static void dmxClearChannel(FIXP_DMX mixFactors[(8)][(8)],
                             int32_t mixScales[(8)][(8)], const uint32_t outCh) {
-  FDK_ASSERT((outCh >= 0) && (outCh < (8)));
+  assert((outCh >= 0) && (outCh < (8)));
   FDKmemclear(&mixFactors[outCh], (8) * sizeof(FIXP_DMX));
   FDKmemclear(&mixScales[outCh], (8) * sizeof(int32_t));
 }
@@ -971,14 +971,14 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
   uint32_t outCh, inChCfg = 0;
   uint32_t valid[(8)] = {0};
 
-  FDK_ASSERT(pMetaData != NULL);
-  FDK_ASSERT(mixFactors != NULL);
+  assert(pMetaData != NULL);
+  assert(mixFactors != NULL);
   /* Check on a supported output configuration.
      Add new one only after extensive testing! */
   if (!((outChMode == CH_MODE_1_0_0_0) || (outChMode == CH_MODE_2_0_0_0) ||
         (outChMode == CH_MODE_3_0_2_1) || (outChMode == CH_MODE_3_0_4_1) ||
         (outChMode == CH_MODE_5_0_2_1))) {
-    FDK_ASSERT(0);
+    assert(0);
   }
 
   if (inModeIsCfg) {
@@ -1004,7 +1004,7 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
         inChMode = CH_MODE_5_0_2_1;
         break;
       default:
-        FDK_ASSERT(0);
+        assert(0);
     }
   }
 
@@ -2087,7 +2087,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
   }
 
   /* Check on misconfiguration */
-  FDK_ASSERT((pParam->numOutChannelsMax <= 0) ||
+  assert((pParam->numOutChannelsMax <= 0) ||
              (pParam->numOutChannelsMax >= pParam->numOutChannelsMin));
 
   /* Determine if the module has to do processing */
@@ -2140,12 +2140,10 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
       (++self->bsMetaData[0].expiryCount >
        pParam
            ->expiryFrame)) { /* The metadata read from bitstream is too old. */
-#ifdef FDK_ASSERT_ENABLE
+
     PCMDMX_ERROR err = pcmDmx_Reset(self, PCMDMX_RESET_BS_DATA);
-    FDK_ASSERT(err == PCMDMX_OK);
-#else
-    pcmDmx_Reset(self, PCMDMX_RESET_BS_DATA);
-#endif
+    assert(err == PCMDMX_OK);
+
   }
   FDKmemcpy(&bsMetaData, &self->bsMetaData[pParam->frameDelay],
             sizeof(DMX_BS_META_DATA));
@@ -2202,7 +2200,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
     /* Set this stages output stride and channel mode: */
     outStride = (fInterleaved) ? numOutChannels : 1;
     outChMode = outChModeTable[numOutChannels];
-    FDK_ASSERT(outChMode != CH_MODE_UNDEFINED);
+    assert(outChMode != CH_MODE_UNDEFINED);
 
     /* Get channel description and channel mapping for the desired output
      * configuration. */
@@ -2289,8 +2287,8 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
         for (inCh = 0; inCh < numInChannels; inCh += 1) {
           tOut[outCh] += fMult((DMX_PCMF)tIn[inCh], mixFactors[outCh][inCh]);
         }
-        FDK_ASSERT(pOutPcm[outCh] >= pPcmBuf);
-        FDK_ASSERT(pOutPcm[outCh] < &pPcmBuf[pcmBufSize]);
+        assert(pOutPcm[outCh] >= pPcmBuf);
+        assert(pOutPcm[outCh] < &pPcmBuf[pcmBufSize]);
         /* Write sample */
         *pOutPcm[outCh] = (DMX_PCM)SATURATE_SHIFT(
             tOut[outCh], DFRACT_BITS - DMX_PCM_BITS - dmxScale, DMX_PCM_BITS);
@@ -2381,7 +2379,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
       /* Set this stages output stride and channel mode: */
       outStride = (fInterleaved) ? numOutChannels : 1;
       outChMode = outChModeTable[numOutChannels];
-      FDK_ASSERT(outChMode != CH_MODE_UNDEFINED);
+      assert(outChMode != CH_MODE_UNDEFINED);
 
       /* Check if input channel config can be easily mapped to the desired
        * output config. */
@@ -2447,7 +2445,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
               }
             }
             if (outCh >= (8)) {
-              FDK_ASSERT(0);
+              assert(0);
               break;
             }
             /* Set I/O pointer: */
@@ -2456,8 +2454,8 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
             pOut[nContentCh] = &pPcmBuf[outOffsetTable[outCh] * offset +
                                         (frameSize - 1) * outStride];
             /* Update signalling */
-            FDK_ASSERT(inOffsetTable[outCh] < numInChannels);
-            FDK_ASSERT(outOffsetTable[outCh] < numOutChannels);
+            assert(inOffsetTable[outCh] < numInChannels);
+            assert(outOffsetTable[outCh] < numOutChannels);
             channelType[outOffsetTable[outCh]] = inChTypes[inOffsetTable[ch]];
             channelIndices[outOffsetTable[outCh]] =
                 inChIndices[inOffsetTable[ch]];

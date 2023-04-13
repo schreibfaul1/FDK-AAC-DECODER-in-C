@@ -106,7 +106,7 @@ amm-info@iis.fraunhofer.de
 
 void drmRead_CrcInit(HANDLE_DRM pDrm) /*!< pointer to drm crc info stucture */
 {
-  FDK_ASSERT(pDrm != NULL);
+  assert(pDrm != NULL);
 
   FDKcrcInit(&pDrm->crcInfo, 0x001d, 0xFFFF, 8);
 }
@@ -116,7 +116,7 @@ int32_t drmRead_CrcStartReg(
     HANDLE_FDK_BITSTREAM hBs, /*!< handle to current bit buffer structure */
     int32_t mBits                 /*!< number of bits in crc region */
 ) {
-  FDK_ASSERT(pDrm != NULL);
+  assert(pDrm != NULL);
 
   FDKcrcReset(&pDrm->crcInfo);
 
@@ -130,7 +130,7 @@ void drmRead_CrcEndReg(
     HANDLE_FDK_BITSTREAM hBs, /*!< handle to current bit buffer structure */
     int32_t reg                   /*!< crc region */
 ) {
-  FDK_ASSERT(pDrm != NULL);
+  assert(pDrm != NULL);
 
   FDKcrcEndReg(&pDrm->crcInfo, hBs, reg);
 }

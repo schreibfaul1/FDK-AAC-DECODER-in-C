@@ -956,7 +956,7 @@ static void rvlcFinalErrorDetection(
       }
       for (; band < lastSfbIndex; band++) {
         bnds = 16 * group + band;
-        FDK_ASSERT(bnds >= 0 && bnds < RVLC_MAX_SFB);
+        assert(bnds >= 0 && bnds < RVLC_MAX_SFB);
         pAacDecoderStaticChannelInfo->concealmentInfo
             .aRvlcPreviousCodebook[bnds] = ZERO_HCB;
       }

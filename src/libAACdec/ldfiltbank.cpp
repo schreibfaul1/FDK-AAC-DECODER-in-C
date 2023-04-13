@@ -145,13 +145,13 @@ static void multE2_DinvF_fdk(int32_t *output, int32_t *x, const FIXP_WTB *fb,
            fMultDiv2(z[i], fb[N + N / 2 + i]));
 
 #if ((DFRACT_BITS - PCM_OUT_BITS - LDFB_HEADROOM + (3) - 1) > 0)
-    FDK_ASSERT((-WTS1 - 1 + scale) >= 0);
-    FDK_ASSERT(tmp <= ((int32_t)0x7FFFFFFF -
+    assert((-WTS1 - 1 + scale) >= 0);
+    assert(tmp <= ((int32_t)0x7FFFFFFF -
                        rnd_val_wts1)); /* rounding must not cause overflow */
     output[(N * 3 / 4 - 1 - i)] = (int32_t)SATURATE_RIGHT_SHIFT(
         tmp + rnd_val_wts1, -WTS1 - 1 + scale, PCM_OUT_BITS);
 #else
-    FDK_ASSERT((WTS1 + 1 - scale) >= 0);
+    assert((WTS1 + 1 - scale) >= 0);
     output[(N * 3 / 4 - 1 - i)] =
         (int32_t)SATURATE_LEFT_SHIFT(tmp, WTS1 + 1 - scale, PCM_OUT_BITS);
 #endif
@@ -177,17 +177,17 @@ static void multE2_DinvF_fdk(int32_t *output, int32_t *x, const FIXP_WTB *fb,
             fMultDiv2(z[i], fb[N + N / 2 + i]));
 
 #if ((DFRACT_BITS - PCM_OUT_BITS - LDFB_HEADROOM + (3) - 1) > 0)
-    FDK_ASSERT((-WTS0 - 1 + scale) >= 0);
-    FDK_ASSERT(tmp0 <= ((int32_t)0x7FFFFFFF -
+    assert((-WTS0 - 1 + scale) >= 0);
+    assert(tmp0 <= ((int32_t)0x7FFFFFFF -
                         rnd_val_wts0)); /* rounding must not cause overflow */
-    FDK_ASSERT(tmp1 <= ((int32_t)0x7FFFFFFF -
+    assert(tmp1 <= ((int32_t)0x7FFFFFFF -
                         rnd_val_wts1)); /* rounding must not cause overflow */
     output[(i - N / 4)] = (int32_t)SATURATE_RIGHT_SHIFT(
         tmp0 + rnd_val_wts0, -WTS0 - 1 + scale, PCM_OUT_BITS);
     output[(N * 3 / 4 - 1 - i)] = (int32_t)SATURATE_RIGHT_SHIFT(
         tmp1 + rnd_val_wts1, -WTS1 - 1 + scale, PCM_OUT_BITS);
 #else
-    FDK_ASSERT((WTS0 + 1 - scale) >= 0);
+    assert((WTS0 + 1 - scale) >= 0);
     output[(i - N / 4)] =
         (int32_t)SATURATE_LEFT_SHIFT(tmp0, WTS0 + 1 - scale, PCM_OUT_BITS);
     output[(N * 3 / 4 - 1 - i)] =
@@ -202,13 +202,13 @@ static void multE2_DinvF_fdk(int32_t *output, int32_t *x, const FIXP_WTB *fb,
     int32_t tmp0 = fMultDiv2(z[i], fb[N / 2 + i]);
 
 #if ((DFRACT_BITS - PCM_OUT_BITS - LDFB_HEADROOM + (3) - 1) > 0)
-    FDK_ASSERT((-WTS0 - 1 + scale) >= 0);
-    FDK_ASSERT(tmp0 <= ((int32_t)0x7FFFFFFF -
+    assert((-WTS0 - 1 + scale) >= 0);
+    assert(tmp0 <= ((int32_t)0x7FFFFFFF -
                         rnd_val_wts0)); /* rounding must not cause overflow */
     output[(N * 3 / 4 + i)] = (int32_t)SATURATE_RIGHT_SHIFT(
         tmp0 + rnd_val_wts0, -WTS0 - 1 + scale, PCM_OUT_BITS);
 #else
-    FDK_ASSERT((WTS0 + 1 - scale) >= 0);
+    assert((WTS0 + 1 - scale) >= 0);
     output[(N * 3 / 4 + i)] =
         (int32_t)SATURATE_LEFT_SHIFT(tmp0, WTS0 + 1 - scale, PCM_OUT_BITS);
 #endif

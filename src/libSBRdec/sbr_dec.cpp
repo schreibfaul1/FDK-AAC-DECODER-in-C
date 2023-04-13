@@ -742,7 +742,7 @@ void sbr_dec(
       /* was ((640)-(64))*sizeof(FIXP_QSS)
          flexible amount of synthesis bands needed for QMF based resampling
       */
-      FDK_ASSERT(hSbrDec->qmfDomainInCh->pGlobalConf->nBandsSynthesis <=
+      assert(hSbrDec->qmfDomainInCh->pGlobalConf->nBandsSynthesis <=
                  QMF_MAX_SYNTHESIS_BANDS);
       qmfChangeOutScalefactor(synQmfRight, -(8));
       FDKmemcpy(synQmfRight->FilterStates, synQmf->FilterStates,
@@ -871,7 +871,7 @@ void sbr_dec(
   if (!(flags & SBRDEC_SKIP_QMF_SYN)) {
     {
       FDK_QmfDomain_SaveOverlap(hSbrDec->qmfDomainInCh, 0);
-      FDK_ASSERT(hSbrDec->qmfDomainInCh->scaling.ov_lb_scale == saveLbScale);
+      assert(hSbrDec->qmfDomainInCh->scaling.ov_lb_scale == saveLbScale);
     }
   }
 
@@ -1068,7 +1068,7 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
 
   /* Change lsb and usb */
   /* Synthesis */
-  FDK_ASSERT(hSbrDec->qmfDomainOutCh != NULL);
+  assert(hSbrDec->qmfDomainOutCh != NULL);
   hSbrDec->qmfDomainOutCh->fb.lsb =
       fixMin((int32_t)hSbrDec->qmfDomainOutCh->fb.no_channels,
              (int32_t)hHeaderData->freqBandData.lowSubband);
@@ -1076,7 +1076,7 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
       fixMin((int32_t)hSbrDec->qmfDomainOutCh->fb.no_channels,
              (int32_t)hHeaderData->freqBandData.highSubband);
   /* Analysis */
-  FDK_ASSERT(hSbrDec->qmfDomainInCh != NULL);
+  assert(hSbrDec->qmfDomainInCh != NULL);
   hSbrDec->qmfDomainInCh->fb.lsb = hSbrDec->qmfDomainOutCh->fb.lsb;
   hSbrDec->qmfDomainInCh->fb.usb = hSbrDec->qmfDomainOutCh->fb.usb;
 
@@ -1225,7 +1225,7 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
       }
     }
 
-    FDK_ASSERT(startBand <= stopBand);
+    assert(startBand <= stopBand);
 
     if (!useLP) {
       for (l = 0; l < startSlot; l++) {

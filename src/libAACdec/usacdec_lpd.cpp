@@ -128,7 +128,7 @@ void filtLP(const int32_t *syn, int32_t *syn_out, int32_t *noise,
   int32_t i, j;
   int32_t tmp;
 
-  FDK_ASSERT((aacOutDataHeadroom - 1) >= -(MDCT_OUTPUT_SCALE));
+  assert((aacOutDataHeadroom - 1) >= -(MDCT_OUTPUT_SCALE));
 
   for (i = 0; i < stop; i++) {
     tmp = fMultDiv2(noise[i], filt[0]);  // Filt in Q-1.16
@@ -290,7 +290,7 @@ void bass_pf_1sf_delay(
         if (tmp <= (int32_t)0) {
           tmp = (int32_t)1;
         }
-        FDK_ASSERT(ener > (int32_t)0);
+        assert(ener > (int32_t)0);
 
         /* tmp = sqrt(tmp/ener) */
         int32_t result_e = 0;
@@ -566,15 +566,15 @@ void lpc2mdctAndNoiseShaping(int32_t *r, int16_t *pScale, const int32_t lg,
       case 64:
         SinTab = SineTable512;
         k_step = (512 / 64);
-        FDK_ASSERT(512 >= 64);
+        assert(512 >= 64);
         break;
       case 48:
         SinTab = SineTable384;
         k_step = 384 / 48;
-        FDK_ASSERT(384 >= 48);
+        assert(384 >= 48);
         break;
       default:
-        FDK_ASSERT(0);
+        assert(0);
         return;
     }
 
@@ -635,7 +635,7 @@ void lpc2mdctAndNoiseShaping(int32_t *r, int16_t *pScale, const int32_t lg,
       s = s2;
     }
 
-    FDK_ASSERT(s == s2);
+    assert(s == s2);
   }
 
   /* Get amplitude and apply gains */
@@ -681,8 +681,8 @@ void lpc2mdctAndNoiseShaping(int32_t *r, int16_t *pScale, const int32_t lg,
 
     /* end of lpc2mdct() */
 
-    FDK_ASSERT(g1 >= (int32_t)0);
-    FDK_ASSERT(g2 >= (int32_t)0);
+    assert(g1 >= (int32_t)0);
+    assert(g2 >= (int32_t)0);
 
     /* mdct_IntNoiseShaping() */
     {
@@ -1006,7 +1006,7 @@ static void CLpd_TcxDecode(
       int32_t tmp = (int32_t)coeffs[i];
       int32_t k;
 
-      FDK_ASSERT((nfEnd - i) < 8);
+      assert((nfEnd - i) < 8);
       for (k = 1; k < (nfEnd - i); k++) {
         tmp |= (int32_t)coeffs[i + k];
       }
@@ -1611,7 +1611,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
       lg_table = &lg_table_ccfl[1][lg_table_offset];
       break;
     default:
-      FDK_ASSERT(0);
+      assert(0);
       return AAC_DEC_UNKNOWN;
   }
 
@@ -1832,7 +1832,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
                           pAacDecoderStaticChannelInfo->last_tcx_noise_factor);
 
       } else {
-        FDK_ASSERT(pAacDecoderChannelInfo->data.usac.aStability[k] >=
+        assert(pAacDecoderChannelInfo->data.usac.aStability[k] >=
                    (FIXP_SGL)0);
         CLpd_AcelpDecode(&pAacDecoderStaticChannelInfo->acelp, i_offset,
                          pAacDecoderChannelInfo->data.usac.lsp_coeff[k],
@@ -1946,7 +1946,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
 
   if (frameOk) {
     /* assume data was ok => store for concealment */
-    FDK_ASSERT(pAacDecoderChannelInfo->data.usac.aStability[last_k] >=
+    assert(pAacDecoderChannelInfo->data.usac.aStability[last_k] >=
                (FIXP_SGL)0);
     pAacDecoderStaticChannelInfo->oldStability =
         pAacDecoderChannelInfo->data.usac.aStability[last_k];
@@ -1970,7 +1970,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
         pAacDecoderChannelInfo->data.usac.lp_coeff_exp[last_k];
   }
 
-  FDK_ASSERT(nrSamples == lFrame);
+  assert(nrSamples == lFrame);
 
   /* check whether usage of bass postfilter was de-activated in the bitstream;
    if yes, set pitch gain to 0 */
@@ -2003,7 +2003,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
     lookahead += imdct_copy_ov_and_nr(&pAacDecoderStaticChannelInfo->IMdct,
                                       synth + nrSamples, copySamp);
 
-    FDK_ASSERT(lookahead == copySamp - BPF_DELAY);
+    assert(lookahead == copySamp - BPF_DELAY);
 
     int32_t *p2_synth = synth + BPF_DELAY;
 

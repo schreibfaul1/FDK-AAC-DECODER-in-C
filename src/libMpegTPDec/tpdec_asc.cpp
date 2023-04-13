@@ -211,9 +211,9 @@ static int32_t CProgramConfig_ReadHeightExt(CProgramConfig *pPce,
   crcReg = FDKcrcStartReg(&crcInfo, bs, 0);
   uint32_t startAnchor = FDKgetValidBits(bs);
 
-  FDK_ASSERT(pPce != NULL);
-  FDK_ASSERT(bs != NULL);
-  FDK_ASSERT(bytesAvailable != NULL);
+  assert(pPce != NULL);
+  assert(bs != NULL);
+  assert(bytesAvailable != NULL);
 
   if ((startAnchor >= 24) && (*bytesAvailable >= 3) &&
       (FDKreadBits(bs, 8) == PCE_HEIGHT_EXT_SYNC)) {
@@ -440,7 +440,7 @@ int32_t CProgramConfig_Compare(const CProgramConfig *const pPce1,
 }
 
 void CProgramConfig_GetDefault(CProgramConfig *pPce, const uint32_t channelConfig) {
-  FDK_ASSERT(pPce != NULL);
+  assert(pPce != NULL);
 
   /* Init PCE */
   CProgramConfig_Init(pPce);
@@ -967,8 +967,8 @@ void CProgramConfig_GetChannelDescription(const uint32_t chConfig,
                                           const CProgramConfig *pPce,
                                           AUDIO_CHANNEL_TYPE chType[],
                                           uint8_t chIndex[]) {
-  FDK_ASSERT(chType != NULL);
-  FDK_ASSERT(chIndex != NULL);
+  assert(chType != NULL);
+  assert(chIndex != NULL);
 
   if ((chConfig == 0) && (pPce != NULL)) {
     if (pPce->isValid) {
@@ -1032,8 +1032,8 @@ int32_t CProgramConfig_GetPceChMap(const CProgramConfig *pPce, uint8_t pceChMap[
   const uint8_t *elHeight[3], *elIsCpe[3];
   unsigned chIdx, plane, grp, offset, totCh[3], numCh[3][4];
 
-  FDK_ASSERT(pPce != NULL);
-  FDK_ASSERT(pceChMap != NULL);
+  assert(pPce != NULL);
+  assert(pceChMap != NULL);
 
   /* Init counter: */
   FDKmemclear(totCh, 3 * sizeof(unsigned));
@@ -1101,9 +1101,9 @@ int32_t CProgramConfig_GetElementTable(const CProgramConfig *pPce,
                                    const int32_t elListSize, uint8_t *pChMapIdx) {
   int32_t i, el = 0;
 
-  FDK_ASSERT(elList != NULL);
-  FDK_ASSERT(pChMapIdx != NULL);
-  FDK_ASSERT(pPce != NULL);
+  assert(elList != NULL);
+  assert(pChMapIdx != NULL);
+  assert(pPce != NULL);
 
   *pChMapIdx = 0;
 

@@ -119,7 +119,7 @@ int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
   int32_t k = 0;
   int32_t max_windows = 8;
 
-  FDK_ASSERT(*pState >= 0 && *pState < max_windows);
+  assert(*pState >= 0 && *pState < max_windows);
 
   /* Look for free space to store FAC data. 2 FAC data blocks fit into each TCX
    * spectral data block. */
@@ -134,7 +134,7 @@ int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
   if (i == max_windows) {
     ptr = pAacDecoderChannelInfo->data.usac.fac_data0;
   } else {
-    FDK_ASSERT(mod[(i >> 1)] == 0);
+    assert(mod[(i >> 1)] == 0);
     ptr = SPEC_FAC(pAacDecoderChannelInfo->pSpectralCoefficient, i,
                    pAacDecoderChannelInfo->granuleLength << k);
   }
@@ -211,7 +211,7 @@ void CFac_ApplyGains(int32_t fac_data[LFAC], const int32_t fac_length,
   int32_t facFactor;
   int32_t i;
 
-  FDK_ASSERT((fac_length == 128) || (fac_length == 96));
+  assert((fac_length == 128) || (fac_length == 96));
 
   /* 2) Apply gain factor to FAC data */
   facFactor = fMult(gainFac[mod], tcx_gain);
@@ -278,7 +278,7 @@ int32_t CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac,
   const FIXP_WTP *pWindow;
   int32_t i, fl, nrSamples = 0;
 
-  FDK_ASSERT(fac_length <= 1024 / (4 * 2));
+  assert(fac_length <= 1024 / (4 * 2));
 
   fl = fac_length * 2;
 
@@ -288,7 +288,7 @@ int32_t CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac,
   if (hMdct->prev_fr != fl) {
     int32_t nl = 0;
     imdct_adapt_parameters(hMdct, &fl, &nl, fac_length, pWindow, nrOutSamples);
-    FDK_ASSERT(nl == 0);
+    assert(nl == 0);
   }
 
   if (nrSamples < nrOutSamples) {
@@ -395,7 +395,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
   int32_t *pF, *pFAC_and_FAC_ZIR = NULL;
   int32_t total_gain = gain;
 
-  FDK_ASSERT(fac_length <= 1024 / (4 * 2));
+  assert(fac_length <= 1024 / (4 * 2));
   switch (fac_length) {
     /* coreCoderFrameLength = 1024 */
     case 128:
@@ -425,7 +425,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
       FacWindowSynth = FacWindowSynth48;
       break;
     default:
-      FDK_ASSERT(0);
+      assert(0);
       return 0;
   }
 
@@ -547,7 +547,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
 
     /* FAC signal is already on pOut1, because of that the += operator. */
     x1 = fMult(*pCurr++, pWindow[i].v.re);
-    FDK_ASSERT((pOut1 >= hMdct->overlap.time &&
+    assert((pOut1 >= hMdct->overlap.time &&
                 pOut1 < hMdct->overlap.time + hMdct->ov_size) ||
                (pOut1 >= output && pOut1 < output + 1024));
     *pOut1 = fAddSaturate(*pOut1, IMDCT_SCALE_DBL(-x1));
@@ -563,7 +563,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
     /* save pointer to write FAC ZIR data later */
     hMdct->pFacZir = pFAC_and_FAC_ZIR;
   } else {
-    FDK_ASSERT(nl >= fac_length);
+    assert(nl >= fac_length);
     /* FAC ZIR will be added now ... */
     hMdct->pFacZir = NULL;
   }
@@ -579,7 +579,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
       x = fAddSaturate(x, *pF++);
     }
 
-    FDK_ASSERT((pOut1 >= hMdct->overlap.time &&
+    assert((pOut1 >= hMdct->overlap.time &&
                 pOut1 < hMdct->overlap.time + hMdct->ov_size) ||
                (pOut1 >= output && pOut1 < output + 1024));
     *pOut1 = IMDCT_SCALE_DBL(x);
@@ -701,7 +701,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
     if (hMdct->pFacZir != 0) {
       /* add FAC ZIR of previous ACELP -> mdct transition */
       int32_t *pOut = pOut0 - fl / 2;
-      FDK_ASSERT(fl / 2 <= 128);
+      assert(fl / 2 <= 128);
       for (i = 0; i < fl / 2; i++) {
         pOut[i] = fAddSaturate(pOut[i], IMDCT_SCALE_DBL(hMdct->pFacZir[i]));
       }
@@ -733,8 +733,8 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
   /* Save overlap */
 
   pOvl = hMdct->overlap.freq + hMdct->ov_size - tl / 2;
-  FDK_ASSERT(pOvl >= hMdct->overlap.time + hMdct->ov_offset);
-  FDK_ASSERT(tl / 2 <= hMdct->ov_size);
+  assert(pOvl >= hMdct->overlap.time + hMdct->ov_offset);
+  assert(tl / 2 <= hMdct->ov_size);
   for (i = 0; i < tl / 2; i++) {
     pOvl[i] = _pSpec[i + (w - 1) * tl];
   }

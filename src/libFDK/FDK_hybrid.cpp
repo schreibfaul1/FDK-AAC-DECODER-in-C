@@ -394,7 +394,7 @@ int32_t FDKhybridAnalysisApply(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
           pHybridImag + hybOffset, &pQmfImag[nrQmfBandsLF],
           (hAnalysisHybFilter->cplxBands - nrQmfBandsLF) * sizeof(int32_t));
     } else {
-      FDK_ASSERT(hAnalysisHybFilter->HFmemorySize != 0);
+      assert(hAnalysisHybFilter->HFmemorySize != 0);
       /* HF delay compensation, filterlength/2. */
       FDKmemcpy(
           pHybridReal + hybOffset,
@@ -538,7 +538,7 @@ static void dualChannelFiltering(const int32_t *const pQmfReal,
   r6 = pQmfReal[pReadIdx[6]] >> 2;
   i6 = pQmfImag[pReadIdx[6]] >> 2;
 
-  FDK_ASSERT((invert == 0) || (invert == 1));
+  assert((invert == 0) || (invert == 1));
   mHybridReal[0 + invert] = (r6 + r1) << 1;
   mHybridImag[0 + invert] = (i6 + i1) << 1;
 

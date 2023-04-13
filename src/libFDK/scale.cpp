@@ -110,6 +110,8 @@ amm-info@iis.fraunhofer.de
 
 #include "scale.h"
 
+#define SHORT_BITS 16
+
 // #if defined(__mips__)
 // #include "mips/scale_mips.cpp"
 

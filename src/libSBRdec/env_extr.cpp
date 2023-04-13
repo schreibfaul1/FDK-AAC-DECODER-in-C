@@ -712,7 +712,7 @@ int32_t sbrGetChannelElement(HANDLE_SBR_HEADER_DATA hHeaderData,
     sbr_grid(): Grid control
   */
   if (hHeaderData->bs_info.pvc_mode) {
-    FDK_ASSERT(nCh == 1); /* PVC not possible for CPE */
+    assert(nCh == 1); /* PVC not possible for CPE */
     if (!extractPvcFrameInfo(hBs, hHeaderData, hFrameDataLeft,
                              hFrameDataLeftPrev, pvc_mode_last, flags))
       return 0;
@@ -933,7 +933,7 @@ static int32_t sbrGetPvcEnvelope(
 
   divMode = FDKreadBits(hBs, PVC_DIVMODE_BITS);
   nsMode = FDKreadBit(hBs);
-  FDK_ASSERT((pvcMode == 1) || (pvcMode == 2));
+  assert((pvcMode == 1) || (pvcMode == 2));
   h_frame_data->ns = mapNsMode2ns[pvcMode - 1][nsMode];
 
   if (divMode <= 3) {
@@ -978,7 +978,7 @@ static int32_t sbrGetPvcEnvelope(
     divMode -= 4;
     num_grid_info = 2 << divMode;
     fixed_length = 8 >> divMode;
-    FDK_ASSERT(num_grid_info * fixed_length == PVC_NTIMESLOT);
+    assert(num_grid_info * fixed_length == PVC_NTIMESLOT);
 
     /* special treatment for first time slot k=0 */
     indepFlag ? (grid_info = 1) : (grid_info = FDKreadBit(hBs));
@@ -1115,7 +1115,7 @@ static int32_t sbrGetEnvelope(
     }
     if ((flags & SBRDEC_SYNTAX_USAC) && (flags & SBRDEC_USAC_ITES)) {
       int32_t bs_temp_shape = FDKreadBit(hBs);
-      FDK_ASSERT(j < 8);
+      assert(j < 8);
       h_frame_data->iTESactive |= (uint8_t)(bs_temp_shape << j);
       if (bs_temp_shape) {
         h_frame_data->interTempShapeMode[j] =
@@ -1295,13 +1295,13 @@ int32_t extractPvcFrameInfo(
     /* See "7.5.1.4 HF adjustment of SBR envelope scalefactors" for reference.
      */
 
-    FDK_ASSERT((pFrameInfo->nEnvelopes == 1) || (pFrameInfo->nEnvelopes == 2));
+    assert((pFrameInfo->nEnvelopes == 1) || (pFrameInfo->nEnvelopes == 2));
 
     /* left timeborder-offset: use the timeborder of prev SBR frame */
     if (pPrevFrameInfo->nEnvelopes > 0) {
       pFrameInfo->borders[0] =
           pPrevFrameInfo->borders[pPrevFrameInfo->nEnvelopes] - PVC_NTIMESLOT;
-      FDK_ASSERT(pFrameInfo->borders[0] <= 3);
+      assert(pFrameInfo->borders[0] <= 3);
     } else {
       pFrameInfo->borders[0] = 0;
     }
@@ -1398,7 +1398,7 @@ int32_t extractFrameInfo(
                         sizeof(FRAME_INFO));
               break;
             default:
-              FDK_ASSERT(0);
+              assert(0);
           }
           break;
         case 2:
@@ -1412,7 +1412,7 @@ int32_t extractFrameInfo(
                         sizeof(FRAME_INFO));
               break;
             default:
-              FDK_ASSERT(0);
+              assert(0);
           }
           break;
         case 4:
@@ -1426,7 +1426,7 @@ int32_t extractFrameInfo(
                         sizeof(FRAME_INFO));
               break;
             default:
-              FDK_ASSERT(0);
+              assert(0);
           }
           break;
         case 8:
@@ -1441,7 +1441,7 @@ int32_t extractFrameInfo(
                         sizeof(FRAME_INFO));
               break;
             default:
-              FDK_ASSERT(0);
+              assert(0);
           }
           break;
 #else

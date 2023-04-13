@@ -424,7 +424,7 @@ AAC_DECODER_ERROR CChannelElement_Read(
   int32_t cplxPred;
   int32_t ind_sw_cce_flag = 0, num_gain_element_lists = 0;
 
-  FDK_ASSERT((numberOfChannels == 1) || (numberOfChannels == 2));
+  assert((numberOfChannels == 1) || (numberOfChannels == 2));
 
   /* Get channel element sequence table */
   list = getBitstreamElementList(aot, epConfig, numberOfChannels, 0, elFlags);

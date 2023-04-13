@@ -99,7 +99,7 @@ amm-info@iis.fraunhofer.de
    Description: int32_t/int16_t-block decoding
 
 *******************************************************************************/
-
+#include <assert.h>
 #include "block.h"
 
 #include "aac_rom.h"
@@ -281,7 +281,7 @@ void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
         }
         SpecScale_window_tns = SpecScale_window_tns +
                                pAacDecoderChannelInfo->pDynData->TnsData.GainLd;
-        FDK_ASSERT(tns_stop >= tns_start);
+        assert(tns_stop >= tns_start);
         /* Consider existing headroom of all MDCT lines inside the TNS bands. */
         SpecScale_window_tns -=
             getScalefactor(pSpectrum + BandOffsets[tns_start],
@@ -307,7 +307,7 @@ void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
         int32_t scale = fMin(DFRACT_BITS - 1,
                          SpecScale_window - pSfbScale[window * 16 + band]);
         if (scale) {
-          FDK_ASSERT(scale > 0);
+          assert(scale > 0);
 
           /* following relation can be used for optimizations:
            * (BandOffsets[i]%4) == 0 for all i */
@@ -627,7 +627,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
   SPECTRAL_PTR pSpectralCoefficient =
       pAacDecoderChannelInfo->pSpectralCoefficient;
 
-  FDK_ASSERT(BandOffsets != NULL);
+  assert(BandOffsets != NULL);
 
   FDKmemclear(pSpectralCoefficient, sizeof(SPECTRUM));
 
@@ -1019,10 +1019,7 @@ void CBlock_FrequencyToTime(
     const int16_t frameLen, const int32_t frameOk, int32_t *pWorkBuffer1,
     const int32_t aacOutDataHeadroom, uint32_t elFlags, int32_t elCh) {
   int32_t fr, fl, tl, nSpec;
-
-#if defined(FDK_ASSERT_ENABLE)
   int32_t nSamples;
-#endif
 
   /* Determine left slope length (fl), right slope length (fr) and transform
      length (tl). USAC: The slope length may mismatch with the previous frame in
@@ -1128,10 +1125,8 @@ void CBlock_FrequencyToTime(
           E_LPC_f_lsp_a_conversion(A, A, &A_exp);
         }
 
-#if defined(FDK_ASSERT_ENABLE)
-        nSamples =
-#endif
-            CLpd_FAC_Acelp2Mdct(
+
+        nSamples = CLpd_FAC_Acelp2Mdct(
                 &pAacDecoderStaticChannelInfo->IMdct, synth,
                 SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient),
                 pAacDecoderChannelInfo->specScale, nSpec,
@@ -1147,10 +1142,8 @@ void CBlock_FrequencyToTime(
                 pAacDecoderChannelInfo->currAliasingSymmetry);
 
       } else {
-#if defined(FDK_ASSERT_ENABLE)
-        nSamples =
-#endif
-            imlt_block(
+
+        nSamples = imlt_block(
                 &pAacDecoderStaticChannelInfo->IMdct, synth,
                 SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient),
                 pAacDecoderChannelInfo->specScale, nSpec, frameLen, tl,
@@ -1164,7 +1157,7 @@ void CBlock_FrequencyToTime(
                     ? MLT_FLAG_CURR_ALIAS_SYMMETRY
                     : 0);
       }
-      FDK_ASSERT(nSamples == frameLen);
+      assert(nSamples == frameLen);
 
       /* The "if" clause is entered both for fullbandLpd mono and
        * non-fullbandLpd*. The "else"-> just for fullbandLpd stereo*/
@@ -1221,10 +1214,8 @@ void CBlock_FrequencyToTime(
     {
       int32_t *tmp =
           pAacDecoderChannelInfo->pComStaticData->pWorkBufferCore1->mdctOutTemp;
-#if defined(FDK_ASSERT_ENABLE)
-      nSamples =
-#endif
-          imlt_block(&pAacDecoderStaticChannelInfo->IMdct, tmp,
+
+      nSamples = imlt_block(&pAacDecoderStaticChannelInfo->IMdct, tmp,
                      SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient),
                      pAacDecoderChannelInfo->specScale, nSpec, frameLen, tl,
                      FDKgetWindowSlope(
@@ -1242,7 +1233,7 @@ void CBlock_FrequencyToTime(
     }
   }
 
-  FDK_ASSERT(nSamples == frameLen);
+  assert(nSamples == frameLen);
 
   pAacDecoderStaticChannelInfo->last_core_mode =
       (pAacDecoderChannelInfo->icsInfo.WindowSequence == BLOCK_SHORT) ? FD_SHORT

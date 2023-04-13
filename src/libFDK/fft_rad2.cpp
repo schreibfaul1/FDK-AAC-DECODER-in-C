@@ -170,7 +170,7 @@ void dit_fft(int32_t *x, const int32_t ldn, const FIXP_STP *trigdata,
 
     trigstep = ((trigDataSize << 2) >> ldm);
 
-    FDK_ASSERT(trigstep > 0);
+    assert(trigstep > 0);
 
     /* Do first iteration with c=1.0 and s=0.0 separately to avoid loosing to
        much precision. Beware: The impact on the overal FFT precision is rather

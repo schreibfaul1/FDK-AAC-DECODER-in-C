@@ -279,7 +279,7 @@ int32_t FDKcrcStartReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM h
                    const int32_t mBits) {
   int32_t reg = hCrcInfo->regStart;
 
-  FDK_ASSERT(hCrcInfo->crcRegData[reg].isActive == 0);
+  assert(hCrcInfo->crcRegData[reg].isActive == 0);
   hCrcInfo->crcRegData[reg].isActive = 1;
   hCrcInfo->crcRegData[reg].maxBits = mBits;
   hCrcInfo->crcRegData[reg].validBits = (int32_t)FDKgetValidBits(hBs);
@@ -292,7 +292,7 @@ int32_t FDKcrcStartReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM h
 
 int32_t FDKcrcEndReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs,
                  const int32_t reg) {
-  FDK_ASSERT((reg == (int32_t)hCrcInfo->regStop) &&
+  assert((reg == (int32_t)hCrcInfo->regStop) &&
              (hCrcInfo->crcRegData[reg].isActive == 1));
 
   if (hBs->ConfigCache == BS_WRITER) {

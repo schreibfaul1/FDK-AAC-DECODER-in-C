@@ -180,9 +180,9 @@ static void SpatialDecClearFrameData(
     SPATIAL_BS_FRAME *bsFrame, const SACDEC_CREATION_PARAMS *const setup) {
   int32_t i;
 
-  FDK_ASSERT(self != NULL);
-  FDK_ASSERT(bsFrame != NULL);
-  FDK_ASSERT(setup != NULL);
+  assert(self != NULL);
+  assert(bsFrame != NULL);
+  assert(setup != NULL);
 
   /* do not apply shaping tools (GES or STP) */
   for (i = 0; i < setup->maxNumOutputChannels;
@@ -527,8 +527,8 @@ static int32_t isValidConfig(spatialDec const *const self,
                          const AUDIO_OBJECT_TYPE coreAot) {
   UPMIXTYPE nUpmixType;
 
-  FDK_ASSERT(self != NULL);
-  FDK_ASSERT(pUserParams != NULL);
+  assert(self != NULL);
+  assert(pUserParams != NULL);
 
   nUpmixType = (UPMIXTYPE)upmixType;
 
@@ -551,8 +551,8 @@ static SACDEC_ERROR CheckLevelTreeUpmixType(
   SACDEC_ERROR err = MPS_OK;
   int32_t nOutputChannels, treeConfig;
 
-  FDK_ASSERT(pCreateParams != NULL);
-  FDK_ASSERT(pSsc != NULL);
+  assert(pCreateParams != NULL);
+  assert(pSsc != NULL);
 
   treeConfig = pSsc->treeConfig;
 
@@ -1075,8 +1075,8 @@ static void SpatialDecApplyBypass(spatialDec *self, int32_t **hybInputReal,
         }
         break;
       case 2:
-        FDK_ASSERT(lf != -1);
-        FDK_ASSERT(rf != -1);
+        assert(lf != -1);
+        assert(rf != -1);
         FDKmemcpy(hybOutputReal[lf], hybInputReal[0],
                   self->hybridBands * sizeof(int32_t));
         FDKmemcpy(hybOutputReal[rf], hybInputReal[1],
@@ -1418,10 +1418,10 @@ SACDEC_ERROR SpatialDecApplyFrame(
   int32_t fDecAndMapFrameData;
   int32_t controlFlags;
 
-  FDK_ASSERT(self != NULL);
-  FDK_ASSERT(pControlFlags != NULL);
-  FDK_ASSERT(pcmOutBuf != NULL);
-  FDK_ASSERT(self->sacInDataHeadroom >= (1));
+  assert(self != NULL);
+  assert(pControlFlags != NULL);
+  assert(pcmOutBuf != NULL);
+  assert(self->sacInDataHeadroom >= (1));
 
   self->errInt = err; /* Init internal error */
 

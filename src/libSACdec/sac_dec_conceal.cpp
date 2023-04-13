@@ -104,7 +104,7 @@ amm-info@iis.fraunhofer.de
 
 void SpatialDecConcealment_Init(SpatialDecConcealmentInfo *info,
                                 const uint32_t resetFlags) {
-  FDK_ASSERT(info != NULL);
+  assert(info != NULL);
 
   if (resetFlags & MPEGS_CONCEAL_RESET_STATE) {
     info->concealState = SpatialDecConcealState_Init;
@@ -139,10 +139,10 @@ int32_t SpatialDecConcealment_Apply(
   int32_t appliedProcessing = 0;
   int32_t band, dataMode = -1;
 
-  FDK_ASSERT(info != NULL);
-  FDK_ASSERT(cmpIdxData != NULL);
-  FDK_ASSERT(idxPrev != NULL);
-  FDK_ASSERT(bsXXXDataMode != NULL);
+  assert(info != NULL);
+  assert(cmpIdxData != NULL);
+  assert(idxPrev != NULL);
+  assert(bsXXXDataMode != NULL);
 
   /* Processing depends only on the internal state */
   switch (info->concealState) {
@@ -195,7 +195,7 @@ int32_t SpatialDecConcealment_Apply(
     } break;
 
     default:
-      FDK_ASSERT(0); /* All valid states shall be handled above. */
+      assert(0); /* All valid states shall be handled above. */
       break;
   }
 
@@ -216,7 +216,7 @@ int32_t SpatialDecConcealment_Apply(
 
 void SpatialDecConcealment_UpdateState(SpatialDecConcealmentInfo *info,
                                        const int32_t frameOk) {
-  FDK_ASSERT(info != NULL);
+  assert(info != NULL);
 
   if (frameOk) {
     info->cntValidFrames += 1;
@@ -302,7 +302,7 @@ void SpatialDecConcealment_UpdateState(SpatialDecConcealmentInfo *info,
       break;
 
     default:
-      FDK_ASSERT(0); /* All valid states should be handled above! */
+      assert(0); /* All valid states should be handled above! */
       break;
   }
 }

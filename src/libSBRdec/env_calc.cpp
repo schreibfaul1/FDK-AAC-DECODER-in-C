@@ -1047,7 +1047,7 @@ void calculateSbrEnvelope(
     i = bordersPvc[0]; /* usually 0; can be >0 if switching from legacy SBR to
                           PVC */
     i_stop = PVC_NTIMESLOT;
-    FDK_ASSERT(bordersPvc[hFrameData->frameInfo.nEnvelopes] == PVC_NTIMESLOT);
+    assert(bordersPvc[hFrameData->frameInfo.nEnvelopes] == PVC_NTIMESLOT);
   } else {
     /* iterate over SBR envelopes starting with 0 */
     i = 0;
@@ -1072,7 +1072,7 @@ void calculateSbrEnvelope(
       freq_res =
           hFrameData->frameInfo
               .freqRes[0]; /* Frequency resolution for current envelope. */
-      FDK_ASSERT(
+      assert(
           freq_res ==
           hFrameData->frameInfo.freqRes[hFrameData->frameInfo.nEnvelopes - 1]);
     } else {
@@ -1208,7 +1208,7 @@ void calculateSbrEnvelope(
               pUiNoise++;
             }
 
-            FDK_ASSERT(k >= lowSubband);
+            assert(k >= lowSubband);
 
             if (useLP) useAliasReduction[k - lowSubband] = !sinePresentFlag;
 
@@ -1245,7 +1245,7 @@ void calculateSbrEnvelope(
               pUiNoise++;
             }
 
-            FDK_ASSERT(k >= lowSubband);
+            assert(k >= lowSubband);
 
             if (useLP) useAliasReduction[k - lowSubband] = !sinePresentFlag;
 
@@ -1568,7 +1568,7 @@ void calculateSbrEnvelope(
                              noNoiseFlag, filtBufferNoiseShift);
           }
         } else {
-          FDK_ASSERT(!iTES_enable); /* not supported */
+          assert(!iTES_enable); /* not supported */
           if (flags & SBRDEC_ELD_GRID) {
             /* FDKmemset(analysBufferReal[j], 0, 64 * sizeof(int32_t)); */
             adjustTimeSlot_EldGrid(
@@ -1696,13 +1696,13 @@ void calculateSbrEnvelope(
   if (pvc_mode > 0) {
     /* Not more than just the last noise envelope reaches into the next PVC
        frame! This should be true because bs_noise_position is <= 15 */
-    FDK_ASSERT(hFrameData->frameInfo
+    assert(hFrameData->frameInfo
                    .bordersNoise[hFrameData->frameInfo.nNoiseEnvelopes - 1] <
                PVC_NTIMESLOT);
     if (hFrameData->frameInfo
             .bordersNoise[hFrameData->frameInfo.nNoiseEnvelopes] >
         PVC_NTIMESLOT) {
-      FDK_ASSERT(noiseLevels ==
+      assert(noiseLevels ==
                  (hFrameData->sbrNoiseFloorLevel +
                   (hFrameData->frameInfo.nNoiseEnvelopes - 1) * noNoiseBands));
       h_sbr_cal_env->prevNNfb = noNoiseBands;
@@ -1918,7 +1918,7 @@ int32_t maxSubbandSample(
   int32_t maxVal = FL2FX_DBL(0.0f);
   uint32_t width = highSubband - lowSubband;
 
-  FDK_ASSERT(width <= (64));
+  assert(width <= (64));
 
   if (width > 0) {
     if (im != NULL) {

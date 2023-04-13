@@ -257,7 +257,7 @@ static int32_t mpegSurroundDecoder_GetNrOfQmfBands(
       case AOT_USAC:
         if ((pSsc->stereoConfigIndex == 3)) {
           static const uint8_t mapIdx2QmfBands[3] = {24, 32, 16};
-          FDK_ASSERT((pSsc->coreSbrFrameLengthIndex >= 2) &&
+          assert((pSsc->coreSbrFrameLengthIndex >= 2) &&
                      (pSsc->coreSbrFrameLengthIndex <= 4));
           qmfBands = mapIdx2QmfBands[pSsc->coreSbrFrameLengthIndex - 2];
         }
@@ -417,8 +417,8 @@ static SACDEC_ERROR check_UParam_Build_DecConfig(
     const SPATIAL_SPECIFIC_CONFIG *pSsc, SPATIAL_DEC_UPMIX_TYPE *pUpmixType) {
   int32_t dmxChannels, outChannels, maxNumOutChannels;
 
-  FDK_ASSERT(pUserParams != NULL);
-  FDK_ASSERT(pUpmixType != NULL);
+  assert(pUserParams != NULL);
+  assert(pUpmixType != NULL);
 
   /* checks if implementation can handle the Ssc */
 
@@ -513,7 +513,7 @@ static SACDEC_ERROR initMpegSurroundDecoder(
   int32_t initFlags = MPEGS_INIT_NONE, initFlagsDec;
   int32_t upmixTypeCurr = pMpegSurroundDecoder->upmixType;
 
-  FDK_ASSERT(pMpegSurroundDecoder != NULL);
+  assert(pMpegSurroundDecoder != NULL);
 
   SPATIAL_SPECIFIC_CONFIG *const pSSCinput =
       &pMpegSurroundDecoder->spatialSpecificConfigBackup;
@@ -1010,7 +1010,7 @@ static SACDEC_ERROR sscCheckInBand(SPATIAL_SPECIFIC_CONFIG *pSsc,
   SACDEC_ERROR err = MPS_OK;
   int32_t qmfBands;
 
-  FDK_ASSERT(pSsc != NULL);
+  assert(pSsc != NULL);
 
   /* check ssc for parse errors */
   if (sscParseCheck(pSsc) != MPS_OK) {
@@ -1043,7 +1043,7 @@ mpegSurroundDecoder_ConfigureQmfDomain(
     return MPS_INVALID_HANDLE;
   }
 
-  FDK_ASSERT(pMpegSurroundDecoder->pSpatialDec);
+  assert(pMpegSurroundDecoder->pSpatialDec);
 
   pGC = &pMpegSurroundDecoder->pQmfDomain->globalConf;
   if (pMpegSurroundDecoder->mpegSurroundSscIsGlobalCfg) {
@@ -1098,7 +1098,7 @@ mpegSurroundDecoder_ConfigureQmfDomain(
 SACDEC_ERROR
 sscCheckOutOfBand(const SPATIAL_SPECIFIC_CONFIG *pSsc, const int32_t coreCodec,
                   const int32_t sampleRate, const int32_t frameSize) {
-  FDK_ASSERT(pSsc != NULL);
+  assert(pSsc != NULL);
   int32_t qmfBands = 0;
 
   /* check ssc for parse errors */
@@ -1301,7 +1301,7 @@ int32_t mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
     return MPS_INVALID_HANDLE;
   }
 
-  FDK_ASSERT(pMpegSurroundDecoder->pSpatialDec);
+  assert(pMpegSurroundDecoder->pSpatialDec);
 
   mpsBsBits = (int32_t)FDKgetValidBits(hBs);
 
@@ -1367,7 +1367,7 @@ int32_t mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
             break;
 
           default:
-            FDK_ASSERT(0);
+            assert(0);
         }
 
         if ((ancStartStop == MPEGS_STOP) ||
@@ -1526,7 +1526,7 @@ int32_t mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder,
     return MPS_INVALID_HANDLE;
   }
 
-  FDK_ASSERT(pMpegSurroundDecoder->pSpatialDec);
+  assert(pMpegSurroundDecoder->pSpatialDec);
 
   if (!FDK_chMapDescr_isValid(mapDescr)) {
     return MPS_INVALID_HANDLE;
@@ -1680,7 +1680,7 @@ int32_t mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder,
   if ((pMpegSurroundDecoder->pSpatialDec->pConfigCurrent->syntaxFlags &
        SACDEC_SYNTAX_USAC) &&
       (pMpegSurroundDecoder->pSpatialDec->stereoConfigIndex > 1)) {
-    FDK_ASSERT(timeDataRequiredSize >= timeDataFrameSize * *nChannels);
+    assert(timeDataRequiredSize >= timeDataFrameSize * *nChannels);
     /* Place samples comprising QMF time slots spaced at QMF output Band raster
      * to allow slot wise processing */
     int32_t timeDataFrameSizeOut =

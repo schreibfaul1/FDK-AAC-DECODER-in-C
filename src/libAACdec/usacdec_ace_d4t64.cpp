@@ -433,7 +433,7 @@ void D_ACELP_decode_4t64(int16_t index[], int32_t nbits, FIXP_COD code[]) {
       }
       break;
     default:
-      FDK_ASSERT(0);
+      assert(0);
   }
   return;
 }

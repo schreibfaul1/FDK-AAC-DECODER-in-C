@@ -399,7 +399,7 @@ uint32_t HcrInit(H_HCR_INFO pHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo
       }
 
       numLine = *pNumLinesInSec++;
-      /* FDK_ASSERT(numLine > 0); */
+      /* assert(numLine > 0); */
 
       if ((numLine <= 0) || (numLine > 1024)) {
         pHcr->decInOut.errorLog |= LINE_IN_SECT_OUT_OF_RANGE_LONG_BLOCK;

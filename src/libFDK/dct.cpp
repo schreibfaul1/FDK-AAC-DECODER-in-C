@@ -164,11 +164,11 @@ void dct_getTables(const FIXP_WTP **ptwiddle, const FIXP_STP **sin_twiddle,
   }
 
   if (ptwiddle != NULL) {
-    FDK_ASSERT(twiddle != NULL);
+    assert(twiddle != NULL);
     *ptwiddle = twiddle;
   }
 
-  FDK_ASSERT(*sin_step > 0);
+  assert(*sin_step > 0);
 }
 
 #if !defined(FUNCTION_dct_III)
@@ -182,7 +182,7 @@ void dct_III(int32_t *pDat, /*!< pointer to input/output */
   int32_t inc, index;
   int32_t M = L >> 1;
 
-  FDK_ASSERT(L % 4 == 0);
+  assert(L % 4 == 0);
   dct_getTables(NULL, &sin_twiddle, &inc, L);
   inc >>= 1;
 
@@ -299,7 +299,7 @@ void dct_II(
   int32_t inc, index = 0;
   int32_t M = L >> 1;
 
-  FDK_ASSERT(L % 4 == 0);
+  assert(L % 4 == 0);
   dct_getTables(NULL, &sin_twiddle, &inc, L);
   inc >>= 1;
 
@@ -377,9 +377,9 @@ void dct_IV(int32_t *pDat, int32_t L, int32_t *pDat_e) {
   const FIXP_WTP *twiddle;
   const FIXP_STP *sin_twiddle;
 
-  FDK_ASSERT(L >= 4);
+  assert(L >= 4);
 
-  FDK_ASSERT(L >= 4);
+  assert(L >= 4);
 
   dct_getTables(&twiddle, &sin_twiddle, &sin_step, L);
 
@@ -474,9 +474,9 @@ void dst_IV(int32_t *pDat, int32_t L, int32_t *pDat_e) {
   const FIXP_WTP *twiddle;
   const FIXP_STP *sin_twiddle;
 
-  FDK_ASSERT(L >= 4);
+  assert(L >= 4);
 
-  FDK_ASSERT(L >= 4);
+  assert(L >= 4);
 
   dct_getTables(&twiddle, &sin_twiddle, &sin_step, L);
 

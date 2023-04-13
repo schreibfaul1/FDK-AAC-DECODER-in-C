@@ -597,9 +597,9 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadPayloadLengthInfo(HANDLE_FDK_BITSTREAM bs,
   int32_t totalPayloadBits = 0;
 
   if (pLatmDemux->m_allStreamsSameTimeFraming == 1) {
-    FDK_ASSERT(pLatmDemux->m_numProgram <= LATM_MAX_PROG);
+    assert(pLatmDemux->m_numProgram <= LATM_MAX_PROG);
     for (uint32_t prog = 0; prog < pLatmDemux->m_numProgram; prog++) {
-      FDK_ASSERT(pLatmDemux->m_numLayer[prog] <= LATM_MAX_LAYER);
+      assert(pLatmDemux->m_numLayer[prog] <= LATM_MAX_LAYER);
       for (uint32_t lay = 0; lay < pLatmDemux->m_numLayer[prog]; lay++) {
         LATM_LAYER_INFO *p_linfo = &pLatmDemux->m_linfo[prog][lay];
 

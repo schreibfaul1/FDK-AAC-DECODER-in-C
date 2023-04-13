@@ -102,7 +102,7 @@ amm-info@iis.fraunhofer.de
 
 #ifndef FDK_BITSTREAM_H
 #define FDK_BITSTREAM_H
-
+#include <assert.h>
 #include "FDK_bitbuffer.h"
 #include "../libSYS/machine_type.h"
 
@@ -212,7 +212,7 @@ FDK_INLINE uint32_t FDKreadBits(HANDLE_FDK_BITSTREAM hBitStream,
   uint32_t bits = 0;
   int32_t missingBits = (int32_t)numberOfBits - (int32_t)hBitStream->BitsInCache;
 
-  FDK_ASSERT(numberOfBits <= 32);
+  assert(numberOfBits <= 32);
   if (missingBits > 0) {
     if (missingBits != 32) bits = hBitStream->CacheWord << missingBits;
     hBitStream->CacheWord = FDK_get32(&hBitStream->hBitBuf);
@@ -531,7 +531,7 @@ FDK_INLINE void FDKbyteAlign(HANDLE_FDK_BITSTREAM hBitStream,
  */
 FDK_INLINE void FDKpushBackCache(HANDLE_FDK_BITSTREAM hBitStream,
                                  const uint32_t numberOfBits) {
-  FDK_ASSERT((hBitStream->BitsInCache + numberOfBits) <= CACHE_BITS);
+  assert((hBitStream->BitsInCache + numberOfBits) <= CACHE_BITS);
   hBitStream->BitsInCache += numberOfBits;
 }
 

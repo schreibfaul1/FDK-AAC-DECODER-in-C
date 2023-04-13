@@ -107,7 +107,7 @@ amm-info@iis.fraunhofer.de
 #endif
 
 #define __GENERICSTDS_CPP__
-
+#include <assert.h>
 #include <stdint.h>
 #include "genericStds.h"
 
@@ -316,7 +316,7 @@ void FDKafree_L(void *ptr) {
  *---------------------------------------------------------------------------------------*/
 void FDKmemcpy(void *dst, const void *src, const uint32_t size) {
   /* -- check for overlapping memory areas -- */
-  FDK_ASSERT(((const unsigned char *)dst - (const unsigned char *)src) >=
+  assert(((const unsigned char *)dst - (const unsigned char *)src) >=
                  (ptrdiff_t)size ||
              ((const unsigned char *)src - (const unsigned char *)dst) >=
                  (ptrdiff_t)size);

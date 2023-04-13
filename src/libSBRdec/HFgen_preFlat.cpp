@@ -730,7 +730,7 @@ static void polyfit(const int32_t numBands, const int32_t *const y, const int32_
   int32_t v[POLY_ORDER + 1];
   int32_t sum_saftey = getLog2[numBands - 1];
 
-  FDK_ASSERT((numBands >= BSD_IDX_OFFSET) && (numBands <= MAXLOWBANDS));
+  assert((numBands >= BSD_IDX_OFFSET) && (numBands <= MAXLOWBANDS));
 
   /* construct vector b[] temporarily stored in array p[] */
   FDKmemclear(p, (POLY_ORDER + 1) * sizeof(int32_t));
@@ -799,7 +799,7 @@ static void polyfit(const int32_t numBands, const int32_t *const y, const int32_
  */
 static int32_t polyval(const int32_t *const p, const int32_t *const p_sf,
                         const int32_t x_int, int32_t *out_sf) {
-  FDK_ASSERT(x_int <= 31); /* otherwise getLog2[] needs more elements */
+  assert(x_int <= 31); /* otherwise getLog2[] needs more elements */
 
   int32_t k, x_sf;
   int32_t result_sf;   /* working space to compute return value *out_sf */
@@ -875,7 +875,7 @@ void sbrDecoder_calculateGainVec(int32_t **sourceBufferReal,
   int32_t sum_scale = 5, sum_scale_ov = 3;
 
   if (overlap > 8) {
-    FDK_ASSERT(overlap <= 16);
+    assert(overlap <= 16);
     sum_scale_ov += 1;
     sum_scale += 1;
   }

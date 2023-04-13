@@ -564,9 +564,9 @@ void SpatialDecReshapeBBEnv(spatialDec *self, const SPATIAL_BS_FRAME *frame,
       /* reshape dry and wet signals according to transmitted envelope */
 
       /* De-quantize GES data */
-      FDK_ASSERT((frame->bsEnvShapeData[ch2][ts] >= 0) &&
+      assert((frame->bsEnvShapeData[ch2][ts] >= 0) &&
                  (frame->bsEnvShapeData[ch2][ts] <= 4));
-      FDK_ASSERT((self->envQuantMode == 0) || (self->envQuantMode == 1));
+      assert((self->envQuantMode == 0) || (self->envQuantMode == 1));
       envShape =
           FX_CFG2FX_DBL(envShapeDataTable__FDK[frame->bsEnvShapeData[ch2][ts]]
                                               [self->envQuantMode]);

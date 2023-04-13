@@ -143,7 +143,7 @@ amm-info@iis.fraunhofer.de
   IP based systems packet loss can occur. The transport protocol used should
   indicate such packet loss by inserting an empty frame with frameOK=0.
 */
-
+#include <assert.h>
 #include <stdint.h>
 #include "conceal.h"
 
@@ -810,8 +810,8 @@ static int32_t CConcealment_ApplyNoise(
 
   int32_t appliedProcessing = 0;
 
-  FDK_ASSERT(pConcealmentInfo != NULL);
-  FDK_ASSERT((samplesPerFrame >= 120) && (samplesPerFrame <= 1024));
+  assert(pConcealmentInfo != NULL);
+  assert((samplesPerFrame >= 120) && (samplesPerFrame <= 1024));
 
   switch (pConcealmentInfo->concealState) {
     case ConcealState_Ok:
@@ -856,7 +856,7 @@ static int32_t CConcealment_ApplyNoise(
 
     default:
       /* we shouldn't come here anyway */
-      FDK_ASSERT(0);
+      assert(0);
       break;
   }
 
@@ -875,9 +875,9 @@ static int32_t CConcealment_ApplyInter(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     const SamplingRateInfo *pSamplingRateInfo, const int32_t samplesPerFrame,
     const int32_t improveTonal, const int32_t frameOk, const int32_t mute_release_active) {
-#if defined(FDK_ASSERT_ENABLE)
+
   CConcealParams *pConcealCommonData = pConcealmentInfo->pConcealParams;
-#endif
+
 
   int32_t *pSpectralCoefficient =
       SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
@@ -1062,10 +1062,10 @@ static int32_t CConcealment_ApplyInter(
       break;
 
     case ConcealState_FadeOut: {
-      FDK_ASSERT(pConcealmentInfo->cntFadeFrames >= 0);
-      FDK_ASSERT(pConcealmentInfo->cntFadeFrames <
+      assert(pConcealmentInfo->cntFadeFrames >= 0);
+      assert(pConcealmentInfo->cntFadeFrames <
                  CONCEAL_MAX_NUM_FADE_FACTORS);
-      FDK_ASSERT(pConcealmentInfo->cntFadeFrames <
+      assert(pConcealmentInfo->cntFadeFrames <
                  pConcealCommonData->numFadeOutFrames);
 
       /* TimeDomainFading:                                        */
@@ -1075,10 +1075,10 @@ static int32_t CConcealment_ApplyInter(
     } break;
 
     case ConcealState_FadeIn: {
-      FDK_ASSERT(pConcealmentInfo->cntFadeFrames >= 0);
-      FDK_ASSERT(pConcealmentInfo->cntFadeFrames <
+      assert(pConcealmentInfo->cntFadeFrames >= 0);
+      assert(pConcealmentInfo->cntFadeFrames <
                  CONCEAL_MAX_NUM_FADE_FACTORS);
-      FDK_ASSERT(pConcealmentInfo->cntFadeFrames <
+      assert(pConcealmentInfo->cntFadeFrames <
                  pConcealCommonData->numFadeInFrames);
 
       /* TimeDomainFading:                                        */
@@ -1479,7 +1479,7 @@ static void CConcealment_UpdateState(
           break;
 
         default:
-          FDK_ASSERT(0);
+          assert(0);
           break;
       }
     } break;
@@ -1729,8 +1729,8 @@ static int32_t CConcealment_ApplyFadeOut(
   numWinGrpPerFac = pConcealmentInfo->attGrpOffset[mode];
   srcWin = srcGrpStart + pConcealmentInfo->winGrpOffset[mode];
 
-  FDK_ASSERT((srcGrpStart * windowLen + windowLen) <= samplesPerFrame);
-  FDK_ASSERT((srcWin * windowLen + windowLen) <= 1024);
+  assert((srcGrpStart * windowLen + windowLen) <= samplesPerFrame);
+  assert((srcWin * windowLen + windowLen) <= 1024);
 
   for (dstWin = 0; dstWin < numWindows; dstWin += 1) {
     FIXP_CNCL *pCncl =
@@ -1778,10 +1778,10 @@ static int32_t CConcealment_ApplyFadeOut(
   /* store current state */
 
   pConcealmentInfo->winGrpOffset[mode] = srcWin - srcGrpStart;
-  FDK_ASSERT((pConcealmentInfo->winGrpOffset[mode] >= 0) &&
+  assert((pConcealmentInfo->winGrpOffset[mode] >= 0) &&
              (pConcealmentInfo->winGrpOffset[mode] < 8));
   pConcealmentInfo->attGrpOffset[mode] = numWinGrpPerFac;
-  FDK_ASSERT((pConcealmentInfo->attGrpOffset[mode] >= 0) &&
+  assert((pConcealmentInfo->attGrpOffset[mode] >= 0) &&
              (pConcealmentInfo->attGrpOffset[mode] < attIdxStride));
 
   if (mode == 0) {
@@ -1901,7 +1901,7 @@ int32_t CConcealment_TDFading(
                        : FADE_TIMEDOMAIN;
       break;
     default:
-      FDK_ASSERT(0);
+      assert(0);
       fadingType = FADE_TIMEDOMAIN_TOSPECTRALMUTE;
       break;
   }

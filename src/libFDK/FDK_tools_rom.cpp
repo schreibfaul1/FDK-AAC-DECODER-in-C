@@ -4101,7 +4101,7 @@ const FIXP_WTP *FDKgetWindowSlope(int32_t length, int32_t shape) {
   /* Look up table */
   w = windowSlopes[shape & 1][raster][ld2_length];
 
-  FDK_ASSERT(w != NULL);
+  assert(w != NULL);
 
   return w;
 }
@@ -7137,7 +7137,7 @@ const element_list_t *getBitstreamElementList(AUDIO_OBJECT_TYPE aot,
     case AOT_AAC_LC:
     case AOT_SBR:
     case AOT_PS:
-      FDK_ASSERT(epConfig == -1);
+      assert(epConfig == -1);
       if (elFlags & AC_EL_GA_CCE) {
         return &node_aac_cce;
       } else {
@@ -7163,7 +7163,7 @@ const element_list_t *getBitstreamElementList(AUDIO_OBJECT_TYPE aot,
       }
     case AOT_USAC:
       if (elFlags & AC_EL_USAC_LFE) {
-        FDK_ASSERT(nChannels == 1);
+        assert(nChannels == 1);
         return &node_usac_lfe_epc0;
       }
       if (nChannels == 1) {
@@ -7199,7 +7199,7 @@ const element_list_t *getBitstreamElementList(AUDIO_OBJECT_TYPE aot,
     case AOT_DRM_SBR:
     case AOT_DRM_MPEG_PS:
     case AOT_DRM_SURROUND:
-      FDK_ASSERT(epConfig == 1);
+      assert(epConfig == 1);
       if (nChannels == 1) {
         return &node_drm_sce;
       } else {

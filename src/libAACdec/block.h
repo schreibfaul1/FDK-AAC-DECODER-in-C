@@ -253,7 +253,7 @@ int32_t EvaluatePower43(int32_t *pValue, uint32_t lsb) {
   value = *pValue;
   freeBits = fNormz(value);
   exponent = DFRACT_BITS - freeBits;
-  FDK_ASSERT(exponent < 14);
+  assert(exponent < 14);
 
   uint32_t x = (((int32_t)value << freeBits) >> 19);
   uint32_t tableIndex = (x & 0x0FFF) >> 4;
@@ -267,7 +267,7 @@ int32_t EvaluatePower43(int32_t *pValue, uint32_t lsb) {
   uint32_t temp = (r0)*nx + (r1)*x;
   invQVal = (int32_t)temp;
 
-  FDK_ASSERT(lsb < 4);
+  assert(lsb < 4);
   *pValue = fMultDiv2(invQVal, MantissaTable[lsb][exponent]);
 
   /* + 1 compensates fMultDiv2(). */

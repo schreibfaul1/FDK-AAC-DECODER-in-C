@@ -108,8 +108,8 @@ amm-info@iis.fraunhofer.de
 
 int32_t FDK_Delay_Create(FDK_SignalDelay* data, const uint16_t delay,
                      const uint8_t num_channels) {
-  FDK_ASSERT(data != NULL);
-  FDK_ASSERT(num_channels > 0);
+  assert(data != NULL);
+  assert(num_channels > 0);
 
   if (delay > 0) {
     data->delay_line =
@@ -128,13 +128,13 @@ int32_t FDK_Delay_Create(FDK_SignalDelay* data, const uint16_t delay,
 
 void FDK_Delay_Apply(FDK_SignalDelay* data, int32_t* time_buffer,
                      const uint32_t frame_length, const uint8_t channel) {
-  FDK_ASSERT(data != NULL);
+  assert(data != NULL);
 
   if (data->delay > 0) {
     C_ALLOC_SCRATCH_START(tmp, int32_t, MAX_FRAME_LENGTH)
-    FDK_ASSERT(frame_length <= MAX_FRAME_LENGTH);
-    FDK_ASSERT(channel < data->num_channels);
-    FDK_ASSERT(time_buffer != NULL);
+    assert(frame_length <= MAX_FRAME_LENGTH);
+    assert(channel < data->num_channels);
+    assert(time_buffer != NULL);
     if (frame_length >= data->delay) {
       FDKmemcpy(tmp, &time_buffer[frame_length - data->delay],
                 data->delay * sizeof(int32_t));

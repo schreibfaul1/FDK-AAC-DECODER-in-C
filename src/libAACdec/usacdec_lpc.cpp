@@ -395,7 +395,7 @@ static void re8_decode_base_index(int32_t *n, uint32_t index, int16_t y[8]) {
         ka = fdk_dec_A4[i];
         break;
       default:
-        FDK_ASSERT(0);
+        assert(0);
         return;
     }
     /* reconstruct the absolute leader */
@@ -436,7 +436,7 @@ static void re8_k2y(int32_t *k, int32_t r, int16_t *y) {
   int16_t v[8];
   FIXP_ZF zf[8];
 
-  FDK_ASSERT(r <= ZF_SCALE);
+  assert(r <= ZF_SCALE);
 
   /* compute y = k M and z=(y-a)/m, where
      M = [4        ]
@@ -969,7 +969,7 @@ int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
     FIXP_LPC *lsf_prev, *lsf_curr;
     k = 0;
 
-    FDK_ASSERT(lpc_present[0] == 1 && lpc_present[4 >> s] == 1);
+    assert(lpc_present[0] == 1 && lpc_present[4 >> s] == 1);
     lsf_prev = lsp[0];
     for (i = 1; i < (nbDiv + 1); i++) {
       if (lpc_present[i]) {

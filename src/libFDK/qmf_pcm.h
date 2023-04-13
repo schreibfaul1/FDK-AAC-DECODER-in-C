@@ -99,7 +99,7 @@ amm-info@iis.fraunhofer.de
    Description: QMF filterbank
 
 *******************************************************************************/
-
+#include <assert.h>
 #ifndef QMF_PCM_H
 #define QMF_PCM_H
 
@@ -181,7 +181,7 @@ void qmfSynPrototypeFirSlot_fallback(
         Are = fMult(Are, gain);
       }
       if (scale >= 0) {
-        FDK_ASSERT(
+        assert(
             Are <=
             (Are + rnd_val)); /* Round-addition must not overflow, might be
                                  equal for rnd_val=0 */
@@ -272,7 +272,7 @@ static void qmfSynPrototypeFirSlot_NonSymmetric(
         Are = fMult(Are, gain);
       }
       if (scale > 0) {
-        FDK_ASSERT(Are <
+        assert(Are <
                    (Are + rnd_val)); /* Round-addition must not overflow */
         tmp = (INT_PCM_QMFOUT)(
             SATURATE_RIGHT_SHIFT(Are + rnd_val, scale, SAMPLE_BITS_QMFOUT));
@@ -377,8 +377,8 @@ void qmfSynthesisFiltering(
   int32_t scaleFactorHighBand;
   int32_t scaleFactorLowBand_ov, scaleFactorLowBand_no_ov;
 
-  FDK_ASSERT(synQmf->no_channels >= synQmf->lsb);
-  FDK_ASSERT(synQmf->no_channels >= synQmf->usb);
+  assert(synQmf->no_channels >= synQmf->lsb);
+  assert(synQmf->no_channels >= synQmf->usb);
 
   /* adapt scaling */
   scaleFactorHighBand = -ALGORITHMIC_SCALING_IN_ANALYSIS_FILTERBANK -
@@ -427,7 +427,7 @@ int32_t qmfInitAnalysisFilterBank(
                 (2 * QMF_NO_POLY - 1) * h_Qmf->no_channels * sizeof(FIXP_QAS));
   }
 
-  FDK_ASSERT(h_Qmf->no_channels >= h_Qmf->lsb);
+  assert(h_Qmf->no_channels >= h_Qmf->lsb);
 
   return err;
 }

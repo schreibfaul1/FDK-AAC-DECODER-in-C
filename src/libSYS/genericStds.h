@@ -172,7 +172,7 @@ typedef enum {
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define C_ALLOC_MEM(name, type, num)               \
   type *Get##name(int32_t n) {                         \
-    FDK_ASSERT((n) == 0);                          \
+    assert((n) == 0);                          \
     return ((type *)FDKcalloc(num, sizeof(type))); \
   }                                                \
   void Free##name(type **p) {                      \
@@ -188,7 +188,7 @@ typedef enum {
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define C_ALLOC_MEM2(name, type, n1, n2)                 \
   type *Get##name(int32_t n) {                               \
-    FDK_ASSERT((n) < (n2));                              \
+    assert((n) < (n2));                              \
     return ((type *)FDKcalloc(n1, sizeof(type)));        \
   }                                                      \
   void Free##name(type **p) {                            \
@@ -205,7 +205,7 @@ typedef enum {
 #define C_AALLOC_MEM(name, type, num)                                  \
   type *Get##name(int32_t n) {                                             \
     type *ap;                                                          \
-    FDK_ASSERT((n) == 0);                                              \
+    assert((n) == 0);                                              \
     ap = ((type *)FDKaalloc((num) * sizeof(type), ALIGNMENT_DEFAULT)); \
     return ap;                                                         \
   }                                                                    \
@@ -224,7 +224,7 @@ typedef enum {
 #define C_AALLOC_MEM2(name, type, n1, n2)                             \
   type *Get##name(int32_t n) {                                            \
     type *ap;                                                         \
-    FDK_ASSERT((n) < (n2));                                           \
+    assert((n) < (n2));                                           \
     ap = ((type *)FDKaalloc((n1) * sizeof(type), ALIGNMENT_DEFAULT)); \
     return ap;                                                        \
   }                                                                   \
@@ -243,7 +243,7 @@ typedef enum {
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define C_ALLOC_MEM_L(name, type, num, s)               \
   type *Get##name(int32_t n) {                              \
-    FDK_ASSERT((n) == 0);                               \
+    assert((n) == 0);                               \
     return ((type *)FDKcalloc_L(num, sizeof(type), s)); \
   }                                                     \
   void Free##name(type **p) {                           \
@@ -259,7 +259,7 @@ typedef enum {
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define C_ALLOC_MEM2_L(name, type, n1, n2, s)            \
   type *Get##name(int32_t n) {                               \
-    FDK_ASSERT((n) < (n2));                              \
+    assert((n) < (n2));                              \
     return (type *)FDKcalloc_L(n1, sizeof(type), s);     \
   }                                                      \
   void Free##name(type **p) {                            \
@@ -276,7 +276,7 @@ typedef enum {
 #define C_AALLOC_MEM_L(name, type, num, s)                                  \
   type *Get##name(int32_t n) {                                                  \
     type *ap;                                                               \
-    FDK_ASSERT((n) == 0);                                                   \
+    assert((n) == 0);                                                   \
     ap = ((type *)FDKaalloc_L((num) * sizeof(type), ALIGNMENT_DEFAULT, s)); \
     return ap;                                                              \
   }                                                                         \
@@ -295,7 +295,7 @@ typedef enum {
 #define C_AALLOC_MEM2_L(name, type, n1, n2, s)                             \
   type *Get##name(int32_t n) {                                                 \
     type *ap;                                                              \
-    FDK_ASSERT((n) < (n2));                                                \
+    assert((n) < (n2));                                                \
     ap = ((type *)FDKaalloc_L((n1) * sizeof(type), ALIGNMENT_DEFAULT, s)); \
     return ap;                                                             \
   }                                                                        \

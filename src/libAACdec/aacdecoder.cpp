@@ -172,7 +172,7 @@ amm-info@iis.fraunhofer.de
 	(((el_id) == ID_USAC_CPE && (stereoConfigIndex) == 0) || ((el_id) == ID_USAC_CPE && (stereoConfigIndex) == 3))
 
 void CAacDecoder_SyncQmfMode(HANDLE_AACDECODER self) {
-	FDK_ASSERT(!((self->flags[0] & AC_MPS_PRESENT) && (self->flags[0] & AC_PS_PRESENT)));
+	assert(!((self->flags[0] & AC_MPS_PRESENT) && (self->flags[0] & AC_PS_PRESENT)));
 
 	/* Assign user requested mode */
 	self->qmfModeCurr = self->qmfModeUser;
@@ -233,7 +233,7 @@ void CAacDecoder_SyncQmfMode(HANDLE_AACDECODER self) {
 		((CAN_DO_PS(self->streamInfo.aot) && !PS_IS_EXPLICITLY_DISABLED(self->streamInfo.aot, self->flags[0]) &&
 		  self->streamInfo.aacNumChannels == 1 && !(self->flags[0] & AC_MPS_PRESENT))) &&
 		self->qmfModeCurr == MODE_HQ;
-	FDK_ASSERT(!((self->flags[0] & AC_MPS_PRESENT) && self->psPossible));
+	assert(!((self->flags[0] & AC_MPS_PRESENT) && self->psPossible));
 }
 
 void CAacDecoder_SignalInterruption(HANDLE_AACDECODER self) {
@@ -401,7 +401,7 @@ static AAC_DECODER_ERROR CDataStreamElement_Read(HANDLE_AACDECODER self, HANDLE_
 	int32_t               dataStart;
 	int32_t               dataByteAlignFlag, count;
 
-	FDK_ASSERT(self != NULL);
+	assert(self != NULL);
 
 	int32_t crcReg = transportDec_CrcStartReg(self->hInput, 0);
 
@@ -1034,7 +1034,7 @@ static AAC_DECODER_ERROR aacDecoder_ParseExplicitMpsAndSbr(HANDLE_AACDECODER sel
 			MP4_ELEMENT_ID sbrType;
 			SBR_ERROR      errTmp;
 			if(self->flags[0] & (AC_USAC)) {
-				FDK_ASSERT((self->elements[element_index] == ID_USAC_SCE) ||
+				assert((self->elements[element_index] == ID_USAC_SCE) ||
 						   (self->elements[element_index] == ID_USAC_CPE));
 				sbrType = IS_STEREO_SBR(self->elements[element_index], self->usacStereoConfigIndex[element_index])
 							  ? ID_CPE
@@ -1742,7 +1742,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, uint8
 	if(asc->m_aot == AOT_DRM_AAC) { self->flags[streamIndex] |= AC_DRM | AC_SBRCRC | AC_SCALABLE; }
 	if(asc->m_aot == AOT_DRM_SURROUND) {
 		self->flags[streamIndex] |= AC_DRM | AC_SBRCRC | AC_SCALABLE | AC_MPS_PRESENT;
-		FDK_ASSERT(!asc->m_psPresentFlag);
+		assert(!asc->m_psPresentFlag);
 	}
 	if((asc->m_aot == AOT_AAC_SCAL) || (asc->m_aot == AOT_ER_AAC_SCAL)) { self->flags[streamIndex] |= AC_SCALABLE; }
 
@@ -1820,8 +1820,8 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, uint8
 				if(self->sbrEnabled) {
 					const uint8_t map_sbrRatio_2_nAnaBands[] = {16, 24, 32};
 
-					FDK_ASSERT(asc->m_sc.m_usacConfig.m_sbrRatioIndex > 0);
-					FDK_ASSERT(streamIndex == 0);
+					assert(asc->m_sc.m_usacConfig.m_sbrRatioIndex > 0);
+					assert(streamIndex == 0);
 
 					self->qmfDomain.globalConf.nInputChannels_requested = ascChannels;
 					self->qmfDomain.globalConf.nOutputChannels_requested =
@@ -3067,8 +3067,8 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 		int32_t                c;
 		int32_t                mapValue;
 
-		FDK_ASSERT(sizeof(self->channelType) == sizeof(types));
-		FDK_ASSERT(sizeof(self->channelIndices) == sizeof(idx));
+		assert(sizeof(self->channelType) == sizeof(types));
+		assert(sizeof(self->channelIndices) == sizeof(idx));
 
 		FDKmemcpy(types, self->channelType, sizeof(types));
 		FDKmemcpy(idx, self->channelIndices, sizeof(idx));

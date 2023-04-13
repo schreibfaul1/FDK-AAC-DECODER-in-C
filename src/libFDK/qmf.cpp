@@ -740,8 +740,8 @@ int32_t qmfInitSynthesisFilterBank(
     }
   }
 
-  FDK_ASSERT(h_Qmf->no_channels >= h_Qmf->lsb);
-  FDK_ASSERT(h_Qmf->no_channels >= h_Qmf->usb);
+  assert(h_Qmf->no_channels >= h_Qmf->lsb);
+  assert(h_Qmf->no_channels >= h_Qmf->usb);
 
   return err;
 }

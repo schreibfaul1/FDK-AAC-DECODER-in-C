@@ -635,7 +635,7 @@ static const int32_t invCubeRootCorrection[3] = {0x40000000, 0x50A28BE6,
  * macro to activate the use of this algorithm: FUNCTION_invCubeRootNorm2 By
  * means of activating the macro INVCUBEROOTNORM2_LINEAR_INTERPOLATE_HQ, a
  * slightly higher precision is reachable (by default, not active). For DEBUG
- * purpose only: a FDK_ASSERT macro validates, if the input mantissa is greater
+ * purpose only: a assert macro validates, if the input mantissa is greater
  * zero.
  *
  */
@@ -648,7 +648,7 @@ static
     invCubeRootNorm2(int32_t op_m, int32_t* op_e)
 #endif
 {
-  FDK_ASSERT(op_m > int32_t(0));
+  assert(op_m > int32_t(0));
 
   /* normalize input, calculate shift value */
   int32_t exponent = (int32_t)fNormz(op_m) - 1;
@@ -754,7 +754,7 @@ static const int32_t invFourthRootCorrection[4] = {0x40000000, 0x4C1BF829,
  * macro to activate the use of this algorithm: FUNCTION_invFourthRootNorm2 By
  * means of activating the macro INVFOURTHROOTNORM2_LINEAR_INTERPOLATE_HQ, a
  * slightly higher precision is reachable (by default, not active). For DEBUG
- * purpose only: a FDK_ASSERT macro validates, if the input mantissa is greater
+ * purpose only: a assert macro validates, if the input mantissa is greater
  * zero.
  *
  */
@@ -770,7 +770,7 @@ static
     invFourthRootNorm2(int32_t op_m, int32_t* op_e)
 #endif
 {
-  FDK_ASSERT(op_m > FL2FXCONST_DBL(0.0));
+  assert(op_m > FL2FXCONST_DBL(0.0));
 
   /* normalize input, calculate shift value */
   int32_t exponent = (int32_t)fNormz(op_m) - 1;
@@ -870,7 +870,7 @@ static const int32_t inv3EigthRootCorrection[8] = {
  * macro to activate the use of this algorithm: FUNCTION_inv3EigthRootNorm2 By
  * means of activating the macro INVTHREEIGTHROOTNORM2_LINEAR_INTERPOLATE_HQ, a
  * slightly higher precision is reachable (by default, not active). For DEBUG
- * purpose only: a FDK_ASSERT macro validates, if the input mantissa is greater
+ * purpose only: a assert macro validates, if the input mantissa is greater
  * zero.
  *
  */
@@ -886,7 +886,7 @@ static
     inv3EigthRootNorm2(int32_t op_m, int32_t* op_e)
 #endif
 {
-  FDK_ASSERT(op_m > FL2FXCONST_DBL(0.0));
+  assert(op_m > FL2FXCONST_DBL(0.0));
 
   /* normalize input, calculate shift op_mue */
   int32_t exponent = (int32_t)fNormz(op_m) - 1;
@@ -1056,7 +1056,7 @@ SBR_ERROR QmfTransposerReInit(HANDLE_HBE_TRANSPOSER hQmfTransposer,
     const FIXP_QTW* tmp_t_sin;
 
     hQmfTransposer->startBand = FreqBandTable[0][0];
-    FDK_ASSERT((!hQmfTransposer->bSbr41 && hQmfTransposer->startBand <= 32) ||
+    assert((!hQmfTransposer->bSbr41 && hQmfTransposer->startBand <= 32) ||
                (hQmfTransposer->bSbr41 &&
                 hQmfTransposer->startBand <=
                     16)); /* is checked by resetFreqBandTables() */
@@ -1223,7 +1223,7 @@ inline void scaleUp(int32_t* real_m, int32_t* imag_m, int32_t* _e) {
                  0); /* Leave one bit headroom such that (real_m^2 + imag_m^2)
                         does not overflow later if both are 0x80000000. */
   reserve = fMin(reserve, *_e);
-  FDK_ASSERT(reserve >= 0);
+  assert(reserve >= 0);
   *real_m <<= reserve;
   *imag_m <<= reserve;
   *_e -= reserve;
@@ -1283,7 +1283,7 @@ static void calculateCenterFIXP(int32_t gammaVecReal, int32_t gammaVecImag,
 
     scaleUp(centerReal, centerImag, &gc_e);
 
-    FDK_ASSERT(gc_e >= 0);
+    assert(gc_e >= 0);
     *exponent = gc_e;
   } else {
     *centerReal = energy; /* energy = 0 */
@@ -1539,7 +1539,7 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
 
         /* interpolation filters for 3rd order */
         sourceband = 2 * band / stretch - qmfOffset;
-        FDK_ASSERT(sourceband >= 0);
+        assert(sourceband >= 0);
 
         /* maximum gammaCenter_e == 20 */
         calculateCenterFIXP(
@@ -1719,7 +1719,7 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
           sourceband = 2 * band / stretch - qmfOffset; /* consistent with the
                                                           already computed for
                                                           stretch = 3,4. */
-          FDK_ASSERT(sourceband >= 0);
+          assert(sourceband >= 0);
 
           int32_t sqmag0R_F =
               hQmfTransposer->qmfInBufReal_F[slotOffset][sourceband];
@@ -1994,7 +1994,7 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
                 }
                 break;
               default:
-                FDK_ASSERT(0);
+                assert(0);
                 break;
             } /* stretch cases */
 
@@ -2023,8 +2023,8 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
 
             scaleUp(&gammaOutReal_m[0], &gammaOutImag_m[0], &gammaOut_e[0]);
             scaleUp(&gammaOutReal_m[1], &gammaOutImag_m[1], &gammaOut_e[1]);
-            FDK_ASSERT(gammaOut_e[0] >= 0);
-            FDK_ASSERT(gammaOut_e[0] < 32);
+            assert(gammaOut_e[0] >= 0);
+            assert(gammaOut_e[0] < 32);
 
             tmpReal_m = gammaOutReal_m[0];
             tmpImag_m = gammaOutImag_m[0];

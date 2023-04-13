@@ -19,44 +19,6 @@
 
 
 
-
-
-
-
-#define SHORT_BITS 16
-#define CHAR_BITS 8
-
-/* Define 64 bit base integer type. */
-#ifdef _MSC_VER
-typedef __int64 int64_t;
-typedef unsigned __int64 uint64_t;
-#else
-
-
-#endif
-
-#ifndef NULL
-#ifdef __cplusplus
-#define NULL 0
-#else
-#define NULL ((void *)0)
-#endif
-#endif
-
-#if ((defined(__i686__) || defined(__i586__) || defined(__i386__) ||  \
-      defined(__x86_64__)) ||                                         \
-     (defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64)))) && \
-    !defined(FDK_ASSERT_ENABLE)
-#define FDK_ASSERT_ENABLE
-#endif
-
-#if defined(FDK_ASSERT_ENABLE)
-#include <assert.h>
-#define FDK_ASSERT(x) assert(x)
-#else
-#define FDK_ASSERT(ignore)
-#endif
-
 typedef int16_t INT_PCM;
 #define MAXVAL_PCM MAXVAL_SGL
 #define MINVAL_PCM MINVAL_SGL

@@ -374,7 +374,7 @@ TRANSPORTDEC_ERROR transportDec_InBandConfig(HANDLE_TRANSPORTDEC hTp,
   uint8_t configMode = AC_CM_ALLOC_MEM;
   *implicitExplicitCfgDiff = 0;
 
-  FDK_ASSERT(hTp->asc->m_aot == AOT_USAC);
+  assert(hTp->asc->m_aot == AOT_USAC);
 
   FDKinitBitStream(hBs, newConfig, TP_USAC_MAX_CONFIG_LEN, newConfigLength << 3,
                    BS_READER);
@@ -1123,7 +1123,7 @@ static TRANSPORTDEC_ERROR synchronization(HANDLE_TRANSPORTDEC hTp,
     if (hTp->numberOfRawDataBlocks == 0) {
       /* search synchword */
 
-      FDK_ASSERT((bitsAvail % TPDEC_SYNCSKIP) == 0);
+      assert((bitsAvail % TPDEC_SYNCSKIP) == 0);
 
       if ((bitsAvail - syncLength) < TPDEC_SYNCSKIP) {
         err = TRANSPORTDEC_NOT_ENOUGH_BITS;
@@ -1361,7 +1361,7 @@ static TRANSPORTDEC_ERROR transportDec_readStream(HANDLE_TRANSPORTDEC hTp,
   error = synchronization(hTp, &headerBits);
   bitDistance -= (int32_t)FDKgetValidBits(hBs);
 
-  FDK_ASSERT(bitDistance >= 0);
+  assert(bitDistance >= 0);
 
   int32_t nAU = -1;
 

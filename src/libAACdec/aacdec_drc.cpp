@@ -374,7 +374,7 @@ static int32_t parseExcludedChannels(uint32_t *excludedChnsMask,
       }
     }
     bitCnt += 9;
-    FDK_ASSERT(j < (uint32_t)-1);
+    assert(j < (uint32_t)-1);
   }
 
   *excludedChnsMask = excludeMask;
@@ -690,9 +690,9 @@ static int32_t aacDecoder_drcExtractAndMap(
   int32_t result = 0;
   int32_t i, thread, validThreads = 0;
 
-  FDK_ASSERT(self != NULL);
-  FDK_ASSERT(hBs != NULL);
-  FDK_ASSERT(pAacDecoderStaticChannelInfo != NULL);
+  assert(self != NULL);
+  assert(hBs != NULL);
+  assert(pAacDecoderStaticChannelInfo != NULL);
 
   pParams = &self->params;
 
@@ -878,7 +878,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
       if (gainScale >= 0 && gainScale <= DFRACT_BITS) {
         *extGain = scaleValue(norm_mantissa, norm_exponent - gainScale);
       } else {
-        FDK_ASSERT(0);
+        assert(0);
       }
     }
     return;
@@ -910,7 +910,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
     if (gainScale >= 0 && gainScale <= DFRACT_BITS) {
       *extGain = scaleValue(norm_mantissa, norm_exponent - gainScale);
     } else {
-      FDK_ASSERT(0);
+      assert(0);
     }
   }
   /* Reset normalization gain since this module must not apply it */
@@ -1084,7 +1084,7 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
   AACDEC_DRC_PARAMETER_HANDLING drcParameterHandling;
   CDrcParams *p;
 
-  FDK_ASSERT(self != NULL);
+  assert(self != NULL);
 
   p = &self->params;
 
@@ -1399,7 +1399,7 @@ int32_t applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn,
   int32_t additionalGain_scaling;
   int32_t additionalGain;
 
-  FDK_ASSERT(gain_delay <= nSamples);
+  assert(gain_delay <= nSamples);
 
   int32_t additionalGainSmoothState = hDrcInfo->additionalGainFilterState;
   int32_t additionalGainSmoothState1 = hDrcInfo->additionalGainFilterState1;
@@ -1423,7 +1423,7 @@ int32_t applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn,
     }
 
     if (limiterEnabled) {
-      FDK_ASSERT(pGainPerSample != NULL);
+      assert(pGainPerSample != NULL);
 
       for (i = 0; i < nSamples; i++) {
         pGainPerSample[i] = additionalGain;
@@ -1471,8 +1471,8 @@ int32_t applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn,
       additionalGain_scaling -= gain_scale;
 
       if (limiterEnabled) {
-        FDK_ASSERT(stride == 1);
-        FDK_ASSERT(pGainPerSample != NULL);
+        assert(stride == 1);
+        assert(pGainPerSample != NULL);
 
         if (additionalGain_scaling) {
           scaleValuesSaturate(samplesIn, channels, -additionalGain_scaling);

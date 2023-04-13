@@ -331,7 +331,7 @@ static void param2UMX_PS_Core__FDK(
   }
 
   band = 0;
-  FDK_ASSERT(resBands == 0);
+  assert(resBands == 0);
   for (; band < numOttBands; band++) {
     /* compute mixing variables: */
     const int32_t idx1 = cld[band];
@@ -492,7 +492,7 @@ static void calculateOpd(spatialDec* self, int32_t ottBoxIndx, int32_t parameter
     if (((cld == FL2FXCONST_DBL(0.0f)) && (idxIpd == 8)) || (idxIpd == 0)) {
       opd[2 * band] = FL2FXCONST_DBL(0.0f);
     } else {
-      FDK_ASSERT(idxIpd > 0);
+      assert(idxIpd > 0);
       opd[2 * band] =
           dequantIPD_CLD_ICC_splitAngle__FDK[idxIpd - 1][idxCld][idxIcc];
     }
@@ -504,7 +504,7 @@ static void calculateOpd(spatialDec* self, int32_t ottBoxIndx, int32_t parameter
 static int32_t wrapPhase(int32_t phase) {
   while (phase < (int32_t)0) phase += PIx2__IPD;
   while (phase >= PIx2__IPD) phase -= PIx2__IPD;
-  FDK_ASSERT((phase >= (int32_t)0) && (phase < PIx2__IPD));
+  assert((phase >= (int32_t)0) && (phase < PIx2__IPD));
 
   return phase;
 }
@@ -533,7 +533,7 @@ static void param2UMX_PS_IPD_OPD__FDK(
 
   numIpdBands = frame->phaseMode ? self->numOttBandsIPD : 0;
 
-  FDK_ASSERT(self->residualCoding == 0);
+  assert(self->residualCoding == 0);
 
   param2UMX_PS_Core__FDK(self->ottCLD__FDK[ottBoxIndx][parameterSetIndx],
                          self->ottICC__FDK[ottBoxIndx][parameterSetIndx],
@@ -566,7 +566,7 @@ FDK_INLINE void param2UMX_Prediction_Core__FDK(
     int32_t cldIdx, int32_t iccIdx, int32_t ipdIdx, int32_t band, int32_t numOttBandsIPD,
     int32_t resBands) {
 #define MAX_WEIGHT (1.2f)
-  FDK_ASSERT((H12im == NULL) && (H22im == NULL)); /* always == 0 */
+  assert((H12im == NULL) && (H22im == NULL)); /* always == 0 */
 
   if ((band < numOttBandsIPD) && (cldIdx == 15) && (iccIdx == 0) &&
       (ipdIdx == 8)) {
@@ -723,7 +723,7 @@ static void param2UMX_Prediction__FDK(spatialDec* self, int32_t* H11re,
                                       int32_t* H22im, int32_t ottBoxIndx,
                                       int32_t parameterSetIndx, int32_t resBands) {
   int32_t band;
-  FDK_ASSERT((H12im == NULL) && (H22im == NULL)); /* always == 0 */
+  assert((H12im == NULL) && (H22im == NULL)); /* always == 0 */
 
   for (band = 0; band < self->numParameterBands; band++) {
     int32_t cldIdx = self->ottCLD__FDK[ottBoxIndx][parameterSetIndx][band];

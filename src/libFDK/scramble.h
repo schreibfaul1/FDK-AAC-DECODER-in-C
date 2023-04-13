@@ -102,7 +102,7 @@ amm-info@iis.fraunhofer.de
 
 #ifndef SCRAMBLE_H
 #define SCRAMBLE_H
-
+#include <assert.h>
 #include "common_fix.h"
 
 // #if defined(__arm__)
@@ -127,7 +127,7 @@ amm-info@iis.fraunhofer.de
 /* default scramble functionality */
 inline void scramble(int32_t *x, int32_t length) {
   int32_t m, k, j;
-  FDK_ASSERT(!(((int32_t)(int64_t)x) & (ALIGNMENT_DEFAULT - 1)));
+  assert(!(((int32_t)(int64_t)x) & (ALIGNMENT_DEFAULT - 1)));
   C_ALLOC_ALIGNED_CHECK(x);
 
   for (m = 1, j = 0; m < length - 1; m++) {

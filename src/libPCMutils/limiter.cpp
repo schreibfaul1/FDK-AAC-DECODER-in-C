@@ -403,7 +403,7 @@ TDLIMITER_ERROR pcmLimiter_Destroy(TDLimiterPtr limiter) {
 
 /* get delay in samples */
 uint32_t pcmLimiter_GetDelay(TDLimiterPtr limiter) {
-  FDK_ASSERT(limiter != NULL);
+  assert(limiter != NULL);
   return limiter->attack;
 }
 
@@ -414,7 +414,7 @@ int32_t pcmLimiter_GetMaxGainReduction(TDLimiterPtr limiter) {
   int32_t e_ans;
   int32_t loggain, maxGainReduction;
 
-  FDK_ASSERT(limiter != NULL);
+  assert(limiter != NULL);
 
   loggain = fLog2(limiter->minGain, 1, &e_ans);
 

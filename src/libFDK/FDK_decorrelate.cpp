@@ -504,7 +504,7 @@ static int32_t DecorrFilterInit(DECORR_FILTER_INSTANCE *const self,
       if (useFractDelay) {
         return 1;
       } else {
-        FDK_ASSERT(decorr_seed == 0);
+        assert(decorr_seed == 0);
 
         switch (reverb_band) {
           case 0:
@@ -523,7 +523,7 @@ static int32_t DecorrFilterInit(DECORR_FILTER_INSTANCE *const self,
       }
       break;
     case DECORR_LD:
-      FDK_ASSERT(decorr_seed < MAX_DECORR_SEED_LD);
+      assert(decorr_seed < MAX_DECORR_SEED_LD);
       switch (reverb_band) {
         case 0:
           self->numeratorReal = NULL;
@@ -989,7 +989,7 @@ static int32_t DuckerInit(DUCKER_INSTANCE *const self, int32_t const hybridBands
   if (self) {
     switch (nParamBands) {
       case (20):
-        FDK_ASSERT(hybridBands == 71);
+        assert(hybridBands == 71);
         self->mapHybBands2ProcBands = kernels_20_to_71_PS;
         self->mapProcBands2HybBands = kernels_20_to_71_offset_PS;
         self->parameterBands = (20);
@@ -1001,7 +1001,7 @@ static int32_t DuckerInit(DUCKER_INSTANCE *const self, int32_t const hybridBands
         self->parameterBands = (28);
         break;
       case (23):
-        FDK_ASSERT(hybridBands == 64 || hybridBands == 32);
+        assert(hybridBands == 64 || hybridBands == 32);
         self->mapHybBands2ProcBands = kernels_23_to_64;
         self->mapProcBands2HybBands = kernels_23_to_64_offset;
         self->parameterBands = (23);
@@ -1082,7 +1082,7 @@ static int32_t DuckerCalcEnergy(DUCKER_INSTANCE *const self,
     for (; pb <= SpatialDecGetProcessingBand(maxHybridBand,
                                              self->mapHybBands2ProcBands);
          pb++) {
-      FDK_ASSERT(pb != SpatialDecGetProcessingBand(
+      assert(pb != SpatialDecGetProcessingBand(
                            qs - 1, self->mapHybBands2ProcBands));
       int32_t qs_next;
       int32_t nrg = 0;
@@ -1325,7 +1325,7 @@ static int32_t DuckerApplyPS(DUCKER_INSTANCE *const self,
 
   hybBands = self->hybridBands;
 
-  FDK_ASSERT((self->parameterBands == (28)) || (self->parameterBands == (20)));
+  assert((self->parameterBands == (28)) || (self->parameterBands == (20)));
   for (pb = startParamBand; pb < self->parameterBands; pb++) {
     int32_t directNrg2 = directNrg[pb];
 
