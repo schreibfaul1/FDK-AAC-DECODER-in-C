@@ -20,5 +20,5 @@ this example converts a aac file into a wav file<br>
 
 
 (Linux)<br>
-build with        g++ -g ./src/*.cpp src/*/*.cpp -o a.out<br>
+build with        g++ -g ./src/*.cpp src/**/*.cpp -o a.out<br>
 execute           ./a.out<br>
