@@ -88,13 +88,13 @@ int main() {
 
     	    exit(1);
     	}
-        printf("bytesAvail %i,  bytesRead %i\n", bytesAvail, bytesRead);
+//        printf("bytesAvail %i,  bytesRead %i\n", bytesAvail, bytesRead);
 //		pos += bytesRead;
 
     	// Abruf der dekodierten PCM-Daten aus dem Ausgabe-Puffer
     	decoderErr = aacDecoder_DecodeFrame(handle, pcmout, sizeof(pcmout), 0);
     	if (decoderErr == AAC_DEC_NOT_ENOUGH_BITS){
-			printf("not enough bits");
+		//	printf("not enough bits");
 			continue;
 		}
 		if(decoderErr != AAC_DEC_OK){
@@ -108,7 +108,7 @@ int main() {
 			//    printf("Abtastrate: %d Hz\n", info->sampleRate);
 			//    printf("Anzahl der Kanäle: %d\n", info->numChannels);
 			//    printf("Bitrate: %d kbps\n", info->bitRate / 1000);
-				printf("valid Samples: %d Hz\n",info->aacSamplesPerFrame);
+			//	printf("valid Samples: %d Hz\n",info->aacSamplesPerFrame);
         	    fwrite(pcmout, 1, info->aacSamplesPerFrame * 2 * info->aacNumChannels, fptrOut);
 			}
 			else {

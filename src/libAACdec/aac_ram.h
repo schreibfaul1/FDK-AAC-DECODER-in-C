@@ -120,7 +120,6 @@ amm-info@iis.fraunhofer.de
 
 AAC_DECODER_INSTANCE *GetAacDecoder(int n = 0);
 void FreeAacDecoder(AAC_DECODER_INSTANCE **p);
-UINT GetRequiredMemAacDecoder(void);
 
 CDrcInfo *GetDrcInfo(int n = 0);
 void FreeDrcInfo(CDrcInfo **p);

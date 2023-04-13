@@ -102,6 +102,7 @@ amm-info@iis.fraunhofer.de
 
 #include "aac_ram.h"
 #include "aac_rom.h"
+#include <stdio.h>
 
 #define WORKBUFFER1_TAG 0
 #define WORKBUFFER2_TAG 1
@@ -111,7 +112,16 @@ amm-info@iis.fraunhofer.de
 /*! The structure AAC_DECODER_INSTANCE is the top level structure holding all
    decoder configurations, handles and structs.
  */
-C_ALLOC_MEM(AacDecoder, struct AAC_DECODER_INSTANCE, 1)
+struct AAC_DECODER_INSTANCE *GetAacDecoder(int n) {
+//   assert(n != 0);
+   return ((struct AAC_DECODER_INSTANCE *)FDKcalloc(1, sizeof(struct AAC_DECODER_INSTANCE)));
+}
+
+void FreeAacDecoder(struct AAC_DECODER_INSTANCE **p) {
+   if (p != __null) { FDKfree(*p); *p = __null; }
+}
+
+
 
 /*!
   \name StaticAacData
