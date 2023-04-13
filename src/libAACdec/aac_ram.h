@@ -118,24 +118,64 @@ amm-info@iis.fraunhofer.de
 #define MAX_SYNCHS 10
 #define SAMPL_FREQS 12
 
-H_ALLOC_MEM(AacDecoder, AAC_DECODER_INSTANCE)
+AAC_DECODER_INSTANCE *GetAacDecoder(int n = 0);
+void FreeAacDecoder(AAC_DECODER_INSTANCE **p);
+UINT GetRequiredMemAacDecoder(void);
 
-H_ALLOC_MEM(DrcInfo, CDrcInfo)
+CDrcInfo *GetDrcInfo(int n = 0);
+void FreeDrcInfo(CDrcInfo **p);
+UINT GetRequiredMemDrcInfo(void);
 
-H_ALLOC_MEM(AacDecoderStaticChannelInfo, CAacDecoderStaticChannelInfo)
-H_ALLOC_MEM(AacDecoderChannelInfo, CAacDecoderChannelInfo)
-H_ALLOC_MEM(OverlapBuffer, FIXP_DBL)
+CAacDecoderStaticChannelInfo *GetAacDecoderStaticChannelInfo(int n = 0);
+void FreeAacDecoderStaticChannelInfo(CAacDecoderStaticChannelInfo **p);
+UINT GetRequiredMemAacDecoderStaticChannelInfo(void);
 
-H_ALLOC_MEM(CpePersistentData, CpePersistentData)
-H_ALLOC_MEM(CplxPredictionData, CCplxPredictionData)
-H_ALLOC_MEM(SpectralCoeffs, FIXP_DBL)
-H_ALLOC_MEM(SpecScale, SHORT)
+CAacDecoderChannelInfo *GetAacDecoderChannelInfo(int n = 0);
+void FreeAacDecoderChannelInfo(CAacDecoderChannelInfo **p);
+UINT GetRequiredMemAacDecoderChannelInfo(void);
 
-H_ALLOC_MEM(TimeDataFlush, INT_PCM)
+FIXP_DBL *GetOverlapBuffer(int n = 0);
+void FreeOverlapBuffer(FIXP_DBL **p);
+UINT GetRequiredMemOverlapBuffer(void);
 
-H_ALLOC_MEM_OVERLAY(WorkBufferCore1, CWorkBufferCore1)
-H_ALLOC_MEM_OVERLAY(WorkBufferCore2, FIXP_DBL)
-H_ALLOC_MEM_OVERLAY(WorkBufferCore5, PCM_DEC)
-H_ALLOC_MEM_OVERLAY(WorkBufferCore6, SCHAR)
+CpePersistentData *GetCpePersistentData(int n = 0);
+void FreeCpePersistentData(CpePersistentData **p);
+UINT GetRequiredMemCpePersistentData(void);
+
+CCplxPredictionData *GetCplxPredictionData(int n = 0);
+void FreeCplxPredictionData(CCplxPredictionData **p);
+UINT GetRequiredMemCplxPredictionData(void);
+
+FIXP_DBL *GetSpectralCoeffs(int n = 0);
+void FreeSpectralCoeffs(FIXP_DBL **p);
+UINT GetRequiredMemSpectralCoeffs(void);
+
+SHORT *GetSpecScale(int n = 0);
+void FreeSpecScale(SHORT **p);
+UINT GetRequiredMemSpecScale(void);
+
+INT_PCM *GetTimeDataFlush(int n = 0);
+void FreeTimeDataFlush(INT_PCM **p);
+UINT GetRequiredMemTimeDataFlush(void);
+
+CWorkBufferCore1 *GetWorkBufferCore1(int n = 0);
+void FreeWorkBufferCore1(CWorkBufferCore1 **p);
+UINT GetRequiredMemWorkBufferCore1(void);
+
+FIXP_DBL *GetWorkBufferCore2(int n = 0);
+void FreeWorkBufferCore2(FIXP_DBL **p);
+UINT GetRequiredMemWorkBufferCore2(void);
+
+FIXP_DBL *GetWorkBufferCore5(int n = 0);
+void FreeWorkBufferCore5(FIXP_DBL **p);
+UINT GetRequiredMemWorkBufferCore5(void);
+
+SCHAR *GetWorkBufferCore6(int n = 0);
+void FreeWorkBufferCore6(SCHAR **p);
+UINT GetRequiredMemWorkBufferCore6(void);
+
+CArcoData *GetArcoData(int n = 0);
+void FreeArcoData(CArcoData **p);
+UINT GetRequiredMemArcoData(void);
 
 #endif /* #ifndef AAC_RAM_H */
