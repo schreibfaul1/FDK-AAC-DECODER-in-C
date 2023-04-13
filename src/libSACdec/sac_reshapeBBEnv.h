@@ -107,8 +107,8 @@ amm-info@iis.fraunhofer.de
 
 #define BB_ENV_SIZE 9 /* END_BB_ENV - START_BB_ENV */
 
-void initBBEnv(spatialDec *self, int initStatesFlag);
+void initBBEnv(spatialDec *self, int32_t initStatesFlag);
 void SpatialDecReshapeBBEnv(spatialDec *self, const SPATIAL_BS_FRAME *frame,
-                            int ts);
+                            int32_t ts);
 
 #endif

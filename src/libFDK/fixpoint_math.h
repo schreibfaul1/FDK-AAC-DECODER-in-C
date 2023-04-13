@@ -170,8 +170,8 @@ extern const int32_t invSqrtTab[SQRT_VALUES];
  * \param b_e exponent of the second input value.
  * \return non-zero if (a_m*2^a_e) < (b_m*2^b_e), 0 otherwise
  */
-FDK_INLINE INT fIsLessThan(int32_t a_m, INT a_e, int32_t b_m, INT b_e) {
-  INT n;
+FDK_INLINE int32_t fIsLessThan(int32_t a_m, int32_t a_e, int32_t b_m, int32_t b_e) {
+  int32_t n;
 
   n = fixnorm_D(a_m);
   a_m <<= n;
@@ -191,8 +191,8 @@ FDK_INLINE INT fIsLessThan(int32_t a_m, INT a_e, int32_t b_m, INT b_e) {
   }
 }
 
-FDK_INLINE INT fIsLessThan(FIXP_SGL a_m, INT a_e, FIXP_SGL b_m, INT b_e) {
-  INT n;
+FDK_INLINE int32_t fIsLessThan(FIXP_SGL a_m, int32_t a_e, FIXP_SGL b_m, int32_t b_e) {
+  int32_t n;
 
   n = fixnorm_S(a_m);
   a_m <<= n;
@@ -218,32 +218,32 @@ FDK_INLINE INT fIsLessThan(FIXP_SGL a_m, INT a_e, FIXP_SGL b_m, INT b_e) {
  */
 #define CalcLdData(op) fLog2(op, 0)
 
-void LdDataVector(int32_t *srcVector, int32_t *destVector, INT number);
+void LdDataVector(int32_t *srcVector, int32_t *destVector, int32_t number);
 
-extern const UINT exp2_tab_long[32];
-extern const UINT exp2w_tab_long[32];
-extern const UINT exp2x_tab_long[32];
+extern const uint32_t exp2_tab_long[32];
+extern const uint32_t exp2w_tab_long[32];
+extern const uint32_t exp2x_tab_long[32];
 
 LNK_SECTION_CODE_L1
 FDK_INLINE int32_t CalcInvLdData(const int32_t x) {
-  int set_zero = (x < FL2FXCONST_DBL(-31.0 / 64.0)) ? 0 : 1;
-  int set_max = (x >= FL2FXCONST_DBL(31.0 / 64.0)) | (x == FL2FXCONST_DBL(0.0));
+  int32_t set_zero = (x < FL2FXCONST_DBL(-31.0 / 64.0)) ? 0 : 1;
+  int32_t set_max = (x >= FL2FXCONST_DBL(31.0 / 64.0)) | (x == FL2FXCONST_DBL(0.0));
 
   FIXP_SGL frac = (FIXP_SGL)((LONG)x & 0x3FF);
-  UINT index3 = (UINT)(LONG)(x >> 10) & 0x1F;
-  UINT index2 = (UINT)(LONG)(x >> 15) & 0x1F;
-  UINT index1 = (UINT)(LONG)(x >> 20) & 0x1F;
-  int exp = fMin(31, ((x > FL2FXCONST_DBL(0.0f)) ? (31 - (int)(x >> 25))
-                                                 : (int)(-(x >> 25))));
+  uint32_t index3 = (uint32_t)(LONG)(x >> 10) & 0x1F;
+  uint32_t index2 = (uint32_t)(LONG)(x >> 15) & 0x1F;
+  uint32_t index1 = (uint32_t)(LONG)(x >> 20) & 0x1F;
+  int32_t exp = fMin(31, ((x > FL2FXCONST_DBL(0.0f)) ? (31 - (int32_t)(x >> 25))
+                                                 : (int32_t)(-(x >> 25))));
 
-  UINT lookup1 = exp2_tab_long[index1] * set_zero;
-  UINT lookup2 = exp2w_tab_long[index2];
-  UINT lookup3 = exp2x_tab_long[index3];
-  UINT lookup3f =
-      lookup3 + (UINT)(LONG)fMultDiv2((int32_t)(0x0016302F), (FIXP_SGL)frac);
+  uint32_t lookup1 = exp2_tab_long[index1] * set_zero;
+  uint32_t lookup2 = exp2w_tab_long[index2];
+  uint32_t lookup3 = exp2x_tab_long[index3];
+  uint32_t lookup3f =
+      lookup3 + (uint32_t)(LONG)fMultDiv2((int32_t)(0x0016302F), (FIXP_SGL)frac);
 
-  UINT lookup12 = (UINT)(LONG)fMult((int32_t)lookup1, (int32_t)lookup2);
-  UINT lookup = (UINT)(LONG)fMult((int32_t)lookup12, (int32_t)lookup3f);
+  uint32_t lookup12 = (uint32_t)(LONG)fMult((int32_t)lookup1, (int32_t)lookup2);
+  uint32_t lookup = (uint32_t)(LONG)fMult((int32_t)lookup12, (int32_t)lookup3f);
 
   int32_t retVal = (lookup << 3) >> exp;
 
@@ -255,26 +255,26 @@ FDK_INLINE int32_t CalcInvLdData(const int32_t x) {
 }
 
 void InitLdInt();
-int32_t CalcLdInt(INT i);
+int32_t CalcLdInt(int32_t i);
 
 extern const USHORT sqrt_tab[49];
 
 inline int32_t sqrtFixp_lookup(int32_t x) {
-  UINT y = (INT)x;
+  uint32_t y = (int32_t)x;
   UCHAR is_zero = (y == 0);
-  INT zeros = fixnormz_D(y) & 0x1e;
+  int32_t zeros = fixnormz_D(y) & 0x1e;
   y <<= zeros;
-  UINT idx = (y >> 26) - 16;
+  uint32_t idx = (y >> 26) - 16;
   USHORT frac = (y >> 10) & 0xffff;
   USHORT nfrac = 0xffff ^ frac;
-  UINT t = (UINT)nfrac * sqrt_tab[idx] + (UINT)frac * sqrt_tab[idx + 1];
+  uint32_t t = (uint32_t)nfrac * sqrt_tab[idx] + (uint32_t)frac * sqrt_tab[idx + 1];
   t = t >> (zeros >> 1);
   return (is_zero ? 0 : t);
 }
 
-inline int32_t sqrtFixp_lookup(int32_t x, INT *x_e) {
-  UINT y = (INT)x;
-  INT e;
+inline int32_t sqrtFixp_lookup(int32_t x, int32_t *x_e) {
+  uint32_t y = (int32_t)x;
+  int32_t e;
 
   if (x == (int32_t)0) {
     return x;
@@ -291,10 +291,10 @@ inline int32_t sqrtFixp_lookup(int32_t x, INT *x_e) {
     e++;
   }
   /* Get square root */
-  UINT idx = (y >> 26) - 16;
+  uint32_t idx = (y >> 26) - 16;
   USHORT frac = (y >> 10) & 0xffff;
   USHORT nfrac = 0xffff ^ frac;
-  UINT t = (UINT)nfrac * sqrt_tab[idx] + (UINT)frac * sqrt_tab[idx + 1];
+  uint32_t t = (uint32_t)nfrac * sqrt_tab[idx] + (uint32_t)frac * sqrt_tab[idx + 1];
 
   /* Write back exponent */
   *x_e = e >> 1;
@@ -317,7 +317,7 @@ void InitInvSqrtTab();
       Q(n+1) = Q(n) + Q(n) * (0.5 - 2 * V * Q(n)^2)
       with Q = 0.5* V ^-0.5; 0.5 <= V < 1.0
 *****************************************************************************/
-static FDK_FORCEINLINE int32_t invSqrtNorm2(int32_t op, INT *shift) {
+static FDK_FORCEINLINE int32_t invSqrtNorm2(int32_t op, int32_t *shift) {
   int32_t val = op;
   int32_t reg1, reg2;
 
@@ -337,10 +337,10 @@ static FDK_FORCEINLINE int32_t invSqrtNorm2(int32_t op, INT *shift) {
   *shift += 2;              /* bias for exponent */
 
 #if defined(INVSQRTNORM2_LINEAR_INTERPOLATE)
-  INT index =
-      (INT)(val >> (DFRACT_BITS - 1 - (SQRT_BITS + 1))) & SQRT_BITS_MASK;
+  int32_t index =
+      (int32_t)(val >> (DFRACT_BITS - 1 - (SQRT_BITS + 1))) & SQRT_BITS_MASK;
   int32_t Fract =
-      (int32_t)(((INT)val & SQRT_FRACT_BITS_MASK) << (SQRT_BITS + 1));
+      (int32_t)(((int32_t)val & SQRT_FRACT_BITS_MASK) << (SQRT_BITS + 1));
   int32_t diff = invSqrtTab[index + 1] - invSqrtTab[index];
   reg1 = invSqrtTab[index] + (fMultDiv2(diff, Fract) << 1);
 #if defined(INVSQRTNORM2_LINEAR_INTERPOLATE_HQ)
@@ -375,7 +375,7 @@ static FDK_FORCEINLINE int32_t invSqrtNorm2(int32_t op, INT *shift) {
 
 #ifndef FUNCTION_sqrtFixp
 static FDK_FORCEINLINE int32_t sqrtFixp(int32_t op) {
-  INT tmp_exp = 0;
+  int32_t tmp_exp = 0;
   int32_t tmp_inv = invSqrtNorm2(op, &tmp_exp);
 
   FDK_ASSERT(tmp_exp > 0);
@@ -394,10 +394,10 @@ static inline int32_t invFixp(int32_t op) {
   if ((op == (int32_t)0x00000000) || (op == (int32_t)0x00000001)) {
     return ((LONG)MAXVAL_DBL);
   }
-  INT tmp_exp;
+  int32_t tmp_exp;
   int32_t tmp_inv = invSqrtNorm2(op, &tmp_exp);
   FDK_ASSERT((31 - (2 * tmp_exp + 1)) >= 0);
-  int shift = 31 - (2 * tmp_exp + 1);
+  int32_t shift = 31 - (2 * tmp_exp + 1);
   tmp_inv = fPow2Div2(tmp_inv);
   if (shift) {
     tmp_inv = ((tmp_inv >> (shift - 1)) + (int32_t)1) >> 1;
@@ -412,13 +412,13 @@ static inline int32_t invFixp(int32_t op) {
  * the result will be stored into.
  * \return mantissa of the result
  */
-static inline int32_t invFixp(int32_t op_m, int *op_e) {
+static inline int32_t invFixp(int32_t op_m, int32_t *op_e) {
   if ((op_m == (int32_t)0x00000000) || (op_m == (int32_t)0x00000001)) {
     *op_e = 31 - *op_e;
     return ((LONG)MAXVAL_DBL);
   }
 
-  INT tmp_exp;
+  int32_t tmp_exp;
   int32_t tmp_inv = invSqrtNorm2(op_m, &tmp_exp);
 
   *op_e = (tmp_exp << 1) - *op_e + 1;
@@ -436,7 +436,7 @@ static inline int32_t invFixp(int32_t op_m, int *op_e) {
  * \return num/divisor
  */
 
-int32_t schur_div(int32_t num, int32_t denum, INT count);
+int32_t schur_div(int32_t num, int32_t denum, int32_t count);
 
 #endif /* FUNCTION_schur_div */
 
@@ -449,11 +449,11 @@ int32_t mul_dbl_sgl_rnd(const int32_t op1, const FIXP_SGL op2);
  *
  * \param f1 first factor
  * \param f2 second factor
- * \param result_e pointer to an INT where the exponent of the result is stored
+ * \param result_e pointer to an int32_t where the exponent of the result is stored
  * into
  * \return mantissa of the product f1*f2
  */
-int32_t fMultNorm(int32_t f1, int32_t f2, INT *result_e);
+int32_t fMultNorm(int32_t f1, int32_t f2, int32_t *result_e);
 
 /**
  * \brief Multiply 2 values using maximum precision. The exponent of the result
@@ -464,7 +464,7 @@ int32_t fMultNorm(int32_t f1, int32_t f2, INT *result_e);
  */
 inline int32_t fMultNorm(int32_t f1, int32_t f2) {
   int32_t m;
-  INT e;
+  int32_t e;
 
   m = fMultNorm(f1, f2, &e);
 
@@ -483,10 +483,10 @@ inline int32_t fMultNorm(int32_t f1, int32_t f2) {
  * \param result_e exponent for the returned mantissa of the result
  * \return mantissa of the result with exponent equal to result_e
  */
-inline int32_t fMultNorm(int32_t f1_m, INT f1_e, int32_t f2_m, INT f2_e,
-                          INT result_e) {
+inline int32_t fMultNorm(int32_t f1_m, int32_t f1_e, int32_t f2_m, int32_t f2_e,
+                          int32_t result_e) {
   int32_t m;
-  INT e;
+  int32_t e;
 
   m = fMultNorm(f1_m, f2_m, &e);
 
@@ -504,14 +504,14 @@ inline int32_t fMultNorm(int32_t f1_m, INT f1_e, int32_t f2_m, INT f2_e,
  * \param b integer value
  * \return integer value
  */
-inline INT fMultI(int32_t a, INT b) {
+inline int32_t fMultI(int32_t a, int32_t b) {
   int32_t m, mi;
-  INT m_e;
+  int32_t m_e;
 
   m = fMultNorm(a, (int32_t)b, &m_e);
 
-  if (m_e < (INT)0) {
-    if (m_e > (INT)-DFRACT_BITS) {
+  if (m_e < (int32_t)0) {
+    if (m_e > (int32_t)-DFRACT_BITS) {
       m = m >> ((-m_e) - 1);
       mi = (m + (int32_t)1) >> 1;
     } else {
@@ -521,7 +521,7 @@ inline INT fMultI(int32_t a, INT b) {
     mi = scaleValueSaturate(m, m_e);
   }
 
-  return ((INT)mi);
+  return ((int32_t)mi);
 }
 #endif /* FUNCTION_fMultI */
 
@@ -533,14 +533,14 @@ inline INT fMultI(int32_t a, INT b) {
  * \param b integer value
  * \return integer value
  */
-inline INT fMultIfloor(int32_t a, INT b) {
+inline int32_t fMultIfloor(int32_t a, int32_t b) {
   int32_t m, mi;
-  INT m_e;
+  int32_t m_e;
 
   m = fMultNorm(a, (int32_t)b, &m_e);
 
-  if (m_e < (INT)0) {
-    if (m_e > (INT)-DFRACT_BITS) {
+  if (m_e < (int32_t)0) {
+    if (m_e > (int32_t)-DFRACT_BITS) {
       mi = m >> (-m_e);
     } else {
       mi = (int32_t)0;
@@ -552,7 +552,7 @@ inline INT fMultIfloor(int32_t a, INT b) {
     mi = scaleValueSaturate(m, m_e);
   }
 
-  return ((INT)mi);
+  return ((int32_t)mi);
 }
 #endif /* FUNCTION_fMultIfloor */
 
@@ -564,14 +564,14 @@ inline INT fMultIfloor(int32_t a, INT b) {
  * \param b integer value
  * \return integer value
  */
-inline INT fMultIceil(int32_t a, INT b) {
+inline int32_t fMultIceil(int32_t a, int32_t b) {
   int32_t m, mi;
-  INT m_e;
+  int32_t m_e;
 
   m = fMultNorm(a, (int32_t)b, &m_e);
 
-  if (m_e < (INT)0) {
-    if (m_e > (INT) - (DFRACT_BITS - 1)) {
+  if (m_e < (int32_t)0) {
+    if (m_e > (int32_t) - (DFRACT_BITS - 1)) {
       mi = (m >> (-m_e));
       if ((LONG)m & ((1 << (-m_e)) - 1)) {
         mi = mi + (int32_t)1;
@@ -591,7 +591,7 @@ inline INT fMultIceil(int32_t a, INT b) {
     mi = scaleValueSaturate(m, m_e);
   }
 
-  return ((INT)mi);
+  return ((int32_t)mi);
 }
 #endif /* FUNCTION_fMultIceil */
 
@@ -600,11 +600,11 @@ inline INT fMultIceil(int32_t a, INT b) {
  * \brief Divide 2 int32_t values with normalization of input values.
  * \param num numerator
  * \param denum denominator
- * \param result_e pointer to an INT where the exponent of the result is stored
+ * \param result_e pointer to an int32_t where the exponent of the result is stored
  * into
  * \return num/denum with exponent = *result_e
  */
-int32_t fDivNorm(int32_t num, int32_t denom, INT *result_e);
+int32_t fDivNorm(int32_t num, int32_t denom, int32_t *result_e);
 
 /**
  * \brief Divide 2 positive int32_t values with normalization of input values.
@@ -618,11 +618,11 @@ int32_t fDivNorm(int32_t num, int32_t denom);
  * \brief Divide 2 signed int32_t values with normalization of input values.
  * \param num numerator
  * \param denum denominator
- * \param result_e pointer to an INT where the exponent of the result is stored
+ * \param result_e pointer to an int32_t where the exponent of the result is stored
  * into
  * \return num/denum with exponent = *result_e
  */
-int32_t fDivNormSigned(int32_t L_num, int32_t L_denum, INT *result_e);
+int32_t fDivNormSigned(int32_t L_num, int32_t L_denum, int32_t *result_e);
 
 /**
  * \brief Divide 2 signed int32_t values with normalization of input values.
@@ -639,8 +639,8 @@ int32_t fDivNormSigned(int32_t num, int32_t denom);
  * \param pA_e pointer to the exponen of a_m
  * \return adjusted mantissa
  */
-inline int32_t fAdjust(int32_t a_m, INT *pA_e) {
-  INT shift;
+inline int32_t fAdjust(int32_t a_m, int32_t *pA_e) {
+  int32_t shift;
 
   shift = fNorm(a_m) - 1;
   *pA_e -= shift;
@@ -659,9 +659,9 @@ inline int32_t fAdjust(int32_t a_m, INT *pA_e) {
  * to.
  * \return mantissa of result
  */
-inline int32_t fAddNorm(int32_t a_m, INT a_e, int32_t b_m, INT b_e,
-                         INT *pResult_e) {
-  INT result_e;
+inline int32_t fAddNorm(int32_t a_m, int32_t a_e, int32_t b_m, int32_t b_e,
+                         int32_t *pResult_e) {
+  int32_t result_e;
   int32_t result_m;
 
   /* If one of the summands is zero, return the other.
@@ -690,8 +690,8 @@ inline int32_t fAddNorm(int32_t a_m, INT a_e, int32_t b_m, INT b_e,
   return result_m;
 }
 
-inline int32_t fAddNorm(int32_t a_m, INT a_e, int32_t b_m, INT b_e,
-                         INT result_e) {
+inline int32_t fAddNorm(int32_t a_m, int32_t a_e, int32_t b_m, int32_t b_e,
+                         int32_t result_e) {
   int32_t result_m;
 
   a_m = scaleValue(a_m, a_e - result_e);
@@ -709,18 +709,18 @@ inline int32_t fAddNorm(int32_t a_m, INT a_e, int32_t b_m, INT b_e,
  * \param denum denomintator
  * \return num/denum with exponent = 0
  */
-int32_t fDivNormHighPrec(int32_t L_num, int32_t L_denum, INT *result_e);
+int32_t fDivNormHighPrec(int32_t L_num, int32_t L_denum, int32_t *result_e);
 
 #ifndef FUNCTION_fPow
 /**
  * \brief return 2 ^ (exp_m * 2^exp_e)
  * \param exp_m mantissa of the exponent to 2.0f
  * \param exp_e exponent of the exponent to 2.0f
- * \param result_e pointer to a INT where the exponent of the result will be
+ * \param result_e pointer to a int32_t where the exponent of the result will be
  * stored into
  * \return mantissa of the result
  */
-int32_t f2Pow(const int32_t exp_m, const INT exp_e, INT *result_e);
+int32_t f2Pow(const int32_t exp_m, const int32_t exp_e, int32_t *result_e);
 
 /**
  * \brief return 2 ^ (exp_m * 2^exp_e). This version returns only the mantissa
@@ -729,7 +729,7 @@ int32_t f2Pow(const int32_t exp_m, const INT exp_e, INT *result_e);
  * \param exp_e exponent of the exponent to 2.0f
  * \return mantissa of the result
  */
-int32_t f2Pow(const int32_t exp_m, const INT exp_e);
+int32_t f2Pow(const int32_t exp_m, const int32_t exp_e);
 
 /**
  * \brief return x ^ (exp_m * 2^exp_e), where log2(x) = baseLd_m * 2^(baseLd_e).
@@ -739,12 +739,12 @@ int32_t f2Pow(const int32_t exp_m, const INT exp_e);
  * \param baseLd_e exponent of log2() of x.
  * \param exp_m mantissa of the exponent to 2.0f
  * \param exp_e exponent of the exponent to 2.0f
- * \param result_e pointer to a INT where the exponent of the result will be
+ * \param result_e pointer to a int32_t where the exponent of the result will be
  * stored into
  * \return mantissa of the result
  */
-int32_t fLdPow(int32_t baseLd_m, INT baseLd_e, int32_t exp_m, INT exp_e,
-                INT *result_e);
+int32_t fLdPow(int32_t baseLd_m, int32_t baseLd_e, int32_t exp_m, int32_t exp_e,
+                int32_t *result_e);
 
 /**
  * \brief return x ^ (exp_m * 2^exp_e), where log2(x) = baseLd_m * 2^(baseLd_e).
@@ -757,7 +757,7 @@ int32_t fLdPow(int32_t baseLd_m, INT baseLd_e, int32_t exp_m, INT exp_e,
  * \param exp_e exponent of the exponent to 2.0f
  * \return mantissa of the result
  */
-int32_t fLdPow(int32_t baseLd_m, INT baseLd_e, int32_t exp_m, INT exp_e);
+int32_t fLdPow(int32_t baseLd_m, int32_t baseLd_e, int32_t exp_m, int32_t exp_e);
 
 /**
  * \brief return (base_m * 2^base_e) ^ (exp * 2^exp_e). Use fLdPow() instead
@@ -766,23 +766,23 @@ int32_t fLdPow(int32_t baseLd_m, INT baseLd_e, int32_t exp_m, INT exp_e);
  * \param base_e exponent of the base.
  * \param exp_m mantissa of power to be calculated of the base.
  * \param exp_e exponent of power to be calculated of the base.
- * \param result_e pointer to a INT where the exponent of the result will be
+ * \param result_e pointer to a int32_t where the exponent of the result will be
  * stored into.
  * \return mantissa of the result.
  */
-int32_t fPow(int32_t base_m, INT base_e, int32_t exp_m, INT exp_e,
-              INT *result_e);
+int32_t fPow(int32_t base_m, int32_t base_e, int32_t exp_m, int32_t exp_e,
+              int32_t *result_e);
 
 /**
  * \brief return (base_m * 2^base_e) ^ N
  * \param base_m mantissa of the base. Must not be negative.
  * \param base_e exponent of the base
  * \param N power to be calculated of the base
- * \param result_e pointer to a INT where the exponent of the result will be
+ * \param result_e pointer to a int32_t where the exponent of the result will be
  * stored into
  * \return mantissa of the result
  */
-int32_t fPowInt(int32_t base_m, INT base_e, INT N, INT *result_e);
+int32_t fPowInt(int32_t base_m, int32_t base_e, int32_t N, int32_t *result_e);
 #endif /* #ifndef FUNCTION_fPow */
 
 #ifndef FUNCTION_fLog2
@@ -791,20 +791,20 @@ int32_t fPowInt(int32_t base_m, INT base_e, INT N, INT *result_e);
  * Use fLog2() instead.
  * \param arg mantissa of the argument
  * \param arg_e exponent of the argument
- * \param result_e pointer to an INT to store the exponent of the result
+ * \param result_e pointer to an int32_t to store the exponent of the result
  * \return the mantissa of the result.
  * \param
  */
-int32_t CalcLog2(int32_t arg, INT arg_e, INT *result_e);
+int32_t CalcLog2(int32_t arg, int32_t arg_e, int32_t *result_e);
 
 /**
  * \brief calculate logarithm of base 2 of x_m * 2^(x_e)
  * \param x_m mantissa of the input value.
  * \param x_e exponent of the input value.
- * \param pointer to an INT where the exponent of the result is returned into.
+ * \param pointer to an int32_t where the exponent of the result is returned into.
  * \return mantissa of the result.
  */
-FDK_INLINE int32_t fLog2(int32_t x_m, INT x_e, INT *result_e) {
+FDK_INLINE int32_t fLog2(int32_t x_m, int32_t x_e, int32_t *result_e) {
   int32_t result_m;
 
   /* Short cut for zero and negative numbers. */
@@ -820,7 +820,7 @@ FDK_INLINE int32_t fLog2(int32_t x_m, INT x_e, INT *result_e) {
     /* Move input value x_m * 2^x_e toward 1.0, where the taylor approximation
        of the function log(1-x) centered at 0 is most accurate. */
     {
-      INT b_norm;
+      int32_t b_norm;
 
       b_norm = fNormz(x_m) - 1;
       x2_m = x_m << b_norm;
@@ -835,7 +835,7 @@ FDK_INLINE int32_t fLog2(int32_t x_m, INT x_e, INT *result_e) {
       int32_t px2_m;
       result_m = FL2FXCONST_DBL(0.0);
       px2_m = x2_m;
-      for (int i = 0; i < LD_PRECISION; i++) {
+      for (int32_t i = 0; i < LD_PRECISION; i++) {
         result_m = fMultAddDiv2(result_m, ldCoeff[i], px2_m);
         px2_m = fMult(px2_m, x2_m);
       }
@@ -848,7 +848,7 @@ FDK_INLINE int32_t fLog2(int32_t x_m, INT x_e, INT *result_e) {
 
     /* Add exponent part. log2(x_m * 2^x_e) = log2(x_m) + x_e */
     if (x_e != 0) {
-      int enorm;
+      int32_t enorm;
 
       enorm = DFRACT_BITS - fNorm((int32_t)x_e);
       /* The -1 in the right shift of result_m compensates the fMultDiv2() above
@@ -873,11 +873,11 @@ FDK_INLINE int32_t fLog2(int32_t x_m, INT x_e, INT *result_e) {
  * \param x_e exponent of the input value.
  * \return mantissa of the result with implicit exponent of LD_DATA_SHIFT.
  */
-FDK_INLINE int32_t fLog2(int32_t x_m, INT x_e) {
+FDK_INLINE int32_t fLog2(int32_t x_m, int32_t x_e) {
   if (x_m <= FL2FXCONST_DBL(0.0f)) {
     x_m = FL2FXCONST_DBL(-1.0f);
   } else {
-    INT result_e;
+    int32_t result_e;
     x_m = fLog2(x_m, x_e, &result_e);
     x_m = scaleValue(x_m, result_e - LD_DATA_SHIFT);
   }
@@ -897,7 +897,7 @@ inline FIXP_SGL fAddSaturate(const FIXP_SGL a, const FIXP_SGL b) {
   LONG sum;
 
   sum = (LONG)(SHORT)a + (LONG)(SHORT)b;
-  sum = fMax(fMin((INT)sum, (INT)MAXVAL_SGL), (INT)MINVAL_SGL);
+  sum = fMax(fMin((int32_t)sum, (int32_t)MAXVAL_SGL), (int32_t)MINVAL_SGL);
   return (FIXP_SGL)(SHORT)sum;
 }
 
@@ -911,22 +911,22 @@ inline int32_t fAddSaturate(const int32_t a, const int32_t b) {
   LONG sum;
 
   sum = (LONG)(a >> 1) + (LONG)(b >> 1);
-  sum = fMax(fMin((INT)sum, (INT)(MAXVAL_DBL >> 1)), (INT)(MINVAL_DBL >> 1));
+  sum = fMax(fMin((int32_t)sum, (int32_t)(MAXVAL_DBL >> 1)), (int32_t)(MINVAL_DBL >> 1));
   return (int32_t)(LONG)(sum << 1);
 }
 #endif /* FUNCTION_fAddSaturate */
 
-INT fixp_floorToInt(int32_t f_inp, INT sf);
-int32_t fixp_floor(int32_t f_inp, INT sf);
+int32_t fixp_floorToInt(int32_t f_inp, int32_t sf);
+int32_t fixp_floor(int32_t f_inp, int32_t sf);
 
-INT fixp_ceilToInt(int32_t f_inp, INT sf);
-int32_t fixp_ceil(int32_t f_inp, INT sf);
+int32_t fixp_ceilToInt(int32_t f_inp, int32_t sf);
+int32_t fixp_ceil(int32_t f_inp, int32_t sf);
 
-INT fixp_truncateToInt(int32_t f_inp, INT sf);
-int32_t fixp_truncate(int32_t f_inp, INT sf);
+int32_t fixp_truncateToInt(int32_t f_inp, int32_t sf);
+int32_t fixp_truncate(int32_t f_inp, int32_t sf);
 
-INT fixp_roundToInt(int32_t f_inp, INT sf);
-int32_t fixp_round(int32_t f_inp, INT sf);
+int32_t fixp_roundToInt(int32_t f_inp, int32_t sf);
+int32_t fixp_round(int32_t f_inp, int32_t sf);
 
 /*****************************************************************************
 
@@ -945,7 +945,7 @@ inline void InitInvInt(void) {}
  * \param intValue Integer input value.
  * \param int32_t representation of 1/intValue
  */
-inline int32_t GetInvInt(int intValue) {
+inline int32_t GetInvInt(int32_t intValue) {
   return invCount[fMin(fMax(intValue, 0), 80 - 1)];
 }
 

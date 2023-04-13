@@ -128,11 +128,11 @@ energies.
 
 static void calcRefValFwd(CErRvlcInfo *pRvlc,
                           CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                          int *refIsFwd, int *refNrgFwd, int *refScfFwd) {
-  int band, bnds, group, startBand;
-  int idIs, idNrg, idScf;
-  int conceal_min, conceal_group_min;
-  int MaximumScaleFactorBands;
+                          int32_t *refIsFwd, int32_t *refNrgFwd, int32_t *refScfFwd) {
+  int32_t band, bnds, group, startBand;
+  int32_t idIs, idNrg, idScf;
+  int32_t conceal_min, conceal_group_min;
+  int32_t MaximumScaleFactorBands;
 
   if (GetWindowSequence(&pAacDecoderChannelInfo->icsInfo) == BLOCK_SHORT)
     MaximumScaleFactorBands = 16;
@@ -204,11 +204,11 @@ energies.
 
 static void calcRefValBwd(CErRvlcInfo *pRvlc,
                           CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                          int *refIsBwd, int *refNrgBwd, int *refScfBwd) {
-  int band, bnds, group, startBand;
-  int idIs, idNrg, idScf;
-  int conceal_max, conceal_group_max;
-  int MaximumScaleFactorBands;
+                          int32_t *refIsBwd, int32_t *refNrgBwd, int32_t *refScfBwd) {
+  int32_t band, bnds, group, startBand;
+  int32_t idIs, idNrg, idScf;
+  int32_t conceal_max, conceal_group_max;
+  int32_t MaximumScaleFactorBands;
 
   if (GetWindowSequence(&pAacDecoderChannelInfo->icsInfo) == BLOCK_SHORT)
     MaximumScaleFactorBands = 16;
@@ -287,10 +287,10 @@ void BidirectionalEstimation_UseLowerScfOfCurrentFrame(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo) {
   CErRvlcInfo *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
-  int band, bnds, startBand, endBand, group;
-  int conceal_min, conceal_max;
-  int conceal_group_min, conceal_group_max;
-  int MaximumScaleFactorBands;
+  int32_t band, bnds, startBand, endBand, group;
+  int32_t conceal_min, conceal_max;
+  int32_t conceal_group_min, conceal_group_max;
+  int32_t MaximumScaleFactorBands;
 
   if (GetWindowSequence(&pAacDecoderChannelInfo->icsInfo) == BLOCK_SHORT) {
     MaximumScaleFactorBands = 16;
@@ -315,8 +315,8 @@ void BidirectionalEstimation_UseLowerScfOfCurrentFrame(
   conceal_group_max = pRvlc->conceal_max / MaximumScaleFactorBands;
 
   if (pRvlc->conceal_min == pRvlc->conceal_max) {
-    int refIsFwd, refNrgFwd, refScfFwd;
-    int refIsBwd, refNrgBwd, refScfBwd;
+    int32_t refIsFwd, refNrgFwd, refScfFwd;
+    int32_t refIsBwd, refNrgBwd, refScfBwd;
 
     bnds = pRvlc->conceal_min;
     calcRefValFwd(pRvlc, pAacDecoderChannelInfo, &refIsFwd, &refNrgFwd,
@@ -434,10 +434,10 @@ void BidirectionalEstimation_UseScfOfPrevFrameAsReference(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo) {
   CErRvlcInfo *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
-  int band, bnds, startBand, endBand, group;
-  int conceal_min, conceal_max;
-  int conceal_group_min, conceal_group_max;
-  int MaximumScaleFactorBands;
+  int32_t band, bnds, startBand, endBand, group;
+  int32_t conceal_min, conceal_max;
+  int32_t conceal_group_min, conceal_group_max;
+  int32_t MaximumScaleFactorBands;
   SHORT commonMin;
 
   if (GetWindowSequence(&pAacDecoderChannelInfo->icsInfo) == BLOCK_SHORT) {
@@ -604,11 +604,11 @@ and noise energy seperately.
 void StatisticalEstimation(CAacDecoderChannelInfo *pAacDecoderChannelInfo) {
   CErRvlcInfo *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
-  int band, bnds, group;
-  int sumIsFwd, sumIsBwd;   /* sum of intensity data forward/backward */
-  int sumNrgFwd, sumNrgBwd; /* sum of noise energy data forward/backward */
-  int sumScfFwd, sumScfBwd; /* sum of scalefactor data forward/backward */
-  int useIsFwd, useNrgFwd, useScfFwd; /* the flags signals the elements which
+  int32_t band, bnds, group;
+  int32_t sumIsFwd, sumIsBwd;   /* sum of intensity data forward/backward */
+  int32_t sumNrgFwd, sumNrgBwd; /* sum of noise energy data forward/backward */
+  int32_t sumScfFwd, sumScfBwd; /* sum of scalefactor data forward/backward */
+  int32_t useIsFwd, useNrgFwd, useScfFwd; /* the flags signals the elements which
                                          are used for the final result */
 
   sumIsFwd = sumIsBwd = sumNrgFwd = sumNrgBwd = sumScfFwd = sumScfBwd = 0;
@@ -717,7 +717,7 @@ void PredictiveInterpolation(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo) {
   CErRvlcInfo *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
-  int band, bnds, group;
+  int32_t band, bnds, group;
   SHORT commonMin;
 
   for (group = 0; group < pRvlc->numWindowGroups; group++) {

@@ -107,21 +107,21 @@ amm-info@iis.fraunhofer.de
 #include "drcDec_types.h"
 #include "drcDec_selectionProcess.h"
 
-int getDeltaTmin(const int sampleRate);
+int32_t getDeltaTmin(const int32_t sampleRate);
 
 DRC_COEFFICIENTS_UNI_DRC* selectDrcCoefficients(
-    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int location);
+    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int32_t location);
 
 DRC_INSTRUCTIONS_UNI_DRC* selectDrcInstructions(
-    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int drcSetId);
+    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int32_t drcSetId);
 
 DOWNMIX_INSTRUCTIONS* selectDownmixInstructions(
-    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int downmixId);
+    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int32_t downmixId);
 
 DRC_ERROR
 deriveDrcChannelGroups(
-    const int drcSetEffect,                                    /* in */
-    const int channelCount,                                    /* in */
+    const int32_t drcSetEffect,                                    /* in */
+    const int32_t channelCount,                                    /* in */
     const SCHAR* gainSetIndex,                                 /* in */
     const DUCKING_MODIFICATION* duckingModificationForChannel, /* in */
     UCHAR* nDrcChannelGroups,                                  /* out */
@@ -130,18 +130,18 @@ deriveDrcChannelGroups(
     DUCKING_MODIFICATION* duckingModificationForChannelGroup); /* out */
 
 int32_t
-dB2lin(const int32_t dB_m, const int dB_e, int* pLin_e);
+dB2lin(const int32_t dB_m, const int32_t dB_e, int32_t* pLin_e);
 
 int32_t
-lin2dB(const int32_t lin_m, const int lin_e, int* pDb_e);
+lin2dB(const int32_t lin_m, const int32_t lin_e, int32_t* pDb_e);
 
 int32_t
-approxDb2lin(const int32_t dB_m, const int dB_e, int* pLin_e);
+approxDb2lin(const int32_t dB_m, const int32_t dB_e, int32_t* pLin_e);
 
-int bitstreamContainsMultibandDrc(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
-                                  const int downmixId);
+int32_t bitstreamContainsMultibandDrc(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
+                                  const int32_t downmixId);
 
 int32_t
-getDownmixOffset(DOWNMIX_INSTRUCTIONS* pDown, int baseChannelCount);
+getDownmixOffset(DOWNMIX_INSTRUCTIONS* pDown, int32_t baseChannelCount);
 
 #endif

@@ -318,7 +318,7 @@ static void fft10(int32_t *x)  // int32_t *re, int32_t *im, FIXP_SGL s)
   int32_t y00, y01, y02, y03, y04, y05, y06, y07, y08, y09;
   int32_t y10, y11, y12, y13, y14, y15, y16, y17, y18, y19;
 
-  const int s = 1;  // stride factor
+  const int32_t s = 1;  // stride factor
 
   /* 2 fft5 stages */
 
@@ -464,7 +464,7 @@ static void fft10(int32_t *x)  // int32_t *re, int32_t *im, FIXP_SGL s)
 static inline void fft12(int32_t *pInput) {
   int32_t aDst[24];
   int32_t *pSrc, *pDst;
-  int i;
+  int32_t i;
 
   pSrc = pInput;
   pDst = aDst;
@@ -603,7 +603,7 @@ static inline void fft12(int32_t *pInput) {
 static inline void fft15(int32_t *pInput) {
   int32_t aDst[2 * N15];
   int32_t aDst1[2 * N15];
-  int i, k, l;
+  int32_t i, k, l;
 
   /* Sort input vector for fft's of length 3
   input3(0:2)   = [input(0) input(5) input(10)];
@@ -1209,7 +1209,7 @@ inline void fft_32(int32_t *const _x) {
   {
     int32_t *xt = _x;
 
-    int j = 4;
+    int32_t j = 4;
     do {
       int32_t vi, ui, vr, ur;
 
@@ -1537,13 +1537,13 @@ inline void fft_32(int32_t *const _x) {
 #define noFFT_APPLY_ROT_VECTOR_HQ
 
 #ifndef FUNCTION_fft_apply_rot_vector__FIXP_DBL
-static inline void fft_apply_rot_vector(int32_t *RESTRICT pData, const int cl,
-                                        const int l, const FIXP_STB *pVecRe,
+static inline void fft_apply_rot_vector(int32_t *RESTRICT pData, const int32_t cl,
+                                        const int32_t l, const FIXP_STB *pVecRe,
                                         const FIXP_STB *pVecIm) {
   int32_t re, im;
   FIXP_STB vre, vim;
 
-  int i, c;
+  int32_t i, c;
 
   for (i = 0; i < cl; i++) {
     re = pData[2 * i];
@@ -1574,8 +1574,8 @@ static inline void fft_apply_rot_vector(int32_t *RESTRICT pData, const int cl,
 /* select either switch case of function pointer. */
 //#define FFT_TWO_STAGE_SWITCH_CASE
 #ifndef FUNCTION_fftN2_func
-static inline void fftN2_func(int32_t *pInput, const int length,
-                              const int dim1, const int dim2,
+static inline void fftN2_func(int32_t *pInput, const int32_t length,
+                              const int32_t dim1, const int32_t dim2,
                               void (*const fft1)(int32_t *),
                               void (*const fft2)(int32_t *),
                               const FIXP_STB *RotVectorReal,
@@ -1586,7 +1586,7 @@ static inline void fftN2_func(int32_t *pInput, const int length,
   indices. The output samples are stored at the address of pInput
   */
   int32_t *pSrc, *pDst, *pDstOut;
-  int i;
+  int32_t i;
 
   FDK_ASSERT(length == dim1 * dim2);
 
@@ -1598,7 +1598,7 @@ static inline void fftN2_func(int32_t *pInput, const int length,
   pSrc = pInput;
   pDst = aDst;
   for (i = 0; i < dim2; i++) {
-    for (int j = 0; j < dim1; j++) {
+    for (int32_t j = 0; j < dim1; j++) {
       pDst[2 * j] = pSrc[2 * j * dim2];
       pDst[2 * j + 1] = pSrc[2 * j * dim2 + 1];
     }
@@ -1650,7 +1650,7 @@ static inline void fftN2_func(int32_t *pInput, const int length,
   pDst = aDst2;
   pDstOut = pInput;
   for (i = 0; i < dim1; i++) {
-    for (int j = 0; j < dim2; j++) {
+    for (int32_t j = 0; j < dim2; j++) {
       pDst[2 * j] = pSrc[2 * j * dim1];
       pDst[2 * j + 1] = pSrc[2 * j * dim1 + 1];
     }
@@ -1680,7 +1680,7 @@ static inline void fftN2_func(int32_t *pInput, const int length,
     }
 #endif
 
-    for (int j = 0; j < dim2; j++) {
+    for (int32_t j = 0; j < dim2; j++) {
       pDstOut[2 * j * dim1] = pDst[2 * j];
       pDstOut[2 * j * dim1 + 1] = pDst[2 * j + 1];
     }
@@ -1797,7 +1797,7 @@ static inline void fft480(int32_t *pInput) {
 }
 #endif /* FUNCTION_fft480 */
 
-void fft(int length, int32_t *pInput, INT *pScalefactor) {
+void fft(int32_t length, int32_t *pInput, int32_t *pScalefactor) {
   /* Ensure, that the io-ptr is always (at least 8-byte) aligned */
   C_ALLOC_ALIGNED_CHECK(pInput);
 
@@ -1913,7 +1913,7 @@ void fft(int length, int32_t *pInput, INT *pScalefactor) {
   }
 }
 
-void ifft(int length, int32_t *pInput, INT *scalefactor) {
+void ifft(int32_t length, int32_t *pInput, int32_t *scalefactor) {
   switch (length) {
     default:
       FDK_ASSERT(0); /* IFFT length not supported! */

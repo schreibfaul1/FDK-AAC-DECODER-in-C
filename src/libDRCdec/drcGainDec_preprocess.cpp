@@ -111,16 +111,16 @@ amm-info@iis.fraunhofer.de
   FL2FXCONST_DBL(0.1151f * (float)(1 << 3)) /* ln(10) / 20 */
 
 typedef struct {
-  int drcSetEffect;
+  int32_t drcSetEffect;
   DUCKING_MODIFICATION* pDMod;
   GAIN_MODIFICATION* pGMod;
-  int drcCharacteristicPresent;
+  int32_t drcCharacteristicPresent;
   CHARACTERISTIC_FORMAT characteristicFormatSource[2];
   const CUSTOM_DRC_CHAR* pCCharSource[2];
   CHARACTERISTIC_FORMAT characteristicFormatTarget[2];
   const CUSTOM_DRC_CHAR* pCCharTarget[2];
-  int slopeIsNegative;
-  int limiterPeakTargetPresent;
+  int32_t slopeIsNegative;
+  int32_t limiterPeakTargetPresent;
   FIXP_SGL limiterPeakTarget;
   int32_t loudnessNormalizationGainDb;
   FIXP_SGL compress;
@@ -128,7 +128,7 @@ typedef struct {
 } NODE_MODIFICATION;
 
 static DRC_ERROR _getCicpCharacteristic(
-    const int cicpCharacteristic,
+    const int32_t cicpCharacteristic,
     CHARACTERISTIC_FORMAT pCharacteristicFormat[2],
     const CUSTOM_DRC_CHAR* pCCharSource[2]) {
   if ((cicpCharacteristic < 1) || (cicpCharacteristic > 11)) {
@@ -156,18 +156,18 @@ static DRC_ERROR _getCicpCharacteristic(
   return DE_OK;
 }
 
-static int _getSign(FIXP_SGL in) {
+static int32_t _getSign(FIXP_SGL in) {
   if (in > (int32_t)0) return 1;
   if (in < (int32_t)0) return -1;
   return 0;
 }
 
 static DRC_ERROR _getSlopeSign(const CHARACTERISTIC_FORMAT drcCharFormat,
-                               const CUSTOM_DRC_CHAR* pCChar, int* pSlopeSign) {
+                               const CUSTOM_DRC_CHAR* pCChar, int32_t* pSlopeSign) {
   if (drcCharFormat == CF_SIGMOID) {
     *pSlopeSign = (pCChar->sigmoid.flipSign ? 1 : -1);
   } else {
-    int k, slopeSign = 0, tmp_slopeSign;
+    int32_t k, slopeSign = 0, tmp_slopeSign;
     for (k = 0; k < pCChar->nodes.characteristicNodeCount; k++) {
       if (pCChar->nodes.nodeLevel[k + 1] > pCChar->nodes.nodeLevel[k]) {
         tmp_slopeSign =
@@ -188,9 +188,9 @@ static DRC_ERROR _getSlopeSign(const CHARACTERISTIC_FORMAT drcCharFormat,
 
 static DRC_ERROR _isSlopeNegative(const CHARACTERISTIC_FORMAT drcCharFormat[2],
                                   const CUSTOM_DRC_CHAR* pCChar[2],
-                                  int* pSlopeIsNegative) {
+                                  int32_t* pSlopeIsNegative) {
   DRC_ERROR err = DE_OK;
-  int slopeSign[2] = {0, 0};
+  int32_t slopeSign[2] = {0, 0};
 
   err = _getSlopeSign(drcCharFormat[CS_LEFT], pCChar[CS_LEFT],
                       &slopeSign[CS_LEFT]);
@@ -210,7 +210,7 @@ static DRC_ERROR _isSlopeNegative(const CHARACTERISTIC_FORMAT drcCharFormat[2],
 
 static DRC_ERROR _prepareDrcCharacteristic(const DRC_CHARACTERISTIC* pDChar,
                                            DRC_COEFFICIENTS_UNI_DRC* pCoef,
-                                           const int b,
+                                           const int32_t b,
                                            NODE_MODIFICATION* pNodeMod) {
   DRC_ERROR err = DE_OK;
   pNodeMod->drcCharacteristicPresent = pDChar->present;
@@ -262,10 +262,10 @@ static DRC_ERROR _compressorIO_sigmoid_common(
     const int32_t tmp,               /* e = 7 */
     const int32_t gainDbLimit,       /* e = 6 */
     const int32_t exp,               /* e = 5 */
-    const int inverse, int32_t* out) /* e = 7 */
+    const int32_t inverse, int32_t* out) /* e = 7 */
 {
   int32_t x, tmp1, tmp2, invExp, denom;
-  int e_x, e_tmp1, e_tmp2, e_invExp, e_denom, e_out;
+  int32_t e_x, e_tmp1, e_tmp2, e_invExp, e_denom, e_out;
 
   if (exp < FL2FXCONST_DBL(1.0f / (float)(1 << 5))) {
     return DE_NOT_OK;
@@ -329,7 +329,7 @@ static DRC_ERROR _compressorIO_sigmoid_inverse(
   FIXP_SGL ioRatio = pCChar->ioRatio;
   FIXP_SGL exp = pCChar->exp;
   int32_t tmp = FX_SGL2FX_DBL(gainDb), tmp_out;
-  int e_out;
+  int32_t e_out;
 
   if (pCChar->flipSign == 1) {
     tmp = -tmp;
@@ -356,7 +356,7 @@ static DRC_ERROR _compressorIO_nodes(const CUSTOM_DRC_CHAR_NODES* pCChar,
                                      const int32_t inLevelDb, /* e = 7 */
                                      int32_t* outGainDb)      /* e = 7 */
 {
-  int n;
+  int32_t n;
   int32_t w;
   const FIXP_SGL* nodeLevel = pCChar->nodeLevel;
   const FIXP_SGL* nodeGain = pCChar->nodeGain;
@@ -394,13 +394,13 @@ static DRC_ERROR _compressorIO_nodes_inverse(
     const CUSTOM_DRC_CHAR_NODES* pCChar, const FIXP_SGL gainDb, /* e = 7 */
     int32_t* inLev)                                            /* e = 7 */
 {
-  int n;
-  int k;
+  int32_t n;
+  int32_t k;
   int32_t w;
-  int gainIsNegative = 0;
+  int32_t gainIsNegative = 0;
   const FIXP_SGL* nodeLevel = pCChar->nodeLevel;
   const FIXP_SGL* nodeGain = pCChar->nodeGain;
-  int nodeCount = pCChar->characteristicNodeCount;
+  int32_t nodeCount = pCChar->characteristicNodeCount;
   for (k = 0; k < nodeCount; k++) {
     if (pCChar->nodeGain[k + 1] < (FIXP_SGL)0) {
       gainIsNegative = 1;
@@ -500,7 +500,7 @@ static DRC_ERROR _mapGain(const CHARACTERISTIC_FORMAT pCCharFormatSource,
 }
 
 static DRC_ERROR _toLinear(
-    const NODE_MODIFICATION* nodeMod, const int drcBand,
+    const NODE_MODIFICATION* nodeMod, const int32_t drcBand,
     const FIXP_SGL gainDb,  /* in: gain value in dB, e = 7 */
     const FIXP_SGL slopeDb, /* in: slope value in dB/deltaTmin, e = 2 */
     int32_t* gainLin,      /* out: linear gain value, e = 7 */
@@ -511,7 +511,7 @@ static DRC_ERROR _toLinear(
   DUCKING_MODIFICATION* pDMod = nodeMod->pDMod;
   int32_t tmp_dbl, gainDb_modified, gainDb_offset, gainDb_out, gainLin_m,
       slopeLin_m;
-  int gainLin_e, gainRatio_e = 1, gainDb_out_e;
+  int32_t gainLin_e, gainRatio_e = 1, gainDb_out_e;
   if (nodeMod->pGMod != NULL) {
     pGMod = &(nodeMod->pGMod[drcBand]);
   }
@@ -641,8 +641,8 @@ DRC_ERROR
 prepareDrcGain(HANDLE_DRC_GAIN_DECODER hGainDec,
                HANDLE_UNI_DRC_GAIN hUniDrcGain, const FIXP_SGL compress,
                const FIXP_SGL boost, const int32_t loudnessNormalizationGainDb,
-               const int activeDrcIndex) {
-  int b, g, gainElementIndex;
+               const int32_t activeDrcIndex) {
+  int32_t b, g, gainElementIndex;
   DRC_GAIN_BUFFERS* drcGainBuffers = &(hGainDec->drcGainBuffers);
   NODE_MODIFICATION nodeMod;
   FDKmemclear(&nodeMod, sizeof(NODE_MODIFICATION));
@@ -660,8 +660,8 @@ prepareDrcGain(HANDLE_DRC_GAIN_DECODER hGainDec,
 
   gainElementIndex = 0;
   for (g = 0; g < pInst->nDrcChannelGroups; g++) {
-    int gainSetIndex = 0;
-    int nDrcBands = 0;
+    int32_t gainSetIndex = 0;
+    int32_t nDrcBands = 0;
     DRC_COEFFICIENTS_UNI_DRC* pCoef = pActiveDrc->pCoef;
     if (pCoef == NULL) return DE_NOT_OK;
 
@@ -680,7 +680,7 @@ prepareDrcGain(HANDLE_DRC_GAIN_DECODER hGainDec,
       for (b = 0; b < nDrcBands; b++) {
         DRC_ERROR err = DE_OK;
         GAIN_SET* pGainSet = &(pCoef->gainSet[gainSetIndex]);
-        int seq = pGainSet->gainSequenceIndex[b];
+        int32_t seq = pGainSet->gainSequenceIndex[b];
         DRC_CHARACTERISTIC* pDChar = &(pGainSet->drcCharacteristic[b]);
 
         /* linearNodeBuffer contains a copy of the gain sequences (consisting of
@@ -689,7 +689,7 @@ prepareDrcGain(HANDLE_DRC_GAIN_DECODER hGainDec,
         LINEAR_NODE_BUFFER* pLnb =
             &(drcGainBuffers->linearNodeBuffer[pActiveDrc->activeDrcOffset +
                                                gainElementIndex]);
-        int i, lnbp;
+        int32_t i, lnbp;
         lnbp = drcGainBuffers->lnbPointer;
         pLnb->gainInterpolationType =
             (GAIN_INTERPOLATION_TYPE)pGainSet->gainInterpolationType;
@@ -698,7 +698,7 @@ prepareDrcGain(HANDLE_DRC_GAIN_DECODER hGainDec,
         if (err) return err;
 
         /* copy a node buffer and convert from dB to linear */
-        pLnb->nNodes[lnbp] = fMin((int)hUniDrcGain->nNodes[seq], 16);
+        pLnb->nNodes[lnbp] = fMin((int32_t)hUniDrcGain->nNodes[seq], 16);
         for (i = 0; i < pLnb->nNodes[lnbp]; i++) {
           int32_t gainLin, slopeLin;
           err = _toLinear(&nodeMod, b, hUniDrcGain->gainNode[seq][i].gainDb,

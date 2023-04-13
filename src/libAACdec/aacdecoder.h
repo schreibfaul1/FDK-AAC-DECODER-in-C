@@ -145,15 +145,15 @@ enum { L = 0, R = 1 };
 
 typedef struct {
   unsigned char *buffer;
-  int bufferSize;
-  int offset[8];
-  int nrElements;
+  int32_t bufferSize;
+  int32_t offset[8];
+  int32_t nrElements;
 } CAncData;
 
 typedef enum { NOT_DEFINED = -1, MODE_HQ = 0, MODE_LP = 1 } QMF_MODE;
 
 typedef struct {
-  int bsDelay;
+  int32_t bsDelay;
 } SBR_PARAMS;
 
 enum {
@@ -175,23 +175,23 @@ enum {
 typedef struct {
   /* Usac Extension Elements */
   USAC_EXT_ELEMENT_TYPE usacExtElementType[(3)];
-  UINT usacExtElementDefaultLength[(3)];
+  uint32_t usacExtElementDefaultLength[(3)];
   UCHAR usacExtElementPayloadFrag[(3)];
 } CUsacCoreExtensions;
 
 /* AAC decoder (opaque toward userland) struct declaration */
 struct AAC_DECODER_INSTANCE {
-  INT aacChannels; /*!< Amount of AAC decoder channels allocated.        */
-  INT ascChannels[(1 *
+  int32_t aacChannels; /*!< Amount of AAC decoder channels allocated.        */
+  int32_t ascChannels[(1 *
                    1)]; /*!< Amount of AAC decoder channels signalled in ASC. */
-  INT blockNumber;      /*!< frame counter                                    */
+  int32_t blockNumber;      /*!< frame counter                                    */
 
-  INT nrOfLayers;
+  int32_t nrOfLayers;
 
-  INT outputInterleaved; /*!< PCM output format (interleaved/none interleaved).
+  int32_t outputInterleaved; /*!< PCM output format (interleaved/none interleaved).
                           */
 
-  INT aacOutDataHeadroom; /*!< Headroom of the output time signal to prevent
+  int32_t aacOutDataHeadroom; /*!< Headroom of the output time signal to prevent
                              clipping */
 
   HANDLE_TRANSPORTDEC hInput; /*!< Transport layer handle. */
@@ -202,9 +202,9 @@ struct AAC_DECODER_INSTANCE {
   UCHAR
   frameOK; /*!< Will be unset if a consistency check, e.g. CRC etc. fails */
 
-  UINT flags[(1 * 1)]; /*!< Flags for internal decoder use. DO NOT USE
+  uint32_t flags[(1 * 1)]; /*!< Flags for internal decoder use. DO NOT USE
                           self::streaminfo::flags ! */
-  UINT elFlags[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) +
+  uint32_t elFlags[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) +
                 1)]; /*!< Flags for internal decoder use (element specific). DO
                         NOT USE self::streaminfo::flags ! */
 
@@ -227,7 +227,7 @@ struct AAC_DECODER_INSTANCE {
   UCHAR chMapIndex; /*!< Index to access one line of the channelOutputMapping
                        table. This is required because not all 8 channel
                        configurations have the same output mapping. */
-  INT sbrDataLen;   /*!< Expected length of the SBR remaining in bitbuffer after
+  int32_t sbrDataLen;   /*!< Expected length of the SBR remaining in bitbuffer after
                          the AAC payload has been pared.   */
 
   CProgramConfig pce;
@@ -241,7 +241,7 @@ struct AAC_DECODER_INSTANCE {
   int32_t *workBufferCore1;
   int32_t *workBufferCore2;
   int32_t *pTimeData2;
-  INT timeData2Size;
+  int32_t timeData2Size;
 
   CpePersistentData *cpeStaticData[(
       3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) +
@@ -253,14 +253,14 @@ This structure is allocated once for each CPE. */
 
   CUsacCoreExtensions usacCoreExt; /*!< Data and handles to extend USAC FD/LPD
                                       core decoder (SBR, MPS, ...) */
-  UINT numUsacElements[(1 * 1)];
+  uint32_t numUsacElements[(1 * 1)];
   UCHAR usacStereoConfigIndex[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) + 1)];
   const CSUsacConfig *pUsacConfig[(1 * 1)];
-  INT nbDiv; /*!< number of frame divisions in LPD-domain */
+  int32_t nbDiv; /*!< number of frame divisions in LPD-domain */
 
   UCHAR useLdQmfTimeAlign;
 
-  INT aacChannelsPrev; /*!< The amount of AAC core channels of the last
+  int32_t aacChannelsPrev; /*!< The amount of AAC core channels of the last
                           successful decode call.         */
   AUDIO_CHANNEL_TYPE channelTypePrev[(8)]; /*!< Array holding the channelType
                                               values of the last successful
@@ -294,7 +294,7 @@ This structure is allocated once for each CPE. */
   QMF_MODE qmfModeUser; /*!< The QMF mode requested by the library user */
 
   HANDLE_AAC_DRC hDrcInfo; /*!< handle to DRC data structure               */
-  INT metadataExpiry;      /*!< Metadata expiry time in milli-seconds.     */
+  int32_t metadataExpiry;      /*!< Metadata expiry time in milli-seconds.     */
 
   void *pMpegSurroundDecoder; /*!< pointer to mpeg surround decoder structure */
   UCHAR mpsEnableUser;        /*!< MPS enable user flag                       */
@@ -302,9 +302,9 @@ This structure is allocated once for each CPE. */
   UCHAR mpsApplicable;        /*!< MPS applicable                             */
   SCHAR mpsOutputMode; /*!< setting: normal = 0, binaural = 1, stereo = 2, 5.1ch
                           = 3 */
-  INT mpsOutChannelsLast; /*!< The amount of channels returned by the last
+  int32_t mpsOutChannelsLast; /*!< The amount of channels returned by the last
                              successful MPS decoder call. */
-  INT mpsFrameSizeLast;   /*!< The frame length returned by the last successful
+  int32_t mpsFrameSizeLast;   /*!< The frame length returned by the last successful
                              MPS decoder call. */
 
   CAncData ancData; /*!< structure to handle ancillary data         */
@@ -317,12 +317,12 @@ This structure is allocated once for each CPE. */
   UCHAR limiterEnableCurr; /*!< The current limiter configuration.         */
 
   int32_t extGain[1]; /*!< Gain that must be applied to the output signal. */
-  UINT extGainDelay;   /*!< Delay that must be accounted for extGain. */
+  uint32_t extGainDelay;   /*!< Delay that must be accounted for extGain. */
 
   HANDLE_DRC_DECODER hUniDrcDecoder;
   UCHAR multibandDrcPresent;
   UCHAR numTimeSlots;
-  UINT loudnessInfoSetPosition[3];
+  uint32_t loudnessInfoSetPosition[3];
   SCHAR defaultTargetLoudness;
 
   INT_PCM
@@ -335,12 +335,12 @@ This structure is allocated once for each CPE. */
   UCHAR buildUpStatus;   /*!< Indicates build up status: on|off */
   SCHAR buildUpCnt;      /*!< Build up frame counter */
   UCHAR hasAudioPreRoll; /*!< Indicates preRoll status: on|off */
-  UINT prerollAULength[AACDEC_MAX_NUM_PREROLL_AU + 1]; /*!< Relative offset of
+  uint32_t prerollAULength[AACDEC_MAX_NUM_PREROLL_AU + 1]; /*!< Relative offset of
                                                           the prerollAU end
                                                           position to the AU
                                                           start position in the
                                                           bitstream */
-  INT accessUnit; /*!< Number of the actual processed preroll accessUnit */
+  int32_t accessUnit; /*!< Number of the actual processed preroll accessUnit */
   UCHAR applyCrossfade; /*!< if set crossfade for seamless stream switching is
                            applied */
 
@@ -392,7 +392,7 @@ void CAacDecoder_SignalInterruption(HANDLE_AACDECODER self);
   \return  Error code
 */
 AAC_DECODER_ERROR CAacDecoder_AncDataInit(CAncData *ancData,
-                                          unsigned char *buffer, int size);
+                                          unsigned char *buffer, int32_t size);
 
 /*!
   \brief Get one ancillary data element
@@ -405,8 +405,8 @@ AAC_DECODER_ERROR CAacDecoder_AncDataInit(CAncData *ancData,
 
   \return  Error code
 */
-AAC_DECODER_ERROR CAacDecoder_AncDataGet(CAncData *ancData, int index,
-                                         unsigned char **ptr, int *size);
+AAC_DECODER_ERROR CAacDecoder_AncDataGet(CAncData *ancData, int32_t index,
+                                         unsigned char **ptr, int32_t *size);
 
 /* initialization of aac decoder */
 HANDLE_AACDECODER CAacDecoder_Open(TRANSPORT_TYPE bsFormat);
@@ -430,22 +430,22 @@ AAC_DECODER_ERROR CAacDecoder_Init(HANDLE_AACDECODER self,
   \return  error status
 */
 AAC_DECODER_ERROR CAacDecoder_DecodeFrame(
-    HANDLE_AACDECODER self, const UINT flags, int32_t *pTimeData,
-    const INT timeDataSize, const int timeDataChannelOffset);
+    HANDLE_AACDECODER self, const uint32_t flags, int32_t *pTimeData,
+    const int32_t timeDataSize, const int32_t timeDataChannelOffset);
 
 /* Free config dependent AAC memory */
 AAC_DECODER_ERROR CAacDecoder_FreeMem(HANDLE_AACDECODER self,
-                                                 const int subStreamIndex);
+                                                 const int32_t subStreamIndex);
 
 /* Prepare crossfade for USAC DASH IPF config change */
 AAC_DECODER_ERROR CAacDecoder_PrepareCrossFade(
-    const INT_PCM *pTimeData, INT_PCM **pTimeDataFlush, const INT numChannels,
-    const INT frameSize, const INT interleaved);
+    const INT_PCM *pTimeData, INT_PCM **pTimeDataFlush, const int32_t numChannels,
+    const int32_t frameSize, const int32_t interleaved);
 
 /* Apply crossfade for USAC DASH IPF config change */
 AAC_DECODER_ERROR CAacDecoder_ApplyCrossFade(
-    INT_PCM *pTimeData, INT_PCM **pTimeDataFlush, const INT numChannels,
-    const INT frameSize, const INT interleaved);
+    INT_PCM *pTimeData, INT_PCM **pTimeDataFlush, const int32_t numChannels,
+    const int32_t frameSize, const int32_t interleaved);
 
 /* Set flush and build up mode */
 AAC_DECODER_ERROR CAacDecoder_CtrlCFGChange(HANDLE_AACDECODER self,
@@ -456,8 +456,8 @@ AAC_DECODER_ERROR CAacDecoder_CtrlCFGChange(HANDLE_AACDECODER self,
 
 /* Parse preRoll Extension Payload */
 AAC_DECODER_ERROR CAacDecoder_PreRollExtensionPayloadParse(
-    HANDLE_AACDECODER self, UINT *numPrerollAU, UINT *prerollAUOffset,
-    UINT *prerollAULength);
+    HANDLE_AACDECODER self, uint32_t *numPrerollAU, uint32_t *prerollAUOffset,
+    uint32_t *prerollAULength);
 
 /* Destroy aac decoder */
 void CAacDecoder_Close(HANDLE_AACDECODER self);

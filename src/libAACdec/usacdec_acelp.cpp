@@ -127,8 +127,8 @@ amm-info@iis.fraunhofer.de
  * \param[in] L length of filtering.
  */
 /* static */
-void E_UTIL_preemph(const int32_t *in, int32_t *out, INT L) {
-  int i;
+void E_UTIL_preemph(const int32_t *in, int32_t *out, int32_t L) {
+  int32_t i;
 
   for (i = 0; i < L; i++) {
     out[i] = fAddSaturate(in[i], -fMult(PREEMPH_FAC, in[i - 1]));
@@ -145,7 +145,7 @@ void E_UTIL_preemph(const int32_t *in, int32_t *out, INT L) {
 static void Preemph_code(
     FIXP_COD x[] /* (i/o)   : input signal overwritten by the output */
 ) {
-  int i;
+  int32_t i;
   int32_t L_tmp;
 
   /* ARM926: 12 cycles per sample */
@@ -163,9 +163,9 @@ static void Preemph_code(
  */
 static void Pit_shrp(
     FIXP_COD x[], /* in/out: impulse response (or algebraic code) */
-    int pit_lag   /* input : pitch lag                            */
+    int32_t pit_lag   /* input : pitch lag                            */
 ) {
-  int i;
+  int32_t i;
   int32_t L_tmp;
 
   for (i = pit_lag; i < L_SUBFR; i++) {
@@ -195,17 +195,17 @@ static void Pit_shrp(
 static const int32_t pow_10_mean_energy[4] = {0x01fc5ebd, 0x07e7db92,
                                                0x1f791f65, 0x7d4bfba3};
 
-static void D_gain2_plus(int index, FIXP_COD code[], FIXP_SGL *gain_pit,
-                         int32_t *gain_code, int mean_ener_bits, int bfi,
+static void D_gain2_plus(int32_t index, FIXP_COD code[], FIXP_SGL *gain_pit,
+                         int32_t *gain_code, int32_t mean_ener_bits, int32_t bfi,
                          FIXP_SGL *past_gpit, int32_t *past_gcode,
-                         int32_t *pEner_code, int *pEner_code_e) {
+                         int32_t *pEner_code, int32_t *pEner_code_e) {
   int32_t Ltmp;
   int32_t gcode0, gcode_inov;
-  INT gcode0_e, gcode_inov_e;
-  int i;
+  int32_t gcode0_e, gcode_inov_e;
+  int32_t i;
 
   int32_t ener_code;
-  INT ener_code_e;
+  int32_t ener_code_e;
 
   /* ener_code = sum(code[]^2) */
   ener_code = int32_t(0);
@@ -280,7 +280,7 @@ static void D_gain2_plus(int index, FIXP_COD code[], FIXP_SGL *gain_pit,
    --------------------------------------------------------*/
   {
     int32_t gcode_m;
-    INT gcode_e;
+    int32_t gcode_e;
 
     gcode_m = fDivNormHighPrec(Ltmp, gcode_inov, &gcode_e);
     gcode_e += (gcode0_e - SF_GAIN_C + SF_QUA_GAIN7B) - (gcode_inov_e);
@@ -300,14 +300,14 @@ static void D_gain2_plus(int index, FIXP_COD code[], FIXP_SGL *gain_pit,
  */
 static int32_t calc_period_factor(int32_t exc[], FIXP_SGL gain_pit,
                                    int32_t gain_code, int32_t ener_code,
-                                   int ener_code_e) {
-  int ener_exc_e, L_tmp_e, s = 0;
+                                   int32_t ener_code_e) {
+  int32_t ener_exc_e, L_tmp_e, s = 0;
   int32_t ener_exc, L_tmp;
   int32_t period_fac;
 
   /* energy of pitch excitation */
   ener_exc = (int32_t)0;
-  for (int i = 0; i < L_SUBFR; i++) {
+  for (int32_t i = 0; i < L_SUBFR; i++) {
     ener_exc += fPow2Div2(exc[i]) >> s;
     if (ener_exc >= FL2FXCONST_DBL(0.5f)) {
       ener_exc >>= 1;
@@ -333,7 +333,7 @@ static int32_t calc_period_factor(int32_t exc[], FIXP_SGL gain_pit,
   /* Find common exponent */
   {
     int32_t num, den;
-    int exp_diff;
+    int32_t exp_diff;
 
     exp_diff = ener_exc_e - L_tmp_e;
     if (exp_diff >= 0) {
@@ -469,7 +469,7 @@ void BuildAdaptiveExcitation(
 #define SF (SF_CODE + SF_GAIN_C + 1 - SF_EXC - SF_HEADROOM)
 #define SF_GAIN_P2 (SF_GAIN_P - SF_HEADROOM)
 
-  int i;
+  int32_t i;
   int32_t tmp, cpe, code_smooth_prev, code_smooth;
 
   FIXP_COD code_i;
@@ -536,11 +536,11 @@ void BuildAdaptiveExcitation(
 void int_lpc_acelp(
     const FIXP_LPC lsp_old[], /* input : LSPs from past frame              */
     const FIXP_LPC lsp_new[], /* input : LSPs from present frame           */
-    int subfr_nr, int nb_subfr,
+    int32_t subfr_nr, int32_t nb_subfr,
     FIXP_LPC
         A[], /* output: interpolated LP coefficients for current subframe */
-    INT *A_exp) {
-  int i;
+    int32_t *A_exp) {
+  int32_t i;
   FIXP_LPC lsp_interpol[M_LP_FILTER_ORDER];
   FIXP_SGL fac_old, fac_new;
 
@@ -570,12 +570,12 @@ void int_lpc_acelp(
 
 /* static */
 void Syn_filt(const FIXP_LPC a[], /* (i) : a[m] prediction coefficients Q12 */
-              const INT a_exp,
-              INT length,   /* (i) : length of input/output signal (64|128)   */
+              const int32_t a_exp,
+              int32_t length,   /* (i) : length of input/output signal (64|128)   */
               int32_t x[], /* (i) : input signal Qx  */
               int32_t y[]  /* (i/o) : filter states / output signal  Qx-s*/
 ) {
-  int i, j;
+  int32_t i, j;
   int32_t L_tmp;
 
   for (i = 0; i < length; i++) {
@@ -600,8 +600,8 @@ void Syn_filt(const FIXP_LPC a[], /* (i) : a[m] prediction coefficients Q12 */
  * \param[in,out] mem memory (signal[-1]).
  */
 /* static */
-void Deemph(int32_t *x, int32_t *y, int L, int32_t *mem) {
-  int i;
+void Deemph(int32_t *x, int32_t *y, int32_t L, int32_t *mem) {
+  int32_t i;
   int32_t yi = *mem;
 
   for (i = 0; i < L; i++) {
@@ -624,10 +624,10 @@ void Deemph(int32_t *x, int32_t *y, int L, int32_t *mem) {
  * \param[in] l length of filtering
  */
 /* static */
-void E_UTIL_residu(const FIXP_LPC *a, const INT a_exp, int32_t *x, int32_t *y,
-                   INT l) {
+void E_UTIL_residu(const FIXP_LPC *a, const int32_t a_exp, int32_t *x, int32_t *y,
+                   int32_t l) {
   int32_t s;
-  INT i, j;
+  int32_t i, j;
 
   /* (note that values x[-m..-1] are needed) */
   for (i = 0; i < l; i++) {
@@ -650,16 +650,16 @@ static const UCHAR num_acb_idx_bits_table[2][NB_SUBFR] = {
     {9, 6, 6, 0}  /* coreCoderFrameLength == 768  */
 };
 
-static int DecodePitchLag(HANDLE_FDK_BITSTREAM hBs,
+static int32_t DecodePitchLag(HANDLE_FDK_BITSTREAM hBs,
                           const UCHAR num_acb_idx_bits,
-                          const int PIT_MIN, /* TMIN */
-                          const int PIT_FR2, /* TFR2 */
-                          const int PIT_FR1, /* TFR1 */
-                          const int PIT_MAX, /* TMAX */
-                          int *pT0, int *pT0_frac, int *pT0_min, int *pT0_max) {
-  int acb_idx;
-  int error = 0;
-  int T0, T0_frac;
+                          const int32_t PIT_MIN, /* TMIN */
+                          const int32_t PIT_FR2, /* TFR2 */
+                          const int32_t PIT_FR1, /* TFR1 */
+                          const int32_t PIT_MAX, /* TMAX */
+                          int32_t *pT0, int32_t *pT0_frac, int32_t *pT0_min, int32_t *pT0_max) {
+  int32_t acb_idx;
+  int32_t error = 0;
+  int32_t T0, T0_frac;
 
   FDK_ASSERT((num_acb_idx_bits == 9) || (num_acb_idx_bits == 6));
 
@@ -678,7 +678,7 @@ static int DecodePitchLag(HANDLE_FDK_BITSTREAM hBs,
        0.5 in the range [TFR2, TFR1-0.5], and integers only in the range [TFR1,
        TMAX]. NOTE: for small sampling rates TMAX can get smaller than TFR1.
     */
-    int T0_min, T0_max;
+    int32_t T0_min, T0_max;
 
     if (acb_idx < (PIT_FR2 - PIT_MIN) * 4) {
       /* first interval with 0.25 pitch resolution */
@@ -713,51 +713,51 @@ static int DecodePitchLag(HANDLE_FDK_BITSTREAM hBs,
 
   return error;
 }
-static void ConcealPitchLag(CAcelpStaticMem *acelp_mem, const int PIT_MAX,
-                            int *pT0, int *pT0_frac) {
+static void ConcealPitchLag(CAcelpStaticMem *acelp_mem, const int32_t PIT_MAX,
+                            int32_t *pT0, int32_t *pT0_frac) {
   USHORT *pold_T0 = &acelp_mem->old_T0;
   UCHAR *pold_T0_frac = &acelp_mem->old_T0_frac;
 
-  if ((int)*pold_T0 >= PIT_MAX) {
+  if ((int32_t)*pold_T0 >= PIT_MAX) {
     *pold_T0 = (UCHAR)(PIT_MAX - 5);
   }
-  *pT0 = (int)*pold_T0;
-  *pT0_frac = (int)*pold_T0_frac;
+  *pT0 = (int32_t)*pold_T0;
+  *pT0_frac = (int32_t)*pold_T0_frac;
 }
 
 static UCHAR tab_coremode2nbits[8] = {20, 28, 36, 44, 52, 64, 12, 16};
 
-static int MapCoreMode2NBits(int core_mode) {
-  return (int)tab_coremode2nbits[core_mode];
+static int32_t MapCoreMode2NBits(int32_t core_mode) {
+  return (int32_t)tab_coremode2nbits[core_mode];
 }
 
-void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, INT i_offset,
+void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, int32_t i_offset,
                       const FIXP_LPC lsp_old[M_LP_FILTER_ORDER],
                       const FIXP_LPC lsp_new[M_LP_FILTER_ORDER],
                       FIXP_SGL stab_fac, CAcelpChannelData *pAcelpData,
-                      INT numLostSubframes, int lastLpcLost, int frameCnt,
-                      int32_t synth[], int pT[], int32_t *pit_gain,
-                      INT coreCoderFrameLength) {
-  int i_subfr, subfr_nr, l_div, T;
-  int T0 = -1, T0_frac = -1; /* mark invalid */
+                      int32_t numLostSubframes, int32_t lastLpcLost, int32_t frameCnt,
+                      int32_t synth[], int32_t pT[], int32_t *pit_gain,
+                      int32_t coreCoderFrameLength) {
+  int32_t i_subfr, subfr_nr, l_div, T;
+  int32_t T0 = -1, T0_frac = -1; /* mark invalid */
 
-  int pit_gain_index = 0;
+  int32_t pit_gain_index = 0;
 
-  const int PIT_MAX = PIT_MAX_12k8 + (6 * i_offset); /* maximum pitch lag */
+  const int32_t PIT_MAX = PIT_MAX_12k8 + (6 * i_offset); /* maximum pitch lag */
 
   FIXP_COD *code;
   int32_t *exc2;
   int32_t *syn;
   int32_t *exc;
   FIXP_LPC A[M_LP_FILTER_ORDER];
-  INT A_exp;
+  int32_t A_exp;
 
   int32_t period_fac;
   FIXP_SGL gain_pit;
   int32_t gain_code, gain_code_smooth, Ener_code;
-  int Ener_code_e;
-  int n;
-  int bfi = (numLostSubframes > 0) ? 1 : 0;
+  int32_t Ener_code_e;
+  int32_t n;
+  int32_t bfi = (numLostSubframes > 0) ? 1 : 0;
 
   C_ALLOC_SCRATCH_START(
       exc_buf, int32_t,
@@ -796,8 +796,8 @@ void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, INT i_offset,
     if (bfi) {
       ConcealPitchLag(acelp_mem, PIT_MAX, &T0, &T0_frac);
     } else {
-      T0 = (int)pAcelpData->T0[subfr_nr];
-      T0_frac = (int)pAcelpData->T0_frac[subfr_nr];
+      T0 = (int32_t)pAcelpData->T0[subfr_nr];
+      T0_frac = (int32_t)pAcelpData->T0_frac[subfr_nr];
     }
 
     /*-------------------------------------------------*
@@ -822,7 +822,7 @@ void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, INT i_offset,
             FX_SGL2FX_COD((FIXP_SGL)E_UTIL_random(&acelp_mem->seed_ace)) >> 4;
       }
     } else {
-      int nbits = MapCoreMode2NBits((int)pAcelpData->acelp_core_mode);
+      int32_t nbits = MapCoreMode2NBits((int32_t)pAcelpData->acelp_core_mode);
       D_ACELP_decode_4t64(pAcelpData->icb_index[subfr_nr], nbits, &code[0]);
     }
 
@@ -941,8 +941,8 @@ void CLpd_AcelpReset(CAcelpStaticMem *acelp) {
 void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, SHORT *pitch,
                        const FIXP_LPC lsp_old[M_LP_FILTER_ORDER],
                        const FIXP_LPC lsp_new[M_LP_FILTER_ORDER],
-                       const FIXP_SGL stab_fac, INT nLostSf, int32_t synth[],
-                       INT coreCoderFrameLength, UCHAR last_tcx_noise_factor) {
+                       const FIXP_SGL stab_fac, int32_t nLostSf, int32_t synth[],
+                       int32_t coreCoderFrameLength, UCHAR last_tcx_noise_factor) {
   /* repeat past excitation with pitch from previous decoded TCX frame */
   C_ALLOC_SCRATCH_START(
       exc_buf, int32_t,
@@ -955,9 +955,9 @@ void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, SHORT *pitch,
   int32_t *exc = exc_buf + PIT_MAX_MAX + L_INTERPOL;
   int32_t *ns = ns_buf + 1;
   int32_t tmp, fact_exc;
-  INT T = fMin(*pitch, (SHORT)PIT_MAX_MAX);
-  int i, i_subfr, subfr_nr;
-  int lDiv = coreCoderFrameLength / NB_DIV;
+  int32_t T = fMin(*pitch, (SHORT)PIT_MAX_MAX);
+  int32_t i, i_subfr, subfr_nr;
+  int32_t lDiv = coreCoderFrameLength / NB_DIV;
 
   FDKmemcpy(syn_buf, acelp_mem->old_syn_mem,
             M_LP_FILTER_ORDER * sizeof(int32_t));
@@ -995,7 +995,7 @@ void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, SHORT *pitch,
        i_subfr += L_SUBFR, subfr_nr++) {
     int32_t tRes[L_SUBFR];
     FIXP_LPC A[M_LP_FILTER_ORDER];
-    INT A_exp;
+    int32_t A_exp;
 
     /* interpolate LPC coefficients */
     int_lpc_acelp(lsp_old, lsp_new, subfr_nr, lDiv / L_SUBFR, A, &A_exp);
@@ -1047,12 +1047,12 @@ void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, SHORT *pitch,
   C_ALLOC_SCRATCH_END(exc_buf, int32_t, PIT_MAX_MAX + L_INTERPOL + L_DIV);
 }
 
-void Acelp_PreProcessing(int32_t *synth_buf, int32_t *old_synth, INT *pitch,
-                         INT *old_T_pf, int32_t *pit_gain,
-                         int32_t *old_gain_pf, INT samplingRate, INT *i_offset,
-                         INT coreCoderFrameLength, INT synSfd,
-                         INT nbSubfrSuperfr) {
-  int n;
+void Acelp_PreProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch,
+                         int32_t *old_T_pf, int32_t *pit_gain,
+                         int32_t *old_gain_pf, int32_t samplingRate, int32_t *i_offset,
+                         int32_t coreCoderFrameLength, int32_t synSfd,
+                         int32_t nbSubfrSuperfr) {
+  int32_t n;
 
   /* init beginning of synth_buf with old synthesis from previous frame */
   FDKmemcpy(synth_buf, old_synth, sizeof(int32_t) * (PIT_MAX_MAX - BPF_DELAY));
@@ -1073,10 +1073,10 @@ void Acelp_PreProcessing(int32_t *synth_buf, int32_t *old_synth, INT *pitch,
   }
 }
 
-void Acelp_PostProcessing(int32_t *synth_buf, int32_t *old_synth, INT *pitch,
-                          INT *old_T_pf, INT coreCoderFrameLength, INT synSfd,
-                          INT nbSubfrSuperfr) {
-  int n;
+void Acelp_PostProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch,
+                          int32_t *old_T_pf, int32_t coreCoderFrameLength, int32_t synSfd,
+                          int32_t nbSubfrSuperfr) {
+  int32_t n;
 
   /* store last part of synth_buf (which is not handled by the IMDCT overlap)
    * for next frame */
@@ -1091,9 +1091,9 @@ void Acelp_PostProcessing(int32_t *synth_buf, int32_t *old_synth, INT *pitch,
 
 #define L_FAC_ZIR (LFAC)
 
-void CLpd_Acelp_Zir(const FIXP_LPC A[], const INT A_exp,
-                    CAcelpStaticMem *acelp_mem, const INT length,
-                    int32_t zir[], int doDeemph) {
+void CLpd_Acelp_Zir(const FIXP_LPC A[], const int32_t A_exp,
+                    CAcelpStaticMem *acelp_mem, const int32_t length,
+                    int32_t zir[], int32_t doDeemph) {
   C_ALLOC_SCRATCH_START(tmp_buf, int32_t, L_FAC_ZIR + M_LP_FILTER_ORDER);
   FDK_ASSERT(length <= L_FAC_ZIR);
 
@@ -1116,14 +1116,14 @@ void CLpd_Acelp_Zir(const FIXP_LPC A[], const INT A_exp,
 
 void CLpd_AcelpPrepareInternalMem(const int32_t *synth, UCHAR last_lpd_mode,
                                   UCHAR last_last_lpd_mode,
-                                  const FIXP_LPC *A_new, const INT A_new_exp,
-                                  const FIXP_LPC *A_old, const INT A_old_exp,
+                                  const FIXP_LPC *A_new, const int32_t A_new_exp,
+                                  const FIXP_LPC *A_old, const int32_t A_old_exp,
                                   CAcelpStaticMem *acelp_mem,
-                                  INT coreCoderFrameLength, INT clearOldExc,
+                                  int32_t coreCoderFrameLength, int32_t clearOldExc,
                                   UCHAR lpd_mode) {
-  int l_div =
+  int32_t l_div =
       coreCoderFrameLength / NB_DIV; /* length of one ACELP/TCX20 frame */
-  int l_div_partial;
+  int32_t l_div_partial;
   int32_t *syn, *old_exc_mem;
 
   C_ALLOC_SCRATCH_START(synth_buf, int32_t,
@@ -1178,10 +1178,10 @@ void CLpd_AcelpPrepareInternalMem(const int32_t *synth, UCHAR last_lpd_mode,
     E_UTIL_residu(A_new, A_new_exp, syn + l_div_partial,
                   old_exc_mem + l_div_partial, l_div);
   } else { /* prev frame was FD, TCX40 or TCX80 */
-    int exc_A_new_length = (coreCoderFrameLength / 2 > PIT_MAX_MAX + L_INTERPOL)
+    int32_t exc_A_new_length = (coreCoderFrameLength / 2 > PIT_MAX_MAX + L_INTERPOL)
                                ? PIT_MAX_MAX + L_INTERPOL
                                : coreCoderFrameLength / 2;
-    int exc_A_old_length = PIT_MAX_MAX + L_INTERPOL - exc_A_new_length;
+    int32_t exc_A_old_length = PIT_MAX_MAX + L_INTERPOL - exc_A_new_length;
     E_UTIL_residu(A_old, A_old_exp, syn, old_exc_mem, exc_A_old_length);
     E_UTIL_residu(A_new, A_new_exp, &syn[exc_A_old_length],
                   &old_exc_mem[exc_A_old_length], exc_A_new_length);
@@ -1192,25 +1192,25 @@ void CLpd_AcelpPrepareInternalMem(const int32_t *synth, UCHAR last_lpd_mode,
   return;
 }
 
-int32_t *CLpd_ACELP_GetFreeExcMem(CAcelpStaticMem *acelp_mem, INT length) {
+int32_t *CLpd_ACELP_GetFreeExcMem(CAcelpStaticMem *acelp_mem, int32_t length) {
   FDK_ASSERT(length <= PIT_MAX_MAX + L_INTERPOL);
   return acelp_mem->old_exc_mem;
 }
 
-INT CLpd_AcelpRead(HANDLE_FDK_BITSTREAM hBs, CAcelpChannelData *acelp,
-                   INT acelp_core_mode, INT coreCoderFrameLength,
-                   INT i_offset) {
-  int nb_subfr = coreCoderFrameLength / L_DIV;
+int32_t CLpd_AcelpRead(HANDLE_FDK_BITSTREAM hBs, CAcelpChannelData *acelp,
+                   int32_t acelp_core_mode, int32_t coreCoderFrameLength,
+                   int32_t i_offset) {
+  int32_t nb_subfr = coreCoderFrameLength / L_DIV;
   const UCHAR *num_acb_index_bits =
       (nb_subfr == 4) ? num_acb_idx_bits_table[0] : num_acb_idx_bits_table[1];
-  int nbits;
-  int error = 0;
+  int32_t nbits;
+  int32_t error = 0;
 
-  const int PIT_MIN = PIT_MIN_12k8 + i_offset;
-  const int PIT_FR2 = PIT_FR2_12k8 - i_offset;
-  const int PIT_FR1 = PIT_FR1_12k8;
-  const int PIT_MAX = PIT_MAX_12k8 + (6 * i_offset);
-  int T0, T0_frac, T0_min = 0, T0_max;
+  const int32_t PIT_MIN = PIT_MIN_12k8 + i_offset;
+  const int32_t PIT_FR2 = PIT_FR2_12k8 - i_offset;
+  const int32_t PIT_FR1 = PIT_FR1_12k8;
+  const int32_t PIT_MAX = PIT_MAX_12k8 + (6 * i_offset);
+  int32_t T0, T0_frac, T0_min = 0, T0_max;
 
   if (PIT_MAX > PIT_MAX_MAX) {
     error = AAC_DEC_DECODE_FRAME_ERROR;
@@ -1224,7 +1224,7 @@ INT CLpd_AcelpRead(HANDLE_FDK_BITSTREAM hBs, CAcelpChannelData *acelp,
   /* decode mean energy with 2 bits : 18, 30, 42 or 54 dB */
   acelp->mean_energy = FDKreadBits(hBs, 2);
 
-  for (int sfr = 0; sfr < nb_subfr; sfr++) {
+  for (int32_t sfr = 0; sfr < nb_subfr; sfr++) {
     /* read ACB index and store T0 and T0_frac for each ACELP subframe. */
     error = DecodePitchLag(hBs, num_acb_index_bits[sfr], PIT_MIN, PIT_FR2,
                            PIT_FR1, PIT_MAX, &T0, &T0_frac, &T0_min, &T0_max);

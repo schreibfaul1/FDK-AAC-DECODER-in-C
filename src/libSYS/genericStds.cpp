@@ -108,6 +108,7 @@ amm-info@iis.fraunhofer.de
 
 #define __GENERICSTDS_CPP__
 
+#include <stdint.h>
 #include "genericStds.h"
 
 /* library info */
@@ -154,10 +155,10 @@ void FDKprintfErr(const char *szFmt, ...) {
   va_end(ap);
 }
 
-int FDKgetchar(void) { return getchar(); }
+int32_t FDKgetchar(void) { return getchar(); }
 
-INT FDKfprintf(FDKFILE *stream, const char *format, ...) {
-  INT chars = 0;
+int32_t FDKfprintf(FDKFILE *stream, const char *format, ...) {
+  int32_t chars = 0;
   va_list ap;
   va_start(ap, format);
   chars += vfprintf((FILE *)stream, format, ap);
@@ -165,8 +166,8 @@ INT FDKfprintf(FDKFILE *stream, const char *format, ...) {
   return chars;
 }
 
-INT FDKsprintf(char *str, const char *format, ...) {
-  INT chars = 0;
+int32_t FDKsprintf(char *str, const char *format, ...) {
+  int32_t chars = 0;
   va_list ap;
   va_start(ap, format);
   chars += vsprintf(str, format, ap);
@@ -178,12 +179,12 @@ INT FDKsprintf(char *str, const char *format, ...) {
 
 /************************************************************************************************/
 
-char *FDKstrchr(char *s, INT c) { return strchr(s, c); }
+char *FDKstrchr(char *s, int32_t c) { return strchr(s, c); }
 const char *FDKstrstr(const char *haystack, const char *needle) {
   return strstr(haystack, needle);
 }
 char *FDKstrcpy(char *dest, const char *src) { return strcpy(dest, src); }
-char *FDKstrncpy(char *dest, const char *src, UINT n) {
+char *FDKstrncpy(char *dest, const char *src, uint32_t n) {
   return strncpy(dest, src, n);
 }
 
@@ -192,12 +193,12 @@ char *FDKstrncpy(char *dest, const char *src, UINT n) {
  *************************************************************************/
 #ifdef ESP32
 
-	void *FDKcalloc(const UINT n, const UINT size) {
+	void *FDKcalloc(const uint32_t n, const uint32_t size) {
     return FDKcallocExt(n, size, 1);
   }
 
   // allocate memory with an optional alignment information
-	void *FDKcallocExt(const UINT n, const UINT size, const UCHAR alignment) {
+	void *FDKcallocExt(const uint32_t n, const uint32_t size, const UCHAR alignment) {
     UCHAR alignment_effective = alignment;
 	  void *ptr=nullptr;
 //	  if (alignment%4 == 0 || size==4 || size==8 || size>20000){
@@ -216,11 +217,11 @@ char *FDKstrncpy(char *dest, const char *src, UINT n) {
 
 #else
 
-	void *FDKcallocExt(const UINT n, const UINT size, const UCHAR) {
+	void *FDKcallocExt(const uint32_t n, const uint32_t size, const UCHAR) {
     return FDKcalloc(n, size);
   }
 
-	void *FDKcalloc(const UINT n, const UINT size) {
+	void *FDKcalloc(const uint32_t n, const uint32_t size) {
 	  void *ptr;
 
 	  ptr = calloc(n, size);
@@ -234,7 +235,7 @@ char *FDKstrncpy(char *dest, const char *src, UINT n) {
 
 #endif
 
-void *FDKmalloc(const UINT size) {
+void *FDKmalloc(const uint32_t size) {
   void *ptr;
 
   ptr = malloc(size);
@@ -246,11 +247,11 @@ void *FDKmalloc(const UINT size) {
   return ptr;
 }
 
-void FDKfree(void *ptr) { free((INT *)ptr); }
+void FDKfree(void *ptr) { free((int32_t *)ptr); }
 
-void *FDKaalloc(const UINT size, const UINT alignment) {
+void *FDKaalloc(const uint32_t size, const uint32_t alignment) {
   void *addr, *result = NULL;
-  addr = FDKcallocExt(1, size + alignment +(UINT)sizeof(void *), alignment); /* Malloc and clear memory. */
+  addr = FDKcallocExt(1, size + alignment +(uint32_t)sizeof(void *), alignment); /* Malloc and clear memory. */
   if (addr != NULL) {
     result = ALIGN_PTR((unsigned char *)addr +
                        sizeof(void *)); /* Get aligned memory base address. */
@@ -277,15 +278,15 @@ void FDKafree(void *ptr) {
 /*--------------------------------------------------------------------------*
  * FDKcalloc_L
  *--------------------------------------------------------------------------*/
-void *FDKcalloc_L(const UINT dim, const UINT size, MEMORY_SECTION s) {
+void *FDKcalloc_L(const uint32_t dim, const uint32_t size, MEMORY_SECTION s) {
   return FDKcalloc(dim, size);
 }
 
 void FDKfree_L(void *p) { FDKfree(p); }
 
-void *FDKaalloc_L(const UINT size, const UINT alignment, MEMORY_SECTION s) {
+void *FDKaalloc_L(const uint32_t size, const uint32_t alignment, MEMORY_SECTION s) {
   void *addr, *result = NULL;
-  addr = FDKcalloc_L(1, size + alignment + (UINT)sizeof(void *),
+  addr = FDKcalloc_L(1, size + alignment + (uint32_t)sizeof(void *),
                      s); /* Malloc and clear memory.         */
 
   if (addr != NULL) {
@@ -313,7 +314,7 @@ void FDKafree_L(void *ptr) {
  * DESCRIPTION: - copies memory from "src" to "dst" with length "size" bytes
  *              - compiled with FDK_DEBUG will give you warnings
  *---------------------------------------------------------------------------------------*/
-void FDKmemcpy(void *dst, const void *src, const UINT size) {
+void FDKmemcpy(void *dst, const void *src, const uint32_t size) {
   /* -- check for overlapping memory areas -- */
   FDK_ASSERT(((const unsigned char *)dst - (const unsigned char *)src) >=
                  (ptrdiff_t)size ||
@@ -324,33 +325,33 @@ void FDKmemcpy(void *dst, const void *src, const UINT size) {
   memcpy(dst, src, size);
 }
 
-void FDKmemmove(void *dst, const void *src, const UINT size) {
+void FDKmemmove(void *dst, const void *src, const uint32_t size) {
   memmove(dst, src, size);
 }
 
-void FDKmemset(void *memPtr, const INT value, const UINT size) {
+void FDKmemset(void *memPtr, const int32_t value, const uint32_t size) {
   memset(memPtr, value, size);
 }
 
-void FDKmemclear(void *memPtr, const UINT size) { FDKmemset(memPtr, 0, size); }
+void FDKmemclear(void *memPtr, const uint32_t size) { FDKmemset(memPtr, 0, size); }
 
-UINT FDKstrlen(const char *s) { return (UINT)strlen(s); }
+uint32_t FDKstrlen(const char *s) { return (uint32_t)strlen(s); }
 
 /* Compare function wrappers */
-INT FDKmemcmp(const void *s1, const void *s2, const UINT size) {
+int32_t FDKmemcmp(const void *s1, const void *s2, const uint32_t size) {
   return memcmp(s1, s2, size);
 }
-INT FDKstrcmp(const char *s1, const char *s2) { return strcmp(s1, s2); }
-INT FDKstrncmp(const char *s1, const char *s2, const UINT size) {
+int32_t FDKstrcmp(const char *s1, const char *s2) { return strcmp(s1, s2); }
+int32_t FDKstrncmp(const char *s1, const char *s2, const uint32_t size) {
   return strncmp(s1, s2, size);
 }
 
-int IS_LITTLE_ENDIAN(void) {
-  int __dummy = 1;
+int32_t IS_LITTLE_ENDIAN(void) {
+  int32_t __dummy = 1;
   return (*((UCHAR *)(&(__dummy))));
 }
 
-UINT TO_LITTLE_ENDIAN(UINT val) {
+uint32_t TO_LITTLE_ENDIAN(uint32_t val) {
   return IS_LITTLE_ENDIAN()
              ? val
              : (((val & 0xff) << 24) | ((val & 0xff00) << 8) |
@@ -362,33 +363,33 @@ UINT TO_LITTLE_ENDIAN(UINT val) {
 FDKFILE *FDKfopen(const char *filename, const char *mode) {
   return fopen(filename, mode);
 }
-INT FDKfclose(FDKFILE *fp) { return fclose((FILE *)fp); }
-INT FDKfseek(FDKFILE *fp, LONG OFFSET, int WHENCE) {
+int32_t FDKfclose(FDKFILE *fp) { return fclose((FILE *)fp); }
+int32_t FDKfseek(FDKFILE *fp, LONG OFFSET, int32_t WHENCE) {
   return fseek((FILE *)fp, OFFSET, WHENCE);
 }
-INT FDKftell(FDKFILE *fp) { return ftell((FILE *)fp); }
-INT FDKfflush(FDKFILE *fp) { return fflush((FILE *)fp); }
-const INT FDKSEEK_SET = SEEK_SET;
-const INT FDKSEEK_CUR = SEEK_CUR;
-const INT FDKSEEK_END = SEEK_END;
+int32_t FDKftell(FDKFILE *fp) { return ftell((FILE *)fp); }
+int32_t FDKfflush(FDKFILE *fp) { return fflush((FILE *)fp); }
+const int32_t FDKSEEK_SET = SEEK_SET;
+const int32_t FDKSEEK_CUR = SEEK_CUR;
+const int32_t FDKSEEK_END = SEEK_END;
 
-UINT FDKfwrite(const void *ptrf, INT size, UINT nmemb, FDKFILE *fp) {
-  return (UINT)fwrite(ptrf, size, nmemb, (FILE *)fp);
+uint32_t FDKfwrite(const void *ptrf, int32_t size, uint32_t nmemb, FDKFILE *fp) {
+  return (uint32_t)fwrite(ptrf, size, nmemb, (FILE *)fp);
 }
-UINT FDKfread(void *dst, INT size, UINT nmemb, FDKFILE *fp) {
-  return (UINT)fread(dst, size, nmemb, (FILE *)fp);
+uint32_t FDKfread(void *dst, int32_t size, uint32_t nmemb, FDKFILE *fp) {
+  return (uint32_t)fread(dst, size, nmemb, (FILE *)fp);
 }
-char *FDKfgets(void *dst, INT size, FDKFILE *fp) {
+char *FDKfgets(void *dst, int32_t size, FDKFILE *fp) {
   return fgets((char *)dst, size, (FILE *)fp);
 }
 void FDKrewind(FDKFILE *fp) { FDKfseek((FILE *)fp, 0, FDKSEEK_SET); }
 
-UINT FDKfwrite_EL(const void *ptrf, INT size, UINT nmemb, FDKFILE *fp) {
+uint32_t FDKfwrite_EL(const void *ptrf, int32_t size, uint32_t nmemb, FDKFILE *fp) {
   if (IS_LITTLE_ENDIAN()) {
     FDKfwrite(ptrf, size, nmemb, fp);
   } else {
-    UINT n;
-    INT s;
+    uint32_t n;
+    int32_t s;
 
     const UCHAR *ptr = (const UCHAR *)ptrf;
 
@@ -402,8 +403,8 @@ UINT FDKfwrite_EL(const void *ptrf, INT size, UINT nmemb, FDKFILE *fp) {
   return nmemb;
 }
 
-UINT FDKfread_EL(void *dst, INT size, UINT nmemb, FDKFILE *fp) {
-  UINT n, s0, s1, err;
+uint32_t FDKfread_EL(void *dst, int32_t size, uint32_t nmemb, FDKFILE *fp) {
+  uint32_t n, s0, s1, err;
   UCHAR tmp, *ptr;
   UCHAR tmp24[3];
 
@@ -445,7 +446,7 @@ UINT FDKfread_EL(void *dst, INT size, UINT nmemb, FDKFILE *fp) {
   return err;
 }
 
-INT FDKfeof(FDKFILE *fp) { return feof((FILE *)fp); }
+int32_t FDKfeof(FDKFILE *fp) { return feof((FILE *)fp); }
 
 /* Global initialization/cleanup */
 

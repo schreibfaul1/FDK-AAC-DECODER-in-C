@@ -114,14 +114,14 @@ typedef struct {
 typedef struct {
   CPnsInterChannelData *pPnsInterChannelData;
   UCHAR pnsUsed[NO_OFBANDS];
-  int CurrentEnergy;
+  int32_t CurrentEnergy;
   UCHAR PnsActive;
-  INT *currentSeed;
-  INT *randomSeed;
+  int32_t *currentSeed;
+  int32_t *randomSeed;
 } CPnsData;
 
-void CPns_UpdateNoiseState(CPnsData *pPnsData, INT *currentSeed,
-                           INT *randomSeed);
+void CPns_UpdateNoiseState(CPnsData *pPnsData, int32_t *currentSeed,
+                           int32_t *randomSeed);
 
 void CPns_ResetData(CPnsData *pPnsData,
                     CPnsInterChannelData *pPnsInterChannelData);

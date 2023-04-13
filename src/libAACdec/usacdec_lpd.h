@@ -118,7 +118,7 @@ amm-info@iis.fraunhofer.de
 AAC_DECODER_ERROR CLpdChannelStream_Read(
     HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, UINT flags);
+    const SamplingRateInfo *pSamplingRateInfo, uint32_t flags);
 
 /**
  * \brief decode one lpd_channel_stream and render the audio output.
@@ -131,7 +131,7 @@ AAC_DECODER_ERROR CLpdChannelStream_Read(
  */
 void CLpdChannelStream_Decode(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo, UINT flags);
+    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo, uint32_t flags);
 
 /**
  * \brief generate time domain output signal for LPD channel streams
@@ -146,10 +146,10 @@ void CLpdChannelStream_Decode(
 AAC_DECODER_ERROR CLpd_RenderTimeSignal(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
     CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t *pTimeData,
-    INT samplesPerFrame, SamplingRateInfo *pSamplingRateInfo, UINT frameOk,
-    const INT aacOutDataHeadroom, UINT flags, UINT strmFlags);
+    int32_t samplesPerFrame, SamplingRateInfo *pSamplingRateInfo, uint32_t frameOk,
+    const int32_t aacOutDataHeadroom, uint32_t flags, uint32_t strmFlags);
 
-static inline INT CLpd_FAC_getLength(int fNotShortBlock, int fac_length_long) {
+static inline int32_t CLpd_FAC_getLength(int32_t fNotShortBlock, int32_t fac_length_long) {
   if (fNotShortBlock) {
     return (fac_length_long);
   } else {
@@ -158,8 +158,8 @@ static inline INT CLpd_FAC_getLength(int fNotShortBlock, int fac_length_long) {
 }
 
 void filtLP(const int32_t *syn, int32_t *syn_out, int32_t *noise,
-            const FIXP_SGL *filt, const INT aacOutDataHeadroom, INT stop,
-            int len);
+            const FIXP_SGL *filt, const int32_t aacOutDataHeadroom, int32_t stop,
+            int32_t len);
 
 /**
  * \brief perform a low-frequency pitch enhancement on time domain signal
@@ -177,10 +177,10 @@ void filtLP(const int32_t *syn, int32_t *syn_out, int32_t *noise,
  * \param[in,out] mem_bpf pointer to filter memory (L_FILT+L_SUBFR)
  */
 
-void bass_pf_1sf_delay(int32_t syn[], const INT T_sf[], int32_t *pit_gain,
-                       const int frame_length, const INT l_frame,
-                       const INT l_next, int32_t *synth_out,
-                       const INT aacOutDataHeadroom, int32_t mem_bpf[]);
+void bass_pf_1sf_delay(int32_t syn[], const int32_t T_sf[], int32_t *pit_gain,
+                       const int32_t frame_length, const int32_t l_frame,
+                       const int32_t l_next, int32_t *synth_out,
+                       const int32_t aacOutDataHeadroom, int32_t mem_bpf[]);
 
 /**
  * \brief random sign generator for FD and TCX noise filling
@@ -190,10 +190,10 @@ void bass_pf_1sf_delay(int32_t syn[], const INT T_sf[], int32_t *pit_gain,
  * "UsacRandomSign"
  */
 FDK_INLINE
-int UsacRandomSign(ULONG *seed) {
+int32_t UsacRandomSign(ULONG *seed) {
   *seed = (ULONG)((UINT64)(*seed) * 69069 + 5);
 
-  return (int)((*seed) & 0x10000);
+  return (int32_t)((*seed) & 0x10000);
 }
 
 void CFdp_Reset(CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo);

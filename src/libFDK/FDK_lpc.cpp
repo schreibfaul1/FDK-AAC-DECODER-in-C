@@ -113,13 +113,13 @@ static SCHAR order_ld[LPC_MAX_ORDER] = {
 
 /* IIRLattice */
 #ifndef FUNCTION_CLpc_SynthesisLattice_SGL
-void CLpc_SynthesisLattice(int32_t *signal, const int signal_size,
-                           const int signal_e, const int signal_e_out,
-                           const int inc, const FIXP_SGL *coeff,
-                           const int order, int32_t *state) {
-  int i, j;
+void CLpc_SynthesisLattice(int32_t *signal, const int32_t signal_size,
+                           const int32_t signal_e, const int32_t signal_e_out,
+                           const int32_t inc, const FIXP_SGL *coeff,
+                           const int32_t order, int32_t *state) {
+  int32_t i, j;
   int32_t *pSignal;
-  int shift;
+  int32_t shift;
 
   FDK_ASSERT(order <= LPC_MAX_ORDER);
   FDK_ASSERT(order > 0);
@@ -165,11 +165,11 @@ void CLpc_SynthesisLattice(int32_t *signal, const int signal_size,
 #endif
 
 #ifndef FUNCTION_CLpc_SynthesisLattice_DBL
-void CLpc_SynthesisLattice(int32_t *signal, const int signal_size,
-                           const int signal_e, const int signal_e_out,
-                           const int inc, const int32_t *coeff,
-                           const int order, int32_t *state) {
-  int i, j;
+void CLpc_SynthesisLattice(int32_t *signal, const int32_t signal_size,
+                           const int32_t signal_e, const int32_t signal_e_out,
+                           const int32_t inc, const int32_t *coeff,
+                           const int32_t order, int32_t *state) {
+  int32_t i, j;
   int32_t *pSignal;
 
   FDK_ASSERT(order <= LPC_MAX_ORDER);
@@ -211,13 +211,13 @@ void CLpc_SynthesisLattice(int32_t *signal, const int signal_size,
 #endif
 
 /* LPC_SYNTHESIS_IIR version */
-void CLpc_Synthesis(int32_t *signal, const int signal_size, const int signal_e,
-                    const int inc, const FIXP_LPC_TNS *lpcCoeff_m,
-                    const int lpcCoeff_e, const int order, int32_t *state,
-                    int *pStateIndex) {
-  int i, j;
+void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t signal_e,
+                    const int32_t inc, const FIXP_LPC_TNS *lpcCoeff_m,
+                    const int32_t lpcCoeff_e, const int32_t order, int32_t *state,
+                    int32_t *pStateIndex) {
+  int32_t i, j;
   int32_t *pSignal;
-  int stateIndex = *pStateIndex;
+  int32_t stateIndex = *pStateIndex;
 
   FIXP_LPC_TNS coeff[2 * LPC_MAX_ORDER];
   FDKmemcpy(&coeff[0], lpcCoeff_m, order * sizeof(FIXP_LPC_TNS));
@@ -254,13 +254,13 @@ void CLpc_Synthesis(int32_t *signal, const int signal_size, const int signal_e,
   *pStateIndex = stateIndex;
 }
 /* default version */
-void CLpc_Synthesis(int32_t *signal, const int signal_size, const int signal_e,
-                    const int inc, const FIXP_LPC *lpcCoeff_m,
-                    const int lpcCoeff_e, const int order, int32_t *state,
-                    int *pStateIndex) {
-  int i, j;
+void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t signal_e,
+                    const int32_t inc, const FIXP_LPC *lpcCoeff_m,
+                    const int32_t lpcCoeff_e, const int32_t order, int32_t *state,
+                    int32_t *pStateIndex) {
+  int32_t i, j;
   int32_t *pSignal;
-  int stateIndex = *pStateIndex;
+  int32_t stateIndex = *pStateIndex;
 
   FIXP_LPC coeff[2 * LPC_MAX_ORDER];
   FDKmemcpy(&coeff[0], lpcCoeff_m, order * sizeof(FIXP_LPC));
@@ -298,12 +298,12 @@ void CLpc_Synthesis(int32_t *signal, const int signal_size, const int signal_e,
 }
 
 /* FIR */
-void CLpc_Analysis(int32_t *RESTRICT signal, const int signal_size,
-                   const FIXP_LPC lpcCoeff_m[], const int lpcCoeff_e,
-                   const int order, int32_t *RESTRICT filtState,
-                   int *filtStateIndex) {
-  int stateIndex;
-  INT i, j, shift = lpcCoeff_e + 1; /* +1, because fMultDiv2 */
+void CLpc_Analysis(int32_t *RESTRICT signal, const int32_t signal_size,
+                   const FIXP_LPC lpcCoeff_m[], const int32_t lpcCoeff_e,
+                   const int32_t order, int32_t *RESTRICT filtState,
+                   int32_t *filtStateIndex) {
+  int32_t stateIndex;
+  int32_t i, j, shift = lpcCoeff_e + 1; /* +1, because fMultDiv2 */
   int32_t tmp;
 
   if (order <= 0) {
@@ -352,10 +352,10 @@ void CLpc_Analysis(int32_t *RESTRICT signal, const int signal_size,
 }
 
 /* For the LPC_SYNTHESIS_IIR version */
-INT CLpc_ParcorToLpc(const FIXP_LPC_TNS reflCoeff[], FIXP_LPC_TNS LpcCoeff[],
-                     INT numOfCoeff, int32_t workBuffer[]) {
-  INT i, j;
-  INT shiftval,
+int32_t CLpc_ParcorToLpc(const FIXP_LPC_TNS reflCoeff[], FIXP_LPC_TNS LpcCoeff[],
+                     int32_t numOfCoeff, int32_t workBuffer[]) {
+  int32_t i, j;
+  int32_t shiftval,
       par2LpcShiftVal = 6; /* 6 should be enough, bec. max(numOfCoeff) = 20 */
   int32_t maxVal = (int32_t)0;
 
@@ -390,10 +390,10 @@ INT CLpc_ParcorToLpc(const FIXP_LPC_TNS reflCoeff[], FIXP_LPC_TNS LpcCoeff[],
   return (par2LpcShiftVal - shiftval);
 }
 /* Default version */
-INT CLpc_ParcorToLpc(const FIXP_LPC reflCoeff[], FIXP_LPC LpcCoeff[],
-                     INT numOfCoeff, int32_t workBuffer[]) {
-  INT i, j;
-  INT shiftval,
+int32_t CLpc_ParcorToLpc(const FIXP_LPC reflCoeff[], FIXP_LPC LpcCoeff[],
+                     int32_t numOfCoeff, int32_t workBuffer[]) {
+  int32_t i, j;
+  int32_t shiftval,
       par2LpcShiftVal = 6; /* 6 should be enough, bec. max(numOfCoeff) = 20 */
   int32_t maxVal = (int32_t)0;
 
@@ -428,10 +428,10 @@ INT CLpc_ParcorToLpc(const FIXP_LPC reflCoeff[], FIXP_LPC LpcCoeff[],
   return (par2LpcShiftVal - shiftval);
 }
 
-void CLpc_AutoToParcor(int32_t acorr[], const int acorr_e,
-                       FIXP_LPC reflCoeff[], const int numOfCoeff,
-                       int32_t *pPredictionGain_m, INT *pPredictionGain_e) {
-  INT i, j, scale = 0;
+void CLpc_AutoToParcor(int32_t acorr[], const int32_t acorr_e,
+                       FIXP_LPC reflCoeff[], const int32_t numOfCoeff,
+                       int32_t *pPredictionGain_m, int32_t *pPredictionGain_e) {
+  int32_t i, j, scale = 0;
   int32_t parcorWorkBuffer[LPC_MAX_ORDER];
 
   int32_t *workBuffer = parcorWorkBuffer;

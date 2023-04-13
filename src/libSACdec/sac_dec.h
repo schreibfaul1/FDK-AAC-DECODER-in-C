@@ -175,8 +175,8 @@ typedef enum {
   UPMIXTYPE_NORMAL = 0   /*multichannel loudspeaker upmix with spatial data*/
 } UPMIXTYPE;
 
-static inline int isTwoChMode(UPMIXTYPE upmixType) {
-  int retval = 0;
+static inline int32_t isTwoChMode(UPMIXTYPE upmixType) {
+  int32_t retval = 0;
   return retval;
 }
 
@@ -211,7 +211,7 @@ struct SPATIAL_BS_FRAME_struct {
   Otherwise, it is
     paramSlot[ps] = bsParamSlot[ps]
   */
-  INT paramSlot[MAX_PARAMETER_SETS];
+  int32_t paramSlot[MAX_PARAMETER_SETS];
 
   /* These arrays contain the compact indices, only one value per pbstride, only
    * paramsets actually containing data. */
@@ -239,8 +239,8 @@ struct SPATIAL_BS_FRAME_struct {
 
   LOSSLESSDATA *IPDLosslessData;
   SCHAR (*cmpOttIPDidx)[MAX_PARAMETER_SETS][MAX_PARAMETER_BANDS];
-  int phaseMode;
-  int OpdSmoothingMode;
+  int32_t phaseMode;
+  int32_t OpdSmoothingMode;
 
   UCHAR tempShapeEnableChannelGES[MAX_OUTPUT_CHANNELS]; /*!< GES side info. */
   UCHAR bsEnvShapeData[MAX_OUTPUT_CHANNELS]
@@ -259,8 +259,8 @@ typedef struct {
 } BS_LL_STATE;
 
 typedef struct {
-  int prevParamSlot;
-  int prevSmgTime;
+  int32_t prevParamSlot;
+  int32_t prevSmgTime;
   UCHAR prevSmgData[MAX_PARAMETER_BANDS];
 
   int32_t opdLeftState__FDK[MAX_PARAMETER_BANDS];
@@ -275,27 +275,27 @@ typedef struct {
                            [BB_ENV_SIZE];
   int32_t normNrgPrev__FDK[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
   int32_t frameNrgPrev__FDK[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
-  INT partNrgPrevSF[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
-  INT partNrgPrev2SF[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
-  INT normNrgPrevSF[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
-  INT frameNrgPrevSF[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
+  int32_t partNrgPrevSF[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
+  int32_t partNrgPrev2SF[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
+  int32_t normNrgPrevSF[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
+  int32_t frameNrgPrevSF[2 * MAX_OUTPUT_CHANNELS + MAX_INPUT_CHANNELS];
 } RESHAPE_BBENV_STATE;
 
 typedef struct {
-  int maxNumInputChannels;
-  int maxNumOutputChannels;
-  int maxNumQmfBands;
-  int maxNumHybridBands;
-  int maxNumXChannels;
-  int maxNumVChannels;
-  int maxNumDecorChannels;
-  int maxNumCmplxQmfBands;
-  int maxNumCmplxHybBands;
-  int maxNumResChannels;
-  int bProcResidual; /* process residual */
-  int maxNumResidualChannels;
-  int maxNumOttBoxes;
-  int maxNumParams;
+  int32_t maxNumInputChannels;
+  int32_t maxNumOutputChannels;
+  int32_t maxNumQmfBands;
+  int32_t maxNumHybridBands;
+  int32_t maxNumXChannels;
+  int32_t maxNumVChannels;
+  int32_t maxNumDecorChannels;
+  int32_t maxNumCmplxQmfBands;
+  int32_t maxNumCmplxHybBands;
+  int32_t maxNumResChannels;
+  int32_t bProcResidual; /* process residual */
+  int32_t maxNumResidualChannels;
+  int32_t maxNumOttBoxes;
+  int32_t maxNumParams;
 
 } SACDEC_CREATION_PARAMS;
 
@@ -303,83 +303,83 @@ struct spatialDec_struct {
   SACDEC_ERROR
   errInt;             /* Field to store internal errors.
                          Will be clear at the very beginning of each process call. */
-  int staticDecScale; /* static scale of decoder */
+  int32_t staticDecScale; /* static scale of decoder */
 
   /* GENERAL */
-  int samplingFreq;       /* [Hz] */
+  int32_t samplingFreq;       /* [Hz] */
   CFG_LEVEL decoderLevel; /* 0..5 */
   CFG_EXTENT decoderMode;
   CFG_BINAURAL binauralMode;
 
   SACDEC_CREATION_PARAMS createParams;
 
-  int numComplexProcessingBands;
+  int32_t numComplexProcessingBands;
 
-  int treeConfig; /* TREE_5151 = 5151, TREE_5152 = 5152, TREE_525 = 525, defined
+  int32_t treeConfig; /* TREE_5151 = 5151, TREE_5152 = 5152, TREE_525 = 525, defined
                      in sac_bitdec.h */
 
-  int numInputChannels;  /* 1 (M) or 2 (L,R) */
-  int numOutputChannels; /* 6 for 3/2.1 (FL,FR,FC,LF,BL,BR) */
-  int numOttBoxes;       /* number of ott boxes */
-  int numM2rows;
+  int32_t numInputChannels;  /* 1 (M) or 2 (L,R) */
+  int32_t numOutputChannels; /* 6 for 3/2.1 (FL,FR,FC,LF,BL,BR) */
+  int32_t numOttBoxes;       /* number of ott boxes */
+  int32_t numM2rows;
 
-  int numOutputChannelsAT; /* Number of output channels after arbitrary tree
+  int32_t numOutputChannelsAT; /* Number of output channels after arbitrary tree
                               processing */
 
-  int quantMode; /* QUANT_FINE, QUANT_EBQ1, QUANT_EBQ2, defined in sac_bitdec.h
+  int32_t quantMode; /* QUANT_FINE, QUANT_EBQ1, QUANT_EBQ2, defined in sac_bitdec.h
                   */
-  int arbitraryDownmix; /* (arbitraryDownmix != 0) 1 arbitrary downmix data
+  int32_t arbitraryDownmix; /* (arbitraryDownmix != 0) 1 arbitrary downmix data
                            present, 2 arbitrary downmix residual data present*/
-  int residualCoding;   /* (residualCoding != 0) => residual coding data present
+  int32_t residualCoding;   /* (residualCoding != 0) => residual coding data present
                          */
   UCHAR nrResidualFrame;
   UCHAR nrArbDownmixResidualFrame;
   FDK_BITSTREAM **hResidualBitstreams;
-  int tempShapeConfig; /* */
-  int decorrType;      /* Indicates to use PS or none PS decorrelator. */
-  int decorrConfig;    /* chosen decorrelator */
-  int envQuantMode;    /* quantization mode of envelope reshaping data */
+  int32_t tempShapeConfig; /* */
+  int32_t decorrType;      /* Indicates to use PS or none PS decorrelator. */
+  int32_t decorrConfig;    /* chosen decorrelator */
+  int32_t envQuantMode;    /* quantization mode of envelope reshaping data */
 
   int32_t clipProtectGain__FDK; /* global gain for upmix */
   char clipProtectGainSF__FDK;   /* global gain for upmix */
 
   /* Currently ignoring center decorr
      numVChannels = numDirektSignals + numDecorSignals */
-  int numDirektSignals;  /* needed for W, Number of direkt signals 515 -> 1 525
+  int32_t numDirektSignals;  /* needed for W, Number of direkt signals 515 -> 1 525
                             -> 3 */
-  int wStartResidualIdx; /* Where to start read residuals for W, = 0 for 515, =
+  int32_t wStartResidualIdx; /* Where to start read residuals for W, = 0 for 515, =
                             1 for 525 since one residual is used in V */
-  int numDecorSignals;   /* needed for W, Number of residual and decorrelated
+  int32_t numDecorSignals;   /* needed for W, Number of residual and decorrelated
                             signals, = 2, 3 for center deccorelation*/
-  int numVChannels;      /* direct signals + decorelator signals */
-  int numXChannels;      /* direct input signals + TTT-residuals */
+  int32_t numVChannels;      /* direct signals + decorelator signals */
+  int32_t numXChannels;      /* direct input signals + TTT-residuals */
 
-  int timeSlots;    /* length of spatial frame in QMF samples */
-  int curTimeSlot;  /* pointer to the current time slot used for hyperframing */
-  int prevTimeSlot; /*  */
-  int curPs;
-  int frameLength; /* number of output waveform samples/channel/frame */
+  int32_t timeSlots;    /* length of spatial frame in QMF samples */
+  int32_t curTimeSlot;  /* pointer to the current time slot used for hyperframing */
+  int32_t prevTimeSlot; /*  */
+  int32_t curPs;
+  int32_t frameLength; /* number of output waveform samples/channel/frame */
   UPMIXTYPE upmixType;
-  int partiallyComplex;
-  int useFDreverb;
+  int32_t partiallyComplex;
+  int32_t useFDreverb;
 
-  int bShareDelayWithSBR;
+  int32_t bShareDelayWithSBR;
 
-  int tp_hybBandBorder; /* Hybrid band indicating the HP filter cut-off. */
+  int32_t tp_hybBandBorder; /* Hybrid band indicating the HP filter cut-off. */
 
   /* FREQUENCY MAPPING */
-  int qmfBands;
-  int hybridBands;
+  int32_t qmfBands;
+  int32_t hybridBands;
   const SCHAR *kernels; /* Mapping hybrid band to parameter band. */
 
-  int TsdTs; /**< TSD QMF slot counter 0<= ts < numSlots */
+  int32_t TsdTs; /**< TSD QMF slot counter 0<= ts < numSlots */
 
-  int *param2hyb; /* Mapping parameter bands to hybrid bands */
-  int kernels_width[MAX_PARAMETER_BANDS]; /* Mapping parmeter band to hybrid
+  int32_t *param2hyb; /* Mapping parameter bands to hybrid bands */
+  int32_t kernels_width[MAX_PARAMETER_BANDS]; /* Mapping parmeter band to hybrid
                                              band offsets. */
 
   /* Residual coding */
-  int residualSamplingFreq;
+  int32_t residualSamplingFreq;
   UCHAR residualPresent[MAX_NUM_OTT + MAX_NUM_TTT];
   UCHAR residualBands[MAX_NUM_OTT + MAX_NUM_TTT];    /* 0, if no residual data
                                                         present for this box */
@@ -387,20 +387,20 @@ struct spatialDec_struct {
                                                         mdct2qmf calculation */
   SPATIAL_SPECIFIC_CONFIG *pConfigCurrent;
 
-  int arbdmxFramesPerSpatialFrame;
-  int arbdmxUpdQMF;
+  int32_t arbdmxFramesPerSpatialFrame;
+  int32_t arbdmxUpdQMF;
 
-  int numParameterBands; /* Number of parameter bands 40, 28, 20, 14, 10, ...
+  int32_t numParameterBands; /* Number of parameter bands 40, 28, 20, 14, 10, ...
                             .*/
-  int bitstreamParameterBands;
-  int *numOttBands; /* number of bands for each ott, is != numParameterBands for
+  int32_t bitstreamParameterBands;
+  int32_t *numOttBands; /* number of bands for each ott, is != numParameterBands for
                        LFEs */
 
   /* 1 MAPPING */
   UCHAR extendFrame;
   UCHAR numParameterSetsPrev;
 
-  int *smgTime;
+  int32_t *smgTime;
   UCHAR **smgData;
 
   /* PARAMETER DATA decoded and dequantized */
@@ -431,9 +431,9 @@ struct spatialDec_struct {
   int32_t *arbdmxAlphaPrev__FDK;
 
   UCHAR stereoConfigIndex;
-  int highRateMode;
+  int32_t highRateMode;
 
-  int phaseCoding;
+  int32_t phaseCoding;
 
   SCHAR ***ottIPD__FDK;
 
@@ -441,7 +441,7 @@ struct spatialDec_struct {
   int32_t PhaseRight__FDK[MAX_PARAMETER_BANDS];
   int32_t PhasePrevLeft__FDK[MAX_PARAMETER_BANDS];
   int32_t PhasePrevRight__FDK[MAX_PARAMETER_BANDS];
-  int numOttBandsIPD;
+  int32_t numOttBandsIPD;
 
   /* GAIN MATRICIES FOR CURRENT and PREVIOUS PARMATER SET(s)*/
   int32_t ***M2Real__FDK;
@@ -453,9 +453,9 @@ struct spatialDec_struct {
   int32_t ***qmfInputRealDelayBuffer__FDK;
   int32_t ***qmfInputImagDelayBuffer__FDK;
 
-  int pc_filterdelay; /* additional delay to align HQ with LP before hybird
+  int32_t pc_filterdelay; /* additional delay to align HQ with LP before hybird
                          analysis */
-  int qmfInputDelayBufPos;
+  int32_t qmfInputDelayBufPos;
   int32_t **qmfInputReal__FDK;
   int32_t **qmfInputImag__FDK;
 
@@ -475,7 +475,7 @@ struct spatialDec_struct {
   int32_t **hybResidualReal__FDK;
   int32_t **hybResidualImag__FDK;
 
-  int qmfOutputRealDryDelayBufPos;
+  int32_t qmfOutputRealDryDelayBufPos;
   int32_t ***qmfOutputRealDryDelayBuffer__FDK;
   int32_t ***qmfOutputImagDryFilterBuffer__FDK;
   int32_t *qmfOutputImagDryFilterBufferBase__FDK;
@@ -519,12 +519,12 @@ struct spatialDec_struct {
 
   const UCHAR *pActivM2ParamBands;
 
-  int bOverwriteM1M2prev; /* Overwrite previous M2/M2 params with first set of
+  int32_t bOverwriteM1M2prev; /* Overwrite previous M2/M2 params with first set of
                              new frame after SSC change (aka
                              decodeAfterConfigHasChangedFlag). */
   SpatialDecConcealmentInfo concealInfo;
 
-  INT sacInDataHeadroom; /* Headroom of the SAC input time signal to prevent
+  int32_t sacInDataHeadroom; /* Headroom of the SAC input time signal to prevent
                             clipping */
 };
 
@@ -535,7 +535,7 @@ struct spatialDec_struct {
 #define SACDEC_SYNTAX_L3 16
 #define SACDEC_SYNTAX_LD 32
 
-static inline int GetProcBand(spatialDec_struct *self, int qs) {
+static inline int32_t GetProcBand(spatialDec_struct *self, int32_t qs) {
   return self->kernels[qs];
 }
 

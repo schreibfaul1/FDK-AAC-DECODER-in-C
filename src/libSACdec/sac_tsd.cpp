@@ -134,8 +134,8 @@ static const FIXP_DPK phiTsd[8] = {
     {{(int32_t)0x5a82799a, (int32_t)0xa57d8666}}};
 
 /*** Static Functions ***/
-static void longmult1(USHORT a[], USHORT b, USHORT d[], int len) {
-  int k;
+static void longmult1(USHORT a[], USHORT b, USHORT d[], int32_t len) {
+  int32_t k;
   ULONG tmp;
   ULONG b0 = (ULONG)b;
 
@@ -148,10 +148,10 @@ static void longmult1(USHORT a[], USHORT b, USHORT d[], int len) {
   }
 }
 
-static void longdiv(USHORT b[], USHORT a, USHORT d[], USHORT *pr, int len) {
+static void longdiv(USHORT b[], USHORT a, USHORT d[], USHORT *pr, int32_t len) {
   ULONG r;
   ULONG tmp;
-  int k;
+  int32_t k;
 
   FDK_ASSERT(a != 0);
 
@@ -170,8 +170,8 @@ static void longdiv(USHORT b[], USHORT a, USHORT d[], USHORT *pr, int len) {
   *pr = (USHORT)r;
 }
 
-static void longsub(USHORT a[], USHORT b[], int lena, int lenb) {
-  int h;
+static void longsub(USHORT a[], USHORT b[], int32_t lena, int32_t lenb) {
+  int32_t h;
   LONG carry = 0;
 
   FDK_ASSERT(lena >= lenb);
@@ -192,8 +192,8 @@ static void longsub(USHORT a[], USHORT b[], int lena, int lenb) {
   return;
 }
 
-static int longcompare(USHORT a[], USHORT b[], int len) {
-  int i;
+static int32_t longcompare(USHORT a[], USHORT b[], int32_t len) {
+  int32_t i;
 
   for (i = len - 1; i > 0; i--) {
     if (a[i] != b[i]) break;
@@ -201,14 +201,14 @@ static int longcompare(USHORT a[], USHORT b[], int len) {
   return (a[i] >= b[i]) ? 1 : 0;
 }
 
-FDK_INLINE int isTrSlot(const TSD_DATA *pTsdData, const int ts) {
+FDK_INLINE int32_t isTrSlot(const TSD_DATA *pTsdData, const int32_t ts) {
   return (pTsdData->bsTsdTrPhaseData[ts] >= 0);
 }
 
 /*** Public Functions ***/
-int TsdRead(HANDLE_FDK_BITSTREAM hBs, const int numSlots, TSD_DATA *pTsdData) {
-  int nBitsTrSlots = 0;
-  int bsTsdNumTrSlots;
+int32_t TsdRead(HANDLE_FDK_BITSTREAM hBs, const int32_t numSlots, TSD_DATA *pTsdData) {
+  int32_t nBitsTrSlots = 0;
+  int32_t bsTsdNumTrSlots;
   const UCHAR *nBitsTsdCW_tab = NULL;
 
   switch (numSlots) {
@@ -237,10 +237,10 @@ int TsdRead(HANDLE_FDK_BITSTREAM hBs, const int numSlots, TSD_DATA *pTsdData) {
 
   /* Decode transient slot positions */
   {
-    int nBitsTsdCW = (int)nBitsTsdCW_tab[bsTsdNumTrSlots];
+    int32_t nBitsTsdCW = (int32_t)nBitsTsdCW_tab[bsTsdNumTrSlots];
     SCHAR *phaseData = pTsdData->bsTsdTrPhaseData;
-    int p = bsTsdNumTrSlots + 1;
-    int k, h;
+    int32_t p = bsTsdNumTrSlots + 1;
+    int32_t k, h;
     USHORT s[SIZE_S] = {0};
     USHORT c[SIZE_C] = {0};
     USHORT r[1];
@@ -302,12 +302,12 @@ int TsdRead(HANDLE_FDK_BITSTREAM hBs, const int numSlots, TSD_DATA *pTsdData) {
   return 0;
 }
 
-void TsdGenerateNonTr(const int numHybridBands, const TSD_DATA *pTsdData,
-                      const int ts, int32_t *pVdirectReal,
+void TsdGenerateNonTr(const int32_t numHybridBands, const TSD_DATA *pTsdData,
+                      const int32_t ts, int32_t *pVdirectReal,
                       int32_t *pVdirectImag, int32_t *pVnonTrReal,
                       int32_t *pVnonTrImag, int32_t **ppDecorrInReal,
                       int32_t **ppDecorrInImag) {
-  int k = 0;
+  int32_t k = 0;
 
   if (!isTrSlot(pTsdData, ts)) {
     /* Let allpass based decorrelator read from direct input. */
@@ -329,13 +329,13 @@ void TsdGenerateNonTr(const int numHybridBands, const TSD_DATA *pTsdData,
   *ppDecorrInImag = pVnonTrImag;
 }
 
-void TsdApply(const int numHybridBands, const TSD_DATA *pTsdData, int *pTsdTs,
+void TsdApply(const int32_t numHybridBands, const TSD_DATA *pTsdData, int32_t *pTsdTs,
               const int32_t *pVdirectReal, const int32_t *pVdirectImag,
               int32_t *pDnonTrReal, int32_t *pDnonTrImag) {
-  const int ts = *pTsdTs;
+  const int32_t ts = *pTsdTs;
 
   if (isTrSlot(pTsdData, ts)) {
-    int k;
+    int32_t k;
     const FIXP_DPK *phi = &phiTsd[pTsdData->bsTsdTrPhaseData[ts]];
     FDK_ASSERT((pTsdData->bsTsdTrPhaseData[ts] >= 0) &&
                (pTsdData->bsTsdTrPhaseData[ts] < 8));

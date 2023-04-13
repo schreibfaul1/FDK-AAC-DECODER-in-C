@@ -120,7 +120,7 @@ amm-info@iis.fraunhofer.de
   (FL2FXCONST_DBL(1.0f / (float)DRC_MAX_QUANT_FACTOR))
 #define DRC_PARAM_SCALE (1)
 #define DRC_SCALING_MAX \
-  ((int32_t)((INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (INT)127))
+  ((int32_t)((int32_t)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (int32_t)127))
 
 #define DRC_BLOCK_LEN (1024)
 #define DRC_BAND_MULT (4)
@@ -135,19 +135,19 @@ amm-info@iis.fraunhofer.de
 #define OFF 0
 #define ON 1
 
-static INT convert_drcParam(int32_t param_dbl) {
+static int32_t convert_drcParam(int32_t param_dbl) {
   /* converts an internal DRC boost/cut scaling factor in int32_t
      (which is downscaled by DRC_PARAM_SCALE)
      back to an integer value between 0 and 127. */
   LONG param_long;
 
   param_long = (LONG)param_dbl >> 7;
-  param_long = param_long * (INT)DRC_MAX_QUANT_FACTOR;
+  param_long = param_long * (int32_t)DRC_MAX_QUANT_FACTOR;
   param_long >>= 31 - 7 - DRC_PARAM_SCALE - 1;
   param_long += 1; /* for rounding */
   param_long >>= 1;
 
-  return (INT)param_long;
+  return (int32_t)param_long;
 }
 
 /*!
@@ -238,7 +238,7 @@ void aacDecoder_drcInitChannelData(CDrcChannelData *pDrcChData) {
   \return an error code.
 */
 AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
-                                         AACDEC_DRC_PARAM param, INT value) {
+                                         AACDEC_DRC_PARAM param, int32_t value) {
   AAC_DECODER_ERROR ErrorStatus = AAC_DEC_OK;
 
   switch (param) {
@@ -251,7 +251,7 @@ AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
         return AAC_DEC_INVALID_HANDLE;
       }
       self->params.usrCut = (int32_t)(
-          (INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (INT)value);
+          (int32_t)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (int32_t)value);
       self->update = 1;
       break;
     case DRC_BOOST_SCALE:
@@ -263,7 +263,7 @@ AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
         return AAC_DEC_INVALID_HANDLE;
       }
       self->params.usrBoost = (int32_t)(
-          (INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (INT)value);
+          (int32_t)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (int32_t)value);
       self->update = 1;
       break;
     case TARGET_REF_LEVEL:
@@ -332,13 +332,13 @@ AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
       if (self == NULL) {
         return AAC_DEC_INVALID_HANDLE;
       }
-      self->params.expiryFrame = (value > 0) ? (UINT)value : 0;
+      self->params.expiryFrame = (value > 0) ? (uint32_t)value : 0;
       break;
     case MAX_OUTPUT_CHANNELS:
       if (self == NULL) {
         return AAC_DEC_INVALID_HANDLE;
       }
-      self->numOutChannels = (INT)value;
+      self->numOutChannels = (int32_t)value;
       self->update = 1;
       break;
     case UNIDRC_PRECEDENCE:
@@ -354,11 +354,11 @@ AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
   return ErrorStatus;
 }
 
-static int parseExcludedChannels(UINT *excludedChnsMask,
+static int32_t parseExcludedChannels(uint32_t *excludedChnsMask,
                                  HANDLE_FDK_BITSTREAM bs) {
-  UINT excludeMask = 0;
-  UINT i, j;
-  int bitCnt = 9;
+  uint32_t excludeMask = 0;
+  uint32_t i, j;
+  int32_t bitCnt = 9;
 
   for (i = 0, j = 1; i < 7; i++, j <<= 1) {
     if (FDKreadBits(bs, 1)) {
@@ -374,7 +374,7 @@ static int parseExcludedChannels(UINT *excludedChnsMask,
       }
     }
     bitCnt += 9;
-    FDK_ASSERT(j < (UINT)-1);
+    FDK_ASSERT(j < (uint32_t)-1);
   }
 
   *excludedChnsMask = excludeMask;
@@ -390,10 +390,10 @@ static int parseExcludedChannels(UINT *excludedChnsMask,
 
   \return The number of DRC payload bits
 */
-int aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM bs,
+int32_t aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM bs,
                               AACDEC_DRC_PAYLOAD_TYPE type) {
-  UINT bsStartPos;
-  int i, numBands = 1, bitCnt = 0;
+  uint32_t bsStartPos;
+  int32_t i, numBands = 1, bitCnt = 0;
 
   if (self == NULL) {
     return 0;
@@ -440,7 +440,7 @@ int aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM bs,
       }
 
       if ((self->numPayloads < MAX_DRC_THREADS) &&
-          ((INT)FDKgetValidBits(bs) >= 0)) {
+          ((int32_t)FDKgetValidBits(bs) >= 0)) {
         self->drcPayloadPosition[self->numPayloads++] = bsStartPos;
       }
     } break;
@@ -449,8 +449,8 @@ int aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM bs,
       bitCnt += 8;
       /* check sync word */
       if (FDKreadBits(bs, 8) == DVB_ANC_DATA_SYNC_BYTE) {
-        int dmxLevelsPresent, compressionPresent;
-        int coarseGrainTcPresent, fineGrainTcPresent;
+        int32_t dmxLevelsPresent, compressionPresent;
+        int32_t coarseGrainTcPresent, fineGrainTcPresent;
 
         /* bs_info field */
         FDKreadBits(
@@ -491,7 +491,7 @@ int aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM bs,
           FDKreadBits(bs, 16); /* fine_grain_timecode */
           bitCnt += 16;
         }
-        if (!self->dvbAncDataAvailable && ((INT)FDKgetValidBits(bs) >= 0)) {
+        if (!self->dvbAncDataAvailable && ((int32_t)FDKgetValidBits(bs) >= 0)) {
           self->dvbAncDataPosition = bsStartPos;
           self->dvbAncDataAvailable = 1;
         }
@@ -514,12 +514,12 @@ int aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM bs,
 
   \return Flag telling whether new DRC data has been found or not.
 */
-static int aacDecoder_drcParse(HANDLE_FDK_BITSTREAM bs, CDrcPayload *pDrcBs,
-                               UINT payloadPosition) {
-  int i, numBands;
+static int32_t aacDecoder_drcParse(HANDLE_FDK_BITSTREAM bs, CDrcPayload *pDrcBs,
+                               uint32_t payloadPosition) {
+  int32_t i, numBands;
 
   /* Move to the beginning of the DRC payload field */
-  FDKpushBiDirectional(bs, (INT)FDKgetValidBits(bs) - (INT)payloadPosition);
+  FDKpushBiDirectional(bs, (int32_t)FDKgetValidBits(bs) - (int32_t)payloadPosition);
 
   /* pce_tag_present */
   if (FDKreadBits(bs, 1)) {
@@ -589,14 +589,14 @@ static int aacDecoder_drcParse(HANDLE_FDK_BITSTREAM bs, CDrcPayload *pDrcBs,
 */
 #define DVB_COMPRESSION_SCALE (8) /* 48,164 dB */
 
-static int aacDecoder_drcReadCompression(HANDLE_FDK_BITSTREAM bs,
+static int32_t aacDecoder_drcReadCompression(HANDLE_FDK_BITSTREAM bs,
                                          CDrcPayload *pDrcBs,
-                                         UINT payloadPosition) {
-  int foundDrcData = 0;
-  int dmxLevelsPresent, compressionPresent;
+                                         uint32_t payloadPosition) {
+  int32_t foundDrcData = 0;
+  int32_t dmxLevelsPresent, compressionPresent;
 
   /* Move to the beginning of the DRC payload field */
-  FDKpushBiDirectional(bs, (INT)FDKgetValidBits(bs) - (INT)payloadPosition);
+  FDKpushBiDirectional(bs, (int32_t)FDKgetValidBits(bs) - (int32_t)payloadPosition);
 
   /* Sanity checks */
   if (FDKgetValidBits(bs) < 24) {
@@ -676,19 +676,19 @@ static int aacDecoder_drcReadCompression(HANDLE_FDK_BITSTREAM bs,
  *      0 : No error and no valid DRC data available.
  *      1 : No error and valid DRC data has been mapped.
  */
-static int aacDecoder_drcExtractAndMap(
+static int32_t aacDecoder_drcExtractAndMap(
     HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
     UCHAR pceInstanceTag,
     UCHAR channelMapping[], /* Channel mapping translating drcChannel index to
                                canonical channel index */
-    int validChannels) {
+    int32_t validChannels) {
   CDrcPayload threadBs[MAX_DRC_THREADS];
   CDrcPayload *validThreadBs[MAX_DRC_THREADS];
   CDrcParams *pParams;
-  UINT backupBsPosition;
-  int result = 0;
-  int i, thread, validThreads = 0;
+  uint32_t backupBsPosition;
+  int32_t result = 0;
+  int32_t i, thread, validThreads = 0;
 
   FDK_ASSERT(self != NULL);
   FDK_ASSERT(hBs != NULL);
@@ -732,7 +732,7 @@ static int aacDecoder_drcExtractAndMap(
   self->dvbAncDataAvailable = 0;
 
   /* Reset the bitbufffer */
-  FDKpushBiDirectional(hBs, (INT)FDKgetValidBits(hBs) - (INT)backupBsPosition);
+  FDKpushBiDirectional(hBs, (int32_t)FDKgetValidBits(hBs) - (int32_t)backupBsPosition);
 
   /* calculate number of valid bits in excl_chn_mask */
 
@@ -741,7 +741,7 @@ static int aacDecoder_drcExtractAndMap(
   /* check for valid threads */
   for (thread = 0; thread < self->numThreads; thread++) {
     CDrcPayload *pThreadBs = &threadBs[thread];
-    int numExclChns = 0;
+    int32_t numExclChns = 0;
 
     switch ((AACDEC_DRC_PAYLOAD_TYPE)pThreadBs->channelData.drcDataType) {
       default:
@@ -759,8 +759,8 @@ static int aacDecoder_drcExtractAndMap(
 
     /* calculate number of excluded channels */
     if (pThreadBs->excludedChnsMask > 0) {
-      INT exclMask = pThreadBs->excludedChnsMask;
-      int ch;
+      int32_t exclMask = pThreadBs->excludedChnsMask;
+      int32_t ch;
       for (ch = 0; ch < validChannels; ch++) {
         numExclChns += exclMask & 0x1;
         exclMask >>= 1;
@@ -775,10 +775,10 @@ static int aacDecoder_drcExtractAndMap(
   /* map DRC bitstream information onto DRC channel information */
   for (thread = 0; thread < validThreads; thread++) {
     CDrcPayload *pThreadBs = validThreadBs[thread];
-    INT exclMask = pThreadBs->excludedChnsMask;
+    int32_t exclMask = pThreadBs->excludedChnsMask;
     AACDEC_DRC_PAYLOAD_TYPE drcPayloadType =
         (AACDEC_DRC_PAYLOAD_TYPE)pThreadBs->channelData.drcDataType;
-    int ch;
+    int32_t ch;
 
     /* last progRefLevel transmitted is the one that is used
      * (but it should really only be transmitted once per block!)
@@ -797,7 +797,7 @@ static int aacDecoder_drcExtractAndMap(
     /* SCE, CPE and LFE */
     for (ch = 0; ch < validChannels; ch++) {
       AACDEC_DRC_PAYLOAD_TYPE prvPayloadType = UNKNOWN_PAYLOAD;
-      int mapedChannel = channelMapping[ch];
+      int32_t mapedChannel = channelMapping[ch];
 
       if ((mapedChannel >= validChannels) ||
           ((exclMask & (1 << mapedChannel)) != 0))
@@ -838,20 +838,20 @@ static int aacDecoder_drcExtractAndMap(
 void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
                          CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                          CDrcChannelData *pDrcChData, int32_t *extGain,
-                         int ch, /* needed only for SBR */
-                         int aacFrameSize, int bSbrPresent) {
-  int band, bin, numBands;
-  int bottom = 0;
-  int modifyBins = 0;
+                         int32_t ch, /* needed only for SBR */
+                         int32_t aacFrameSize, int32_t bSbrPresent) {
+  int32_t band, bin, numBands;
+  int32_t bottom = 0;
+  int32_t modifyBins = 0;
 
   int32_t max_mantissa;
-  INT max_exponent;
+  int32_t max_exponent;
 
   int32_t norm_mantissa = FL2FXCONST_DBL(0.5f);
-  INT norm_exponent = 1;
+  int32_t norm_exponent = 1;
 
   int32_t fact_mantissa[MAX_DRC_BANDS];
-  INT fact_exponent[MAX_DRC_BANDS];
+  int32_t fact_exponent[MAX_DRC_BANDS];
 
   CDrcParams *pParams = &self->params;
 
@@ -860,7 +860,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
   CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
   SHORT *pSpecScale = pAacDecoderChannelInfo->specScale;
 
-  int winSeq = pIcsInfo->WindowSequence;
+  int32_t winSeq = pIcsInfo->WindowSequence;
 
   /* Increment and check expiry counter */
   if ((pParams->expiryFrame > 0) &&
@@ -872,7 +872,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
   if (self->enable != ON) {
     sbrDecoder_drcDisable((HANDLE_SBRDECODER)pSbrDec, ch);
     if (extGain != NULL) {
-      INT gainScale = (INT)*extGain;
+      int32_t gainScale = (int32_t)*extGain;
       /* The gain scaling must be passed to the function in the buffer pointed
        * on by extGain. */
       if (gainScale >= 0 && gainScale <= DFRACT_BITS) {
@@ -898,13 +898,13 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
     norm_mantissa =
         fLdPow(FL2FXCONST_DBL(-1.0), /* log2(0.5) */
                0,
-               (int32_t)((INT)(FL2FXCONST_DBL(1.0f / 24.0) >> 3) *
-                          (INT)(pParams->targetRefLevel - self->progRefLevel)),
+               (int32_t)((int32_t)(FL2FXCONST_DBL(1.0f / 24.0) >> 3) *
+                          (int32_t)(pParams->targetRefLevel - self->progRefLevel)),
                3, &norm_exponent);
   }
   /* Always export the normalization gain (if possible). */
   if (extGain != NULL) {
-    INT gainScale = (INT)*extGain;
+    int32_t gainScale = (int32_t)*extGain;
     /* The gain scaling must be passed to the function in the buffer pointed on
      * by extGain. */
     if (gainScale >= 0 && gainScale <= DFRACT_BITS) {
@@ -927,8 +927,8 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
     if ((pParams->applyHeavyCompression == ON) &&
         ((AACDEC_DRC_PAYLOAD_TYPE)pDrcChData->drcDataType ==
          DVB_DRC_ANC_DATA)) {
-      INT compressionFactorVal_e;
-      int valX, valY;
+      int32_t compressionFactorVal_e;
+      int32_t valX, valY;
 
       valX = drcVal >> 4;
       valY = drcVal & 0x0F;
@@ -964,7 +964,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
         int32_t tParamVal = (drcVal & 0x80) ? -pParams->cut : pParams->boost;
 
         fact_mantissa[band] = f2Pow(
-            (int32_t)((INT)fMult(FL2FXCONST_DBL(1.0f / 192.0f), tParamVal) *
+            (int32_t)((int32_t)fMult(FL2FXCONST_DBL(1.0f / 192.0f), tParamVal) *
                        (drcVal & 0x7F)),
             3 + DRC_PARAM_SCALE, &fact_exponent[band]);
       }
@@ -977,7 +977,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
 
   /* normalizations */
   {
-    int res;
+    int32_t res;
 
     max_mantissa = FL2FXCONST_DBL(0.0f);
     max_exponent = 0;
@@ -1031,7 +1031,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
       max_exponent -= 1;
     } else {
       for (band = 0; band < numBands; band++) {
-        int top = fixMin((int)((pDrcChData->bandTop[band] + 1) << 2),
+        int32_t top = fixMin((int32_t)((pDrcChData->bandTop[band] + 1) << 2),
                          aacFrameSize); /* ... * DRC_BAND_MULT; */
 
         for (bin = bottom; bin < top; bin++) {
@@ -1054,7 +1054,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
     pSpecScale[0] += max_exponent;
 
     if (winSeq == BLOCK_SHORT) {
-      int win;
+      int32_t win;
       for (win = 1; win < 8; win++) {
         pSpecScale[win] += max_exponent;
       }
@@ -1076,11 +1076,11 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
  * DRC parameter and presentation mode handling
  */
 static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
-                                            INT aacNumChannels,
+                                            int32_t aacNumChannels,
                                             SCHAR prevDrcProgRefLevel,
                                             SCHAR prevDrcPresMode) {
-  int isDownmix, isMonoDownmix, isStereoDownmix;
-  int dDmx, dHr;
+  int32_t isDownmix, isMonoDownmix, isStereoDownmix;
+  int32_t dDmx, dHr;
   AACDEC_DRC_PARAMETER_HANDLING drcParameterHandling;
   CDrcParams *p;
 
@@ -1129,7 +1129,7 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
          dDmx = floor(-4*20*log10(aacNumChannels/numOutChannels)) */
       if (isDownmix) {
         int32_t dmxTmp;
-        int e_log, e_mult;
+        int32_t e_log, e_mult;
         dmxTmp = fDivNorm(self->numOutChannels,
                           aacNumChannels); /* inverse division ->
                                               negative sign after
@@ -1138,7 +1138,7 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
         dmxTmp = fMultNorm(
             dmxTmp, FL2FXCONST_DBL(4.0f * 20.0f * 0.30103f / (float)(1 << 5)),
             &e_mult); /* e = e_log + e_mult + 5 */
-        dDmx = (int)scaleValue(dmxTmp, e_log + e_mult + 5 - (DFRACT_BITS - 1));
+        dDmx = (int32_t)scaleValue(dmxTmp, e_log + e_mult + 5 - (DFRACT_BITS - 1));
       } else {
         dDmx = 0;
       }
@@ -1154,12 +1154,12 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
       if (dHr < 0) { /* if headroom is reduced */
         /* Use compression, but as little as possible. */
         /* eHr: Headroom provided by encoder, format: -1/4 dB */
-        int eHr = fixMin(p->encoderTargetLevel - self->progRefLevel, 0);
+        int32_t eHr = fixMin(p->encoderTargetLevel - self->progRefLevel, 0);
         if (eHr <
             dHr) { /* if encoder provides more headroom than decoder needs */
           /* derive scaling of light DRC */
           int32_t calcFactor_norm;
-          INT calcFactor; /* fraction of DRC gains that is minimally needed for
+          int32_t calcFactor; /* fraction of DRC gains that is minimally needed for
                              clipping prevention */
           calcFactor_norm =
               fDivNorm(-dHr, -eHr); /* 0.0 < calcFactor_norm < 1.0 */
@@ -1168,7 +1168,7 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
           calcFactor = convert_drcParam(
               calcFactor_norm); /* convert to integer value between 0 and 127 */
           calcFactor_norm = (int32_t)(
-              (INT)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * calcFactor);
+              (int32_t)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * calcFactor);
           p->cut = (calcFactor_norm > p->cut)
                        ? calcFactor_norm
                        : p->cut; /* use calcFactor_norm as lower limit */
@@ -1259,14 +1259,14 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
  *      0 : No error and no valid DRC data available.
  *      1 : No error and valid DRC data has been mapped.
  */
-int aacDecoder_drcProlog(
+int32_t aacDecoder_drcProlog(
     HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
     UCHAR pceInstanceTag,
     UCHAR channelMapping[], /* Channel mapping translating drcChannel index to
                                canonical channel index */
-    int validChannels) {
-  int result = 0;
+    int32_t validChannels) {
+  int32_t result = 0;
 
   if (self == NULL) {
     return -1;
@@ -1275,7 +1275,7 @@ int aacDecoder_drcProlog(
   if (!self->params.bsDelayEnable) {
     /* keep previous progRefLevel and presMode for update flag in
      * drcParameterHandling */
-    INT prevPRL, prevPM = 0;
+    int32_t prevPRL, prevPM = 0;
     prevPRL = self->progRefLevel;
     prevPM = self->presMode;
 
@@ -1301,14 +1301,14 @@ int aacDecoder_drcProlog(
  *      0 : No error and no valid DRC data available.
  *      1 : No error and valid DRC data has been mapped.
  */
-int aacDecoder_drcEpilog(
+int32_t aacDecoder_drcEpilog(
     HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
     UCHAR pceInstanceTag,
     UCHAR channelMapping[], /* Channel mapping translating drcChannel index to
                                canonical channel index */
-    int validChannels) {
-  int result = 0;
+    int32_t validChannels) {
+  int32_t result = 0;
 
   if (self == NULL) {
     return -1;
@@ -1317,7 +1317,7 @@ int aacDecoder_drcEpilog(
   if (self->params.bsDelayEnable) {
     /* keep previous progRefLevel and presMode for update flag in
      * drcParameterHandling */
-    INT prevPRL, prevPM = 0;
+    int32_t prevPRL, prevPM = 0;
     prevPRL = self->progRefLevel;
     prevPM = self->presMode;
 
@@ -1390,13 +1390,13 @@ void aacDecoder_drcGetInfo(HANDLE_AAC_DRC self, SCHAR *pPresMode,
  *
  * \return exponent of time data
  */
-INT applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn,
+int32_t applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn,
                                int32_t *pGain, int32_t *pGainPerSample,
-                               const INT gain_scale, const UINT gain_delay,
-                               const UINT nSamples, const UINT channels,
-                               const UINT stride, const UINT limiterEnabled) {
-  UINT i;
-  INT additionalGain_scaling;
+                               const int32_t gain_scale, const uint32_t gain_delay,
+                               const uint32_t nSamples, const uint32_t channels,
+                               const uint32_t stride, const uint32_t limiterEnabled) {
+  uint32_t i;
+  int32_t additionalGain_scaling;
   int32_t additionalGain;
 
   FDK_ASSERT(gain_delay <= nSamples);
@@ -1434,7 +1434,7 @@ INT applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn,
       }
     }
   } else {
-    UINT inc;
+    uint32_t inc;
     int32_t additionalGainUnfiltered;
 
     inc = (stride == 1) ? channels : 1;
@@ -1481,13 +1481,13 @@ INT applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn,
         pGainPerSample[i] = additionalGain;
       } else {
         if (additionalGain_scaling) {
-          for (UINT k = 0; k < channels; k++) {
+          for (uint32_t k = 0; k < channels; k++) {
             scaleValuesSaturate(&samplesIn[k * stride], 1,
                                 -additionalGain_scaling);
           }
         }
 
-        for (UINT k = 0; k < channels; k++) {
+        for (uint32_t k = 0; k < channels; k++) {
           samplesIn[k * stride] =
               FIXP_DBL2PCM_DEC(fMult(samplesIn[k * stride], additionalGain));
         }

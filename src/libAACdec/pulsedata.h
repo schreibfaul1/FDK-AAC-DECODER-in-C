@@ -128,7 +128,7 @@ typedef struct {
  * \param MaxSfBands max number of scale factor bands.
  * \return 0 on success, != 0 on parse error.
  */
-INT CPulseData_Read(const HANDLE_FDK_BITSTREAM bs, CPulseData *const PulseData,
+int32_t CPulseData_Read(const HANDLE_FDK_BITSTREAM bs, CPulseData *const PulseData,
                     const SHORT *sfb_startlines, const void *pIcsInfo,
                     const SHORT frame_length);
 

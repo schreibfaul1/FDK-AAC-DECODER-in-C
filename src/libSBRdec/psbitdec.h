@@ -106,10 +106,10 @@ amm-info@iis.fraunhofer.de
 #include "sbrdecoder.h"
 #include "psdec.h"
 
-unsigned int ReadPsData(struct PS_DEC *h_ps_d, HANDLE_FDK_BITSTREAM hBs,
-                        int nBitsLeft);
+uint32_t ReadPsData(struct PS_DEC *h_ps_d, HANDLE_FDK_BITSTREAM hBs,
+                        int32_t nBitsLeft);
 
-int DecodePs(struct PS_DEC *h_ps_d, const UCHAR frameError,
+int32_t DecodePs(struct PS_DEC *h_ps_d, const UCHAR frameError,
              PS_DEC_COEFFICIENTS *pCoef);
 
 #endif /* PSBITDEC_H */

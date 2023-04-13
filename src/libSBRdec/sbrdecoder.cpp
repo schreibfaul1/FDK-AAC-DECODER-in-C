@@ -178,8 +178,8 @@ static void setFrameErrorFlag(SBR_DECODER_ELEMENT *pSbrElement, UCHAR value) {
 }
 
 static UCHAR getHeaderSlot(UCHAR currentSlot, UCHAR hdrSlotUsage[(1) + 1]) {
-  UINT occupied = 0;
-  int s;
+  uint32_t occupied = 0;
+  int32_t s;
   UCHAR slot = hdrSlotUsage[currentSlot];
 
   FDK_ASSERT((1) + 1 < 32);
@@ -219,9 +219,9 @@ static void copySbrHeader(HANDLE_SBR_HEADER_DATA hDst,
   hDst->freqBandData.freqBandTable[1] = hDst->freqBandData.freqBandTableHi;
 }
 
-static int compareSbrHeader(const HANDLE_SBR_HEADER_DATA hHdr1,
+static int32_t compareSbrHeader(const HANDLE_SBR_HEADER_DATA hHdr1,
                             const HANDLE_SBR_HEADER_DATA hHdr2) {
-  int result = 0;
+  int32_t result = 0;
 
   /* compare basic data */
   result |= (hHdr1->syncState != hHdr2->syncState) ? 1 : 0;
@@ -269,19 +269,19 @@ static int compareSbrHeader(const HANDLE_SBR_HEADER_DATA hHdr1,
   \return Error code.
 */
 static SBR_ERROR sbrDecoder_ResetElement(HANDLE_SBRDECODER self,
-                                         int sampleRateIn, int sampleRateOut,
-                                         int samplesPerFrame,
+                                         int32_t sampleRateIn, int32_t sampleRateOut,
+                                         int32_t samplesPerFrame,
                                          const MP4_ELEMENT_ID elementID,
-                                         const int elementIndex,
-                                         const int overlap) {
+                                         const int32_t elementIndex,
+                                         const int32_t overlap) {
   SBR_ERROR sbrError = SBRDEC_OK;
   HANDLE_SBR_HEADER_DATA hSbrHeader;
-  UINT qmfFlags = 0;
+  uint32_t qmfFlags = 0;
 
-  int i, synDownsampleFac;
+  int32_t i, synDownsampleFac;
 
   /* USAC: assuming theoretical case 8 kHz output sample rate with 4:1 SBR */
-  const int sbr_min_sample_rate_in = IS_USAC(self->coreCodec) ? 2000 : 6400;
+  const int32_t sbr_min_sample_rate_in = IS_USAC(self->coreCodec) ? 2000 : 6400;
 
   /* Check in/out samplerates */
   if (sampleRateIn < sbr_min_sample_rate_in || sampleRateIn > (96000)) {
@@ -326,7 +326,7 @@ static SBR_ERROR sbrDecoder_ResetElement(HANDLE_SBRDECODER self,
 
   {
     for (i = 0; i < (1) + 1; i++) {
-      int setDflt;
+      int32_t setDflt;
       hSbrHeader = &(self->sbrHeader[elementIndex][i]);
       setDflt = ((hSbrHeader->syncState == SBR_NOT_INITIALIZED) ||
                  (self->flags & SBRDEC_FORCE_RESET))
@@ -368,9 +368,9 @@ static SBR_ERROR sbrDecoder_ResetElement(HANDLE_SBRDECODER self,
 
   /* Init SBR channels going to be assigned to a SBR element */
   {
-    int ch;
+    int32_t ch;
     for (ch = 0; ch < self->pSbrElement[elementIndex]->nChannels; ch++) {
-      int headerIndex =
+      int32_t headerIndex =
           getHeaderSlot(self->pSbrElement[elementIndex]->useFrameSlot,
                         self->pSbrElement[elementIndex]->useHeaderSlot);
 
@@ -425,7 +425,7 @@ bail:
   \return void
 */
 static void sbrDecoder_AssignQmfChannels2SbrChannels(HANDLE_SBRDECODER self) {
-  int ch, el, absCh_offset = 0;
+  int32_t ch, el, absCh_offset = 0;
   for (el = 0; el < self->numSbrElements; el++) {
     if (self->pSbrElement[el] != NULL) {
       for (ch = 0; ch < self->pSbrElement[el]->nChannels; ch++) {
@@ -445,7 +445,7 @@ SBR_ERROR sbrDecoder_Open(HANDLE_SBRDECODER *pSelf,
                           HANDLE_FDK_QMF_DOMAIN pQmfDomain) {
   HANDLE_SBRDECODER self = NULL;
   SBR_ERROR sbrError = SBRDEC_OK;
-  int elIdx;
+  int32_t elIdx;
 
   if ((pSelf == NULL) || (pQmfDomain == NULL)) {
     return SBRDEC_INVALID_ARGUMENT;
@@ -471,7 +471,7 @@ SBR_ERROR sbrDecoder_Open(HANDLE_SBRDECODER *pSelf,
 
   /* Initialize header sync state */
   for (elIdx = 0; elIdx < (8); elIdx += 1) {
-    int i;
+    int32_t i;
     for (i = 0; i < (1) + 1; i += 1) {
       self->sbrHeader[elIdx][i].syncState = SBR_NOT_INITIALIZED;
     }
@@ -488,7 +488,7 @@ bail:
  * \param coreCodec core codec audio object type.
  * \return 1 if SBR can be processed, 0 if SBR cannot be processed/applied.
  */
-static int sbrDecoder_isCoreCodecValid(AUDIO_OBJECT_TYPE coreCodec) {
+static int32_t sbrDecoder_isCoreCodecValid(AUDIO_OBJECT_TYPE coreCodec) {
   switch (coreCodec) {
     case AOT_AAC_LC:
     case AOT_SBR:
@@ -505,9 +505,9 @@ static int sbrDecoder_isCoreCodecValid(AUDIO_OBJECT_TYPE coreCodec) {
 }
 
 static void sbrDecoder_DestroyElement(HANDLE_SBRDECODER self,
-                                      const int elementIndex) {
+                                      const int32_t elementIndex) {
   if (self->pSbrElement[elementIndex] != NULL) {
-    int ch;
+    int32_t ch;
 
     for (ch = 0; ch < SBRDEC_MAX_CH_PER_ELEMENT; ch++) {
       if (self->pSbrElement[elementIndex]->pSbrChannel[ch] != NULL) {
@@ -523,15 +523,15 @@ static void sbrDecoder_DestroyElement(HANDLE_SBRDECODER self,
 }
 
 SBR_ERROR sbrDecoder_InitElement(
-    HANDLE_SBRDECODER self, const int sampleRateIn, const int sampleRateOut,
-    const int samplesPerFrame, const AUDIO_OBJECT_TYPE coreCodec,
-    const MP4_ELEMENT_ID elementID, const int elementIndex,
+    HANDLE_SBRDECODER self, const int32_t sampleRateIn, const int32_t sampleRateOut,
+    const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE coreCodec,
+    const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
     const UCHAR harmonicSBR, const UCHAR stereoConfigIndex,
-    const UCHAR configMode, UCHAR *configChanged, const INT downscaleFactor) {
+    const UCHAR configMode, UCHAR *configChanged, const int32_t downscaleFactor) {
   SBR_ERROR sbrError = SBRDEC_OK;
-  int chCnt = 0;
-  int nSbrElementsStart;
-  int nSbrChannelsStart;
+  int32_t chCnt = 0;
+  int32_t nSbrElementsStart;
+  int32_t nSbrChannelsStart;
   if (self == NULL) {
     return SBRDEC_INVALID_ARGUMENT;
   }
@@ -602,7 +602,7 @@ SBR_ERROR sbrDecoder_InitElement(
 
   /* Init SBR elements */
   {
-    int elChannels, ch;
+    int32_t elChannels, ch;
 
     if (self->pSbrElement[elementIndex] == NULL) {
       self->pSbrElement[elementIndex] = GetRam_SbrDecElement(elementIndex);
@@ -682,8 +682,8 @@ SBR_ERROR sbrDecoder_InitElement(
     self->pQmfDomain->globalConf.nInputChannels_requested =
         self->numSbrChannels;
     self->pQmfDomain->globalConf.nOutputChannels_requested =
-        fMax((INT)self->numSbrChannels,
-             (INT)self->pQmfDomain->globalConf.nOutputChannels_requested);
+        fMax((int32_t)self->numSbrChannels,
+             (int32_t)self->pQmfDomain->globalConf.nOutputChannels_requested);
   }
 
   /* Make sure each SBR channel has one QMF channel assigned even if
@@ -695,7 +695,7 @@ SBR_ERROR sbrDecoder_InitElement(
               ((1) + 1) * sizeof(UCHAR));
 
   {
-    int overlap;
+    int32_t overlap;
 
     if (coreCodec == AOT_ER_AAC_ELD) {
       overlap = 0;
@@ -731,8 +731,8 @@ bail:
  * \param self SBR decoder instance handle
  */
 SBR_ERROR sbrDecoder_FreeMem(HANDLE_SBRDECODER *self) {
-  int i;
-  int elIdx;
+  int32_t i;
+  int32_t elIdx;
 
   if (self != NULL && *self != NULL) {
     for (i = 0; i < (8); i++) {
@@ -763,7 +763,7 @@ static SBR_ERROR sbrDecoder_HeaderUpdate(HANDLE_SBRDECODER self,
                                          HANDLE_SBR_HEADER_DATA hSbrHeader,
                                          SBR_HEADER_STATUS headerStatus,
                                          HANDLE_SBR_CHANNEL hSbrChannel[],
-                                         const int numElementChannels) {
+                                         const int32_t numElementChannels) {
   SBR_ERROR errorStatus = SBRDEC_OK;
 
   /*
@@ -774,7 +774,7 @@ static SBR_ERROR sbrDecoder_HeaderUpdate(HANDLE_SBRDECODER self,
   if (errorStatus == SBRDEC_OK) {
     if (hSbrHeader->syncState == UPSAMPLING && headerStatus != HEADER_RESET) {
 #if (SBRDEC_MAX_HB_FADE_FRAMES > 0)
-      int ch;
+      int32_t ch;
       for (ch = 0; ch < numElementChannels; ch += 1) {
         hSbrChannel[ch]->SbrDec.highBandFadeCnt = SBRDEC_MAX_HB_FADE_FRAMES;
       }
@@ -793,19 +793,19 @@ static SBR_ERROR sbrDecoder_HeaderUpdate(HANDLE_SBRDECODER self,
   return errorStatus;
 }
 
-INT sbrDecoder_Header(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
-                      const INT sampleRateIn, const INT sampleRateOut,
-                      const INT samplesPerFrame,
+int32_t sbrDecoder_Header(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
+                      const int32_t sampleRateIn, const int32_t sampleRateOut,
+                      const int32_t samplesPerFrame,
                       const AUDIO_OBJECT_TYPE coreCodec,
-                      const MP4_ELEMENT_ID elementID, const INT elementIndex,
+                      const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
                       const UCHAR harmonicSBR, const UCHAR stereoConfigIndex,
                       const UCHAR configMode, UCHAR *configChanged,
-                      const INT downscaleFactor) {
+                      const int32_t downscaleFactor) {
   SBR_HEADER_STATUS headerStatus;
   HANDLE_SBR_HEADER_DATA hSbrHeader;
   SBR_ERROR sbrError = SBRDEC_OK;
-  int headerIndex;
-  UINT flagsSaved =
+  int32_t headerIndex;
+  uint32_t flagsSaved =
       0; /* flags should not be changed in AC_CM_DET_CFG_CHANGE - mode after
             parsing */
 
@@ -882,7 +882,7 @@ bail:
 }
 
 SBR_ERROR sbrDecoder_SetParam(HANDLE_SBRDECODER self, const SBRDEC_PARAM param,
-                              const INT value) {
+                              const int32_t value) {
   SBR_ERROR errorStatus = SBRDEC_OK;
 
   /* configure the subsystems */
@@ -939,7 +939,7 @@ SBR_ERROR sbrDecoder_SetParam(HANDLE_SBRDECODER self, const SBRDEC_PARAM param,
       }
       break;
     case SBR_BS_INTERRUPTION: {
-      int elementIndex;
+      int32_t elementIndex;
 
       if (self == NULL) {
         errorStatus = SBRDEC_NOT_INITIALIZED;
@@ -951,7 +951,7 @@ SBR_ERROR sbrDecoder_SetParam(HANDLE_SBRDECODER self, const SBRDEC_PARAM param,
            elementIndex++) {
         if (self->pSbrElement[elementIndex] != NULL) {
           HANDLE_SBR_HEADER_DATA hSbrHeader;
-          int headerIndex =
+          int32_t headerIndex =
               getHeaderSlot(self->pSbrElement[elementIndex]->useFrameSlot,
                             self->pSbrElement[elementIndex]->useHeaderSlot);
 
@@ -990,14 +990,14 @@ SBR_ERROR sbrDecoder_SetParam(HANDLE_SBRDECODER self, const SBRDEC_PARAM param,
 }
 
 static SBRDEC_DRC_CHANNEL *sbrDecoder_drcGetChannel(
-    const HANDLE_SBRDECODER self, const INT channel) {
+    const HANDLE_SBRDECODER self, const int32_t channel) {
   SBRDEC_DRC_CHANNEL *pSbrDrcChannelData = NULL;
-  int elementIndex, elChanIdx = 0, numCh = 0;
+  int32_t elementIndex, elChanIdx = 0, numCh = 0;
 
   for (elementIndex = 0; (elementIndex < (8)) && (numCh <= channel);
        elementIndex++) {
     SBR_DECODER_ELEMENT *pSbrElement = self->pSbrElement[elementIndex];
-    int c, elChannels;
+    int32_t c, elChannels;
 
     elChanIdx = 0;
     if (pSbrElement == NULL) break;
@@ -1045,13 +1045,13 @@ static SBRDEC_DRC_CHANNEL *sbrDecoder_drcGetChannel(
   return (pSbrDrcChannelData);
 }
 
-SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, INT ch,
-                                    UINT numBands, int32_t *pNextFact_mag,
-                                    INT nextFact_exp,
+SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, int32_t ch,
+                                    uint32_t numBands, int32_t *pNextFact_mag,
+                                    int32_t nextFact_exp,
                                     SHORT drcInterpolationScheme,
                                     UCHAR winSequence, USHORT *pBandTop) {
   SBRDEC_DRC_CHANNEL *pSbrDrcChannelData = NULL;
-  int band, isValidData = 0;
+  int32_t band, isValidData = 0;
 
   if (self == NULL) {
     return SBRDEC_NOT_INITIALIZED;
@@ -1061,7 +1061,7 @@ SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, INT ch,
   }
 
   /* Search for gain values different to 1.0f */
-  for (band = 0; band < (int)numBands; band += 1) {
+  for (band = 0; band < (int32_t)numBands; band += 1) {
     if (!((pNextFact_mag[band] == FL2FXCONST_DBL(0.5)) &&
           (nextFact_exp == 1)) &&
         !((pNextFact_mag[band] == (int32_t)MAXVAL_DBL) &&
@@ -1077,7 +1077,7 @@ SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, INT ch,
   if (pSbrDrcChannelData != NULL) {
     if (pSbrDrcChannelData->enable ||
         isValidData) { /* Activate processing only with real and valid data */
-      int i;
+      int32_t i;
 
       pSbrDrcChannelData->enable = 1;
       pSbrDrcChannelData->numBandsNext = numBands;
@@ -1086,7 +1086,7 @@ SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, INT ch,
       pSbrDrcChannelData->drcInterpolationSchemeNext = drcInterpolationScheme;
       pSbrDrcChannelData->nextFact_exp = nextFact_exp;
 
-      for (i = 0; i < (int)numBands; i++) {
+      for (i = 0; i < (int32_t)numBands; i++) {
         pSbrDrcChannelData->bandTopNext[i] = pBandTop[i];
         pSbrDrcChannelData->nextFact_mag[i] = pNextFact_mag[i];
       }
@@ -1096,7 +1096,7 @@ SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, INT ch,
   return SBRDEC_OK;
 }
 
-void sbrDecoder_drcDisable(HANDLE_SBRDECODER self, INT ch) {
+void sbrDecoder_drcDisable(HANDLE_SBRDECODER self, int32_t ch) {
   SBRDEC_DRC_CHANNEL *pSbrDrcChannelData = NULL;
 
   if ((self == NULL) || (ch > (8)) || (self->numSbrElements == 0) ||
@@ -1114,9 +1114,9 @@ void sbrDecoder_drcDisable(HANDLE_SBRDECODER self, INT ch) {
 
 SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
                            UCHAR *pDrmBsBuffer, USHORT drmBsBufferSize,
-                           int *count, int bsPayLen, int crcFlag,
-                           MP4_ELEMENT_ID prevElement, int elementIndex,
-                           UINT acFlags, UINT acElFlags[]) {
+                           int32_t *count, int32_t bsPayLen, int32_t crcFlag,
+                           MP4_ELEMENT_ID prevElement, int32_t elementIndex,
+                           uint32_t acFlags, uint32_t acElFlags[]) {
   SBR_DECODER_ELEMENT *hSbrElement = NULL;
   HANDLE_SBR_HEADER_DATA hSbrHeader = NULL;
   HANDLE_SBR_CHANNEL *pSbrChannel;
@@ -1129,25 +1129,25 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
   SBR_ERROR errorStatus = SBRDEC_OK;
   SBR_HEADER_STATUS headerStatus = HEADER_NOT_PRESENT;
 
-  INT startPos = FDKgetValidBits(hBs);
+  int32_t startPos = FDKgetValidBits(hBs);
   FDK_CRCINFO crcInfo;
-  INT crcReg = 0;
+  int32_t crcReg = 0;
   USHORT sbrCrc = 0;
-  UINT crcPoly;
-  UINT crcStartValue = 0;
-  UINT crcLen;
+  uint32_t crcPoly;
+  uint32_t crcStartValue = 0;
+  uint32_t crcLen;
 
   HANDLE_FDK_BITSTREAM hBsOriginal = hBs;
   FDK_BITSTREAM bsBwd;
 
-  const int fGlobalIndependencyFlag = acFlags & AC_INDEP;
-  const int bs_pvc = acElFlags[elementIndex] & AC_EL_USAC_PVC;
-  const int bs_interTes = acElFlags[elementIndex] & AC_EL_USAC_ITES;
-  int stereo;
-  int fDoDecodeSbrData = 1;
-  int alignBits = 0;
+  const int32_t fGlobalIndependencyFlag = acFlags & AC_INDEP;
+  const int32_t bs_pvc = acElFlags[elementIndex] & AC_EL_USAC_PVC;
+  const int32_t bs_interTes = acElFlags[elementIndex] & AC_EL_USAC_ITES;
+  int32_t stereo;
+  int32_t fDoDecodeSbrData = 1;
+  int32_t alignBits = 0;
 
-  int lastSlot, lastHdrSlot = 0, thisHdrSlot = 0;
+  int32_t lastSlot, lastHdrSlot = 0, thisHdrSlot = 0;
 
   if (*count <= 0) {
     setFrameErrorFlag(self->pSbrElement[elementIndex], FRAME_ERROR);
@@ -1162,7 +1162,7 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
 
   /* Reverse bits of DRM SBR payload */
   if ((self->flags & SBRDEC_SYNTAX_DRM) && *count > 0) {
-    int dataBytes, dataBits;
+    int32_t dataBytes, dataBits;
 
     FDK_ASSERT(drmBsBufferSize >= (512));
     dataBits = *count;
@@ -1174,21 +1174,21 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
 
     dataBytes = (dataBits + 7) >> 3;
 
-    int j;
+    int32_t j;
 
-    if ((j = (int)FDKgetValidBits(hBs)) != 8) {
+    if ((j = (int32_t)FDKgetValidBits(hBs)) != 8) {
       FDKpushBiDirectional(hBs, (j - 8));
     }
 
     j = 0;
     for (; dataBytes > 0; dataBytes--) {
-      int i;
+      int32_t i;
       UCHAR tmpByte;
       UCHAR buffer = 0x00;
 
       tmpByte = (UCHAR)FDKreadBits(hBs, 8);
       for (i = 0; i < 4; i++) {
-        int shift = 2 * i + 1;
+        int32_t shift = 2 * i + 1;
         buffer |= (tmpByte & (0x08 >> i)) << shift;
         buffer |= (tmpByte & (0x10 << i)) >> shift;
       }
@@ -1266,7 +1266,7 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
   }
 
   if (fDoDecodeSbrData) {
-    if ((INT)FDKgetValidBits(hBs) <= 0) {
+    if ((int32_t)FDKgetValidBits(hBs) <= 0) {
       fDoDecodeSbrData = 0;
     }
   }
@@ -1301,11 +1301,11 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
      Read in the header data and issue a reset if change occured
   */
   if (fDoDecodeSbrData) {
-    int sbrHeaderPresent;
+    int32_t sbrHeaderPresent;
 
     if (self->flags & (SBRDEC_SYNTAX_RSVD50 | SBRDEC_SYNTAX_USAC)) {
       SBR_HEADER_DATA_BS_INFO newSbrInfo;
-      int sbrInfoPresent;
+      int32_t sbrInfoPresent;
 
       if (bs_interTes) {
         self->flags |= SBRDEC_USAC_ITES;
@@ -1375,7 +1375,7 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
       }
 
       if (sbrHeaderPresent && fDoDecodeSbrData) {
-        int useDfltHeader;
+        int32_t useDfltHeader;
 
         useDfltHeader = FDKreadBit(hBs);
 
@@ -1420,7 +1420,7 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
 
   /* read frame data */
   if ((hSbrHeader->syncState >= SBR_HEADER) && fDoDecodeSbrData) {
-    int sbrFrameOk;
+    int32_t sbrFrameOk;
     /* read the SBR element data */
     if (!stereo && (self->hParametricStereoDec != NULL)) {
       /* update slot index for PS bitstream parsing */
@@ -1438,12 +1438,12 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
     if (!sbrFrameOk) {
       fDoDecodeSbrData = 0;
     } else {
-      INT valBits;
+      int32_t valBits;
 
       if (bsPayLen > 0) {
-        valBits = bsPayLen - ((INT)startPos - (INT)FDKgetValidBits(hBs));
+        valBits = bsPayLen - ((int32_t)startPos - (int32_t)FDKgetValidBits(hBs));
       } else {
-        valBits = (INT)FDKgetValidBits(hBs);
+        valBits = (int32_t)FDKgetValidBits(hBs);
       }
 
       /* sanity check of remaining bits */
@@ -1517,7 +1517,7 @@ bail:
     }
 
     if (errorStatus != SBRDEC_NOT_INITIALIZED) {
-      int useOldHdr =
+      int32_t useOldHdr =
           ((headerStatus == HEADER_NOT_PRESENT) ||
            (headerStatus == HEADER_ERROR) ||
            (headerStatus == HEADER_RESET && errorStatus == SBRDEC_PARSE_ERROR))
@@ -1549,7 +1549,7 @@ bail:
     }
   }
 
-  *count -= startPos - (INT)FDKgetValidBits(hBs);
+  *count -= startPos - (int32_t)FDKgetValidBits(hBs);
 
   return errorStatus;
 }
@@ -1568,10 +1568,10 @@ bail:
  * \return SBRDEC_OK if successfull, else error code
  */
 static SBR_ERROR sbrDecoder_DecodeElement(
-    HANDLE_SBRDECODER self, LONG *input, LONG *timeData, const int timeDataSize,
-    const FDK_channelMapDescr *const mapDescr, const int mapIdx,
-    int channelIndex, const int elementIndex, const int numInChannels,
-    int *numOutChannels, const int psPossible) {
+    HANDLE_SBRDECODER self, LONG *input, LONG *timeData, const int32_t timeDataSize,
+    const FDK_channelMapDescr *const mapDescr, const int32_t mapIdx,
+    int32_t channelIndex, const int32_t elementIndex, const int32_t numInChannels,
+    int32_t *numOutChannels, const int32_t psPossible) {
   SBR_DECODER_ELEMENT *hSbrElement = self->pSbrElement[elementIndex];
   HANDLE_SBR_CHANNEL *pSbrChannel =
       self->pSbrElement[elementIndex]->pSbrChannel;
@@ -1586,12 +1586,12 @@ static SBR_ERROR sbrDecoder_DecodeElement(
 
   SBR_ERROR errorStatus = SBRDEC_OK;
 
-  INT strideOut, offset0 = 255, offset0_block = 0, offset1 = 255,
+  int32_t strideOut, offset0 = 255, offset0_block = 0, offset1 = 255,
                  offset1_block = 0;
-  INT codecFrameSize = self->codecFrameSize;
+  int32_t codecFrameSize = self->codecFrameSize;
 
-  int stereo = (hSbrElement->elementID == ID_CPE) ? 1 : 0;
-  int numElementChannels =
+  int32_t stereo = (hSbrElement->elementID == ID_CPE) ? 1 : 0;
+  int32_t numElementChannels =
       hSbrElement
           ->nChannels; /* Number of channels of the current SBR element */
 
@@ -1604,7 +1604,7 @@ static SBR_ERROR sbrDecoder_DecodeElement(
 
   if (self->flags & SBRDEC_FLUSH) {
     if (self->numFlushedFrames > self->numDelayFrames) {
-      int hdrIdx;
+      int32_t hdrIdx;
       /* No valid SBR payload available, hence switch to upsampling (in all
        * headers) */
       for (hdrIdx = 0; hdrIdx < ((1) + 1); hdrIdx += 1) {
@@ -1661,8 +1661,8 @@ static SBR_ERROR sbrDecoder_DecodeElement(
 
   /* reset */
   if (hSbrHeader->status & SBRDEC_HDR_STAT_RESET) {
-    int ch;
-    int applySbrProc = (hSbrHeader->syncState == SBR_ACTIVE ||
+    int32_t ch;
+    int32_t applySbrProc = (hSbrHeader->syncState == SBR_ACTIVE ||
                         (hSbrHeader->frameErrorFlag == 0 &&
                          hSbrHeader->syncState == SBR_HEADER));
     for (ch = 0; ch < numElementChannels; ch++) {
@@ -1709,7 +1709,7 @@ static SBR_ERROR sbrDecoder_DecodeElement(
 
     /* decode PS data if available */
     if (h_ps_d != NULL && psPossible && (hSbrHeader->syncState == SBR_ACTIVE)) {
-      int applyPs = 1;
+      int32_t applyPs = 1;
 
       /* define which frame delay line slot to process */
       h_ps_d->processSlot = hSbrElement->useFrameSlot;
@@ -1766,11 +1766,11 @@ static SBR_ERROR sbrDecoder_DecodeElement(
       /* A decoder which is able to decode PS has to produce a stereo output
        * even if no PS data is available. */
       /* So copy left channel to right channel. */
-      int copyFrameSize =
+      int32_t copyFrameSize =
           codecFrameSize * self->pQmfDomain->QmfDomainOut->fb.no_channels;
       copyFrameSize /= self->pQmfDomain->QmfDomainIn->fb.no_channels;
       LONG *ptr;
-      INT i;
+      int32_t i;
       FDK_ASSERT(strideOut == 2);
 
       ptr = timeData;
@@ -1790,18 +1790,18 @@ static SBR_ERROR sbrDecoder_DecodeElement(
 }
 
 SBR_ERROR sbrDecoder_Apply(HANDLE_SBRDECODER self, LONG *input, LONG *timeData,
-                           const int timeDataSize, int *numChannels,
-                           int *sampleRate,
+                           const int32_t timeDataSize, int32_t *numChannels,
+                           int32_t *sampleRate,
                            const FDK_channelMapDescr *const mapDescr,
-                           const int mapIdx, const int coreDecodedOk,
-                           UCHAR *psDecoded, const INT inDataHeadroom,
-                           INT *outDataHeadroom) {
+                           const int32_t mapIdx, const int32_t coreDecodedOk,
+                           UCHAR *psDecoded, const int32_t inDataHeadroom,
+                           int32_t *outDataHeadroom) {
   SBR_ERROR errorStatus = SBRDEC_OK;
 
-  int psPossible;
-  int sbrElementNum;
-  int numCoreChannels;
-  int numSbrChannels = 0;
+  int32_t psPossible;
+  int32_t sbrElementNum;
+  int32_t numCoreChannels;
+  int32_t numSbrChannels = 0;
 
   if ((self == NULL) || (timeData == NULL) || (numChannels == NULL) ||
       (sampleRate == NULL) || (psDecoded == NULL) ||
@@ -1833,7 +1833,7 @@ SBR_ERROR sbrDecoder_Apply(HANDLE_SBRDECODER self, LONG *input, LONG *timeData,
   }
 
   self->sbrInDataHeadroom = inDataHeadroom;
-  *outDataHeadroom = (INT)(8);
+  *outDataHeadroom = (int32_t)(8);
 
   /* Make sure that even if no SBR data was found/parsed *psDecoded is returned
    * 1 if psPossible was 0. */
@@ -1870,7 +1870,7 @@ SBR_ERROR sbrDecoder_Apply(HANDLE_SBRDECODER self, LONG *input, LONG *timeData,
   /* Loop over SBR elements */
   for (sbrElementNum = 0; sbrElementNum < self->numSbrElements;
        sbrElementNum++) {
-    int numElementChan;
+    int32_t numElementChan;
 
     if (psPossible &&
         self->pSbrElement[sbrElementNum]->pSbrChannel[1] == NULL) {
@@ -1924,7 +1924,7 @@ bail:
 
 SBR_ERROR sbrDecoder_Close(HANDLE_SBRDECODER *pSelf) {
   HANDLE_SBRDECODER self = *pSelf;
-  int i;
+  int32_t i;
 
   if (self != NULL) {
     if (self->hParametricStereoDec != NULL) {
@@ -1941,8 +1941,8 @@ SBR_ERROR sbrDecoder_Close(HANDLE_SBRDECODER *pSelf) {
   return SBRDEC_OK;
 }
 
-INT sbrDecoder_GetLibInfo(LIB_INFO *info) {
-  int i;
+int32_t sbrDecoder_GetLibInfo(LIB_INFO *info) {
+  int32_t i;
 
   if (info == NULL) {
     return -1;
@@ -1972,11 +1972,11 @@ INT sbrDecoder_GetLibInfo(LIB_INFO *info) {
   return 0;
 }
 
-UINT sbrDecoder_GetDelay(const HANDLE_SBRDECODER self) {
-  UINT outputDelay = 0;
+uint32_t sbrDecoder_GetDelay(const HANDLE_SBRDECODER self) {
+  uint32_t outputDelay = 0;
 
   if (self != NULL) {
-    UINT flags = self->flags;
+    uint32_t flags = self->flags;
 
     /* See chapter 1.6.7.2 of ISO/IEC 14496-3 for the GA-SBR figures below. */
 

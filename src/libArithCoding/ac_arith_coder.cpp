@@ -300,17 +300,17 @@ static const SHORT ari_pk[64][17] = {
 
 typedef struct
 {
-	int low;
-	int high;
-	int vobf;
+	int32_t low;
+	int32_t high;
+	int32_t vobf;
 } Tastat;
 
-static inline INT mul_sbc_14bits(INT r, INT c) { return (((INT)r) * ((INT)c)) >> stat_bitsnew; }
+static inline int32_t mul_sbc_14bits(int32_t r, int32_t c) { return (((int32_t)r) * ((int32_t)c)) >> stat_bitsnew; }
 
-static inline INT ari_decode_14bits(HANDLE_FDK_BITSTREAM hBs, Tastat *s, const SHORT *RESTRICT c_freq, int cfl) {
-	INT          symbol;
-	INT          low, high, range, value;
-	INT          c;
+static inline int32_t ari_decode_14bits(HANDLE_FDK_BITSTREAM hBs, Tastat *s, const SHORT *RESTRICT c_freq, int32_t cfl) {
+	int32_t          symbol;
+	int32_t          low, high, range, value;
+	int32_t          c;
 	const SHORT *p;
 
 	low = s->low;
@@ -318,7 +318,7 @@ static inline INT ari_decode_14bits(HANDLE_FDK_BITSTREAM hBs, Tastat *s, const S
 	value = s->vobf;
 
 	range = high - low + 1;
-	c = (((int)(value - low + 1)) << stat_bitsnew) - ((int)1);
+	c = (((int32_t)(value - low + 1)) << stat_bitsnew) - ((int32_t)1);
 	p = (const SHORT *)(c_freq - 1);
 
 	if(cfl == (VAL_ESC + 1)) {
@@ -354,7 +354,7 @@ static inline INT ari_decode_14bits(HANDLE_FDK_BITSTREAM hBs, Tastat *s, const S
 		}
 	}
 
-	symbol = (INT)(p - (const SHORT *)(c_freq - 1));
+	symbol = (int32_t)(p - (const SHORT *)(c_freq - 1));
 
 	if(symbol) { high = low + mul_sbc_14bits(range, c_freq[symbol - 1]) - 1; }
 
@@ -378,17 +378,17 @@ static inline INT ari_decode_14bits(HANDLE_FDK_BITSTREAM hBs, Tastat *s, const S
 		us_high = (us_high << 1) | 1;
 		value = (value << 1) | FDKreadBit(hBs);
 	}
-	s->low = (int)us_low;
-	s->high = (int)us_high;
+	s->low = (int32_t)us_low;
+	s->high = (int32_t)us_high;
 	s->vobf = value & 0xFFFF;
 
 	return symbol;
 }
 
-static inline void copyTableAmrwbArith2(UCHAR tab[], int sizeIn, int sizeOut) {
-	int i;
-	int j;
-	int k = 2;
+static inline void copyTableAmrwbArith2(UCHAR tab[], int32_t sizeIn, int32_t sizeOut) {
+	int32_t i;
+	int32_t j;
+	int32_t k = 2;
 
 	tab += 2;
 
@@ -404,7 +404,7 @@ static inline void copyTableAmrwbArith2(UCHAR tab[], int sizeIn, int sizeOut) {
 		for(; i >= 0; j--) {
 			UCHAR tq_data0 = tab[j];
 
-			for(int l = (k >> 1); l > 0; l--) {
+			for(int32_t l = (k >> 1); l > 0; l--) {
 				tab[i--] = tq_data0;
 				tab[i--] = tq_data0;
 			}
@@ -426,7 +426,7 @@ static inline void copyTableAmrwbArith2(UCHAR tab[], int sizeIn, int sizeOut) {
 
 static inline ULONG get_pk_v2(ULONG s) {
 	const ULONG *p = ari_merged_hash_ps;
-	ULONG        s12 = (fMax((UINT)s, (UINT)1) << 12) - 1;
+	ULONG        s12 = (fMax((uint32_t)s, (uint32_t)1) << 12) - 1;
 	if(s12 > p[485]) { p += 486; /* 742 - 256 = 486 */ }
 	else {
 		if(s12 > p[255]) p += 256;
@@ -446,18 +446,18 @@ static inline ULONG get_pk_v2(ULONG s) {
 }
 
 static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf, UCHAR *RESTRICT c_prev,
-								  int32_t *RESTRICT pSpectralCoefficient, INT n, INT nt) {
+								  int32_t *RESTRICT pSpectralCoefficient, int32_t n, int32_t nt) {
 	Tastat             as;
-	int                i, l, r;
-	INT                lev, esc_nb, pki;
+	int32_t                i, l, r;
+	int32_t                lev, esc_nb, pki;
 	USHORT             state_inc;
-	UINT               s;
+	uint32_t               s;
 	ARITH_CODING_ERROR ErrorStatus = ARITH_CODER_OK;
 
-	int c_3 = 0; /* context of current frame 3 time steps ago */
-	int c_2 = 0; /* context of current frame 2 time steps ago */
-	int c_1 = 0; /* context of current frame 1 time steps ago */
-	int c_0 = 1; /* context of current frame to be calculated */
+	int32_t c_3 = 0; /* context of current frame 3 time steps ago */
+	int32_t c_2 = 0; /* context of current frame 2 time steps ago */
+	int32_t c_1 = 0; /* context of current frame 1 time steps ago */
+	int32_t c_0 = 1; /* context of current frame to be calculated */
 
 	/* ari_start_decoding_14bits */
 	as.low = 0;
@@ -500,13 +500,13 @@ static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf, UCHAR *RESTRICT c_p
 		}
 		else /* if (r==0) */
 		{
-			INT b = r >> 2;
-			INT a = r & 0x3;
+			int32_t b = r >> 2;
+			int32_t a = r & 0x3;
 
 			/* LSBs decoding */
 			for(l = 0; l < lev; l++) {
 				{
-					int pidx = (a == 0) ? 1 : ((b == 0) ? 0 : 2);
+					int32_t pidx = (a == 0) ? 1 : ((b == 0) ? 0 : 2);
 					r = ari_decode_14bits(bbuf, &as, ari_lsb2[pidx], 4);
 				}
 				a = (a << 1) | (r & 1);
@@ -533,9 +533,9 @@ static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf, UCHAR *RESTRICT c_p
 
 	/* We need to run only from 0 to i-1 since all other q[i][1].a,b will be
 	 * cleared later */
-	int j = i;
+	int32_t j = i;
 	for(i = 0; i < j; i++) {
-		int bits = 0;
+		int32_t bits = 0;
 		if(pSpectralCoefficient[2 * i] != (int32_t)0) bits++;
 		if(pSpectralCoefficient[2 * i + 1] != (int32_t)0) bits++;
 
@@ -565,7 +565,7 @@ void CArco_Destroy(CArcoData *pArcoData) {
 }
 
 ARITH_CODING_ERROR CArco_DecodeArithData(CArcoData *pArcoData, HANDLE_FDK_BITSTREAM hBs,
-										 int32_t *RESTRICT mdctSpectrum, int lg, int lg_max, int arith_reset_flag) {
+										 int32_t *RESTRICT mdctSpectrum, int32_t lg, int32_t lg_max, int32_t arith_reset_flag) {
 	ARITH_CODING_ERROR ErrorStatus = ARITH_CODER_OK;
 
 	/* Check lg and lg_max consistency. */
@@ -594,7 +594,7 @@ ARITH_CODING_ERROR CArco_DecodeArithData(CArcoData *pArcoData, HANDLE_FDK_BITSTR
 	if(lg > 0) { ErrorStatus = decode2(hBs, pArcoData->c_prev + 2, mdctSpectrum, lg >> 1, lg_max >> 1); }
 	else { FDKmemset(&pArcoData->c_prev[2], 1, sizeof(pArcoData->c_prev[2]) * (lg_max >> 1)); }
 
-	if((INT)FDKgetValidBits(hBs) < 0) { return ARITH_CODER_ERROR; }
+	if((int32_t)FDKgetValidBits(hBs) < 0) { return ARITH_CODER_ERROR; }
 
 	return ErrorStatus;
 }

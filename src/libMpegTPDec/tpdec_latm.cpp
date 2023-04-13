@@ -106,13 +106,13 @@ amm-info@iis.fraunhofer.de
 
 #define TPDEC_TRACKINDEX(p, l) (1 * (p) + (l))
 
-static UINT CLatmDemux_GetValue(HANDLE_FDK_BITSTREAM bs) {
+static uint32_t CLatmDemux_GetValue(HANDLE_FDK_BITSTREAM bs) {
   UCHAR bytesForValue = 0, tmp = 0;
-  int value = 0;
+  int32_t value = 0;
 
   bytesForValue = (UCHAR)FDKreadBits(bs, 2);
 
-  for (UINT i = 0; i <= bytesForValue; i++) {
+  for (uint32_t i = 0; i <= bytesForValue; i++) {
     value <<= 8;
     tmp = (UCHAR)FDKreadBits(bs, 8);
     value += tmp;
@@ -122,16 +122,16 @@ static UINT CLatmDemux_GetValue(HANDLE_FDK_BITSTREAM bs) {
 }
 
 static TRANSPORTDEC_ERROR CLatmDemux_ReadAudioMuxElement(
-    HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux, int m_muxConfigPresent,
+    HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux, int32_t m_muxConfigPresent,
     CSTpCallBacks *pTpDecCallbacks, CSAudioSpecificConfig *pAsc,
-    int *pfConfigFound) {
+    int32_t *pfConfigFound) {
   TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
 
   if (m_muxConfigPresent) {
     pLatmDemux->m_useSameStreamMux = FDKreadBits(bs, 1);
 
     if (!pLatmDemux->m_useSameStreamMux) {
-      int i;
+      int32_t i;
       UCHAR configChanged = 0;
       UCHAR configMode = 0;
 
@@ -188,7 +188,7 @@ static TRANSPORTDEC_ERROR CLatmDemux_ReadAudioMuxElement(
           if (ErrorStatus == TRANSPORTDEC_OK) {
             if ((i == 0) && (pAsc->AacConfigChanged || pAsc->SbrConfigChanged ||
                              pAsc->SacConfigChanged)) {
-              int errC;
+              int32_t errC;
 
               configChanged = 1;
               errC = pTpDecCallbacks->cbFreeMem(pTpDecCallbacks->cbFreeMemData,
@@ -237,16 +237,16 @@ TRANSPORTDEC_ERROR CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
                                    CLatmDemux *pLatmDemux, TRANSPORT_TYPE tt,
                                    CSTpCallBacks *pTpDecCallbacks,
                                    CSAudioSpecificConfig *pAsc,
-                                   int *pfConfigFound,
-                                   const INT ignoreBufferFullness) {
-  UINT cntBits;
-  UINT cmpBufferFullness;
-  UINT audioMuxLengthBytesLast = 0;
+                                   int32_t *pfConfigFound,
+                                   const int32_t ignoreBufferFullness) {
+  uint32_t cntBits;
+  uint32_t cmpBufferFullness;
+  uint32_t audioMuxLengthBytesLast = 0;
   TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
 
   cntBits = FDKgetValidBits(bs);
 
-  if ((INT)cntBits < MIN_LATM_HEADERLENGTH) {
+  if ((int32_t)cntBits < MIN_LATM_HEADERLENGTH) {
     return TRANSPORTDEC_NOT_ENOUGH_BITS;
   }
 
@@ -283,7 +283,7 @@ TRANSPORTDEC_ERROR CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
 TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
     HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux,
     CSTpCallBacks *pTpDecCallbacks, CSAudioSpecificConfig *pAsc,
-    int *pfConfigFound, UCHAR configMode, UCHAR configChanged) {
+    int32_t *pfConfigFound, UCHAR configMode, UCHAR configChanged) {
   CSAudioSpecificConfig ascDummy; /* the actual config is needed for flushing,
                                      after that new config can be parsed */
   CSAudioSpecificConfig *pAscDummy;
@@ -314,16 +314,16 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
       goto bail;
     }
 
-    int idCnt = 0;
-    for (UINT prog = 0; prog < pLatmDemux->m_numProgram; prog++) {
+    int32_t idCnt = 0;
+    for (uint32_t prog = 0; prog < pLatmDemux->m_numProgram; prog++) {
       pLatmDemux->m_numLayer[prog] = FDKreadBits(bs, 3) + 1;
       if (pLatmDemux->m_numLayer[prog] > LATM_MAX_LAYER) {
         ErrorStatus = TRANSPORTDEC_UNSUPPORTED_FORMAT;
         goto bail;
       }
 
-      for (UINT lay = 0; lay < pLatmDemux->m_numLayer[prog]; lay++) {
-        int useSameConfig;
+      for (uint32_t lay = 0; lay < pLatmDemux->m_numLayer[prog]; lay++) {
+        int32_t useSameConfig;
         p_linfo = &pLatmDemux->m_linfo[prog][lay];
 
         p_linfo->m_streamID = idCnt++;
@@ -345,13 +345,13 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
             goto bail;
           }
         } else {
-          UINT usacConfigLengthPrev = 0;
+          uint32_t usacConfigLengthPrev = 0;
           UCHAR usacConfigPrev[TP_USAC_MAX_CONFIG_LEN];
 
           if (!(pLatmDemux->applyAsc) &&
               (pAsc[TPDEC_TRACKINDEX(prog, lay)].m_aot == AOT_USAC)) {
             usacConfigLengthPrev =
-                (UINT)(pAsc[TPDEC_TRACKINDEX(prog, lay)]
+                (uint32_t)(pAsc[TPDEC_TRACKINDEX(prog, lay)]
                            .m_sc.m_usacConfig.UsacConfigBits +
                        7) >>
                 3; /* store previous USAC config length */
@@ -367,10 +367,10 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
           }
           if (pLatmDemux->m_AudioMuxVersion == 1) {
             FDK_BITSTREAM tmpBs;
-            INT ascLen = 0;
+            int32_t ascLen = 0;
             ascLen = CLatmDemux_GetValue(bs);
             /* The ascLen could be wrong, so check if validBits<=bufBits*/
-            if (ascLen < 0 || ascLen > (INT)FDKgetValidBits(bs)) {
+            if (ascLen < 0 || ascLen > (int32_t)FDKgetValidBits(bs)) {
               ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
               goto bail;
             }
@@ -395,7 +395,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
             }
 
             /* The field p_linfo->m_ascLen could be wrong, so check if */
-            if (0 > (INT)FDKgetValidBits(&tmpBs)) {
+            if (0 > (int32_t)FDKgetValidBits(&tmpBs)) {
               ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
               goto bail;
             }
@@ -425,8 +425,8 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
           if (!pLatmDemux->applyAsc) {
             if (pAscDummy[TPDEC_TRACKINDEX(prog, lay)].m_aot ==
                 AOT_USAC) { /* flush in case SMC has changed */
-              const UINT usacConfigLength =
-                  (UINT)(pAscDummy->m_sc.m_usacConfig.UsacConfigBits + 7) >> 3;
+              const uint32_t usacConfigLength =
+                  (uint32_t)(pAscDummy->m_sc.m_usacConfig.UsacConfigBits + 7) >> 3;
               if (usacConfigLength > TP_USAC_MAX_CONFIG_LEN) {
                 ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
                 goto bail;
@@ -519,7 +519,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
       if (pLatmDemux->m_AudioMuxVersion == 1) {
         pLatmDemux->m_otherDataLength = CLatmDemux_GetValue(bs);
       } else {
-        int otherDataLenEsc = 0;
+        int32_t otherDataLenEsc = 0;
         do {
           pLatmDemux->m_otherDataLength <<= 8;  // *= 256
           otherDataLenEsc = FDKreadBits(bs, 1);
@@ -546,12 +546,12 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
 
   /* Configure source decoder: */
   if (ErrorStatus == TRANSPORTDEC_OK) {
-    UINT prog;
+    uint32_t prog;
     for (prog = 0; prog < pLatmDemux->m_numProgram; prog++) {
-      UINT lay;
+      uint32_t lay;
       for (lay = 0; lay < pLatmDemux->m_numLayer[prog]; lay++) {
         if (updateConfig[TPDEC_TRACKINDEX(prog, lay)] != 0) {
-          int cbError;
+          int32_t cbError;
           cbError = pTpDecCallbacks->cbUpdateConfig(
               pTpDecCallbacks->cbUpdateConfigData,
               &pAsc[TPDEC_TRACKINDEX(prog, lay)],
@@ -594,13 +594,13 @@ bail:
 TRANSPORTDEC_ERROR CLatmDemux_ReadPayloadLengthInfo(HANDLE_FDK_BITSTREAM bs,
                                                     CLatmDemux *pLatmDemux) {
   TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
-  int totalPayloadBits = 0;
+  int32_t totalPayloadBits = 0;
 
   if (pLatmDemux->m_allStreamsSameTimeFraming == 1) {
     FDK_ASSERT(pLatmDemux->m_numProgram <= LATM_MAX_PROG);
-    for (UINT prog = 0; prog < pLatmDemux->m_numProgram; prog++) {
+    for (uint32_t prog = 0; prog < pLatmDemux->m_numProgram; prog++) {
       FDK_ASSERT(pLatmDemux->m_numLayer[prog] <= LATM_MAX_LAYER);
-      for (UINT lay = 0; lay < pLatmDemux->m_numLayer[prog]; lay++) {
+      for (uint32_t lay = 0; lay < pLatmDemux->m_numLayer[prog]; lay++) {
         LATM_LAYER_INFO *p_linfo = &pLatmDemux->m_linfo[prog][lay];
 
         switch (p_linfo->m_frameLengthType) {
@@ -619,17 +619,17 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadPayloadLengthInfo(HANDLE_FDK_BITSTREAM bs,
   } else {
     ErrorStatus = TRANSPORTDEC_PARSE_ERROR;  // AAC_DEC_LATM_TIMEFRAMING;
   }
-  if (pLatmDemux->m_audioMuxLengthBytes > (UINT)0 &&
-      totalPayloadBits > (int)pLatmDemux->m_audioMuxLengthBytes * 8) {
+  if (pLatmDemux->m_audioMuxLengthBytes > (uint32_t)0 &&
+      totalPayloadBits > (int32_t)pLatmDemux->m_audioMuxLengthBytes * 8) {
     return TRANSPORTDEC_PARSE_ERROR;
   }
 
   return (ErrorStatus);
 }
 
-int CLatmDemux_ReadAuChunkLengthInfo(HANDLE_FDK_BITSTREAM bs) {
+int32_t CLatmDemux_ReadAuChunkLengthInfo(HANDLE_FDK_BITSTREAM bs) {
   UCHAR endFlag;
-  int len = 0;
+  int32_t len = 0;
 
   do {
     UCHAR tmp = (UCHAR)FDKreadBits(bs, 8);
@@ -644,9 +644,9 @@ int CLatmDemux_ReadAuChunkLengthInfo(HANDLE_FDK_BITSTREAM bs) {
   return len;
 }
 
-UINT CLatmDemux_GetFrameLengthInBits(CLatmDemux *pLatmDemux, const UINT prog,
-                                     const UINT layer) {
-  UINT nFrameLenBits = 0;
+uint32_t CLatmDemux_GetFrameLengthInBits(CLatmDemux *pLatmDemux, const uint32_t prog,
+                                     const uint32_t layer) {
+  uint32_t nFrameLenBits = 0;
   if (prog < pLatmDemux->m_numProgram) {
     if (layer < pLatmDemux->m_numLayer[prog]) {
       nFrameLenBits = pLatmDemux->m_linfo[prog][layer].m_frameLengthInBits;
@@ -655,20 +655,20 @@ UINT CLatmDemux_GetFrameLengthInBits(CLatmDemux *pLatmDemux, const UINT prog,
   return nFrameLenBits;
 }
 
-UINT CLatmDemux_GetOtherDataPresentFlag(CLatmDemux *pLatmDemux) {
+uint32_t CLatmDemux_GetOtherDataPresentFlag(CLatmDemux *pLatmDemux) {
   return pLatmDemux->m_otherDataPresent ? 1 : 0;
 }
 
-UINT CLatmDemux_GetOtherDataLength(CLatmDemux *pLatmDemux) {
+uint32_t CLatmDemux_GetOtherDataLength(CLatmDemux *pLatmDemux) {
   return pLatmDemux->m_otherDataLength;
 }
 
-UINT CLatmDemux_GetNrOfSubFrames(CLatmDemux *pLatmDemux) {
+uint32_t CLatmDemux_GetNrOfSubFrames(CLatmDemux *pLatmDemux) {
   return pLatmDemux->m_noSubFrames;
 }
 
-UINT CLatmDemux_GetNrOfLayers(CLatmDemux *pLatmDemux, const UINT prog) {
-  UINT numLayer = 0;
+uint32_t CLatmDemux_GetNrOfLayers(CLatmDemux *pLatmDemux, const uint32_t prog) {
+  uint32_t numLayer = 0;
   if (prog < pLatmDemux->m_numProgram) {
     numLayer = pLatmDemux->m_numLayer[prog];
   }

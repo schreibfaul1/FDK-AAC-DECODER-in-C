@@ -115,9 +115,9 @@ amm-info@iis.fraunhofer.de
 #define FDK_TOOLS_LIB_BUILD_TIME __TIME__
 #endif
 
-int FDK_toolsGetLibInfo(LIB_INFO *info) {
-  UINT v;
-  int i;
+int32_t FDK_toolsGetLibInfo(LIB_INFO *info) {
+  uint32_t v;
+  int32_t i;
 
   if (info == NULL) {
     return -1;

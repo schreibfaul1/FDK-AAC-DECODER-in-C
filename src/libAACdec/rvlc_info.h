@@ -137,17 +137,17 @@ typedef struct {
                                          bitstream (RVLC-initialization), every
                                          component appears only once in
                                          bitstream */
-  INT sf_concealment;                 /* 1          */
-  INT rev_global_gain;                /* 2          */
+  int32_t sf_concealment;                 /* 1          */
+  int32_t rev_global_gain;                /* 2          */
   SHORT length_of_rvlc_sf; /* 3          */ /* original value, gets modified
                                                (subtract 9) in case of noise
                                                (PNS); is kept for later use */
-  INT dpcm_noise_nrg;                       /* 4 optional */
-  INT sf_escapes_present;                   /* 5          */
+  int32_t dpcm_noise_nrg;                       /* 4 optional */
+  int32_t sf_escapes_present;                   /* 5          */
   SHORT length_of_rvlc_escapes;             /* 6 optional */
-  INT dpcm_noise_last_position;             /* 7 optional */
+  int32_t dpcm_noise_last_position;             /* 7 optional */
 
-  INT dpcm_is_last_position;
+  int32_t dpcm_is_last_position;
 
   SHORT length_of_rvlc_sf_fwd; /* length_of_rvlc_sf used for forward decoding */
   SHORT
@@ -155,7 +155,7 @@ typedef struct {
 
   /* for RVL-Codeword decoder to distinguish between fwd and bwd decoding */
   SHORT *pRvlBitCnt_RVL;
-  INT *pBitstrIndxRvl_RVL;
+  int32_t *pBitstrIndxRvl_RVL;
 
   UCHAR numWindowGroups;
   UCHAR maxSfbTransmitted;
@@ -164,16 +164,16 @@ typedef struct {
   UCHAR direction;
 
   /* bitstream indices */
-  INT bsAnchor;             /* hcr bit buffer reference index */
-  INT bitstreamIndexRvlFwd; /* base address of RVL-coded-scalefactor data (ESC
+  int32_t bsAnchor;             /* hcr bit buffer reference index */
+  int32_t bitstreamIndexRvlFwd; /* base address of RVL-coded-scalefactor data (ESC
                                2) for forward  decoding */
-  INT bitstreamIndexRvlBwd; /* base address of RVL-coded-scalefactor data (ESC
+  int32_t bitstreamIndexRvlBwd; /* base address of RVL-coded-scalefactor data (ESC
                                2) for backward decoding */
-  INT bitstreamIndexEsc;    /* base address where RVLC-escapes start (ESC 2) */
+  int32_t bitstreamIndexEsc;    /* base address where RVLC-escapes start (ESC 2) */
 
   /* decoding trees */
-  const UINT *pHuffTreeRvlCodewds;
-  const UINT *pHuffTreeRvlcEscape;
+  const uint32_t *pHuffTreeRvlCodewds;
+  const uint32_t *pHuffTreeRvlcEscape;
 
   /* escape counters */
   UCHAR numDecodedEscapeWordsFwd; /* when decoding RVL-codes forward  */
@@ -192,7 +192,7 @@ typedef struct {
   SHORT lastIs;
 
   /* ------ RVLC error detection ------ */
-  UINT errorLogRvlc;     /* store RVLC errors  */
+  uint32_t errorLogRvlc;     /* store RVLC errors  */
   SHORT conceal_min;     /* is set at backward decoding  */
   SHORT conceal_max;     /* is set at forward  decoding  */
   SHORT conceal_min_esc; /* is set at backward decoding  */

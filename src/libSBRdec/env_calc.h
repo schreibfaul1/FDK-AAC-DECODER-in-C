@@ -118,15 +118,15 @@ typedef struct {
   SCHAR filtBuffer_e[MAX_FREQ_COEFFS];       /*!< Exponents of previous gains */
   SCHAR filtBufferNoise_e; /*!< Common exponent of previous noise levels */
 
-  int startUp;     /*!< flag to signal initial conditions in buffers */
-  int phaseIndex;  /*!< Index for randomPase array */
-  int prevTranEnv; /*!< The transient envelope of the previous frame. */
+  int32_t startUp;     /*!< flag to signal initial conditions in buffers */
+  int32_t phaseIndex;  /*!< Index for randomPase array */
+  int32_t prevTranEnv; /*!< The transient envelope of the previous frame. */
 
   ULONG harmFlagsPrev[ADD_HARMONICS_FLAGS_SIZE];
   /*!< Words with 16 flags each indicating where a sine was added in the
    * previous frame.*/
   UCHAR harmIndex;     /*!< Current phase of synthetic sine */
-  int sbrPatchingMode; /*!< Current patching mode           */
+  int32_t sbrPatchingMode; /*!< Current patching mode           */
 
   FIXP_SGL prevSbrNoiseFloorLevel[MAX_NOISE_COEFFS];
   UCHAR prevNNfb;
@@ -151,32 +151,32 @@ void calculateSbrEnvelope(
     PVC_DYNAMIC_DATA *pPvcDynamicData, int32_t **analysBufferReal,
     int32_t *
         *analysBufferImag, /*!< Imag part of subband samples to be processed */
-    const int useLP,
+    const int32_t useLP,
     int32_t *degreeAlias, /*!< Estimated aliasing for each QMF channel */
-    const UINT flags, const int frameErrorFlag);
+    const uint32_t flags, const int32_t frameErrorFlag);
 
 SBR_ERROR
 createSbrEnvelopeCalc(HANDLE_SBR_CALCULATE_ENVELOPE hSbrCalculateEnvelope,
-                      HANDLE_SBR_HEADER_DATA hHeaderData, const int chan,
-                      const UINT flags);
+                      HANDLE_SBR_HEADER_DATA hHeaderData, const int32_t chan,
+                      const uint32_t flags);
 
-int deleteSbrEnvelopeCalc(HANDLE_SBR_CALCULATE_ENVELOPE hSbrCalculateEnvelope);
+int32_t deleteSbrEnvelopeCalc(HANDLE_SBR_CALCULATE_ENVELOPE hSbrCalculateEnvelope);
 
 void resetSbrEnvelopeCalc(HANDLE_SBR_CALCULATE_ENVELOPE hCalEnv);
 
 SBR_ERROR
 ResetLimiterBands(UCHAR *limiterBandTable, UCHAR *noLimiterBands,
-                  UCHAR *freqBandTable, int noFreqBands,
-                  const PATCH_PARAM *patchParam, int noPatches,
-                  int limiterBands, UCHAR sbrPatchingMode,
-                  int xOverQmf[MAX_NUM_PATCHES], int sbrRatio);
+                  UCHAR *freqBandTable, int32_t noFreqBands,
+                  const PATCH_PARAM *patchParam, int32_t noPatches,
+                  int32_t limiterBands, UCHAR sbrPatchingMode,
+                  int32_t xOverQmf[MAX_NUM_PATCHES], int32_t sbrRatio);
 
-void rescaleSubbandSamples(int32_t **re, int32_t **im, int lowSubband,
-                           int noSubbands, int start_pos, int next_pos,
-                           int shift);
+void rescaleSubbandSamples(int32_t **re, int32_t **im, int32_t lowSubband,
+                           int32_t noSubbands, int32_t start_pos, int32_t next_pos,
+                           int32_t shift);
 
 int32_t maxSubbandSample(int32_t **analysBufferReal_m,
-                          int32_t **analysBufferImag_m, int lowSubband,
-                          int highSubband, int start_pos, int stop_pos);
+                          int32_t **analysBufferImag_m, int32_t lowSubband,
+                          int32_t highSubband, int32_t start_pos, int32_t stop_pos);
 
 #endif  // ENV_CALC_H

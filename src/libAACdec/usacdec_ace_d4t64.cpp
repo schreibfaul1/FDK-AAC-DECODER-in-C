@@ -353,7 +353,7 @@ static void D_ACELP_decode_4p_4N(LONG index, SHORT N, SHORT offset,
  * Returns:
  *    void
  */
-void D_ACELP_decode_4t64(SHORT index[], int nbits, FIXP_COD code[]) {
+void D_ACELP_decode_4t64(SHORT index[], int32_t nbits, FIXP_COD code[]) {
   LONG L_index;
   SHORT k, pos[6];
 
@@ -369,8 +369,8 @@ void D_ACELP_decode_4t64(SHORT index[], int nbits, FIXP_COD code[]) {
       }
       break;
     case 16: {
-      int i = 0;
-      int offset = index[i++];
+      int32_t i = 0;
+      int32_t offset = index[i++];
       offset = (offset == 0) ? 1 : 3;
       for (k = 0; k < 4; k++) {
         if (k != offset) {

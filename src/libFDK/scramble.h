@@ -125,9 +125,9 @@ amm-info@iis.fraunhofer.de
 #if !defined(FUNCTION_scramble)
 
 /* default scramble functionality */
-inline void scramble(int32_t *x, INT length) {
-  INT m, k, j;
-  FDK_ASSERT(!(((INT)(INT64)x) & (ALIGNMENT_DEFAULT - 1)));
+inline void scramble(int32_t *x, int32_t length) {
+  int32_t m, k, j;
+  FDK_ASSERT(!(((int32_t)(INT64)x) & (ALIGNMENT_DEFAULT - 1)));
   C_ALLOC_ALIGNED_CHECK(x);
 
   for (m = 1, j = 0; m < length - 1; m++) {

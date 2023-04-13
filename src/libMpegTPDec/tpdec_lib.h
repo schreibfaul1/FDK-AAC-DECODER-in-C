@@ -188,7 +188,7 @@ void CProgramConfig_Init(CProgramConfig *pPce);
   structure. \param pPce          Program Config Element structure. \return
   1 if the PCE structure is filled correct, 0 if no valid PCE present.
 */
-int CProgramConfig_IsValid(const CProgramConfig *pPce);
+int32_t CProgramConfig_IsValid(const CProgramConfig *pPce);
 
 /*!
   \brief               Read Program Config Element.
@@ -198,7 +198,7 @@ int CProgramConfig_IsValid(const CProgramConfig *pPce);
   operations. \return              void
 */
 void CProgramConfig_Read(CProgramConfig *pPce, HANDLE_FDK_BITSTREAM bs,
-                         UINT alignAnchor);
+                         uint32_t alignAnchor);
 
 /*!
   \brief               Compare two Program Config Elements.
@@ -209,7 +209,7 @@ void CProgramConfig_Read(CProgramConfig *pPce, HANDLE_FDK_BITSTREAM bs,
                         1 if PCEs are different but have the same channel
   config, 2 if PCEs have different channel config but same number of channels.
 */
-int CProgramConfig_Compare(const CProgramConfig *const pPce1,
+int32_t CProgramConfig_Compare(const CProgramConfig *const pPce1,
                            const CProgramConfig *const pPce2);
 
 /*!
@@ -218,7 +218,7 @@ int CProgramConfig_Compare(const CProgramConfig *const pPce1,
   Element structure. \param channelConfig MPEG-4 channel configuration. \return
   void
 */
-void CProgramConfig_GetDefault(CProgramConfig *pPce, const UINT channelConfig);
+void CProgramConfig_GetDefault(CProgramConfig *pPce, const uint32_t channelConfig);
 
 /**
  * \brief Lookup and verify a given element. The decoder calls this
@@ -238,10 +238,10 @@ void CProgramConfig_GetDefault(CProgramConfig *pPce, const UINT channelConfig);
  * \return            Non-zero if the element belongs to the current program,
  * zero if it does not.
  */
-int CProgramConfig_LookupElement(CProgramConfig *pPce, UINT chConfig,
-                                 const UINT tag, const UINT channelIdx,
+int32_t CProgramConfig_LookupElement(CProgramConfig *pPce, uint32_t chConfig,
+                                 const uint32_t tag, const uint32_t channelIdx,
                                  UCHAR chMapping[], AUDIO_CHANNEL_TYPE chType[],
-                                 UCHAR chIndex[], const UINT chDescrLen,
+                                 UCHAR chIndex[], const uint32_t chDescrLen,
                                  UCHAR *elMapping, MP4_ELEMENT_ID elList[],
                                  MP4_ELEMENT_ID elType);
 
@@ -255,8 +255,8 @@ int CProgramConfig_LookupElement(CProgramConfig *pPce, UINT chConfig,
  *
  * \return            Non-zero if any error occured otherwise zero.
  */
-int CProgramConfig_GetPceChMap(const CProgramConfig *pPce, UCHAR pceChMap[],
-                               const UINT pceChMapLen);
+int32_t CProgramConfig_GetPceChMap(const CProgramConfig *pPce, UCHAR pceChMap[],
+                               const uint32_t pceChMapLen);
 
 /**
  * \brief             Get table of elements in canonical order from a
@@ -269,8 +269,8 @@ int CProgramConfig_GetPceChMap(const CProgramConfig *pPce, UCHAR pceChMap[],
  *                    PCE. If none can be found it receives the value 0.
  * \return            Total element count including all SCE, CPE and LFE.
  */
-int CProgramConfig_GetElementTable(const CProgramConfig *pPce,
-                                   MP4_ELEMENT_ID table[], const INT elListSize,
+int32_t CProgramConfig_GetElementTable(const CProgramConfig *pPce,
+                                   MP4_ELEMENT_ID table[], const int32_t elListSize,
                                    UCHAR *pChMapIdx);
 
 /**
@@ -281,7 +281,7 @@ int CProgramConfig_GetElementTable(const CProgramConfig *pPce,
  * \param chIndex  Array to store the individual audio channel type index.
  * \return         void
  */
-void CProgramConfig_GetChannelDescription(const UINT chConfig,
+void CProgramConfig_GetChannelDescription(const uint32_t chConfig,
                                           const CProgramConfig *pPce,
                                           AUDIO_CHANNEL_TYPE chType[],
                                           UCHAR chIndex[]);
@@ -312,7 +312,7 @@ void AudioSpecificConfig_Init(CSAudioSpecificConfig *pAsc);
  */
 TRANSPORTDEC_ERROR AudioSpecificConfig_Parse(
     CSAudioSpecificConfig *pAsc, HANDLE_FDK_BITSTREAM hBs,
-    int fExplicitBackwardCompatible, CSTpCallBacks *cb, UCHAR configMode,
+    int32_t fExplicitBackwardCompatible, CSTpCallBacks *cb, UCHAR configMode,
     UCHAR configChanged, AUDIO_OBJECT_TYPE m_aot);
 
 /* CELP stuff */
@@ -348,8 +348,8 @@ typedef struct TRANSPORTDEC *HANDLE_TRANSPORTDEC;
  * \return        Error code.
  */
 TRANSPORTDEC_ERROR transportDec_OutOfBandConfig(const HANDLE_TRANSPORTDEC hTp,
-                                                UCHAR *conf, const UINT length,
-                                                const UINT layer);
+                                                UCHAR *conf, const uint32_t length,
+                                                const uint32_t layer);
 
 /**
  * \brief Configure Transport Decoder via a binary coded USAC/RSV603DA Config.
@@ -367,8 +367,8 @@ TRANSPORTDEC_ERROR transportDec_OutOfBandConfig(const HANDLE_TRANSPORTDEC hTp,
  * \return        Error code.
  */
 TRANSPORTDEC_ERROR transportDec_InBandConfig(
-    const HANDLE_TRANSPORTDEC hTp, UCHAR *newConfig, const UINT newConfigLength,
-    const UCHAR buildUpStatus, UCHAR *configChanged, const UINT layer,
+    const HANDLE_TRANSPORTDEC hTp, UCHAR *newConfig, const uint32_t newConfigLength,
+    const UCHAR buildUpStatus, UCHAR *configChanged, const uint32_t layer,
     UCHAR *implicitExplicitCfgDiff);
 
 /**
@@ -382,7 +382,7 @@ TRANSPORTDEC_ERROR transportDec_InBandConfig(
  * pointer on failure.
  */
 HANDLE_TRANSPORTDEC transportDec_Open(TRANSPORT_TYPE transportDecFmt,
-                                      const UINT flags, const UINT nrOfLayer);
+                                      const uint32_t flags, const uint32_t nrOfLayer);
 
 /**
  * \brief                Register configuration change callback.
@@ -393,7 +393,7 @@ HANDLE_TRANSPORTDEC transportDec_Open(TRANSPORT_TYPE transportDecFmt,
  * first parameter.
  * \return               0 on success.
  */
-int transportDec_RegisterAscCallback(HANDLE_TRANSPORTDEC hTp,
+int32_t transportDec_RegisterAscCallback(HANDLE_TRANSPORTDEC hTp,
                                      const cbUpdateConfig_t cbUpdateConfig,
                                      void *user_data);
 
@@ -406,7 +406,7 @@ int transportDec_RegisterAscCallback(HANDLE_TRANSPORTDEC hTp,
  * first parameter.
  * \return               0 on success.
  */
-int transportDec_RegisterFreeMemCallback(HANDLE_TRANSPORTDEC hTp,
+int32_t transportDec_RegisterFreeMemCallback(HANDLE_TRANSPORTDEC hTp,
                                          const cbFreeMem_t cbFreeMem,
                                          void *user_data);
 
@@ -419,7 +419,7 @@ int transportDec_RegisterFreeMemCallback(HANDLE_TRANSPORTDEC hTp,
  * first parameter.
  * \return                0 on success.
  */
-int transportDec_RegisterCtrlCFGChangeCallback(
+int32_t transportDec_RegisterCtrlCFGChangeCallback(
     HANDLE_TRANSPORTDEC hTp, const cbCtrlCFGChange_t cbCtrlCFGChange,
     void *user_data);
 
@@ -431,7 +431,7 @@ int transportDec_RegisterCtrlCFGChangeCallback(
  * first parameter.
  * \return               0 on success.
  */
-int transportDec_RegisterSscCallback(HANDLE_TRANSPORTDEC hTp,
+int32_t transportDec_RegisterSscCallback(HANDLE_TRANSPORTDEC hTp,
                                      const cbSsc_t cbSscParse, void *user_data);
 
 /**
@@ -443,7 +443,7 @@ int transportDec_RegisterSscCallback(HANDLE_TRANSPORTDEC hTp,
  * first parameter.
  * \return               0 on success.
  */
-int transportDec_RegisterSbrCallback(HANDLE_TRANSPORTDEC hTpDec,
+int32_t transportDec_RegisterSbrCallback(HANDLE_TRANSPORTDEC hTpDec,
                                      const cbSbr_t cbSbr, void *user_data);
 
 /**
@@ -455,7 +455,7 @@ int transportDec_RegisterSbrCallback(HANDLE_TRANSPORTDEC hTpDec,
  * first parameter.
  * \return               0 on success.
  */
-int transportDec_RegisterUsacCallback(HANDLE_TRANSPORTDEC hTpDec,
+int32_t transportDec_RegisterUsacCallback(HANDLE_TRANSPORTDEC hTpDec,
                                       const cbUsac_t cbUsac, void *user_data);
 
 /**
@@ -468,10 +468,10 @@ int transportDec_RegisterUsacCallback(HANDLE_TRANSPORTDEC hTpDec,
  * first parameter.
  * \return               0 on success.
  */
-int transportDec_RegisterUniDrcConfigCallback(HANDLE_TRANSPORTDEC hTpDec,
+int32_t transportDec_RegisterUniDrcConfigCallback(HANDLE_TRANSPORTDEC hTpDec,
                                               const cbUniDrc_t cbUniDrc,
                                               void *user_data,
-                                              UINT *pLoudnessInfoSetPosition);
+                                              uint32_t *pLoudnessInfoSetPosition);
 
 /**
  * \brief Fill internal input buffer with bitstream data from the external input
@@ -498,8 +498,8 @@ int transportDec_RegisterUniDrcConfigCallback(HANDLE_TRANSPORTDEC hTpDec,
  * \return            Error code.
  */
 TRANSPORTDEC_ERROR transportDec_FillData(const HANDLE_TRANSPORTDEC hTp,
-                                         UCHAR *pBuffer, const UINT bufferSize,
-                                         UINT *pBytesValid, const INT layer);
+                                         UCHAR *pBuffer, const uint32_t bufferSize,
+                                         uint32_t *pBytesValid, const int32_t layer);
 
 /**
  * \brief      Get transportDec bitstream handle.
@@ -507,7 +507,7 @@ TRANSPORTDEC_ERROR transportDec_FillData(const HANDLE_TRANSPORTDEC hTp,
  * \return     HANDLE_FDK_BITSTREAM bitstream handle.
  */
 HANDLE_FDK_BITSTREAM transportDec_GetBitstream(const HANDLE_TRANSPORTDEC hTp,
-                                               const UINT layer);
+                                               const uint32_t layer);
 
 /**
  * \brief      Get transport format.
@@ -523,7 +523,7 @@ TRANSPORT_TYPE transportDec_GetFormat(const HANDLE_TRANSPORTDEC hTp);
  *
  * \return        Buffer fullness
  */
-INT transportDec_GetBufferFullness(const HANDLE_TRANSPORTDEC hTp);
+int32_t transportDec_GetBufferFullness(const HANDLE_TRANSPORTDEC hTp);
 
 /**
  * \brief       Close and deallocate transportDec.
@@ -540,7 +540,7 @@ void transportDec_Close(HANDLE_TRANSPORTDEC *phTp);
  * \return        Error code.
  */
 TRANSPORTDEC_ERROR transportDec_ReadAccessUnit(const HANDLE_TRANSPORTDEC hTp,
-                                               const UINT layer);
+                                               const uint32_t layer);
 
 /**
  * \brief          Get AudioSpecificConfig.
@@ -550,7 +550,7 @@ TRANSPORTDEC_ERROR transportDec_ReadAccessUnit(const HANDLE_TRANSPORTDEC hTp,
  * \return         Error code.
  */
 TRANSPORTDEC_ERROR transportDec_GetAsc(const HANDLE_TRANSPORTDEC hTp,
-                                       const UINT layer,
+                                       const uint32_t layer,
                                        CSAudioSpecificConfig *asc);
 
 /**
@@ -559,16 +559,16 @@ TRANSPORTDEC_ERROR transportDec_GetAsc(const HANDLE_TRANSPORTDEC hTp,
  * \param hTp     Handle of transportDec.
  * \return amount of remaining bits.
  */
-INT transportDec_GetAuBitsRemaining(const HANDLE_TRANSPORTDEC hTp,
-                                    const UINT layer);
+int32_t transportDec_GetAuBitsRemaining(const HANDLE_TRANSPORTDEC hTp,
+                                    const uint32_t layer);
 
 /**
  * \brief Get the total amount of bits of the current access unit.
  * \param hTp     Handle of transportDec.
  * \return amount of total bits.
  */
-INT transportDec_GetAuBitsTotal(const HANDLE_TRANSPORTDEC hTp,
-                                const UINT layer);
+int32_t transportDec_GetAuBitsTotal(const HANDLE_TRANSPORTDEC hTp,
+                                const uint32_t layer);
 
 /**
  * \brief      This function is required to be called when the decoder has
@@ -592,7 +592,7 @@ TRANSPORTDEC_ERROR transportDec_EndAccessUnit(const HANDLE_TRANSPORTDEC hTp);
  * \return     Error code.
  */
 TRANSPORTDEC_ERROR transportDec_GetMissingAccessUnitCount(
-    INT *pNAccessUnits, HANDLE_TRANSPORTDEC hTp);
+    int32_t *pNAccessUnits, HANDLE_TRANSPORTDEC hTp);
 
 /**
  * \brief        Set a given setting.
@@ -603,7 +603,7 @@ TRANSPORTDEC_ERROR transportDec_GetMissingAccessUnitCount(
  */
 TRANSPORTDEC_ERROR transportDec_SetParam(const HANDLE_TRANSPORTDEC hTp,
                                          const TPDEC_PARAM param,
-                                         const INT value);
+                                         const int32_t value);
 
 /**
  * \brief        Get number of subframes (for LATM or ADTS)
@@ -611,7 +611,7 @@ TRANSPORTDEC_ERROR transportDec_SetParam(const HANDLE_TRANSPORTDEC hTp,
  * \return       Number of ADTS/LATM subframes (return 1 for all other transport
  * types).
  */
-UINT transportDec_GetNrOfSubFrames(HANDLE_TRANSPORTDEC hTp);
+uint32_t transportDec_GetNrOfSubFrames(HANDLE_TRANSPORTDEC hTp);
 
 /**
  * \brief       Get info structure of transport decoder library.
@@ -630,7 +630,7 @@ TRANSPORTDEC_ERROR transportDec_GetLibInfo(LIB_INFO *info);
  * \return       Data region ID, which should be used when calling
  * transportDec_CrcEndReg().
  */
-int transportDec_CrcStartReg(const HANDLE_TRANSPORTDEC hTp, const INT mBits);
+int32_t transportDec_CrcStartReg(const HANDLE_TRANSPORTDEC hTp, const int32_t mBits);
 
 /**
  * \brief        Set end of data region.
@@ -638,7 +638,7 @@ int transportDec_CrcStartReg(const HANDLE_TRANSPORTDEC hTp, const INT mBits);
  * \param reg    Data region ID, opbtained from transportDec_CrcStartReg().
  * \return       void
  */
-void transportDec_CrcEndReg(const HANDLE_TRANSPORTDEC hTp, const INT reg);
+void transportDec_CrcEndReg(const HANDLE_TRANSPORTDEC hTp, const int32_t reg);
 
 /**
  * \brief      Calculate ADTS crc and check if it is correct. The ADTS checksum
@@ -659,6 +659,6 @@ TRANSPORTDEC_ERROR transportDec_CrcCheck(const HANDLE_TRANSPORTDEC hTp);
  * \return        Error code.
  */
 TRANSPORTDEC_ERROR transportDec_DrmRawSdcAudioConfig_Check(UCHAR *conf,
-                                                           const UINT length);
+                                                           const uint32_t length);
 
 #endif /* #ifndef TPDEC_LIB_H */

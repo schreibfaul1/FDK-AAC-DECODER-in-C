@@ -114,19 +114,19 @@ extern "C" {
 #endif
 
 struct TDLimiter {
-  unsigned int attack;
+  uint32_t attack;
   int32_t attackConst, releaseConst;
-  unsigned int attackMs, releaseMs, maxAttackMs;
+  uint32_t attackMs, releaseMs, maxAttackMs;
   int32_t threshold;
-  unsigned int channels, maxChannels;
-  UINT sampleRate, maxSampleRate;
+  uint32_t channels, maxChannels;
+  uint32_t sampleRate, maxSampleRate;
   int32_t cor, max;
   int32_t* maxBuf;
   int32_t* delayBuf;
-  unsigned int maxBufIdx, delayBufIdx;
+  uint32_t maxBufIdx, delayBufIdx;
   int32_t smoothState0;
   int32_t minGain;
-  INT scaling;
+  int32_t scaling;
 };
 
 typedef enum {
@@ -171,14 +171,14 @@ TDLIMITER_ERROR pcmLimiter_Destroy(TDLimiterPtr limiter);
  * limiter: limiter handle                                                     *
  * returns: exact delay caused by the limiter in samples per channel           *
  ******************************************************************************/
-unsigned int pcmLimiter_GetDelay(TDLimiterPtr limiter);
+uint32_t pcmLimiter_GetDelay(TDLimiterPtr limiter);
 
 /******************************************************************************
  * pcmLimiter_GetMaxGainReduction                                              *
  * limiter: limiter handle                                                     *
  * returns: maximum gain reduction in last processed block in dB               *
  ******************************************************************************/
-INT pcmLimiter_GetMaxGainReduction(TDLimiterPtr limiter);
+int32_t pcmLimiter_GetMaxGainReduction(TDLimiterPtr limiter);
 
 /******************************************************************************
  * pcmLimiter_SetNChannels                                                     *
@@ -187,7 +187,7 @@ INT pcmLimiter_GetMaxGainReduction(TDLimiterPtr limiter);
  * returns:   error code                                                       *
  ******************************************************************************/
 TDLIMITER_ERROR pcmLimiter_SetNChannels(TDLimiterPtr limiter,
-                                        unsigned int nChannels);
+                                        uint32_t nChannels);
 
 /******************************************************************************
  * pcmLimiter_SetSampleRate                                                    *
@@ -195,7 +195,7 @@ TDLIMITER_ERROR pcmLimiter_SetNChannels(TDLimiterPtr limiter,
  * sampleRate: sampling rate in Hz ( <= maxSampleRate specified on create)     *
  * returns:    error code                                                      *
  ******************************************************************************/
-TDLIMITER_ERROR pcmLimiter_SetSampleRate(TDLimiterPtr limiter, UINT sampleRate);
+TDLIMITER_ERROR pcmLimiter_SetSampleRate(TDLimiterPtr limiter, uint32_t sampleRate);
 
 /******************************************************************************
  * pcmLimiter_SetAttack                                                        *
@@ -204,7 +204,7 @@ TDLIMITER_ERROR pcmLimiter_SetSampleRate(TDLimiterPtr limiter, UINT sampleRate);
  * returns:    error code                                                      *
  ******************************************************************************/
 TDLIMITER_ERROR pcmLimiter_SetAttack(TDLimiterPtr limiter,
-                                     unsigned int attackMs);
+                                     uint32_t attackMs);
 
 /******************************************************************************
  * pcmLimiter_SetRelease                                                       *
@@ -213,7 +213,7 @@ TDLIMITER_ERROR pcmLimiter_SetAttack(TDLimiterPtr limiter,
  * returns:    error code                                                      *
  ******************************************************************************/
 TDLIMITER_ERROR pcmLimiter_SetRelease(TDLimiterPtr limiter,
-                                      unsigned int releaseMs);
+                                      uint32_t releaseMs);
 
 /******************************************************************************
  * pcmLimiter_GetLibInfo                                                       *
@@ -235,9 +235,9 @@ TDLIMITER_ERROR pcmLimiter_GetLibInfo(LIB_INFO* info);
  * maxSampleRate: maximum and initial sampling rate in Hz                      *
  * returns:       limiter handle                                               *
  ******************************************************************************/
-TDLimiterPtr pcmLimiter_Create(unsigned int maxAttackMs, unsigned int releaseMs,
-                               int32_t threshold, unsigned int maxChannels,
-                               UINT maxSampleRate);
+TDLimiterPtr pcmLimiter_Create(uint32_t maxAttackMs, uint32_t releaseMs,
+                               int32_t threshold, uint32_t maxChannels,
+                               uint32_t maxSampleRate);
 
 /******************************************************************************
  * pcmLimiter_SetThreshold                                                     *
@@ -260,6 +260,6 @@ TDLIMITER_ERROR pcmLimiter_SetThreshold(TDLimiterPtr limiter,
  ******************************************************************************/
 TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
                                  INT_PCM* samplesOut, int32_t* pGainPerSample,
-                                 const INT scaling, const UINT nSamples);
+                                 const int32_t scaling, const uint32_t nSamples);
 
 #endif /* #ifndef LIMITER_H */

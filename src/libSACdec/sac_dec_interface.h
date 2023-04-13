@@ -189,10 +189,10 @@ typedef struct {
 
   /* Error concealment */
   UCHAR concealMethod;
-  UINT concealNumKeepFrames;
-  UINT concealFadeOutSlopeLength;
-  UINT concealFadeInSlopeLength;
-  UINT concealNumReleaseFrames;
+  uint32_t concealNumKeepFrames;
+  uint32_t concealFadeOutSlopeLength;
+  uint32_t concealFadeInSlopeLength;
+  uint32_t concealNumReleaseFrames;
 
 } SPATIALDEC_PARAM;
 
@@ -245,8 +245,8 @@ typedef struct spatialDec_struct spatialDec, *HANDLE_SPATIAL_DEC;
 typedef struct SPATIAL_BS_FRAME_struct SPATIAL_BS_FRAME;
 
 typedef struct {
-  UINT sizePersistent;     /* persistent memory */
-  UINT sizeFastPersistent; /* fast persistent memory */
+  uint32_t sizePersistent;     /* persistent memory */
+  uint32_t sizeFastPersistent; /* fast persistent memory */
 
 } MEM_REQUIREMENTS;
 
@@ -257,16 +257,16 @@ typedef struct {
 
 /* exposed functions (library interface) */
 
-int FDK_SpatialDecCompareSpatialSpecificConfigHeader(
+int32_t FDK_SpatialDecCompareSpatialSpecificConfigHeader(
     SPATIAL_SPECIFIC_CONFIG *pSsc1, SPATIAL_SPECIFIC_CONFIG *pSsc2);
 
-int FDK_SpatialDecInitDefaultSpatialSpecificConfig(
+int32_t FDK_SpatialDecInitDefaultSpatialSpecificConfig(
     SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
-    AUDIO_OBJECT_TYPE coreCodec, int coreChannels, int samplingFreq,
-    int nTimeSlots, int decoderLevel, int isBlind);
+    AUDIO_OBJECT_TYPE coreCodec, int32_t coreChannels, int32_t samplingFreq,
+    int32_t nTimeSlots, int32_t decoderLevel, int32_t isBlind);
 
 spatialDec *FDK_SpatialDecOpen(const SPATIAL_DEC_CONFIG *config,
-                               int stereoConfigIndex);
+                               int32_t stereoConfigIndex);
 
 /**
  * \brief Initialize state variables of the MPS parser
@@ -279,10 +279,10 @@ void SpatialDecInitParserContext(spatialDec *self);
  */
 SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
                                 SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
-                                int nQmfBands,
+                                int32_t nQmfBands,
                                 SPATIAL_DEC_UPMIX_TYPE const upmixType,
                                 SPATIALDEC_PARAM *pUserParams,
-                                UINT initFlags /* MPEGS_INIT_CTRL_FLAGS */
+                                uint32_t initFlags /* MPEGS_INIT_CTRL_FLAGS */
 );
 
 /**
@@ -311,7 +311,7 @@ SACDEC_ERROR SpatialDecApplyFrame(
     int32_t **qmfInDataReal, /* interleaved l/r */
     int32_t **qmfInDataImag, /* interleaved l/r */
     PCM_MPS *pcmOutBuf, /* MAX_OUTPUT_CHANNELS*MAX_TIME_SLOTS*NUM_QMF_BANDS] */
-    UINT nSamples, UINT *pControlFlags, int numInputChannels,
+    uint32_t nSamples, uint32_t *pControlFlags, int32_t numInputChannels,
     const FDK_channelMapDescr *const mapDescr);
 
 /**

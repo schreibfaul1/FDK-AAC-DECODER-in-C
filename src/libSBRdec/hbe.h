@@ -135,17 +135,17 @@ struct hbeTransposer {
   int32_t anaQmfStates[HBE_QMF_FILTER_STATE_ANA_SIZE];
   FIXP_QSS synQmfStates[HBE_QMF_FILTER_STATE_SYN_SIZE];
 
-  int xOverQmf[MAX_NUM_PATCHES_HBE];
+  int32_t xOverQmf[MAX_NUM_PATCHES_HBE];
 
-  int maxStretch;
-  int timeDomainWinLen;
-  int qmfInBufSize;
-  int qmfOutBufSize;
-  int noCols;
-  int noChannels;
-  int startBand;
-  int stopBand;
-  int bSbr41;
+  int32_t maxStretch;
+  int32_t timeDomainWinLen;
+  int32_t qmfInBufSize;
+  int32_t qmfOutBufSize;
+  int32_t noCols;
+  int32_t noChannels;
+  int32_t startBand;
+  int32_t stopBand;
+  int32_t bSbr41;
 
   LONG *inBuf_F;
   int32_t **qmfInBufReal_F;
@@ -162,20 +162,20 @@ struct hbeTransposer {
   int32_t **qmfHBEBufReal_F;
   int32_t **qmfHBEBufImag_F;
 
-  int bXProducts[MAX_STRETCH_HBE];
+  int32_t bXProducts[MAX_STRETCH_HBE];
 
-  int kstart;
-  int synthSize;
+  int32_t kstart;
+  int32_t synthSize;
 
-  int highband_exp[2];
-  int target_exp[2];
+  int32_t highband_exp[2];
+  int32_t target_exp[2];
 };
 
 typedef struct hbeTransposer *HANDLE_HBE_TRANSPOSER;
 
 SBR_ERROR QmfTransposerCreate(HANDLE_HBE_TRANSPOSER *hQmfTransposer,
-                              const int frameSize, int bDisableCrossProducts,
-                              int bSbr41);
+                              const int32_t frameSize, int32_t bDisableCrossProducts,
+                              int32_t bSbr41);
 
 SBR_ERROR QmfTransposerReInit(HANDLE_HBE_TRANSPOSER hQmfTransposer,
                               UCHAR *FreqBandTable[2], UCHAR NSfb[2]);
@@ -184,17 +184,17 @@ void QmfTransposerClose(HANDLE_HBE_TRANSPOSER hQmfTransposer);
 
 void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
                         int32_t **qmfBufferCodecReal,
-                        int32_t **qmfBufferCodecImag, int nColsIn,
+                        int32_t **qmfBufferCodecImag, int32_t nColsIn,
                         int32_t **ppQmfBufferOutReal_F,
                         int32_t **ppQmfBufferOutImag_F,
                         int32_t lpcFilterStatesReal[2 + (3 * (4))][(64)],
                         int32_t lpcFilterStatesImag[2 + (3 * (4))][(64)],
-                        int pitchInBins, int scale_lb, int scale_hbe,
-                        int *scale_hb, int timeStep, int firstSlotOffsset,
-                        int ov_len,
+                        int32_t pitchInBins, int32_t scale_lb, int32_t scale_hbe,
+                        int32_t *scale_hb, int32_t timeStep, int32_t firstSlotOffsset,
+                        int32_t ov_len,
                         KEEP_STATES_SYNCED_MODE keepStatesSyncedMode);
 
-int *GetxOverBandQmfTransposer(HANDLE_HBE_TRANSPOSER hQmfTransposer);
+int32_t *GetxOverBandQmfTransposer(HANDLE_HBE_TRANSPOSER hQmfTransposer);
 
-int Get41SbrQmfTransposer(HANDLE_HBE_TRANSPOSER hQmfTransposer);
+int32_t Get41SbrQmfTransposer(HANDLE_HBE_TRANSPOSER hQmfTransposer);
 #endif /* HBE_H */

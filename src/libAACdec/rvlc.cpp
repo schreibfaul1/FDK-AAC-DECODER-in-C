@@ -137,7 +137,7 @@ static void rvlcInit(CErRvlcInfo *pRvlc,
   SHORT *pScfFwd = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfFwd;
   SHORT *pScfBwd = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfBwd;
   SHORT *pScaleFactor = pAacDecoderChannelInfo->pDynData->aScaleFactor;
-  int bnds;
+  int32_t bnds;
 
   pAacDecoderChannelInfo->pDynData->specificTo.aac.rvlcIntensityUsed = 0;
 
@@ -168,7 +168,7 @@ static void rvlcInit(CErRvlcInfo *pRvlc,
   /* set base bitstream ptr to the RVL-coded part (start of RVLC data (ESC 2))
    */
   FDKsyncCache(bs);
-  pRvlc->bsAnchor = (INT)FDKgetValidBits(bs);
+  pRvlc->bsAnchor = (int32_t)FDKgetValidBits(bs);
 
   pRvlc->bitstreamIndexRvlFwd =
       0; /* first bit within RVL coded block as start address for  forward
@@ -184,7 +184,7 @@ static void rvlcInit(CErRvlcInfo *pRvlc,
   if (pRvlc->sf_escapes_present != 0) {
     /* locate internal bitstream ptr at escapes (which is the second part) */
     FDKsyncCache(bs);
-    pRvlc->bitstreamIndexEsc = pRvlc->bsAnchor - (INT)FDKgetValidBits(bs);
+    pRvlc->bitstreamIndexEsc = pRvlc->bsAnchor - (int32_t)FDKgetValidBits(bs);
 
     /* skip escapeRVLC-bitstream-part -- pointing to TNS data (if present)   to
      * make decoder continue */
@@ -213,7 +213,7 @@ static void rvlcInit(CErRvlcInfo *pRvlc,
 
 static void rvlcCheckIntensityCb(
     CErRvlcInfo *pRvlc, CAacDecoderChannelInfo *pAacDecoderChannelInfo) {
-  int group, band, bnds;
+  int32_t group, band, bnds;
 
   pRvlc->intensity_used = 0;
 
@@ -245,15 +245,15 @@ DPCM value (which has a absolute value of 7)
 */
 
 static SCHAR rvlcDecodeEscapeWord(CErRvlcInfo *pRvlc, HANDLE_FDK_BITSTREAM bs) {
-  int i;
+  int32_t i;
   SCHAR value;
   UCHAR carryBit;
-  UINT treeNode;
-  UINT branchValue;
-  UINT branchNode;
+  uint32_t treeNode;
+  uint32_t branchValue;
+  uint32_t branchNode;
 
-  INT *pBitstreamIndexEsc;
-  const UINT *pEscTree;
+  int32_t *pBitstreamIndexEsc;
+  const uint32_t *pEscTree;
 
   pEscTree = pRvlc->pHuffTreeRvlcEscape;
   pBitstreamIndexEsc = &(pRvlc->bitstreamIndexEsc);
@@ -360,16 +360,16 @@ value. In case of errors a forbidden codeword is detected --> returning -1
 */
 
 SCHAR decodeRVLCodeword(HANDLE_FDK_BITSTREAM bs, CErRvlcInfo *pRvlc) {
-  int i;
+  int32_t i;
   SCHAR value;
   UCHAR carryBit;
-  UINT branchValue;
-  UINT branchNode;
+  uint32_t branchValue;
+  uint32_t branchNode;
 
-  const UINT *pRvlCodeTree = pRvlc->pHuffTreeRvlCodewds;
+  const uint32_t *pRvlCodeTree = pRvlc->pHuffTreeRvlCodewds;
   UCHAR direction = pRvlc->direction;
-  INT *pBitstrIndxRvl = pRvlc->pBitstrIndxRvl_RVL;
-  UINT treeNode = *pRvlCodeTree;
+  int32_t *pBitstrIndxRvl = pRvlc->pBitstrIndxRvl_RVL;
+  uint32_t treeNode = *pRvlCodeTree;
 
   for (i = MAX_LEN_RVLC_CODE_WORD - 1; i >= 0; i--) {
     carryBit =
@@ -436,9 +436,9 @@ SCHAR decodeRVLCodeword(HANDLE_FDK_BITSTREAM bs, CErRvlcInfo *pRvlc) {
 static void rvlcDecodeForward(CErRvlcInfo *pRvlc,
                               CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                               HANDLE_FDK_BITSTREAM bs) {
-  int band = 0;
-  int group = 0;
-  int bnds = 0;
+  int32_t band = 0;
+  int32_t group = 0;
+  int32_t bnds = 0;
 
   SHORT dpcm;
 
@@ -930,10 +930,10 @@ static void rvlcFinalErrorDetection(
                                                                            : 1;
 
   if (!ErrorStatusComplete) {
-    int band;
-    int group;
-    int bnds;
-    int lastSfbIndex;
+    int32_t band;
+    int32_t group;
+    int32_t bnds;
+    int32_t lastSfbIndex;
 
     lastSfbIndex = (pRvlc->numWindowGroups > 1) ? 16 : 64;
 
@@ -962,8 +962,8 @@ static void rvlcFinalErrorDetection(
       }
     }
   } else {
-    int band;
-    int group;
+    int32_t band;
+    int32_t group;
 
     /* A single bit error was detected in decoding of dpcm values. It also could
        be an error with more bits in decoding of escapes and dpcm values whereby
@@ -1062,7 +1062,7 @@ void CRvlc_Read(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
   CErRvlcInfo *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
 
-  int group, band;
+  int32_t group, band;
 
   /* RVLC long specific initialization  Init part 1 of 2 */
   pRvlc->numWindowGroups = GetWindowGroups(&pAacDecoderChannelInfo->icsInfo);
@@ -1137,13 +1137,13 @@ void CRvlc_Decode(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                   HANDLE_FDK_BITSTREAM bs) {
   CErRvlcInfo *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
-  INT bitCntOffst;
-  INT saveBitCnt;
+  int32_t bitCntOffst;
+  int32_t saveBitCnt;
 
   rvlcInit(pRvlc, pAacDecoderChannelInfo, bs);
 
   /* save bitstream position */
-  saveBitCnt = (INT)FDKgetValidBits(bs);
+  saveBitCnt = (int32_t)FDKgetValidBits(bs);
 
   if (pRvlc->sf_escapes_present)
     rvlcDecodeEscapes(
@@ -1158,7 +1158,7 @@ void CRvlc_Decode(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
   pAacDecoderChannelInfo->data.aac.PnsData.PnsActive = pRvlc->noise_used;
 
   /* restore bitstream position */
-  bitCntOffst = (INT)FDKgetValidBits(bs) - saveBitCnt;
+  bitCntOffst = (int32_t)FDKgetValidBits(bs) - saveBitCnt;
   if (bitCntOffst) {
     FDKpushBiDirectional(bs, bitCntOffst);
   }
@@ -1167,8 +1167,8 @@ void CRvlc_Decode(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
 void CRvlc_ElementCheck(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
-    const UINT flags, const INT elChannels) {
-  int ch;
+    const uint32_t flags, const int32_t elChannels) {
+  int32_t ch;
 
   /* Required for MPS residuals. */
   if (pAacDecoderStaticChannelInfo == NULL) {

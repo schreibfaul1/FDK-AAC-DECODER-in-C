@@ -764,7 +764,7 @@ static const FIXP_SGL harmonicPhase [2][4] = {
 
 /* tables for SBR and AAC LD */
 /* table for 8 time slot index */
-const int FDK_sbrDecoder_envelopeTable_8[8][5] = {
+const int32_t FDK_sbrDecoder_envelopeTable_8[8][5] = {
     /* transientIndex  nEnv, tranIdx, shortEnv, border1, border2, ... */
     /* borders from left to right side; -1 = not in use */
     /*[|T-|------]*/ {2, 0, 0, 1, -1},
@@ -778,7 +778,7 @@ const int FDK_sbrDecoder_envelopeTable_8[8][5] = {
 };
 
 /* table for 15 time slot index */
-const int FDK_sbrDecoder_envelopeTable_15[15][6] = {
+const int32_t FDK_sbrDecoder_envelopeTable_15[15][6] = {
     /* transientIndex  nEnv, tranIdx, shortEnv, border1, border2, ... */
     /* length from left to right side; -1 = not in use */
     /*[|T---|------------]*/ {2, 0, 0, 4, -1, -1},
@@ -799,7 +799,7 @@ const int FDK_sbrDecoder_envelopeTable_15[15][6] = {
 };
 
 /* table for 16 time slot index */
-const int FDK_sbrDecoder_envelopeTable_16[16][6] = {
+const int32_t FDK_sbrDecoder_envelopeTable_16[16][6] = {
     /* transientIndex  nEnv, tranIdx, shortEnv, border1, border2, ... */
     /* length from left to right side; -1 = not in use */
     /*[|T---|------------|]*/ {2, 0, 0, 4, -1, -1},

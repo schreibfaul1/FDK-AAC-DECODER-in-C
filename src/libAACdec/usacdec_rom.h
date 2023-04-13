@@ -118,7 +118,7 @@ amm-info@iis.fraunhofer.de
 #define LSF_SCALE 13
 
 /* RE8 lattice quantiser tables */
-extern const UINT fdk_dec_tab_factorial[8];
+extern const uint32_t fdk_dec_tab_factorial[8];
 extern const UCHAR fdk_dec_Ia[NB_LEADER];
 extern const UCHAR fdk_dec_Ds[NB_LDSIGN];
 extern const USHORT fdk_dec_Is[NB_LDSIGN];

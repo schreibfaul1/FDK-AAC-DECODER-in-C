@@ -121,12 +121,12 @@ amm-info@iis.fraunhofer.de
  * because up to a maximum of 4 spectral values can be added for USAC */
 #define SCALE_DATA_APPLY_M2_PC (2)
 
-SACDEC_ERROR initM1andM2(spatialDec* self, int initStatesFlag,
-                         int configChanged);
+SACDEC_ERROR initM1andM2(spatialDec* self, int32_t initStatesFlag,
+                         int32_t configChanged);
 
-int SpatialDecGetResidualIndex(spatialDec* self, int row);
+int32_t SpatialDecGetResidualIndex(spatialDec* self, int32_t row);
 
-SACDEC_ERROR SpatialDecCalculateM1andM2(spatialDec* self, int ps,
+SACDEC_ERROR SpatialDecCalculateM1andM2(spatialDec* self, int32_t ps,
                                         const SPATIAL_BS_FRAME* frame);
 
 #endif /* SAC_CALCM1ANDM2_H */

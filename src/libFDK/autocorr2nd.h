@@ -116,22 +116,22 @@ typedef struct {
   int32_t r02i;
   int32_t r12i;
   int32_t det;
-  int det_scale;
+  int32_t det_scale;
 } ACORR_COEFS;
 
 #define LPC_ORDER 2
 
-INT autoCorr2nd_real(
+int32_t autoCorr2nd_real(
     ACORR_COEFS *ac,          /*!< Pointer to autocorrelation coeffs */
     const int32_t *reBuffer, /*!< Pointer to to real part of spectrum */
-    const int len             /*!< Number of qmf slots */
+    const int32_t len             /*!< Number of qmf slots */
 );
 
-INT autoCorr2nd_cplx(
+int32_t autoCorr2nd_cplx(
     ACORR_COEFS *ac,          /*!< Pointer to autocorrelation coeffs */
     const int32_t *reBuffer, /*!< Pointer to to real part of spectrum */
     const int32_t *imBuffer, /*!< Pointer to imag part of spectrum */
-    const int len             /*!< Number of qmf slots */
+    const int32_t len             /*!< Number of qmf slots */
 );
 
 #endif /* AUTOCORR2ND_H */

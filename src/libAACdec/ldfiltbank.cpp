@@ -113,11 +113,11 @@ amm-info@iis.fraunhofer.de
 #endif
 
 static void multE2_DinvF_fdk(int32_t *output, int32_t *x, const FIXP_WTB *fb,
-                             int32_t *z, const int N) {
-  int i;
+                             int32_t *z, const int32_t N) {
+  int32_t i;
 
   /*  scale for int32_t -> int32_t conversion:       */
-  const int scale = (DFRACT_BITS - PCM_OUT_BITS) - LDFB_HEADROOM + (3);
+  const int32_t scale = (DFRACT_BITS - PCM_OUT_BITS) - LDFB_HEADROOM + (3);
 
 #if ((DFRACT_BITS - PCM_OUT_BITS - LDFB_HEADROOM + (3) - 1) > 0)
   int32_t rnd_val_wts0 = (int32_t)0;
@@ -215,15 +215,15 @@ static void multE2_DinvF_fdk(int32_t *output, int32_t *x, const FIXP_WTB *fb,
   }
 }
 
-int InvMdctTransformLowDelay_fdk(int32_t *mdctData, const int mdctData_e,
+int32_t InvMdctTransformLowDelay_fdk(int32_t *mdctData, const int32_t mdctData_e,
                                  int32_t *output, int32_t *fs_buffer,
-                                 const int N) {
+                                 const int32_t N) {
   const FIXP_WTB *coef;
   int32_t gain = (int32_t)0;
-  int scale = mdctData_e + MDCT_OUT_HEADROOM -
+  int32_t scale = mdctData_e + MDCT_OUT_HEADROOM -
               LDFB_HEADROOM; /* The LDFB_HEADROOM is compensated inside
                                 multE2_DinvF_fdk() below */
-  int i;
+  int32_t i;
 
   /* Select LD window slope */
   switch (N) {

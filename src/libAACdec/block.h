@@ -112,13 +112,13 @@ amm-info@iis.fraunhofer.de
 /* PNS (of block) */
 void CPns_Read(CPnsData *pPnsData, HANDLE_FDK_BITSTREAM bs,
                const CodeBookDescription *hcb, SHORT *pScaleFactor,
-               UCHAR global_gain, int band, int group);
+               UCHAR global_gain, int32_t band, int32_t group);
 
 void CPns_Apply(const CPnsData *pPnsData, const CIcsInfo *pIcsInfo,
                 SPECTRAL_PTR pSpectrum, const SHORT *pSpecScale,
                 const SHORT *pScaleFactor,
                 const SamplingRateInfo *pSamplingRateInfo,
-                const INT granuleLength, const int channel);
+                const int32_t granuleLength, const int32_t channel);
 
 void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                        SamplingRateInfo *pSamplingRateInfo, ULONG *nfRandomSeed,
@@ -137,17 +137,17 @@ void CTns_ReadDataPresentFlag(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData);
 
 void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData *pTnsData0,
                               CTnsData *pTnsData1, UCHAR *ptns_on_lr,
-                              const CIcsInfo *pIcsInfo, const UINT flags,
-                              const UINT elFlags, const int fCommonWindow);
+                              const CIcsInfo *pIcsInfo, const uint32_t flags,
+                              const uint32_t elFlags, const int32_t fCommonWindow);
 
 AAC_DECODER_ERROR CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData,
-                            const CIcsInfo *pIcsInfo, const UINT flags);
+                            const CIcsInfo *pIcsInfo, const uint32_t flags);
 
 void CTns_Apply(CTnsData *RESTRICT pTnsData, /*!< pointer to aac decoder info */
                 const CIcsInfo *pIcsInfo, SPECTRAL_PTR pSpectralCoefficient,
                 const SamplingRateInfo *pSamplingRateInfo,
-                const INT granuleLength, const UCHAR nbands,
-                const UCHAR igf_active, const UINT flags);
+                const int32_t granuleLength, const UCHAR nbands,
+                const UCHAR igf_active, const uint32_t flags);
 
 /* Block */
 
@@ -164,7 +164,7 @@ LONG CBlock_GetEscape(HANDLE_FDK_BITSTREAM bs, const LONG q);
  */
 AAC_DECODER_ERROR CBlock_ReadScaleFactorData(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo, HANDLE_FDK_BITSTREAM bs,
-    const UINT flags);
+    const uint32_t flags);
 
 /**
  * \brief Read Huffman encoded spectral data.
@@ -174,7 +174,7 @@ AAC_DECODER_ERROR CBlock_ReadScaleFactorData(
  */
 AAC_DECODER_ERROR CBlock_ReadSpectralData(
     HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, const UINT flags);
+    const SamplingRateInfo *pSamplingRateInfo, const uint32_t flags);
 
 /**
  * \brief Read Arithmetic encoded spectral data.
@@ -188,12 +188,12 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
 AAC_DECODER_ERROR CBlock_ReadAcSpectralData(
     HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, const UINT frame_length,
-    const UINT flags);
+    const SamplingRateInfo *pSamplingRateInfo, const uint32_t frame_length,
+    const uint32_t flags);
 
 AAC_DECODER_ERROR CBlock_ReadSectionData(
     HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, const UINT flags);
+    const SamplingRateInfo *pSamplingRateInfo, const uint32_t flags);
 
 /**
  * \brief find a common exponent (shift factor) for all sfb in each Spectral
@@ -211,8 +211,8 @@ void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
  * \brief Apply TNS and PNS tools.
  */
 void ApplyTools(CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
-                const SamplingRateInfo *pSamplingRateInfo, const UINT flags,
-                const UINT elFlags, const int channel, const int maybe_jstereo);
+                const SamplingRateInfo *pSamplingRateInfo, const uint32_t flags,
+                const uint32_t elFlags, const int32_t channel, const int32_t maybe_jstereo);
 
 /**
  * \brief Transform MDCT spectral data into time domain
@@ -220,8 +220,8 @@ void ApplyTools(CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
 void CBlock_FrequencyToTime(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
     CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t outSamples[],
-    const SHORT frameLen, const int frameOk, int32_t *pWorkBuffer1,
-    const INT aacOutDataHeadroom, UINT elFlags, INT elCh);
+    const SHORT frameLen, const int32_t frameOk, int32_t *pWorkBuffer1,
+    const int32_t aacOutDataHeadroom, uint32_t elFlags, int32_t elCh);
 
 /**
  * \brief Transform double lapped MDCT (AAC-ELD) spectral data into time domain.
@@ -245,26 +245,26 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
  * \return the exponent of the result (mantissa) stored into *pValue.
  */
 FDK_INLINE
-int EvaluatePower43(int32_t *pValue, UINT lsb) {
+int32_t EvaluatePower43(int32_t *pValue, uint32_t lsb) {
   int32_t value;
-  UINT freeBits;
-  UINT exponent;
+  uint32_t freeBits;
+  uint32_t exponent;
 
   value = *pValue;
   freeBits = fNormz(value);
   exponent = DFRACT_BITS - freeBits;
   FDK_ASSERT(exponent < 14);
 
-  UINT x = (((int)value << freeBits) >> 19);
-  UINT tableIndex = (x & 0x0FFF) >> 4;
+  uint32_t x = (((int32_t)value << freeBits) >> 19);
+  uint32_t tableIndex = (x & 0x0FFF) >> 4;
   int32_t invQVal;
 
   x = x & 0x0F;
 
-  UINT r0 = (LONG)InverseQuantTable[tableIndex + 0];
-  UINT r1 = (LONG)InverseQuantTable[tableIndex + 1];
+  uint32_t r0 = (LONG)InverseQuantTable[tableIndex + 0];
+  uint32_t r1 = (LONG)InverseQuantTable[tableIndex + 1];
   USHORT nx = 16 - x;
-  UINT temp = (r0)*nx + (r1)*x;
+  uint32_t temp = (r0)*nx + (r1)*x;
   invQVal = (int32_t)temp;
 
   FDK_ASSERT(lsb < 4);
@@ -275,15 +275,15 @@ int EvaluatePower43(int32_t *pValue, UINT lsb) {
 }
 
 /* Recalculate gain */
-int32_t get_gain(const int32_t *x, const int32_t *y, int n);
+int32_t get_gain(const int32_t *x, const int32_t *y, int32_t n);
 
 /**
  * \brief determine the required shift scale for the given quantized value and
  * scale (factor % 4) value.
  */
-FDK_INLINE int GetScaleFromValue(int32_t value, unsigned int lsb) {
+FDK_INLINE int32_t GetScaleFromValue(int32_t value, uint32_t lsb) {
   if (value != (int32_t)0) {
-    int scale = EvaluatePower43(&value, lsb);
+    int32_t scale = EvaluatePower43(&value, lsb);
     return CntLeadingZeros(value) - scale - 2;
   } else
     return 0; /* Return zero, because its useless to scale a zero value, saves
@@ -298,12 +298,12 @@ FDK_INLINE int GetScaleFromValue(int32_t value, unsigned int lsb) {
 
   \return  index value
 */
-inline int CBlock_DecodeHuffmanWord(
+inline int32_t CBlock_DecodeHuffmanWord(
     HANDLE_FDK_BITSTREAM bs,        /*!< pointer to bitstream */
     const CodeBookDescription *hcb) /*!< pointer to codebook description */
 {
-  UINT val;
-  UINT index = 0;
+  uint32_t val;
+  uint32_t index = 0;
   const USHORT(*CodeBook)[HuffmanEntries] = hcb->CodeBook;
 
   while (1) {
@@ -325,12 +325,12 @@ inline int CBlock_DecodeHuffmanWord(
 
   return val;
 }
-inline int CBlock_DecodeHuffmanWordCB(
+inline int32_t CBlock_DecodeHuffmanWordCB(
     HANDLE_FDK_BITSTREAM bs, /*!< pointer to bitstream */
     const USHORT (
         *CodeBook)[HuffmanEntries]) /*!< pointer to codebook description */
 {
-  UINT index = 0;
+  uint32_t index = 0;
 
   while (1) {
     index = CodeBook[index][FDKread2Bits(bs)]; /* Expensive memory access */

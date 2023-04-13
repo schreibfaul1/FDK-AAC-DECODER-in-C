@@ -140,14 +140,14 @@ typedef struct {
   } overlap; /**< Pointer to overlap memory */
 
   const FIXP_WTP *prev_wrs; /**< pointer to previous right window slope  */
-  int prev_tl;              /**< previous transform length */
-  int prev_nr;              /**< previous right window offset */
-  int prev_fr;              /**< previous right window slope length */
-  int ov_offset;            /**< overlap time data fill level */
-  int ov_size;              /**< Overlap buffer size in words */
+  int32_t prev_tl;              /**< previous transform length */
+  int32_t prev_nr;              /**< previous right window offset */
+  int32_t prev_fr;              /**< previous right window slope length */
+  int32_t ov_offset;            /**< overlap time data fill level */
+  int32_t ov_size;              /**< Overlap buffer size in words */
 
-  int prevAliasSymmetry;
-  int prevPrevAliasSymmetry;
+  int32_t prevAliasSymmetry;
+  int32_t prevPrevAliasSymmetry;
 
   int32_t *pFacZir;
   int32_t *pAsymOvlp; /**< pointer to asymmetric overlap (used for stereo LPD
@@ -163,7 +163,7 @@ typedef mdct_t *H_MDCT;
  * \param overlap pointer to int32_t overlap buffer.
  * \param overlapBufferSize size in FIXP_DBLs of the given overlap buffer.
  */
-void mdct_init(H_MDCT hMdct, int32_t *overlap, INT overlapBufferSize);
+void mdct_init(H_MDCT hMdct, int32_t *overlap, int32_t overlapBufferSize);
 
 /**
  * \brief perform MDCT transform (time domain to frequency domain) with given
@@ -179,9 +179,9 @@ void mdct_init(H_MDCT hMdct, int32_t *overlap, INT overlapBufferSize);
  * return for output data.
  * \return number of input samples processed.
  */
-INT mdct_block(H_MDCT hMdct, const INT_PCM *pTimeData, const INT noInSamples,
-               int32_t *RESTRICT mdctData, const INT nSpec, const INT tl,
-               const FIXP_WTP *pRightWindowPart, const INT fr,
+int32_t mdct_block(H_MDCT hMdct, const INT_PCM *pTimeData, const int32_t noInSamples,
+               int32_t *RESTRICT mdctData, const int32_t nSpec, const int32_t tl,
+               const FIXP_WTP *pRightWindowPart, const int32_t fr,
                SHORT *pMdctData_e);
 
 /**
@@ -194,20 +194,20 @@ INT mdct_block(H_MDCT hMdct, const INT_PCM *pTimeData, const INT noInSamples,
  * \param tl length of the IMDCT where the gain *pGain * (2 ^ *pExponent) will
  * be applied to.
  */
-void imdct_gain(int32_t *pGain, int *pExponent, int tl);
+void imdct_gain(int32_t *pGain, int32_t *pExponent, int32_t tl);
 
 /**
  * \brief drain buffered output samples into given buffer. Changes the MDCT
  * state.
  */
-INT imdct_drain(H_MDCT hMdct, int32_t *pTimeData, INT nrSamplesRoom);
+int32_t imdct_drain(H_MDCT hMdct, int32_t *pTimeData, int32_t nrSamplesRoom);
 
 /**
  * \brief Copy overlap time domain data to given buffer. Does not change the
  * MDCT state.
  * \return number of actually copied samples (ov + nr).
  */
-INT imdct_copy_ov_and_nr(H_MDCT hMdct, int32_t *pTimeData, INT nrSamples);
+int32_t imdct_copy_ov_and_nr(H_MDCT hMdct, int32_t *pTimeData, int32_t nrSamples);
 
 /**
  * \brief Adapt MDCT parameters for non-matching window slopes.
@@ -218,8 +218,8 @@ INT imdct_copy_ov_and_nr(H_MDCT hMdct, int32_t *pTimeData, INT nrSamples);
  * \param wls pointer to the left side overlap window coefficients.
  * \param noOutSamples desired number of output samples.
  */
-void imdct_adapt_parameters(H_MDCT hMdct, int *pfl, int *pnl, int tl,
-                            const FIXP_WTP *wls, int noOutSamples);
+void imdct_adapt_parameters(H_MDCT hMdct, int32_t *pfl, int32_t *pnl, int32_t tl,
+                            const FIXP_WTP *wls, int32_t noOutSamples);
 
 /**
  * \brief perform several inverse MLT transforms (frequency domain to time
@@ -242,10 +242,10 @@ void imdct_adapt_parameters(H_MDCT hMdct, int *pfl, int *pnl, int tl,
  * \param flags flags controlling the type of transform
  * \return number of output samples returned.
  */
-INT imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
-               const SHORT scalefactor[], const INT nSpec,
-               const INT noOutSamples, const INT tl, const FIXP_WTP *wls,
-               INT fl, const FIXP_WTP *wrs, const INT fr, int32_t gain,
-               int flags);
+int32_t imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
+               const SHORT scalefactor[], const int32_t nSpec,
+               const int32_t noOutSamples, const int32_t tl, const FIXP_WTP *wls,
+               int32_t fl, const FIXP_WTP *wrs, const int32_t fr, int32_t gain,
+               int32_t flags);
 
 #endif /* MDCT_H */

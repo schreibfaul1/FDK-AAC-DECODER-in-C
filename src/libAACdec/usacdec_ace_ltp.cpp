@@ -131,10 +131,10 @@ static const LONG Pred_lt4_inter4_2[UP_SAMP][L_INTERPOL2] = {
      (LONG)0x01CFFECE, (LONG)0x00B9FF9E, (LONG)0x002BFFF2, (LONG)0x00020000}};
 
 void Pred_lt4(int32_t exc[], /* in/out: excitation buffer              */
-              int T0,         /* input : integer pitch lag              */
-              int frac        /* input : fraction of lag in range 0..3  */
+              int32_t T0,         /* input : integer pitch lag              */
+              int32_t frac        /* input : fraction of lag in range 0..3  */
 ) {
-  int j;
+  int32_t j;
   int32_t *x;
   const LONG *interpol;
   int32_t L_sumb, L_sumt;
@@ -159,7 +159,7 @@ void Pred_lt4(int32_t exc[], /* in/out: excitation buffer              */
     int32_t x0, x1;
     int32_t *xi = x++;
     interpol = Pred_lt4_inter4_2[frac];
-    int i = 3;
+    int32_t i = 3;
 
     filt = *interpol++;
     x0 = *xi++;
@@ -211,7 +211,7 @@ void Pred_lt4_postfilter(int32_t exc[] /* in/out: excitation buffer */
   exc[i]   = A*exc[i-1] + B*exc[i] + A*exc[i+1]
   exc[i+1] =              A*exc[i] + B*exc[i+1] + A*exc[i+2] ; i = 0:2:62
   */
-  int i;
+  int32_t i;
   int32_t sum0, sum1, a_exc0, a_exc1;
   a_exc0 = fMultDiv2(A2, exc[-1]);
   a_exc1 = fMultDiv2(A2, exc[0]);

@@ -218,49 +218,49 @@ typedef enum {
 } SPATIALDEC_DECORR_CONF;
 
 typedef struct T_SPATIALDEC_OTT_CONF {
-  int nOttBands;
+  int32_t nOttBands;
 
 } SPATIALDEC_OTT_CONF;
 
 typedef struct T_SPATIALDEC_RESIDUAL_CONF {
-  int bResidualPresent;
-  int nResidualBands;
+  int32_t bResidualPresent;
+  int32_t nResidualBands;
 
 } SPATIALDEC_RESIDUAL_CONF;
 
 typedef struct T_SPATIAL_SPECIFIC_CONFIG {
-  UINT syntaxFlags;
-  int samplingFreq;
-  int nTimeSlots;
+  uint32_t syntaxFlags;
+  int32_t samplingFreq;
+  int32_t nTimeSlots;
   SPATIALDEC_FREQ_RES freqRes;
   SPATIALDEC_TREE_CONFIG treeConfig;
   SPATIALDEC_QUANT_MODE quantMode;
-  int bArbitraryDownmix;
+  int32_t bArbitraryDownmix;
 
-  int bResidualCoding;
+  int32_t bResidualCoding;
   SPATIALDEC_FIXED_GAINS bsFixedGainDMX;
 
   SPATIALDEC_TS_CONF tempShapeConfig;
   SPATIALDEC_DECORR_CONF decorrConfig;
 
-  int nInputChannels;  /* derived from  treeConfig */
-  int nOutputChannels; /* derived from  treeConfig */
+  int32_t nInputChannels;  /* derived from  treeConfig */
+  int32_t nOutputChannels; /* derived from  treeConfig */
 
   /* ott config */
-  int nOttBoxes;                              /* derived from  treeConfig */
+  int32_t nOttBoxes;                              /* derived from  treeConfig */
   SPATIALDEC_OTT_CONF OttConfig[MAX_NUM_OTT]; /* dimension nOttBoxes */
 
   /* ttt config */
-  int nTttBoxes; /* derived from  treeConfig */
+  int32_t nTttBoxes; /* derived from  treeConfig */
 
   /* residual config */
   SPATIALDEC_RESIDUAL_CONF
   ResidualConfig[MAX_NUM_OTT +
                  MAX_NUM_TTT]; /* dimension (nOttBoxes + nTttBoxes) */
 
-  int sacExtCnt;
-  int sacExtType[MAX_NUM_EXT_TYPES];
-  int envQuantMode;
+  int32_t sacExtCnt;
+  int32_t sacExtType[MAX_NUM_EXT_TYPES];
+  int32_t envQuantMode;
 
   AUDIO_OBJECT_TYPE coreCodec;
 
@@ -271,7 +271,7 @@ typedef struct T_SPATIAL_SPECIFIC_CONFIG {
   UCHAR bsPseudoLr;
   UCHAR bsPhaseCoding;
   UCHAR bsOttBandsPhasePresent;
-  int bsOttBandsPhase;
+  int32_t bsOttBandsPhase;
 
   SCHAR ottCLDdefault[MAX_NUM_OTT];
   UCHAR numOttBandsIPD;

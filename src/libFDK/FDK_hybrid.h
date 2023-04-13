@@ -126,25 +126,25 @@ typedef struct {
   int32_t *bufferHFReal[13]; /*!< HF real delay lines. */
   int32_t *bufferHFImag[13]; /*!< HF imag delay lines. */
 
-  INT bufferLFpos; /*!< Position to write incoming data into ringbuffer. */
-  INT bufferHFpos; /*!< Delay line positioning. */
-  INT nrBands;     /*!< Number of QMF bands. */
-  INT cplxBands;   /*!< Number of complex QMF bands.*/
+  int32_t bufferLFpos; /*!< Position to write incoming data into ringbuffer. */
+  int32_t bufferHFpos; /*!< Delay line positioning. */
+  int32_t nrBands;     /*!< Number of QMF bands. */
+  int32_t cplxBands;   /*!< Number of complex QMF bands.*/
   UCHAR hfMode;    /*!< Flag signalizes treatment of HF bands. */
 
   int32_t *pLFmemory; /*!< Pointer to LF states buffer. */
   int32_t *pHFmemory; /*!< Pointer to HF states buffer. */
 
-  UINT LFmemorySize; /*!< Size of LF states buffer. */
-  UINT HFmemorySize; /*!< Size of HF states buffer. */
+  uint32_t LFmemorySize; /*!< Size of LF states buffer. */
+  uint32_t HFmemorySize; /*!< Size of HF states buffer. */
 
   HANDLE_FDK_HYBRID_SETUP pSetup; /*!< Pointer to filter setup. */
 
 } FDK_ANA_HYB_FILTER;
 
 typedef struct {
-  INT nrBands;   /*!< Number of QMF bands. */
-  INT cplxBands; /*!< Number of complex QMF bands.*/
+  int32_t nrBands;   /*!< Number of QMF bands. */
+  int32_t cplxBands; /*!< Number of complex QMF bands.*/
 
   HANDLE_FDK_HYBRID_SETUP pSetup; /*!< Pointer to filter setup. */
 
@@ -165,9 +165,9 @@ typedef FDK_SYN_HYB_FILTER *HANDLE_FDK_SYN_HYB_FILTER;
  *
  * \return  0 on success.
  */
-INT FDKhybridAnalysisOpen(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
-                          int32_t *const pLFmemory, const UINT LFmemorySize,
-                          int32_t *const pHFmemory, const UINT HFmemorySize);
+int32_t FDKhybridAnalysisOpen(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
+                          int32_t *const pLFmemory, const uint32_t LFmemorySize,
+                          int32_t *const pHFmemory, const uint32_t HFmemorySize);
 
 /**
  * \brief  Initialize and configure Hybrid Analysis Filterbank instance.
@@ -181,9 +181,9 @@ INT FDKhybridAnalysisOpen(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
  *
  * \return  0 on success.
  */
-INT FDKhybridAnalysisInit(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
-                          const FDK_HYBRID_MODE mode, const INT qmfBands,
-                          const INT cplxBands, const INT initStatesFlag);
+int32_t FDKhybridAnalysisInit(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
+                          const FDK_HYBRID_MODE mode, const int32_t qmfBands,
+                          const int32_t cplxBands, const int32_t initStatesFlag);
 
 /**
  * \brief  Adjust Hybrid Analysis Filterbank states.
@@ -193,8 +193,8 @@ INT FDKhybridAnalysisInit(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
  *
  * \return  0 on success.
  */
-INT FDKhybridAnalysisScaleStates(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
-                                 const INT scalingValue);
+int32_t FDKhybridAnalysisScaleStates(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
+                                 const int32_t scalingValue);
 
 /**
  * \brief  Apply Hybrid Analysis Filterbank on Qmf input data.
@@ -207,7 +207,7 @@ INT FDKhybridAnalysisScaleStates(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
  *
  * \return  0 on success.
  */
-INT FDKhybridAnalysisApply(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
+int32_t FDKhybridAnalysisApply(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
                            const int32_t *const pQmfReal,
                            const int32_t *const pQmfImag,
                            int32_t *const pHybridReal,
@@ -220,7 +220,7 @@ INT FDKhybridAnalysisApply(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
  *
  * \return  0 on success.
  */
-INT FDKhybridAnalysisClose(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter);
+int32_t FDKhybridAnalysisClose(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter);
 
 /**
  * \brief  Initialize and configure Hybrdid Synthesis Filterbank instance.
@@ -232,9 +232,9 @@ INT FDKhybridAnalysisClose(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter);
  *
  * \return  0 on success.
  */
-INT FDKhybridSynthesisInit(HANDLE_FDK_SYN_HYB_FILTER hSynthesisHybFilter,
-                           const FDK_HYBRID_MODE mode, const INT qmfBands,
-                           const INT cplxBands);
+int32_t FDKhybridSynthesisInit(HANDLE_FDK_SYN_HYB_FILTER hSynthesisHybFilter,
+                           const FDK_HYBRID_MODE mode, const int32_t qmfBands,
+                           const int32_t cplxBands);
 
 /**
  * \brief  Apply Hybrid Analysis Filterbank on Hybrid data.

@@ -119,8 +119,8 @@ amm-info@iis.fraunhofer.de
  * \param total amount of individual data values to decode.
  * \return 0 on success, -1 on error.
  */
-int CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *lsfq, int nk_mode,
-                   int nqn, int length);
+int32_t CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *lsfq, int32_t nk_mode,
+                   int32_t nqn, int32_t length);
 
 /**
  * \brief Read and decode LPC coeficient sets. First stage approximation + AVQ
@@ -141,11 +141,11 @@ int CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *lsfq, int nk_mode,
  * \param[in]  last_frame_ok indicate that the last frame was ok.
  * \return 0 on success, -1 on error.
  */
-int CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
+int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
               FIXP_LPC lpc4_lsf[M_LP_FILTER_ORDER],
               FIXP_LPC lsf_adaptive_mean_cand[M_LP_FILTER_ORDER],
-              FIXP_SGL pStability[], UCHAR *mod, int first_lpd_flag,
-              int last_lpc_lost, int last_frame_ok);
+              FIXP_SGL pStability[], UCHAR *mod, int32_t first_lpd_flag,
+              int32_t last_lpc_lost, int32_t last_frame_ok);
 
 /**
  * \brief Generate LPC coefficient sets in case frame loss.
@@ -160,7 +160,7 @@ int CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
 void CLpc_Conceal(FIXP_LPC lsp[][M_LP_FILTER_ORDER],
                   FIXP_LPC lpc4_lsf[M_LP_FILTER_ORDER],
                   FIXP_LPC isf_adaptive_mean[M_LP_FILTER_ORDER],
-                  const int first_lpd_flag);
+                  const int32_t first_lpd_flag);
 
 /**
  * \brief apply absolute weighting
@@ -170,7 +170,7 @@ void CLpc_Conceal(FIXP_LPC lsp[][M_LP_FILTER_ORDER],
  * \param m length of vector A
  */
 /* static */
-void E_LPC_a_weight(FIXP_LPC *wA, const FIXP_LPC *A, const int m);
+void E_LPC_a_weight(FIXP_LPC *wA, const FIXP_LPC *A, const int32_t m);
 
 /**
  * \brief decode TCX/FAC gain. In case of TCX the lg/sqrt(rms) part
@@ -180,11 +180,11 @@ void E_LPC_a_weight(FIXP_LPC *wA, const FIXP_LPC *A, const int m);
  * \param gain_code (i) the 7 bit binary word from the bitstream
  *                      representing the gain.
  */
-void CLpd_DecodeGain(int32_t *gain, INT *gain_e, int gain_code);
+void CLpd_DecodeGain(int32_t *gain, int32_t *gain_e, int32_t gain_code);
 
 /**
  * \brief convert LSP coefficients into LP domain.
  */
-void E_LPC_f_lsp_a_conversion(FIXP_LPC *lsp, FIXP_LPC *a, INT *a_exp);
+void E_LPC_f_lsp_a_conversion(FIXP_LPC *lsp, FIXP_LPC *a, int32_t *a_exp);
 
 #endif /* USACDEC_LPC_H */

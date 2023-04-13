@@ -199,14 +199,14 @@ typedef struct {
 
   \return  0 on success, -1 on error.
 */
-int CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
+int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
                       CJointStereoData *pJointStereoData,
-                      const int windowGroups,
-                      const int scaleFactorBandsTransmitted,
-                      const int max_sfb_ste_clear,
+                      const int32_t windowGroups,
+                      const int32_t scaleFactorBandsTransmitted,
+                      const int32_t max_sfb_ste_clear,
                       CJointStereoPersistentData *pJointStereoPersistentData,
                       CCplxPredictionData *cplxPredictionData,
-                      int cplxPredictionActiv, int scaleFactorBandsTotal,
-                      int windowSequence, const UINT flags);
+                      int32_t cplxPredictionActiv, int32_t scaleFactorBandsTotal,
+                      int32_t windowSequence, const uint32_t flags);
 
 #endif /* #ifndef STEREO_H */

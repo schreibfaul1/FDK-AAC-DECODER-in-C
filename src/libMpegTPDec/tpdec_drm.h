@@ -137,7 +137,7 @@ void drmRead_CrcInit(HANDLE_DRM pDrm);
  *
  * \return  ID for the created region, -1 in case of an error
  */
-int drmRead_CrcStartReg(HANDLE_DRM pDrm, HANDLE_FDK_BITSTREAM hBs, int mBits);
+int32_t drmRead_CrcStartReg(HANDLE_DRM pDrm, HANDLE_FDK_BITSTREAM hBs, int32_t mBits);
 
 /**
  * \brief Ends CRC region identified by reg
@@ -148,7 +148,7 @@ int drmRead_CrcStartReg(HANDLE_DRM pDrm, HANDLE_FDK_BITSTREAM hBs, int mBits);
  *
  * \return  none
  */
-void drmRead_CrcEndReg(HANDLE_DRM pDrm, HANDLE_FDK_BITSTREAM hBs, int reg);
+void drmRead_CrcEndReg(HANDLE_DRM pDrm, HANDLE_FDK_BITSTREAM hBs, int32_t reg);
 
 /**
  * \brief Check CRC

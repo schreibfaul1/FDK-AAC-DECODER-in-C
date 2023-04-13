@@ -114,8 +114,8 @@ amm-info@iis.fraunhofer.de
   functionname: LdDataVector
 *****************************************************************************/
 LNK_SECTION_CODE_L1
-void LdDataVector(int32_t *srcVector, int32_t *destVector, INT n) {
-  INT i;
+void LdDataVector(int32_t *srcVector, int32_t *destVector, int32_t n) {
+  int32_t i;
   for (i = 0; i < n; i++) {
     destVector[i] = fLog2(srcVector[i], 0);
   }
@@ -205,7 +205,7 @@ values.
 /* This table is used for lookup 2^x with   */
 /* x in range [0...1.0[ in steps of 1/32 */
 LNK_SECTION_DATA_L1
-const UINT exp2_tab_long[32] = {
+const uint32_t exp2_tab_long[32] = {
     0x40000000, 0x4166C34C, 0x42D561B4, 0x444C0740, 0x45CAE0F2, 0x47521CC6,
     0x48E1E9BA, 0x4A7A77D4, 0x4C1BF829, 0x4DC69CDD, 0x4F7A9930, 0x51382182,
     0x52FF6B55, 0x54D0AD5A, 0x56AC1F75, 0x5891FAC1, 0x5A82799A, 0x5C7DD7A4,
@@ -218,7 +218,7 @@ const UINT exp2_tab_long[32] = {
 /* This table is used for lookup 2^x with   */
 /* x in range [0...1/32[ in steps of 1/1024 */
 LNK_SECTION_DATA_L1
-const UINT exp2w_tab_long[32] = {
+const uint32_t exp2w_tab_long[32] = {
     0x40000000, 0x400B1818, 0x4016321B, 0x40214E0C, 0x402C6BE9, 0x40378BB4,
     0x4042AD6D, 0x404DD113, 0x4058F6A8, 0x40641E2B, 0x406F479E, 0x407A7300,
     0x4085A051, 0x4090CF92, 0x409C00C4, 0x40A733E6, 0x40B268FA, 0x40BD9FFF,
@@ -230,7 +230,7 @@ const UINT exp2w_tab_long[32] = {
 /* This table is used for lookup 2^x with   */
 /* x in range [0...1/1024[ in steps of 1/32768 */
 LNK_SECTION_DATA_L1
-const UINT exp2x_tab_long[32] = {
+const uint32_t exp2x_tab_long[32] = {
     0x40000000, 0x400058B9, 0x4000B173, 0x40010A2D, 0x400162E8, 0x4001BBA3,
     0x4002145F, 0x40026D1B, 0x4002C5D8, 0x40031E95, 0x40037752, 0x4003D011,
     0x400428CF, 0x4004818E, 0x4004DA4E, 0x4005330E, 0x40058BCE, 0x4005E48F,
@@ -375,7 +375,7 @@ void InitLdInt() { /* nothing to do! Use preinitialized logarithm table */
 #if (LD_INT_TAB_LEN != 0)
 
 LNK_SECTION_CODE_L1
-int32_t CalcLdInt(INT i) {
+int32_t CalcLdInt(int32_t i) {
   /* calculates ld(op)/LD_DATA_SCALING */
   /* op is assumed to be an integer value between 1 and LD_INT_TAB_LEN */
 
@@ -399,11 +399,11 @@ int32_t CalcLdInt(INT i) {
 
 *****************************************************************************/
 
-int32_t schur_div(int32_t num, int32_t denum, INT count) {
-  INT L_num = (LONG)num >> 1;
-  INT L_denum = (LONG)denum >> 1;
-  INT div = 0;
-  INT k = count;
+int32_t schur_div(int32_t num, int32_t denum, int32_t count) {
+  int32_t L_num = (LONG)num >> 1;
+  int32_t L_denum = (LONG)denum >> 1;
+  int32_t div = 0;
+  int32_t k = count;
 
   FDK_ASSERT(num >= (int32_t)0);
   FDK_ASSERT(denum > (int32_t)0);
@@ -424,9 +424,9 @@ int32_t schur_div(int32_t num, int32_t denum, INT count) {
 #endif /* !defined(FUNCTION_schur_div) */
 
 #ifndef FUNCTION_fMultNorm
-int32_t fMultNorm(int32_t f1, int32_t f2, INT *result_e) {
-  INT product = 0;
-  INT norm_f1, norm_f2;
+int32_t fMultNorm(int32_t f1, int32_t f2, int32_t *result_e) {
+  int32_t product = 0;
+  int32_t norm_f1, norm_f2;
 
   if ((f1 == (int32_t)0) || (f2 == (int32_t)0)) {
     *result_e = 0;
@@ -450,9 +450,9 @@ int32_t fMultNorm(int32_t f1, int32_t f2, INT *result_e) {
 #endif
 
 #ifndef FUNCTION_fDivNorm
-int32_t fDivNorm(int32_t L_num, int32_t L_denum, INT *result_e) {
+int32_t fDivNorm(int32_t L_num, int32_t L_denum, int32_t *result_e) {
   int32_t div;
-  INT norm_num, norm_den;
+  int32_t norm_num, norm_den;
 
   FDK_ASSERT(L_num >= (int32_t)0);
   FDK_ASSERT(L_denum > (int32_t)0);
@@ -479,7 +479,7 @@ int32_t fDivNorm(int32_t L_num, int32_t L_denum, INT *result_e) {
 
 #ifndef FUNCTION_fDivNorm
 int32_t fDivNorm(int32_t num, int32_t denom) {
-  INT e;
+  int32_t e;
   int32_t res;
 
   FDK_ASSERT(denom >= num);
@@ -500,9 +500,9 @@ int32_t fDivNorm(int32_t num, int32_t denom) {
 
 #ifndef FUNCTION_fDivNormSigned
 int32_t fDivNormSigned(int32_t num, int32_t denom) {
-  INT e;
+  int32_t e;
   int32_t res;
-  int sign;
+  int32_t sign;
 
   if (denom == (int32_t)0) {
     return (int32_t)MAXVAL_DBL;
@@ -524,10 +524,10 @@ int32_t fDivNormSigned(int32_t num, int32_t denom) {
 
   return res;
 }
-int32_t fDivNormSigned(int32_t L_num, int32_t L_denum, INT *result_e) {
+int32_t fDivNormSigned(int32_t L_num, int32_t L_denum, int32_t *result_e) {
   int32_t div;
-  INT norm_num, norm_den;
-  int sign;
+  int32_t norm_num, norm_den;
+  int32_t sign;
 
   sign = ((L_num >= (int32_t)0) != (L_denum >= (int32_t)0));
 
@@ -563,9 +563,9 @@ int32_t fDivNormSigned(int32_t L_num, int32_t L_denum, INT *result_e) {
 #endif /* FUNCTION_fDivNormSigned */
 
 #ifndef FUNCTION_fDivNormHighPrec
-int32_t fDivNormHighPrec(int32_t num, int32_t denom, INT *result_e) {
+int32_t fDivNormHighPrec(int32_t num, int32_t denom, int32_t *result_e) {
   int32_t div;
-  INT norm_num, norm_den;
+  int32_t norm_num, norm_den;
 
   FDK_ASSERT(num >= (int32_t)0);
   FDK_ASSERT(denom > (int32_t)0);
@@ -590,12 +590,12 @@ int32_t fDivNormHighPrec(int32_t num, int32_t denom, INT *result_e) {
 #endif /* !FUNCTION_fDivNormHighPrec */
 
 #ifndef FUNCTION_fPow
-int32_t f2Pow(const int32_t exp_m, const INT exp_e, INT *result_e) {
+int32_t f2Pow(const int32_t exp_m, const int32_t exp_e, int32_t *result_e) {
   int32_t frac_part, result_m;
-  INT int_part;
+  int32_t int_part;
 
   if (exp_e > 0) {
-    INT exp_bits = DFRACT_BITS - 1 - exp_e;
+    int32_t exp_bits = DFRACT_BITS - 1 - exp_e;
     int_part = exp_m >> exp_bits;
     frac_part = exp_m - (int32_t)(int_part << exp_bits);
     frac_part = frac_part << exp_e;
@@ -626,7 +626,7 @@ int32_t f2Pow(const int32_t exp_m, const INT exp_e, INT *result_e) {
     /* First taylor series coefficient a_0 = 1.0, scaled by 0.5 due to
      * fMultDiv2(). */
     result_m = FL2FXCONST_DBL(1.0f / 2.0f);
-    for (INT i = 0; i < POW2_PRECISION; i++) {
+    for (int32_t i = 0; i < POW2_PRECISION; i++) {
       /* next taylor series term: a_i * x^i, x=0 */
       result_m = fMultAddDiv2(result_m, pow2Coeff[i], p);
       p = fMult(p, frac_part);
@@ -635,9 +635,9 @@ int32_t f2Pow(const int32_t exp_m, const INT exp_e, INT *result_e) {
   return result_m;
 }
 
-int32_t f2Pow(const int32_t exp_m, const INT exp_e) {
+int32_t f2Pow(const int32_t exp_m, const int32_t exp_e) {
   int32_t result_m;
-  INT result_e;
+  int32_t result_e;
 
   result_m = f2Pow(exp_m, exp_e, &result_e);
   result_e = fixMin(DFRACT_BITS - 1, fixMax(-(DFRACT_BITS - 1), result_e));
@@ -645,9 +645,9 @@ int32_t f2Pow(const int32_t exp_m, const INT exp_e) {
   return scaleValue(result_m, result_e);
 }
 
-int32_t fPow(int32_t base_m, INT base_e, int32_t exp_m, INT exp_e,
-              INT *result_e) {
-  INT ans_lg2_e, baselg2_e;
+int32_t fPow(int32_t base_m, int32_t base_e, int32_t exp_m, int32_t exp_e,
+              int32_t *result_e) {
+  int32_t ans_lg2_e, baselg2_e;
   int32_t base_lg2, ans_lg2, result;
 
   if (base_m <= (int32_t)0) {
@@ -661,7 +661,7 @@ int32_t fPow(int32_t base_m, INT base_e, int32_t exp_m, INT exp_e,
 
   /* Prepare exp */
   {
-    INT leadingBits;
+    int32_t leadingBits;
 
     leadingBits = CountLeadingBits(fAbs(exp_m));
     exp_m = exp_m << leadingBits;
@@ -678,14 +678,14 @@ int32_t fPow(int32_t base_m, INT base_e, int32_t exp_m, INT exp_e,
   return result;
 }
 
-int32_t fLdPow(int32_t baseLd_m, INT baseLd_e, int32_t exp_m, INT exp_e,
-                INT *result_e) {
-  INT ans_lg2_e;
+int32_t fLdPow(int32_t baseLd_m, int32_t baseLd_e, int32_t exp_m, int32_t exp_e,
+                int32_t *result_e) {
+  int32_t ans_lg2_e;
   int32_t ans_lg2, result;
 
   /* Prepare exp */
   {
-    INT leadingBits;
+    int32_t leadingBits;
 
     leadingBits = CountLeadingBits(fAbs(exp_m));
     exp_m = exp_m << leadingBits;
@@ -702,24 +702,24 @@ int32_t fLdPow(int32_t baseLd_m, INT baseLd_e, int32_t exp_m, INT exp_e,
   return result;
 }
 
-int32_t fLdPow(int32_t baseLd_m, INT baseLd_e, int32_t exp_m, INT exp_e) {
+int32_t fLdPow(int32_t baseLd_m, int32_t baseLd_e, int32_t exp_m, int32_t exp_e) {
   int32_t result_m;
-  int result_e;
+  int32_t result_e;
 
   result_m = fLdPow(baseLd_m, baseLd_e, exp_m, exp_e, &result_e);
 
   return SATURATE_SHIFT(result_m, -result_e, DFRACT_BITS);
 }
 
-int32_t fPowInt(int32_t base_m, INT base_e, INT exp, INT *pResult_e) {
+int32_t fPowInt(int32_t base_m, int32_t base_e, int32_t exp, int32_t *pResult_e) {
   int32_t result;
 
   if (exp != 0) {
-    INT result_e = 0;
+    int32_t result_e = 0;
 
     if (base_m != (int32_t)0) {
       {
-        INT leadingBits;
+        int32_t leadingBits;
         leadingBits = CountLeadingBits(base_m);
         base_m <<= leadingBits;
         base_e -= leadingBits;
@@ -728,7 +728,7 @@ int32_t fPowInt(int32_t base_m, INT base_e, INT exp, INT *pResult_e) {
       result = base_m;
 
       {
-        int i;
+        int32_t i;
         for (i = 1; i < fAbs(exp); i++) {
           result = fMult(result, base_m);
         }
@@ -739,7 +739,7 @@ int32_t fPowInt(int32_t base_m, INT base_e, INT exp, INT *pResult_e) {
         result = fDivNorm(FL2FXCONST_DBL(0.5f), result, &result_e);
         result_e++;
       } else {
-        int ansScale = CountLeadingBits(result);
+        int32_t ansScale = CountLeadingBits(result);
         result <<= ansScale;
         result_e -= ansScale;
       }
@@ -760,32 +760,32 @@ int32_t fPowInt(int32_t base_m, INT base_e, INT exp, INT *pResult_e) {
 #endif /* FUNCTION_fPow */
 
 #ifndef FUNCTION_fLog2
-int32_t CalcLog2(int32_t base_m, INT base_e, INT *result_e) {
+int32_t CalcLog2(int32_t base_m, int32_t base_e, int32_t *result_e) {
   return fLog2(base_m, base_e, result_e);
 }
 #endif /* FUNCTION_fLog2 */
 
-INT fixp_floorToInt(int32_t f_inp, INT sf) {
+int32_t fixp_floorToInt(int32_t f_inp, int32_t sf) {
   FDK_ASSERT(sf >= 0);
-  INT floorInt = (INT)(f_inp >> ((DFRACT_BITS - 1) - sf));
+  int32_t floorInt = (int32_t)(f_inp >> ((DFRACT_BITS - 1) - sf));
   return floorInt;
 }
 
-int32_t fixp_floor(int32_t f_inp, INT sf) {
+int32_t fixp_floor(int32_t f_inp, int32_t sf) {
   FDK_ASSERT(sf >= 0);
-  INT floorInt = fixp_floorToInt(f_inp, sf);
+  int32_t floorInt = fixp_floorToInt(f_inp, sf);
   int32_t f_floor = (int32_t)(floorInt << ((DFRACT_BITS - 1) - sf));
   return f_floor;
 }
 
-INT fixp_ceilToInt(int32_t f_inp, INT sf)  // sf  mantissaBits left of dot
+int32_t fixp_ceilToInt(int32_t f_inp, int32_t sf)  // sf  mantissaBits left of dot
 {
   FDK_ASSERT(sf >= 0);
-  INT sx = (DFRACT_BITS - 1) - sf;  // sx  mantissaBits right of dot
-  INT inpINT = (INT)f_inp;
+  int32_t sx = (DFRACT_BITS - 1) - sf;  // sx  mantissaBits right of dot
+  int32_t inpINT = (int32_t)f_inp;
 
-  INT mask = (0x1 << sx) - 1;
-  INT ceilInt = (INT)(f_inp >> sx);
+  int32_t mask = (0x1 << sx) - 1;
+  int32_t ceilInt = (int32_t)(f_inp >> sx);
 
   if (inpINT & mask) {
     ceilInt++;  // increment only, if there is at least one set mantissaBit
@@ -795,13 +795,13 @@ INT fixp_ceilToInt(int32_t f_inp, INT sf)  // sf  mantissaBits left of dot
   return ceilInt;
 }
 
-int32_t fixp_ceil(int32_t f_inp, INT sf) {
+int32_t fixp_ceil(int32_t f_inp, int32_t sf) {
   FDK_ASSERT(sf >= 0);
-  INT sx = (DFRACT_BITS - 1) - sf;
-  INT ceilInt = fixp_ceilToInt(f_inp, sf);
+  int32_t sx = (DFRACT_BITS - 1) - sf;
+  int32_t ceilInt = fixp_ceilToInt(f_inp, sf);
   ULONG mask = (ULONG)0x1 << (DFRACT_BITS - 1);  // 0x80000000
   ceilInt = ceilInt
-            << sx;  // no fract warn bec. shift into saturation done on int side
+            << sx;  // no fract warn bec. shift into saturation done on int32_t side
 
   if ((f_inp > FL2FXCONST_DBL(0.0f)) && (ceilInt & mask)) {
     --ceilInt;
@@ -814,22 +814,22 @@ int32_t fixp_ceil(int32_t f_inp, INT sf) {
 /*****************************************************************************
    fixp_truncateToInt()
      Just remove the fractional part which is located right of decimal point
-     Same as which is done when a float is casted to (INT) :
-     result_INTtype = (INT)b_floatTypeInput;
+     Same as which is done when a float is casted to (int32_t) :
+     result_INTtype = (int32_t)b_floatTypeInput;
 
-   returns INT
+   returns int32_t
 *****************************************************************************/
-INT fixp_truncateToInt(int32_t f_inp, INT sf)  // sf  mantissaBits left  of dot
+int32_t fixp_truncateToInt(int32_t f_inp, int32_t sf)  // sf  mantissaBits left  of dot
                                                 // (without sign)  e.g. at width
                                                 // 32 this would be [sign]7.
                                                 // supposed sf equals 8.
 {
   FDK_ASSERT(sf >= 0);
-  INT sx = (DFRACT_BITS - 1) - sf;  // sx  mantissaBits right of dot
+  int32_t sx = (DFRACT_BITS - 1) - sf;  // sx  mantissaBits right of dot
                                     // at width 32 this would be        .24
                                     // supposed sf equals 8.
-  INT fbaccu = (INT)f_inp;
-  INT mask = (0x1 << sx);
+  int32_t fbaccu = (int32_t)f_inp;
+  int32_t mask = (0x1 << sx);
 
   if ((fbaccu < 0) && (fbaccu & (mask - 1))) {
     fbaccu = fbaccu + mask;
@@ -845,9 +845,9 @@ INT fixp_truncateToInt(int32_t f_inp, INT sf)  // sf  mantissaBits left  of dot
 
    returns int32_t
 *****************************************************************************/
-int32_t fixp_truncate(int32_t f_inp, INT sf) {
+int32_t fixp_truncate(int32_t f_inp, int32_t sf) {
   FDK_ASSERT(sf >= 0);
-  INT truncateInt = fixp_truncateToInt(f_inp, sf);
+  int32_t truncateInt = fixp_truncateToInt(f_inp, sf);
   int32_t f_truncate = (int32_t)(truncateInt << ((DFRACT_BITS - 1) - sf));
   return f_truncate;
 }
@@ -857,17 +857,17 @@ int32_t fixp_truncate(int32_t f_inp, INT sf) {
     round [typical rounding]
 
     See fct roundRef() [which is the reference]
-  returns INT
+  returns int32_t
 *****************************************************************************/
-INT fixp_roundToInt(int32_t f_inp, INT sf) {
+int32_t fixp_roundToInt(int32_t f_inp, int32_t sf) {
   FDK_ASSERT(sf >= 0);
-  INT sx = DFRACT_BITS - 1 - sf;
-  INT inp = (INT)f_inp;
-  INT mask1 = (0x1 << (sx - 1));
-  INT mask2 = (0x1 << (sx)) - 1;
-  INT mask3 = 0x7FFFFFFF;
-  INT iam = inp & mask2;
-  INT rnd;
+  int32_t sx = DFRACT_BITS - 1 - sf;
+  int32_t inp = (int32_t)f_inp;
+  int32_t mask1 = (0x1 << (sx - 1));
+  int32_t mask2 = (0x1 << (sx)) - 1;
+  int32_t mask3 = 0x7FFFFFFF;
+  int32_t iam = inp & mask2;
+  int32_t rnd;
 
   if ((inp < 0) && !(iam == mask1))
     rnd = inp + mask1;
@@ -890,10 +890,10 @@ INT fixp_roundToInt(int32_t f_inp, INT sf) {
     See fct roundRef() [which is the reference]
   returns int32_t
 *****************************************************************************/
-int32_t fixp_round(int32_t f_inp, INT sf) {
+int32_t fixp_round(int32_t f_inp, int32_t sf) {
   FDK_ASSERT(sf >= 0);
-  INT sx = DFRACT_BITS - 1 - sf;
-  INT r = fixp_roundToInt(f_inp, sf);
+  int32_t sx = DFRACT_BITS - 1 - sf;
+  int32_t r = fixp_roundToInt(f_inp, sf);
   ULONG mask = (ULONG)0x1 << (DFRACT_BITS - 1);  // 0x80000000
   r = r << sx;
 

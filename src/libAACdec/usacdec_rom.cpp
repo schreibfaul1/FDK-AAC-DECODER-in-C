@@ -113,7 +113,7 @@ amm-info@iis.fraunhofer.de
 #define SF_FILT_LP 1
 
 /* table of factorial */
-const UINT fdk_dec_tab_factorial[8] = {5040, 720, 120, 24, 6, 2, 1, 1};
+const uint32_t fdk_dec_tab_factorial[8] = {5040, 720, 120, 24, 6, 2, 1, 1};
 
 /*  Da - Absolute leaders */
 const UCHAR fdk_dec_Da[NB_LEADER][8] = {

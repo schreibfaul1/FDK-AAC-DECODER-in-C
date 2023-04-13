@@ -113,11 +113,11 @@ amm-info@iis.fraunhofer.de
 #define SPEC_FAC(ptr, i, gl) ((ptr) + ((i) * (gl)))
 
 int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                             UCHAR mod[NB_DIV], int *pState) {
+                             UCHAR mod[NB_DIV], int32_t *pState) {
   int32_t *ptr;
-  int i;
-  int k = 0;
-  int max_windows = 8;
+  int32_t i;
+  int32_t k = 0;
+  int32_t max_windows = 8;
 
   FDK_ASSERT(*pState >= 0 && *pState < max_windows);
 
@@ -142,10 +142,10 @@ int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
   return ptr;
 }
 
-int CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, int32_t *pFac, SCHAR *pFacScale,
-                  int length, int use_gain, int frame) {
+int32_t CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, int32_t *pFac, SCHAR *pFacScale,
+                  int32_t length, int32_t use_gain, int32_t frame) {
   int32_t fac_gain;
-  int fac_gain_e = 0;
+  int32_t fac_gain_e = 0;
 
   if (use_gain) {
     CLpd_DecodeGain(&fac_gain, &fac_gain_e, FDKreadBits(hBs, 7));
@@ -156,7 +156,7 @@ int CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, int32_t *pFac, SCHAR *pFacScale,
   }
 
   {
-    int scale;
+    int32_t scale;
 
     scale = getScalefactor(pFac, length);
     scaleValues(pFac, length, scale);
@@ -164,7 +164,7 @@ int CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, int32_t *pFac, SCHAR *pFacScale,
   }
 
   if (use_gain) {
-    int i;
+    int32_t i;
 
     pFacScale[frame] += fac_gain_e;
 
@@ -182,9 +182,9 @@ int CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, int32_t *pFac, SCHAR *pFacScale,
  * \param length length of the input/output data vector x.
  * \param x input/output vector, where the synthesis filter is applied in place.
  */
-static void Syn_filt_zero(const FIXP_LPC a[], const INT a_exp, INT length,
+static void Syn_filt_zero(const FIXP_LPC a[], const int32_t a_exp, int32_t length,
                           int32_t x[]) {
-  int i, j;
+  int32_t i, j;
   int32_t L_tmp;
 
   for (i = 0; i < length; i++) {
@@ -205,11 +205,11 @@ static void Syn_filt_zero(const FIXP_LPC a[], const INT a_exp, INT length,
 static const int32_t gainFac[4] = {0x40000000, 0x2d413ccd, 0x20000000,
                                     0x16a09e66};
 
-void CFac_ApplyGains(int32_t fac_data[LFAC], const INT fac_length,
+void CFac_ApplyGains(int32_t fac_data[LFAC], const int32_t fac_length,
                      const int32_t tcx_gain, const int32_t alfd_gains[],
-                     const INT mod) {
+                     const int32_t mod) {
   int32_t facFactor;
-  int i;
+  int32_t i;
 
   FDK_ASSERT((fac_length == 128) || (fac_length == 96));
 
@@ -221,7 +221,7 @@ void CFac_ApplyGains(int32_t fac_data[LFAC], const INT fac_length,
 
   /* 3) Apply spectrum deshaping using alfd_gains */
   for (i = 0; i < fac_length / 4; i++) {
-    int k;
+    int32_t k;
 
     k = i >> (3 - mod);
     fac_data[i] = fMult(fac_data[i], alfd_gains[k])
@@ -230,14 +230,14 @@ void CFac_ApplyGains(int32_t fac_data[LFAC], const INT fac_length,
 }
 
 static void CFac_CalcFacSignal(int32_t *pOut, int32_t *pFac,
-                               const int fac_scale, const int fac_length,
+                               const int32_t fac_scale, const int32_t fac_length,
                                const FIXP_LPC A[M_LP_FILTER_ORDER],
-                               const INT A_exp, const int fAddZir,
-                               const int isFdFac) {
+                               const int32_t A_exp, const int32_t fAddZir,
+                               const int32_t isFdFac) {
   FIXP_LPC wA[M_LP_FILTER_ORDER];
   int32_t tf_gain = (int32_t)0;
-  int wlength;
-  int scale = fac_scale;
+  int32_t wlength;
+  int32_t scale = fac_scale;
 
   /* obtain tranform gain. */
   imdct_gain(&tf_gain, &scale, isFdFac ? 0 : fac_length);
@@ -247,7 +247,7 @@ static void CFac_CalcFacSignal(int32_t *pOut, int32_t *pFac,
   dct_IV(pFac, fac_length, &scale);
   /* dct_IV scale = log2(fac_length). "- 7" is a factor of 2/128 */
   if (tf_gain != (int32_t)0) { /* non-radix 2 transform gain */
-    int i;
+    int32_t i;
 
     for (i = 0; i < fac_length; i++) {
       pFac[i] = fMult(tf_gain, pFac[i]);
@@ -269,14 +269,14 @@ static void CFac_CalcFacSignal(int32_t *pOut, int32_t *pFac,
   Syn_filt_zero(wA, A_exp, wlength, pOut);
 }
 
-INT CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac,
-                        const int fac_scale, FIXP_LPC *A, INT A_exp,
-                        INT nrOutSamples, const INT fac_length,
-                        const INT isFdFac, UCHAR prevWindowShape) {
+int32_t CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac,
+                        const int32_t fac_scale, FIXP_LPC *A, int32_t A_exp,
+                        int32_t nrOutSamples, const int32_t fac_length,
+                        const int32_t isFdFac, UCHAR prevWindowShape) {
   int32_t *pOvl;
   int32_t *pOut0;
   const FIXP_WTP *pWindow;
-  int i, fl, nrSamples = 0;
+  int32_t i, fl, nrSamples = 0;
 
   FDK_ASSERT(fac_length <= 1024 / (4 * 2));
 
@@ -286,7 +286,7 @@ INT CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac,
 
   /* Adapt window slope length in case of frame loss. */
   if (hMdct->prev_fr != fl) {
-    int nl = 0;
+    int32_t nl = 0;
     imdct_adapt_parameters(hMdct, &fl, &nl, fac_length, pWindow, nrOutSamples);
     FDK_ASSERT(nl == 0);
   }
@@ -375,23 +375,23 @@ INT CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac,
   return nrSamples;
 }
 
-INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
-                        const SHORT spec_scale[], const int nSpec,
-                        int32_t *pFac, const int fac_scale,
-                        const INT fac_length, INT noOutSamples, const INT tl,
-                        const FIXP_WTP *wrs, const INT fr, FIXP_LPC A[16],
-                        INT A_exp, CAcelpStaticMem *acelp_mem,
-                        const int32_t gain, const int last_frame_lost,
-                        const int isFdFac, const UCHAR last_lpd_mode,
-                        const int k, int currAliasingSymmetry) {
+int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
+                        const SHORT spec_scale[], const int32_t nSpec,
+                        int32_t *pFac, const int32_t fac_scale,
+                        const int32_t fac_length, int32_t noOutSamples, const int32_t tl,
+                        const FIXP_WTP *wrs, const int32_t fr, FIXP_LPC A[16],
+                        int32_t A_exp, CAcelpStaticMem *acelp_mem,
+                        const int32_t gain, const int32_t last_frame_lost,
+                        const int32_t isFdFac, const UCHAR last_lpd_mode,
+                        const int32_t k, int32_t currAliasingSymmetry) {
   int32_t *pCurr, *pOvl, *pSpec;
   const FIXP_WTP *pWindow;
   const FIXP_WTB *FacWindowZir_conceal;
   UCHAR doFacZirConceal = 0;
-  int doDeemph = 1;
+  int32_t doDeemph = 1;
   const FIXP_WTB *FacWindowZir, *FacWindowSynth;
   int32_t *pOut0 = output, *pOut1;
-  int w, i, fl, nl, nr, f_len, nrSamples = 0, s = 0, scale, total_gain_e;
+  int32_t w, i, fl, nl, nr, f_len, nrSamples = 0, s = 0, scale, total_gain_e;
   int32_t *pF, *pFAC_and_FAC_ZIR = NULL;
   int32_t total_gain = gain;
 
@@ -536,7 +536,7 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
       pSpec[i] = fMult(pSpec[i], total_gain);
     }
   }
-  int loc_scale = fixmin_I(spec_scale[0] + scale, (INT)DFRACT_BITS - 1);
+  int32_t loc_scale = fixmin_I(spec_scale[0] + scale, (int32_t)DFRACT_BITS - 1);
   scaleValuesSaturate(pSpec, tl, loc_scale);
 
   pOut1 += fl / 2 - 1;
@@ -627,7 +627,7 @@ INT CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
         pSpec[i] = fMult(pSpec[i], total_gain);
       }
     }
-    loc_scale = fixmin_I(spec_scale[w] + scale, (INT)DFRACT_BITS - 1);
+    loc_scale = fixmin_I(spec_scale[w] + scale, (int32_t)DFRACT_BITS - 1);
     scaleValuesSaturate(pSpec, tl, loc_scale);
 
     if (noOutSamples <= nrSamples) {

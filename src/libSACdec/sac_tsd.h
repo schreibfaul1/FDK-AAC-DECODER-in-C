@@ -118,8 +118,8 @@ typedef struct {
                                            and TsdSepData[ts]=1 */
 } TSD_DATA;
 
-FDK_INLINE int isTsdActive(const TSD_DATA *pTsdData) {
-  return (int)pTsdData->bsTsdEnable;
+FDK_INLINE int32_t isTsdActive(const TSD_DATA *pTsdData) {
+  return (int32_t)pTsdData->bsTsdEnable;
 }
 
 /**
@@ -129,7 +129,7 @@ FDK_INLINE int isTsdActive(const TSD_DATA *pTsdData) {
  * \param[out] pTsdData pointer to TSD data structure.
  * \return 0 on succes, 1 on error.
  */
-int TsdRead(HANDLE_FDK_BITSTREAM hBs, const int numSlots, TSD_DATA *pTsdData);
+int32_t TsdRead(HANDLE_FDK_BITSTREAM hBs, const int32_t numSlots, TSD_DATA *pTsdData);
 
 /**
  * \brief Perform transient seperation (v_{x,nonTr} signal).
@@ -144,8 +144,8 @@ int TsdRead(HANDLE_FDK_BITSTREAM hBs, const int numSlots, TSD_DATA *pTsdData);
  * \param[out] ppDecorrInImag handle to array where allpass based decorrelator
  * should read from (modified by this function).
  */
-void TsdGenerateNonTr(const int numHybridBands, const TSD_DATA *pTsdData,
-                      const int ts, int32_t *pVdirectReal,
+void TsdGenerateNonTr(const int32_t numHybridBands, const TSD_DATA *pTsdData,
+                      const int32_t ts, int32_t *pVdirectReal,
                       int32_t *pVdirectImag, int32_t *pVnonTrReal,
                       int32_t *pVnonTrImag, int32_t **ppDecorrInReal,
                       int32_t **ppDecorrInImag);
@@ -160,7 +160,7 @@ void TsdGenerateNonTr(const int numHybridBands, const TSD_DATA *pTsdData,
  * \param[out] pDnonTrReal
  * \param[out] pDnonTrImag
  */
-void TsdApply(const int numHybridBands, const TSD_DATA *pTsdData, int *pTsdTs,
+void TsdApply(const int32_t numHybridBands, const TSD_DATA *pTsdData, int32_t *pTsdTs,
               const int32_t *pVdirectReal, const int32_t *pVdirectImag,
               int32_t *pDnonTrReal, int32_t *pDnonTrImag);
 

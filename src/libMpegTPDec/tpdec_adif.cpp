@@ -108,11 +108,11 @@ amm-info@iis.fraunhofer.de
 TRANSPORTDEC_ERROR adifRead_DecodeHeader(CAdifHeader *pAdifHeader,
                                          CProgramConfig *pPce,
                                          HANDLE_FDK_BITSTREAM bs) {
-  int i;
+  int32_t i;
   TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
-  UINT startAnchor = FDKgetValidBits(bs);
+  uint32_t startAnchor = FDKgetValidBits(bs);
 
-  if ((INT)startAnchor < MIN_ADIF_HEADERLENGTH) {
+  if ((int32_t)startAnchor < MIN_ADIF_HEADERLENGTH) {
     return (TRANSPORTDEC_NOT_ENOUGH_BITS);
   }
 

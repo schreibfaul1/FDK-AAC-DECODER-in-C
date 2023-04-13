@@ -144,19 +144,19 @@ typedef struct {
 
 typedef struct {
   GAIN_INTERPOLATION_TYPE gainInterpolationType;
-  int nNodes[NUM_LNB_FRAMES]; /* number of nodes, saturated to 16 */
+  int32_t nNodes[NUM_LNB_FRAMES]; /* number of nodes, saturated to 16 */
   NODE_LIN linearNode[NUM_LNB_FRAMES][16];
 } LINEAR_NODE_BUFFER;
 
 typedef struct {
-  int lnbPointer;
+  int32_t lnbPointer;
   LINEAR_NODE_BUFFER linearNodeBuffer[12];
   LINEAR_NODE_BUFFER dummyLnb;
   int32_t channelGain[8][NUM_LNB_FRAMES]; /* e = 8 */
 } DRC_GAIN_BUFFERS;
 
 typedef struct {
-  int activeDrcOffset;
+  int32_t activeDrcOffset;
   DRC_INSTRUCTIONS_UNI_DRC* pInst;
   DRC_COEFFICIENTS_UNI_DRC* pCoef;
 
@@ -168,28 +168,28 @@ typedef struct {
   UCHAR channelGroupIsParametricDrc[8];
   UCHAR gainElementCount; /* number of different DRC gains inluding all DRC
                              bands */
-  int lnbIndexForChannel[8][NUM_LNB_FRAMES];
-  int subbandGainsReady;
+  int32_t lnbIndexForChannel[8][NUM_LNB_FRAMES];
+  int32_t subbandGainsReady;
 } ACTIVE_DRC;
 
 typedef struct {
-  int deltaTminDefault;
-  INT frameSize;
+  int32_t deltaTminDefault;
+  int32_t frameSize;
   int32_t loudnessNormalisationGainDb;
   DELAY_MODE delayMode;
 
-  int nActiveDrcs;
+  int32_t nActiveDrcs;
   ACTIVE_DRC activeDrc[MAX_ACTIVE_DRCS];
-  int multiBandActiveDrcIndex;
-  int channelGainActiveDrcIndex;
+  int32_t multiBandActiveDrcIndex;
+  int32_t channelGainActiveDrcIndex;
   int32_t channelGain[8]; /* e = 8 */
 
   DRC_GAIN_BUFFERS drcGainBuffers;
   int32_t subbandGains[12][4 * 1024 / 256];
   int32_t dummySubbandGains[4 * 1024 / 256];
 
-  int status;
-  int timeDomainSupported;
+  int32_t status;
+  int32_t timeDomainSupported;
   SUBBAND_DOMAIN_MODE subbandDomainSupported;
 } DRC_GAIN_DECODER, *HANDLE_DRC_GAIN_DECODER;
 
@@ -203,12 +203,12 @@ drcDec_GainDecoder_Init(HANDLE_DRC_GAIN_DECODER hGainDec);
 DRC_ERROR
 drcDec_GainDecoder_SetParam(HANDLE_DRC_GAIN_DECODER hGainDec,
                             const GAIN_DEC_PARAM paramType,
-                            const int paramValue);
+                            const int32_t paramValue);
 
 DRC_ERROR
 drcDec_GainDecoder_SetCodecDependentParameters(
     HANDLE_DRC_GAIN_DECODER hGainDec, const DELAY_MODE delayMode,
-    const int timeDomainSupported,
+    const int32_t timeDomainSupported,
     const SUBBAND_DOMAIN_MODE subbandDomainSupported);
 
 DRC_ERROR
@@ -235,17 +235,17 @@ drcDec_GainDecoder_Preprocess(HANDLE_DRC_GAIN_DECODER hGainDec,
  * drcDec_GainDecoder_ProcessSubbandDomain */
 DRC_ERROR
 drcDec_GainDecoder_ProcessTimeDomain(
-    HANDLE_DRC_GAIN_DECODER hGainDec, const int delaySamples,
-    const GAIN_DEC_LOCATION drcLocation, const int channelOffset,
-    const int drcChannelOffset, const int numChannelsProcessed,
-    const int timeDataChannelOffset, int32_t* audioIOBuffer);
+    HANDLE_DRC_GAIN_DECODER hGainDec, const int32_t delaySamples,
+    const GAIN_DEC_LOCATION drcLocation, const int32_t channelOffset,
+    const int32_t drcChannelOffset, const int32_t numChannelsProcessed,
+    const int32_t timeDataChannelOffset, int32_t* audioIOBuffer);
 
 DRC_ERROR
 drcDec_GainDecoder_ProcessSubbandDomain(
-    HANDLE_DRC_GAIN_DECODER hGainDec, const int delaySamples,
-    GAIN_DEC_LOCATION drcLocation, const int channelOffset,
-    const int drcChannelOffset, const int numChannelsProcessed,
-    const int processSingleTimeslot, int32_t* audioIOBufferReal[],
+    HANDLE_DRC_GAIN_DECODER hGainDec, const int32_t delaySamples,
+    GAIN_DEC_LOCATION drcLocation, const int32_t channelOffset,
+    const int32_t drcChannelOffset, const int32_t numChannelsProcessed,
+    const int32_t processSingleTimeslot, int32_t* audioIOBufferReal[],
     int32_t* audioIOBufferImag[]);
 
 DRC_ERROR
@@ -257,15 +257,15 @@ DRC_ERROR
 drcDec_GainDecoder_SetLoudnessNormalizationGainDb(
     HANDLE_DRC_GAIN_DECODER hGainDec, int32_t loudnessNormalizationGainDb);
 
-int drcDec_GainDecoder_GetFrameSize(HANDLE_DRC_GAIN_DECODER hGainDec);
+int32_t drcDec_GainDecoder_GetFrameSize(HANDLE_DRC_GAIN_DECODER hGainDec);
 
-int drcDec_GainDecoder_GetDeltaTminDefault(HANDLE_DRC_GAIN_DECODER hGainDec);
+int32_t drcDec_GainDecoder_GetDeltaTminDefault(HANDLE_DRC_GAIN_DECODER hGainDec);
 
 void drcDec_GainDecoder_SetChannelGains(HANDLE_DRC_GAIN_DECODER hGainDec,
-                                        const int numChannels,
-                                        const int frameSize,
+                                        const int32_t numChannels,
+                                        const int32_t frameSize,
                                         const int32_t* channelGainDb,
-                                        const int audioBufferChannelOffset,
+                                        const int32_t audioBufferChannelOffset,
                                         int32_t* audioBuffer);
 
 #endif

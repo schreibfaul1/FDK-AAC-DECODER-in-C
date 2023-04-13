@@ -145,10 +145,10 @@ typedef enum {
 typedef struct {
   SpatialDecConcealmentMethod method;
 
-  UINT numKeepFrames;
-  UINT numFadeOutFrames;
-  UINT numFadeInFrames;
-  UINT numReleaseFrames;
+  uint32_t numKeepFrames;
+  uint32_t numFadeOutFrames;
+  uint32_t numFadeInFrames;
+  uint32_t numReleaseFrames;
 
 } SpatialDecConcealmentParams;
 
@@ -157,8 +157,8 @@ typedef struct {
   SpatialDecConcealmentState
       concealState; /* State of internal state machine (fade-in/out etc) */
 
-  UINT cntStateFrames; /* Counter for fade-in/out handling */
-  UINT cntValidFrames; /* Counter for the number of consecutive good frames*/
+  uint32_t cntStateFrames; /* Counter for fade-in/out handling */
+  uint32_t cntValidFrames; /* Counter for the number of consecutive good frames*/
 
 } SpatialDecConcealmentInfo;
 
@@ -168,20 +168,20 @@ typedef struct {
 #define MPEGS_CONCEAL_RESET_ALL (0xFF)
 
 void SpatialDecConcealment_Init(SpatialDecConcealmentInfo *info,
-                                const UINT resetFlags);
+                                const uint32_t resetFlags);
 
-int SpatialDecConcealment_Apply(SpatialDecConcealmentInfo *info,
+int32_t SpatialDecConcealment_Apply(SpatialDecConcealmentInfo *info,
                                 const SCHAR (*cmpIdxData)[MAX_PARAMETER_BANDS],
                                 SCHAR **diffIdxData, SCHAR *idxPrev,
-                                SCHAR *bsXXXDataMode, const int startBand,
-                                const int stopBand, const SCHAR defaultValue,
-                                const int paramType, const int numParamSets);
+                                SCHAR *bsXXXDataMode, const int32_t startBand,
+                                const int32_t stopBand, const SCHAR defaultValue,
+                                const int32_t paramType, const int32_t numParamSets);
 
 void SpatialDecConcealment_UpdateState(SpatialDecConcealmentInfo *info,
-                                       const int frameOk);
+                                       const int32_t frameOk);
 
 SACDEC_ERROR SpatialDecConcealment_SetParam(SpatialDecConcealmentInfo *info,
                                             const SAC_DEC_CONCEAL_PARAM param,
-                                            const INT value);
+                                            const int32_t value);
 
 #endif /* SAC_DEC_CONCEAL_H */

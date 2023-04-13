@@ -128,8 +128,8 @@ typedef struct {
  */
 typedef struct {
   const CHANNEL_MAP_INFO* pMapInfoTab; /*!< Table of channel maps. */
-  UINT mapInfoTabLen; /*!< Length of the channel map table array. */
-  UINT fPassThrough;  /*!< Flag that defines whether the specified mapping shall
+  uint32_t mapInfoTabLen; /*!< Length of the channel map table array. */
+  uint32_t fPassThrough;  /*!< Flag that defines whether the specified mapping shall
                          be applied  (value: 0) or the input just gets passed
                          through (MPEG mapping). */
 } FDK_channelMapDescr;
@@ -153,7 +153,7 @@ extern "C" {
  */
 void FDK_chMapDescr_init(FDK_channelMapDescr* const pMapDescr,
                          const CHANNEL_MAP_INFO* const pMapInfoTab,
-                         const UINT mapInfoTabLen, const UINT fPassThrough);
+                         const uint32_t mapInfoTabLen, const uint32_t fPassThrough);
 
 /**
  * \brief  Change the channel reordering state of a given channel map
@@ -165,8 +165,8 @@ void FDK_chMapDescr_init(FDK_channelMapDescr* const pMapDescr,
  * \return               Value unequal to zero if set operation was not
  * successful. And zero on success.
  */
-int FDK_chMapDescr_setPassThrough(FDK_channelMapDescr* const pMapDescr,
-                                  UINT fPassThrough);
+int32_t FDK_chMapDescr_setPassThrough(FDK_channelMapDescr* const pMapDescr,
+                                  uint32_t fPassThrough);
 
 /**
  * \brief  Get the mapping value for a specific channel and map index.
@@ -178,7 +178,7 @@ int FDK_chMapDescr_setPassThrough(FDK_channelMapDescr* const pMapDescr,
  * \return            Mapping value.
  */
 UCHAR FDK_chMapDescr_getMapValue(const FDK_channelMapDescr* const pMapDescr,
-                                 const UCHAR chIdx, const UINT mapIdx);
+                                 const UCHAR chIdx, const uint32_t mapIdx);
 
 /**
  * \brief  Evaluate whether channel map descriptor is reasonable or not.
@@ -187,13 +187,13 @@ UCHAR FDK_chMapDescr_getMapValue(const FDK_channelMapDescr* const pMapDescr,
  * \return           Value unequal to zero if descriptor is valid, otherwise
  * zero.
  */
-int FDK_chMapDescr_isValid(const FDK_channelMapDescr* const pMapDescr);
+int32_t FDK_chMapDescr_isValid(const FDK_channelMapDescr* const pMapDescr);
 
 /**
  * Extra variables for setting up Wg4 channel mapping.
  */
 extern const CHANNEL_MAP_INFO FDK_mapInfoTabWg4[];
-extern const UINT FDK_mapInfoTabLenWg4;
+extern const uint32_t FDK_mapInfoTabLenWg4;
 
 #ifdef __cplusplus
 }

@@ -108,14 +108,14 @@ amm-info@iis.fraunhofer.de
 #include "channelinfo.h"
 #include "../libFDK/FDK_bitstream.h"
 
-UINT HcrInit(H_HCR_INFO pHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+uint32_t HcrInit(H_HCR_INFO pHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
              const SamplingRateInfo *pSamplingRateInfo,
              HANDLE_FDK_BITSTREAM bs);
-UINT HcrDecoder(H_HCR_INFO hHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+uint32_t HcrDecoder(H_HCR_INFO hHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                 const SamplingRateInfo *pSamplingRateInfo,
                 HANDLE_FDK_BITSTREAM bs);
-void CarryBitToBranchValue(UCHAR carryBit, UINT treeNode, UINT *branchValue,
-                           UINT *branchNode);
+void CarryBitToBranchValue(UCHAR carryBit, uint32_t treeNode, uint32_t *branchValue,
+                           uint32_t *branchNode);
 
 void CHcr_Read(HANDLE_FDK_BITSTREAM bs,
                CAacDecoderChannelInfo *pAacDecoderChannelInfo,
@@ -123,6 +123,6 @@ void CHcr_Read(HANDLE_FDK_BITSTREAM bs,
 void HcrMuteErroneousLines(H_HCR_INFO hHcr);
 
 void setHcrType(H_HCR_INFO hHcr, MP4_ELEMENT_ID type);
-INT getHcrType(H_HCR_INFO hHcr);
+int32_t getHcrType(H_HCR_INFO hHcr);
 
 #endif /* AACDEC_HCR_H */

@@ -110,15 +110,15 @@ amm-info@iis.fraunhofer.de
 
 typedef struct {
   int32_t prevFact_mag[(64)];
-  INT prevFact_exp;
+  int32_t prevFact_exp;
 
   int32_t currFact_mag[SBRDEC_MAX_DRC_BANDS];
   int32_t nextFact_mag[SBRDEC_MAX_DRC_BANDS];
-  INT currFact_exp;
-  INT nextFact_exp;
+  int32_t currFact_exp;
+  int32_t nextFact_exp;
 
-  UINT numBandsCurr;
-  UINT numBandsNext;
+  uint32_t numBandsCurr;
+  uint32_t numBandsNext;
   USHORT bandTopCurr[SBRDEC_MAX_DRC_BANDS];
   USHORT bandTopNext[SBRDEC_MAX_DRC_BANDS];
 
@@ -140,10 +140,10 @@ void sbrDecoder_drcUpdateChannel(HANDLE_SBR_DRC_CHANNEL hDrcData);
 
 void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
                              int32_t *qmfRealSlot, int32_t *qmfImagSlot,
-                             int col, int numQmfSubSamples, int maxShift);
+                             int32_t col, int32_t numQmfSubSamples, int32_t maxShift);
 
 void sbrDecoder_drcApply(HANDLE_SBR_DRC_CHANNEL hDrcData,
                          int32_t **QmfBufferReal, int32_t **QmfBufferImag,
-                         int numQmfSubSamples, int *scaleFactor);
+                         int32_t numQmfSubSamples, int32_t *scaleFactor);
 
 #endif /* SBRDEC_DRC_H */

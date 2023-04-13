@@ -380,21 +380,21 @@ typedef struct {
   CHANNEL_MODE channelMode;  /**< Channel mode.                      */
   UCHAR channelConfigZero;   /**< Use channel config zero + pce although a
                                 standard channel config could be signaled. */
-  INT samplingRate;          /**< Sampling rate.                     */
-  INT extSamplingRate;       /**< Extended samplerate (SBR).         */
-  INT downscaleSamplingRate; /**< Downscale sampling rate (ELD downscaled mode)
+  int32_t samplingRate;          /**< Sampling rate.                     */
+  int32_t extSamplingRate;       /**< Extended samplerate (SBR).         */
+  int32_t downscaleSamplingRate; /**< Downscale sampling rate (ELD downscaled mode)
                               */
-  INT bitRate;               /**< Average bitrate.                   */
-  int samplesPerFrame; /**< Number of PCM samples per codec frame and audio
+  int32_t bitRate;               /**< Average bitrate.                   */
+  int32_t samplesPerFrame; /**< Number of PCM samples per codec frame and audio
                           channel. */
-  int noChannels;      /**< Number of audio channels.          */
-  int bitsFrame;
-  int nSubFrames; /**< Amount of encoder subframes. 1 means no subframing. */
-  int BSACnumOfSubFrame; /**< The number of the sub-frames which are grouped and
+  int32_t noChannels;      /**< Number of audio channels.          */
+  int32_t bitsFrame;
+  int32_t nSubFrames; /**< Amount of encoder subframes. 1 means no subframing. */
+  int32_t BSACnumOfSubFrame; /**< The number of the sub-frames which are grouped and
                             transmitted in a super-frame (BSAC). */
-  int BSAClayerLength; /**< The average length of the large-step layers in bytes
+  int32_t BSAClayerLength; /**< The average length of the large-step layers in bytes
                           (BSAC).                            */
-  UINT flags;          /**< flags */
+  uint32_t flags;          /**< flags */
   UCHAR matrixMixdownA; /**< Matrix mixdown index to put into PCE. Default value
                            0 means no mixdown coefficient, valid values are 1-4
                            which correspond to matrix_mixdown_idx 0-3. */
@@ -408,7 +408,7 @@ typedef struct {
                                     hierarcical explicit signaling */
 
   UCHAR rawConfig[64]; /**< raw codec specific config as bit stream */
-  int rawConfigBits;   /**< Size of rawConfig in bits */
+  int32_t rawConfigBits;   /**< Size of rawConfig in bits */
 
   UCHAR sbrPresent;
   UCHAR psPresent;
@@ -720,8 +720,8 @@ typedef struct LIB_INFO {
   const char* build_date;
   const char* build_time;
   FDK_MODULE_ID module_id;
-  INT version;
-  UINT flags;
+  int32_t version;
+  uint32_t flags;
   char versionStr[32];
 } LIB_INFO;
 
@@ -733,7 +733,7 @@ typedef struct LIB_INFO {
 
 /** Initialize library info. */
 static FDK_AUDIO_INLINE void FDKinitLibInfo(LIB_INFO* info) {
-  int i;
+  int32_t i;
 
   for (i = 0; i < FDK_MODULE_LAST; i++) {
     info[i].module_id = FDK_NONE;
@@ -741,9 +741,9 @@ static FDK_AUDIO_INLINE void FDKinitLibInfo(LIB_INFO* info) {
 }
 
 /** Aquire supported features of library. */
-static FDK_AUDIO_INLINE UINT
+static FDK_AUDIO_INLINE uint32_t
 FDKlibInfo_getCapabilities(const LIB_INFO* info, FDK_MODULE_ID module_id) {
-  int i;
+  int32_t i;
 
   for (i = 0; i < FDK_MODULE_LAST; i++) {
     if (info[i].module_id == module_id) {
@@ -754,9 +754,9 @@ FDKlibInfo_getCapabilities(const LIB_INFO* info, FDK_MODULE_ID module_id) {
 }
 
 /** Search for next free tab. */
-static FDK_AUDIO_INLINE INT FDKlibInfo_lookup(const LIB_INFO* info,
+static FDK_AUDIO_INLINE int32_t FDKlibInfo_lookup(const LIB_INFO* info,
                                               FDK_MODULE_ID module_id) {
-  int i = -1;
+  int32_t i = -1;
 
   for (i = 0; i < FDK_MODULE_LAST; i++) {
     if (info[i].module_id == module_id) return -1;
@@ -779,32 +779,32 @@ static FDK_AUDIO_INLINE INT FDKlibInfo_lookup(const LIB_INFO* info,
 typedef struct FDK_bufDescr {
   void** ppBase;  /*!< Pointer to an array containing buffer base addresses.
                        Set to NULL for buffer requirement info. */
-  UINT* pBufSize; /*!< Pointer to an array containing the number of elements
+  uint32_t* pBufSize; /*!< Pointer to an array containing the number of elements
                      that can be placed in the specific buffer. */
-  UINT* pEleSize; /*!< Pointer to an array containing the element size for each
+  uint32_t* pEleSize; /*!< Pointer to an array containing the element size for each
                      buffer in bytes. That is mostly the number returned by the
                      sizeof() operator for the data type used for the specific
                      buffer. */
-  UINT*
+  uint32_t*
       pBufType; /*!< Pointer to an array of bit fields containing a description
                      for each buffer. See XXX below for more details.  */
-  UINT numBufs; /*!< Total number of buffers. */
+  uint32_t numBufs; /*!< Total number of buffers. */
 
 } FDK_bufDescr;
 
 /**
  * Buffer type description field.
  */
-#define FDK_BUF_TYPE_MASK_IO ((UINT)0x03 << 30)
-#define FDK_BUF_TYPE_MASK_DESCR ((UINT)0x3F << 16)
-#define FDK_BUF_TYPE_MASK_ID ((UINT)0xFF)
+#define FDK_BUF_TYPE_MASK_IO ((uint32_t)0x03 << 30)
+#define FDK_BUF_TYPE_MASK_DESCR ((uint32_t)0x3F << 16)
+#define FDK_BUF_TYPE_MASK_ID ((uint32_t)0xFF)
 
-#define FDK_BUF_TYPE_INPUT ((UINT)0x1 << 30)
-#define FDK_BUF_TYPE_OUTPUT ((UINT)0x2 << 30)
+#define FDK_BUF_TYPE_INPUT ((uint32_t)0x1 << 30)
+#define FDK_BUF_TYPE_OUTPUT ((uint32_t)0x2 << 30)
 
-#define FDK_BUF_TYPE_PCM_DATA ((UINT)0x1 << 16)
-#define FDK_BUF_TYPE_ANC_DATA ((UINT)0x2 << 16)
-#define FDK_BUF_TYPE_BS_DATA ((UINT)0x4 << 16)
+#define FDK_BUF_TYPE_PCM_DATA ((uint32_t)0x1 << 16)
+#define FDK_BUF_TYPE_ANC_DATA ((uint32_t)0x2 << 16)
+#define FDK_BUF_TYPE_BS_DATA ((uint32_t)0x4 << 16)
 
 #ifdef __cplusplus
 }

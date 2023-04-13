@@ -135,8 +135,8 @@ void CPns_ResetData(CPnsData *pPnsData,
   The function sets the seed for PNS noise generation.
   It can be used to link two or more channels in terms of PNS.
 */
-void CPns_UpdateNoiseState(CPnsData *pPnsData, INT *currentSeed,
-                           INT *randomSeed) {
+void CPns_UpdateNoiseState(CPnsData *pPnsData, int32_t *currentSeed,
+                           int32_t *randomSeed) {
   /* use pointer because seed has to be
      same, left and right channel ! */
   pPnsData->currentSeed = currentSeed;
@@ -151,7 +151,7 @@ void CPns_UpdateNoiseState(CPnsData *pPnsData, INT *currentSeed,
 
   \return  PNS used
 */
-int CPns_IsPnsUsed(const CPnsData *pPnsData, const int group, const int band) {
+int32_t CPns_IsPnsUsed(const CPnsData *pPnsData, const int32_t group, const int32_t band) {
   unsigned pns_band = group * 16 + band;
 
   return pPnsData->pnsUsed[pns_band] & (UCHAR)1;
@@ -162,8 +162,8 @@ int CPns_IsPnsUsed(const CPnsData *pPnsData, const int group, const int band) {
 
   The function activates the noise correlation between the channel pair
 */
-void CPns_SetCorrelation(CPnsData *pPnsData, const int group, const int band,
-                         const int outofphase) {
+void CPns_SetCorrelation(CPnsData *pPnsData, const int32_t group, const int32_t band,
+                         const int32_t outofphase) {
   CPnsInterChannelData *pInterChannelData = pPnsData->pPnsInterChannelData;
   unsigned pns_band = group * 16 + band;
 
@@ -178,8 +178,8 @@ void CPns_SetCorrelation(CPnsData *pPnsData, const int group, const int band,
 
   \return  PNS is correlated
 */
-static int CPns_IsCorrelated(const CPnsData *pPnsData, const int group,
-                             const int band) {
+static int32_t CPns_IsCorrelated(const CPnsData *pPnsData, const int32_t group,
+                             const int32_t band) {
   CPnsInterChannelData *pInterChannelData = pPnsData->pPnsInterChannelData;
   unsigned pns_band = group * 16 + band;
 
@@ -194,8 +194,8 @@ static int CPns_IsCorrelated(const CPnsData *pPnsData, const int group,
 
   \return  PNS is out-of-phase
 */
-static int CPns_IsOutOfPhase(const CPnsData *pPnsData, const int group,
-                             const int band) {
+static int32_t CPns_IsOutOfPhase(const CPnsData *pPnsData, const int32_t group,
+                             const int32_t band) {
   CPnsInterChannelData *pInterChannelData = pPnsData->pPnsInterChannelData;
   unsigned pns_band = group * 16 + band;
 
@@ -209,16 +209,16 @@ static int CPns_IsOutOfPhase(const CPnsData *pPnsData, const int group,
 */
 void CPns_Read(CPnsData *pPnsData, HANDLE_FDK_BITSTREAM bs,
                const CodeBookDescription *hcb, SHORT *pScaleFactor,
-               UCHAR global_gain, int band, int group /* = 0 */) {
-  int delta;
-  UINT pns_band = group * 16 + band;
+               UCHAR global_gain, int32_t band, int32_t group /* = 0 */) {
+  int32_t delta;
+  uint32_t pns_band = group * 16 + band;
 
   if (pPnsData->PnsActive) {
     /* Next PNS band case */
     delta = CBlock_DecodeHuffmanWord(bs, hcb) - 60;
   } else {
     /* First PNS band case */
-    int noiseStartValue = FDKreadBits(bs, 9);
+    int32_t noiseStartValue = FDKreadBits(bs, 9);
 
     delta = noiseStartValue - 256;
     pPnsData->PnsActive = 1;
@@ -239,12 +239,12 @@ void CPns_Read(CPnsData *pPnsData, HANDLE_FDK_BITSTREAM bs,
  * \param pRandomState pointer to the state of the random generator being used.
  * \return exponent of generated noise vector.
  */
-static int GenerateRandomVector(int32_t *RESTRICT spec, int size,
-                                int *pRandomState) {
-  int i, invNrg_e = 0, nrg_e = 0;
+static int32_t GenerateRandomVector(int32_t *RESTRICT spec, int32_t size,
+                                int32_t *pRandomState) {
+  int32_t i, invNrg_e = 0, nrg_e = 0;
   int32_t invNrg_m, nrg_m = FL2FXCONST_DBL(0.0f);
   int32_t *RESTRICT ptr = spec;
-  int randomState = *pRandomState;
+  int32_t randomState = *pRandomState;
 
 #define GEN_NOISE_NRG_SCALE 7
 
@@ -271,9 +271,9 @@ static int GenerateRandomVector(int32_t *RESTRICT spec, int size,
   return invNrg_e;
 }
 
-static void ScaleBand(int32_t *RESTRICT spec, int size, int scaleFactor,
-                      int specScale, int noise_e, int out_of_phase) {
-  int i, shift, sfExponent;
+static void ScaleBand(int32_t *RESTRICT spec, int32_t size, int32_t scaleFactor,
+                      int32_t specScale, int32_t noise_e, int32_t out_of_phase) {
+  int32_t i, shift, sfExponent;
   int32_t sfMatissa;
 
   /* Get gain from scale factor value = 2^(scaleFactor * 0.25) */
@@ -314,25 +314,25 @@ void CPns_Apply(const CPnsData *pPnsData, const CIcsInfo *pIcsInfo,
                 SPECTRAL_PTR pSpectrum, const SHORT *pSpecScale,
                 const SHORT *pScaleFactor,
                 const SamplingRateInfo *pSamplingRateInfo,
-                const INT granuleLength, const int channel) {
+                const int32_t granuleLength, const int32_t channel) {
   if (pPnsData->PnsActive) {
     const short *BandOffsets =
         GetScaleFactorBandOffsets(pIcsInfo, pSamplingRateInfo);
 
-    int ScaleFactorBandsTransmitted = GetScaleFactorBandsTransmitted(pIcsInfo);
+    int32_t ScaleFactorBandsTransmitted = GetScaleFactorBandsTransmitted(pIcsInfo);
 
-    for (int window = 0, group = 0; group < GetWindowGroups(pIcsInfo);
+    for (int32_t window = 0, group = 0; group < GetWindowGroups(pIcsInfo);
          group++) {
-      for (int groupwin = 0; groupwin < GetWindowGroupLength(pIcsInfo, group);
+      for (int32_t groupwin = 0; groupwin < GetWindowGroupLength(pIcsInfo, group);
            groupwin++, window++) {
         int32_t *spectrum = SPEC(pSpectrum, window, granuleLength);
 
-        for (int band = 0; band < ScaleFactorBandsTransmitted; band++) {
+        for (int32_t band = 0; band < ScaleFactorBandsTransmitted; band++) {
           if (CPns_IsPnsUsed(pPnsData, group, band)) {
-            UINT pns_band = window * 16 + band;
+            uint32_t pns_band = window * 16 + band;
 
-            int bandWidth = BandOffsets[band + 1] - BandOffsets[band];
-            int noise_e;
+            int32_t bandWidth = BandOffsets[band + 1] - BandOffsets[band];
+            int32_t noise_e;
 
             FDK_ASSERT(bandWidth >= 0);
 
@@ -347,7 +347,7 @@ void CPns_Apply(const CPnsData *pPnsData, const CIcsInfo *pIcsInfo,
                                              bandWidth, pPnsData->currentSeed);
             }
 
-            int outOfPhase = CPns_IsOutOfPhase(pPnsData, group, band);
+            int32_t outOfPhase = CPns_IsOutOfPhase(pPnsData, group, band);
 
             ScaleBand(spectrum + BandOffsets[band], bandWidth,
                       pScaleFactor[group * 16 + band], pSpecScale[window],

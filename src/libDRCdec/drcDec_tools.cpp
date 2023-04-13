@@ -105,10 +105,10 @@ amm-info@iis.fraunhofer.de
 #include "../libFDK/fixpoint_math.h"
 #include "drcDecoder.h"
 
-int getDeltaTmin(const int sampleRate) {
+int32_t getDeltaTmin(const int32_t sampleRate) {
   /* half_ms = round (0.0005 * sampleRate); */
-  int half_ms = (sampleRate + 1000) / 2000;
-  int deltaTmin = 1;
+  int32_t half_ms = (sampleRate + 1000) / 2000;
+  int32_t deltaTmin = 1;
   if (sampleRate < 1000) {
     return DE_NOT_OK;
   }
@@ -119,9 +119,9 @@ int getDeltaTmin(const int sampleRate) {
 }
 
 DRC_COEFFICIENTS_UNI_DRC* selectDrcCoefficients(
-    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int location) {
-  int n;
-  int c = -1;
+    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int32_t location) {
+  int32_t n;
+  int32_t c = -1;
   for (n = 0; n < hUniDrcConfig->drcCoefficientsUniDrcCount; n++) {
     if (hUniDrcConfig->drcCoefficientsUniDrc[n].drcLocation == location) {
       c = n;
@@ -134,8 +134,8 @@ DRC_COEFFICIENTS_UNI_DRC* selectDrcCoefficients(
 }
 
 DRC_INSTRUCTIONS_UNI_DRC* selectDrcInstructions(
-    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int drcSetId) {
-  int i;
+    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int32_t drcSetId) {
+  int32_t i;
   for (i = 0; i < hUniDrcConfig->drcInstructionsCountInclVirtual; i++) {
     if (hUniDrcConfig->drcInstructionsUniDrc[i].drcSetId == drcSetId) {
       return &(hUniDrcConfig->drcInstructionsUniDrc[i]);
@@ -145,8 +145,8 @@ DRC_INSTRUCTIONS_UNI_DRC* selectDrcInstructions(
 }
 
 DOWNMIX_INSTRUCTIONS* selectDownmixInstructions(
-    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int downmixId) {
-  int i;
+    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int32_t downmixId) {
+  int32_t i;
   for (i = 0; i < hUniDrcConfig->downmixInstructionsCount; i++) {
     if (hUniDrcConfig->downmixInstructions[i].downmixId == downmixId) {
       return &(hUniDrcConfig->downmixInstructions[i]);
@@ -157,8 +157,8 @@ DOWNMIX_INSTRUCTIONS* selectDownmixInstructions(
 
 DRC_ERROR
 deriveDrcChannelGroups(
-    const int drcSetEffect,                                    /* in */
-    const int channelCount,                                    /* in */
+    const int32_t drcSetEffect,                                    /* in */
+    const int32_t channelCount,                                    /* in */
     const SCHAR* gainSetIndex,                                 /* in */
     const DUCKING_MODIFICATION* duckingModificationForChannel, /* in */
     UCHAR* nDrcChannelGroups,                                  /* out */
@@ -166,8 +166,8 @@ deriveDrcChannelGroups(
     SCHAR* groupForChannel, /* out */
     DUCKING_MODIFICATION* duckingModificationForChannelGroup) /* out */
 {
-  int duckingSequence = -1;
-  int c, n, g, match, idx;
+  int32_t duckingSequence = -1;
+  int32_t c, n, g, match, idx;
   FIXP_SGL factor;
   FIXP_SGL uniqueScaling[8];
 
@@ -279,7 +279,7 @@ deriveDrcChannelGroups(
 }
 
 int32_t
-dB2lin(const int32_t dB_m, const int dB_e, int* pLin_e) {
+dB2lin(const int32_t dB_m, const int32_t dB_e, int32_t* pLin_e) {
   /* get linear value from dB.
      return lin_val = 10^(dB_val/20) = 2^(log2(10)/20*dB_val)
      with dB_val = dB_m *2^dB_e and lin_val = lin_m * 2^lin_e */
@@ -291,7 +291,7 @@ dB2lin(const int32_t dB_m, const int dB_e, int* pLin_e) {
 }
 
 int32_t
-lin2dB(const int32_t lin_m, const int lin_e, int* pDb_e) {
+lin2dB(const int32_t lin_m, const int32_t lin_e, int32_t* pDb_e) {
   /* get dB value from linear value.
      return dB_val = 20*log10(lin_val)
      with dB_val = dB_m *2^dB_e and lin_val = lin_m * 2^lin_e */
@@ -311,7 +311,7 @@ lin2dB(const int32_t lin_m, const int lin_e, int* pDb_e) {
 }
 
 int32_t
-approxDb2lin(const int32_t dB_m, const int dB_e, int* pLin_e) {
+approxDb2lin(const int32_t dB_m, const int32_t dB_e, int32_t* pLin_e) {
   /* get linear value from approximate dB.
      return lin_val = 2^(dB_val/6)
      with dB_val = dB_m *2^dB_e and lin_val = lin_m * 2^lin_e */
@@ -322,12 +322,12 @@ approxDb2lin(const int32_t dB_m, const int dB_e, int* pLin_e) {
   return lin_m;
 }
 
-int bitstreamContainsMultibandDrc(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
-                                  const int downmixId) {
-  int i, g, d, seq;
+int32_t bitstreamContainsMultibandDrc(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
+                                  const int32_t downmixId) {
+  int32_t i, g, d, seq;
   DRC_INSTRUCTIONS_UNI_DRC* pInst;
   DRC_COEFFICIENTS_UNI_DRC* pCoef = NULL;
-  int isMultiband = 0;
+  int32_t isMultiband = 0;
 
   pCoef = selectDrcCoefficients(hUniDrcConfig, LOCATION_SELECTED);
   if (pCoef == NULL) return 0;
@@ -349,10 +349,10 @@ int bitstreamContainsMultibandDrc(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
   return isMultiband;
 }
 
-int32_t getDownmixOffset(DOWNMIX_INSTRUCTIONS* pDown, int baseChannelCount) {
+int32_t getDownmixOffset(DOWNMIX_INSTRUCTIONS* pDown, int32_t baseChannelCount) {
   int32_t downmixOffset = FL2FXCONST_DBL(1.0f / (1 << 1)); /* e = 1 */
   if ((pDown->bsDownmixOffset == 1) || (pDown->bsDownmixOffset == 2)) {
-    int e_a, e_downmixOffset;
+    int32_t e_a, e_downmixOffset;
     int32_t a, q;
     if (baseChannelCount <= pDown->targetChannelCount) return downmixOffset;
 

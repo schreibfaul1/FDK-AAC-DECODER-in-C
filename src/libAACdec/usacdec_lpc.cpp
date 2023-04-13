@@ -116,8 +116,8 @@ amm-info@iis.fraunhofer.de
  * \param hBs bitstream handle as data source.
  * \return decoded value.
  */
-static int get_vlclbf(HANDLE_FDK_BITSTREAM hBs) {
-  int result = 0;
+static int32_t get_vlclbf(HANDLE_FDK_BITSTREAM hBs) {
+  int32_t result = 0;
 
   while (FDKreadBits(hBs, 1) && result <= NQ_MAX) {
     result++;
@@ -131,8 +131,8 @@ static int get_vlclbf(HANDLE_FDK_BITSTREAM hBs) {
  * \param n max amount of bits to be read.
  * \return decoded value.
  */
-static int get_vlclbf_n(HANDLE_FDK_BITSTREAM hBs, int n) {
-  int result = 0;
+static int32_t get_vlclbf_n(HANDLE_FDK_BITSTREAM hBs, int32_t n) {
+  int32_t result = 0;
 
   while (FDKreadBits(hBs, 1)) {
     result++;
@@ -155,15 +155,15 @@ static int get_vlclbf_n(HANDLE_FDK_BITSTREAM hBs, int n) {
 #define ZF_SCALE ((DFRACT_BITS / 2))
 #define FIXP_ZF int32_t
 #define INT2ZF(x, s) (FIXP_ZF)((x) << (ZF_SCALE - (s)))
-#define ZF2INT(x) (INT)((x) >> ZF_SCALE)
+#define ZF2INT(x) (int32_t)((x) >> ZF_SCALE)
 
 /* 1.0 in ZF format format */
 #define ONEZF ((FIXP_ZF)INT2ZF(1, 0))
 
 /* static */
-void nearest_neighbor_2D8(FIXP_ZF x[8], int y[8]) {
+void nearest_neighbor_2D8(FIXP_ZF x[8], int32_t y[8]) {
   FIXP_ZF s, em, e[8];
-  int i, j, sum;
+  int32_t i, j, sum;
 
   /* round x into 2Z^8 i.e. compute y=(y1,...,y8) such that yi = 2[xi/2]
      where [.] is the nearest integer operator
@@ -228,8 +228,8 @@ void nearest_neighbor_2D8(FIXP_ZF x[8], int y[8]) {
   --------------------------------------------------------------
 */
 /* static */
-void RE8_PPV(FIXP_ZF x[], SHORT y[], int r) {
-  int i, y0[8], y1[8];
+void RE8_PPV(FIXP_ZF x[], SHORT y[], int32_t r) {
+  int32_t i, y0[8], y1[8];
   FIXP_ZF x1[8], tmp;
   INT64 e;
 
@@ -267,8 +267,8 @@ void RE8_PPV(FIXP_ZF x[], SHORT y[], int r) {
 
 /* table look-up of unsigned value: find i where index >= table[i]
    Note: range must be >= 2, index must be >= table[0] */
-static int table_lookup(const USHORT *table, unsigned int index, int range) {
-  int i;
+static int32_t table_lookup(const USHORT *table, uint32_t index, int32_t range) {
+  int32_t i;
 
   for (i = 4; i < range; i += 4) {
     if (index < table[i]) {
@@ -298,9 +298,9 @@ static int table_lookup(const USHORT *table, unsigned int index, int range) {
   (o) x:    point in RE8 (8-dimensional integer vector)
   --------------------------------------------------------------------------
  */
-static void re8_decode_rank_of_permutation(int rank, int *xs, SHORT x[8]) {
-  INT a[8], w[8], B, fac, fac_B, target;
-  int i, j;
+static void re8_decode_rank_of_permutation(int32_t rank, int32_t *xs, SHORT x[8]) {
+  int32_t a[8], w[8], B, fac, fac_B, target;
+  int32_t i, j;
 
   /* --- pre-processing based on the signed leader xs ---
      - compute the alphabet a=[a[0] ... a[q-1]] of x (q elements)
@@ -372,15 +372,15 @@ static void re8_decode_rank_of_permutation(int rank, int *xs, SHORT x[8]) {
   16 bits are required (long can be replaced by unsigned integer)
   --------------------------------------------------------------------------
  */
-static void re8_decode_base_index(int *n, UINT index, SHORT y[8]) {
-  int i, im, t, sign_code, ka, ks, rank, leader[8];
+static void re8_decode_base_index(int32_t *n, uint32_t index, SHORT y[8]) {
+  int32_t i, im, t, sign_code, ka, ks, rank, leader[8];
 
   if (*n < 2) {
     for (i = 0; i < 8; i++) {
       y[i] = 0;
     }
   } else {
-    // index = (unsigned int)*I;
+    // index = (unsigned int32_t)*I;
     /* search for the identifier ka of the absolute leader (table-lookup)
        Q2 is a subset of Q3 - the two cases are considered in the same branch
      */
@@ -431,8 +431,8 @@ static void re8_decode_base_index(int *n, UINT index, SHORT y[8]) {
    (i) r: Voronoi order  (m = 2^r = 1<<r, where r is integer >=2)
    (o) y: 8-dimensional point y[0..7] in RE8
  */
-static void re8_k2y(int *k, int r, SHORT *y) {
-  int i, tmp, sum;
+static void re8_k2y(int32_t *k, int32_t r, SHORT *y) {
+  int32_t i, tmp, sum;
   SHORT v[8];
   FIXP_ZF zf[8];
 
@@ -480,11 +480,11 @@ static void re8_k2y(int *k, int r, SHORT *y) {
   return 0 on success, -1 on error.
   --------------------------------------------------------------------------
  */
-static int RE8_dec(int n, int I, int *k, int32_t *y) {
+static int32_t RE8_dec(int32_t n, int32_t I, int32_t *k, int32_t *y) {
   SHORT v[8];
   SHORT _y[8];
-  UINT r;
-  int i;
+  uint32_t r;
+  int32_t i;
 
   /* Check bound of codebook qn */
   if (n > NQ_MAX) {
@@ -534,11 +534,11 @@ static int RE8_dec(int n, int I, int *k, int32_t *y) {
  * \param xq weighted residual LSF vector
  * \param nk_mode code book number coding mode.
  */
-static void lsf_weight_2st(FIXP_LPC *lsfq, int32_t *xq, int nk_mode) {
+static void lsf_weight_2st(FIXP_LPC *lsfq, int32_t *xq, int32_t nk_mode) {
   FIXP_LPC d[M_LP_FILTER_ORDER + 1];
   FIXP_SGL factor;
   LONG w; /* inverse weight factor */
-  int i;
+  int32_t i;
 
   /* compute lsf distance */
   d[0] = lsfq[0];
@@ -579,9 +579,9 @@ static void lsf_weight_2st(FIXP_LPC *lsfq, int32_t *xq, int nk_mode) {
  * \param nqn amount code book number to read.
  * \param qn pointer to output buffer to hold decoded code book numbers qn.
  */
-static void decode_qn(HANDLE_FDK_BITSTREAM hBs, int nk_mode, int nqn,
-                      int qn[]) {
-  int n;
+static void decode_qn(HANDLE_FDK_BITSTREAM hBs, int32_t nk_mode, int32_t nqn,
+                      int32_t qn[]) {
+  int32_t n;
 
   if (nk_mode == 1) { /* nk mode 1 */
     /* Unary code for mid LPC1/LPC3 */
@@ -639,9 +639,9 @@ static void decode_qn(HANDLE_FDK_BITSTREAM hBs, int nk_mode, int nqn,
  * \param min_dist min distance scaled by LSF_SCALE
  * \param n number of LSF/LSP coefficients.
  */
-static void reorder_lsf(FIXP_LPC *lsf, FIXP_LPC min_dist, int n) {
+static void reorder_lsf(FIXP_LPC *lsf, FIXP_LPC min_dist, int32_t n) {
   FIXP_LPC lsf_min;
-  int i;
+  int32_t i;
 
   lsf_min = min_dist;
   for (i = 0; i < n; i++) {
@@ -673,7 +673,7 @@ static void vlpc_1st_dec(
     FIXP_LPC *lsfq            /* i/o:    i:prediction   o:quantized lsf  */
 ) {
   const FIXP_LPC *p_dico;
-  int i, index;
+  int32_t i, index;
 
   index = FDKreadBits(hBs, 8);
   p_dico = &fdk_dec_dico_lsf_abs_8b[index * M_LP_FILTER_ORDER];
@@ -691,12 +691,12 @@ static void vlpc_1st_dec(
  * \param nk_mode quantization mode.
  * \return 0 on success, -1 on error.
  */
-static int vlpc_2st_dec(
+static int32_t vlpc_2st_dec(
     HANDLE_FDK_BITSTREAM hBs,
     FIXP_LPC *lsfq, /* i/o:    i:1st stage   o:1st+2nd stage   */
-    int nk_mode     /* input:  0=abs, >0=rel                   */
+    int32_t nk_mode     /* input:  0=abs, >0=rel                   */
 ) {
-  int err;
+  int32_t err;
   int32_t xq[M_LP_FILTER_ORDER]; /* weighted residual LSF vector */
 
   /* Decode AVQ refinement */
@@ -719,13 +719,13 @@ static int vlpc_2st_dec(
  * Externally visible functions
  */
 
-int CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *pOutput, int nk_mode,
-                   int no_qn, int length) {
-  int i, l;
+int32_t CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *pOutput, int32_t nk_mode,
+                   int32_t no_qn, int32_t length) {
+  int32_t i, l;
 
   for (i = 0; i < length; i += 8 * no_qn) {
-    int qn[2], nk, n, I;
-    int kv[8] = {0};
+    int32_t qn[2], nk, n, I;
+    int32_t kv[8] = {0};
 
     decode_qn(hBs, nk_mode, no_qn, qn);
 
@@ -746,7 +746,7 @@ int CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *pOutput, int nk_mode,
       I = FDKreadBits(hBs, 4 * n);
 
       if (nk > 0) {
-        int j;
+        int32_t j;
 
         for (j = 0; j < 8; j++) {
           kv[j] = FDKreadBits(hBs, nk);
@@ -761,18 +761,18 @@ int CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *pOutput, int nk_mode,
   return 0;
 }
 
-int CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
+int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
               FIXP_LPC lpc4_lsf[M_LP_FILTER_ORDER],
               FIXP_LPC lsf_adaptive_mean_cand[M_LP_FILTER_ORDER],
-              FIXP_SGL pStability[], UCHAR *mod, int first_lpd_flag,
-              int last_lpc_lost, int last_frame_ok) {
-  int i, k, err;
-  int mode_lpc_bin = 0; /* mode_lpc bitstream representation */
-  int lpc_present[5] = {0, 0, 0, 0, 0};
-  int lpc0_available = 1;
-  int s = 0;
-  int l = 3;
-  const int nbDiv = NB_DIV;
+              FIXP_SGL pStability[], UCHAR *mod, int32_t first_lpd_flag,
+              int32_t last_lpc_lost, int32_t last_frame_ok) {
+  int32_t i, k, err;
+  int32_t mode_lpc_bin = 0; /* mode_lpc bitstream representation */
+  int32_t lpc_present[5] = {0, 0, 0, 0, 0};
+  int32_t lpc0_available = 1;
+  int32_t s = 0;
+  int32_t l = 3;
+  const int32_t nbDiv = NB_DIV;
 
   lpc_present[4 >> s] = 1; /* LPC4 */
 
@@ -799,7 +799,7 @@ int CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
   }
 
   for (; k < l; k += 2) {
-    int nk_mode = 0;
+    int32_t nk_mode = 0;
 
     if ((k == 2) && (mod[0] == 3)) {
       break; /* skip LPC2 */
@@ -867,7 +867,7 @@ int CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
 
   /*** Decode LPC3 ***/
   if ((mod[2] < 2)) { /* else: skip LPC3 */
-    int nk_mode = 0;
+    int32_t nk_mode = 0;
     lpc_present[3] = 1;
 
     mode_lpc_bin = get_vlclbf_n(hBs, 3);
@@ -930,7 +930,7 @@ int CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
 
   {
     int32_t divFac;
-    int last, numLpc = 0;
+    int32_t last, numLpc = 0;
 
     i = nbDiv;
     do {
@@ -974,7 +974,7 @@ int CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
     for (i = 1; i < (nbDiv + 1); i++) {
       if (lpc_present[i]) {
         int32_t tmp = (int32_t)0;
-        int j;
+        int32_t j;
         lsf_curr = lsp[i];
 
         /* sum = tmp * 2^(LSF_SCALE*2 + 4) */
@@ -1021,8 +1021,8 @@ int CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
 void CLpc_Conceal(FIXP_LPC lsp[][M_LP_FILTER_ORDER],
                   FIXP_LPC lpc4_lsf[M_LP_FILTER_ORDER],
                   FIXP_LPC lsf_adaptive_mean[M_LP_FILTER_ORDER],
-                  const int first_lpd_flag) {
-  int i, j;
+                  const int32_t first_lpd_flag) {
+  int32_t i, j;
 
 #define BETA (FL2FXCONST_SGL(0.25f))
 #define ONE_BETA (FL2FXCONST_SGL(0.75f))
@@ -1061,10 +1061,10 @@ void CLpc_Conceal(FIXP_LPC lsp[][M_LP_FILTER_ORDER],
          FL2FXCONST_LPC(0.1f)), lsf_adaptive_mean[i])); */
 
       FIXP_LPC lsf_mean = FX_DBL2FX_LPC(
-          fMult((FIXP_SGL)(BETA + (FIXP_SGL)(j * (INT)FL2FXCONST_SGL(0.1f))),
+          fMult((FIXP_SGL)(BETA + (FIXP_SGL)(j * (int32_t)FL2FXCONST_SGL(0.1f))),
                 (FIXP_SGL)fdk_dec_lsf_init[i]) +
           fMult(
-              (FIXP_SGL)(ONE_BETA - (FIXP_SGL)(j * (INT)FL2FXCONST_SGL(0.1f))),
+              (FIXP_SGL)(ONE_BETA - (FIXP_SGL)(j * (int32_t)FL2FXCONST_SGL(0.1f))),
               lsf_adaptive_mean[i]));
 
       lsp[j][i] = FX_DBL2FX_LPC(fMult(BFI_FAC, lsp[j - 1][i]) +
@@ -1087,9 +1087,9 @@ void CLpc_Conceal(FIXP_LPC lsp[][M_LP_FILTER_ORDER],
   }
 }
 
-void E_LPC_a_weight(FIXP_LPC *wA, const FIXP_LPC *A, int m) {
+void E_LPC_a_weight(FIXP_LPC *wA, const FIXP_LPC *A, int32_t m) {
   int32_t f;
-  int i;
+  int32_t i;
 
   f = FL2FXCONST_DBL(0.92f);
   for (i = 0; i < m; i++) {
@@ -1098,7 +1098,7 @@ void E_LPC_a_weight(FIXP_LPC *wA, const FIXP_LPC *A, int m) {
   }
 }
 
-void CLpd_DecodeGain(int32_t *gain, INT *gain_e, int gain_code) {
+void CLpd_DecodeGain(int32_t *gain, int32_t *gain_e, int32_t gain_code) {
   /* gain * 2^(gain_e) = 10^(gain_code/28) */
   *gain = fLdPow(
       FL2FXCONST_DBL(3.3219280948873623478703194294894 / 4.0), /* log2(10)*/
@@ -1127,10 +1127,10 @@ void CLpd_DecodeGain(int32_t *gain, INT *gain_e, int gain_code) {
 
 #define SF_F 8
 
-static void get_lsppol(FIXP_LPC lsp[], int32_t f[], int n, int flag) {
+static void get_lsppol(FIXP_LPC lsp[], int32_t f[], int32_t n, int32_t flag) {
   int32_t b;
   FIXP_LPC *plsp;
-  int i, j;
+  int32_t i, j;
 
   plsp = lsp + flag - 1;
   f[0] = FL2FXCONST_DBL(1.0f / (1 << SF_F));
@@ -1157,9 +1157,9 @@ static void get_lsppol(FIXP_LPC lsp[], int32_t f[], int n, int flag) {
  * \brief lsp input LSP vector
  * \brief a output LP filter coefficient vector scaled by SF_A_COEFFS.
  */
-void E_LPC_f_lsp_a_conversion(FIXP_LPC *lsp, FIXP_LPC *a, INT *a_exp) {
+void E_LPC_f_lsp_a_conversion(FIXP_LPC *lsp, FIXP_LPC *a, int32_t *a_exp) {
   int32_t f1[NC + 1], f2[NC + 1];
-  int i, k;
+  int32_t i, k;
 
   /*-----------------------------------------------------*
    *  Find the polynomials F1(z) and F2(z)               *
@@ -1186,7 +1186,7 @@ void E_LPC_f_lsp_a_conversion(FIXP_LPC *lsp, FIXP_LPC *a, INT *a_exp) {
     aDBL[k] = f1[i] - f2[i];
   }
 
-  int headroom_a = getScalefactor(aDBL, M_LP_FILTER_ORDER);
+  int32_t headroom_a = getScalefactor(aDBL, M_LP_FILTER_ORDER);
 
   for (i = 0; i < M_LP_FILTER_ORDER; i++) {
     a[i] = FX_DBL2FX_LPC(aDBL[i] << headroom_a);

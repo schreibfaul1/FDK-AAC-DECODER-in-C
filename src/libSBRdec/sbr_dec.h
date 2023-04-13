@@ -136,7 +136,7 @@ typedef struct {
   SHORT prev_frame_lSbr;
   SHORT prev_frame_hbeSbr;
 
-  int codecFrameSize;
+  int32_t codecFrameSize;
 
   HANDLE_HBE_TRANSPOSER hHBE;
 
@@ -146,7 +146,7 @@ typedef struct {
   SBRDEC_DRC_CHANNEL sbrDrcChannel;
 
 #if (SBRDEC_MAX_HB_FADE_FRAMES > 0)
-  INT highBandFadeCnt; /* counter for fading in high-band signal smoothly */
+  int32_t highBandFadeCnt; /* counter for fading in high-band signal smoothly */
 
 #endif
   int32_t **tmp_memory; /* shared memory between hbeLightTimeDelayBuffer and
@@ -158,7 +158,7 @@ typedef struct {
   int32_t **codecQMFBufferReal;
   int32_t **codecQMFBufferImag;
   UCHAR savedStates;
-  int applySbrProc_old;
+  int32_t applySbrProc_old;
 } SBR_DEC;
 
 typedef SBR_DEC *HANDLE_SBR_DEC;
@@ -177,26 +177,26 @@ void sbr_dec(
     LONG *timeOut,                      /*!< pointer to output time signal */
     HANDLE_SBR_DEC hSbrDecRight,        /*!< handle to Decoder channel right */
     LONG *timeOutRight,                 /*!< pointer to output time signal */
-    INT strideOut,                      /*!< Time data traversal strideOut */
+    int32_t strideOut,                      /*!< Time data traversal strideOut */
     HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Static control data */
     HANDLE_SBR_FRAME_DATA hFrameData,   /*!< Control data of current frame */
     HANDLE_SBR_PREV_FRAME_DATA
         hPrevFrameData,        /*!< Some control data of last frame */
-    const int applyProcessing, /*!< Flag for SBR operation */
-    HANDLE_PS_DEC h_ps_d, const UINT flags, const int codecFrameSize,
-    const INT sbrInDataHeadroom);
+    const int32_t applyProcessing, /*!< Flag for SBR operation */
+    HANDLE_PS_DEC h_ps_d, const uint32_t flags, const int32_t codecFrameSize,
+    const int32_t sbrInDataHeadroom);
 
 SBR_ERROR
 createSbrDec(SBR_CHANNEL *hSbrChannel, HANDLE_SBR_HEADER_DATA hHeaderData,
-             TRANSPOSER_SETTINGS *pSettings, const int downsampleFac,
-             const UINT qmfFlags, const UINT flags, const int overlap, int chan,
-             int codecFrameSize);
+             TRANSPOSER_SETTINGS *pSettings, const int32_t downsampleFac,
+             const uint32_t qmfFlags, const uint32_t flags, const int32_t overlap, int32_t chan,
+             int32_t codecFrameSize);
 
-int deleteSbrDec(SBR_CHANNEL *hSbrChannel);
+int32_t deleteSbrDec(SBR_CHANNEL *hSbrChannel);
 
 SBR_ERROR
 resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
-            HANDLE_SBR_PREV_FRAME_DATA hPrevFrameData, const int downsampleFac,
-            const UINT flags, HANDLE_SBR_FRAME_DATA hFrameData);
+            HANDLE_SBR_PREV_FRAME_DATA hPrevFrameData, const int32_t downsampleFac,
+            const uint32_t flags, HANDLE_SBR_FRAME_DATA hFrameData);
 
 #endif

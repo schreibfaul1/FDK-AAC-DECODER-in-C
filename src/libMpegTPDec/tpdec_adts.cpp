@@ -110,10 +110,10 @@ void adtsRead_CrcInit(
   FDKcrcInit(&pAdts->crcInfo, 0x8005, 0xFFFF, 16);
 }
 
-int adtsRead_CrcStartReg(
+int32_t adtsRead_CrcStartReg(
     HANDLE_ADTS pAdts,        /*!< pointer to adts stucture */
     HANDLE_FDK_BITSTREAM hBs, /*!< handle to current bit buffer structure */
-    int mBits                 /*!< number of bits in crc region */
+    int32_t mBits                 /*!< number of bits in crc region */
 ) {
   if (pAdts->bs.protection_absent) {
     return 0;
@@ -125,7 +125,7 @@ int adtsRead_CrcStartReg(
 void adtsRead_CrcEndReg(
     HANDLE_ADTS pAdts,        /*!< pointer to adts crc info stucture */
     HANDLE_FDK_BITSTREAM hBs, /*!< handle to current bit buffer structure */
-    int reg                   /*!< crc region */
+    int32_t reg                   /*!< crc region */
 ) {
   if (pAdts->bs.protection_absent == 0) {
     FDKcrcEndReg(&pAdts->crcInfo, hBs, reg);
@@ -166,12 +166,12 @@ TRANSPORTDEC_ERROR adtsRead_CrcCheck(HANDLE_ADTS pAdts) {
 TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
                                          CSAudioSpecificConfig *pAsc,
                                          HANDLE_FDK_BITSTREAM hBs,
-                                         const INT ignoreBufferFullness) {
-  INT crcReg;
+                                         const int32_t ignoreBufferFullness) {
+  int32_t crcReg;
 
-  INT valBits;
-  INT cmp_buffer_fullness;
-  int i, adtsHeaderLength;
+  int32_t valBits;
+  int32_t cmp_buffer_fullness;
+  int32_t i, adtsHeaderLength;
 
   STRUCT_ADTS_BS bs;
 
@@ -221,7 +221,7 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
   }
 
   if (!bs.protection_absent && bs.num_raw_blocks > 0) {
-    if ((INT)FDKgetValidBits(hBs) < bs.num_raw_blocks * 16) {
+    if ((int32_t)FDKgetValidBits(hBs) < bs.num_raw_blocks * 16) {
       goto bail;
     }
     for (i = 0; i < bs.num_raw_blocks; i++) {
@@ -242,7 +242,7 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
 
     FDKcrcEndReg(&pAdts->crcInfo, hBs, crcReg);
 
-    if ((INT)FDKgetValidBits(hBs) < Adts_Length_CrcCheck) {
+    if ((int32_t)FDKgetValidBits(hBs) < Adts_Length_CrcCheck) {
       goto bail;
     }
 
@@ -312,8 +312,8 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
   pAsc->m_samplesPerFrame = 1024;
 
   if (bs.channel_config == 0) {
-    int pceBits = 0;
-    UINT alignAnchor = FDKgetValidBits(hBs);
+    int32_t pceBits = 0;
+    uint32_t alignAnchor = FDKgetValidBits(hBs);
     CProgramConfig tmpPce;
 
     if (FDKreadBits(hBs, 3) == ID_PCE) {
@@ -356,10 +356,10 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
       }
 
       adtsRead_CrcEndReg(pAdts, hBs, crcReg);
-      pceBits = (INT)alignAnchor - (INT)FDKgetValidBits(hBs);
+      pceBits = (int32_t)alignAnchor - (int32_t)FDKgetValidBits(hBs);
       adtsHeaderLength += pceBits;
 
-      if (pceBits > (INT)alignAnchor) {
+      if (pceBits > (int32_t)alignAnchor) {
         goto bail;
       }
 
@@ -405,8 +405,8 @@ bail:
   return TRANSPORTDEC_NOT_ENOUGH_BITS;
 }
 
-int adtsRead_GetRawDataBlockLength(HANDLE_ADTS pAdts, INT blockNum) {
-  int length;
+int32_t adtsRead_GetRawDataBlockLength(HANDLE_ADTS pAdts, int32_t blockNum) {
+  int32_t length;
 
   if (pAdts->bs.num_raw_blocks == 0) {
     length =

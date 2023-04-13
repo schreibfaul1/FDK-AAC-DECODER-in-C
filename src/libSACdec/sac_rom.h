@@ -157,7 +157,7 @@ extern const FIXP_CFG BP_GF__FDK[];
 extern const SCHAR row2channelSTP[][MAX_M2_INPUT];
 
 /* sac_bitdec */
-extern const INT samplingFreqTable[16];
+extern const int32_t samplingFreqTable[16];
 extern const UCHAR freqResTable[];
 extern const UCHAR freqResTable_LD[];
 extern const UCHAR tempShapeChanTable[2][8];
@@ -196,7 +196,7 @@ extern const FIXP_CFG clipGainTable__FDK[];
 extern const UCHAR clipGainSFTable__FDK[];
 
 extern const UCHAR pbStrideTable[];
-extern const int smgTimeTable[];
+extern const int32_t smgTimeTable[];
 
 extern const FIXP_CFG envShapeDataTable__FDK[5][2];
 extern const SCHAR row2channelGES[][MAX_M2_INPUT];
@@ -204,12 +204,12 @@ extern const SCHAR row2channelGES[][MAX_M2_INPUT];
 /* sac_calcM1andM2 */
 extern const SCHAR row2residual[][MAX_M2_INPUT];
 
-void SpatialDequantGetCLDValues(int index, int32_t* cu, int32_t* cl);
+void SpatialDequantGetCLDValues(int32_t index, int32_t* cu, int32_t* cl);
 
-void SpatialDequantGetCLD2Values(int index, int32_t* x);
+void SpatialDequantGetCLD2Values(int32_t index, int32_t* x);
 
 /* External helper functions */
-static inline int SacGetHybridSubbands(int qmfSubbands) {
+static inline int32_t SacGetHybridSubbands(int32_t qmfSubbands) {
   return qmfSubbands - MAX_QMF_BANDS_TO_HYBRID + 10;
 }
 

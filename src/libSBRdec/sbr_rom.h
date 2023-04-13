@@ -157,9 +157,9 @@ extern const FIXP_SGL FDK_sbrDecoder_sbr_randomPhase[SBR_NF_NO_RANDOM_VAL][2];
 /*
   Envelope Extractor
 */
-extern const int FDK_sbrDecoder_envelopeTable_8[8][5];
-extern const int FDK_sbrDecoder_envelopeTable_15[15][6];
-extern const int FDK_sbrDecoder_envelopeTable_16[16][6];
+extern const int32_t FDK_sbrDecoder_envelopeTable_8[8][5];
+extern const int32_t FDK_sbrDecoder_envelopeTable_15[15][6];
+extern const int32_t FDK_sbrDecoder_envelopeTable_16[16][6];
 extern const FRAME_INFO FDK_sbrDecoder_sbr_frame_info1_15;
 extern const FRAME_INFO FDK_sbrDecoder_sbr_frame_info2_15;
 extern const FRAME_INFO FDK_sbrDecoder_sbr_frame_info4_15;

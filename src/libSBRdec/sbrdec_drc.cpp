@@ -122,7 +122,7 @@ static const UCHAR winBorderToColMappingTab[2][16] = {
   \return none
 */
 void sbrDecoder_drcInitChannel(HANDLE_SBR_DRC_CHANNEL hDrcData) {
-  int band;
+  int32_t band;
 
   if (hDrcData == NULL) {
     return;
@@ -198,19 +198,19 @@ void sbrDecoder_drcUpdateChannel(HANDLE_SBR_DRC_CHANNEL hDrcData) {
 */
 void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
                              int32_t *qmfRealSlot, int32_t *qmfImagSlot,
-                             int col, int numQmfSubSamples, int maxShift) {
+                             int32_t col, int32_t numQmfSubSamples, int32_t maxShift) {
   const UCHAR *winBorderToColMap;
 
-  int band, bottomMdct, topMdct, bin, useLP;
-  int indx = numQmfSubSamples - (numQmfSubSamples >> 1) - 10; /* l_border */
-  int frameLenFlag = (numQmfSubSamples == 30) ? 1 : 0;
-  int frameSize = (frameLenFlag == 1) ? 960 : 1024;
+  int32_t band, bottomMdct, topMdct, bin, useLP;
+  int32_t indx = numQmfSubSamples - (numQmfSubSamples >> 1) - 10; /* l_border */
+  int32_t frameLenFlag = (numQmfSubSamples == 30) ? 1 : 0;
+  int32_t frameSize = (frameLenFlag == 1) ? 960 : 1024;
 
   const int32_t *fact_mag = NULL;
-  INT fact_exp = 0;
-  UINT numBands = 0;
+  int32_t fact_exp = 0;
+  uint32_t numBands = 0;
   USHORT *bandTop = NULL;
-  int shortDrc = 0;
+  int32_t shortDrc = 0;
 
   int32_t alphaValue = FL2FXCONST_DBL(0.0f);
 
@@ -231,14 +231,14 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
   /* get respective data and calc interpolation factor */
   if (col < (numQmfSubSamples >> 1)) {    /* first half of current frame */
     if (hDrcData->winSequenceCurr != 2) { /* long window */
-      int j = col + (numQmfSubSamples >> 1);
+      int32_t j = col + (numQmfSubSamples >> 1);
 
       if (hDrcData->drcInterpolationSchemeCurr == 0) {
-        INT k = (frameLenFlag) ? 0x4444445 : 0x4000000;
+        int32_t k = (frameLenFlag) ? 0x4444445 : 0x4000000;
 
         alphaValue = (int32_t)(j * k);
       } else {
-        if (j >= (int)winBorderToColMap[hDrcData->drcInterpolationSchemeCurr]) {
+        if (j >= (int32_t)winBorderToColMap[hDrcData->drcInterpolationSchemeCurr]) {
           alphaValue = (int32_t)MAXVAL_DBL;
         }
       }
@@ -252,14 +252,14 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
     bandTop = hDrcData->bandTopCurr;
   } else if (col < numQmfSubSamples) {    /* second half of current frame */
     if (hDrcData->winSequenceNext != 2) { /* next: long window */
-      int j = col - (numQmfSubSamples >> 1);
+      int32_t j = col - (numQmfSubSamples >> 1);
 
       if (hDrcData->drcInterpolationSchemeNext == 0) {
-        INT k = (frameLenFlag) ? 0x4444445 : 0x4000000;
+        int32_t k = (frameLenFlag) ? 0x4444445 : 0x4000000;
 
         alphaValue = (int32_t)(j * k);
       } else {
-        if (j >= (int)winBorderToColMap[hDrcData->drcInterpolationSchemeNext]) {
+        if (j >= (int32_t)winBorderToColMap[hDrcData->drcInterpolationSchemeNext]) {
           alphaValue = (int32_t)MAXVAL_DBL;
         }
       }
@@ -287,14 +287,14 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
     }
   } else {                                /* first half of next frame */
     if (hDrcData->winSequenceNext != 2) { /* long window */
-      int j = col - (numQmfSubSamples >> 1);
+      int32_t j = col - (numQmfSubSamples >> 1);
 
       if (hDrcData->drcInterpolationSchemeNext == 0) {
-        INT k = (frameLenFlag) ? 0x4444445 : 0x4000000;
+        int32_t k = (frameLenFlag) ? 0x4444445 : 0x4000000;
 
         alphaValue = (int32_t)(j * k);
       } else {
-        if (j >= (int)winBorderToColMap[hDrcData->drcInterpolationSchemeNext]) {
+        if (j >= (int32_t)winBorderToColMap[hDrcData->drcInterpolationSchemeNext]) {
           alphaValue = (int32_t)MAXVAL_DBL;
         }
       }
@@ -311,8 +311,8 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
   }
 
   /* process bands */
-  for (band = 0; band < (int)numBands; band++) {
-    int bottomQmf, topQmf;
+  for (band = 0; band < (int32_t)numBands; band++) {
+    int32_t bottomQmf, topQmf;
 
     int32_t drcFact_mag = (int32_t)MAXVAL_DBL;
 
@@ -333,7 +333,7 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
         topQmf = topMdct >> 5;
       }
 
-      if (band == ((int)numBands - 1)) {
+      if (band == ((int32_t)numBands - 1)) {
         topQmf = (64);
       }
 
@@ -373,7 +373,7 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
       }
     } else { /* short windows */
       unsigned startWinIdx, stopWinIdx;
-      int startCol, stopCol;
+      int32_t startCol, stopCol;
       int32_t invFrameSizeDiv8 =
           (frameLenFlag) ? (int32_t)0x1111112 : (int32_t)0x1000000;
 
@@ -403,11 +403,11 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
 
       /* startCol is truncated to the nearest corresponding start subsample in
          the QMF of the short window bottom is present in:*/
-      startCol = (int)winBorderToColMap[startWinIdx];
+      startCol = (int32_t)winBorderToColMap[startWinIdx];
 
       /* stopCol is rounded upwards to the nearest corresponding stop subsample
          in the QMF of the short window top is present in. */
-      stopCol = (int)winBorderToColMap[stopWinIdx];
+      stopCol = (int32_t)winBorderToColMap[stopWinIdx];
 
       bottomQmf = fMultIfloor(invFrameSizeDiv8,
                               ((bottomMdct % (numQmfSubSamples << 2)) << 5));
@@ -415,7 +415,7 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
                            ((topMdct % (numQmfSubSamples << 2)) << 5));
 
       /* extend last band */
-      if (band == ((int)numBands - 1)) {
+      if (band == ((int32_t)numBands - 1)) {
         topQmf = (64);
         stopCol = numQmfSubSamples;
         stopWinIdx = 10;
@@ -427,7 +427,7 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
                                (int32_t)(topMdct << (DFRACT_BITS - 12)));
           if ((LONG)rem & (LONG)0x1F) {
             stopWinIdx -= 1;
-            stopCol = (int)winBorderToColMap[stopWinIdx];
+            stopCol = (int32_t)winBorderToColMap[stopWinIdx];
           }
         }
         topQmf = (64);
@@ -435,9 +435,9 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
 
       /* save previous factors */
       if (stopCol == numQmfSubSamples) {
-        int tmpBottom = bottomQmf;
+        int32_t tmpBottom = bottomQmf;
 
-        if ((int)winBorderToColMap[8] > startCol) {
+        if ((int32_t)winBorderToColMap[8] > startCol) {
           tmpBottom = 0; /* band starts in previous short window */
         }
 
@@ -448,10 +448,10 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
 
       /* apply */
       if ((col >= startCol) && (col < stopCol)) {
-        if (col >= (int)winBorderToColMap[startWinIdx + 1]) {
+        if (col >= (int32_t)winBorderToColMap[startWinIdx + 1]) {
           bottomQmf = 0; /* band starts in previous short window */
         }
-        if (col < (int)winBorderToColMap[stopWinIdx - 1]) {
+        if (col < (int32_t)winBorderToColMap[stopWinIdx - 1]) {
           topQmf = (64); /* band ends in next short window */
         }
 
@@ -493,9 +493,9 @@ void sbrDecoder_drcApplySlot(HANDLE_SBR_DRC_CHANNEL hDrcData,
 */
 void sbrDecoder_drcApply(HANDLE_SBR_DRC_CHANNEL hDrcData,
                          int32_t **QmfBufferReal, int32_t **QmfBufferImag,
-                         int numQmfSubSamples, int *scaleFactor) {
-  int col;
-  int maxShift = 0;
+                         int32_t numQmfSubSamples, int32_t *scaleFactor) {
+  int32_t col;
+  int32_t maxShift = 0;
 
   if (hDrcData == NULL) {
     return;

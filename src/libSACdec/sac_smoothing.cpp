@@ -119,9 +119,9 @@ amm-info@iis.fraunhofer.de
 
 
 *******************************************************************************/
-static int32_t calcFilterCoeff__FDK(spatialDec *self, int ps,
+static int32_t calcFilterCoeff__FDK(spatialDec *self, int32_t ps,
                                      const SPATIAL_BS_FRAME *frame) {
-  int dSlots;
+  int32_t dSlots;
   int32_t delta;
 
   dSlots = frame->paramSlot[ps] - self->smoothState->prevParamSlot;
@@ -149,8 +149,8 @@ static int32_t calcFilterCoeff__FDK(spatialDec *self, int ps,
 
 
 *******************************************************************************/
-static int getSmoothOnOff(spatialDec *self, int ps, int pb) {
-  int smoothBand = 0;
+static int32_t getSmoothOnOff(spatialDec *self, int32_t ps, int32_t pb) {
+  int32_t smoothBand = 0;
 
   smoothBand = self->smgData[ps][pb];
 
@@ -158,16 +158,16 @@ static int getSmoothOnOff(spatialDec *self, int ps, int pb) {
 }
 
 void SpatialDecSmoothM1andM2(spatialDec *self, const SPATIAL_BS_FRAME *frame,
-                             int ps) {
+                             int32_t ps) {
   int32_t delta__FDK;
   int32_t one_minus_delta__FDK;
 
-  int pb, row, col;
-  int residualBands = 0;
+  int32_t pb, row, col;
+  int32_t residualBands = 0;
 
   if (self->residualCoding) {
-    int i;
-    int boxes = self->numOttBoxes;
+    int32_t i;
+    int32_t boxes = self->numOttBoxes;
     for (i = 0; i < boxes; i++) {
       if (self->residualBands[i] > residualBands) {
         residualBands = self->residualBands[i];
@@ -184,7 +184,7 @@ void SpatialDecSmoothM1andM2(spatialDec *self, const SPATIAL_BS_FRAME *frame,
     one_minus_delta__FDK = (FL2FXCONST_DBL(0.5f) - (delta__FDK >> 1)) << 1;
 
   for (pb = 0; pb < self->numParameterBands; pb++) {
-    int smoothBand;
+    int32_t smoothBand;
 
     smoothBand = getSmoothOnOff(self, ps, pb);
 
@@ -216,14 +216,14 @@ void initParameterSmoothing(spatialDec *self) {
 }
 
 void SpatialDecSmoothOPD(spatialDec *self, const SPATIAL_BS_FRAME *frame,
-                         int ps) {
-  int pb;
-  int dSlots;
+                         int32_t ps) {
+  int32_t pb;
+  int32_t dSlots;
   int32_t delta__FDK;
   int32_t one_minus_delta__FDK;
   int32_t *phaseLeftSmooth__FDK = self->smoothState->opdLeftState__FDK;
   int32_t *phaseRightSmooth__FDK = self->smoothState->opdRightState__FDK;
-  int quantCoarse;
+  int32_t quantCoarse;
 
   quantCoarse = frame->IPDLosslessData[0].bsQuantCoarseXXX[ps];
 
@@ -239,7 +239,7 @@ void SpatialDecSmoothOPD(spatialDec *self, const SPATIAL_BS_FRAME *frame,
       dSlots = frame->paramSlot[ps] - frame->paramSlot[ps - 1];
     }
 
-    delta__FDK = (int32_t)((INT)(FL2FXCONST_DBL(0.0078125f)) * dSlots);
+    delta__FDK = (int32_t)((int32_t)(FL2FXCONST_DBL(0.0078125f)) * dSlots);
 
     if (delta__FDK == (int32_t)MAXVAL_DBL /*FL2FXCONST_DBL(1.0f)*/)
       one_minus_delta__FDK = FL2FXCONST_DBL(0.0f);

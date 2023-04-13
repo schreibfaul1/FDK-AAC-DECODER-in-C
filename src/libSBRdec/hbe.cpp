@@ -124,13 +124,13 @@ amm-info@iis.fraunhofer.de
 #define PI 3.14159265358979323846
 #endif
 
-static const int xProducts[MAX_STRETCH_HBE - 1] = {
+static const int32_t xProducts[MAX_STRETCH_HBE - 1] = {
     1, 1, 1}; /* Cross products on(1)/off(0) for T=2,3,4. */
-static const int startSubband2kL[33] = {
+static const int32_t startSubband2kL[33] = {
     0, 0, 0, 0, 0, 0, 0,  2,  2,  2,  4,  4,  4,  4,  4,  6, 6,
     6, 8, 8, 8, 8, 8, 10, 10, 10, 12, 12, 12, 12, 12, 12, 12};
 
-static const int pmin = 12;
+static const int32_t pmin = 12;
 
 static const int32_t hintReal_F[4][3] = {
     {FL2FXCONST_DBL(0.39840335f), FL2FXCONST_DBL(0.39840335f),
@@ -584,7 +584,7 @@ static const int32_t preModSin[32] = {
 #define CUBE_ROOT_BITS_MASK 0x7f
 #define CUBE_ROOT_FRACT_BITS_MASK 0x007FFFFF
 /* Inverse cube root table for operands running from 0.5 to 1.0 */
-/* (INT) (1.0/cuberoot((op)));                    */
+/* (int32_t) (1.0/cuberoot((op)));                    */
 /* Implicit exponent is 1.                        */
 
 LNK_SECTION_CONSTDATA
@@ -628,7 +628,7 @@ static const int32_t invCubeRootCorrection[3] = {0x40000000, 0x50A28BE6,
  * \return:     (o) mantissa of the result
  * \description:
  *  This routine calculates the cube root of the input operand, that is
- *  given with its mantissa in Q31 format (int32_t) and its exponent (INT).
+ *  given with its mantissa in Q31 format (int32_t) and its exponent (int32_t).
  *  The resulting mantissa is returned in format Q31. The exponent (*op_e)
  *  is modified accordingly. It is not assured, that the result is fully
  * left-aligned but assumed to have not more than 2 bits headroom. There is one
@@ -642,21 +642,21 @@ static const int32_t invCubeRootCorrection[3] = {0x40000000, 0x50A28BE6,
 static
 #ifdef __arm__
     int32_t FDK_FORCEINLINE
-    invCubeRootNorm2(int32_t op_m, INT* op_e)
+    invCubeRootNorm2(int32_t op_m, int32_t* op_e)
 #else
     int32_t
-    invCubeRootNorm2(int32_t op_m, INT* op_e)
+    invCubeRootNorm2(int32_t op_m, int32_t* op_e)
 #endif
 {
   FDK_ASSERT(op_m > int32_t(0));
 
   /* normalize input, calculate shift value */
-  INT exponent = (INT)fNormz(op_m) - 1;
+  int32_t exponent = (int32_t)fNormz(op_m) - 1;
   op_m <<= exponent;
 
-  INT index = (INT)(op_m >> (DFRACT_BITS - 1 - (CUBE_ROOT_BITS + 1))) &
+  int32_t index = (int32_t)(op_m >> (DFRACT_BITS - 1 - (CUBE_ROOT_BITS + 1))) &
               CUBE_ROOT_BITS_MASK;
-  int32_t fract = (int32_t)(((INT)op_m & CUBE_ROOT_FRACT_BITS_MASK)
+  int32_t fract = (int32_t)(((int32_t)op_m & CUBE_ROOT_FRACT_BITS_MASK)
                               << (CUBE_ROOT_BITS + 1));
   int32_t diff = invCubeRootTab[index + 1] - invCubeRootTab[index];
   op_m = fMultAddDiv2(invCubeRootTab[index], diff << 1, fract);
@@ -674,12 +674,12 @@ static
   /* calculate the output exponent = input * exp/3 = cubicroot(m)*2^(exp/3)
    * where 2^(exp/3) = 2^k'*2 or 2^k'*2^(1/3) or 2^k'*2^(2/3) */
   exponent = exponent - *op_e + 3;
-  INT shift_tmp =
-      ((INT)fMultDiv2((FIXP_SGL)fAbs(exponent), (FIXP_SGL)0x5556)) >> 16;
+  int32_t shift_tmp =
+      ((int32_t)fMultDiv2((FIXP_SGL)fAbs(exponent), (FIXP_SGL)0x5556)) >> 16;
   if (exponent < 0) {
     shift_tmp = -shift_tmp;
   }
-  INT rem = exponent - 3 * shift_tmp;
+  int32_t rem = exponent - 3 * shift_tmp;
   if (rem < 0) {
     rem += 3;
     shift_tmp--;
@@ -747,7 +747,7 @@ static const int32_t invFourthRootCorrection[4] = {0x40000000, 0x4C1BF829,
  * \return:     (o) mantissa of the result
  * \description:
  *  This routine calculates the cube root of the input operand, that is
- *  given with its mantissa in Q31 format (int32_t) and its exponent (INT).
+ *  given with its mantissa in Q31 format (int32_t) and its exponent (int32_t).
  *  The resulting mantissa is returned in format Q31. The exponent (*op_e)
  *  is modified accordingly. It is not assured, that the result is fully
  * left-aligned but assumed to have not more than 2 bits headroom. There is one
@@ -764,21 +764,21 @@ static const int32_t invFourthRootCorrection[4] = {0x40000000, 0x4C1BF829,
 static
 #ifdef __arm__
     int32_t FDK_FORCEINLINE
-    invFourthRootNorm2(int32_t op_m, INT* op_e)
+    invFourthRootNorm2(int32_t op_m, int32_t* op_e)
 #else
     int32_t
-    invFourthRootNorm2(int32_t op_m, INT* op_e)
+    invFourthRootNorm2(int32_t op_m, int32_t* op_e)
 #endif
 {
   FDK_ASSERT(op_m > FL2FXCONST_DBL(0.0));
 
   /* normalize input, calculate shift value */
-  INT exponent = (INT)fNormz(op_m) - 1;
+  int32_t exponent = (int32_t)fNormz(op_m) - 1;
   op_m <<= exponent;
 
-  INT index = (INT)(op_m >> (DFRACT_BITS - 1 - (FOURTHROOT_BITS + 1))) &
+  int32_t index = (int32_t)(op_m >> (DFRACT_BITS - 1 - (FOURTHROOT_BITS + 1))) &
               FOURTHROOT_BITS_MASK;
-  int32_t fract = (int32_t)(((INT)op_m & FOURTHROOT_FRACT_BITS_MASK)
+  int32_t fract = (int32_t)(((int32_t)op_m & FOURTHROOT_FRACT_BITS_MASK)
                               << (FOURTHROOT_BITS + 1));
   int32_t diff = invFourthRootTab[index + 1] - invFourthRootTab[index];
   op_m = invFourthRootTab[index] + (fMultDiv2(diff, fract) << 1);
@@ -795,8 +795,8 @@ static
 #endif /* INVFOURTHROOTNORM2_LINEAR_INTERPOLATE_HQ */
 
   exponent = exponent - *op_e + 4;
-  INT rem = exponent & 0x00000003;
-  INT shift_tmp = (exponent >> 2);
+  int32_t rem = exponent & 0x00000003;
+  int32_t shift_tmp = (exponent >> 2);
 
   *op_e = shift_tmp;
   op_m = fMultDiv2(op_m, invFourthRootCorrection[rem]) << 2;
@@ -863,7 +863,7 @@ static const int32_t inv3EigthRootCorrection[8] = {
  * \return:     (o) mantissa of the result
  * \description:
  *  This routine calculates the cube root of the input operand, that is
- *  given with its mantissa in Q31 format (int32_t) and its exponent (INT).
+ *  given with its mantissa in Q31 format (int32_t) and its exponent (int32_t).
  *  The resulting mantissa is returned in format Q31. The exponent (*op_e)
  *  is modified accordingly. It is not assured, that the result is fully
  * left-aligned but assumed to have not more than 2 bits headroom. There is one
@@ -880,21 +880,21 @@ static const int32_t inv3EigthRootCorrection[8] = {
 static
 #ifdef __arm__
     int32_t FDK_FORCEINLINE
-    inv3EigthRootNorm2(int32_t op_m, INT* op_e)
+    inv3EigthRootNorm2(int32_t op_m, int32_t* op_e)
 #else
     int32_t
-    inv3EigthRootNorm2(int32_t op_m, INT* op_e)
+    inv3EigthRootNorm2(int32_t op_m, int32_t* op_e)
 #endif
 {
   FDK_ASSERT(op_m > FL2FXCONST_DBL(0.0));
 
   /* normalize input, calculate shift op_mue */
-  INT exponent = (INT)fNormz(op_m) - 1;
+  int32_t exponent = (int32_t)fNormz(op_m) - 1;
   op_m <<= exponent;
 
-  INT index = (INT)(op_m >> (DFRACT_BITS - 1 - (THREEIGTHROOT_BITS + 1))) &
+  int32_t index = (int32_t)(op_m >> (DFRACT_BITS - 1 - (THREEIGTHROOT_BITS + 1))) &
               THREEIGTHROOT_BITS_MASK;
-  int32_t fract = (int32_t)(((INT)op_m & THREEIGTHROOT_FRACT_BITS_MASK)
+  int32_t fract = (int32_t)(((int32_t)op_m & THREEIGTHROOT_FRACT_BITS_MASK)
                               << (THREEIGTHROOT_BITS + 1));
   int32_t diff = inv3EigthRootTab[index + 1] - inv3EigthRootTab[index];
   op_m = inv3EigthRootTab[index] + (fMultDiv2(diff, fract) << 1);
@@ -911,8 +911,8 @@ static
 #endif /* INVTHREEIGTHROOTNORM2_LINEAR_INTERPOLATE_HQ */
 
   exponent = exponent - *op_e + 8;
-  INT rem = exponent & 0x00000007;
-  INT shift_tmp = (exponent >> 3);
+  int32_t rem = exponent & 0x00000007;
+  int32_t shift_tmp = (exponent >> 3);
 
   *op_e = shift_tmp * 3;
   op_m = fMultDiv2(op_m, inv3EigthRootCorrection[rem]) << 2;
@@ -921,11 +921,11 @@ static
 }
 
 SBR_ERROR
-QmfTransposerCreate(HANDLE_HBE_TRANSPOSER* hQmfTransposer, const int frameSize,
-                    int bDisableCrossProducts, int bSbr41) {
+QmfTransposerCreate(HANDLE_HBE_TRANSPOSER* hQmfTransposer, const int32_t frameSize,
+                    int32_t bDisableCrossProducts, int32_t bSbr41) {
   HANDLE_HBE_TRANSPOSER hQmfTran = NULL;
 
-  int i;
+  int32_t i;
 
   if (hQmfTransposer != NULL) {
     /* Memory allocation */
@@ -1049,7 +1049,7 @@ SBR_ERROR QmfTransposerReInit(HANDLE_HBE_TRANSPOSER hQmfTransposer,
    don't know where to get this value from
    at call-side */
 {
-  int L, sfb, patch, stopPatch, qmfErr;
+  int32_t L, sfb, patch, stopPatch, qmfErr;
 
   if (hQmfTransposer != NULL) {
     const FIXP_QTW* tmp_t_cos;
@@ -1131,7 +1131,7 @@ SBR_ERROR QmfTransposerReInit(HANDLE_HBE_TRANSPOSER hQmfTransposer,
     hQmfTransposer->HBEAnalysiscQMF.t_sin = tmp_t_sin;
 
     FDKmemset(hQmfTransposer->xOverQmf, 0,
-              MAX_NUM_PATCHES * sizeof(int)); /* global */
+              MAX_NUM_PATCHES * sizeof(int32_t)); /* global */
     sfb = 0;
     if (hQmfTransposer->bSbr41) {
       stopPatch = MAX_NUM_PATCHES;
@@ -1151,7 +1151,7 @@ SBR_ERROR QmfTransposerReInit(HANDLE_HBE_TRANSPOSER hQmfTransposer,
             3) {
           hQmfTransposer->xOverQmf[patch - 1] = FreqBandTable[0][sfb - 1];
         } else {
-          int sfb_tmp = 0;
+          int32_t sfb_tmp = 0;
           while (sfb_tmp <= NSfb[1] &&
                  FreqBandTable[1][sfb_tmp] <= patch * hQmfTransposer->startBand)
             sfb_tmp++;
@@ -1174,7 +1174,7 @@ SBR_ERROR QmfTransposerReInit(HANDLE_HBE_TRANSPOSER hQmfTransposer,
 }
 
 void QmfTransposerClose(HANDLE_HBE_TRANSPOSER hQmfTransposer) {
-  int i;
+  int32_t i;
 
   if (hQmfTransposer != NULL) {
     if (hQmfTransposer->inBuf_F) FDKfree(hQmfTransposer->inBuf_F);
@@ -1213,11 +1213,11 @@ void QmfTransposerClose(HANDLE_HBE_TRANSPOSER hQmfTransposer) {
   }
 }
 
-inline void scaleUp(int32_t* real_m, int32_t* imag_m, INT* _e) {
-  INT reserve;
+inline void scaleUp(int32_t* real_m, int32_t* imag_m, int32_t* _e) {
+  int32_t reserve;
   /* shift gc_r and gc_i up if possible */
-  reserve = CntLeadingZeros((INT(*real_m) ^ INT((*real_m >> 31))) |
-                            (INT(*imag_m) ^ INT((*imag_m >> 31)))) -
+  reserve = CntLeadingZeros((int32_t(*real_m) ^ int32_t((*real_m >> 31))) |
+                            (int32_t(*imag_m) ^ int32_t((*imag_m >> 31)))) -
             1;
   reserve = fMax(reserve - 1,
                  0); /* Leave one bit headroom such that (real_m^2 + imag_m^2)
@@ -1231,13 +1231,13 @@ inline void scaleUp(int32_t* real_m, int32_t* imag_m, INT* _e) {
 
 static void calculateCenterFIXP(int32_t gammaVecReal, int32_t gammaVecImag,
                                 int32_t* centerReal, int32_t* centerImag,
-                                INT* exponent, int stretch, int mult) {
+                                int32_t* exponent, int32_t stretch, int32_t mult) {
   scaleUp(&gammaVecReal, &gammaVecImag, exponent);
   int32_t energy = fPow2Div2(gammaVecReal) + fPow2Div2(gammaVecImag);
 
   if (energy != FL2FXCONST_DBL(0.f)) {
     int32_t gc_r_m, gc_i_m, factor_m = (int32_t)0;
-    INT factor_e, gc_e;
+    int32_t factor_e, gc_e;
     factor_e = 2 * (*exponent) + 1;
 
     switch (stretch) {
@@ -1288,12 +1288,12 @@ static void calculateCenterFIXP(int32_t gammaVecReal, int32_t gammaVecImag,
   } else {
     *centerReal = energy; /* energy = 0 */
     *centerImag = energy; /* energy = 0 */
-    *exponent = (INT)energy;
+    *exponent = (int32_t)energy;
   }
 }
 
-static int getHBEScaleFactorFrame(const int bSbr41, const int maxStretch,
-                                  const int pitchInBins) {
+static int32_t getHBEScaleFactorFrame(const int32_t bSbr41, const int32_t maxStretch,
+                                  const int32_t pitchInBins) {
   if (pitchInBins >= pmin * (1 + bSbr41)) {
     /* crossproducts enabled */
     return 26;
@@ -1302,17 +1302,17 @@ static int getHBEScaleFactorFrame(const int bSbr41, const int maxStretch,
   }
 }
 
-static void addHighBandPart(int32_t g_r_m, int32_t g_i_m, INT g_e,
+static void addHighBandPart(int32_t g_r_m, int32_t g_i_m, int32_t g_e,
                             int32_t mult, int32_t gammaCenterReal_m,
-                            int32_t gammaCenterImag_m, INT gammaCenter_e,
-                            INT stretch, INT scale_factor_hbe,
+                            int32_t gammaCenterImag_m, int32_t gammaCenter_e,
+                            int32_t stretch, int32_t scale_factor_hbe,
                             int32_t* qmfHBEBufReal_F,
                             int32_t* qmfHBEBufImag_F) {
   if ((g_r_m | g_i_m) != FL2FXCONST_DBL(0.f)) {
     int32_t factor_m = (int32_t)0;
-    INT factor_e;
-    INT add = (stretch == 4) ? 1 : 0;
-    INT shift = (stretch == 4) ? 1 : 2;
+    int32_t factor_e;
+    int32_t add = (stretch == 4) ? 1 : 0;
+    int32_t shift = (stretch == 4) ? 1 : 2;
 
     scaleUp(&g_r_m, &g_i_m, &g_e);
     int32_t energy = fPow2AddDiv2(fPow2Div2(g_r_m), g_i_m);
@@ -1339,7 +1339,7 @@ static void addHighBandPart(int32_t g_r_m, int32_t g_i_m, INT g_e,
     g_r_m = fMultDiv2(tmp_r, factor_m) << shift;
     g_i_m = fMultDiv2(tmp_i, factor_m) << shift;
     g_e = scale_factor_hbe - (g_e + factor_e + gammaCenter_e + add);
-    g_e = fMax((INT)0, g_e);
+    g_e = fMax((int32_t)0, g_e);
     *qmfHBEBufReal_F += g_r_m >> g_e;
     *qmfHBEBufImag_F += g_i_m >> g_e;
   }
@@ -1347,40 +1347,40 @@ static void addHighBandPart(int32_t g_r_m, int32_t g_i_m, INT g_e,
 
 void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
                         int32_t** qmfBufferCodecReal,
-                        int32_t** qmfBufferCodecImag, int nColsIn,
+                        int32_t** qmfBufferCodecImag, int32_t nColsIn,
                         int32_t** ppQmfBufferOutReal_F,
                         int32_t** ppQmfBufferOutImag_F,
                         int32_t lpcFilterStatesReal[2 + (3 * (4))][(64)],
                         int32_t lpcFilterStatesImag[2 + (3 * (4))][(64)],
-                        int pitchInBins, int scale_lb, int scale_hbe,
-                        int* scale_hb, int timeStep, int firstSlotOffsset,
-                        int ov_len,
+                        int32_t pitchInBins, int32_t scale_lb, int32_t scale_hbe,
+                        int32_t* scale_hb, int32_t timeStep, int32_t firstSlotOffsset,
+                        int32_t ov_len,
                         KEEP_STATES_SYNCED_MODE keepStatesSyncedMode) {
-  int i, j, stretch, band, sourceband, r, s;
-  int qmfVocoderColsIn = hQmfTransposer->noCols / 2;
-  int bSbr41 = hQmfTransposer->bSbr41;
+  int32_t i, j, stretch, band, sourceband, r, s;
+  int32_t qmfVocoderColsIn = hQmfTransposer->noCols / 2;
+  int32_t bSbr41 = hQmfTransposer->bSbr41;
 
-  const int winLength[3] = {10, 8, 6};
-  const int slotOffset = 6; /* hQmfTransposer->winLen-6; */
+  const int32_t winLength[3] = {10, 8, 6};
+  const int32_t slotOffset = 6; /* hQmfTransposer->winLen-6; */
 
-  int qmfOffset = 2 * hQmfTransposer->kstart;
-  int scale_border = (nColsIn == 64) ? 32 : nColsIn;
+  int32_t qmfOffset = 2 * hQmfTransposer->kstart;
+  int32_t scale_border = (nColsIn == 64) ? 32 : nColsIn;
 
-  INT slot_stretch4[9] = {0, 0, 0, 0, 2, 4, 6, 8, 10};
-  INT slot_stretch2[11] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-  INT slot_stretch3[10] = {0, 0, 0, 1, 3, 4, 6, 7, 9, 10};
-  INT filt_stretch3[10] = {0, 0, 0, 1, 0, 1, 0, 1, 0, 1};
-  INT filt_dummy[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  INT* pSlotStretch;
-  INT* pFilt;
+  int32_t slot_stretch4[9] = {0, 0, 0, 0, 2, 4, 6, 8, 10};
+  int32_t slot_stretch2[11] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  int32_t slot_stretch3[10] = {0, 0, 0, 1, 3, 4, 6, 7, 9, 10};
+  int32_t filt_stretch3[10] = {0, 0, 0, 1, 0, 1, 0, 1, 0, 1};
+  int32_t filt_dummy[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  int32_t* pSlotStretch;
+  int32_t* pFilt;
 
-  int offset = 0; /* where to take  QmfTransposer data */
+  int32_t offset = 0; /* where to take  QmfTransposer data */
 
-  int signPreMod =
+  int32_t signPreMod =
       (hQmfTransposer->synthesisQmfPreModCos_F[0] < FL2FXCONST_DBL(0.f)) ? 1
                                                                          : -1;
 
-  int scale_factor_hbe =
+  int32_t scale_factor_hbe =
       getHBEScaleFactorFrame(bSbr41, hQmfTransposer->maxStretch, pitchInBins);
 
   if (keepStatesSyncedMode != KEEP_STATES_SYNCED_OFF) {
@@ -1396,7 +1396,7 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
 
   scale_factor_hbe = hQmfTransposer->target_exp[1];
 
-  int shift_ov = hQmfTransposer->target_exp[0] - hQmfTransposer->target_exp[1];
+  int32_t shift_ov = hQmfTransposer->target_exp[0] - hQmfTransposer->target_exp[1];
 
   if (shift_ov != 0) {
     for (i = 0; i < HBE_MAX_OUT_SLOTS; i++) {
@@ -1441,8 +1441,8 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
   }
 
   int32_t twid_m_new[3][2]; /* [stretch][cos/sin] */
-  INT stepsize = 1 + !bSbr41, sine_offset = 24, mod = 96;
-  INT mult[3] = {1, 2, 3};
+  int32_t stepsize = 1 + !bSbr41, sine_offset = 24, mod = 96;
+  int32_t mult[3] = {1, 2, 3};
 
   for (s = 0; s <= MAX_STRETCH_HBE - 2; s++) {
     twid_m_new[s][0] = twiddle[(mult[s] * (stepsize * pitchInBins)) % mod];
@@ -1452,7 +1452,7 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
 
   /* Time-stretch */
   for (j = 0; j < qmfVocoderColsIn; j++) {
-    int sign = -1, k, z, addrshift, codecTemp_e;
+    int32_t sign = -1, k, z, addrshift, codecTemp_e;
     /* update inbuf */
     for (i = 0; i < hQmfTransposer->synthSize; i++) {
       hQmfTransposer->inBuf_F[i] =
@@ -1462,13 +1462,13 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
     /* run synthesis for two sbr slots as transposer uses
     half slots double bands representation */
     for (z = 0; z < 2; z++) {
-      int scale_factor = ((nColsIn == 64) && ((2 * j + z) < scale_border))
+      int32_t scale_factor = ((nColsIn == 64) && ((2 * j + z) < scale_border))
                              ? scale_lb
                              : scale_hbe;
       codecTemp_e = scale_factor - 1; /* -2 for Div2 and cos/sin scale of 1 */
 
       for (k = 0; k < hQmfTransposer->synthSize; k++) {
-        int ki = hQmfTransposer->kstart + k;
+        int32_t ki = hQmfTransposer->kstart + k;
         hQmfTransposer->qmfBufferCodecTempSlot_F[k] =
             fMultDiv2(signPreMod * hQmfTransposer->synthesisQmfPreModCos_F[k],
                       qmfBufferCodecReal[2 * j + z][ki]);
@@ -1515,8 +1515,8 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
     }
 
     for (stretch = 2; stretch <= hQmfTransposer->maxStretch; stretch++) {
-      int start = slotOffset - winLength[stretch - 2] / 2;
-      int stop = slotOffset + winLength[stretch - 2] / 2;
+      int32_t start = slotOffset - winLength[stretch - 2] / 2;
+      int32_t stop = slotOffset + winLength[stretch - 2] / 2;
 
       int32_t factor = FL2FXCONST_DBL(1.f / 3.f);
 
@@ -1524,11 +1524,11 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
            band < hQmfTransposer->xOverQmf[stretch - 1]; band++) {
         int32_t gammaCenterReal_m[2] = {(int32_t)0, (int32_t)0},
                  gammaCenterImag_m[2] = {(int32_t)0, (int32_t)0};
-        INT gammaCenter_e[2] = {0, 0};
+        int32_t gammaCenter_e[2] = {0, 0};
 
         int32_t gammaVecReal_m[2] = {(int32_t)0, (int32_t)0},
                  gammaVecImag_m[2] = {(int32_t)0, (int32_t)0};
-        INT gammaVec_e[2] = {0, 0};
+        int32_t gammaVec_e[2] = {0, 0};
 
         int32_t wingain = (int32_t)0;
 
@@ -1708,8 +1708,8 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
         /* pitchInBins is given with the resolution of a 768 bins FFT and we
          * need 64 QMF units so factor 768/64 = 12 */
         if (pitchInBins >= pmin * (1 + bSbr41)) {
-          int tr, ti1, ti2, mTr = 0, ts1 = 0, ts2 = 0, mVal_e = 0, temp_e = 0;
-          int sqmag0_e =
+          int32_t tr, ti1, ti2, mTr = 0, ts1 = 0, ts2 = 0, mVal_e = 0, temp_e = 0;
+          int32_t sqmag0_e =
               SCALE2EXP(-hQmfTransposer->HBEAnalysiscQMF.outScalefactor);
 
           int32_t mVal_F = FL2FXCONST_DBL(0.f), sqmag0_F, sqmag1_F, sqmag2_F,
@@ -1732,9 +1732,9 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
           sqmag0_e = 2 * sqmag0_e + 1;
 
           for (tr = 1; tr < stretch; tr++) {
-            int sqmag1_e =
+            int32_t sqmag1_e =
                 SCALE2EXP(-hQmfTransposer->HBEAnalysiscQMF.outScalefactor);
-            int sqmag2_e =
+            int32_t sqmag2_e =
                 SCALE2EXP(-hQmfTransposer->HBEAnalysiscQMF.outScalefactor);
 
             int32_t tmp_band = band_F[band];
@@ -1742,8 +1742,8 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
                 fMult(p_F[pitchInBins] >> bSbr41, tr_str[tr - 1]); /* scale 7 */
             f1_F =
                 fMult(tmp_band - tr_p, stretchfac[stretch - 2]); /* scale 7 */
-            ti1 = (INT)(f1_F >> (DFRACT_BITS - 1 - 7)) - qmfOffset;
-            ti2 = (INT)(((f1_F) + ((p_F[pitchInBins] >> bSbr41) >> 2)) >>
+            ti1 = (int32_t)(f1_F >> (DFRACT_BITS - 1 - 7)) - qmfOffset;
+            ti2 = (int32_t)(((f1_F) + ((p_F[pitchInBins] >> bSbr41) >> 2)) >>
                         (DFRACT_BITS - 1 - 7)) -
                   qmfOffset;
 
@@ -1766,14 +1766,14 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
               sqmag2_F += fPow2Div2(sqmag2I_F);
               sqmag2_e = 2 * sqmag2_e + 1;
 
-              int shift1 = fMin(fMax(sqmag1_e, sqmag2_e) - sqmag1_e, 31);
-              int shift2 = fMin(fMax(sqmag1_e, sqmag2_e) - sqmag2_e, 31);
+              int32_t shift1 = fMin(fMax(sqmag1_e, sqmag2_e) - sqmag1_e, 31);
+              int32_t shift2 = fMin(fMax(sqmag1_e, sqmag2_e) - sqmag2_e, 31);
 
               temp_F = fMin((sqmag1_F >> shift1), (sqmag2_F >> shift2));
               temp_e = fMax(sqmag1_e, sqmag2_e);
 
-              int shift3 = fMin(fMax(temp_e, mVal_e) - temp_e, 31);
-              int shift4 = fMin(fMax(temp_e, mVal_e) - mVal_e, 31);
+              int32_t shift3 = fMin(fMax(temp_e, mVal_e) - temp_e, 31);
+              int32_t shift4 = fMin(fMax(temp_e, mVal_e) - mVal_e, 31);
 
               if ((temp_F >> shift3) > (mVal_F >> shift4)) {
                 mVal_F = temp_F;
@@ -1785,16 +1785,16 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
             }
           }
 
-          int shift1 = fMin(fMax(sqmag0_e, mVal_e) - sqmag0_e, 31);
-          int shift2 = fMin(fMax(sqmag0_e, mVal_e) - mVal_e, 31);
+          int32_t shift1 = fMin(fMax(sqmag0_e, mVal_e) - sqmag0_e, 31);
+          int32_t shift2 = fMin(fMax(sqmag0_e, mVal_e) - mVal_e, 31);
 
           if ((mVal_F >> shift2) > (sqmag0_F >> shift1) && ts1 >= 0 &&
               ts2 < 2 * hQmfTransposer->synthSize) {
-            INT gammaOut_e[2];
+            int32_t gammaOut_e[2];
             int32_t gammaOutReal_m[2], gammaOutImag_m[2];
             int32_t tmpReal_m = (int32_t)0, tmpImag_m = (int32_t)0;
 
-            int Tcenter, Tvec;
+            int32_t Tcenter, Tvec;
 
             Tcenter = stretch - mTr; /* default phase power parameters */
             Tvec = mTr;
@@ -2029,7 +2029,7 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
             tmpReal_m = gammaOutReal_m[0];
             tmpImag_m = gammaOutImag_m[0];
 
-            INT modstretch4 = ((stretch == 4) && (mTr == 2));
+            int32_t modstretch4 = ((stretch == 4) && (mTr == 2));
 
             int32_t cos_twid = twid_m_new[stretch - 2 - modstretch4][0];
             int32_t sin_twid = sign * twid_m_new[stretch - 2 - modstretch4][1];
@@ -2187,14 +2187,14 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
   *scale_hb = EXP2SCALE(scale_factor_hbe);
 }
 
-int* GetxOverBandQmfTransposer(HANDLE_HBE_TRANSPOSER hQmfTransposer) {
+int32_t* GetxOverBandQmfTransposer(HANDLE_HBE_TRANSPOSER hQmfTransposer) {
   if (hQmfTransposer)
     return hQmfTransposer->xOverQmf;
   else
     return NULL;
 }
 
-int Get41SbrQmfTransposer(HANDLE_HBE_TRANSPOSER hQmfTransposer) {
+int32_t Get41SbrQmfTransposer(HANDLE_HBE_TRANSPOSER hQmfTransposer) {
   if (hQmfTransposer != NULL)
     return hQmfTransposer->bSbr41;
   else

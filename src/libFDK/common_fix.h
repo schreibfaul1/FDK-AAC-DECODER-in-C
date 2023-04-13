@@ -281,7 +281,7 @@ FDK_INLINE int32_t fAbs(int32_t x) { return fixabs_D(x); }
 FDK_INLINE FIXP_SGL fAbs(FIXP_SGL x) { return fixabs_S(x); }
 
 #if !defined(__LP64__)
-FDK_INLINE INT fAbs(INT x) { return fixabs_I(x); }
+FDK_INLINE int32_t fAbs(int32_t x) { return fixabs_I(x); }
 #endif
 
   /* ********************************************************************************
@@ -289,15 +289,15 @@ FDK_INLINE INT fAbs(INT x) { return fixabs_I(x); }
 
 #include "clz.h"
 
-FDK_INLINE INT fNormz(INT64 x) {
-  INT clz = fixnormz_D((INT)(x >> 32));
-  if (clz == 32) clz += fixnormz_D((INT)x);
+FDK_INLINE int32_t fNormz(INT64 x) {
+  int32_t clz = fixnormz_D((int32_t)(x >> 32));
+  if (clz == 32) clz += fixnormz_D((int32_t)x);
   return clz;
 }
-FDK_INLINE INT fNormz(int32_t x) { return fixnormz_D(x); }
-FDK_INLINE INT fNormz(FIXP_SGL x) { return fixnormz_S(x); }
-FDK_INLINE INT fNorm(int32_t x) { return fixnorm_D(x); }
-FDK_INLINE INT fNorm(FIXP_SGL x) { return fixnorm_S(x); }
+FDK_INLINE int32_t fNormz(int32_t x) { return fixnormz_D(x); }
+FDK_INLINE int32_t fNormz(FIXP_SGL x) { return fixnormz_S(x); }
+FDK_INLINE int32_t fNorm(int32_t x) { return fixnorm_D(x); }
+FDK_INLINE int32_t fNorm(FIXP_SGL x) { return fixnorm_S(x); }
 
   /* ********************************************************************************
    */
@@ -409,18 +409,18 @@ FDK_INLINE FIXP_SGL fMin(FIXP_SGL a, FIXP_SGL b) { return fixmin_S(a, b); }
 FDK_INLINE FIXP_SGL fMax(FIXP_SGL a, FIXP_SGL b) { return fixmax_S(a, b); }
 
 #if !defined(__LP64__)
-FDK_INLINE INT fMax(INT a, INT b) { return fixmax_I(a, b); }
-FDK_INLINE INT fMin(INT a, INT b) { return fixmin_I(a, b); }
+FDK_INLINE int32_t fMax(int32_t a, int32_t b) { return fixmax_I(a, b); }
+FDK_INLINE int32_t fMin(int32_t a, int32_t b) { return fixmin_I(a, b); }
 #endif
 
-inline UINT fMax(UINT a, UINT b) { return fixmax_UI(a, b); }
-inline UINT fMin(UINT a, UINT b) { return fixmin_UI(a, b); }
+inline uint32_t fMax(uint32_t a, uint32_t b) { return fixmax_UI(a, b); }
+inline uint32_t fMin(uint32_t a, uint32_t b) { return fixmin_UI(a, b); }
 
 inline UCHAR fMax(UCHAR a, UCHAR b) {
-  return (UCHAR)fixmax_UI((UINT)a, (UINT)b);
+  return (UCHAR)fixmax_UI((uint32_t)a, (uint32_t)b);
 }
 inline UCHAR fMin(UCHAR a, UCHAR b) {
-  return (UCHAR)fixmin_UI((UINT)a, (UINT)b);
+  return (UCHAR)fixmin_UI((uint32_t)a, (uint32_t)b);
 }
 
 /* Complex data types */

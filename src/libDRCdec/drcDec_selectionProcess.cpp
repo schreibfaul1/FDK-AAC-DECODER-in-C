@@ -250,7 +250,7 @@ typedef struct {
 /* helper functions                        */
 /*******************************************/
 
-static int _isError(int x) {
+static int32_t _isError(int32_t x) {
   if (x < DRCDEC_SELECTION_PROCESS_WARNING) {
     return 1;
   }
@@ -259,57 +259,57 @@ static int _isError(int x) {
 }
 
 /* compare and assign */
-static inline int _compAssign(UCHAR* dest, const UCHAR src) {
-  int diff = 0;
+static inline int32_t _compAssign(UCHAR* dest, const UCHAR src) {
+  int32_t diff = 0;
   if (*dest != src) diff = 1;
   *dest = src;
   return diff;
 }
 
-static inline int _compAssign(SCHAR* dest, const SCHAR src) {
-  int diff = 0;
+static inline int32_t _compAssign(SCHAR* dest, const SCHAR src) {
+  int32_t diff = 0;
   if (*dest != src) diff = 1;
   *dest = src;
   return diff;
 }
 
-static inline int _compAssign(int32_t* dest, const int32_t src) {
-  int diff = 0;
+static inline int32_t _compAssign(int32_t* dest, const int32_t src) {
+  int32_t diff = 0;
   if (*dest != src) diff = 1;
   *dest = src;
   return diff;
 }
 
-static inline int _compAssign(FIXP_SGL* dest, const FIXP_SGL src) {
-  int diff = 0;
+static inline int32_t _compAssign(FIXP_SGL* dest, const FIXP_SGL src) {
+  int32_t diff = 0;
   if (*dest != src) diff = 1;
   *dest = src;
   return diff;
 }
 
-static inline int _compAssign(TARGET_CONFIG_REQUEST_TYPE* dest, const int src) {
-  int diff = 0;
+static inline int32_t _compAssign(TARGET_CONFIG_REQUEST_TYPE* dest, const int32_t src) {
+  int32_t diff = 0;
   if (*dest != src) diff = 1;
   *dest = (TARGET_CONFIG_REQUEST_TYPE)src;
   return diff;
 }
 
-static inline int _compAssign(METHOD_DEFINITION_REQUEST* dest, const int src) {
-  int diff = 0;
+static inline int32_t _compAssign(METHOD_DEFINITION_REQUEST* dest, const int32_t src) {
+  int32_t diff = 0;
   if (*dest != src) diff = 1;
   *dest = (METHOD_DEFINITION_REQUEST)src;
   return diff;
 }
 
-static inline int _compAssign(DRC_FEATURE_REQUEST_TYPE* dest, const int src) {
-  int diff = 0;
+static inline int32_t _compAssign(DRC_FEATURE_REQUEST_TYPE* dest, const int32_t src) {
+  int32_t diff = 0;
   if (*dest != src) diff = 1;
   *dest = (DRC_FEATURE_REQUEST_TYPE)src;
   return diff;
 }
 
-static inline int _compAssign(DRC_EFFECT_TYPE_REQUEST* dest, const int src) {
-  int diff = 0;
+static inline int32_t _compAssign(DRC_EFFECT_TYPE_REQUEST* dest, const int32_t src) {
+  int32_t diff = 0;
   if (*dest != src) diff = 1;
   *dest = (DRC_EFFECT_TYPE_REQUEST)src;
   return diff;
@@ -321,19 +321,19 @@ static DRCDEC_SELECTION_DATA* _drcdec_selection_addNew(
 static DRCDEC_SELECTION_DATA* _drcdec_selection_add(
     DRCDEC_SELECTION* pSelection, DRCDEC_SELECTION_DATA* pDataIn);
 
-static int _drcdec_selection_clear(DRCDEC_SELECTION* pSelection);
+static int32_t _drcdec_selection_clear(DRCDEC_SELECTION* pSelection);
 
-static int _drcdec_selection_getNumber(DRCDEC_SELECTION* pSelection);
+static int32_t _drcdec_selection_getNumber(DRCDEC_SELECTION* pSelection);
 
-static int _drcdec_selection_setNumber(DRCDEC_SELECTION* pSelection, int num);
+static int32_t _drcdec_selection_setNumber(DRCDEC_SELECTION* pSelection, int32_t num);
 
 static DRCDEC_SELECTION_DATA* _drcdec_selection_getAt(
-    DRCDEC_SELECTION* pSelection, int at);
+    DRCDEC_SELECTION* pSelection, int32_t at);
 
-static int _swapSelectionAndClear(DRCDEC_SELECTION** ppCandidatesPotential,
+static int32_t _swapSelectionAndClear(DRCDEC_SELECTION** ppCandidatesPotential,
                                   DRCDEC_SELECTION** ppCandidatesSelected);
 
-static int _swapSelection(DRCDEC_SELECTION** ppCandidatesPotential,
+static int32_t _swapSelection(DRCDEC_SELECTION** ppCandidatesPotential,
                           DRCDEC_SELECTION** ppCandidatesSelected);
 
 /*******************************************/
@@ -360,7 +360,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _dynamicRangeMeasurement(
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, DRC_INSTRUCTIONS_UNI_DRC* pInst,
     UCHAR downmixIdRequested,
     DYN_RANGE_MEASUREMENT_REQUEST_TYPE dynamicRangeMeasurementType,
-    int albumMode, int* peakToAveragePresent, int32_t* peakToAverage);
+    int32_t albumMode, int32_t* peakToAveragePresent, int32_t* peakToAverage);
 
 static DRCDEC_SELECTION_PROCESS_RETURN _channelLayoutToDownmixIdMapping(
     HANDLE_SEL_PROC_INPUT hSelProcInput, HANDLE_UNI_DRC_CONFIG hUniDrcConfig);
@@ -390,27 +390,27 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectDownmixMatrix(
     HANDLE_SEL_PROC_OUTPUT hSelProcOutput, HANDLE_UNI_DRC_CONFIG hUniDrcConfig);
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getLoudness(
-    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int albumMode,
+    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int32_t albumMode,
     METHOD_DEFINITION_REQUEST measurementMethodRequested,
     MEASUREMENT_SYSTEM_REQUEST measurementSystemRequested,
-    int32_t targetLoudness, int drcSetId, int downmixIdRequested,
+    int32_t targetLoudness, int32_t drcSetId, int32_t downmixIdRequested,
     int32_t* pLoudnessNormalizationGain, int32_t* pLoudness);
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getMixingLevel(
-    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int downmixIdRequested,
-    int drcSetIdRequested, int albumMode, int32_t* pMixingLevel);
+    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int32_t downmixIdRequested,
+    int32_t drcSetIdRequested, int32_t albumMode, int32_t* pMixingLevel);
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getSignalPeakLevel(
     HANDLE_SEL_PROC_INPUT hSelProcInput, HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, DRC_INSTRUCTIONS_UNI_DRC* pInst,
-    int downmixIdRequested, int* explicitPeakInformationPresent,
+    int32_t downmixIdRequested, int32_t* explicitPeakInformationPresent,
     int32_t* signalPeakLevelOut, /* e = 7 */
     SEL_PROC_CODEC_MODE codecMode);
 
 static DRCDEC_SELECTION_PROCESS_RETURN _extractLoudnessPeakToAverageValue(
     LOUDNESS_INFO* loudnessInfo,
     DYN_RANGE_MEASUREMENT_REQUEST_TYPE dynamicRangeMeasurementType,
-    int* pLoudnessPeakToAverageValuePresent,
+    int32_t* pLoudnessPeakToAverageValuePresent,
     int32_t* pLoudnessPeakToAverageValue);
 
 static DRCDEC_SELECTION_PROCESS_RETURN _selectAlbumLoudness(
@@ -418,8 +418,8 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectAlbumLoudness(
     DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected);
 
-static int _findMethodDefinition(LOUDNESS_INFO* pLoudnessInfo,
-                                 int methodDefinition, int startIndex);
+static int32_t _findMethodDefinition(LOUDNESS_INFO* pLoudnessInfo,
+                                 int32_t methodDefinition, int32_t startIndex);
 
 /*******************************************/
 /* public functions                        */
@@ -484,9 +484,9 @@ drcDec_SelectionProcess_SetCodecMode(HANDLE_DRC_SELECTION_PROCESS hInstance,
 DRCDEC_SELECTION_PROCESS_RETURN
 drcDec_SelectionProcess_SetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
                                  const SEL_PROC_USER_PARAM requestType,
-                                 int32_t requestValue, int* pDiff) {
-  INT requestValueInt = (INT)requestValue;
-  int i, diff = 0;
+                                 int32_t requestValue, int32_t* pDiff) {
+  int32_t requestValueInt = (int32_t)requestValue;
+  int32_t i, diff = 0;
   SEL_PROC_INPUT* pSelProcInput = &(hInstance->selProcInput);
 
   switch (requestType) {
@@ -823,7 +823,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _channelLayoutToDownmixIdMapping(
 
   DOWNMIX_INSTRUCTIONS* pDown = NULL;
 
-  int i;
+  int32_t i;
 
   hSelProcInput->numDownmixIdRequests = 0;
 
@@ -916,9 +916,9 @@ static DRCDEC_SELECTION_PROCESS_RETURN _channelLayoutToDownmixIdMapping(
    #2: Output channel layout of DRC set matches the requested layout.
    #3: Channel count of DRC set matches the requested channel count. */
 static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement123(
-    int nRequestedDownmixId, DRC_INSTRUCTIONS_UNI_DRC* pDrcInstructionUniDrc,
-    int* pMatchFound) {
-  int i;
+    int32_t nRequestedDownmixId, DRC_INSTRUCTIONS_UNI_DRC* pDrcInstructionUniDrc,
+    int32_t* pMatchFound) {
+  int32_t i;
   *pMatchFound = 0;
 
   for (i = 0; i < pDrcInstructionUniDrc->downmixIdCount; i++) {
@@ -936,8 +936,8 @@ static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement123(
 
 /* #4: The DRC set is not a "Fade-" or "Ducking-" only DRC set. */
 static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement4(
-    DRC_INSTRUCTIONS_UNI_DRC* pDrcInstruction, int nDynamicRangeControlOn,
-    int* pMatchFound) {
+    DRC_INSTRUCTIONS_UNI_DRC* pDrcInstruction, int32_t nDynamicRangeControlOn,
+    int32_t* pMatchFound) {
   *pMatchFound = 0;
 
   if (nDynamicRangeControlOn == 1) {
@@ -958,8 +958,8 @@ static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement4(
  * gainSequenceIndex are within the allowed range. */
 static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement5(
     DRC_INSTRUCTIONS_UNI_DRC* pDrcInstructionUniDrc,
-    DRC_COEFFICIENTS_UNI_DRC* pCoef, int* pMatchFound) {
-  int b, i;
+    DRC_COEFFICIENTS_UNI_DRC* pCoef, int32_t* pMatchFound) {
+  int32_t b, i;
 
   *pMatchFound = 1;
 
@@ -983,8 +983,8 @@ static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement5(
   }
 
   for (i = 0; i < pDrcInstructionUniDrc->nDrcChannelGroups; i++) {
-    int indexDrcCoeff = pDrcInstructionUniDrc->gainSetIndexForChannelGroup[i];
-    int bandCount = 0;
+    int32_t indexDrcCoeff = pDrcInstructionUniDrc->gainSetIndexForChannelGroup[i];
+    int32_t bandCount = 0;
 
     if (indexDrcCoeff >= 12) {
       *pMatchFound = 0;
@@ -1017,7 +1017,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement5(
 
 /* #6: Independent use of DRC set is permitted.*/
 static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement6(
-    DRC_INSTRUCTIONS_UNI_DRC* pDrcInstructionUniDrc, int* pMatchFound) {
+    DRC_INSTRUCTIONS_UNI_DRC* pDrcInstructionUniDrc, int32_t* pMatchFound) {
   *pMatchFound = 0;
 
   if (((pDrcInstructionUniDrc->dependsOnDrcSetPresent == 0) &&
@@ -1031,7 +1031,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement6(
 
 /* #7: DRC sets that require EQ are only permitted if EQ is supported. */
 static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement7(
-    DRC_INSTRUCTIONS_UNI_DRC* pDrcInstructionUniDrc, int* pMatchFound) {
+    DRC_INSTRUCTIONS_UNI_DRC* pDrcInstructionUniDrc, int32_t* pMatchFound) {
   *pMatchFound = 1;
 
   if (pDrcInstructionUniDrc->requiresEq) {
@@ -1049,7 +1049,7 @@ static void _setSelectionDataInfo(
     int32_t loudnessDeviationMax,                   /* e = 7 */
     int32_t signalPeakLevel,                        /* e = 7 */
     int32_t outputPeakLevelMax,                     /* e = 7 */
-    int applyAdjustment) {
+    int32_t applyAdjustment) {
   int32_t adjustment = 0; /* e = 8 */
 
   /* use e = 8 for all function parameters to prevent overflow */
@@ -1082,9 +1082,9 @@ static void _setSelectionDataInfo(
       SATURATE_LEFT_SHIFT(pData->outputPeakLevel, 1, DFRACT_BITS);
 }
 
-static int _targetLoudnessInRange(
+static int32_t _targetLoudnessInRange(
     DRC_INSTRUCTIONS_UNI_DRC* pDrcInstructionUniDrc, int32_t targetLoudness) {
-  int retVal = 0;
+  int32_t retVal = 0;
 
   int32_t drcSetTargetLoudnessValueUpper =
       ((int32_t)pDrcInstructionUniDrc->drcSetTargetLoudnessValueUpper)
@@ -1102,9 +1102,9 @@ static int _targetLoudnessInRange(
   return retVal;
 }
 
-static int _drcSetIsUsable(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
+static int32_t _drcSetIsUsable(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
                            DRC_INSTRUCTIONS_UNI_DRC* pInst) {
-  int usable = 0;
+  int32_t usable = 0;
   DRC_COEFFICIENTS_UNI_DRC* pCoef =
       selectDrcCoefficients(hUniDrcConfig, LOCATION_SELECTED);
 
@@ -1118,16 +1118,16 @@ static int _drcSetIsUsable(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
 /* #8: The range of the target loudness specified for a DRC set has to include
  * the requested decoder target loudness. */
 static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement8(
-    SEL_PROC_INPUT* hSelProcInput, int downmixIdIndex,
+    SEL_PROC_INPUT* hSelProcInput, int32_t downmixIdIndex,
     HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet,
     DRC_INSTRUCTIONS_UNI_DRC* pDrcInstructionUniDrc,
     DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected, SEL_PROC_CODEC_MODE codecMode) {
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
-  int explicitPeakInformationPresent;
+  int32_t explicitPeakInformationPresent;
   int32_t signalPeakLevel;
-  int addToCandidate = 0;
+  int32_t addToCandidate = 0;
 
   int32_t loudnessNormalizationGainDb;
   int32_t loudness;
@@ -1236,7 +1236,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement8(
 static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement9(
     SEL_PROC_INPUT* hSelProcInput, DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected) {
-  int i;
+  int32_t i;
 
   for (i = 0; i < _drcdec_selection_getNumber(pCandidatesPotential); i++) {
     DRCDEC_SELECTION_DATA* pCandidate =
@@ -1253,14 +1253,14 @@ static DRCDEC_SELECTION_PROCESS_RETURN _preSelectionRequirement9(
 }
 
 static DRCDEC_SELECTION_PROCESS_RETURN _drcSetPreSelectionSingleInstruction(
-    SEL_PROC_INPUT* hSelProcInput, int downmixIdIndex,
+    SEL_PROC_INPUT* hSelProcInput, int32_t downmixIdIndex,
     HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet,
     DRC_INSTRUCTIONS_UNI_DRC* pDrcInstructionUniDrc,
     DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected, SEL_PROC_CODEC_MODE codecMode) {
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
-  int matchFound = 0;
+  int32_t matchFound = 0;
   DRC_COEFFICIENTS_UNI_DRC* pCoef =
       selectDrcCoefficients(hUniDrcConfig, LOCATION_SELECTED);
 
@@ -1296,8 +1296,8 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetSelectionAddCandidates(
     SEL_PROC_INPUT* hSelProcInput, DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected) {
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
-  int nHitCount = 0;
-  int i;
+  int32_t nHitCount = 0;
+  int32_t i;
 
   DRCDEC_SELECTION_DATA* pCandidate = NULL;
   DRC_INSTRUCTIONS_UNI_DRC* pDrcInstructionUniDrc = NULL;
@@ -1375,7 +1375,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetSelectionAddCandidates(
 static DRCDEC_SELECTION_PROCESS_RETURN _dependentDrcInstruction(
     HANDLE_UNI_DRC_CONFIG hUniDrcConfig, DRC_INSTRUCTIONS_UNI_DRC* pInst,
     DRC_INSTRUCTIONS_UNI_DRC** ppDrcInstructionsDependent) {
-  int i;
+  int32_t i;
   DRC_INSTRUCTIONS_UNI_DRC* pDependentDrc = NULL;
 
   for (i = 0; i < hUniDrcConfig->drcInstructionsUniDrcCount; i++) {
@@ -1403,7 +1403,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _dependentDrcInstruction(
 static DRCDEC_SELECTION_PROCESS_RETURN _selectDrcSetEffectNone(
     HANDLE_UNI_DRC_CONFIG hUniDrcConfig, DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected) {
-  int i;
+  int32_t i;
 
   for (i = 0; i < _drcdec_selection_getNumber(pCandidatesPotential); i++) {
     DRCDEC_SELECTION_DATA* pCandidate =
@@ -1423,7 +1423,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectSingleEffectType(
     HANDLE_UNI_DRC_CONFIG hUniDrcConfig, DRC_EFFECT_TYPE_REQUEST effectType,
     DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected) {
-  int i;
+  int32_t i;
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
   DRC_INSTRUCTIONS_UNI_DRC* pInst;
   DRC_INSTRUCTIONS_UNI_DRC* pDrcInstructionsDependent;
@@ -1433,7 +1433,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectSingleEffectType(
                                      pCandidatesSelected);
     if (retVal) return (retVal);
   } else {
-    int effectBitPosition = 1 << (effectType - 1);
+    int32_t effectBitPosition = 1 << (effectType - 1);
 
     for (i = 0; i < _drcdec_selection_getNumber(pCandidatesPotential); i++) {
       DRCDEC_SELECTION_DATA* pCandidate =
@@ -1469,8 +1469,8 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectEffectTypeFeature(
     DRCDEC_SELECTION** ppCandidatesPotential,
     DRCDEC_SELECTION** ppCandidatesSelected) {
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
-  int i;
-  int desiredEffectTypeFound = 0;
+  int32_t i;
+  int32_t desiredEffectTypeFound = 0;
 
   for (i = 0; i < drcFeatureRequest.drcEffectType.numRequestsDesired; i++) {
     retVal = _selectSingleEffectType(
@@ -1508,17 +1508,17 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectDynamicRange(
     HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet,
     DRC_FEATURE_REQUEST drcFeatureRequest, UCHAR* pDownmixIdRequested,
-    int albumMode, DRCDEC_SELECTION* pCandidatesPotential,
+    int32_t albumMode, DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* ppCandidatesSelected) {
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
-  int i;
-  int peakToAveragePresent;
+  int32_t i;
+  int32_t peakToAveragePresent;
   int32_t peakToAverage;
 
   int32_t minVal = MAXVAL_DBL;
   int32_t val = 0;
 
-  int numSelectedCandidates = _drcdec_selection_getNumber(ppCandidatesSelected);
+  int32_t numSelectedCandidates = _drcdec_selection_getNumber(ppCandidatesSelected);
 
   for (i = 0; i < _drcdec_selection_getNumber(pCandidatesPotential); i++) {
     DRCDEC_SELECTION_DATA* pCandidate =
@@ -1558,11 +1558,11 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectDynamicRange(
 }
 
 static DRCDEC_SELECTION_PROCESS_RETURN _selectSingleDrcCharacteristic(
-    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, int requestedDrcCharacteristic,
+    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, int32_t requestedDrcCharacteristic,
     DRCDEC_SELECTION** ppCandidatesPotential,
     DRCDEC_SELECTION** ppCandidatesSelected) {
-  int i, j, b;
-  int hit = 0;
+  int32_t i, j, b;
+  int32_t hit = 0;
 
   DRC_INSTRUCTIONS_UNI_DRC* pInst = NULL;
   DRC_COEFFICIENTS_UNI_DRC* pCoef = NULL;
@@ -1589,8 +1589,8 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectSingleDrcCharacteristic(
     hit = 0;
 
     for (j = 0; j < pInst->nDrcChannelGroups; j++) {
-      int bandCount = 0;
-      int indexDrcCoeff = pInst->gainSetIndexForChannelGroup[j];
+      int32_t bandCount = 0;
+      int32_t indexDrcCoeff = pInst->gainSetIndexForChannelGroup[j];
 
       if (indexDrcCoeff > pCoef->gainSetCount - 1) /* check for parametricDRC */
       {
@@ -1626,12 +1626,12 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectSingleDrcCharacteristic(
 }
 
 static DRCDEC_SELECTION_PROCESS_RETURN _selectDrcCharacteristic(
-    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, int drcCharacteristicRequested,
+    HANDLE_UNI_DRC_CONFIG hUniDrcConfig, int32_t drcCharacteristicRequested,
     DRCDEC_SELECTION** ppCandidatesPotential,
     DRCDEC_SELECTION** ppCandidatesSelected) {
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
 
-  const int secondTry[12] = {0, 2, 3, 4, 5, 6, 5, 9, 10, 7, 8, 10};
+  const int32_t secondTry[12] = {0, 2, 3, 4, 5, 6, 5, 9, 10, 7, 8, 10};
 
   retVal = _selectSingleDrcCharacteristic(
       hUniDrcConfig, drcCharacteristicRequested, ppCandidatesPotential,
@@ -1668,7 +1668,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectDrcCharacteristic(
 static DRCDEC_SELECTION_PROCESS_RETURN _drcSetFinalSelection_peakValue0(
     DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected) {
-  int i;
+  int32_t i;
 
   for (i = 0; i < _drcdec_selection_getNumber(pCandidatesPotential); i++) {
     DRCDEC_SELECTION_DATA* pCandidate =
@@ -1688,7 +1688,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetFinalSelection_downmixId(
     HANDLE_SEL_PROC_INPUT hSelProcInput,
     DRCDEC_SELECTION** ppCandidatesPotential,
     DRCDEC_SELECTION** ppCandidatesSelected) {
-  int i, j;
+  int32_t i, j;
   DRCDEC_SELECTION_DATA* pCandidate = NULL;
   DRC_INSTRUCTIONS_UNI_DRC* pInst = NULL;
 
@@ -1717,8 +1717,8 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetFinalSelection_downmixId(
   return DRCDEC_SELECTION_PROCESS_NO_ERROR;
 }
 
-static int _crossSum(int value) {
-  int sum = 0;
+static int32_t _crossSum(int32_t value) {
+  int32_t sum = 0;
 
   while (value != 0) {
     if ((value & 1) == 1) {
@@ -1734,10 +1734,10 @@ static int _crossSum(int value) {
 static DRCDEC_SELECTION_PROCESS_RETURN _drcSetFinalSelection_effectTypes(
     DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected) {
-  int i;
-  int minNumEffects = 1000;
-  int numEffects = 0;
-  int effects = 0;
+  int32_t i;
+  int32_t minNumEffects = 1000;
+  int32_t numEffects = 0;
+  int32_t effects = 0;
   DRCDEC_SELECTION_DATA* pCandidate = NULL;
   DRC_INSTRUCTIONS_UNI_DRC* pInst = NULL;
 
@@ -1779,7 +1779,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetFinalSelection_effectTypes(
 static DRCDEC_SELECTION_PROCESS_RETURN _selectSmallestTargetLoudnessValueUpper(
     DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected) {
-  int i;
+  int32_t i;
   SCHAR minVal = 0x7F;
   SCHAR val = 0;
   DRCDEC_SELECTION_DATA* pCandidate = NULL;
@@ -1815,7 +1815,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetFinalSelection_targetLoudness(
     int32_t targetLoudness, DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected) {
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
-  int i;
+  int32_t i;
   DRCDEC_SELECTION_DATA* pCandidate = NULL;
 
   for (i = 0; i < _drcdec_selection_getNumber(pCandidatesPotential); i++) {
@@ -1866,7 +1866,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetFinalSelection_targetLoudness(
 static DRCDEC_SELECTION_PROCESS_RETURN _drcSetFinalSelection_peakValueLargest(
     DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected) {
-  int i;
+  int32_t i;
   int32_t largestPeakLevel = MINVAL_DBL;
   int32_t peakLevel = 0;
   DRCDEC_SELECTION_DATA* pCandidate = NULL;
@@ -1901,9 +1901,9 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetFinalSelection_peakValueLargest(
 static DRCDEC_SELECTION_PROCESS_RETURN _drcSetFinalSelection_drcSetId(
     DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected) {
-  int i;
-  int largestId = -1000;
-  int id = 0;
+  int32_t i;
+  int32_t largestId = -1000;
+  int32_t id = 0;
   DRCDEC_SELECTION_DATA* pCandidate = NULL;
   DRCDEC_SELECTION_DATA* pCandidateSelected = NULL;
 
@@ -1993,10 +1993,10 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetFinalSelection(
 static DRCDEC_SELECTION_PROCESS_RETURN _generateVirtualDrcSets(
     HANDLE_SEL_PROC_INPUT hSelProcInput, HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
     SEL_PROC_CODEC_MODE codecMode) {
-  int i;
-  int nMixes = hUniDrcConfig->downmixInstructionsCount + 1;
-  int index = hUniDrcConfig->drcInstructionsUniDrcCount;
-  int indexVirtual = -1;
+  int32_t i;
+  int32_t nMixes = hUniDrcConfig->downmixInstructionsCount + 1;
+  int32_t index = hUniDrcConfig->drcInstructionsUniDrcCount;
+  int32_t indexVirtual = -1;
   DRC_INSTRUCTIONS_UNI_DRC* pDrcInstruction =
       &(hUniDrcConfig->drcInstructionsUniDrc[index]);
 
@@ -2046,14 +2046,14 @@ static DRCDEC_SELECTION_PROCESS_RETURN _generateOutputInfo(
     DRCDEC_SELECTION_DATA* pSelectionData, SEL_PROC_CODEC_MODE codecMode) {
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
 
-  int i, j;
-  int hasDependend = 0;
-  int hasFading = 0;
-  int hasDucking = 0;
-  int selectedDrcSetIds;
-  int selectedDownmixIds;
+  int32_t i, j;
+  int32_t hasDependend = 0;
+  int32_t hasFading = 0;
+  int32_t hasDucking = 0;
+  int32_t selectedDrcSetIds;
+  int32_t selectedDownmixIds;
   int32_t mixingLevel = 0;
-  int albumMode = hSelProcInput->albumMode;
+  int32_t albumMode = hSelProcInput->albumMode;
   UCHAR* pDownmixIdRequested = hSelProcInput->downmixIdRequested;
   FIXP_SGL boost = hSelProcInput->boost;
   FIXP_SGL compress = hSelProcInput->compress;
@@ -2086,7 +2086,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _generateOutputInfo(
 
   /*dependent*/
   if (pSelectionData->pInst->dependsOnDrcSetPresent) {
-    int dependsOnDrcSetID = pSelectionData->pInst->dependsOnDrcSet;
+    int32_t dependsOnDrcSetID = pSelectionData->pInst->dependsOnDrcSet;
 
     for (i = 0; i < hUniDrcConfig->drcInstructionsCountInclVirtual; i++) {
       DRC_INSTRUCTIONS_UNI_DRC* pInst =
@@ -2218,7 +2218,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _generateOutputInfo(
 static DRCDEC_SELECTION_PROCESS_RETURN _selectDownmixMatrix(
     HANDLE_SEL_PROC_OUTPUT hSelProcOutput,
     HANDLE_UNI_DRC_CONFIG hUniDrcConfig) {
-  int i;
+  int32_t i;
   hSelProcOutput->baseChannelCount =
       hUniDrcConfig->channelLayout.baseChannelCount;
   hSelProcOutput->targetChannelCount =
@@ -2238,7 +2238,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectDownmixMatrix(
         hSelProcOutput->targetLayout = pDown->targetLayout;
 
         if (pDown->downmixCoefficientsPresent) {
-          int j, k;
+          int32_t j, k;
           int32_t downmixOffset = getDownmixOffset(
               pDown, hSelProcOutput->baseChannelCount); /* e = 1 */
 
@@ -2269,7 +2269,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetPreSelection(
     DRCDEC_SELECTION** ppCandidatesPotential,
     DRCDEC_SELECTION** ppCandidatesSelected, SEL_PROC_CODEC_MODE codecMode) {
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
-  int i, j;
+  int32_t i, j;
 
   for (i = 0; i < hSelProcInput->numDownmixIdRequests; i++) {
     for (j = 0; j < hUniDrcConfig->drcInstructionsCountInclVirtual; j++) {
@@ -2306,7 +2306,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _drcSetRequestSelection(
     DRCDEC_SELECTION** ppCandidatesPotential,
     DRCDEC_SELECTION** ppCandidatesSelected) {
   DRCDEC_SELECTION_PROCESS_RETURN retVal;
-  int i;
+  int32_t i;
 
   if (_drcdec_selection_getNumber(*ppCandidatesPotential) == 0) {
     retVal = DRCDEC_SELECTION_PROCESS_NOT_OK;
@@ -2383,10 +2383,10 @@ static DRCDEC_SELECTION_PROCESS_RETURN _dynamicRangeMeasurement(
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, DRC_INSTRUCTIONS_UNI_DRC* pInst,
     UCHAR downmixIdRequested,
     DYN_RANGE_MEASUREMENT_REQUEST_TYPE dynamicRangeMeasurementType,
-    int albumMode, int* pPeakToAveragePresent, int32_t* pPeakToAverage) {
-  int i;
+    int32_t albumMode, int32_t* pPeakToAveragePresent, int32_t* pPeakToAverage) {
+  int32_t i;
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
-  int drcSetId = fMax(0, pInst->drcSetId);
+  int32_t drcSetId = fMax(0, pInst->drcSetId);
 
   *pPeakToAveragePresent = 0;
 
@@ -2449,15 +2449,15 @@ static DRCDEC_SELECTION_DATA* _drcdec_selection_add(
   }
 }
 
-static int _drcdec_selection_clear(DRCDEC_SELECTION* pSelection) {
+static int32_t _drcdec_selection_clear(DRCDEC_SELECTION* pSelection) {
   return pSelection->numData = 0;
 }
 
-static int _drcdec_selection_getNumber(DRCDEC_SELECTION* pSelection) {
+static int32_t _drcdec_selection_getNumber(DRCDEC_SELECTION* pSelection) {
   return pSelection->numData;
 }
 
-static int _drcdec_selection_setNumber(DRCDEC_SELECTION* pSelection, int num) {
+static int32_t _drcdec_selection_setNumber(DRCDEC_SELECTION* pSelection, int32_t num) {
   if (num >= 0 && num < pSelection->numData) {
     return pSelection->numData = num;
   } else {
@@ -2466,7 +2466,7 @@ static int _drcdec_selection_setNumber(DRCDEC_SELECTION* pSelection, int num) {
 }
 
 static DRCDEC_SELECTION_DATA* _drcdec_selection_getAt(
-    DRCDEC_SELECTION* pSelection, int at) {
+    DRCDEC_SELECTION* pSelection, int32_t at) {
   if (at >= 0 && at < (12 + 1 + 6)) {
     return &(pSelection->data[at]);
   } else {
@@ -2474,7 +2474,7 @@ static DRCDEC_SELECTION_DATA* _drcdec_selection_getAt(
   }
 }
 
-static int _swapSelectionAndClear(DRCDEC_SELECTION** ppCandidatesPotential,
+static int32_t _swapSelectionAndClear(DRCDEC_SELECTION** ppCandidatesPotential,
                                   DRCDEC_SELECTION** ppCandidatesSelected) {
   DRCDEC_SELECTION* pTmp = *ppCandidatesPotential;
   *ppCandidatesPotential = *ppCandidatesSelected;
@@ -2483,7 +2483,7 @@ static int _swapSelectionAndClear(DRCDEC_SELECTION** ppCandidatesPotential,
   return 0;
 }
 
-static int _swapSelection(DRCDEC_SELECTION** ppCandidatesPotential,
+static int32_t _swapSelection(DRCDEC_SELECTION** ppCandidatesPotential,
                           DRCDEC_SELECTION** ppCandidatesSelected) {
   DRCDEC_SELECTION* pTmp = *ppCandidatesPotential;
   *ppCandidatesPotential = *ppCandidatesSelected;
@@ -2494,10 +2494,10 @@ static int _swapSelection(DRCDEC_SELECTION** ppCandidatesPotential,
 /*******************************************/
 
 static LOUDNESS_INFO* _getLoudnessInfoStructure(
-    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int drcSetId, int downmixId,
-    int albumMode) {
-  int i, j;
-  int count;
+    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int32_t drcSetId, int32_t downmixId,
+    int32_t albumMode) {
+  int32_t i, j;
+  int32_t count;
 
   LOUDNESS_INFO* pLoudnessInfo = NULL;
 
@@ -2525,8 +2525,8 @@ static LOUDNESS_INFO* _getLoudnessInfoStructure(
 }
 
 static LOUDNESS_INFO* _getApplicableLoudnessInfoStructure(
-    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int drcSetId,
-    int downmixIdRequested, int albumMode) {
+    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int32_t drcSetId,
+    int32_t downmixIdRequested, int32_t albumMode) {
   LOUDNESS_INFO* pLoudnessInfo = NULL;
 
   /* default value */
@@ -2581,7 +2581,7 @@ static LOUDNESS_INFO* _getApplicableLoudnessInfoStructure(
 
 typedef struct {
   int32_t value;
-  int order;
+  int32_t order;
 } VALUE_ORDER;
 
 void _initValueOrder(VALUE_ORDER* pValue) {
@@ -2604,11 +2604,11 @@ enum {
 };
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getMethodValue(
-    VALUE_ORDER* pValueOrder, int32_t value, int measurementSystem,
-    int measurementSystemRequested) {
-  const int rows = 11;
-  const int columns = 12;
-  const int pOrdering[rows][columns] = {
+    VALUE_ORDER* pValueOrder, int32_t value, int32_t measurementSystem,
+    int32_t measurementSystemRequested) {
+  const int32_t rows = 11;
+  const int32_t columns = 12;
+  const int32_t pOrdering[rows][columns] = {
       {0, 0, 8, 0, 1, 3, 0, 5, 6, 7, 4, 2}, /* default = bonus1770 */
       {0, 0, 8, 0, 1, 3, 0, 5, 6, 7, 4, 2}, /* bonus1770 */
       {0, 0, 1, 0, 8, 5, 0, 2, 3, 4, 6, 7}, /* bonusUser */
@@ -2640,15 +2640,15 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getMethodValue(
 /*******************************************/
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getLoudness(
-    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int albumMode,
+    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int32_t albumMode,
     METHOD_DEFINITION_REQUEST measurementMethodRequested,
     MEASUREMENT_SYSTEM_REQUEST measurementSystemRequested,
     int32_t targetLoudness, /* e = 7 */
-    int drcSetId, int downmixIdRequested,
+    int32_t drcSetId, int32_t downmixIdRequested,
     int32_t* pLoudnessNormalizationGain, /* e = 7 */
     int32_t* pLoudness)                  /* e = 7 */
 {
-  int index;
+  int32_t index;
 
   LOUDNESS_INFO* pLoudnessInfo = NULL;
   VALUE_ORDER valueOrder;
@@ -2730,10 +2730,10 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getLoudness(
 
 /*******************************************/
 
-static int _truePeakLevelIsPresent(HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet,
-                                   int drcSetId, int downmixId, int albumMode) {
-  int i;
-  int count;
+static int32_t _truePeakLevelIsPresent(HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet,
+                                   int32_t drcSetId, int32_t downmixId, int32_t albumMode) {
+  int32_t i;
+  int32_t count;
   LOUDNESS_INFO* pLoudnessInfo = NULL;
 
   if (albumMode) {
@@ -2755,10 +2755,10 @@ static int _truePeakLevelIsPresent(HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet,
 }
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getTruePeakLevel(
-    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int drcSetId, int downmixId,
-    int albumMode, int32_t* pTruePeakLevel) {
-  int i;
-  int count;
+    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int32_t drcSetId, int32_t downmixId,
+    int32_t albumMode, int32_t* pTruePeakLevel) {
+  int32_t i;
+  int32_t count;
   LOUDNESS_INFO* pLoudnessInfo = NULL;
 
   if (albumMode) {
@@ -2782,11 +2782,11 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getTruePeakLevel(
   return DRCDEC_SELECTION_PROCESS_NOT_OK;
 }
 
-static int _samplePeakLevelIsPresent(HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet,
-                                     int drcSetId, int downmixId,
-                                     int albumMode) {
-  int i;
-  int count;
+static int32_t _samplePeakLevelIsPresent(HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet,
+                                     int32_t drcSetId, int32_t downmixId,
+                                     int32_t albumMode) {
+  int32_t i;
+  int32_t count;
   LOUDNESS_INFO* pLoudnessInfo = NULL;
 
   if (albumMode) {
@@ -2808,11 +2808,11 @@ static int _samplePeakLevelIsPresent(HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet,
 }
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getSamplePeakLevel(
-    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int drcSetId, int downmixId,
-    int albumMode, int32_t* pSamplePeakLevel /* e = 7 */
+    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int32_t drcSetId, int32_t downmixId,
+    int32_t albumMode, int32_t* pSamplePeakLevel /* e = 7 */
 ) {
-  int i;
-  int count;
+  int32_t i;
+  int32_t count;
   LOUDNESS_INFO* pLoudnessInfo = NULL;
 
   if (albumMode) {
@@ -2836,9 +2836,9 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getSamplePeakLevel(
   return DRCDEC_SELECTION_PROCESS_NOT_OK;
 }
 
-static int _limiterPeakTargetIsPresent(
-    DRC_INSTRUCTIONS_UNI_DRC* pDrcInstruction, int drcSetId, int downmixId) {
-  int i;
+static int32_t _limiterPeakTargetIsPresent(
+    DRC_INSTRUCTIONS_UNI_DRC* pDrcInstruction, int32_t drcSetId, int32_t downmixId) {
+  int32_t i;
 
   if (pDrcInstruction->limiterPeakTargetPresent) {
     if ((pDrcInstruction->downmixId[0] == downmixId) ||
@@ -2857,9 +2857,9 @@ static int _limiterPeakTargetIsPresent(
 }
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getLimiterPeakTarget(
-    DRC_INSTRUCTIONS_UNI_DRC* pDrcInstruction, int drcSetId, int downmixId,
+    DRC_INSTRUCTIONS_UNI_DRC* pDrcInstruction, int32_t drcSetId, int32_t downmixId,
     int32_t* pLimiterPeakTarget) {
-  int i;
+  int32_t i;
 
   if (pDrcInstruction->limiterPeakTargetPresent) {
     if ((pDrcInstruction->downmixId[0] == downmixId) ||
@@ -2881,9 +2881,9 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getLimiterPeakTarget(
   return DRCDEC_SELECTION_PROCESS_NOT_OK;
 }
 
-static int _downmixCoefficientsArePresent(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
-                                          int downmixId, int* pIndex) {
-  int i;
+static int32_t _downmixCoefficientsArePresent(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
+                                          int32_t downmixId, int32_t* pIndex) {
+  int32_t i;
   *pIndex = -1;
 
   for (i = 0; i < hUniDrcConfig->downmixInstructionsCount; i++) {
@@ -2903,21 +2903,21 @@ static int _downmixCoefficientsArePresent(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
 static DRCDEC_SELECTION_PROCESS_RETURN _getSignalPeakLevel(
     HANDLE_SEL_PROC_INPUT hSelProcInput, HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, DRC_INSTRUCTIONS_UNI_DRC* pInst,
-    int downmixIdRequested, int* explicitPeakInformationPresent,
+    int32_t downmixIdRequested, int32_t* explicitPeakInformationPresent,
     int32_t* signalPeakLevelOut, /* e = 7 */
     SEL_PROC_CODEC_MODE codecMode
 
 ) {
   DRCDEC_SELECTION_PROCESS_RETURN retVal = DRCDEC_SELECTION_PROCESS_NO_ERROR;
 
-  int albumMode = hSelProcInput->albumMode;
+  int32_t albumMode = hSelProcInput->albumMode;
 
   int32_t signalPeakLevelTmp = (int32_t)0;
   int32_t signalPeakLevel = int32_t(0);
 
-  int dmxId = downmixIdRequested;
+  int32_t dmxId = downmixIdRequested;
 
-  int drcSetId = pInst->drcSetId;
+  int32_t drcSetId = pInst->drcSetId;
 
   if (drcSetId < 0) {
     drcSetId = 0;
@@ -2948,7 +2948,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getSignalPeakLevel(
     retVal = _getLimiterPeakTarget(pInst, drcSetId, dmxId, &signalPeakLevel);
     if (retVal) return (retVal);
   } else if (dmxId != 0) {
-    int downmixInstructionIndex = 0;
+    int32_t downmixInstructionIndex = 0;
     int32_t downmixPeakLevelDB = 0;
 
     *explicitPeakInformationPresent = 0;
@@ -2958,11 +2958,11 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getSignalPeakLevel(
     if (_downmixCoefficientsArePresent(hUniDrcConfig, dmxId,
                                        &downmixInstructionIndex)) {
       int32_t dB_m;
-      int dB_e;
+      int32_t dB_e;
       int32_t coeff;
       int32_t sum, maxSum; /* e = 7, so it is possible to sum up up to 32
                                downmix coefficients (with e = 2) */
-      int i, j;
+      int32_t i, j;
       DOWNMIX_INSTRUCTIONS* pDown =
           &(hUniDrcConfig->downmixInstructions[downmixInstructionIndex]);
       int32_t downmixOffset = getDownmixOffset(
@@ -3027,9 +3027,9 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getSignalPeakLevel(
 static DRCDEC_SELECTION_PROCESS_RETURN _extractLoudnessPeakToAverageValue(
     LOUDNESS_INFO* loudnessInfo,
     DYN_RANGE_MEASUREMENT_REQUEST_TYPE dynamicRangeMeasurementType,
-    int* pLoudnessPeakToAverageValuePresent,
+    int32_t* pLoudnessPeakToAverageValuePresent,
     int32_t* pLoudnessPeakToAverageValue) {
-  int i;
+  int32_t i;
 
   VALUE_ORDER valueOrderLoudness;
   VALUE_ORDER valueOrderPeakLoudness;
@@ -3083,7 +3083,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectAlbumLoudness(
     HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet,
     DRCDEC_SELECTION* pCandidatesPotential,
     DRCDEC_SELECTION* pCandidatesSelected) {
-  int i, j;
+  int32_t i, j;
 
   for (i = 0; i < _drcdec_selection_getNumber(pCandidatesPotential); i++) {
     DRCDEC_SELECTION_DATA* pCandidate =
@@ -3104,10 +3104,10 @@ static DRCDEC_SELECTION_PROCESS_RETURN _selectAlbumLoudness(
 
 /*******************************************/
 
-static int _findMethodDefinition(LOUDNESS_INFO* pLoudnessInfo,
-                                 int methodDefinition, int startIndex) {
-  int i;
-  int index = -1;
+static int32_t _findMethodDefinition(LOUDNESS_INFO* pLoudnessInfo,
+                                 int32_t methodDefinition, int32_t startIndex) {
+  int32_t i;
+  int32_t index = -1;
 
   for (i = startIndex; i < pLoudnessInfo->measurementCount; i++) {
     if (pLoudnessInfo->loudnessMeasurement[i].methodDefinition ==
@@ -3123,12 +3123,12 @@ static int _findMethodDefinition(LOUDNESS_INFO* pLoudnessInfo,
 /*******************************************/
 
 static DRCDEC_SELECTION_PROCESS_RETURN _getMixingLevel(
-    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int downmixIdRequested,
-    int drcSetIdRequested, int albumMode, int32_t* pMixingLevel) {
+    HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet, int32_t downmixIdRequested,
+    int32_t drcSetIdRequested, int32_t albumMode, int32_t* pMixingLevel) {
   const int32_t mixingLevelDefault = FL2FXCONST_DBL(85.0f / (float)(1 << 7));
 
-  int i;
-  int count;
+  int32_t i;
+  int32_t count;
 
   LOUDNESS_INFO* pLoudnessInfo = NULL;
 
@@ -3150,7 +3150,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _getMixingLevel(
     if ((drcSetIdRequested == pLoudnessInfo[i].drcSetId) &&
         ((downmixIdRequested == pLoudnessInfo[i].downmixId) ||
          (DOWNMIX_ID_ANY_DOWNMIX == pLoudnessInfo[i].downmixId))) {
-      int index = _findMethodDefinition(&pLoudnessInfo[i], MD_MIXING_LEVEL, 0);
+      int32_t index = _findMethodDefinition(&pLoudnessInfo[i], MD_MIXING_LEVEL, 0);
 
       if (index >= 0) {
         *pMixingLevel = pLoudnessInfo[i].loudnessMeasurement[index].methodValue;

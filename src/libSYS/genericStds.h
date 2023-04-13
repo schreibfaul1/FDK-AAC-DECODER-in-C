@@ -108,6 +108,7 @@ amm-info@iis.fraunhofer.de
 #if !defined(GENERICSTDS_H)
 #define GENERICSTDS_H
 
+#include <stdint.h>
 #include "machine_type.h"
 
 #ifndef M_PI
@@ -158,19 +159,19 @@ typedef enum {
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define H_ALLOC_MEM(name, type) \
-  type *Get##name(int n = 0);   \
+  type *Get##name(int32_t n = 0);   \
   void Free##name(type **p);    \
-  UINT GetRequiredMem##name(void);
+  uint32_t GetRequiredMem##name(void);
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define H_ALLOC_MEM_OVERLAY(name, type) \
-  type *Get##name(int n = 0);           \
+  type *Get##name(int32_t n = 0);           \
   void Free##name(type **p);            \
-  UINT GetRequiredMem##name(void);
+  uint32_t GetRequiredMem##name(void);
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define C_ALLOC_MEM(name, type, num)               \
-  type *Get##name(int n) {                         \
+  type *Get##name(int32_t n) {                         \
     FDK_ASSERT((n) == 0);                          \
     return ((type *)FDKcalloc(num, sizeof(type))); \
   }                                                \
@@ -180,13 +181,13 @@ typedef enum {
       *p = NULL;                                   \
     }                                              \
   }                                                \
-  UINT GetRequiredMem##name(void) {                \
+  uint32_t GetRequiredMem##name(void) {                \
     return ALGN_SIZE_EXTRES((num) * sizeof(type)); \
   }
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define C_ALLOC_MEM2(name, type, n1, n2)                 \
-  type *Get##name(int n) {                               \
+  type *Get##name(int32_t n) {                               \
     FDK_ASSERT((n) < (n2));                              \
     return ((type *)FDKcalloc(n1, sizeof(type)));        \
   }                                                      \
@@ -196,13 +197,13 @@ typedef enum {
       *p = NULL;                                         \
     }                                                    \
   }                                                      \
-  UINT GetRequiredMem##name(void) {                      \
+  uint32_t GetRequiredMem##name(void) {                      \
     return ALGN_SIZE_EXTRES((n1) * sizeof(type)) * (n2); \
   }
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define C_AALLOC_MEM(name, type, num)                                  \
-  type *Get##name(int n) {                                             \
+  type *Get##name(int32_t n) {                                             \
     type *ap;                                                          \
     FDK_ASSERT((n) == 0);                                              \
     ap = ((type *)FDKaalloc((num) * sizeof(type), ALIGNMENT_DEFAULT)); \
@@ -214,14 +215,14 @@ typedef enum {
       *p = NULL;                                                       \
     }                                                                  \
   }                                                                    \
-  UINT GetRequiredMem##name(void) {                                    \
+  uint32_t GetRequiredMem##name(void) {                                    \
     return ALGN_SIZE_EXTRES((num) * sizeof(type) + ALIGNMENT_DEFAULT + \
                             sizeof(void *));                           \
   }
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define C_AALLOC_MEM2(name, type, n1, n2)                             \
-  type *Get##name(int n) {                                            \
+  type *Get##name(int32_t n) {                                            \
     type *ap;                                                         \
     FDK_ASSERT((n) < (n2));                                           \
     ap = ((type *)FDKaalloc((n1) * sizeof(type), ALIGNMENT_DEFAULT)); \
@@ -233,7 +234,7 @@ typedef enum {
       *p = NULL;                                                      \
     }                                                                 \
   }                                                                   \
-  UINT GetRequiredMem##name(void) {                                   \
+  uint32_t GetRequiredMem##name(void) {                                   \
     return ALGN_SIZE_EXTRES((n1) * sizeof(type) + ALIGNMENT_DEFAULT + \
                             sizeof(void *)) *                         \
            (n2);                                                      \
@@ -241,7 +242,7 @@ typedef enum {
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define C_ALLOC_MEM_L(name, type, num, s)               \
-  type *Get##name(int n) {                              \
+  type *Get##name(int32_t n) {                              \
     FDK_ASSERT((n) == 0);                               \
     return ((type *)FDKcalloc_L(num, sizeof(type), s)); \
   }                                                     \
@@ -251,13 +252,13 @@ typedef enum {
       *p = NULL;                                        \
     }                                                   \
   }                                                     \
-  UINT GetRequiredMem##name(void) {                     \
+  uint32_t GetRequiredMem##name(void) {                     \
     return ALGN_SIZE_EXTRES((num) * sizeof(type));      \
   }
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define C_ALLOC_MEM2_L(name, type, n1, n2, s)            \
-  type *Get##name(int n) {                               \
+  type *Get##name(int32_t n) {                               \
     FDK_ASSERT((n) < (n2));                              \
     return (type *)FDKcalloc_L(n1, sizeof(type), s);     \
   }                                                      \
@@ -267,13 +268,13 @@ typedef enum {
       *p = NULL;                                         \
     }                                                    \
   }                                                      \
-  UINT GetRequiredMem##name(void) {                      \
+  uint32_t GetRequiredMem##name(void) {                      \
     return ALGN_SIZE_EXTRES((n1) * sizeof(type)) * (n2); \
   }
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define C_AALLOC_MEM_L(name, type, num, s)                                  \
-  type *Get##name(int n) {                                                  \
+  type *Get##name(int32_t n) {                                                  \
     type *ap;                                                               \
     FDK_ASSERT((n) == 0);                                                   \
     ap = ((type *)FDKaalloc_L((num) * sizeof(type), ALIGNMENT_DEFAULT, s)); \
@@ -285,14 +286,14 @@ typedef enum {
       *p = NULL;                                                            \
     }                                                                       \
   }                                                                         \
-  UINT GetRequiredMem##name(void) {                                         \
+  uint32_t GetRequiredMem##name(void) {                                         \
     return ALGN_SIZE_EXTRES((num) * sizeof(type) + ALIGNMENT_DEFAULT +      \
                             sizeof(void *));                                \
   }
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define C_AALLOC_MEM2_L(name, type, n1, n2, s)                             \
-  type *Get##name(int n) {                                                 \
+  type *Get##name(int32_t n) {                                                 \
     type *ap;                                                              \
     FDK_ASSERT((n) < (n2));                                                \
     ap = ((type *)FDKaalloc_L((n1) * sizeof(type), ALIGNMENT_DEFAULT, s)); \
@@ -304,7 +305,7 @@ typedef enum {
       *p = NULL;                                                           \
     }                                                                      \
   }                                                                        \
-  UINT GetRequiredMem##name(void) {                                        \
+  uint32_t GetRequiredMem##name(void) {                                        \
     return ALGN_SIZE_EXTRES((n1) * sizeof(type) + ALIGNMENT_DEFAULT +      \
                             sizeof(void *)) *                              \
            (n2);                                                           \
@@ -387,22 +388,22 @@ void FDKprintf(const char *szFmt, ...);
 void FDKprintfErr(const char *szFmt, ...);
 
 /** Wrapper for <stdio.h>'s getchar(). */
-int FDKgetchar(void);
+int32_t FDKgetchar(void);
 
-INT FDKfprintf(void *stream, const char *format, ...);
-INT FDKsprintf(char *str, const char *format, ...);
+int32_t FDKfprintf(void *stream, const char *format, ...);
+int32_t FDKsprintf(char *str, const char *format, ...);
 
-char *FDKstrchr(char *s, INT c);
+char *FDKstrchr(char *s, int32_t c);
 const char *FDKstrstr(const char *haystack, const char *needle);
 char *FDKstrcpy(char *dest, const char *src);
-char *FDKstrncpy(char *dest, const char *src, const UINT n);
+char *FDKstrncpy(char *dest, const char *src, const uint32_t n);
 
 #define FDK_MAX_OVERLAYS 8 /**< Maximum number of memory overlays. */
 
-void *FDKcalloc(const UINT n, const UINT size);
-void *FDKcallocExt(const UINT n, const UINT size, const UCHAR alignment);
+void *FDKcalloc(const uint32_t n, const uint32_t size);
+void *FDKcallocExt(const uint32_t n, const uint32_t size, const UCHAR alignment);
 
-void *FDKmalloc(const UINT size);
+void *FDKmalloc(const uint32_t size);
 void FDKfree(void *ptr);
 
 /**
@@ -413,7 +414,7 @@ void FDKfree(void *ptr);
  * \param alignment  Alignment of requested memory in bytes.
  * \return           Pointer to allocated memory.
  */
-void *FDKaalloc(const UINT size, const UINT alignment);
+void *FDKaalloc(const uint32_t size, const uint32_t alignment);
 
 /**
  *  Free an aligned memory area.
@@ -436,13 +437,13 @@ void FDKafree(void *ptr);
  * \param s     Memory section.
  * \return      See MSDN documentation on calloc().
  */
-void *FDKcalloc_L(const UINT n, const UINT size, MEMORY_SECTION s);
+void *FDKcalloc_L(const uint32_t n, const uint32_t size, MEMORY_SECTION s);
 
 /**
  *  Allocate aligned memory in a specific memory section.
  *  See FDKcalloc_L() description for details - same applies here.
  */
-void *FDKaalloc_L(const UINT size, const UINT alignment, MEMORY_SECTION s);
+void *FDKaalloc_L(const uint32_t size, const uint32_t alignment, MEMORY_SECTION s);
 
 /**
  *  Free memory that was allocated in a specific memory section.
@@ -462,7 +463,7 @@ void FDKafree_L(void *ptr);
  * use. The function arguments correspond to the standard memcpy(). Please see
  * MSDN documentation for details on how to use it.
  */
-void FDKmemcpy(void *dst, const void *src, const UINT size);
+void FDKmemcpy(void *dst, const void *src, const uint32_t size);
 
 /**
  * Copy memory. Source and destination memory are allowed to overlap.
@@ -472,7 +473,7 @@ void FDKmemcpy(void *dst, const void *src, const UINT size);
  * use. The function arguments correspond to the standard memmove(). Please see
  * MSDN documentation for details on how to use it.
  */
-void FDKmemmove(void *dst, const void *src, const UINT size);
+void FDKmemmove(void *dst, const void *src, const uint32_t size);
 
 /**
  * Clear memory.
@@ -482,27 +483,27 @@ void FDKmemmove(void *dst, const void *src, const UINT size);
  * use. The function arguments correspond to the standard memclear(). Please see
  * MSDN documentation for details on how to use it.
  */
-void FDKmemclear(void *memPtr, const UINT size);
+void FDKmemclear(void *memPtr, const uint32_t size);
 
 /**
  * Fill memory with values.
  * The function arguments correspond to the standard memset(). Please see MSDN
  * documentation for details on how to use it.
  */
-void FDKmemset(void *memPtr, const INT value, const UINT size);
+void FDKmemset(void *memPtr, const int32_t value, const uint32_t size);
 
 /* Compare function wrappers */
-INT FDKmemcmp(const void *s1, const void *s2, const UINT size);
-INT FDKstrcmp(const char *s1, const char *s2);
-INT FDKstrncmp(const char *s1, const char *s2, const UINT size);
+int32_t FDKmemcmp(const void *s1, const void *s2, const uint32_t size);
+int32_t FDKstrcmp(const char *s1, const char *s2);
+int32_t FDKstrncmp(const char *s1, const char *s2, const uint32_t size);
 
-UINT FDKstrlen(const char *s);
+uint32_t FDKstrlen(const char *s);
 
 #define FDKmax(a, b) ((a) > (b) ? (a) : (b))
 #define FDKmin(a, b) ((a) < (b) ? (a) : (b))
 
-#define FDK_INT_MAX ((INT)0x7FFFFFFF)
-#define FDK_INT_MIN ((INT)0x80000000)
+#define FDK_INT_MAX ((int32_t)0x7FFFFFFF)
+#define FDK_INT_MIN ((int32_t)0x80000000)
 
 /* FILE I/O */
 
@@ -511,7 +512,7 @@ UINT FDKstrlen(const char *s);
  *
  * \return  1 if platform is little endian, non-1 if platform is big endian.
  */
-int IS_LITTLE_ENDIAN(void);
+int32_t IS_LITTLE_ENDIAN(void);
 
 /*!
  *  Convert input value to little endian format.
@@ -519,37 +520,37 @@ int IS_LITTLE_ENDIAN(void);
  * \param val  Value to be converted. It may be in both big or little endian.
  * \return     Value in little endian format.
  */
-UINT TO_LITTLE_ENDIAN(UINT val);
+uint32_t TO_LITTLE_ENDIAN(uint32_t val);
 
 /*!
  * \fn     FDKFILE *FDKfopen(const char *filename, const char *mode);
  *         Standard fopen() wrapper.
- * \fn     INT FDKfclose(FDKFILE *FP);
+ * \fn     int32_t FDKfclose(FDKFILE *FP);
  *         Standard fclose() wrapper.
- * \fn     INT FDKfseek(FDKFILE *FP, LONG OFFSET, int WHENCE);
+ * \fn     int32_t FDKfseek(FDKFILE *FP, LONG OFFSET, int32_t WHENCE);
  *         Standard fseek() wrapper.
- * \fn     INT FDKftell(FDKFILE *FP);
+ * \fn     int32_t FDKftell(FDKFILE *FP);
  *         Standard ftell() wrapper.
- * \fn     INT FDKfflush(FDKFILE *fp);
+ * \fn     int32_t FDKfflush(FDKFILE *fp);
  *         Standard fflush() wrapper.
- * \fn     UINT FDKfwrite(const void *ptrf, INT size, UINT nmemb, FDKFILE *fp);
+ * \fn     uint32_t FDKfwrite(const void *ptrf, int32_t size, uint32_t nmemb, FDKFILE *fp);
  *         Standard fwrite() wrapper.
- * \fn     UINT FDKfread(void *dst, INT size, UINT nmemb, FDKFILE *fp);
+ * \fn     uint32_t FDKfread(void *dst, int32_t size, uint32_t nmemb, FDKFILE *fp);
  *         Standard fread() wrapper.
  */
 typedef void FDKFILE;
-extern const INT FDKSEEK_SET, FDKSEEK_CUR, FDKSEEK_END;
+extern const int32_t FDKSEEK_SET, FDKSEEK_CUR, FDKSEEK_END;
 
 FDKFILE *FDKfopen(const char *filename, const char *mode);
-INT FDKfclose(FDKFILE *FP);
-INT FDKfseek(FDKFILE *FP, LONG OFFSET, int WHENCE);
-INT FDKftell(FDKFILE *FP);
-INT FDKfflush(FDKFILE *fp);
-UINT FDKfwrite(const void *ptrf, INT size, UINT nmemb, FDKFILE *fp);
-UINT FDKfread(void *dst, INT size, UINT nmemb, FDKFILE *fp);
-char *FDKfgets(void *dst, INT size, FDKFILE *fp);
+int32_t FDKfclose(FDKFILE *FP);
+int32_t FDKfseek(FDKFILE *FP, LONG OFFSET, int32_t WHENCE);
+int32_t FDKftell(FDKFILE *FP);
+int32_t FDKfflush(FDKFILE *fp);
+uint32_t FDKfwrite(const void *ptrf, int32_t size, uint32_t nmemb, FDKFILE *fp);
+uint32_t FDKfread(void *dst, int32_t size, uint32_t nmemb, FDKFILE *fp);
+char *FDKfgets(void *dst, int32_t size, FDKFILE *fp);
 void FDKrewind(FDKFILE *fp);
-INT FDKfeof(FDKFILE *fp);
+int32_t FDKfeof(FDKFILE *fp);
 
 /**
  * \brief        Write each member in little endian order. Convert automatically
@@ -560,7 +561,7 @@ INT FDKfeof(FDKFILE *fp);
  * \param fp     File pointer of type FDKFILE.
  * \return       Number of items read on success and fread() error on failure.
  */
-UINT FDKfwrite_EL(const void *ptrf, INT size, UINT nmemb, FDKFILE *fp);
+uint32_t FDKfwrite_EL(const void *ptrf, int32_t size, uint32_t nmemb, FDKFILE *fp);
 
 /**
  * \brief        Read variable of size "size" as little endian. Convert
@@ -572,7 +573,7 @@ UINT FDKfwrite_EL(const void *ptrf, INT size, UINT nmemb, FDKFILE *fp);
  * \param fp     File pointer of type FDKFILE.
  * \return       Number of items read on success and fread() error on failure.
  */
-UINT FDKfread_EL(void *dst, INT size, UINT nmemb, FDKFILE *fp);
+uint32_t FDKfread_EL(void *dst, int32_t size, uint32_t nmemb, FDKFILE *fp);
 
 /**
  * \brief  Print FDK software disclaimer.

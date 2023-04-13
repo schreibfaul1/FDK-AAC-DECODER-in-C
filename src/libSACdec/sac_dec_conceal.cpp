@@ -103,7 +103,7 @@ amm-info@iis.fraunhofer.de
 #include "sac_dec_conceal.h"
 
 void SpatialDecConcealment_Init(SpatialDecConcealmentInfo *info,
-                                const UINT resetFlags) {
+                                const uint32_t resetFlags) {
   FDK_ASSERT(info != NULL);
 
   if (resetFlags & MPEGS_CONCEAL_RESET_STATE) {
@@ -127,17 +127,17 @@ void SpatialDecConcealment_Init(SpatialDecConcealmentInfo *info,
   return;
 }
 
-int SpatialDecConcealment_Apply(
+int32_t SpatialDecConcealment_Apply(
     SpatialDecConcealmentInfo *info,
     const SCHAR (*cmpIdxData)[MAX_PARAMETER_BANDS], SCHAR **diffIdxData,
     SCHAR *
         idxPrev, /* char
                     idxPrev[SPATIALDEC_MAX_NUM_OTT][SPATIALDEC_MAX_PARAMETER_BANDS],
                   */
-    SCHAR *bsXXXDataMode, const int startBand, const int stopBand,
-    const SCHAR defaultValue, const int paramType, const int numParamSets) {
-  int appliedProcessing = 0;
-  int band, dataMode = -1;
+    SCHAR *bsXXXDataMode, const int32_t startBand, const int32_t stopBand,
+    const SCHAR defaultValue, const int32_t paramType, const int32_t numParamSets) {
+  int32_t appliedProcessing = 0;
+  int32_t band, dataMode = -1;
 
   FDK_ASSERT(info != NULL);
   FDK_ASSERT(cmpIdxData != NULL);
@@ -200,7 +200,7 @@ int SpatialDecConcealment_Apply(
   }
 
   if (dataMode >= 0) {
-    int i;
+    int32_t i;
     for (i = 0; i < numParamSets; i += 1) {
       bsXXXDataMode[i] = dataMode;
       if (diffIdxData != NULL) {
@@ -215,7 +215,7 @@ int SpatialDecConcealment_Apply(
 }
 
 void SpatialDecConcealment_UpdateState(SpatialDecConcealmentInfo *info,
-                                       const int frameOk) {
+                                       const int32_t frameOk) {
   FDK_ASSERT(info != NULL);
 
   if (frameOk) {
@@ -309,7 +309,7 @@ void SpatialDecConcealment_UpdateState(SpatialDecConcealmentInfo *info,
 
 SACDEC_ERROR SpatialDecConcealment_SetParam(SpatialDecConcealmentInfo *self,
                                             const SAC_DEC_CONCEAL_PARAM param,
-                                            const INT value) {
+                                            const int32_t value) {
   SACDEC_ERROR err = MPS_OK;
 
   switch (param) {
@@ -337,7 +337,7 @@ SACDEC_ERROR SpatialDecConcealment_SetParam(SpatialDecConcealmentInfo *self,
       }
       if (self != NULL) {
         /* store parameter value */
-        self->concealParams.numKeepFrames = (UINT)value;
+        self->concealParams.numKeepFrames = (uint32_t)value;
       } else {
         err = MPS_INVALID_HANDLE;
         goto bail;
@@ -350,7 +350,7 @@ SACDEC_ERROR SpatialDecConcealment_SetParam(SpatialDecConcealmentInfo *self,
       }
       if (self != NULL) {
         /* store parameter value */
-        self->concealParams.numFadeOutFrames = (UINT)value;
+        self->concealParams.numFadeOutFrames = (uint32_t)value;
       } else {
         err = MPS_INVALID_HANDLE;
         goto bail;
@@ -363,7 +363,7 @@ SACDEC_ERROR SpatialDecConcealment_SetParam(SpatialDecConcealmentInfo *self,
       }
       if (self != NULL) {
         /* store parameter value */
-        self->concealParams.numFadeInFrames = (UINT)value;
+        self->concealParams.numFadeInFrames = (uint32_t)value;
       } else {
         err = MPS_INVALID_HANDLE;
         goto bail;
@@ -376,7 +376,7 @@ SACDEC_ERROR SpatialDecConcealment_SetParam(SpatialDecConcealmentInfo *self,
       }
       if (self != NULL) {
         /* store parameter value */
-        self->concealParams.numReleaseFrames = (UINT)value;
+        self->concealParams.numReleaseFrames = (uint32_t)value;
       } else {
         err = MPS_INVALID_HANDLE;
         goto bail;

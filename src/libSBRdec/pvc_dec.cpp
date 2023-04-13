@@ -392,11 +392,11 @@ static const SCHAR g_a_scalingCoef_mode1[PVC_NBLOW + 1] = {
 static const SCHAR g_a_scalingCoef_mode2[PVC_NBLOW + 1] = {
     0, 0, 1, 7}; /* { 7, 7, 6, 0 }; Q scaling */
 
-int pvcInitFrame(PVC_STATIC_DATA *pPvcStaticData,
+int32_t pvcInitFrame(PVC_STATIC_DATA *pPvcStaticData,
                  PVC_DYNAMIC_DATA *pPvcDynamicData, const UCHAR pvcMode,
-                 const UCHAR ns, const int RATE, const int kx,
-                 const int pvcBorder0, const UCHAR *pPvcID) {
-  int lbw, hbw, i, temp;
+                 const UCHAR ns, const int32_t RATE, const int32_t kx,
+                 const int32_t pvcBorder0, const UCHAR *pPvcID) {
+  int32_t lbw, hbw, i, temp;
   pPvcDynamicData->pvc_mode = pvcMode;
   pPvcDynamicData->kx = kx;
   pPvcDynamicData->RATE = RATE;
@@ -481,16 +481,16 @@ int pvcInitFrame(PVC_STATIC_DATA *pPvcStaticData,
 /* call if pvcMode = 1,2 */
 void pvcDecodeFrame(PVC_STATIC_DATA *pPvcStaticData,
                     PVC_DYNAMIC_DATA *pPvcDynamicData, int32_t **qmfBufferReal,
-                    int32_t **qmfBufferImag, const int overlap,
-                    const int qmfExponentOverlap,
-                    const int qmfExponentCurrent) {
-  int t;
+                    int32_t **qmfBufferImag, const int32_t overlap,
+                    const int32_t qmfExponentOverlap,
+                    const int32_t qmfExponentCurrent) {
+  int32_t t;
   int32_t *predictedEsgSlot;
-  int RATE = pPvcDynamicData->RATE;
-  int pvcBorder0 = pPvcDynamicData->pvcBorder0;
+  int32_t RATE = pPvcDynamicData->RATE;
+  int32_t pvcBorder0 = pPvcDynamicData->pvcBorder0;
 
   for (t = pvcBorder0; t < PVC_NTIMESLOT; t++) {
-    int *pPredEsg_exp = &pPvcDynamicData->predEsg_exp[t];
+    int32_t *pPredEsg_exp = &pPvcDynamicData->predEsg_exp[t];
     predictedEsgSlot = pPvcDynamicData->predEsg[t];
 
     pvcDecodeTimeSlot(
@@ -506,12 +506,12 @@ void pvcDecodeFrame(PVC_STATIC_DATA *pPvcStaticData,
 void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
                        PVC_DYNAMIC_DATA *pPvcDynamicData,
                        int32_t **qmfSlotReal, int32_t **qmfSlotImag,
-                       const int qmfExponent, const int pvcBorder0,
-                       const int timeSlotNumber, int32_t predictedEsgSlot[],
-                       int *predictedEsg_exp) {
-  int i, band, ksg, ksg_start = 0;
-  int RATE = pPvcDynamicData->RATE;
-  int Esg_index = pPvcStaticData->Esg_slot_index;
+                       const int32_t qmfExponent, const int32_t pvcBorder0,
+                       const int32_t timeSlotNumber, int32_t predictedEsgSlot[],
+                       int32_t *predictedEsg_exp) {
+  int32_t i, band, ksg, ksg_start = 0;
+  int32_t RATE = pPvcDynamicData->RATE;
+  int32_t Esg_index = pPvcStaticData->Esg_slot_index;
   const SCHAR *sg_borders = pPvcDynamicData->sg_offset_low;
   int32_t *pEsg = pPvcStaticData->Esg[Esg_index];
   int32_t E[PVC_NBLOW] = {0};
@@ -542,7 +542,7 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
   for (ksg = ksg_start; ksg < PVC_NBLOW; ksg++) {
     if (E[ksg] > (int32_t)0) {
       /* 10/log2(10) = 0.752574989159953 * 2^2 */
-      int exp_log;
+      int32_t exp_log;
       int32_t nrg = CalcLog2(E[ksg], 2 * qmfExponent + 2, &exp_log);
       nrg = fMult(nrg, FL2FXCONST_SGL(LOG10FAC));
       nrg = scaleValue(nrg, exp_log - PVC_ESG_EXP + 2);
@@ -555,7 +555,7 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
 
   /* Time domain smoothing of subband-grouped energy */
   {
-    int idx = pPvcStaticData->Esg_slot_index;
+    int32_t idx = pPvcStaticData->Esg_slot_index;
     int32_t *pEsg_filt;
     FIXP_SGL SCcoeff;
 
@@ -582,10 +582,10 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
 
   /* SBR envelope scalefactor prediction */
   {
-    int E_high_exp[PVC_NBHIGH_MAX];
-    int E_high_exp_max = 0;
-    int pvcTab1ID;
-    int pvcTab2ID = (int)pPvcDynamicData->pPvcID[timeSlotNumber];
+    int32_t E_high_exp[PVC_NBHIGH_MAX];
+    int32_t E_high_exp_max = 0;
+    int32_t pvcTab1ID;
+    int32_t pvcTab2ID = (int32_t)pPvcDynamicData->pPvcID[timeSlotNumber];
     const UCHAR *pTab1, *pTab2;
     if (pvcTab2ID < pPvcDynamicData->pPVCTab1_dp[0]) {
       pvcTab1ID = 0;
@@ -600,7 +600,7 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
     for (ksg = 0; ksg < pPvcDynamicData->nbHigh; ksg++) {
       FIXP_SGL predCoeff;
       int32_t accu;
-      int predCoeff_exp, kb;
+      int32_t predCoeff_exp, kb;
       E_high_exp[ksg] = 0;
 
       /* residual part */
@@ -629,7 +629,7 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
 
     /* rescale output vector according to largest exponent */
     for (ksg = 0; ksg < pPvcDynamicData->nbHigh; ksg++) {
-      int scale = fMin(E_high_exp_max - E_high_exp[ksg], DFRACT_BITS - 1);
+      int32_t scale = fMin(E_high_exp_max - E_high_exp[ksg], DFRACT_BITS - 1);
       predictedEsgSlot[ksg] = predictedEsgSlot[ksg] >> scale;
     }
     *predictedEsg_exp = E_high_exp_max;
@@ -651,7 +651,7 @@ void pvcEndFrame(PVC_STATIC_DATA *pPvcStaticData,
   if (pPvcDynamicData->pvc_mode == 0) return;
 
   {
-    int t, max = -100;
+    int32_t t, max = -100;
     for (t = pPvcDynamicData->pvcBorder0; t < PVC_NTIMESLOT; t++) {
       if (pPvcDynamicData->predEsg_exp[t] > max) {
         max = pPvcDynamicData->predEsg_exp[t];
@@ -662,10 +662,10 @@ void pvcEndFrame(PVC_STATIC_DATA *pPvcStaticData,
   return;
 }
 
-void expandPredEsg(const PVC_DYNAMIC_DATA *pPvcDynamicData, const int timeSlot,
-                   const int lengthOutputVector, int32_t *pOutput,
+void expandPredEsg(const PVC_DYNAMIC_DATA *pPvcDynamicData, const int32_t timeSlot,
+                   const int32_t lengthOutputVector, int32_t *pOutput,
                    SCHAR *pOutput_exp) {
-  int k = 0, ksg;
+  int32_t k = 0, ksg;
   const int32_t *predEsg = pPvcDynamicData->predEsg[timeSlot];
 
   for (ksg = 0; ksg < pPvcDynamicData->nbHigh; ksg++) {

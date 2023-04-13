@@ -129,13 +129,13 @@ amm-info@iis.fraunhofer.de
 
 #include "sbrdec_drc.h"
 
-static void copyHarmonicSpectrum(int *xOverQmf, int32_t **qmfReal,
-                                 int32_t **qmfImag, int noCols, int overlap,
+static void copyHarmonicSpectrum(int32_t *xOverQmf, int32_t **qmfReal,
+                                 int32_t **qmfImag, int32_t noCols, int32_t overlap,
                                  KEEP_STATES_SYNCED_MODE keepStatesSynced) {
-  int patchBands;
-  int patch, band, col, target, sourceBands, i;
-  int numPatches = 0;
-  int slotOffset = 0;
+  int32_t patchBands;
+  int32_t patch, band, col, target, sourceBands, i;
+  int32_t numPatches = 0;
+  int32_t slotOffset = 0;
 
   int32_t **ppqmfReal = qmfReal + overlap;
   int32_t **ppqmfImag = qmfImag + overlap;
@@ -161,8 +161,8 @@ static void copyHarmonicSpectrum(int *xOverQmf, int32_t **qmfReal,
     sourceBands = xOverQmf[MAX_STRETCH_HBE - 1] - xOverQmf[MAX_STRETCH_HBE - 2];
 
     while (patchBands > 0) {
-      int numBands = sourceBands;
-      int startBand = xOverQmf[MAX_STRETCH_HBE - 1] - 1;
+      int32_t numBands = sourceBands;
+      int32_t startBand = xOverQmf[MAX_STRETCH_HBE - 1] - 1;
       if (target + numBands >= xOverQmf[patch + 1]) {
         numBands = xOverQmf[patch + 1] - target;
       }
@@ -263,17 +263,17 @@ void sbr_dec(
     LONG *timeOut,                      /*!< pointer to output time signal */
     HANDLE_SBR_DEC hSbrDecRight,        /*!< handle to Decoder channel right */
     LONG *timeOutRight,                 /*!< pointer to output time signal */
-    const int strideOut,                /*!< Time data traversal strideOut */
+    const int32_t strideOut,                /*!< Time data traversal strideOut */
     HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Static control data */
     HANDLE_SBR_FRAME_DATA hFrameData,   /*!< Control data of current frame */
     HANDLE_SBR_PREV_FRAME_DATA
         hPrevFrameData,        /*!< Some control data of last frame */
-    const int applyProcessing, /*!< Flag for SBR operation */
-    HANDLE_PS_DEC h_ps_d, const UINT flags, const int codecFrameSize,
-    const INT sbrInDataHeadroom) {
-  int i, slot, reserve;
-  int saveLbScale;
-  int lastSlotOffs;
+    const int32_t applyProcessing, /*!< Flag for SBR operation */
+    HANDLE_PS_DEC h_ps_d, const uint32_t flags, const int32_t codecFrameSize,
+    const int32_t sbrInDataHeadroom) {
+  int32_t i, slot, reserve;
+  int32_t saveLbScale;
+  int32_t lastSlotOffs;
   int32_t maxVal;
 
   /* temporary pointer / variable for QMF;
@@ -282,10 +282,10 @@ void sbr_dec(
   LONG *pTimeInQmf = timeIn;
 
   /* Number of QMF timeslots in the overlap buffer: */
-  int ov_len = hSbrDec->LppTrans.pSettings->overlap;
+  int32_t ov_len = hSbrDec->LppTrans.pSettings->overlap;
 
   /* Number of QMF slots per frame */
-  int noCols = hHeaderData->numberTimeSlots * hHeaderData->timeStep;
+  int32_t noCols = hHeaderData->numberTimeSlots * hHeaderData->timeStep;
 
   /* create pointer array for data to use for HBE and legacy sbr */
   int32_t *pLowBandReal[(3 * 4) + 2 * ((1024) / (32) * (4) / 2)];
@@ -353,7 +353,7 @@ void sbr_dec(
   */
   if (!((flags & SBRDEC_USAC_HARMONICSBR) &&
         (hFrameData->sbrPatchingMode == 0))) {
-    int nAnalysisBands = hHeaderData->numberOfAnalysisBands;
+    int32_t nAnalysisBands = hHeaderData->numberOfAnalysisBands;
 
     if (!(flags & SBRDEC_LOW_POWER)) {
       for (slot = ov_len; slot < noCols + ov_len; slot++) {
@@ -484,7 +484,7 @@ void sbr_dec(
             borders[0], ov_len, keepStatesSyncedMode);
 
         if (flags & SBRDEC_QUAD_RATE) {
-          int *xOverQmf = GetxOverBandQmfTransposer(hSbrDec->hHBE);
+          int32_t *xOverQmf = GetxOverBandQmfTransposer(hSbrDec->hHBE);
 
           copyHarmonicSpectrum(xOverQmf, pLowBandReal, pLowBandImag, noCols,
                                ov_len, keepStatesSyncedMode);
@@ -601,9 +601,9 @@ void sbr_dec(
   } else {
     /* rescale from lsb to nAnalysisBands in order to compensate scaling with
      * hb_scale in this area, done by synthesisFiltering*/
-    int rescale;
-    int lsb;
-    int length;
+    int32_t rescale;
+    int32_t lsb;
+    int32_t length;
 
     /* Reset hb_scale if no highband is present, because hb_scale is considered
      * in the QMF-synthesis */
@@ -629,7 +629,7 @@ void sbr_dec(
   }
 
   if (!(flags & SBRDEC_USAC_HARMONICSBR)) {
-    int length = hSbrDec->qmfDomainInCh->fb.lsb;
+    int32_t length = hSbrDec->qmfDomainInCh->fb.lsb;
     if (flags & SBRDEC_SYNTAX_USAC) {
       length = hSbrDec->qmfDomainInCh->fb.no_channels;
     }
@@ -659,7 +659,7 @@ void sbr_dec(
 
   if (!(flags & SBRDEC_PS_DECODED)) {
     if (!(flags & SBRDEC_SKIP_QMF_SYN)) {
-      int outScalefactor = -(8);
+      int32_t outScalefactor = -(8);
 
       if (h_ps_d != NULL) {
         h_ps_d->procFrameBased = 1; /* we here do frame based processing */
@@ -673,7 +673,7 @@ void sbr_dec(
 
       {
         HANDLE_FREQ_BAND_DATA hFreq = &hHeaderData->freqBandData;
-        int save_usb = hSbrDec->qmfDomainOutCh->fb.usb;
+        int32_t save_usb = hSbrDec->qmfDomainOutCh->fb.usb;
 
 #if (QMF_MAX_SYNTHESIS_BANDS <= 64)
         C_AALLOC_SCRATCH_START(qmfTemp, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
@@ -689,8 +689,8 @@ void sbr_dec(
              limit ov_highSubband with fMin function to avoid not allowed usb in
              synthesis filterbank. */
           hSbrDec->qmfDomainOutCh->fb.usb =
-              fMin((UINT)hFreq->ov_highSubband,
-                   (UINT)hSbrDec->qmfDomainOutCh->fb.no_channels);
+              fMin((uint32_t)hFreq->ov_highSubband,
+                   (uint32_t)hSbrDec->qmfDomainOutCh->fb.no_channels);
         }
         {
           qmfSynthesisFiltering(
@@ -712,8 +712,8 @@ void sbr_dec(
     }
 
   } else { /* (flags & SBRDEC_PS_DECODED) */
-    INT sdiff;
-    INT scaleFactorHighBand, scaleFactorLowBand_ov, scaleFactorLowBand_no_ov;
+    int32_t sdiff;
+    int32_t scaleFactorHighBand, scaleFactorLowBand_ov, scaleFactorLowBand_no_ov;
 
     HANDLE_QMF_FILTER_BANK synQmf = &hSbrDec->qmfDomainOutCh->fb;
     HANDLE_QMF_FILTER_BANK synQmfRight = &hSbrDecRight->qmfDomainOutCh->fb;
@@ -759,7 +759,7 @@ void sbr_dec(
     synQmfRight->lsb = synQmf->lsb;
     synQmfRight->usb = synQmf->usb;
 
-    int env = 0;
+    int32_t env = 0;
 
     {
 #if (QMF_MAX_SYNTHESIS_BANDS <= 64)
@@ -769,7 +769,7 @@ void sbr_dec(
       C_AALLOC_STACK_START(pWorkBuffer, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
 #endif
 
-      int maxShift = 0;
+      int32_t maxShift = 0;
 
       if (hSbrDec->sbrDrcChannel.enable != 0) {
         if (hSbrDec->sbrDrcChannel.prevFact_exp > maxShift) {
@@ -790,7 +790,7 @@ void sbr_dec(
 
       for (i = 0; i < synQmf->no_col; i++) { /* ----- no_col loop ----- */
 
-        INT outScalefactorR, outScalefactorL;
+        int32_t outScalefactorR, outScalefactorL;
 
         /* qmf timeslot of right channel */
         int32_t *rQmfReal = pWorkBuffer;
@@ -891,17 +891,17 @@ SBR_ERROR
 createSbrDec(SBR_CHANNEL *hSbrChannel,
              HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Static control data */
              TRANSPOSER_SETTINGS *pSettings,
-             const int downsampleFac, /*!< Downsampling factor */
-             const UINT qmfFlags, /*!< flags -> 1: HQ/LP selector, 2: CLDFB */
-             const UINT flags, const int overlap,
-             int chan, /*!< Channel for which to assign buffers etc. */
-             int codecFrameSize)
+             const int32_t downsampleFac, /*!< Downsampling factor */
+             const uint32_t qmfFlags, /*!< flags -> 1: HQ/LP selector, 2: CLDFB */
+             const uint32_t flags, const int32_t overlap,
+             int32_t chan, /*!< Channel for which to assign buffers etc. */
+             int32_t codecFrameSize)
 
 {
   SBR_ERROR err = SBRDEC_OK;
-  int timeSlots =
+  int32_t timeSlots =
       hHeaderData->numberTimeSlots; /* Number of SBR slots per frame */
-  int noCols =
+  int32_t noCols =
       timeSlots * hHeaderData->timeStep; /* Number of QMF slots per frame */
   HANDLE_SBR_DEC hs = &(hSbrChannel->SbrDec);
 
@@ -944,7 +944,7 @@ createSbrDec(SBR_CHANNEL *hSbrChannel,
   }
 
   if (flags & SBRDEC_USAC_HARMONICSBR) {
-    int noChannels, bSbr41 = flags & SBRDEC_QUAD_RATE ? 1 : 0;
+    int32_t noChannels, bSbr41 = flags & SBRDEC_QUAD_RATE ? 1 : 0;
 
     noChannels =
         QMF_SYNTH_CHANNELS /
@@ -997,7 +997,7 @@ createSbrDec(SBR_CHANNEL *hSbrChannel,
   \brief     Delete sbr decoder structure
   \return    errorCode, 0 if successful
 */
-int deleteSbrDec(SBR_CHANNEL *hSbrChannel) {
+int32_t deleteSbrDec(SBR_CHANNEL *hSbrChannel) {
   HANDLE_SBR_DEC hs = &hSbrChannel->SbrDec;
 
   deleteSbrEnvelopeCalc(&hs->SbrCalculateEnvelope);
@@ -1028,19 +1028,19 @@ int deleteSbrDec(SBR_CHANNEL *hSbrChannel) {
 */
 SBR_ERROR
 resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
-            HANDLE_SBR_PREV_FRAME_DATA hPrevFrameData, const int downsampleFac,
-            const UINT flags, HANDLE_SBR_FRAME_DATA hFrameData) {
+            HANDLE_SBR_PREV_FRAME_DATA hPrevFrameData, const int32_t downsampleFac,
+            const uint32_t flags, HANDLE_SBR_FRAME_DATA hFrameData) {
   SBR_ERROR sbrError = SBRDEC_OK;
-  int i;
+  int32_t i;
   int32_t *pLowBandReal[128];
   int32_t *pLowBandImag[128];
-  int useLP = flags & SBRDEC_LOW_POWER;
+  int32_t useLP = flags & SBRDEC_LOW_POWER;
 
-  int old_lsb = hSbrDec->qmfDomainInCh->fb.lsb;
-  int old_usb = hSbrDec->qmfDomainInCh->fb.usb;
-  int new_lsb = hHeaderData->freqBandData.lowSubband;
-  /* int new_usb = hHeaderData->freqBandData.highSubband; */
-  int l, startBand, stopBand, startSlot, size;
+  int32_t old_lsb = hSbrDec->qmfDomainInCh->fb.lsb;
+  int32_t old_usb = hSbrDec->qmfDomainInCh->fb.usb;
+  int32_t new_lsb = hHeaderData->freqBandData.lowSubband;
+  /* int32_t new_usb = hHeaderData->freqBandData.highSubband; */
+  int32_t l, startBand, stopBand, startSlot, size;
 
   int32_t **OverlapBufferReal = hSbrDec->qmfDomainInCh->hQmfSlotsReal;
   int32_t **OverlapBufferImag = hSbrDec->qmfDomainInCh->hQmfSlotsImag;
@@ -1051,10 +1051,10 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
      no_channels in the previous frame. The same states for the current frame if
      the current frame is not active in terms of SBR processing
   */
-  int applySbrProc = (hHeaderData->syncState == SBR_ACTIVE ||
+  int32_t applySbrProc = (hHeaderData->syncState == SBR_ACTIVE ||
                       (hHeaderData->frameErrorFlag == 0 &&
                        hHeaderData->syncState == SBR_HEADER));
-  int applySbrProc_old = hSbrDec->applySbrProc_old;
+  int32_t applySbrProc_old = hSbrDec->applySbrProc_old;
 
   if (!applySbrProc) {
     new_lsb = (hSbrDec->qmfDomainInCh->fb).no_channels;
@@ -1070,11 +1070,11 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
   /* Synthesis */
   FDK_ASSERT(hSbrDec->qmfDomainOutCh != NULL);
   hSbrDec->qmfDomainOutCh->fb.lsb =
-      fixMin((INT)hSbrDec->qmfDomainOutCh->fb.no_channels,
-             (INT)hHeaderData->freqBandData.lowSubband);
+      fixMin((int32_t)hSbrDec->qmfDomainOutCh->fb.no_channels,
+             (int32_t)hHeaderData->freqBandData.lowSubband);
   hSbrDec->qmfDomainOutCh->fb.usb =
-      fixMin((INT)hSbrDec->qmfDomainOutCh->fb.no_channels,
-             (INT)hHeaderData->freqBandData.highSubband);
+      fixMin((int32_t)hSbrDec->qmfDomainOutCh->fb.no_channels,
+             (int32_t)hHeaderData->freqBandData.highSubband);
   /* Analysis */
   FDK_ASSERT(hSbrDec->qmfDomainInCh != NULL);
   hSbrDec->qmfDomainInCh->fb.lsb = hSbrDec->qmfDomainOutCh->fb.lsb;
@@ -1131,7 +1131,7 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
   }
 
   if (startSlot != 0) {
-    int source_exp, target_exp, delta_exp, target_lsb, target_usb, reserve;
+    int32_t source_exp, target_exp, delta_exp, target_lsb, target_usb, reserve;
     int32_t maxVal;
 
     /*
@@ -1293,7 +1293,7 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
 
       if (flags & SBRDEC_QUAD_RATE) {
         if (hFrameData->sbrPatchingMode == 0) {
-          int *xOverQmf = GetxOverBandQmfTransposer(hSbrDec->hHBE);
+          int32_t *xOverQmf = GetxOverBandQmfTransposer(hSbrDec->hHBE);
 
           /* in case of harmonic SBR and no HBE_LP map additional buffer for
           one more frame to pointer arry */
@@ -1403,7 +1403,7 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
   }
 
   {
-    int adapt_lb = 0, diff = 0,
+    int32_t adapt_lb = 0, diff = 0,
         new_scale = hSbrDec->qmfDomainInCh->scaling.ov_lb_scale;
 
     if ((hSbrDec->qmfDomainInCh->scaling.ov_lb_scale !=

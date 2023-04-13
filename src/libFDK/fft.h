@@ -111,10 +111,10 @@ amm-info@iis.fraunhofer.de
  * \param length Length of the FFT to be calculated.
  * \param pInput Input/Output data buffer. The input data must have at least 1
  * bit scale headroom. The values are interleaved, real/imag pairs.
- * \param scalefactor Pointer to an INT, which contains the current scale of the
+ * \param scalefactor Pointer to an int32_t, which contains the current scale of the
  * input data, which is updated according to the FFT scale.
  */
-void fft(int length, int32_t *pInput, INT *scalefactor);
+void fft(int32_t length, int32_t *pInput, int32_t *scalefactor);
 
 /**
  * \brief Perform an inplace complex valued IFFT of length 2^n
@@ -122,10 +122,10 @@ void fft(int length, int32_t *pInput, INT *scalefactor);
  * \param length Length of the FFT to be calculated.
  * \param pInput Input/Output data buffer. The input data must have at least 1
  * bit scale headroom. The values are interleaved, real/imag pairs.
- * \param scalefactor Pointer to an INT, which contains the current scale of the
+ * \param scalefactor Pointer to an int32_t, which contains the current scale of the
  * input data, which is updated according to the IFFT scale.
  */
-void ifft(int length, int32_t *pInput, INT *scalefactor);
+void ifft(int32_t length, int32_t *pInput, int32_t *scalefactor);
 
 /*
  * Frequently used and fixed short length FFTs.

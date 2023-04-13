@@ -220,16 +220,16 @@ typedef enum {
  * GaSpecificConfig struct
  */
 typedef struct {
-  UINT m_frameLengthFlag;
-  UINT m_dependsOnCoreCoder;
-  UINT m_coreCoderDelay;
+  uint32_t m_frameLengthFlag;
+  uint32_t m_dependsOnCoreCoder;
+  uint32_t m_coreCoderDelay;
 
-  UINT m_extensionFlag;
-  UINT m_extensionFlag3;
+  uint32_t m_extensionFlag;
+  uint32_t m_extensionFlag3;
 
-  UINT m_layer;
-  UINT m_numOfSubFrame;
-  UINT m_layerLength;
+  uint32_t m_layer;
+  uint32_t m_numOfSubFrame;
+  uint32_t m_layerLength;
 
 } CSGaSpecificConfig;
 
@@ -249,7 +249,7 @@ typedef struct {
   m_useLdQmfTimeAlign; /* Use LD-MPS QMF in SBR to achive time alignment */
   UCHAR m_sbrSamplingRate;
   UCHAR m_sbrCrcFlag;
-  UINT m_downscaledSamplingFrequency;
+  uint32_t m_downscaledSamplingFrequency;
 
 } CSEldSpecificConfig;
 
@@ -279,7 +279,7 @@ typedef struct {
                             UsacDecoderConfig() / rsv603daDecoderConfig() via
                             numElements and usacElementType */
   UCHAR m_channelConfigurationIndex;
-  UINT m_usacNumElements;
+  uint32_t m_usacNumElements;
   CSUsacElementConfig element[TP_USAC_MAX_ELEMENTS];
 
   UCHAR numAudioChannels;
@@ -305,12 +305,12 @@ typedef struct {
   CProgramConfig m_progrConfigElement; /**< Program configuration. */
 
   AUDIO_OBJECT_TYPE m_aot;  /**< Audio Object Type.  */
-  UINT m_samplingFrequency; /**< Samplerate. */
-  UINT m_samplesPerFrame;   /**< Amount of samples per frame.   */
-  UINT m_directMapping; /**< Document this please !!                         */
+  uint32_t m_samplingFrequency; /**< Samplerate. */
+  uint32_t m_samplesPerFrame;   /**< Amount of samples per frame.   */
+  uint32_t m_directMapping; /**< Document this please !!                         */
 
   AUDIO_OBJECT_TYPE m_extensionAudioObjectType; /**< Audio object type */
-  UINT m_extensionSamplingFrequency;            /**< Samplerate            */
+  uint32_t m_extensionSamplingFrequency;            /**< Samplerate            */
 
   SCHAR m_channelConfiguration; /**< Channel configuration index */
 
@@ -343,7 +343,7 @@ typedef struct {
 
   UCHAR
   config[TP_USAC_MAX_CONFIG_LEN]; /**< Configuration stored as bitstream */
-  UINT configBits;                /**< Configuration length in bits */
+  uint32_t configBits;                /**< Configuration length in bits */
 
 } CSAudioSpecificConfig;
 
@@ -361,31 +361,31 @@ typedef struct {
                            even if new config is the same */
 } CCtrlCFGChange;
 
-typedef INT (*cbUpdateConfig_t)(void *, const CSAudioSpecificConfig *,
+typedef int32_t (*cbUpdateConfig_t)(void *, const CSAudioSpecificConfig *,
                                 const UCHAR configMode, UCHAR *configChanged);
-typedef INT (*cbFreeMem_t)(void *, const CSAudioSpecificConfig *);
-typedef INT (*cbCtrlCFGChange_t)(void *, const CCtrlCFGChange *);
-typedef INT (*cbSsc_t)(void *, HANDLE_FDK_BITSTREAM,
+typedef int32_t (*cbFreeMem_t)(void *, const CSAudioSpecificConfig *);
+typedef int32_t (*cbCtrlCFGChange_t)(void *, const CCtrlCFGChange *);
+typedef int32_t (*cbSsc_t)(void *, HANDLE_FDK_BITSTREAM,
                        const AUDIO_OBJECT_TYPE coreCodec,
-                       const INT samplingRate, const INT frameSize,
-                       const INT stereoConfigIndex,
-                       const INT coreSbrFrameLengthIndex, const INT configBytes,
+                       const int32_t samplingRate, const int32_t frameSize,
+                       const int32_t stereoConfigIndex,
+                       const int32_t coreSbrFrameLengthIndex, const int32_t configBytes,
                        const UCHAR configMode, UCHAR *configChanged);
 
-typedef INT (*cbSbr_t)(void *self, HANDLE_FDK_BITSTREAM hBs,
-                       const INT sampleRateIn, const INT sampleRateOut,
-                       const INT samplesPerFrame,
+typedef int32_t (*cbSbr_t)(void *self, HANDLE_FDK_BITSTREAM hBs,
+                       const int32_t sampleRateIn, const int32_t sampleRateOut,
+                       const int32_t samplesPerFrame,
                        const AUDIO_OBJECT_TYPE coreCodec,
-                       const MP4_ELEMENT_ID elementID, const INT elementIndex,
+                       const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
                        const UCHAR harmonicSbr, const UCHAR stereoConfigIndex,
                        const UCHAR configMode, UCHAR *configChanged,
-                       const INT downscaleFactor);
+                       const int32_t downscaleFactor);
 
-typedef INT (*cbUsac_t)(void *self, HANDLE_FDK_BITSTREAM hBs);
+typedef int32_t (*cbUsac_t)(void *self, HANDLE_FDK_BITSTREAM hBs);
 
-typedef INT (*cbUniDrc_t)(void *self, HANDLE_FDK_BITSTREAM hBs,
-                          const INT fullPayloadLength, const INT payloadType,
-                          const INT subStreamIndex, const INT payloadStart,
+typedef int32_t (*cbUniDrc_t)(void *self, HANDLE_FDK_BITSTREAM hBs,
+                          const int32_t fullPayloadLength, const int32_t payloadType,
+                          const int32_t subStreamIndex, const int32_t payloadStart,
                           const AUDIO_OBJECT_TYPE);
 
 typedef struct {
@@ -411,14 +411,14 @@ typedef struct {
                           loudnessInfoSet parser callback. */
 } CSTpCallBacks;
 
-static const UINT SamplingRateTable[] = {
+static const uint32_t SamplingRateTable[] = {
     96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 16000, 12000, 11025,
     8000,  7350,  0,     0,     57600, 51200, 40000, 38400, 34150, 28800, 25600,
     20000, 19200, 17075, 14400, 12800, 9600,  0,     0,     0,     0};
 
-static inline int getSamplingRateIndex(UINT samplingRate, UINT nBits) {
-  UINT sf_index;
-  UINT tableSize = (1 << nBits) - 1;
+static inline int32_t getSamplingRateIndex(uint32_t samplingRate, uint32_t nBits) {
+  uint32_t sf_index;
+  uint32_t tableSize = (1 << nBits) - 1;
 
   for (sf_index = 0; sf_index < tableSize; sf_index++) {
     if (SamplingRateTable[sf_index] == samplingRate) break;
@@ -434,7 +434,7 @@ static inline int getSamplingRateIndex(UINT samplingRate, UINT nBits) {
 /*
  * Get Channel count from channel configuration
  */
-static inline int getNumberOfTotalChannels(int channelConfig) {
+static inline int32_t getNumberOfTotalChannels(int32_t channelConfig) {
   switch (channelConfig) {
     case 1:
     case 2:
@@ -456,10 +456,10 @@ static inline int getNumberOfTotalChannels(int channelConfig) {
   }
 }
 
-static inline int getNumberOfEffectiveChannels(
-    const int
+static inline int32_t getNumberOfEffectiveChannels(
+    const int32_t
         channelConfig) { /* index: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 */
-  const int n[] = {0, 1, 2, 3, 4, 5, 5, 7, 0, 0, 0, 6, 7, 22, 7, 0};
+  const int32_t n[] = {0, 1, 2, 3, 4, 5, 5, 7, 0, 0, 0, 6, 7, 22, 7, 0};
   return n[channelConfig];
 }
 

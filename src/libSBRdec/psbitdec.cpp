@@ -117,7 +117,7 @@ SBR_ERROR ResetPsDec(HANDLE_PS_DEC h_ps_d);
 static SCHAR decode_huff_cw(
     Huffman h,                    /*!< pointer to huffman codebook table */
     HANDLE_FDK_BITSTREAM hBitBuf, /*!< Handle to Bitbuffer */
-    int *length)                  /*!< length of huffman codeword (or NULL) */
+    int32_t *length)                  /*!< length of huffman codeword (or NULL) */
 {
   UCHAR bit = 0;
   SCHAR index = 0;
@@ -169,7 +169,7 @@ static void deltaDecodeArray(
                                   /*!< output array size: nrElements*stride */
     UCHAR stride,                 /*!< 1=dflt, 2=half freq. resolution */
     SCHAR minIdx, SCHAR maxIdx) {
-  int i;
+  int32_t i;
 
   /* Delta decode */
   if (enable == 1) {
@@ -241,12 +241,12 @@ static void map34IndexTo20(SCHAR *aIndex, /*!< decoded ICC/IID parameters */
   \return PS processing flag. If set to 1
 
 ****************************************************************************/
-int DecodePs(struct PS_DEC *h_ps_d,  /*!< PS handle */
+int32_t DecodePs(struct PS_DEC *h_ps_d,  /*!< PS handle */
              const UCHAR frameError, /*!< Flag telling that frame had errors */
              PS_DEC_COEFFICIENTS *pScratch) {
   MPEG_PS_BS_DATA *pBsData;
   UCHAR gr, env;
-  int bPsHeaderValid, bPsDataAvail;
+  int32_t bPsHeaderValid, bPsDataAvail;
 
   /* Assign Scratch */
   h_ps_d->specificTo.mpeg.pCoef = pScratch;
@@ -445,16 +445,16 @@ int DecodePs(struct PS_DEC *h_ps_d,  /*!< PS handle */
   \return
 
 ****************************************************************************/
-unsigned int ReadPsData(
+uint32_t ReadPsData(
     HANDLE_PS_DEC h_ps_d,         /*!< handle to struct PS_DEC */
     HANDLE_FDK_BITSTREAM hBitBuf, /*!< handle to struct BIT_BUF */
-    int nBitsLeft                 /*!< max number of bits available */
+    int32_t nBitsLeft                 /*!< max number of bits available */
 ) {
   MPEG_PS_BS_DATA *pBsData;
 
   UCHAR gr, env;
   SCHAR dtFlag;
-  INT startbits;
+  int32_t startbits;
   Huffman CurrentTable;
   SCHAR bEnableHeader;
 
@@ -468,7 +468,7 @@ unsigned int ReadPsData(
               sizeof(MPEG_PS_BS_DATA));
   }
 
-  startbits = (INT)FDKgetValidBits(hBitBuf);
+  startbits = (int32_t)FDKgetValidBits(hBitBuf);
 
   bEnableHeader = (SCHAR)FDKreadBits(hBitBuf, 1);
 
@@ -507,16 +507,16 @@ unsigned int ReadPsData(
     /* no useful PS data could be read from bitstream */
     h_ps_d->bPsDataAvail[h_ps_d->bsReadSlot] = ppt_none;
     /* discard all remaining bits */
-    nBitsLeft -= startbits - (INT)FDKgetValidBits(hBitBuf);
+    nBitsLeft -= startbits - (int32_t)FDKgetValidBits(hBitBuf);
     while (nBitsLeft > 0) {
-      int i = nBitsLeft;
+      int32_t i = nBitsLeft;
       if (i > 8) {
         i = 8;
       }
       FDKreadBits(hBitBuf, i);
       nBitsLeft -= i;
     }
-    return (UINT)(startbits - (INT)FDKgetValidBits(hBitBuf));
+    return (uint32_t)(startbits - (int32_t)FDKgetValidBits(hBitBuf));
   }
 
   if (pBsData->modeIid > 2) {
@@ -579,7 +579,7 @@ unsigned int ReadPsData(
     ISO/IEC 14496-3 Subpart 8 Annex 4
     */
 
-    int cnt = FDKreadBits(hBitBuf, PS_EXTENSION_SIZE_BITS);
+    int32_t cnt = FDKreadBits(hBitBuf, PS_EXTENSION_SIZE_BITS);
     if (cnt == (1 << PS_EXTENSION_SIZE_BITS) - 1) {
       cnt += FDKreadBits(hBitBuf, PS_EXTENSION_ESC_COUNT_BITS);
     }
@@ -589,5 +589,5 @@ unsigned int ReadPsData(
   /* new PS data was read from bitstream */
   h_ps_d->bPsDataAvail[h_ps_d->bsReadSlot] = ppt_mpeg;
 
-  return (startbits - (INT)FDKgetValidBits(hBitBuf));
+  return (startbits - (int32_t)FDKgetValidBits(hBitBuf));
 }

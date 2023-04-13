@@ -203,14 +203,14 @@ struct STP_DEC {
   int32_t prev_tp_scale[MAX_OUTPUT_CHANNELS];
   const FIXP_CFG *BP;
   const FIXP_CFG *BP_GF;
-  int update_old_ener;
+  int32_t update_old_ener;
 };
 
 inline void combineSignalCplx(int32_t *hybOutputRealDry,
                               int32_t *hybOutputImagDry,
                               int32_t *hybOutputRealWet,
-                              int32_t *hybOutputImagWet, int bands) {
-  int n;
+                              int32_t *hybOutputImagWet, int32_t bands) {
+  int32_t n;
 
   for (n = bands - 1; n >= 0; n--) {
     *hybOutputRealDry = fAddSaturate(*hybOutputRealDry, *hybOutputRealWet);
@@ -225,8 +225,8 @@ inline void combineSignalCplxScale1(int32_t *hybOutputRealDry,
                                     int32_t *hybOutputRealWet,
                                     int32_t *hybOutputImagWet,
                                     const FIXP_CFG *pBP, int32_t scaleX,
-                                    int bands) {
-  int n;
+                                    int32_t bands) {
+  int32_t n;
   int32_t scaleY;
   for (n = bands - 1; n >= 0; n--) {
     scaleY = fMultDiv2(scaleX, *pBP);
@@ -248,8 +248,8 @@ inline void combineSignalCplxScale2(int32_t *hybOutputRealDry,
                                     int32_t *hybOutputImagDry,
                                     int32_t *hybOutputRealWet,
                                     int32_t *hybOutputImagWet, int32_t scaleX,
-                                    int bands) {
-  int n;
+                                    int32_t bands) {
+  int32_t n;
 
   for (n = bands - 1; n >= 0; n--) {
     *hybOutputRealDry =
@@ -280,7 +280,7 @@ bail:
 
 SACDEC_ERROR subbandTPInit(HANDLE_STP_DEC self) {
   SACDEC_ERROR err = MPS_OK;
-  int ch;
+  int32_t ch;
 
   for (ch = 0; ch < MAX_OUTPUT_CHANNELS; ch++) {
     self->prev_tp_scale[ch] = FL2FXCONST_DBL(1.0f / (1 << SF_SCALE));
@@ -325,14 +325,14 @@ SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
   int32_t DryEner0 = FL2FXCONST_DBL(0.0f);
   int32_t WetEnerX, damp, tmp;
   int32_t dmxReal0, dmxImag0;
-  int skipChannels[MAX_OUTPUT_CHANNELS];
-  int n, ch, cplxBands, cplxHybBands;
-  int dry_scale_dmx, wet_scale_dmx;
-  int i_LF, i_RF;
+  int32_t skipChannels[MAX_OUTPUT_CHANNELS];
+  int32_t n, ch, cplxBands, cplxHybBands;
+  int32_t dry_scale_dmx, wet_scale_dmx;
+  int32_t i_LF, i_RF;
   HANDLE_STP_DEC hStpDec;
   const FIXP_CFG *pBP;
 
-  int nrgScale = (2 * self->clipProtectGainSF__FDK);
+  int32_t nrgScale = (2 * self->clipProtectGainSF__FDK);
 
   hStpDec = self->hStpDec;
 
@@ -359,7 +359,7 @@ SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
   }
 
   /* clear skipping flag for all output channels */
-  FDKmemset(skipChannels, 0, self->numOutputChannels * sizeof(int));
+  FDKmemset(skipChannels, 0, self->numOutputChannels * sizeof(int32_t));
 
   /* set scale values to zero */
   FDKmemset(scale, 0, self->numOutputChannels * sizeof(int32_t));
@@ -397,7 +397,7 @@ SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
   pBP = hStpDec->BP_GF - BP_GF_START;
   switch (self->treeConfig) {
     case TREE_212:
-      INT sMin, sNorm, sReal, sImag;
+      int32_t sMin, sNorm, sReal, sImag;
 
       sReal = fMin(getScalefactor(&qmfOutputRealDry[i_LF][BP_GF_START],
                                   cplxBands - BP_GF_START),
@@ -457,7 +457,7 @@ SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
     WetEnerX = FL2FXCONST_DBL(0.0f);
 
     if (self->treeConfig == TREE_212) {
-      INT sMin, sNorm;
+      int32_t sMin, sNorm;
 
       sMin = fMin(getScalefactor(&qmfOutputRealWet[ch][BP_GF_START],
                                  cplxBands - BP_GF_START),
@@ -528,7 +528,7 @@ SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
   const SCHAR *channlIndex = row2channelSTP[self->treeConfig];
 
   for (ch = 0; ch < self->numOutputChannels; ch++) {
-    int no_scaling;
+    int32_t no_scaling;
 
     no_scaling = !frame->tempShapeEnableChannelSTP[channlIndex[ch]];
     if (no_scaling) {

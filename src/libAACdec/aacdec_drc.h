@@ -147,15 +147,15 @@ void aacDecoder_drcInit(HANDLE_AAC_DRC self);
 void aacDecoder_drcInitChannelData(CDrcChannelData *pDrcChannel);
 
 AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
-                                         AACDEC_DRC_PARAM param, INT value);
+                                         AACDEC_DRC_PARAM param, int32_t value);
 
-int aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
+int32_t aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
                               AACDEC_DRC_PAYLOAD_TYPE type);
 
-int aacDecoder_drcProlog(
+int32_t aacDecoder_drcProlog(
     HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
-    UCHAR pceInstanceTag, UCHAR channelMapping[], int validChannels);
+    UCHAR pceInstanceTag, UCHAR channelMapping[], int32_t validChannels);
 
 /**
  * \brief Apply DRC. If SBR is present, DRC data is handed over to the SBR
@@ -175,13 +175,13 @@ int aacDecoder_drcProlog(
  */
 void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
                          CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                         CDrcChannelData *pDrcDat, int32_t *extGain, int ch,
-                         int aacFrameSize, int bSbrPresent);
+                         CDrcChannelData *pDrcDat, int32_t *extGain, int32_t ch,
+                         int32_t aacFrameSize, int32_t bSbrPresent);
 
-int aacDecoder_drcEpilog(
+int32_t aacDecoder_drcEpilog(
     HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
-    UCHAR pceInstanceTag, UCHAR channelMapping[], int validChannels);
+    UCHAR pceInstanceTag, UCHAR channelMapping[], int32_t validChannels);
 
 /**
  * \brief Get metadata information found in bitstream.
@@ -230,10 +230,10 @@ void aacDecoder_drcGetInfo(HANDLE_AAC_DRC self, SCHAR *pPresMode,
  *
  * \return exponent of time data
  */
-INT applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn,
+int32_t applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn,
                                int32_t *pGain, int32_t *pGainPerSample,
-                               const INT gain_scale, const UINT gain_delay,
-                               const UINT nSamples, const UINT channels,
-                               const UINT stride, const UINT limiterEnabled);
+                               const int32_t gain_scale, const uint32_t gain_delay,
+                               const uint32_t nSamples, const uint32_t channels,
+                               const uint32_t stride, const uint32_t limiterEnabled);
 
 #endif /* AACDEC_DRC_H */

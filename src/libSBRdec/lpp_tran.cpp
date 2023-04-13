@@ -185,7 +185,7 @@ static void inverseFilteringLevelEmphasis(
     INVF_MODE *sbr_invf_mode_prev, /*!< Previous inverse filtering modes */
     int32_t *bwVector             /*!< Resulting filtering levels */
 ) {
-  for (int i = 0; i < nInvfBands; i++) {
+  for (int32_t i = 0; i < nInvfBands; i++) {
     int32_t accu;
     int32_t bwTmp = mapInvfMode(sbr_invf_mode[i], sbr_invf_mode_prev[i],
                                  hLppTrans->pSettings->whFactors);
@@ -217,12 +217,12 @@ static void inverseFilteringLevelEmphasis(
 
 static inline void calc_qmfBufferReal(int32_t **qmfBufferReal,
                                       const int32_t *const lowBandReal,
-                                      const int startSample,
-                                      const int stopSample, const UCHAR hiBand,
-                                      const int dynamicScale, const int descale,
+                                      const int32_t startSample,
+                                      const int32_t stopSample, const UCHAR hiBand,
+                                      const int32_t dynamicScale, const int32_t descale,
                                       const FIXP_SGL a0r, const FIXP_SGL a1r) {
   int32_t accu1, accu2;
-  int i;
+  int32_t i;
 
   for (i = 0; i < stopSample - startSample; i++) {
     accu1 = fMultDiv2(a1r, lowBandReal[i]);
@@ -262,42 +262,42 @@ void lppTransposer(
     int32_t *degreeAlias,    /*!< Vector for results of aliasing estimation */
     int32_t **qmfBufferImag, /*!< Pointer to pointer to imaginary part of
                                  subband samples (source) */
-    const int useLP, const int fPreWhitening, const int v_k_master0,
-    const int timeStep,       /*!< Time step of envelope */
-    const int firstSlotOffs,  /*!< Start position in time */
-    const int lastSlotOffs,   /*!< Number of overlap-slots into next frame */
-    const int nInvfBands,     /*!< Number of bands for inverse filtering */
+    const int32_t useLP, const int32_t fPreWhitening, const int32_t v_k_master0,
+    const int32_t timeStep,       /*!< Time step of envelope */
+    const int32_t firstSlotOffs,  /*!< Start position in time */
+    const int32_t lastSlotOffs,   /*!< Number of overlap-slots into next frame */
+    const int32_t nInvfBands,     /*!< Number of bands for inverse filtering */
     INVF_MODE *sbr_invf_mode, /*!< Current inverse filtering modes */
     INVF_MODE *sbr_invf_mode_prev /*!< Previous inverse filtering modes */
 ) {
-  INT bwIndex[MAX_NUM_PATCHES];
+  int32_t bwIndex[MAX_NUM_PATCHES];
   int32_t bwVector[MAX_NUM_PATCHES]; /*!< pole moving factors */
   int32_t preWhiteningGains[(64) / 2];
-  int preWhiteningGains_exp[(64) / 2];
+  int32_t preWhiteningGains_exp[(64) / 2];
 
-  int i;
-  int loBand, start, stop;
+  int32_t i;
+  int32_t loBand, start, stop;
   TRANSPOSER_SETTINGS *pSettings = hLppTrans->pSettings;
   PATCH_PARAM *patchParam = pSettings->patchParam;
-  int patch;
+  int32_t patch;
 
   FIXP_SGL alphar[LPC_ORDER], a0r, a1r;
   FIXP_SGL alphai[LPC_ORDER], a0i = 0, a1i = 0;
   FIXP_SGL bw = FL2FXCONST_SGL(0.0f);
 
-  int autoCorrLength;
+  int32_t autoCorrLength;
 
   int32_t k1, k1_below = 0, k1_below2 = 0;
 
   ACORR_COEFS ac;
-  int startSample;
-  int stopSample;
-  int stopSampleClear;
+  int32_t startSample;
+  int32_t stopSample;
+  int32_t stopSampleClear;
 
-  int comLowBandScale;
-  int ovLowBandShift;
-  int lowBandShift;
-  /*  int ovHighBandShift;*/
+  int32_t comLowBandScale;
+  int32_t ovLowBandShift;
+  int32_t lowBandShift;
+  /*  int32_t ovHighBandShift;*/
 
   alphai[0] = FL2FXCONST_SGL(0.0f);
   alphai[1] = FL2FXCONST_SGL(0.0f);
@@ -318,11 +318,11 @@ void lppTransposer(
        This is required in case that the patches do not cover the complete
        highband (because the last patch would be too short). Possible
        optimization: Clearing bands up to usb would be sufficient here. */
-    int targetStopBand =
+    int32_t targetStopBand =
         patchParam[pSettings->noOfPatches - 1].targetStartBand +
         patchParam[pSettings->noOfPatches - 1].numBandsInPatch;
 
-    int memSize = ((64) - targetStopBand) * sizeof(int32_t);
+    int32_t memSize = ((64) - targetStopBand) * sizeof(int32_t);
 
     if (!useLP) {
       for (i = startSample; i < stopSampleClear; i++) {
@@ -385,9 +385,9 @@ void lppTransposer(
     int32_t *plowBandImag = lowBandImag;
     int32_t **pqmfBufferImag =
         qmfBufferImag + firstSlotOffs * timeStep /* + pSettings->overlap */;
-    int resetLPCCoeffs = 0;
-    int dynamicScale = DFRACT_BITS - 1 - LPC_SCALE_FACTOR;
-    int acDetScale = 0; /* scaling of autocorrelation determinant */
+    int32_t resetLPCCoeffs = 0;
+    int32_t dynamicScale = DFRACT_BITS - 1 - LPC_SCALE_FACTOR;
+    int32_t acDetScale = 0; /* scaling of autocorrelation determinant */
 
     for (i = 0;
          i < LPC_ORDER + firstSlotOffs * timeStep /*+pSettings->overlap*/;
@@ -521,7 +521,7 @@ void lppTransposer(
         Quick check: is first filter coeff >= 1(4)
        */
       {
-        INT scale;
+        int32_t scale;
         int32_t result = fDivNorm(absTmp, absDet, &scale);
         scale = scale + ac.det_scale;
 
@@ -547,7 +547,7 @@ void lppTransposer(
         Quick check: is second filter coeff >= 1(4)
         */
         {
-          INT scale;
+          int32_t scale;
           int32_t result = fDivNorm(absTmp, absDet, &scale);
           scale = scale + ac.det_scale;
 
@@ -593,7 +593,7 @@ void lppTransposer(
       if (absTmp >= (ac.r11r >> 1)) {
         resetLPCCoeffs = 1;
       } else {
-        INT scale;
+        int32_t scale;
         int32_t result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
         alphar[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
 
@@ -613,7 +613,7 @@ void lppTransposer(
         if (absTmp >= (ac.r11r >> 1)) {
           resetLPCCoeffs = 1;
         } else {
-          INT scale;
+          int32_t scale;
           int32_t result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
           alphai[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
           if ((tmp > FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f)))
@@ -655,7 +655,7 @@ void lppTransposer(
             k1 = (int32_t)(MINVAL_DBL + 1) /*FL2FXCONST_SGL(-1.0f)*/;
           }
         } else {
-          INT scale;
+          int32_t scale;
           int32_t result =
               fDivNorm(fixp_abs(ac.r01r), fixp_abs(ac.r11r), &scale);
           k1 = scaleValue(result, scale);
@@ -704,7 +704,7 @@ void lppTransposer(
 
     while (patch < pSettings->noOfPatches) { /* inner loop over every patch */
 
-      int hiBand = loBand + patchParam[patch].targetBandOffs;
+      int32_t hiBand = loBand + patchParam[patch].targetBandOffs;
 
       if (loBand < patchParam[patch].sourceStartBand ||
           loBand >= patchParam[patch].sourceStopBand
@@ -743,7 +743,7 @@ void lppTransposer(
       */
       if (bw <= FL2FXCONST_SGL(0.0f)) {
         if (!useLP) {
-          int descale =
+          int32_t descale =
               fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
           for (i = startSample; i < stopSample; i++) {
             int32_t accu1, accu2;
@@ -761,7 +761,7 @@ void lppTransposer(
             qmfBufferImag[i][hiBand] = accu2;
           }
         } else {
-          int descale =
+          int32_t descale =
               fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
           for (i = startSample; i < stopSample; i++) {
             qmfBufferReal[i][hiBand] = lowBandReal[LPC_ORDER + i] >> descale;
@@ -770,14 +770,14 @@ void lppTransposer(
       } else { /* bw <= 0 */
 
         if (!useLP) {
-          int descale =
+          int32_t descale =
               fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
 #ifdef FUNCTION_LPPTRANSPOSER_func1
           lppTransposer_func1(
               lowBandReal + LPC_ORDER + startSample,
               lowBandImag + LPC_ORDER + startSample,
               qmfBufferReal + startSample, qmfBufferImag + startSample,
-              stopSample - startSample, (int)hiBand, dynamicScale, descale, a0r,
+              stopSample - startSample, (int32_t)hiBand, dynamicScale, descale, a0r,
               a0i, a1r, a1i, fPreWhitening, preWhiteningGains[loBand],
               preWhiteningGains_exp[loBand] + 1);
 #else
@@ -873,18 +873,18 @@ void lppTransposerHBE(
                                  samples (source) */
     int32_t **qmfBufferImag, /*!< Pointer to pointer to imaginary part of
                                  subband samples (source) */
-    const int timeStep,       /*!< Time step of envelope */
-    const int firstSlotOffs,  /*!< Start position in time */
-    const int lastSlotOffs,   /*!< Number of overlap-slots into next frame */
-    const int nInvfBands,     /*!< Number of bands for inverse filtering */
+    const int32_t timeStep,       /*!< Time step of envelope */
+    const int32_t firstSlotOffs,  /*!< Start position in time */
+    const int32_t lastSlotOffs,   /*!< Number of overlap-slots into next frame */
+    const int32_t nInvfBands,     /*!< Number of bands for inverse filtering */
     INVF_MODE *sbr_invf_mode, /*!< Current inverse filtering modes */
     INVF_MODE *sbr_invf_mode_prev /*!< Previous inverse filtering modes */
 ) {
-  INT bwIndex;
+  int32_t bwIndex;
   int32_t bwVector[MAX_NUM_PATCHES_HBE]; /*!< pole moving factors */
 
-  int i;
-  int loBand, start, stop;
+  int32_t i;
+  int32_t loBand, start, stop;
   TRANSPOSER_SETTINGS *pSettings = hLppTrans->pSettings;
   PATCH_PARAM *patchParam = pSettings->patchParam;
 
@@ -892,17 +892,17 @@ void lppTransposerHBE(
   FIXP_SGL alphai[LPC_ORDER], a0i = 0, a1i = 0;
   FIXP_SGL bw = FL2FXCONST_SGL(0.0f);
 
-  int autoCorrLength;
+  int32_t autoCorrLength;
 
   ACORR_COEFS ac;
-  int startSample;
-  int stopSample;
-  int stopSampleClear;
+  int32_t startSample;
+  int32_t stopSample;
+  int32_t stopSampleClear;
 
-  int comBandScale;
-  int ovLowBandShift;
-  int lowBandShift;
-  /*  int ovHighBandShift;*/
+  int32_t comBandScale;
+  int32_t ovLowBandShift;
+  int32_t lowBandShift;
+  /*  int32_t ovHighBandShift;*/
 
   alphai[0] = FL2FXCONST_SGL(0.0f);
   alphai[1] = FL2FXCONST_SGL(0.0f);
@@ -922,11 +922,11 @@ void lppTransposerHBE(
        This is required in case that the patches do not cover the complete
        highband (because the last patch would be too short). Possible
        optimization: Clearing bands up to usb would be sufficient here. */
-    int targetStopBand =
+    int32_t targetStopBand =
         patchParam[pSettings->noOfPatches - 1].targetStartBand +
         patchParam[pSettings->noOfPatches - 1].numBandsInPatch;
 
-    int memSize = ((64) - targetStopBand) * sizeof(int32_t);
+    int32_t memSize = ((64) - targetStopBand) * sizeof(int32_t);
 
     for (i = startSample; i < stopSampleClear; i++) {
       FDKmemclear(&qmfBufferReal[i][targetStopBand], memSize);
@@ -960,9 +960,9 @@ void lppTransposerHBE(
     int32_t lowBandReal[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
     int32_t lowBandImag[(((1024) / (32) * (4) / 2) + (3 * (4))) + LPC_ORDER];
 
-    int resetLPCCoeffs = 0;
-    int dynamicScale = DFRACT_BITS - 1 - LPC_SCALE_FACTOR;
-    int acDetScale = 0; /* scaling of autocorrelation determinant */
+    int32_t resetLPCCoeffs = 0;
+    int32_t dynamicScale = DFRACT_BITS - 1 - LPC_SCALE_FACTOR;
+    int32_t acDetScale = 0; /* scaling of autocorrelation determinant */
 
     for (i = 0; i < LPC_ORDER; i++) {
       lowBandReal[i] = hLppTrans->lpcFilterStatesRealHBE[i][loBand];
@@ -1058,7 +1058,7 @@ void lppTransposerHBE(
       Quick check: is first filter coeff >= 1(4)
       */
       {
-        INT scale;
+        int32_t scale;
         int32_t result = fDivNorm(absTmp, absDet, &scale);
         scale = scale + ac.det_scale;
 
@@ -1083,7 +1083,7 @@ void lppTransposerHBE(
       Quick check: is second filter coeff >= 1(4)
       */
       {
-        INT scale;
+        int32_t scale;
         int32_t result = fDivNorm(absTmp, absDet, &scale);
         scale = scale + ac.det_scale;
 
@@ -1118,7 +1118,7 @@ void lppTransposerHBE(
       if (absTmp >= (ac.r11r >> 1)) {
         resetLPCCoeffs = 1;
       } else {
-        INT scale;
+        int32_t scale;
         int32_t result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
         alphar[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
 
@@ -1137,7 +1137,7 @@ void lppTransposerHBE(
       if (absTmp >= (ac.r11r >> 1)) {
         resetLPCCoeffs = 1;
       } else {
-        INT scale;
+        int32_t scale;
         int32_t result = fDivNorm(absTmp, fixp_abs(ac.r11r), &scale);
         alphai[0] = FX_DBL2FX_SGL(scaleValue(result, scale + 1));
         if ((tmp > FL2FX_DBL(0.0f)) ^ (ac.r11r < FL2FX_DBL(0.0f))) {
@@ -1185,14 +1185,14 @@ void lppTransposerHBE(
     Filter Step 3: insert the middle part which won't be windowed
     */
     if (bw <= FL2FXCONST_SGL(0.0f)) {
-      int descale = fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
+      int32_t descale = fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
       for (i = startSample; i < stopSample; i++) {
         qmfBufferReal[i][loBand] = lowBandReal[LPC_ORDER + i] >> descale;
         qmfBufferImag[i][loBand] = lowBandImag[LPC_ORDER + i] >> descale;
       }
     } else { /* bw <= 0 */
 
-      int descale = fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
+      int32_t descale = fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
       dynamicScale +=
           1; /* prevent negativ scale factor due to 'one additional bit
                 headroom' */
@@ -1245,17 +1245,17 @@ SBR_ERROR
 createLppTransposer(
     HANDLE_SBR_LPP_TRANS hs,        /*!< Handle of low power transposer  */
     TRANSPOSER_SETTINGS *pSettings, /*!< Pointer to settings */
-    const int highBandStartSb,      /*!< ? */
+    const int32_t highBandStartSb,      /*!< ? */
     UCHAR *v_k_master,              /*!< Master table */
-    const int numMaster,            /*!< Valid entries in master table */
-    const int usb,                  /*!< Highband area stop subband */
-    const int timeSlots,            /*!< Number of time slots */
-    const int nCols,                /*!< Number of colums (codec qmf bank) */
+    const int32_t numMaster,            /*!< Valid entries in master table */
+    const int32_t usb,                  /*!< Highband area stop subband */
+    const int32_t timeSlots,            /*!< Number of time slots */
+    const int32_t nCols,                /*!< Number of colums (codec qmf bank) */
     UCHAR *noiseBandTable,  /*!< Mapping of SBR noise bands to QMF bands */
-    const int noNoiseBands, /*!< Number of noise bands */
-    UINT fs,                /*!< Sample Frequency */
-    const int chan,         /*!< Channel number */
-    const int overlap) {
+    const int32_t noNoiseBands, /*!< Number of noise bands */
+    uint32_t fs,                /*!< Sample Frequency */
+    const int32_t chan,         /*!< Channel number */
+    const int32_t overlap) {
   /* FB inverse filtering settings */
   hs->pSettings = pSettings;
 
@@ -1281,9 +1281,9 @@ createLppTransposer(
   return SBRDEC_OK;
 }
 
-static int findClosestEntry(UCHAR goalSb, UCHAR *v_k_master, UCHAR numMaster,
+static int32_t findClosestEntry(UCHAR goalSb, UCHAR *v_k_master, UCHAR numMaster,
                             UCHAR direction) {
-  int index;
+  int32_t index;
 
   if (goalSb <= v_k_master[0]) return v_k_master[0];
 
@@ -1319,24 +1319,24 @@ resetLppTransposer(
     UCHAR *noiseBandTable, /*!< Mapping of SBR noise bands to QMF bands */
     UCHAR noNoiseBands,    /*!< Number of noise bands */
     UCHAR usb,             /*!< High band area: stop subband */
-    UINT fs                /*!< SBR output sampling frequency */
+    uint32_t fs                /*!< SBR output sampling frequency */
 ) {
   TRANSPOSER_SETTINGS *pSettings = hLppTrans->pSettings;
   PATCH_PARAM *patchParam = pSettings->patchParam;
 
-  int i, patch;
-  int targetStopBand;
-  int sourceStartBand;
-  int patchDistance;
-  int numBandsInPatch;
+  int32_t i, patch;
+  int32_t targetStopBand;
+  int32_t sourceStartBand;
+  int32_t patchDistance;
+  int32_t numBandsInPatch;
 
-  int lsb = v_k_master[0]; /* Start subband expressed in "non-critical" sampling
+  int32_t lsb = v_k_master[0]; /* Start subband expressed in "non-critical" sampling
                               terms*/
-  int xoverOffset = highBandStartSb -
+  int32_t xoverOffset = highBandStartSb -
                     lsb; /* Calculate distance in QMF bands between k0 and kx */
-  int startFreqHz;
+  int32_t startFreqHz;
 
-  int desiredBorder;
+  int32_t desiredBorder;
 
   usb = fixMin(usb, v_k_master[numMaster]); /* Avoid endless loops (compare with
                                                float code). */

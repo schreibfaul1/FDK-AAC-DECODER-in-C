@@ -111,7 +111,7 @@ amm-info@iis.fraunhofer.de
 #include "sac_dec.h"
 
 void SpatialDecApplyPhase(spatialDec *self, FIXP_SGL alpha,
-                          int lastSlotOfParamSet);
+                          int32_t lastSlotOfParamSet);
 
 /**
  * \brief  Apply QMF Analysis Filterbank.
@@ -128,9 +128,9 @@ void SpatialDecApplyPhase(spatialDec *self, FIXP_SGL alpha,
  * \return  Error status.
  */
 SACDEC_ERROR SpatialDecQMFAnalysis(spatialDec *self, const PCM_MPS *inData,
-                                   const INT ts, const INT bypassMode,
+                                   const int32_t ts, const int32_t bypassMode,
                                    int32_t **qmfReal, int32_t **qmfImag,
-                                   const int numInputChannels);
+                                   const int32_t numInputChannels);
 
 /**
  * \brief  Feed spatial decoder with external qmf data.
@@ -147,9 +147,9 @@ SACDEC_ERROR SpatialDecQMFAnalysis(spatialDec *self, const PCM_MPS *inData,
  * \return  Error status.
  */
 SACDEC_ERROR SpatialDecFeedQMF(spatialDec *self, int32_t **qmfInDataReal,
-                               int32_t **qmfInDataImag, const INT ts,
-                               const INT bypassMode, int32_t **qmfReal,
-                               int32_t **qmfImag, const INT numInputChannels);
+                               int32_t **qmfInDataImag, const int32_t ts,
+                               const int32_t bypassMode, int32_t **qmfReal,
+                               int32_t **qmfImag, const int32_t numInputChannels);
 
 /**
  * \brief  Apply Hybrdid Analysis Filterbank.
@@ -171,8 +171,8 @@ SACDEC_ERROR SpatialDecFeedQMF(spatialDec *self, int32_t **qmfInDataReal,
 SACDEC_ERROR SpatialDecHybridAnalysis(spatialDec *self, int32_t **qmfInputReal,
                                       int32_t **qmfInputImag,
                                       int32_t **hybOutputReal,
-                                      int32_t **hybOutputImag, const INT ts,
-                                      const INT numInputChannels);
+                                      int32_t **hybOutputImag, const int32_t ts,
+                                      const int32_t numInputChannels);
 
 /**
  * \brief  Create X data.
@@ -226,7 +226,7 @@ SACDEC_ERROR SpatialDecApplyM1_CreateW_Mode212(
  *
  * \return  Error status.
  */
-SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
+SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, int32_t ps, const FIXP_SGL alpha,
                                int32_t **wReal, int32_t **wImag,
                                int32_t **hybOutputRealDry,
                                int32_t **hybOutputImagDry,
@@ -249,7 +249,7 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
  * \return error
  */
 SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
-    spatialDec *self, INT ps, const FIXP_SGL alpha, int32_t **wReal,
+    spatialDec *self, int32_t ps, const FIXP_SGL alpha, int32_t **wReal,
     int32_t **wImag, int32_t **hybOutputRealDry, int32_t **hybOutputImagDry);
 
 /**
@@ -267,7 +267,7 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
  *
  * \return error
  */
-SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, INT ps,
+SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, int32_t ps,
                                        const FIXP_SGL alpha, int32_t **wReal,
                                        int32_t **wImag,
                                        int32_t **hybOutputRealDry,
@@ -284,14 +284,14 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, INT ps,
  *
  * \return  Error status.
  */
-SACDEC_ERROR SpatialDecSynthesis(spatialDec *self, const INT ts,
+SACDEC_ERROR SpatialDecSynthesis(spatialDec *self, const int32_t ts,
                                  int32_t **hybOutputReal,
                                  int32_t **hybOutputImag, PCM_MPS *timeOut,
-                                 const INT numInputChannels,
+                                 const int32_t numInputChannels,
                                  const FDK_channelMapDescr *const mapDescr);
 
 void SpatialDecBufferMatrices(spatialDec *self);
 
-int32_t getChGain(spatialDec *self, UINT ch, INT *scale);
+int32_t getChGain(spatialDec *self, uint32_t ch, int32_t *scale);
 
 #endif

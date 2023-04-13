@@ -107,8 +107,8 @@ amm-info@iis.fraunhofer.de
 
 UCHAR ToggleReadDirection(UCHAR readDirection);
 
-UINT HcrGetABitFromBitstream(HANDLE_FDK_BITSTREAM bs, const INT bsAnchor,
-                             INT *pLeftStartOfSegment,
-                             INT *pRightStartOfSegment, UCHAR readDirection);
+uint32_t HcrGetABitFromBitstream(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor,
+                             int32_t *pLeftStartOfSegment,
+                             int32_t *pRightStartOfSegment, UCHAR readDirection);
 
 #endif /* AACDEC_HCR_BIT_H */

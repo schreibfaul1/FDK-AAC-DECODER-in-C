@@ -112,16 +112,16 @@ enum { L = 0, R = 1 };
 
 #include "../libAACdec/block.h"
 
-int CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
+int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
                       CJointStereoData *pJointStereoData,
-                      const int windowGroups,
-                      const int scaleFactorBandsTransmitted,
-                      const int max_sfb_ste_clear,
+                      const int32_t windowGroups,
+                      const int32_t scaleFactorBandsTransmitted,
+                      const int32_t max_sfb_ste_clear,
                       CJointStereoPersistentData *pJointStereoPersistentData,
                       CCplxPredictionData *cplxPredictionData,
-                      int cplxPredictionActiv, int scaleFactorBandsTotal,
-                      int windowSequence, const UINT flags) {
-  int group, band;
+                      int32_t cplxPredictionActiv, int32_t scaleFactorBandsTotal,
+                      int32_t windowSequence, const uint32_t flags) {
+  int32_t group, band;
 
   pJointStereoData->MsMaskPresent = (UCHAR)FDKreadBits(bs, 2);
 
@@ -163,7 +163,7 @@ int CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
           pJointStereoData->cplx_pred_flag = 1;
 
           /* cplx_pred_data()  cp. ISO/IEC FDIS 23003-3:2011(E)  Table 26 */
-          int cplx_pred_all = 0; /* local use only */
+          int32_t cplx_pred_all = 0; /* local use only */
           cplx_pred_all = FDKreadBits(bs, 1);
 
           if (cplx_pred_all) {
@@ -196,7 +196,7 @@ int CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
     /* If all sfb are MS-ed then no complex prediction */
     if (pJointStereoData->MsMaskPresent == 3) {
       if (pJointStereoData->cplx_pred_flag) {
-        int delta_code_time = 0;
+        int32_t delta_code_time = 0;
 
         /* set pointer to Huffman codebooks */
         const CodeBookDescription *hcb = &AACcodeBookDescriptionTable[BOOKSCL];
@@ -241,7 +241,7 @@ int CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
         }
 
         {
-          int last_alpha_q_re = 0, last_alpha_q_im = 0;
+          int32_t last_alpha_q_re = 0, last_alpha_q_im = 0;
 
           for (group = 0; group < windowGroups; group++) {
             for (band = 0; band < scaleFactorBandsTransmitted;
@@ -285,7 +285,7 @@ int CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
               } /* if (delta_code_time == 1) */
 
               if (pJointStereoData->MsUsed[band] & ((UCHAR)1 << group)) {
-                int dpcm_alpha_re, dpcm_alpha_im;
+                int32_t dpcm_alpha_re, dpcm_alpha_im;
 
                 dpcm_alpha_re = CBlock_DecodeHuffmanWord(bs, hcb);
                 dpcm_alpha_re -= 60;
@@ -353,20 +353,20 @@ int CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
 }
 
 static void CJointStereo_filterAndAdd(
-    int32_t *in, int len, int windowLen, const FIXP_FILT *coeff, int32_t *out,
+    int32_t *in, int32_t len, int32_t windowLen, const FIXP_FILT *coeff, int32_t *out,
     UCHAR isCurrent /* output values with even index get a
                        positve addon (=1) or a negative addon
                        (=0) */
 ) {
-  int i, j;
+  int32_t i, j;
 
-  int indices_1[] = {2, 1, 0, 1, 2, 3};
-  int indices_2[] = {1, 0, 0, 2, 3, 4};
-  int indices_3[] = {0, 0, 1, 3, 4, 5};
+  int32_t indices_1[] = {2, 1, 0, 1, 2, 3};
+  int32_t indices_2[] = {1, 0, 0, 2, 3, 4};
+  int32_t indices_3[] = {0, 0, 1, 3, 4, 5};
 
-  int subtr_1[] = {6, 5, 4, 2, 1, 1};
-  int subtr_2[] = {5, 4, 3, 1, 1, 2};
-  int subtr_3[] = {4, 3, 2, 1, 2, 3};
+  int32_t subtr_1[] = {6, 5, 4, 2, 1, 1};
+  int32_t subtr_2[] = {5, 4, 3, 1, 1, 2};
+  int32_t subtr_3[] = {4, 3, 2, 1, 2, 3};
 
   if (isCurrent == 1) {
     /* exploit the symmetry of the table: coeff[6] = - coeff[0],
@@ -492,10 +492,10 @@ static void CJointStereo_filterAndAdd(
 
 static inline void CJointStereo_GenerateMSOutput(int32_t *pSpecLCurrBand,
                                                  int32_t *pSpecRCurrBand,
-                                                 UINT leftScale,
-                                                 UINT rightScale,
-                                                 UINT nSfbBands) {
-  unsigned int i;
+                                                 uint32_t leftScale,
+                                                 uint32_t rightScale,
+                                                 uint32_t nSfbBands) {
+  uint32_t i;
 
   int32_t leftCoefficient0;
   int32_t leftCoefficient1;
@@ -547,25 +547,25 @@ void CJointStereo_ApplyMS(
     int32_t *spectrumL, int32_t *spectrumR, SHORT *SFBleftScale,
     SHORT *SFBrightScale, SHORT *specScaleL, SHORT *specScaleR,
     const SHORT *pScaleFactorBandOffsets, const UCHAR *pWindowGroupLength,
-    const int windowGroups, const int max_sfb_ste_outside,
-    const int scaleFactorBandsTransmittedL,
-    const int scaleFactorBandsTransmittedR, int32_t *store_dmx_re_prev,
-    SHORT *store_dmx_re_prev_e, const int mainband_flag) {
-  int window, group, band;
+    const int32_t windowGroups, const int32_t max_sfb_ste_outside,
+    const int32_t scaleFactorBandsTransmittedL,
+    const int32_t scaleFactorBandsTransmittedR, int32_t *store_dmx_re_prev,
+    SHORT *store_dmx_re_prev_e, const int32_t mainband_flag) {
+  int32_t window, group, band;
   UCHAR groupMask;
   CJointStereoData *pJointStereoData =
       &pAacDecoderChannelInfo[L]->pComData->jointStereoData;
   CCplxPredictionData *cplxPredictionData =
       pAacDecoderChannelInfo[L]->pComStaticData->cplxPredictionData;
 
-  int max_sfb_ste =
+  int32_t max_sfb_ste =
       fMax(scaleFactorBandsTransmittedL, scaleFactorBandsTransmittedR);
-  int min_sfb_ste =
+  int32_t min_sfb_ste =
       fMin(scaleFactorBandsTransmittedL, scaleFactorBandsTransmittedR);
-  int scaleFactorBandsTransmitted = min_sfb_ste;
+  int32_t scaleFactorBandsTransmitted = min_sfb_ste;
 
   if (pJointStereoData->cplx_pred_flag) {
-    int windowLen, groupwin, frameMaxScale;
+    int32_t windowLen, groupwin, frameMaxScale;
     CJointStereoPersistentData *pJointStereoPersistentData =
         &pAacDecoderStaticChannelInfo[L]
              ->pCpeStaticData->jointStereoPersistentData;
@@ -596,10 +596,10 @@ void CJointStereo_ApplyMS(
 
     const FIXP_FILT *pCoeff;
     const FIXP_FILT *pCoeffPrev;
-    int coeffPointerOffset;
+    int32_t coeffPointerOffset;
 
-    int previousShape = (int)pJointStereoPersistentData->winShapePrev;
-    int currentShape = (int)pAacDecoderChannelInfo[L]->icsInfo.WindowShape;
+    int32_t previousShape = (int32_t)pJointStereoPersistentData->winShapePrev;
+    int32_t currentShape = (int32_t)pAacDecoderChannelInfo[L]->icsInfo.WindowShape;
 
     /* complex stereo prediction */
 
@@ -708,13 +708,13 @@ void CJointStereo_ApplyMS(
            groupwin++, window++) {
         SHORT *leftScale = &SFBleftScale[window * 16];
         SHORT *rightScale = &SFBrightScale[window * 16];
-        int windowMaxScale = 0;
+        int32_t windowMaxScale = 0;
 
         /* find maximum scaling factor of all bands in this window */
         for (band = 0; band < min_sfb_ste; band++) {
-          int lScale = leftScale[band];
-          int rScale = rightScale[band];
-          int commonScale = ((lScale > rScale) ? lScale : rScale);
+          int32_t lScale = leftScale[band];
+          int32_t rScale = rightScale[band];
+          int32_t commonScale = ((lScale > rScale) ? lScale : rScale);
           windowMaxScale =
               (windowMaxScale < commonScale) ? commonScale : windowMaxScale;
         }
@@ -722,7 +722,7 @@ void CJointStereo_ApplyMS(
             min_sfb_ste) { /* i.e. scaleFactorBandsTransmittedL == max_sfb_ste
                             */
           for (; band < max_sfb_ste; band++) {
-            int lScale = leftScale[band];
+            int32_t lScale = leftScale[band];
             windowMaxScale =
                 (windowMaxScale < lScale) ? lScale : windowMaxScale;
           }
@@ -731,7 +731,7 @@ void CJointStereo_ApplyMS(
               min_sfb_ste) { /* i.e. scaleFactorBandsTransmittedR == max_sfb_ste
                               */
             for (; band < max_sfb_ste; band++) {
-              int rScale = rightScale[band];
+              int32_t rScale = rightScale[band];
               windowMaxScale =
                   (windowMaxScale < rScale) ? rScale : windowMaxScale;
             }
@@ -771,9 +771,9 @@ void CJointStereo_ApplyMS(
             if ((pAacDecoderChannelInfo[L]->icsInfo.WindowSequence !=
                  BLOCK_SHORT) ||
                 (window == 0)) {
-              int index_offset = 0;
-              int srLeftChan = 0;
-              int srRightChan = 0;
+              int32_t index_offset = 0;
+              int32_t srLeftChan = 0;
+              int32_t srRightChan = 0;
               if (pAacDecoderChannelInfo[L]->icsInfo.WindowSequence ==
                   BLOCK_SHORT) {
                 /* use the last window of the previous frame for MDCT
@@ -805,7 +805,7 @@ void CJointStereo_ApplyMS(
                 dmx_re_prev_e = 0;
               } else {
                 if (cplxPredictionData->pred_dir == 0) {
-                  for (int i = 0; i < windowLen; i++) {
+                  for (int32_t i = 0; i < windowLen; i++) {
                     dmx_re_prev[i] =
                         ((staticSpectralCoeffsL[index_offset + i] >>
                           fMin(DFRACT_BITS - 1, srLeftChan + 1)) +
@@ -813,7 +813,7 @@ void CJointStereo_ApplyMS(
                           fMin(DFRACT_BITS - 1, srRightChan + 1)));
                   }
                 } else {
-                  for (int i = 0; i < windowLen; i++) {
+                  for (int32_t i = 0; i < windowLen; i++) {
                     dmx_re_prev[i] =
                         ((staticSpectralCoeffsL[index_offset + i] >>
                           fMin(DFRACT_BITS - 1, srLeftChan + 1)) -
@@ -890,8 +890,8 @@ void CJointStereo_ApplyMS(
         for (band = 0; band < max_sfb_ste; band++) {
           /* first adapt scaling of current band to scaling of current window =>
            * shift signal right */
-          int lScale = leftScale[band];
-          int rScale = rightScale[band];
+          int32_t lScale = leftScale[band];
+          int32_t rScale = rightScale[band];
 
           lScale = fMin(DFRACT_BITS - 1, specScaleL[window] - lScale);
           rScale = fMin(DFRACT_BITS - 1,
@@ -905,7 +905,7 @@ void CJointStereo_ApplyMS(
            * max_sfb */
           leftScale[band] = rightScale[band] = specScaleL[window];
 
-          for (int i = pScaleFactorBandOffsets[band];
+          for (int32_t i = pScaleFactorBandOffsets[band];
                i < pScaleFactorBandOffsets[band + 1]; i++) {
             spectrumL[windowLen * window + i] >>= lScale;
             spectrumR[windowLen * window + i] >>= rScale;
@@ -913,14 +913,14 @@ void CJointStereo_ApplyMS(
 
           /* now calculate downmix MDCT */
           if (pJointStereoData->MsUsed[band] & groupMask) {
-            for (int i = pScaleFactorBandOffsets[band];
+            for (int32_t i = pScaleFactorBandOffsets[band];
                  i < pScaleFactorBandOffsets[band + 1]; i++) {
               dmx_re[windowLen * window + i] =
                   spectrumL[windowLen * window + i];
             }
           } else {
             if (cplxPredictionData->pred_dir == 0) {
-              for (int i = pScaleFactorBandOffsets[band];
+              for (int32_t i = pScaleFactorBandOffsets[band];
                    i < pScaleFactorBandOffsets[band + 1]; i++) {
                 dmx_re[windowLen * window + i] =
                     (spectrumL[windowLen * window + i] +
@@ -928,7 +928,7 @@ void CJointStereo_ApplyMS(
                     1;
               }
             } else {
-              for (int i = pScaleFactorBandOffsets[band];
+              for (int32_t i = pScaleFactorBandOffsets[band];
                    i < pScaleFactorBandOffsets[band + 1]; i++) {
                 dmx_re[windowLen * window + i] =
                     (spectrumL[windowLen * window + i] -
@@ -940,7 +940,7 @@ void CJointStereo_ApplyMS(
 
         } /* for ( band=0; band<max_sfb_ste; band++ ) */
         /* Clean until the end */
-        for (int i = pScaleFactorBandOffsets[max_sfb_ste_outside];
+        for (int32_t i = pScaleFactorBandOffsets[max_sfb_ste_outside];
              i < windowLen; i++) {
           dmx_re[windowLen * window + i] = (int32_t)0;
         }
@@ -961,7 +961,7 @@ void CJointStereo_ApplyMS(
 
             /* The length of the filter processing must be extended because of
              * filter boundary problems */
-            int extended_band = fMin(
+            int32_t extended_band = fMin(
                 pScaleFactorBandOffsets[max_sfb_ste_outside] + 7, windowLen);
 
             /* 3.2. estimate downmix MDST from current frame downmix MDCT */
@@ -994,7 +994,7 @@ void CJointStereo_ApplyMS(
         /* 0.1 in Q-3.34 */
         const int32_t pointOne = 0x66666666; /* 0.8 */
         /* Shift value for the downmix */
-        const INT shift_dmx = SF_FNA_COEFFS + 1;
+        const int32_t shift_dmx = SF_FNA_COEFFS + 1;
 
         for (band = 0; band < max_sfb_ste_outside; band++) {
           if (pJointStereoData->MsUsed[band] & groupMask) {
@@ -1004,11 +1004,11 @@ void CJointStereo_ApplyMS(
                 (FIXP_SGL)cplxPredictionData->alpha_q_im[group][band];
 
             /* Find the minimum common headroom for alpha_re and alpha_im */
-            int alpha_re_headroom = CountLeadingBits((INT)tempRe) - 16;
+            int32_t alpha_re_headroom = CountLeadingBits((int32_t)tempRe) - 16;
             if (tempRe == (FIXP_SGL)0) alpha_re_headroom = 15;
-            int alpha_im_headroom = CountLeadingBits((INT)tempIm) - 16;
+            int32_t alpha_im_headroom = CountLeadingBits((int32_t)tempIm) - 16;
             if (tempIm == (FIXP_SGL)0) alpha_im_headroom = 15;
-            int val = fMin(alpha_re_headroom, alpha_im_headroom);
+            int32_t val = fMin(alpha_re_headroom, alpha_im_headroom);
 
             /* Multiply alpha by 0.1 with maximum precision */
             FDK_ASSERT(val >= 0);
@@ -1017,9 +1017,9 @@ void CJointStereo_ApplyMS(
 
             /* Calculate alpha exponent */
             /* (Q-3.34 * Q15.0) shifted left by "val" */
-            int alpha_re_exp = -3 + 15 - val;
+            int32_t alpha_re_exp = -3 + 15 - val;
 
-            int help3_shift = alpha_re_exp + 1;
+            int32_t help3_shift = alpha_re_exp + 1;
 
             int32_t *p2CoeffL = &(
                 spectrumL[windowLen * window + pScaleFactorBandOffsets[band]]);
@@ -1030,7 +1030,7 @@ void CJointStereo_ApplyMS(
             int32_t *p2dmxRe =
                 &(dmx_re[windowLen * window + pScaleFactorBandOffsets[band]]);
 
-            for (int i = pScaleFactorBandOffsets[band];
+            for (int32_t i = pScaleFactorBandOffsets[band];
                  i < pScaleFactorBandOffsets[band + 1]; i++) {
               /* Calculating helper term:
                     side = specR[i] - alpha_re[i] * dmx_re[i] - alpha_im[i] *
@@ -1076,7 +1076,7 @@ void CJointStereo_ApplyMS(
     for (window = 0, group = 0; group < windowGroups; group++) {
       groupMask = 1 << group;
 
-      for (int groupwin = 0; groupwin < pWindowGroupLength[group];
+      for (int32_t groupwin = 0; groupwin < pWindowGroupLength[group];
            groupwin++, window++) {
         int32_t *leftSpectrum, *rightSpectrum;
         SHORT *leftScale = &SFBleftScale[window * 16];
@@ -1089,10 +1089,10 @@ void CJointStereo_ApplyMS(
 
         for (band = 0; band < max_sfb_ste_outside; band++) {
           if (pJointStereoData->MsUsed[band] & groupMask) {
-            int lScale = leftScale[band];
-            int rScale = rightScale[band];
-            int commonScale = lScale > rScale ? lScale : rScale;
-            unsigned int offsetCurrBand, offsetNextBand;
+            int32_t lScale = leftScale[band];
+            int32_t rScale = rightScale[band];
+            int32_t commonScale = lScale > rScale ? lScale : rScale;
+            uint32_t offsetCurrBand, offsetNextBand;
 
             /* ISO/IEC 14496-3 Chapter 4.6.8.1.1 :
                M/S joint channel coding can only be used if common_window is 1.
@@ -1125,7 +1125,7 @@ void CJointStereo_ApplyMS(
             if (pJointStereoData->MsUsed[band] & groupMask) {
               rightScale[band] = leftScale[band];
 
-              for (int index = pScaleFactorBandOffsets[band];
+              for (int32_t index = pScaleFactorBandOffsets[band];
                    index < pScaleFactorBandOffsets[band + 1]; index++) {
                 int32_t leftCoefficient = leftSpectrum[index];
                 /* int32_t rightCoefficient = (int32_t)0; */
@@ -1138,7 +1138,7 @@ void CJointStereo_ApplyMS(
             if (pJointStereoData->MsUsed[band] & groupMask) {
               leftScale[band] = rightScale[band];
 
-              for (int index = pScaleFactorBandOffsets[band];
+              for (int32_t index = pScaleFactorBandOffsets[band];
                    index < pScaleFactorBandOffsets[band + 1]; index++) {
                 /* int32_t leftCoefficient  = (int32_t)0; */
                 int32_t rightCoefficient = rightSpectrum[index];
@@ -1165,12 +1165,12 @@ void CJointStereo_ApplyMS(
 void CJointStereo_ApplyIS(CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
                           const SHORT *pScaleFactorBandOffsets,
                           const UCHAR *pWindowGroupLength,
-                          const int windowGroups,
-                          const int scaleFactorBandsTransmitted) {
+                          const int32_t windowGroups,
+                          const int32_t scaleFactorBandsTransmitted) {
   CJointStereoData *pJointStereoData =
       &pAacDecoderChannelInfo[L]->pComData->jointStereoData;
 
-  for (int window = 0, group = 0; group < windowGroups; group++) {
+  for (int32_t window = 0, group = 0; group < windowGroups; group++) {
     UCHAR *CodeBook;
     SHORT *ScaleFactor;
     UCHAR groupMask = 1 << group;
@@ -1179,14 +1179,14 @@ void CJointStereo_ApplyIS(CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
     ScaleFactor =
         &pAacDecoderChannelInfo[R]->pDynData->aScaleFactor[group * 16];
 
-    for (int groupwin = 0; groupwin < pWindowGroupLength[group];
+    for (int32_t groupwin = 0; groupwin < pWindowGroupLength[group];
          groupwin++, window++) {
       int32_t *leftSpectrum, *rightSpectrum;
       SHORT *leftScale =
           &pAacDecoderChannelInfo[L]->pDynData->aSfbScale[window * 16];
       SHORT *rightScale =
           &pAacDecoderChannelInfo[R]->pDynData->aSfbScale[window * 16];
-      int band;
+      int32_t band;
 
       leftSpectrum = SPEC(pAacDecoderChannelInfo[L]->pSpectralCoefficient,
                           window, pAacDecoderChannelInfo[L]->granuleLength);
@@ -1196,10 +1196,10 @@ void CJointStereo_ApplyIS(CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
       for (band = 0; band < scaleFactorBandsTransmitted; band++) {
         if ((CodeBook[band] == INTENSITY_HCB) ||
             (CodeBook[band] == INTENSITY_HCB2)) {
-          int bandScale = -(ScaleFactor[band] + 100);
+          int32_t bandScale = -(ScaleFactor[band] + 100);
 
-          int msb = bandScale >> 2;
-          int lsb = bandScale & 0x03;
+          int32_t msb = bandScale >> 2;
+          int32_t lsb = bandScale & 0x03;
 
           /* exponent of MantissaTable[lsb][0] is 1, thus msb+1 below. */
           int32_t scale = MantissaTable[lsb][0];
@@ -1228,7 +1228,7 @@ void CJointStereo_ApplyIS(CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
             }
           }
 
-          for (int index = pScaleFactorBandOffsets[band];
+          for (int32_t index = pScaleFactorBandOffsets[band];
                index < pScaleFactorBandOffsets[band + 1]; index++) {
             rightSpectrum[index] = fMult(leftSpectrum[index], scale);
           }

@@ -156,9 +156,9 @@ typedef struct {
   const UCHAR *pPVCTab1_dp;  /**< Mapping of pvcID to PVC mode 1 table */
   int32_t predEsg[PVC_NTIMESLOT]
                   [PVC_NBHIGH_MAX]; /**< Predicted Energy in linear domain */
-  int predEsg_exp[PVC_NTIMESLOT];   /**< Exponent of predicted Energy in linear
+  int32_t predEsg_exp[PVC_NTIMESLOT];   /**< Exponent of predicted Energy in linear
                                        domain */
-  int predEsg_expMax;               /**< Maximum of predEsg_exp[] */
+  int32_t predEsg_expMax;               /**< Maximum of predEsg_exp[] */
 } PVC_DYNAMIC_DATA;
 
 /**
@@ -173,10 +173,10 @@ typedef struct {
  * \param[in] pvcBorder0 Start SBR time slot of PVC frame
  * \param[in] pPvcID Pointer to array of PvcIDs read from bitstream
  */
-int pvcInitFrame(PVC_STATIC_DATA *pPvcStaticData,
+int32_t pvcInitFrame(PVC_STATIC_DATA *pPvcStaticData,
                  PVC_DYNAMIC_DATA *pPvcDynamicData, const UCHAR pvcMode,
-                 const UCHAR ns, const int RATE, const int kx,
-                 const int pvcBorder0, const UCHAR *pPvcID);
+                 const UCHAR ns, const int32_t RATE, const int32_t kx,
+                 const int32_t pvcBorder0, const UCHAR *pPvcID);
 
 /**
  * \brief Wrapper function for pvcDecodeTimeSlot() to decode PVC data of one
@@ -192,8 +192,8 @@ int pvcInitFrame(PVC_STATIC_DATA *pPvcStaticData,
  */
 void pvcDecodeFrame(PVC_STATIC_DATA *pPvcStaticData,
                     PVC_DYNAMIC_DATA *pPvcDynamicData, int32_t **qmfBufferReal,
-                    int32_t **qmfBufferImag, const int overlap,
-                    const int qmfExponentOverlap, const int qmfExponentCurrent);
+                    int32_t **qmfBufferImag, const int32_t overlap,
+                    const int32_t qmfExponentOverlap, const int32_t qmfExponentCurrent);
 
 /**
  * \brief Decode PVC data for one SBR time slot (call if pvcMode = 1,2)
@@ -211,9 +211,9 @@ void pvcDecodeFrame(PVC_STATIC_DATA *pPvcStaticData,
 void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
                        PVC_DYNAMIC_DATA *pPvcDynamicData,
                        int32_t **qmfSlotReal, int32_t **qmfSlotImag,
-                       const int qmfExponent, const int pvcBorder0,
-                       const int timeSlotNumber, int32_t predictedEsgSlot[],
-                       int *predictedEsg_exp);
+                       const int32_t qmfExponent, const int32_t pvcBorder0,
+                       const int32_t timeSlotNumber, int32_t predictedEsgSlot[],
+                       int32_t *predictedEsg_exp);
 
 /**
  * \brief Finish the current PVC frame (call if pvcMode = 0,1,2)
@@ -231,8 +231,8 @@ void pvcEndFrame(PVC_STATIC_DATA *pPvcStaticData,
  * \param[out] pOutput Output array for predicted energies
  * \param[out] pOutput_exp Exponent of predicted energies
  */
-void expandPredEsg(const PVC_DYNAMIC_DATA *pPvcDynamicData, const int timeSlot,
-                   const int lengthOutputVector, int32_t *pOutput,
+void expandPredEsg(const PVC_DYNAMIC_DATA *pPvcDynamicData, const int32_t timeSlot,
+                   const int32_t lengthOutputVector, int32_t *pOutput,
                    SCHAR *pOutput_exp);
 
 #endif /* PVC_DEC_H*/

@@ -148,12 +148,12 @@ struct FDK_HYBRID_SETUP {
   SCHAR kHybrid[3];     /*!< Filter configuration of each QMF band. */
   UCHAR protoLen;       /*!< Prototype filter length. */
   UCHAR filterDelay;    /*!< Delay caused by hybrid filter. */
-  const INT
+  const int32_t
       *pReadIdxTable; /*!< Helper table to access input data ringbuffer. */
 };
 
 /*--------------- constants ---------------------------*/
-static const INT ringbuffIdxTab[2 * 13] = {0, 1,  2,  3,  4, 5,  6,  7, 8,
+static const int32_t ringbuffIdxTab[2 * 13] = {0, 1,  2,  3,  4, 5,  6,  7, 8,
                                            9, 10, 11, 12, 0, 1,  2,  3, 4,
                                            5, 6,  7,  8,  9, 10, 11, 12};
 
@@ -192,19 +192,19 @@ static const FIXP_HTB HybFilterCoef4[13] = {FL2FXCONST_HTB(-0.00305151927305f),
                                             FL2FXCONST_HTB(-0.00305151927305f)};
 
 /*--------------- function declarations ---------------*/
-static INT kChannelFiltering(const int32_t *const pQmfReal,
+static int32_t kChannelFiltering(const int32_t *const pQmfReal,
                              const int32_t *const pQmfImag,
-                             const INT *const pReadIdx,
+                             const int32_t *const pReadIdx,
                              int32_t *const mHybridReal,
                              int32_t *const mHybridImag,
                              const SCHAR hybridConfig);
 
 /*--------------- function definitions ----------------*/
 
-INT FDKhybridAnalysisOpen(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
-                          int32_t *const pLFmemory, const UINT LFmemorySize,
-                          int32_t *const pHFmemory, const UINT HFmemorySize) {
-  INT err = 0;
+int32_t FDKhybridAnalysisOpen(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
+                          int32_t *const pLFmemory, const uint32_t LFmemorySize,
+                          int32_t *const pHFmemory, const uint32_t HFmemorySize) {
+  int32_t err = 0;
 
   /* Save pointer to extern memory. */
   hAnalysisHybFilter->pLFmemory = pLFmemory;
@@ -216,11 +216,11 @@ INT FDKhybridAnalysisOpen(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
   return err;
 }
 
-INT FDKhybridAnalysisInit(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
-                          const FDK_HYBRID_MODE mode, const INT qmfBands,
-                          const INT cplxBands, const INT initStatesFlag) {
-  int k;
-  INT err = 0;
+int32_t FDKhybridAnalysisInit(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
+                          const FDK_HYBRID_MODE mode, const int32_t qmfBands,
+                          const int32_t cplxBands, const int32_t initStatesFlag) {
+  int32_t k;
+  int32_t err = 0;
   int32_t *pMem = NULL;
   HANDLE_FDK_HYBRID_SETUP setup = NULL;
 
@@ -310,14 +310,14 @@ bail:
   return err;
 }
 
-INT FDKhybridAnalysisScaleStates(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
-                                 const INT scalingValue) {
-  INT err = 0;
+int32_t FDKhybridAnalysisScaleStates(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
+                                 const int32_t scalingValue) {
+  int32_t err = 0;
 
   if (hAnalysisHybFilter == NULL) {
     err = 1; /* invalid handle */
   } else {
-    int k;
+    int32_t k;
     HANDLE_FDK_HYBRID_SETUP setup = hAnalysisHybFilter->pSetup;
 
     /* Scale LF buffer */
@@ -342,22 +342,22 @@ INT FDKhybridAnalysisScaleStates(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
   return err;
 }
 
-INT FDKhybridAnalysisApply(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
+int32_t FDKhybridAnalysisApply(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
                            const int32_t *const pQmfReal,
                            const int32_t *const pQmfImag,
                            int32_t *const pHybridReal,
                            int32_t *const pHybridImag) {
-  int k, hybOffset = 0;
-  INT err = 0;
-  const int nrQmfBandsLF =
+  int32_t k, hybOffset = 0;
+  int32_t err = 0;
+  const int32_t nrQmfBandsLF =
       hAnalysisHybFilter->pSetup
           ->nrQmfBands; /* number of QMF bands to be converted to hybrid */
 
-  const int writIndex = hAnalysisHybFilter->bufferLFpos;
-  int readIndex = hAnalysisHybFilter->bufferLFpos;
+  const int32_t writIndex = hAnalysisHybFilter->bufferLFpos;
+  int32_t readIndex = hAnalysisHybFilter->bufferLFpos;
 
   if (++readIndex >= hAnalysisHybFilter->pSetup->protoLen) readIndex = 0;
-  const INT *pBufferLFreadIdx =
+  const int32_t *pBufferLFreadIdx =
       &hAnalysisHybFilter->pSetup->pReadIdxTable[readIndex];
 
   /*
@@ -423,8 +423,8 @@ INT FDKhybridAnalysisApply(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
   return err;
 }
 
-INT FDKhybridAnalysisClose(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter) {
-  INT err = 0;
+int32_t FDKhybridAnalysisClose(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter) {
+  int32_t err = 0;
 
   if (hAnalysisHybFilter != NULL) {
     hAnalysisHybFilter->pLFmemory = NULL;
@@ -436,10 +436,10 @@ INT FDKhybridAnalysisClose(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter) {
   return err;
 }
 
-INT FDKhybridSynthesisInit(HANDLE_FDK_SYN_HYB_FILTER hSynthesisHybFilter,
-                           const FDK_HYBRID_MODE mode, const INT qmfBands,
-                           const INT cplxBands) {
-  INT err = 0;
+int32_t FDKhybridSynthesisInit(HANDLE_FDK_SYN_HYB_FILTER hSynthesisHybFilter,
+                           const FDK_HYBRID_MODE mode, const int32_t qmfBands,
+                           const int32_t cplxBands) {
+  int32_t err = 0;
   HANDLE_FDK_HYBRID_SETUP setup = NULL;
 
   switch (mode) {
@@ -470,15 +470,15 @@ void FDKhybridSynthesisApply(HANDLE_FDK_SYN_HYB_FILTER hSynthesisHybFilter,
                              const int32_t *const pHybridImag,
                              int32_t *const pQmfReal,
                              int32_t *const pQmfImag) {
-  int k, n, hybOffset = 0;
-  const INT nrQmfBandsLF = hSynthesisHybFilter->pSetup->nrQmfBands;
+  int32_t k, n, hybOffset = 0;
+  const int32_t nrQmfBandsLF = hSynthesisHybFilter->pSetup->nrQmfBands;
 
   /*
    * LF buffer.
    */
   for (k = 0; k < nrQmfBandsLF; k++) {
-    const int nHybBands = hSynthesisHybFilter->pSetup->nHybBands[k];
-    const int scale = hSynthesisHybFilter->pSetup->synHybScale[k];
+    const int32_t nHybBands = hSynthesisHybFilter->pSetup->nHybBands[k];
+    const int32_t scale = hSynthesisHybFilter->pSetup->synHybScale[k];
 
     int32_t accu1 = FL2FXCONST_DBL(0.f);
     int32_t accu2 = FL2FXCONST_DBL(0.f);
@@ -510,10 +510,10 @@ void FDKhybridSynthesisApply(HANDLE_FDK_SYN_HYB_FILTER hSynthesisHybFilter,
 
 static void dualChannelFiltering(const int32_t *const pQmfReal,
                                  const int32_t *const pQmfImag,
-                                 const INT *const pReadIdx,
+                                 const int32_t *const pReadIdx,
                                  int32_t *const mHybridReal,
                                  int32_t *const mHybridImag,
-                                 const INT invert) {
+                                 const int32_t invert) {
   int32_t r1, r6;
   int32_t i1, i6;
 
@@ -548,10 +548,10 @@ static void dualChannelFiltering(const int32_t *const pQmfReal,
 
 static void fourChannelFiltering(const int32_t *const pQmfReal,
                                  const int32_t *const pQmfImag,
-                                 const INT *const pReadIdx,
+                                 const int32_t *const pReadIdx,
                                  int32_t *const mHybridReal,
                                  int32_t *const mHybridImag,
-                                 const INT invert) {
+                                 const int32_t invert) {
   const FIXP_HTB *p = HybFilterCoef4;
 
   int32_t fft[8];
@@ -688,12 +688,12 @@ static void fourChannelFiltering(const int32_t *const pQmfReal,
 
 static void eightChannelFiltering(const int32_t *const pQmfReal,
                                   const int32_t *const pQmfImag,
-                                  const INT *const pReadIdx,
+                                  const int32_t *const pReadIdx,
                                   int32_t *const mHybridReal,
                                   int32_t *const mHybridImag,
-                                  const INT invert) {
+                                  const int32_t invert) {
   const FIXP_HTP *p = HybFilterCoef8;
-  INT k, sc;
+  int32_t k, sc;
 
   int32_t mfft[16 + ALIGNMENT_DEFAULT];
   int32_t *pfft = (int32_t *)ALIGN_PTR(mfft);
@@ -783,13 +783,13 @@ static void eightChannelFiltering(const int32_t *const pQmfReal,
   }
 }
 
-static INT kChannelFiltering(const int32_t *const pQmfReal,
+static int32_t kChannelFiltering(const int32_t *const pQmfReal,
                              const int32_t *const pQmfImag,
-                             const INT *const pReadIdx,
+                             const int32_t *const pReadIdx,
                              int32_t *const mHybridReal,
                              int32_t *const mHybridImag,
                              const SCHAR hybridConfig) {
-  INT err = 0;
+  int32_t err = 0;
 
   switch (hybridConfig) {
     case 2:

@@ -99,19 +99,21 @@ amm-info@iis.fraunhofer.de
    Description: matrix memory allocation
 
 *******************************************************************************/
+
+#include <stdint.h>
 #include "FDK_matrixCalloc.h"
 
 #include "../libSYS/genericStds.h"
 
-void *fdkCallocMatrix1D_aligned(UINT dim1, UINT size) {
+void *fdkCallocMatrix1D_aligned(uint32_t dim1, uint32_t size) {
   return FDKaalloc(dim1 * size, ALIGNMENT_DEFAULT);
 }
 
-void *fdkCallocMatrix1D_int(UINT dim, UINT size, MEMORY_SECTION s) {
+void *fdkCallocMatrix1D_int(uint32_t dim, uint32_t size, MEMORY_SECTION s) {
   return FDKcalloc_L(dim, size, s);
 }
 
-void *fdkCallocMatrix1D_int_aligned(UINT dim, UINT size, MEMORY_SECTION s) {
+void *fdkCallocMatrix1D_int_aligned(uint32_t dim, uint32_t size, MEMORY_SECTION s) {
   return FDKaalloc_L(dim * size, ALIGNMENT_DEFAULT, s);
 }
 
@@ -127,12 +129,12 @@ void fdkFreeMatrix1D_aligned(void *p) {
   }
 }
 
-void *fdkCallocMatrix1D(UINT dim1, UINT size) { return FDKcalloc(dim1, size); }
+void *fdkCallocMatrix1D(uint32_t dim1, uint32_t size) { return FDKcalloc(dim1, size); }
 
 /* 2D */
-void **fdkCallocMatrix2D(UINT dim1, UINT dim2, UINT size) {
+void **fdkCallocMatrix2D(uint32_t dim1, uint32_t dim2, uint32_t size) {
   void **p1;
-  UINT i;
+  uint32_t i;
   char *p2;
   if (!dim1 || !dim2) return NULL;
   if ((p1 = (void **)fdkCallocMatrix1D(dim1, sizeof(void *))) == NULL) {
@@ -151,9 +153,9 @@ bail:
   return p1;
 }
 
-void **fdkCallocMatrix2D_aligned(UINT dim1, UINT dim2, UINT size) {
+void **fdkCallocMatrix2D_aligned(uint32_t dim1, uint32_t dim2, uint32_t size) {
   void **p1;
-  UINT i;
+  uint32_t i;
   char *p2;
   if (!dim1 || !dim2) return NULL;
   if ((p1 = (void **)fdkCallocMatrix1D(dim1, sizeof(void *))) == NULL) {
@@ -184,10 +186,10 @@ void fdkFreeMatrix2D_aligned(void **p) {
   fdkFreeMatrix1D(p);
 }
 
-void **fdkCallocMatrix2D_int(UINT dim1, UINT dim2, UINT size,
+void **fdkCallocMatrix2D_int(uint32_t dim1, uint32_t dim2, uint32_t size,
                              MEMORY_SECTION s) {
   void **p1;
-  UINT i;
+  uint32_t i;
   char *p2;
 
   if (!dim1 || !dim2) return NULL;
@@ -207,10 +209,10 @@ bail:
   return p1;
 }
 
-void **fdkCallocMatrix2D_int_aligned(UINT dim1, UINT dim2, UINT size,
+void **fdkCallocMatrix2D_int_aligned(uint32_t dim1, uint32_t dim2, uint32_t size,
                                      MEMORY_SECTION s) {
   void **p1;
-  UINT i;
+  uint32_t i;
   char *p2;
 
   if (!dim1 || !dim2) return NULL;
@@ -232,9 +234,9 @@ bail:
 }
 
 /* 3D */
-void ***fdkCallocMatrix3D(UINT dim1, UINT dim2, UINT dim3, UINT size) {
+void ***fdkCallocMatrix3D(uint32_t dim1, uint32_t dim2, uint32_t dim3, uint32_t size) {
   void ***p1;
-  UINT i, j;
+  uint32_t i, j;
   void **p2;
   char *p3;
 
@@ -274,10 +276,10 @@ void fdkFreeMatrix3D(void ***p) {
   fdkFreeMatrix1D(p);
 }
 
-void ***fdkCallocMatrix3D_int(UINT dim1, UINT dim2, UINT dim3, UINT size,
+void ***fdkCallocMatrix3D_int(uint32_t dim1, uint32_t dim2, uint32_t dim3, uint32_t size,
                               MEMORY_SECTION s) {
   void ***p1;
-  UINT i, j;
+  uint32_t i, j;
   void **p2;
   char *p3;
 

@@ -130,8 +130,8 @@ void CChannel_CodebookTableInit(CAacDecoderChannelInfo *pAacDecoderChannelInfo);
 void CChannelElement_Decode(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[2],
-    SamplingRateInfo *pSamplingRateInfo, UINT flags, UINT elFlags,
-    int el_channels);
+    SamplingRateInfo *pSamplingRateInfo, uint32_t flags, uint32_t elFlags,
+    int32_t el_channels);
 
 /**
  * \brief Read channel element of given type from bitstream.
@@ -153,7 +153,7 @@ AAC_DECODER_ERROR CChannelElement_Read(
     HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
     const AUDIO_OBJECT_TYPE aot, SamplingRateInfo *pSamplingRateInfo,
-    const UINT flags, const UINT elFlags, const UINT frame_length,
+    const uint32_t flags, const uint32_t elFlags, const uint32_t frame_length,
     const UCHAR numberOfChannels, const SCHAR epConfig,
     HANDLE_TRANSPORTDEC pTpDec);
 

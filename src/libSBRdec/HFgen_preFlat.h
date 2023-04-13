@@ -123,10 +123,10 @@ amm-info@iis.fraunhofer.de
  */
 void sbrDecoder_calculateGainVec(int32_t **sourceBufferReal,
                                  int32_t **sourceBufferImag,
-                                 int sourceBuffer_e_overlap,
-                                 int sourceBuffer_e_current, int overlap,
-                                 int32_t GainVec[], int GainVec_exp[],
-                                 const int numBands, const int startSample,
-                                 const int stopSample);
+                                 int32_t sourceBuffer_e_overlap,
+                                 int32_t sourceBuffer_e_current, int32_t overlap,
+                                 int32_t GainVec[], int32_t GainVec_exp[],
+                                 const int32_t numBands, const int32_t startSample,
+                                 const int32_t stopSample);
 
 #endif /* __HFGEN_PREFLAT_H */

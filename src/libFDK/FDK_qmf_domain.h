@@ -181,9 +181,9 @@ typedef struct {
   UCHAR parkChannel_requested;
   int32_t *
       pWorkBuffer[QMF_MAX_WB_SECTIONS]; /*!< Pointerarray to volatile memory. */
-  UINT flags; /*!< Flags to be set on all QMF analysis/synthesis filter
+  uint32_t flags; /*!< Flags to be set on all QMF analysis/synthesis filter
                  instances. */
-  UINT flags_requested; /*!< Corresponding requested not yet active
+  uint32_t flags_requested; /*!< Corresponding requested not yet active
                            configuration parameter. */
   UCHAR nBandsAnalysis; /*!< Number of QMF analysis bands for all input
                            channels. */
@@ -281,7 +281,7 @@ typedef FDK_QMF_DOMAIN *HANDLE_FDK_QMF_DOMAIN;
  *
  * \return  1 if initialized, 0 else
  */
-int FDK_QmfDomain_IsInitialized(const HANDLE_FDK_QMF_DOMAIN qd);
+int32_t FDK_QmfDomain_IsInitialized(const HANDLE_FDK_QMF_DOMAIN qd);
 
 /**
  * \brief Initialize QMF analysis and synthesis filter banks and set up QMF data
@@ -293,7 +293,7 @@ int FDK_QmfDomain_IsInitialized(const HANDLE_FDK_QMF_DOMAIN qd);
  *
  * \return  0 on success.
  */
-int FDK_QmfDomain_InitFilterBank(HANDLE_FDK_QMF_DOMAIN qd, UINT extra_flags);
+int32_t FDK_QmfDomain_InitFilterBank(HANDLE_FDK_QMF_DOMAIN qd, uint32_t extra_flags);
 
 /**
  * \brief When QMF processing of one channel is finished copy the overlap/delay
@@ -304,7 +304,7 @@ int FDK_QmfDomain_InitFilterBank(HANDLE_FDK_QMF_DOMAIN qd, UINT extra_flags);
  *
  * \return  void
  */
-void FDK_QmfDomain_SaveOverlap(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int offset);
+void FDK_QmfDomain_SaveOverlap(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int32_t offset);
 
 /**
  * \brief Get one slot of QMF data and adapt the scaling.
@@ -319,10 +319,10 @@ void FDK_QmfDomain_SaveOverlap(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int offset);
  *
  * \return  void
  */
-void FDK_QmfDomain_GetSlot(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int ts,
-                           const int start_band, const int stop_band,
+void FDK_QmfDomain_GetSlot(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int32_t ts,
+                           const int32_t start_band, const int32_t stop_band,
                            int32_t *pQmfOutReal, int32_t *pQmfOutImag,
-                           const int exp_out);
+                           const int32_t exp_out);
 
 /**
  * \brief Direct access to the work buffer associated with a certain channel (no
@@ -338,7 +338,7 @@ void FDK_QmfDomain_GetSlot(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int ts,
  * \return  void
  */
 void FDK_QmfDomain_GetWorkBuffer(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch,
-                                 const int ts, int32_t **ppQmfReal,
+                                 const int32_t ts, int32_t **ppQmfReal,
                                  int32_t **ppQmfImag);
 
 /**

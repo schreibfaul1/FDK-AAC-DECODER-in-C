@@ -141,7 +141,7 @@ void CTns_ReadDataPresentFlag(
   \return  none
 */
 AAC_DECODER_ERROR CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData,
-                            const CIcsInfo *pIcsInfo, const UINT flags) {
+                            const CIcsInfo *pIcsInfo, const uint32_t flags) {
   UCHAR n_filt, order;
   UCHAR length, coef_res, coef_compress;
   UCHAR window;
@@ -167,7 +167,7 @@ AAC_DECODER_ERROR CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData,
         (UCHAR)FDKreadBits(bs, isLongFlag ? 2 : 1);
 
     if (n_filt) {
-      int index;
+      int32_t index;
       UCHAR nextstopband;
 
       coef_res = (UCHAR)FDKreadBits(bs, 1);
@@ -235,9 +235,9 @@ AAC_DECODER_ERROR CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData,
 
 void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData *pTnsData0,
                               CTnsData *pTnsData1, UCHAR *ptns_on_lr,
-                              const CIcsInfo *pIcsInfo, const UINT flags,
-                              const UINT elFlags, const int fCommonWindow) {
-  int common_tns = 0;
+                              const CIcsInfo *pIcsInfo, const uint32_t flags,
+                              const uint32_t elFlags, const int32_t fCommonWindow) {
+  int32_t common_tns = 0;
 
   if (fCommonWindow) {
     common_tns = FDKreadBit(hBs);
@@ -251,7 +251,7 @@ void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData *pTnsData0,
     pTnsData0->Active = 1;
     *pTnsData1 = *pTnsData0;
   } else {
-    int tns_present_both;
+    int32_t tns_present_both;
 
     tns_present_both = FDKreadBit(hBs);
     if (tns_present_both) {
@@ -274,9 +274,9 @@ void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData *pTnsData0,
 void CTns_Apply(CTnsData *RESTRICT pTnsData, /*!< pointer to aac decoder info */
                 const CIcsInfo *pIcsInfo, SPECTRAL_PTR pSpectralCoefficient,
                 const SamplingRateInfo *pSamplingRateInfo,
-                const INT granuleLength, const UCHAR nbands,
-                const UCHAR igf_active, const UINT flags) {
-  int window, index, start, stop, size, start_window, wins_per_frame;
+                const int32_t granuleLength, const UCHAR nbands,
+                const UCHAR igf_active, const uint32_t flags) {
+  int32_t window, index, start, stop, size, start_window, wins_per_frame;
 
   if (pTnsData->Active) {
     C_AALLOC_SCRATCH_START(coeff, FIXP_TCC, TNS_MAXIMUM_ORDER)
@@ -300,11 +300,11 @@ void CTns_Apply(CTnsData *RESTRICT pTnsData, /*!< pointer to aac decoder info */
 
           pCoeff = coeff;
           if (filter->Resolution == 3) {
-            int i;
+            int32_t i;
             for (i = 0; i < filter->Order; i++)
               *pCoeff++ = FDKaacDec_tnsCoeff3[filter->Coeff[i] + 4];
           } else {
-            int i;
+            int32_t i;
             for (i = 0; i < filter->Order; i++)
               *pCoeff++ = FDKaacDec_tnsCoeff4[filter->Coeff[i] + 8];
           }

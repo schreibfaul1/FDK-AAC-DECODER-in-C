@@ -121,8 +121,8 @@ amm-info@iis.fraunhofer.de
   \return   ld(a/b) / 8
 */
 /************************************************************************/
-static inline FIXP_SGL FDK_getNumOctavesDiv8(INT a, /*!< lower band */
-                                             INT b) /*!< upper band */
+static inline FIXP_SGL FDK_getNumOctavesDiv8(int32_t a, /*!< lower band */
+                                             int32_t b) /*!< upper band */
 {
   return ((SHORT)((LONG)(CalcLdInt(b) - CalcLdInt(a)) >> (FRACT_BITS - 3)));
 }
@@ -143,8 +143,8 @@ inline void FDK_add_MantExp(FIXP_SGL a_m, /*!< Mantissa of 1st operand a */
                             SCHAR *ptrSum_e)    /*!< Exponent of result */
 {
   int32_t accu;
-  int shift;
-  int shiftAbs;
+  int32_t shift;
+  int32_t shiftAbs;
 
   int32_t shiftedMantissa;
   int32_t otherMantissa;
@@ -153,7 +153,7 @@ inline void FDK_add_MantExp(FIXP_SGL a_m, /*!< Mantissa of 1st operand a */
      For the smaller summand, the exponent is adapted and
      for compensation, the mantissa is shifted right. */
 
-  shift = (int)(a_e - b_e);
+  shift = (int32_t)(a_e - b_e);
 
   shiftAbs = (shift > 0) ? shift : -shift;
   shiftAbs = (shiftAbs < DFRACT_BITS - 1) ? shiftAbs : DFRACT_BITS - 1;
@@ -182,8 +182,8 @@ inline void FDK_add_MantExp(int32_t a,       /*!< Mantissa of 1st operand a */
                             SCHAR *ptrSum_e)  /*!< Exponent of result */
 {
   int32_t accu;
-  int shift;
-  int shiftAbs;
+  int32_t shift;
+  int32_t shiftAbs;
 
   int32_t shiftedMantissa;
   int32_t otherMantissa;
@@ -192,7 +192,7 @@ inline void FDK_add_MantExp(int32_t a,       /*!< Mantissa of 1st operand a */
      For the smaller summand, the exponent is adapted and
      for compensation, the mantissa is shifted right. */
 
-  shift = (int)(a_e - b_e);
+  shift = (int32_t)(a_e - b_e);
 
   shiftAbs = (shift > 0) ? shift : -shift;
   shiftAbs = (shiftAbs < DFRACT_BITS - 1) ? shiftAbs : DFRACT_BITS - 1;
@@ -232,7 +232,7 @@ static inline void FDK_divide_MantExp(
     SCHAR *ptrResult_e)    /*!< Exponent of quotient a/b */
 
 {
-  int preShift, postShift, index, shift;
+  int32_t preShift, postShift, index, shift;
   int32_t ratio_m;
   FIXP_SGL bInv_m = FL2FXCONST_SGL(0.0f);
 
@@ -288,7 +288,7 @@ static inline void FDK_divide_MantExp(
     SCHAR *ptrResult_e)    /*!< Exponent of quotient a/b */
 
 {
-  int preShift, postShift, index, shift;
+  int32_t preShift, postShift, index, shift;
   int32_t ratio_m;
   FIXP_SGL bInv_m = FL2FXCONST_SGL(0.0f);
 
@@ -349,9 +349,9 @@ static inline void FDK_sqrt_MantExp(
     int32_t *mantissa, /*!< Pointer to mantissa */
     SCHAR *exponent, const SCHAR *destScale) {
   int32_t input_m = *mantissa;
-  int input_e = (int)*exponent;
+  int32_t input_e = (int32_t)*exponent;
   int32_t result = FL2FXCONST_DBL(0.0f);
-  int result_e = -FRACT_BITS;
+  int32_t result_e = -FRACT_BITS;
 
   /* Call lookup square root, which does internally normalization. */
   result = sqrtFixp_lookup(input_m, &input_e);
@@ -362,9 +362,9 @@ static inline void FDK_sqrt_MantExp(
     *mantissa = result;
     *exponent = result_e;
   } else {
-    int shift = result_e - *destScale;
-    *mantissa = (shift >= 0) ? result << (INT)fixMin(DFRACT_BITS - 1, shift)
-                             : result >> (INT)fixMin(DFRACT_BITS - 1, -shift);
+    int32_t shift = result_e - *destScale;
+    *mantissa = (shift >= 0) ? result << (int32_t)fixMin(DFRACT_BITS - 1, shift)
+                             : result >> (int32_t)fixMin(DFRACT_BITS - 1, -shift);
     *exponent = *destScale;
   }
 }

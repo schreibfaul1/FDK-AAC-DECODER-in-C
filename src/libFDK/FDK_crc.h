@@ -114,9 +114,9 @@ amm-info@iis.fraunhofer.de
  */
 typedef struct {
   UCHAR isActive;
-  INT maxBits;
-  INT bitBufCntBits;
-  INT validBits;
+  int32_t maxBits;
+  int32_t bitBufCntBits;
+  int32_t validBits;
 
 } CCrcRegData;
 
@@ -133,8 +133,8 @@ typedef struct {
   USHORT startValue; /*!< CRC start value. */
   UCHAR crcLen;      /*!< CRC length. */
 
-  UINT regStart; /*!< Start region marker for synchronization. */
-  UINT regStop;  /*!< Stop region marker for synchronization. */
+  uint32_t regStart; /*!< Start region marker for synchronization. */
+  uint32_t regStop;  /*!< Stop region marker for synchronization. */
 
   USHORT crcValue; /*!< Crc value to be calculated. */
 
@@ -159,8 +159,8 @@ typedef FDK_CRCINFO* HANDLE_FDK_CRCINFO;
  *
  * \return  none
  */
-void FDKcrcInit(HANDLE_FDK_CRCINFO hCrcInfo, const UINT crcPoly,
-                const UINT crcStartValue, const UINT crcLen);
+void FDKcrcInit(HANDLE_FDK_CRCINFO hCrcInfo, const uint32_t crcPoly,
+                const uint32_t crcStartValue, const uint32_t crcLen);
 
 /**
  * \brief  Reset CRC info structure.
@@ -194,8 +194,8 @@ void FDKcrcReset(HANDLE_FDK_CRCINFO hCrcInfo);
  *
  * \return  ID for the created region, -1 in case of an error
  */
-INT FDKcrcStartReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs,
-                   const INT mBits);
+int32_t FDKcrcStartReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs,
+                   const int32_t mBits);
 
 /**
  * \brief  Ends CRC region.
@@ -210,8 +210,8 @@ INT FDKcrcStartReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs,
  *
  * \return  0 on success
  */
-INT FDKcrcEndReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs,
-                 const INT reg);
+int32_t FDKcrcEndReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs,
+                 const int32_t reg);
 
 /**
  * \brief  This function returns crc value from info struct.

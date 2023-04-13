@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdint.h>
 #include "FDK_crc.h"
 
 /*---------------- constants -----------------------*/
@@ -213,20 +214,20 @@ static const USHORT crcLookup_16_15_5_0[256] = {
 
 /*--------------- function declarations --------------------*/
 
-static inline INT calcCrc_Bits(USHORT *const pCrc, USHORT crcMask,
+static inline int32_t calcCrc_Bits(USHORT *const pCrc, USHORT crcMask,
                                USHORT crcPoly, HANDLE_FDK_BITSTREAM hBs,
-                               INT nBits);
+                               int32_t nBits);
 
-static inline INT calcCrc_Bytes(USHORT *const pCrc, const USHORT *pCrcLookup,
-                                HANDLE_FDK_BITSTREAM hBs, INT nBytes);
+static inline int32_t calcCrc_Bytes(USHORT *const pCrc, const USHORT *pCrcLookup,
+                                HANDLE_FDK_BITSTREAM hBs, int32_t nBytes);
 
 static void crcCalc(HANDLE_FDK_CRCINFO hCrcInfo, HANDLE_FDK_BITSTREAM hBs,
-                    const INT reg);
+                    const int32_t reg);
 
 /*------------- function definitions ----------------*/
 
-void FDKcrcInit(HANDLE_FDK_CRCINFO hCrcInfo, const UINT crcPoly,
-                const UINT crcStartValue, const UINT crcLen) {
+void FDKcrcInit(HANDLE_FDK_CRCINFO hCrcInfo, const uint32_t crcPoly,
+                const uint32_t crcStartValue, const uint32_t crcLen) {
   /* crc polynom example:
   x^16 + x^15 + x^5 + x^0        (1) 1000 0000 0010 0001 -> 0x8021
   x^16 + x^15 + x^2 + x^0        (1) 1000 0000 0000 0101 -> 0x8005
@@ -263,7 +264,7 @@ void FDKcrcInit(HANDLE_FDK_CRCINFO hCrcInfo, const UINT crcPoly,
 }
 
 void FDKcrcReset(HANDLE_FDK_CRCINFO hCrcInfo) {
-  int i;
+  int32_t i;
 
   hCrcInfo->crcValue = hCrcInfo->startValue;
 
@@ -274,14 +275,14 @@ void FDKcrcReset(HANDLE_FDK_CRCINFO hCrcInfo) {
   hCrcInfo->regStop = 0;
 }
 
-INT FDKcrcStartReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs,
-                   const INT mBits) {
-  int reg = hCrcInfo->regStart;
+int32_t FDKcrcStartReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs,
+                   const int32_t mBits) {
+  int32_t reg = hCrcInfo->regStart;
 
   FDK_ASSERT(hCrcInfo->crcRegData[reg].isActive == 0);
   hCrcInfo->crcRegData[reg].isActive = 1;
   hCrcInfo->crcRegData[reg].maxBits = mBits;
-  hCrcInfo->crcRegData[reg].validBits = (INT)FDKgetValidBits(hBs);
+  hCrcInfo->crcRegData[reg].validBits = (int32_t)FDKgetValidBits(hBs);
   hCrcInfo->crcRegData[reg].bitBufCntBits = 0;
 
   hCrcInfo->regStart = (hCrcInfo->regStart + 1) % MAX_CRC_REGS;
@@ -289,17 +290,17 @@ INT FDKcrcStartReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs,
   return (reg);
 }
 
-INT FDKcrcEndReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs,
-                 const INT reg) {
-  FDK_ASSERT((reg == (INT)hCrcInfo->regStop) &&
+int32_t FDKcrcEndReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs,
+                 const int32_t reg) {
+  FDK_ASSERT((reg == (int32_t)hCrcInfo->regStop) &&
              (hCrcInfo->crcRegData[reg].isActive == 1));
 
   if (hBs->ConfigCache == BS_WRITER) {
     hCrcInfo->crcRegData[reg].bitBufCntBits =
-        (INT)FDKgetValidBits(hBs) - hCrcInfo->crcRegData[reg].validBits;
+        (int32_t)FDKgetValidBits(hBs) - hCrcInfo->crcRegData[reg].validBits;
   } else {
     hCrcInfo->crcRegData[reg].bitBufCntBits =
-        hCrcInfo->crcRegData[reg].validBits - (INT)FDKgetValidBits(hBs);
+        hCrcInfo->crcRegData[reg].validBits - (int32_t)FDKgetValidBits(hBs);
   }
 
   if (hCrcInfo->crcRegData[reg].maxBits == 0) {
@@ -332,10 +333,10 @@ USHORT FDKcrcGetCRC(const HANDLE_FDK_CRCINFO hCrcInfo) {
  *
  * \return  Number of processed bits.
  */
-static inline INT calcCrc_Bits(USHORT *const pCrc, USHORT crcMask,
+static inline int32_t calcCrc_Bits(USHORT *const pCrc, USHORT crcMask,
                                USHORT crcPoly, HANDLE_FDK_BITSTREAM hBs,
-                               INT nBits) {
-  int i;
+                               int32_t nBits) {
+  int32_t i;
   USHORT crc = *pCrc; /* get crc value */
 
   if (hBs != NULL) {
@@ -373,14 +374,14 @@ static inline INT calcCrc_Bits(USHORT *const pCrc, USHORT crcMask,
  * \return  Number of processed bits.
  */
 
-static inline INT calcCrc_Bytes(USHORT *const pCrc, const USHORT *pCrcLookup,
-                                HANDLE_FDK_BITSTREAM hBs, INT nBytes) {
-  int i;
+static inline int32_t calcCrc_Bytes(USHORT *const pCrc, const USHORT *pCrcLookup,
+                                HANDLE_FDK_BITSTREAM hBs, int32_t nBytes) {
+  int32_t i;
   USHORT crc = *pCrc; /* get crc value */
 
   if (hBs != NULL) {
     ULONG data;
-    INT bits;
+    int32_t bits;
     for (i = 0; i < (nBytes >> 2); i++) {
       data = (ULONG)FDKreadBits(hBs, 32);
       crc =
@@ -424,7 +425,7 @@ static inline INT calcCrc_Bytes(USHORT *const pCrc, const USHORT *pCrcLookup,
  * \return  Number of processed bits.
  */
 static void crcCalc(HANDLE_FDK_CRCINFO hCrcInfo, HANDLE_FDK_BITSTREAM hBs,
-                    const INT reg) {
+                    const int32_t reg) {
   USHORT crc = hCrcInfo->crcValue;
   CCrcRegData *rD = &hCrcInfo->crcRegData[reg];
   FDK_BITSTREAM bsReader;
@@ -432,14 +433,14 @@ static void crcCalc(HANDLE_FDK_CRCINFO hCrcInfo, HANDLE_FDK_BITSTREAM hBs,
   if (hBs->ConfigCache == BS_READER) {
     bsReader = *hBs;
     FDKpushBiDirectional(&bsReader,
-                         -(rD->validBits - (INT)FDKgetValidBits(&bsReader)));
+                         -(rD->validBits - (int32_t)FDKgetValidBits(&bsReader)));
   } else {
     FDKinitBitStream(&bsReader, hBs->hBitBuf.Buffer, hBs->hBitBuf.bufSize,
                      hBs->hBitBuf.ValidBits, BS_READER);
     FDKpushBiDirectional(&bsReader, rD->validBits);
   }
 
-  int bits, rBits;
+  int32_t bits, rBits;
   rBits = (rD->maxBits >= 0) ? rD->maxBits : -rD->maxBits; /* ramaining bits */
   if ((rD->maxBits > 0) && ((rD->bitBufCntBits >> 3 << 3) < rBits)) {
     bits = rD->bitBufCntBits;
@@ -447,8 +448,8 @@ static void crcCalc(HANDLE_FDK_CRCINFO hCrcInfo, HANDLE_FDK_BITSTREAM hBs,
     bits = rBits;
   }
 
-  int words = bits >> 3;  /* processing bytes */
-  int mBits = bits & 0x7; /* modulo bits */
+  int32_t words = bits >> 3;  /* processing bytes */
+  int32_t mBits = bits & 0x7; /* modulo bits */
 
   if (hCrcInfo->pCrcLookup) {
     rBits -= (calcCrc_Bytes(&crc, hCrcInfo->pCrcLookup, &bsReader, words) << 3);

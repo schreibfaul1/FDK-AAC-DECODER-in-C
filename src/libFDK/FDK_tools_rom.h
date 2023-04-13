@@ -197,7 +197,7 @@ extern const FIXP_WTP *const windowSlopes[2][4][9];
  * \param Pointer to window slope or NULL if the requested window slope is not
  * available.
  */
-const FIXP_WTP *FDKgetWindowSlope(int length, int shape);
+const FIXP_WTP *FDKgetWindowSlope(int32_t length, int32_t shape);
 
 extern const FIXP_WTP sin_twiddle_L64[];
 
@@ -362,7 +362,7 @@ typedef struct element_list element_list_t;
  */
 const element_list_t *getBitstreamElementList(AUDIO_OBJECT_TYPE aot,
                                               SCHAR epConfig, UCHAR nChannels,
-                                              UCHAR layer, UINT elFlags);
+                                              UCHAR layer, uint32_t elFlags);
 
 typedef enum {
   /* n.a. */
@@ -393,6 +393,6 @@ typedef enum {
   FDK_FORMAT_FAIL = -1
 } FDK_converter_formatid_t;
 
-extern const INT format_nchan[FDK_NFORMATS + 9 - 2];
+extern const int32_t format_nchan[FDK_NFORMATS + 9 - 2];
 
 #endif

@@ -4067,9 +4067,9 @@ const FIXP_WTP *const windowSlopes[2][4][9] = {
       NULL, KBDWindow768},
      {NULL, NULL, NULL, NULL}}};
 
-const FIXP_WTP *FDKgetWindowSlope(int length, int shape) {
+const FIXP_WTP *FDKgetWindowSlope(int32_t length, int32_t shape) {
   const FIXP_WTP *w = NULL;
-  int raster, ld2_length;
+  int32_t raster, ld2_length;
 
   /* Get ld2 of length - 2 + 1
      -2: because first table entry is window of size 4
@@ -7132,7 +7132,7 @@ static const struct element_list node_usac_lfe_epc0 = {el_usac_lfe_epc0,
 
 const element_list_t *getBitstreamElementList(AUDIO_OBJECT_TYPE aot,
                                               SCHAR epConfig, UCHAR nChannels,
-                                              UCHAR layer, UINT elFlags) {
+                                              UCHAR layer, uint32_t elFlags) {
   switch (aot) {
     case AOT_AAC_LC:
     case AOT_SBR:
@@ -7212,7 +7212,7 @@ const element_list_t *getBitstreamElementList(AUDIO_OBJECT_TYPE aot,
 }
 
 /* Inverse square root table for operands running from 0.5 to ~1.0 */
-/* (INT) (0.5 + 1.0/sqrt((op)/FDKpow(2.0,31)));                    */
+/* (int32_t) (0.5 + 1.0/sqrt((op)/FDKpow(2.0,31)));                    */
 /* Note: First value is rnot rounded for accuracy reasons          */
 /* Implicit exponent is 1.                                         */
 /* Examples: 0x5A82799A = invSqrtNorm2 (0x4000.0000), exp=1        */
@@ -7246,7 +7246,7 @@ const int32_t invSqrtTab[SQRT_VALUES] = {
 
 /* number of channels of the formats */
 
-const INT format_nchan[FDK_NFORMATS + 9 - 2] = {
+const int32_t format_nchan[FDK_NFORMATS + 9 - 2] = {
     0,  /* any set-up, ChConfIdx = 0 */
     1,  /* mono ChConfIdx = 1 */
     2,  /* stereo ChConfIdx = 2 */

@@ -119,12 +119,12 @@ static void param2UMX_PS__FDK(spatialDec* self,
                               int32_t H21[MAX_PARAMETER_BANDS],
                               int32_t H22[MAX_PARAMETER_BANDS],
                               int32_t c_l[MAX_PARAMETER_BANDS],
-                              int32_t c_r[MAX_PARAMETER_BANDS], int ottBoxIndx,
-                              int parameterSetIndx, int resBands);
+                              int32_t c_r[MAX_PARAMETER_BANDS], int32_t ottBoxIndx,
+                              int32_t parameterSetIndx, int32_t resBands);
 
 static void param2UMX_PS_Core__FDK(
     const SCHAR cld[MAX_PARAMETER_BANDS], const SCHAR icc[MAX_PARAMETER_BANDS],
-    const int numOttBands, const int resBands,
+    const int32_t numOttBands, const int32_t resBands,
     int32_t H11[MAX_PARAMETER_BANDS], int32_t H12[MAX_PARAMETER_BANDS],
     int32_t H21[MAX_PARAMETER_BANDS], int32_t H22[MAX_PARAMETER_BANDS],
     int32_t c_l[MAX_PARAMETER_BANDS], int32_t c_r[MAX_PARAMETER_BANDS]);
@@ -134,19 +134,19 @@ static void param2UMX_PS_IPD_OPD__FDK(
     int32_t H11re[MAX_PARAMETER_BANDS], int32_t H12re[MAX_PARAMETER_BANDS],
     int32_t H21re[MAX_PARAMETER_BANDS], int32_t H22re[MAX_PARAMETER_BANDS],
     int32_t c_l[MAX_PARAMETER_BANDS], int32_t c_r[MAX_PARAMETER_BANDS],
-    int ottBoxIndx, int parameterSetIndx, int residualBands);
+    int32_t ottBoxIndx, int32_t parameterSetIndx, int32_t residualBands);
 
 static void param2UMX_Prediction__FDK(
     spatialDec* self, int32_t H11re[MAX_PARAMETER_BANDS],
     int32_t H11im[MAX_PARAMETER_BANDS], int32_t H12re[MAX_PARAMETER_BANDS],
     int32_t H12im[MAX_PARAMETER_BANDS], int32_t H21re[MAX_PARAMETER_BANDS],
     int32_t H21im[MAX_PARAMETER_BANDS], int32_t H22re[MAX_PARAMETER_BANDS],
-    int32_t H22im[MAX_PARAMETER_BANDS], int ottBoxIndx, int parameterSetIndx,
-    int resBands);
+    int32_t H22im[MAX_PARAMETER_BANDS], int32_t ottBoxIndx, int32_t parameterSetIndx,
+    int32_t resBands);
 
-/* static void SpatialDecCalculateM0(spatialDec* self,int ps); */
+/* static void SpatialDecCalculateM0(spatialDec* self,int32_t ps); */
 static SACDEC_ERROR SpatialDecCalculateM1andM2_212(
-    spatialDec* self, int ps, const SPATIAL_BS_FRAME* frame);
+    spatialDec* self, int32_t ps, const SPATIAL_BS_FRAME* frame);
 
 /*******************************************************************************
  Functionname: SpatialDecGetResidualIndex
@@ -161,7 +161,7 @@ static SACDEC_ERROR SpatialDecCalculateM1andM2_212(
  Output:
 
 *******************************************************************************/
-int SpatialDecGetResidualIndex(spatialDec* self, int row) {
+int32_t SpatialDecGetResidualIndex(spatialDec* self, int32_t row) {
   return row2residual[self->treeConfig][row];
 }
 
@@ -179,8 +179,8 @@ int SpatialDecGetResidualIndex(spatialDec* self, int row) {
 
 *******************************************************************************/
 static void updateAlpha(spatialDec* self) {
-  int nChIn = self->numInputChannels;
-  int ch;
+  int32_t nChIn = self->numInputChannels;
+  int32_t ch;
 
   for (ch = 0; ch < nChIn; ch++) {
     int32_t alpha = /* FL2FXCONST_DBL(1.0f) */ (int32_t)MAXVAL_DBL;
@@ -197,7 +197,7 @@ static void updateAlpha(spatialDec* self) {
  Description:
  Arguments:
 *******************************************************************************/
-SACDEC_ERROR SpatialDecCalculateM1andM2(spatialDec* self, int ps,
+SACDEC_ERROR SpatialDecCalculateM1andM2(spatialDec* self, int32_t ps,
                                         const SPATIAL_BS_FRAME* frame) {
   SACDEC_ERROR err = MPS_OK;
 
@@ -243,9 +243,9 @@ bail:
 
 *******************************************************************************/
 static SACDEC_ERROR SpatialDecCalculateM1andM2_212(
-    spatialDec* self, int ps, const SPATIAL_BS_FRAME* frame) {
+    spatialDec* self, int32_t ps, const SPATIAL_BS_FRAME* frame) {
   SACDEC_ERROR err = MPS_OK;
-  int pb;
+  int32_t pb;
 
   int32_t H11re[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
   int32_t H12re[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
@@ -254,7 +254,7 @@ static SACDEC_ERROR SpatialDecCalculateM1andM2_212(
   int32_t H11im[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
   int32_t H21im[MAX_PARAMETER_BANDS] = {FL2FXCONST_DBL(0.0f)};
 
-  INT phaseCoding = self->phaseCoding;
+  int32_t phaseCoding = self->phaseCoding;
 
   switch (phaseCoding) {
     case 1:
@@ -318,11 +318,11 @@ static SACDEC_ERROR SpatialDecCalculateM1andM2_212(
 *******************************************************************************/
 static void param2UMX_PS_Core__FDK(
     const SCHAR cld[MAX_PARAMETER_BANDS], const SCHAR icc[MAX_PARAMETER_BANDS],
-    const int numOttBands, const int resBands,
+    const int32_t numOttBands, const int32_t resBands,
     int32_t H11[MAX_PARAMETER_BANDS], int32_t H12[MAX_PARAMETER_BANDS],
     int32_t H21[MAX_PARAMETER_BANDS], int32_t H22[MAX_PARAMETER_BANDS],
     int32_t c_l[MAX_PARAMETER_BANDS], int32_t c_r[MAX_PARAMETER_BANDS]) {
-  int band;
+  int32_t band;
 
   if ((c_l != NULL) && (c_r != NULL)) {
     for (band = 0; band < numOttBands; band++) {
@@ -334,8 +334,8 @@ static void param2UMX_PS_Core__FDK(
   FDK_ASSERT(resBands == 0);
   for (; band < numOttBands; band++) {
     /* compute mixing variables: */
-    const int idx1 = cld[band];
-    const int idx2 = icc[band];
+    const int32_t idx1 = cld[band];
+    const int32_t idx2 = icc[band];
     H11[band] = FX_CFG2FX_DBL(H11_nc[idx1][idx2]);
     H21[band] = FX_CFG2FX_DBL(H11_nc[30 - idx1][idx2]);
     H12[band] = FX_CFG2FX_DBL(H12_nc[idx1][idx2]);
@@ -360,9 +360,9 @@ static void param2UMX_PS__FDK(spatialDec* self,
                               int32_t H21[MAX_PARAMETER_BANDS],
                               int32_t H22[MAX_PARAMETER_BANDS],
                               int32_t c_l[MAX_PARAMETER_BANDS],
-                              int32_t c_r[MAX_PARAMETER_BANDS], int ottBoxIndx,
-                              int parameterSetIndx, int residualBands) {
-  int band;
+                              int32_t c_r[MAX_PARAMETER_BANDS], int32_t ottBoxIndx,
+                              int32_t parameterSetIndx, int32_t residualBands) {
+  int32_t band;
   param2UMX_PS_Core__FDK(self->ottCLD__FDK[ottBoxIndx][parameterSetIndx],
                          self->ottICC__FDK[ottBoxIndx][parameterSetIndx],
                          self->numOttBands[ottBoxIndx], residualBands, H11, H12,
@@ -474,14 +474,14 @@ static const int32_t CLD_m[N_CLD] = {
     FL2FXCONST_DBL(0.888178419700125),
 };
 
-static void calculateOpd(spatialDec* self, INT ottBoxIndx, INT parameterSetIndx,
+static void calculateOpd(spatialDec* self, int32_t ottBoxIndx, int32_t parameterSetIndx,
                          int32_t opd[MAX_PARAMETER_BANDS]) {
-  INT band;
+  int32_t band;
 
   for (band = 0; band < self->numOttBandsIPD; band++) {
-    INT idxCld = self->ottCLD__FDK[ottBoxIndx][parameterSetIndx][band];
-    INT idxIpd = self->ottIPD__FDK[ottBoxIndx][parameterSetIndx][band];
-    INT idxIcc = self->ottICC__FDK[ottBoxIndx][parameterSetIndx][band];
+    int32_t idxCld = self->ottCLD__FDK[ottBoxIndx][parameterSetIndx][band];
+    int32_t idxIpd = self->ottIPD__FDK[ottBoxIndx][parameterSetIndx][band];
+    int32_t idxIcc = self->ottICC__FDK[ottBoxIndx][parameterSetIndx][band];
     int32_t cld, ipd;
 
     ipd = FX_CFG2FX_DBL(dequantIPD__FDK[idxIpd]);
@@ -525,11 +525,11 @@ static void param2UMX_PS_IPD_OPD__FDK(
     int32_t H11[MAX_PARAMETER_BANDS], int32_t H12[MAX_PARAMETER_BANDS],
     int32_t H21[MAX_PARAMETER_BANDS], int32_t H22[MAX_PARAMETER_BANDS],
     int32_t c_l[MAX_PARAMETER_BANDS], int32_t c_r[MAX_PARAMETER_BANDS],
-    int ottBoxIndx, int parameterSetIndx, int residualBands) {
-  INT band;
+    int32_t ottBoxIndx, int32_t parameterSetIndx, int32_t residualBands) {
+  int32_t band;
   int32_t opd[2 * MAX_PARAMETER_BANDS];
-  INT numOttBands = self->numOttBands[ottBoxIndx];
-  INT numIpdBands;
+  int32_t numOttBands = self->numOttBands[ottBoxIndx];
+  int32_t numIpdBands;
 
   numIpdBands = frame->phaseMode ? self->numOttBandsIPD : 0;
 
@@ -563,8 +563,8 @@ static void param2UMX_PS_IPD_OPD__FDK(
 FDK_INLINE void param2UMX_Prediction_Core__FDK(
     int32_t* H11re, int32_t* H11im, int32_t* H12re, int32_t* H12im,
     int32_t* H21re, int32_t* H21im, int32_t* H22re, int32_t* H22im,
-    int cldIdx, int iccIdx, int ipdIdx, int band, int numOttBandsIPD,
-    int resBands) {
+    int32_t cldIdx, int32_t iccIdx, int32_t ipdIdx, int32_t band, int32_t numOttBandsIPD,
+    int32_t resBands) {
 #define MAX_WEIGHT (1.2f)
   FDK_ASSERT((H12im == NULL) && (H22im == NULL)); /* always == 0 */
 
@@ -592,23 +592,23 @@ FDK_INLINE void param2UMX_Prediction_Core__FDK(
     }
   } else {
     const int32_t one_m = (int32_t)MAXVAL_DBL;
-    const int one_e = 0;
+    const int32_t one_e = 0;
     /* iidLin = sqrt(cld); */
     int32_t iidLin_m = sqrt_CLD_m[cldIdx];
-    int iidLin_e = sqrt_CLD_e[cldIdx];
+    int32_t iidLin_e = sqrt_CLD_e[cldIdx];
     /* iidLin2 = cld; */
     int32_t iidLin2_m = CLD_m[cldIdx];
-    int iidLin2_e = sqrt_CLD_e[cldIdx] << 1;
+    int32_t iidLin2_e = sqrt_CLD_e[cldIdx] << 1;
     /* iidLin21 = iidLin2 + 1.0f; */
-    int iidLin21_e;
+    int32_t iidLin21_e;
     int32_t iidLin21_m =
         fAddNorm(iidLin2_m, iidLin2_e, one_m, one_e, &iidLin21_e);
     /* iidIcc2 = iidLin * icc * 2.0f; */
     FIXP_CFG icc = dequantICC__FDK[iccIdx];
-    int iidIcc2_e = iidLin_e + 1;
+    int32_t iidIcc2_e = iidLin_e + 1;
     int32_t iidIcc2_m = fMult(iidLin_m, icc);
     int32_t temp_m, sqrt_temp_m, inv_temp_m, weight_m;
-    int temp_e, sqrt_temp_e, inv_temp_e, weight_e, scale;
+    int32_t temp_e, sqrt_temp_e, inv_temp_e, weight_e, scale;
     int32_t cosIpd, sinIpd;
 
     cosIpd = COS_IPD((band < numOttBandsIPD) ? ipdIdx : 0);
@@ -653,7 +653,7 @@ FDK_INLINE void param2UMX_Prediction_Core__FDK(
 
     {
       int32_t alphaRe_m, alphaIm_m, accu_m;
-      int alphaRe_e, alphaIm_e, accu_e;
+      int32_t alphaRe_e, alphaIm_e, accu_e;
       /* alphaRe = (1.0f - iidLin2) / temp; */
       alphaRe_m = fAddNorm(one_m, one_e, -iidLin2_m, iidLin2_e, &alphaRe_e);
       alphaRe_m = fMult(alphaRe_m, inv_temp_m);
@@ -664,7 +664,7 @@ FDK_INLINE void param2UMX_Prediction_Core__FDK(
       accu_m = fMult(alphaRe_m, weight_m);
       accu_e = alphaRe_e + weight_e;
       {
-        int accu2_e;
+        int32_t accu2_e;
         int32_t accu2_m;
         accu2_m = fAddNorm(weight_m, weight_e, -accu_m, accu_e, &accu2_e);
         *H11re = scaleValue(accu2_m, accu2_e - SCALE_PARAM_M2_212_PRED);
@@ -699,7 +699,7 @@ FDK_INLINE void param2UMX_Prediction_Core__FDK(
       /* beta = 2.0f * iidLin * (float) sqrt(1.0f - icc * icc) * weight / temp;
        */
       int32_t beta_m;
-      int beta_e;
+      int32_t beta_e;
       beta_m = FX_SGL2FX_DBL(sqrt_one_minus_ICC2[iccIdx]);
       beta_e = 1; /* multipication with 2.0f */
       beta_m = fMult(beta_m, weight_m);
@@ -720,15 +720,15 @@ static void param2UMX_Prediction__FDK(spatialDec* self, int32_t* H11re,
                                       int32_t* H11im, int32_t* H12re,
                                       int32_t* H12im, int32_t* H21re,
                                       int32_t* H21im, int32_t* H22re,
-                                      int32_t* H22im, int ottBoxIndx,
-                                      int parameterSetIndx, int resBands) {
-  int band;
+                                      int32_t* H22im, int32_t ottBoxIndx,
+                                      int32_t parameterSetIndx, int32_t resBands) {
+  int32_t band;
   FDK_ASSERT((H12im == NULL) && (H22im == NULL)); /* always == 0 */
 
   for (band = 0; band < self->numParameterBands; band++) {
-    int cldIdx = self->ottCLD__FDK[ottBoxIndx][parameterSetIndx][band];
-    int iccIdx = self->ottICC__FDK[ottBoxIndx][parameterSetIndx][band];
-    int ipdIdx = self->ottIPD__FDK[ottBoxIndx][parameterSetIndx][band];
+    int32_t cldIdx = self->ottCLD__FDK[ottBoxIndx][parameterSetIndx][band];
+    int32_t iccIdx = self->ottICC__FDK[ottBoxIndx][parameterSetIndx][band];
+    int32_t ipdIdx = self->ottIPD__FDK[ottBoxIndx][parameterSetIndx][band];
 
     param2UMX_Prediction_Core__FDK(
         &H11re[band], (H11im ? &H11im[band] : NULL), &H12re[band], NULL,
@@ -749,8 +749,8 @@ static void param2UMX_Prediction__FDK(spatialDec* self, int32_t* H11re,
 
 *******************************************************************************/
 
-SACDEC_ERROR initM1andM2(spatialDec* self, int initStatesFlag,
-                         int configChanged) {
+SACDEC_ERROR initM1andM2(spatialDec* self, int32_t initStatesFlag,
+                         int32_t configChanged) {
   SACDEC_ERROR err = MPS_OK;
 
   self->bOverwriteM1M2prev = (configChanged && !initStatesFlag) ? 1 : 0;
@@ -758,7 +758,7 @@ SACDEC_ERROR initM1andM2(spatialDec* self, int initStatesFlag,
   { self->numM2rows = self->numOutputChannels; }
 
   if (initStatesFlag) {
-    int i, j, k;
+    int32_t i, j, k;
 
     for (i = 0; i < self->numM2rows; i++) {
       for (j = 0; j < self->numVChannels; j++) {

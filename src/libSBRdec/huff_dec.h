@@ -112,6 +112,6 @@ amm-info@iis.fraunhofer.de
 
 typedef const SCHAR (*Huffman)[2];
 
-int DecodeHuffmanCW(Huffman h, HANDLE_FDK_BITSTREAM hBitBuf);
+int32_t DecodeHuffmanCW(Huffman h, HANDLE_FDK_BITSTREAM hBitBuf);
 
 #endif

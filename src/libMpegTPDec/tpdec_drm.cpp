@@ -111,10 +111,10 @@ void drmRead_CrcInit(HANDLE_DRM pDrm) /*!< pointer to drm crc info stucture */
   FDKcrcInit(&pDrm->crcInfo, 0x001d, 0xFFFF, 8);
 }
 
-int drmRead_CrcStartReg(
+int32_t drmRead_CrcStartReg(
     HANDLE_DRM pDrm,          /*!< pointer to drm stucture */
     HANDLE_FDK_BITSTREAM hBs, /*!< handle to current bit buffer structure */
-    int mBits                 /*!< number of bits in crc region */
+    int32_t mBits                 /*!< number of bits in crc region */
 ) {
   FDK_ASSERT(pDrm != NULL);
 
@@ -128,7 +128,7 @@ int drmRead_CrcStartReg(
 void drmRead_CrcEndReg(
     HANDLE_DRM pDrm,          /*!< pointer to drm crc info stucture */
     HANDLE_FDK_BITSTREAM hBs, /*!< handle to current bit buffer structure */
-    int reg                   /*!< crc region */
+    int32_t reg                   /*!< crc region */
 ) {
   FDK_ASSERT(pDrm != NULL);
 

@@ -147,7 +147,7 @@ int32_t fixp_atan2(int32_t y, int32_t x) {
   int32_t at;  /* atan  out */
   int32_t at2; /* atan2 out */
   int32_t ret = FL2FXCONST_DBL(-1.0f);
-  INT sf, sfo, stf;
+  int32_t sf, sfo, stf;
 
   /* --- division */
 
@@ -205,9 +205,9 @@ int32_t fixp_atan2(int32_t y, int32_t x) {
     /*     ==> set q on fixed scale level as desired from fixp_atan() */
     stf = sfo - ATI_SF;
     if (stf > 0)
-      q = q << (INT)fMin(stf, DFRACT_BITS - 1);
+      q = q << (int32_t)fMin(stf, DFRACT_BITS - 1);
     else
-      q = q >> (INT)fMin(-stf, DFRACT_BITS - 1);
+      q = q >> (int32_t)fMin(-stf, DFRACT_BITS - 1);
     at = fixp_atan(q); /* ATO_SF */
   }
 
@@ -236,7 +236,7 @@ int32_t fixp_atan2(int32_t y, int32_t x) {
 }
 
 int32_t fixp_atan(int32_t x) {
-  INT sign;
+  int32_t sign;
   int32_t result, temp;
 
   /* SNR of fixp_atan() = 56 dB */
@@ -278,7 +278,7 @@ int32_t fixp_atan(int32_t x) {
     result = PI_BY_4 + (delta_fix >> 1) - (fPow2Div2(delta_fix));
   } else {
     /* Other approximation for |x| > 1.28 */
-    INT res_e;
+    int32_t res_e;
 
     temp = fPow2Div2(x); /* q25 * q25 - (DFRACT_BITS-1) - 1 = q18 */
     temp = temp + P281;  /* q18 + q18 = q18 */
@@ -296,7 +296,7 @@ int32_t fixp_atan(int32_t x) {
 
 #include "FDK_tools_rom.h"
 
-int32_t fixp_cos(int32_t x, int scale) {
+int32_t fixp_cos(int32_t x, int32_t scale) {
   int32_t residual, error, sine, cosine;
 
   residual = fixp_sin_cos_residual_inline(x, scale, &sine, &cosine);
@@ -310,7 +310,7 @@ int32_t fixp_cos(int32_t x, int scale) {
 #endif
 }
 
-int32_t fixp_sin(int32_t x, int scale) {
+int32_t fixp_sin(int32_t x, int32_t scale) {
   int32_t residual, error, sine, cosine;
 
   residual = fixp_sin_cos_residual_inline(x, scale, &sine, &cosine);
@@ -323,7 +323,7 @@ int32_t fixp_sin(int32_t x, int scale) {
 #endif
 }
 
-void fixp_cos_sin(int32_t x, int scale, int32_t *cos, int32_t *sin) {
+void fixp_cos_sin(int32_t x, int32_t scale, int32_t *cos, int32_t *sin) {
   int32_t residual, error0, error1, sine, cosine;
 
   residual = fixp_sin_cos_residual_inline(x, scale, &sine, &cosine);

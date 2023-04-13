@@ -123,7 +123,7 @@ static void sbr_envelope_unmapping(HANDLE_SBR_HEADER_DATA hHeaderData,
                                    HANDLE_SBR_FRAME_DATA h_data_left,
                                    HANDLE_SBR_FRAME_DATA h_data_right);
 static void requantizeEnvelopeData(HANDLE_SBR_FRAME_DATA h_sbr_data,
-                                   int ampResolution);
+                                   int32_t ampResolution);
 static void deltaToLinearPcmEnvelopeDecoding(
     HANDLE_SBR_HEADER_DATA hHeaderData, HANDLE_SBR_FRAME_DATA h_sbr_data,
     HANDLE_SBR_PREV_FRAME_DATA h_prev_data);
@@ -133,7 +133,7 @@ static void decodeNoiseFloorlevels(HANDLE_SBR_HEADER_DATA hHeaderData,
 static void timeCompensateFirstEnvelope(HANDLE_SBR_HEADER_DATA hHeaderData,
                                         HANDLE_SBR_FRAME_DATA h_sbr_data,
                                         HANDLE_SBR_PREV_FRAME_DATA h_prev_data);
-static int checkEnvelopeData(HANDLE_SBR_HEADER_DATA hHeaderData,
+static int32_t checkEnvelopeData(HANDLE_SBR_HEADER_DATA hHeaderData,
                              HANDLE_SBR_FRAME_DATA h_sbr_data,
                              HANDLE_SBR_PREV_FRAME_DATA h_prev_data);
 
@@ -153,9 +153,9 @@ static int checkEnvelopeData(HANDLE_SBR_HEADER_DATA hHeaderData,
 /*!
   \brief  Convert table index
 */
-static int indexLow2High(int offset, /*!< mapping factor */
-                         int index,  /*!< index to scalefactor band */
-                         int res)    /*!< frequency resolution */
+static int32_t indexLow2High(int32_t offset, /*!< mapping factor */
+                         int32_t index,  /*!< index to scalefactor band */
+                         int32_t res)    /*!< frequency resolution */
 {
   if (res == 0) {
     if (offset >= 0) {
@@ -186,9 +186,9 @@ static int indexLow2High(int offset, /*!< mapping factor */
 static void mapLowResEnergyVal(
     FIXP_SGL currVal,   /*!< current energy value */
     FIXP_SGL *prevData, /*!< pointer to previous data vector */
-    int offset,         /*!< mapping factor */
-    int index,          /*!< index to scalefactor band */
-    int res)            /*!< frequeny resolution */
+    int32_t offset,         /*!< mapping factor */
+    int32_t index,          /*!< index to scalefactor band */
+    int32_t res)            /*!< frequeny resolution */
 {
   if (res == 0) {
     if (offset >= 0) {
@@ -238,7 +238,7 @@ void decodeSbrData(
         h_prev_data_right) /*!< pointer to right channel previous frame data */
 {
   FIXP_SGL tempSfbNrgPrev[MAX_FREQ_COEFFS];
-  int errLeft;
+  int32_t errLeft;
 
   /* Save previous energy values to be able to reuse them later for concealment.
    */
@@ -293,7 +293,7 @@ static void sbr_envelope_unmapping(
     HANDLE_SBR_FRAME_DATA h_data_left,  /*!< pointer to left channel */
     HANDLE_SBR_FRAME_DATA h_data_right) /*!< pointer to right channel */
 {
-  int i;
+  int32_t i;
   FIXP_SGL tempL_m, tempR_m, tempRplus1_m, newL_m, newR_m;
   SCHAR tempL_e, tempR_e, tempRplus1_e, newL_e, newR_e;
 
@@ -383,11 +383,11 @@ static void leanSbrConcealment(
 ) {
   FIXP_SGL target; /* targeted level for sfb_nrg_prev during fade-down */
   FIXP_SGL step;   /* speed of fade */
-  int i;
+  int32_t i;
 
-  int currentStartPos =
+  int32_t currentStartPos =
       fMax(0, h_prev_data->stopPos - hHeaderData->numberTimeSlots);
-  int currentStopPos = hHeaderData->numberTimeSlots;
+  int32_t currentStopPos = hHeaderData->numberTimeSlots;
 
   /* Use some settings of the previous frame */
   h_sbr_data->ampResolutionCurrentFrame = h_prev_data->ampRes;
@@ -453,8 +453,8 @@ static void decodeEnvelope(
     HANDLE_SBR_PREV_FRAME_DATA
         otherChannel /*!< other channel's last frame data */
 ) {
-  int i;
-  int fFrameError = hHeaderData->frameErrorFlag;
+  int32_t i;
+  int32_t fFrameError = hHeaderData->frameErrorFlag;
   FIXP_SGL tempSfbNrgPrev[MAX_FREQ_COEFFS];
 
   if (!fFrameError) {
@@ -547,14 +547,14 @@ static void decodeEnvelope(
   \brief   Verify that envelope energies are within the allowed range
   \return  0 if all is fine, 1 if an envelope value was too high
 */
-static int checkEnvelopeData(
+static int32_t checkEnvelopeData(
     HANDLE_SBR_HEADER_DATA hHeaderData,    /*!< Static control data */
     HANDLE_SBR_FRAME_DATA h_sbr_data,      /*!< pointer to current data */
     HANDLE_SBR_PREV_FRAME_DATA h_prev_data /*!< pointer to data of last frame */
 ) {
   FIXP_SGL *iEnvelope = h_sbr_data->iEnvelope;
   FIXP_SGL *sfb_nrg_prev = h_prev_data->sfb_nrg_prev;
-  int i = 0, errorFlag = 0;
+  int32_t i = 0, errorFlag = 0;
   FIXP_SGL sbr_max_energy = (h_sbr_data->ampResolutionCurrentFrame == 1)
                                 ? SBR_MAX_ENERGY
                                 : (SBR_MAX_ENERGY << 1);
@@ -594,8 +594,8 @@ static void limitNoiseLevels(
     HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Static control data */
     HANDLE_SBR_FRAME_DATA h_sbr_data)   /*!< pointer to current data */
 {
-  int i;
-  int nNfb = hHeaderData->freqBandData.nNfb;
+  int32_t i;
+  int32_t nNfb = hHeaderData->freqBandData.nNfb;
 
 /*
   Set range limits. The exact values depend on the coupling mode.
@@ -627,12 +627,12 @@ static void timeCompensateFirstEnvelope(
     HANDLE_SBR_PREV_FRAME_DATA
         h_prev_data) /*!< pointer to data of last frame */
 {
-  int i, nScalefactors;
+  int32_t i, nScalefactors;
   FRAME_INFO *pFrameInfo = &h_sbr_data->frameInfo;
   UCHAR *nSfb = hHeaderData->freqBandData.nSfb;
-  int estimatedStartPos =
+  int32_t estimatedStartPos =
       fMax(0, h_prev_data->stopPos - hHeaderData->numberTimeSlots);
-  int refLen, newLen, shift;
+  int32_t refLen, newLen, shift;
   FIXP_SGL deltaExp;
 
   /* Original length of first envelope according to bitstream */
@@ -687,11 +687,11 @@ static void timeCompensateFirstEnvelope(
   The data is then used in calculateSbrEnvelope().
 */
 static void requantizeEnvelopeData(HANDLE_SBR_FRAME_DATA h_sbr_data,
-                                   int ampResolution) {
-  int i;
+                                   int32_t ampResolution) {
+  int32_t i;
   FIXP_SGL mantissa;
-  int ampShift = 1 - ampResolution;
-  int exponent;
+  int32_t ampShift = 1 - ampResolution;
+  int32_t exponent;
 
   /* In case that ENV_EXP_FRACT is changed to something else but 0 or 8,
      the initialization of this array has to be adapted!
@@ -708,7 +708,7 @@ static void requantizeEnvelopeData(HANDLE_SBR_FRAME_DATA h_sbr_data,
       FL2FXCONST_SGL(0.5f * pow(2.0f, pow(0.5f, 8))) /* 0.5013 */
   };
 
-  int bit, mask;
+  int32_t bit, mask;
 #endif
 
   for (i = 0; i < h_sbr_data->nScaleFactors; i++) {
@@ -768,12 +768,12 @@ static void deltaToLinearPcmEnvelopeDecoding(
     HANDLE_SBR_FRAME_DATA h_sbr_data,       /*!< pointer to current data */
     HANDLE_SBR_PREV_FRAME_DATA h_prev_data) /*!< pointer to previous data */
 {
-  int i, domain, no_of_bands, band, freqRes;
+  int32_t i, domain, no_of_bands, band, freqRes;
 
   FIXP_SGL *sfb_nrg_prev = h_prev_data->sfb_nrg_prev;
   FIXP_SGL *ptr_nrg = h_sbr_data->iEnvelope;
 
-  int offset =
+  int32_t offset =
       2 * hHeaderData->freqBandData.nSfb[0] - hHeaderData->freqBandData.nSfb[1];
 
   for (i = 0; i < h_sbr_data->frameInfo.nEnvelopes; i++) {
@@ -813,9 +813,9 @@ static void decodeNoiseFloorlevels(
     HANDLE_SBR_FRAME_DATA h_sbr_data,       /*!< pointer to current data */
     HANDLE_SBR_PREV_FRAME_DATA h_prev_data) /*!< pointer to previous data */
 {
-  int i;
-  int nNfb = hHeaderData->freqBandData.nNfb;
-  int nNoiseFloorEnvelopes = h_sbr_data->frameInfo.nNoiseEnvelopes;
+  int32_t i;
+  int32_t nNfb = hHeaderData->freqBandData.nNfb;
+  int32_t nNoiseFloorEnvelopes = h_sbr_data->frameInfo.nNoiseEnvelopes;
 
   /* Decode first noise envelope */
 
@@ -858,7 +858,7 @@ static void decodeNoiseFloorlevels(
 
   /* Requantize the noise floor levels in COUPLING_OFF-mode */
   if (!h_sbr_data->coupling) {
-    int nf_e;
+    int32_t nf_e;
 
     for (i = 0; i < nNoiseFloorEnvelopes * nNfb; i++) {
       nf_e = 6 - (LONG)h_sbr_data->sbrNoiseFloorLevel[i] + 1 + NOISE_EXP_OFFSET;

@@ -115,7 +115,7 @@ amm-info@iis.fraunhofer.de
 #define MAX_OCTAVE 29
 #define MAX_SECOND_REGION 50
 
-static int numberOfBands(FIXP_SGL bpo_div16, int start, int stop, int warpFlag);
+static int32_t numberOfBands(FIXP_SGL bpo_div16, int32_t start, int32_t stop, int32_t warpFlag);
 static void CalcBands(UCHAR *diff, UCHAR start, UCHAR stop, UCHAR num_bands);
 static SBR_ERROR modifyBands(UCHAR max_band, UCHAR *diff, UCHAR length);
 static void cumSum(UCHAR start_value, UCHAR *diff, UCHAR length,
@@ -130,12 +130,12 @@ static void cumSum(UCHAR start_value, UCHAR *diff, UCHAR length,
   \return  Number of start band
 */
 static UCHAR getStartBand(
-    UINT fs,              /*!< Output sampling frequency */
+    uint32_t fs,              /*!< Output sampling frequency */
     UCHAR startFreq,      /*!< Index to table of possible start bands */
-    UINT headerDataFlags) /*!< Info to SBR mode */
+    uint32_t headerDataFlags) /*!< Info to SBR mode */
 {
-  INT band;
-  UINT fsMapped = fs;
+  int32_t band;
+  uint32_t fsMapped = fs;
   SBR_RATE rate = DUAL;
 
   if (headerDataFlags & (SBRDEC_SYNTAX_USAC | SBRDEC_SYNTAX_RSVD50)) {
@@ -201,16 +201,16 @@ static UCHAR getStartBand(
   \return  Number of start band
 */
 static UCHAR getStopBand(
-    UINT fs,              /*!< Output sampling frequency */
+    uint32_t fs,              /*!< Output sampling frequency */
     UCHAR stopFreq,       /*!< Index to table of possible start bands */
-    UINT headerDataFlags, /*!< Info to SBR mode */
+    uint32_t headerDataFlags, /*!< Info to SBR mode */
     UCHAR k0)             /*!< Start freq index */
 {
   UCHAR k2;
 
   if (stopFreq < 14) {
-    INT stopMin;
-    INT num = 2 * (64);
+    int32_t stopMin;
+    int32_t num = 2 * (64);
     UCHAR diff_tot[MAX_OCTAVE + MAX_SECOND_REGION];
     UCHAR *diff0 = diff_tot;
     UCHAR *diff1 = diff_tot + MAX_OCTAVE;
@@ -299,11 +299,11 @@ SBR_ERROR
 sbrdecUpdateFreqScale(
     UCHAR *v_k_master, /*!< Master table to be created */
     UCHAR *numMaster,  /*!< Number of entries in master table */
-    UINT fs,           /*!< SBR working sampling rate */
+    uint32_t fs,           /*!< SBR working sampling rate */
     HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Control data from bitstream */
-    UINT flags) {
+    uint32_t flags) {
   FIXP_SGL bpo_div16; /* bands_per_octave divided by 16 */
-  INT dk = 0;
+  int32_t dk = 0;
 
   /* Internal variables */
   UCHAR k0, k2, i;
@@ -312,9 +312,9 @@ sbrdecUpdateFreqScale(
   UCHAR diff_tot[MAX_OCTAVE + MAX_SECOND_REGION];
   UCHAR *diff0 = diff_tot;
   UCHAR *diff1 = diff_tot + MAX_OCTAVE;
-  INT k2_achived;
-  INT k2_diff;
-  INT incr = 0;
+  int32_t k2_achived;
+  int32_t k2_diff;
+  int32_t incr = 0;
 
   /*
     Determine start band
@@ -337,7 +337,7 @@ sbrdecUpdateFreqScale(
   }
 
   if (hHeaderData->bs_data.freqScale > 0) { /* Bark */
-    INT k1;
+    int32_t k1;
 
     if (hHeaderData->bs_data.freqScale == 1) {
       bpo_div16 = FL2FXCONST_SGL(12.0f / 16.0f);
@@ -457,7 +457,7 @@ sbrdecUpdateFreqScale(
 
   /* Ref: ISO/IEC 23003-3 Cor.3, "In 7.5.5.2, add to the requirements:"*/
   if (flags & SBRDEC_QUAD_RATE) {
-    int k;
+    int32_t k;
     for (k = 1; k < *numMaster; k++) {
       if (!(v_k_master[k] - v_k_master[k - 1] <= k0 - 2)) {
         return SBRDEC_UNSUPPORTED_CONFIG;
@@ -481,22 +481,22 @@ sbrdecUpdateFreqScale(
 
  \return    num_band-th root of k_start/k_stop
 */
-static FIXP_SGL calcFactorPerBand(int k_start, int k_stop, int num_bands) {
+static FIXP_SGL calcFactorPerBand(int32_t k_start, int32_t k_stop, int32_t num_bands) {
   /* Scaled bandfactor and step 1 bit right to avoid overflow
    * use double data type */
   int32_t bandfactor = FL2FXCONST_DBL(0.25f); /* Start value */
   int32_t step = FL2FXCONST_DBL(0.125f); /* Initial increment for factor */
 
-  int direction = 1;
+  int32_t direction = 1;
 
-  /* Because saturation can't be done in INT IIS,
+  /* Because saturation can't be done in int32_t IIS,
    * changed start and stop data type from FIXP_SGL to int32_t */
   int32_t start = k_start << (DFRACT_BITS - 8);
   int32_t stop = k_stop << (DFRACT_BITS - 8);
 
   int32_t temp;
 
-  int j, i = 0;
+  int32_t j, i = 0;
 
   while (step > FL2FXCONST_DBL(0.0f)) {
     i++;
@@ -538,14 +538,14 @@ static FIXP_SGL calcFactorPerBand(int k_start, int k_stop, int num_bands) {
 
   \return    number of bands
 */
-static int numberOfBands(
+static int32_t numberOfBands(
     FIXP_SGL bpo_div16, /*!< Input: number of bands per octave divided by 16 */
-    int start,          /*!< First QMF band of SBR frequency range */
-    int stop,           /*!< Last QMF band of SBR frequency range + 1 */
-    int warpFlag)       /*!< Stretching flag */
+    int32_t start,          /*!< First QMF band of SBR frequency range */
+    int32_t stop,           /*!< Last QMF band of SBR frequency range + 1 */
+    int32_t warpFlag)       /*!< Stretching flag */
 {
   FIXP_SGL num_bands_div128;
-  int num_bands;
+  int32_t num_bands;
 
   num_bands_div128 =
       FX_DBL2FX_SGL(fMult(FDK_getNumOctavesDiv8(start, stop), bpo_div16));
@@ -579,9 +579,9 @@ static void CalcBands(UCHAR *diff,     /*!< Vector of widths to be calculated */
                       UCHAR stop,      /*!< Upper end of subband range */
                       UCHAR num_bands) /*!< Desired number of bands */
 {
-  int i;
-  int previous;
-  int current;
+  int32_t i;
+  int32_t previous;
+  int32_t current;
   FIXP_SGL exact, temp;
   FIXP_SGL bandfactor = calcFactorPerBand(start, stop, num_bands);
 
@@ -612,7 +612,7 @@ static void CalcBands(UCHAR *diff,     /*!< Vector of widths to be calculated */
 */
 static void cumSum(UCHAR start_value, UCHAR *diff, UCHAR length,
                    UCHAR *start_adress) {
-  int i;
+  int32_t i;
   start_adress[0] = start_value;
   for (i = 1; i <= length; i++)
     start_adress[i] = start_adress[i - 1] + diff[i - 1];
@@ -627,7 +627,7 @@ static void cumSum(UCHAR start_value, UCHAR *diff, UCHAR length,
 */
 static SBR_ERROR modifyBands(UCHAR max_band_previous, UCHAR *diff,
                              UCHAR length) {
-  int change = max_band_previous - diff[0];
+  int32_t change = max_band_previous - diff[0];
 
   /* Limit the change so that the last band cannot get narrower than the first
    * one */
@@ -685,10 +685,10 @@ static void sbrdecUpdateLoRes(UCHAR *h_lores, UCHAR *num_lores, UCHAR *h_hires,
 */
 void sbrdecDownSampleLoRes(UCHAR *v_result, UCHAR num_result,
                            UCHAR *freqBandTableRef, UCHAR num_Ref) {
-  int step;
-  int i, j;
-  int org_length, result_length;
-  int v_index[MAX_FREQ_COEFFS >> 1];
+  int32_t step;
+  int32_t i, j;
+  int32_t org_length, result_length;
+  int32_t v_index[MAX_FREQ_COEFFS >> 1];
 
   /* init */
   org_length = num_Ref;
@@ -715,8 +715,8 @@ void sbrdecDownSampleLoRes(UCHAR *v_result, UCHAR num_result,
   \brief   Sorting routine
 */
 void shellsort(UCHAR *in, UCHAR n) {
-  int i, j, v, w;
-  int inc = 1;
+  int32_t i, j, v, w;
+  int32_t inc = 1;
 
   do
     inc = 3 * inc + 1;
@@ -742,10 +742,10 @@ void shellsort(UCHAR *in, UCHAR n) {
   \return  errorCode, 0 if successful
 */
 SBR_ERROR
-resetFreqBandTables(HANDLE_SBR_HEADER_DATA hHeaderData, const UINT flags) {
+resetFreqBandTables(HANDLE_SBR_HEADER_DATA hHeaderData, const uint32_t flags) {
   SBR_ERROR err = SBRDEC_OK;
-  int k2, kx, lsb, usb;
-  int intTemp;
+  int32_t k2, kx, lsb, usb;
+  int32_t intTemp;
   UCHAR nBandsLo, nBandsHi;
   HANDLE_FREQ_BAND_DATA hFreq = &hHeaderData->freqBandData;
 

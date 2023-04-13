@@ -237,10 +237,10 @@ void lppTransposer(HANDLE_SBR_LPP_TRANS hLppTrans,
                    QMF_SCALE_FACTOR *sbrScaleFactor, int32_t **qmfBufferReal,
 
                    int32_t *degreeAlias, int32_t **qmfBufferImag,
-                   const int useLP, const int fPreWhitening,
-                   const int v_k_master0, const int timeStep,
-                   const int firstSlotOffset, const int lastSlotOffset,
-                   const int nInvfBands, INVF_MODE *sbr_invf_mode,
+                   const int32_t useLP, const int32_t fPreWhitening,
+                   const int32_t v_k_master0, const int32_t timeStep,
+                   const int32_t firstSlotOffset, const int32_t lastSlotOffset,
+                   const int32_t nInvfBands, INVF_MODE *sbr_invf_mode,
                    INVF_MODE *sbr_invf_mode_prev);
 
 void lppTransposerHBE(
@@ -251,25 +251,25 @@ void lppTransposerHBE(
                                  samples (source) */
     int32_t **qmfBufferImag, /*!< Pointer to pointer to imaginary part of
                                  subband samples (source) */
-    const int timeStep,       /*!< Time step of envelope */
-    const int firstSlotOffs,  /*!< Start position in time */
-    const int lastSlotOffs,   /*!< Number of overlap-slots into next frame */
-    const int nInvfBands,     /*!< Number of bands for inverse filtering */
+    const int32_t timeStep,       /*!< Time step of envelope */
+    const int32_t firstSlotOffs,  /*!< Start position in time */
+    const int32_t lastSlotOffs,   /*!< Number of overlap-slots into next frame */
+    const int32_t nInvfBands,     /*!< Number of bands for inverse filtering */
     INVF_MODE *sbr_invf_mode, /*!< Current inverse filtering modes */
     INVF_MODE *sbr_invf_mode_prev /*!< Previous inverse filtering modes */
 );
 
 SBR_ERROR
 createLppTransposer(HANDLE_SBR_LPP_TRANS hLppTrans,
-                    TRANSPOSER_SETTINGS *pSettings, const int highBandStartSb,
-                    UCHAR *v_k_master, const int numMaster, const int usb,
-                    const int timeSlots, const int nCols, UCHAR *noiseBandTable,
-                    const int noNoiseBands, UINT fs, const int chan,
-                    const int overlap);
+                    TRANSPOSER_SETTINGS *pSettings, const int32_t highBandStartSb,
+                    UCHAR *v_k_master, const int32_t numMaster, const int32_t usb,
+                    const int32_t timeSlots, const int32_t nCols, UCHAR *noiseBandTable,
+                    const int32_t noNoiseBands, uint32_t fs, const int32_t chan,
+                    const int32_t overlap);
 
 SBR_ERROR
 resetLppTransposer(HANDLE_SBR_LPP_TRANS hLppTrans, UCHAR highBandStartSb,
                    UCHAR *v_k_master, UCHAR numMaster, UCHAR *noiseBandTable,
-                   UCHAR noNoiseBands, UCHAR usb, UINT fs);
+                   UCHAR noNoiseBands, UCHAR usb, uint32_t fs);
 
 #endif /* LPP_TRAN_H */

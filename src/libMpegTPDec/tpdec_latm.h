@@ -119,17 +119,17 @@ enum {
 };
 
 typedef struct {
-  UINT m_frameLengthType;
-  UINT m_bufferFullness;
-  UINT m_streamID;
-  UINT m_frameLengthInBits;
+  uint32_t m_frameLengthType;
+  uint32_t m_bufferFullness;
+  uint32_t m_streamID;
+  uint32_t m_frameLengthInBits;
 } LATM_LAYER_INFO;
 
 typedef struct {
   LATM_LAYER_INFO m_linfo[LATM_MAX_PROG][LATM_MAX_LAYER];
-  UINT m_taraBufferFullness;
-  UINT m_otherDataLength;
-  UINT m_audioMuxLengthBytes; /* Length of LOAS payload */
+  uint32_t m_taraBufferFullness;
+  uint32_t m_otherDataLength;
+  uint32_t m_audioMuxLengthBytes; /* Length of LOAS payload */
 
   UCHAR m_useSameStreamMux;
   UCHAR m_AudioMuxVersion;
@@ -151,14 +151,14 @@ typedef struct {
                                   AudioPreRoll */
 } CLatmDemux;
 
-int CLatmDemux_ReadAuChunkLengthInfo(HANDLE_FDK_BITSTREAM bs);
+int32_t CLatmDemux_ReadAuChunkLengthInfo(HANDLE_FDK_BITSTREAM bs);
 
 TRANSPORTDEC_ERROR CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
                                    CLatmDemux *pLatmDemux, TRANSPORT_TYPE tt,
                                    CSTpCallBacks *pTpDecCallbacks,
                                    CSAudioSpecificConfig *pAsc,
-                                   int *pfConfigFound,
-                                   const INT ignoreBufferFullness);
+                                   int32_t *pfConfigFound,
+                                   const int32_t ignoreBufferFullness);
 
 /**
  * \brief Read StreamMuxConfig
@@ -176,16 +176,16 @@ TRANSPORTDEC_ERROR CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
 TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
     HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux,
     CSTpCallBacks *pTpDecCallbacks, CSAudioSpecificConfig *pAsc,
-    int *pfConfigFound, UCHAR configMode, UCHAR configChanged);
+    int32_t *pfConfigFound, UCHAR configMode, UCHAR configChanged);
 
 TRANSPORTDEC_ERROR CLatmDemux_ReadPayloadLengthInfo(HANDLE_FDK_BITSTREAM bs,
                                                     CLatmDemux *pLatmDemux);
 
-UINT CLatmDemux_GetFrameLengthInBits(CLatmDemux *pLatmDemux, const UINT prog,
-                                     const UINT layer);
-UINT CLatmDemux_GetOtherDataPresentFlag(CLatmDemux *pLatmDemux);
-UINT CLatmDemux_GetOtherDataLength(CLatmDemux *pLatmDemux);
-UINT CLatmDemux_GetNrOfSubFrames(CLatmDemux *pLatmDemux);
-UINT CLatmDemux_GetNrOfLayers(CLatmDemux *pLatmDemux, const UINT program);
+uint32_t CLatmDemux_GetFrameLengthInBits(CLatmDemux *pLatmDemux, const uint32_t prog,
+                                     const uint32_t layer);
+uint32_t CLatmDemux_GetOtherDataPresentFlag(CLatmDemux *pLatmDemux);
+uint32_t CLatmDemux_GetOtherDataLength(CLatmDemux *pLatmDemux);
+uint32_t CLatmDemux_GetNrOfSubFrames(CLatmDemux *pLatmDemux);
+uint32_t CLatmDemux_GetNrOfLayers(CLatmDemux *pLatmDemux, const uint32_t program);
 
 #endif /* TPDEC_LATM_H */

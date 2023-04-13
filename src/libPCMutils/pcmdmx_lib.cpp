@@ -334,7 +334,7 @@ static const FIXP_DMX mpegMixDownIdx2PreFact[3][4] = {
 #define TYPE_DSE_DATA (0x7E)
 
 typedef struct {
-  UINT typeFlags;
+  uint32_t typeFlags;
   /* From DSE */
   UCHAR cLevIdx;
   UCHAR sLevIdx;
@@ -349,7 +349,7 @@ typedef struct {
   SCHAR pseudoSurround; /*!< If set to 1 the signal is pseudo surround
                            compatible. The value 0 tells that it is not. If the
                            value is -1 the information is not available.  */
-  UINT expiryCount; /*!< Counter to monitor the life time of a meta data set. */
+  uint32_t expiryCount; /*!< Counter to monitor the life time of a meta data set. */
 
 } DMX_BS_META_DATA;
 
@@ -361,7 +361,7 @@ static const DMX_BS_META_DATA dfltMetaData = {0, 2, 2, 2,  2, 15,
      See the definition of PCMDMX_PARAM for details on the specific fields. */
 typedef struct {
   DMX_PROFILE_TYPE dmxProfile; /*!< Linked to DMX_PRFL_STANDARD              */
-  UINT expiryFrame;            /*!< Linked to DMX_BS_DATA_EXPIRY_FRAME       */
+  uint32_t expiryFrame;            /*!< Linked to DMX_BS_DATA_EXPIRY_FRAME       */
   DUAL_CHANNEL_MODE dualChannelMode; /*!< Linked to DMX_DUAL_CHANNEL_MODE */
   PSEUDO_SURROUND_MODE
   pseudoSurrMode;          /*!< Linked to DMX_PSEUDO_SURROUND_MODE       */
@@ -384,7 +384,7 @@ struct PCM_DMX_INSTANCE {
 /* Memory allocation macro */
 C_ALLOC_MEM(PcmDmxInstance, struct PCM_DMX_INSTANCE, 1)
 
-static UINT getSpeakerDistance(PCM_DMX_SPEAKER_POSITION posA,
+static uint32_t getSpeakerDistance(PCM_DMX_SPEAKER_POSITION posA,
                                PCM_DMX_SPEAKER_POSITION posB) {
   PCM_DMX_SPEAKER_POSITION diff;
 
@@ -407,7 +407,7 @@ static PCM_DMX_SPEAKER_POSITION getSpeakerPos(AUDIO_CHANNEL_TYPE chType,
   unsigned chGrpWidth = numChInGrp >> 1;
   unsigned fIsCenter = 0;
   unsigned fIsLfe = (chType == ACT_LFE) ? 1 : 0;
-  int offset = 0;
+  int32_t offset = 0;
 
   FDK_ASSERT(chIndex < numChInGrp);
 
@@ -466,8 +466,8 @@ static PCM_DMX_SPEAKER_POSITION getSpeakerPos(AUDIO_CHANNEL_TYPE chType,
  * @returns Returns the packed channel mode of the requested channel plain.
  **/
 static PCM_DMX_CHANNEL_MODE getChMode4Plain(
-    const int plainIndex, const PCM_DMX_CHANNEL_MODE totChMode,
-    const int chCfg) {
+    const int32_t plainIndex, const PCM_DMX_CHANNEL_MODE totChMode,
+    const int32_t chCfg) {
   PCM_DMX_CHANNEL_MODE plainChMode = totChMode;
 
   switch (totChMode) {
@@ -494,9 +494,9 @@ static PCM_DMX_CHANNEL_MODE getChMode4Plain(
   return plainChMode;
 }
 
-static inline UINT getIdxSum(UCHAR numCh) {
-  UINT result = 0;
-  int i;
+static inline uint32_t getIdxSum(UCHAR numCh) {
+  uint32_t result = 0;
+  int32_t i;
   for (i = 1; i < numCh; i += 1) {
     result += i;
   }
@@ -517,13 +517,13 @@ static inline UINT getIdxSum(UCHAR numCh) {
  * @returns Returns an error code.
  **/
 static PCMDMX_ERROR getChannelMode(
-    const UINT numChannels,                 /* in */
+    const uint32_t numChannels,                 /* in */
     const AUDIO_CHANNEL_TYPE channelType[], /* in */
     UCHAR channelIndices[],                 /* in */
     UCHAR offsetTable[(8)],                 /* out */
     PCM_DMX_CHANNEL_MODE *chMode            /* out */
 ) {
-  UINT idxSum[(3)][(4)];
+  uint32_t idxSum[(3)][(4)];
   UCHAR numCh[(3)][(4)];
   UCHAR mapped[(8)];
   PCM_DMX_SPEAKER_POSITION spkrPos[(8)];
@@ -538,7 +538,7 @@ static PCMDMX_ERROR getChannelMode(
   FDK_ASSERT(chMode != NULL);
 
   /* For details see ISO/IEC 13818-7:2005(E), 8.5.3 Channel configuration */
-  FDKmemclear(idxSum, (3) * (4) * sizeof(UINT));
+  FDKmemclear(idxSum, (3) * (4) * sizeof(uint32_t));
   FDKmemclear(numCh, (3) * (4) * sizeof(UCHAR));
   FDKmemclear(mapped, (8) * sizeof(UCHAR));
   FDKmemclear(spkrPos, (8) * sizeof(PCM_DMX_SPEAKER_POSITION));
@@ -555,10 +555,10 @@ static PCMDMX_ERROR getChannelMode(
     idxSum[channelType[ch] >> 4][chGrp] += channelIndices[ch];
   }
   if (numChannels > TWO_CHANNEL) {
-    int chGrp;
+    int32_t chGrp;
     /* Sanity check on the indices */
     for (chGrp = 0; chGrp < (4); chGrp += 1) {
-      int plane;
+      int32_t plane;
       for (plane = 0; plane < (3); plane += 1) {
         if (idxSum[plane][chGrp] != getIdxSum(numCh[plane][chGrp])) {
           unsigned idxCnt = 0;
@@ -577,7 +577,7 @@ static PCMDMX_ERROR getChannelMode(
    *   Determine the speaker position of each input channel and map it to a
    * internal slot if it matches exactly (with zero distance). */
   for (ch = 0; ch < numChannels; ch += 1) {
-    UINT mapDist = (unsigned)-1;
+    uint32_t mapDist = (unsigned)-1;
     unsigned mapCh, mapPos = (unsigned)-1;
     unsigned chGrp = fMax(
         (channelType[ch] & 0x0F) - 1,
@@ -590,7 +590,7 @@ static PCMDMX_ERROR getChannelMode(
 
     for (mapCh = 0; mapCh <= stopSlot; mapCh += 1) {
       if (offsetTable[mapCh] == 255) {
-        UINT dist = getSpeakerDistance(spkrPos[ch], spkrSlotPos[mapCh]);
+        uint32_t dist = getSpeakerDistance(spkrPos[ch], spkrSlotPos[mapCh]);
         if (dist < mapDist) {
           mapPos = mapCh;
           mapDist = dist;
@@ -614,12 +614,12 @@ static PCMDMX_ERROR getChannelMode(
           : 1;
   for (ch = 0; ch < (unsigned)numChannels; ch += 1) {
     if (!mapped[ch]) {
-      UINT mapDist = (unsigned)-1;
+      uint32_t mapDist = (unsigned)-1;
       unsigned mapCh, mapPos = (unsigned)-1;
 
       for (mapCh = startSlot; mapCh <= stopSlot; mapCh += 1) {
         if (offsetTable[mapCh] == 255) {
-          UINT dist = getSpeakerDistance(spkrPos[ch], spkrSlotPos[mapCh]);
+          uint32_t dist = getSpeakerDistance(spkrPos[ch], spkrSlotPos[mapCh]);
           if (dist < mapDist) {
             mapPos = mapCh;
             mapDist = dist;
@@ -643,12 +643,12 @@ static PCMDMX_ERROR getChannelMode(
    * internal slot. */
   for (ch = startSlot; (ch < (8)) && (numMappedInChs < numChannels); ch += 1) {
     if (offsetTable[ch] == 255) {
-      UINT mapDist = (unsigned)-1;
+      uint32_t mapDist = (unsigned)-1;
       unsigned mapCh, mapPos = (unsigned)-1;
 
       for (mapCh = 0; mapCh < (unsigned)numChannels; mapCh += 1) {
         if (!mapped[mapCh]) {
-          UINT dist = getSpeakerDistance(spkrPos[mapCh], spkrSlotPos[ch]);
+          uint32_t dist = getSpeakerDistance(spkrPos[mapCh], spkrSlotPos[ch]);
           if (dist < mapDist) {
             mapPos = mapCh;
             mapDist = dist;
@@ -670,7 +670,7 @@ static PCMDMX_ERROR getChannelMode(
 
   /* Finaly compose the channel mode */
   for (ch = 0; ch < (4); ch += 1) {
-    int plane, numChInGrp = 0;
+    int32_t plane, numChInGrp = 0;
     for (plane = 0; plane < (3); plane += 1) {
       numChInGrp += numCh[plane][ch];
     }
@@ -700,8 +700,8 @@ static void getChannelDescription(
     UCHAR channelIndices[],                    /* out */
     UCHAR offsetTable[(8)]                     /* out */
 ) {
-  int grpIdx, plainIdx, numPlains = 1, numTotalChannels = 0;
-  int chCfg, ch = 0;
+  int32_t grpIdx, plainIdx, numPlains = 1, numTotalChannels = 0;
+  int32_t chCfg, ch = 0;
 
   FDK_ASSERT(channelType != NULL);
   FDK_ASSERT(channelIndices != NULL);
@@ -761,7 +761,7 @@ static void getChannelDescription(
     if ((numChInGrp[CH_GROUP_FRONT] & 0x1) && (plainIdx == CH_PLAIN_NORMAL)) {
       /* Odd number of front channels -> we have a center channel.
          In MPEG-4 the center has the index 0. */
-      int mappedIdx = FDK_chMapDescr_getMapValue(mapDescr, (UCHAR)ch, chCfg);
+      int32_t mappedIdx = FDK_chMapDescr_getMapValue(mapDescr, (UCHAR)ch, chCfg);
       offsetTable[CENTER_FRONT_CHANNEL] = (UCHAR)mappedIdx;
       channelType[mappedIdx] = ACT_FRONT;
       channelIndices[mappedIdx] = 0;
@@ -770,8 +770,8 @@ static void getChannelDescription(
 
     for (grpIdx = 0; grpIdx < (4); grpIdx += 1) {
       AUDIO_CHANNEL_TYPE type = ACT_NONE;
-      int chMapPos = 0, maxChannels = 0;
-      int chIdx = 0; /* Index of channel within the specific group */
+      int32_t chMapPos = 0, maxChannels = 0;
+      int32_t chIdx = 0; /* Index of channel within the specific group */
 
       switch (grpIdx) {
         case CH_GROUP_FRONT:
@@ -818,7 +818,7 @@ static void getChannelDescription(
 
       /* Map all channels in this group */
       for (; chIdx < numChInGrp[grpIdx]; chIdx += 1) {
-        int mappedIdx = FDK_chMapDescr_getMapValue(mapDescr, (UCHAR)ch, chCfg);
+        int32_t mappedIdx = FDK_chMapDescr_getMapValue(mapDescr, (UCHAR)ch, chCfg);
         if ((chIdx == maxChannels) || (offsetTable[chMapPos] < 255)) {
           /* No space left in this channel group! */
           if (offsetTable[LEFT_MULTIPRPS_CHANNEL] ==
@@ -847,8 +847,8 @@ static void getChannelDescription(
  * @returns       Nothing to return.
  **/
 static void dmxInitChannel(FIXP_DMX mixFactors[(8)][(8)],
-                           INT mixScales[(8)][(8)], const unsigned int outCh) {
-  unsigned int inCh;
+                           int32_t mixScales[(8)][(8)], const uint32_t outCh) {
+  uint32_t inCh;
   for (inCh = 0; inCh < (8); inCh += 1) {
     if (inCh == outCh) {
       mixFactors[outCh][inCh] = FL2FXCONST_DMX(0.5f);
@@ -869,10 +869,10 @@ static void dmxInitChannel(FIXP_DMX mixFactors[(8)][(8)],
  * @returns       Nothing to return.
  **/
 static void dmxClearChannel(FIXP_DMX mixFactors[(8)][(8)],
-                            INT mixScales[(8)][(8)], const unsigned int outCh) {
+                            int32_t mixScales[(8)][(8)], const uint32_t outCh) {
   FDK_ASSERT((outCh >= 0) && (outCh < (8)));
   FDKmemclear(&mixFactors[outCh], (8) * sizeof(FIXP_DMX));
-  FDKmemclear(&mixScales[outCh], (8) * sizeof(INT));
+  FDKmemclear(&mixScales[outCh], (8) * sizeof(int32_t));
 }
 
 /** Private helper function for downmix matrix manipulation that applies a
@@ -889,10 +889,10 @@ static void dmxClearChannel(FIXP_DMX mixFactors[(8)][(8)],
  * @returns       Nothing to return.
  **/
 static void dmxSetChannel(FIXP_DMX mixFactors[(8)][(8)],
-                          INT mixScales[(8)][(8)], const unsigned int dstCh,
-                          const unsigned int srcCh, const FIXP_DMX factor,
-                          const INT scale) {
-  int ch;
+                          int32_t mixScales[(8)][(8)], const uint32_t dstCh,
+                          const uint32_t srcCh, const FIXP_DMX factor,
+                          const int32_t scale) {
+  int32_t ch;
   for (ch = 0; ch < (8); ch += 1) {
     if (mixFactors[srcCh][ch] != (FIXP_DMX)0) {
       mixFactors[dstCh][ch] =
@@ -915,14 +915,14 @@ static void dmxSetChannel(FIXP_DMX mixFactors[(8)][(8)],
  * @returns       Nothing to return.
  **/
 static void dmxAddChannel(FIXP_DMX mixFactors[(8)][(8)],
-                          INT mixScales[(8)][(8)], const unsigned int dstCh,
-                          const unsigned int srcCh, const FIXP_DMX factor,
-                          const INT scale) {
-  int ch;
+                          int32_t mixScales[(8)][(8)], const uint32_t dstCh,
+                          const uint32_t srcCh, const FIXP_DMX factor,
+                          const int32_t scale) {
+  int32_t ch;
   for (ch = 0; ch < (8); ch += 1) {
     int32_t addFact = fMult(mixFactors[srcCh][ch], factor);
     if (addFact != (FIXP_DMX)0) {
-      INT newScale = mixScales[srcCh][ch] + scale;
+      int32_t newScale = mixScales[srcCh][ch] + scale;
       if (mixFactors[dstCh][ch] != (FIXP_DMX)0) {
         if (newScale > mixScales[dstCh][ch]) {
           mixFactors[dstCh][ch] >>= newScale - mixScales[dstCh][ch];
@@ -961,15 +961,15 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
                                   const PCM_DMX_USER_PARAMS *pParams,
                                   const DMX_BS_META_DATA *pMetaData,
                                   FIXP_DMX mixFactors[(8)][(8)],
-                                  INT *pOutScale) {
+                                  int32_t *pOutScale) {
   PCMDMX_ERROR err = PCMDMX_OK;
-  INT mixScales[(8)][(8)];
-  INT maxScale = 0;
-  int numInChannel;
-  int numOutChannel;
-  int dmxMethod;
-  unsigned int outCh, inChCfg = 0;
-  unsigned int valid[(8)] = {0};
+  int32_t mixScales[(8)][(8)];
+  int32_t maxScale = 0;
+  int32_t numInChannel;
+  int32_t numOutChannel;
+  int32_t dmxMethod;
+  uint32_t outCh, inChCfg = 0;
+  uint32_t valid[(8)] = {0};
 
   FDK_ASSERT(pMetaData != NULL);
   FDK_ASSERT(mixFactors != NULL);
@@ -983,7 +983,7 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
 
   if (inModeIsCfg) {
     /* Convert channel config to channel mode: */
-    inChCfg = (unsigned int)inChMode;
+    inChCfg = (uint32_t)inChMode;
     switch (inChCfg) {
       case 1:
       case 2:
@@ -1030,8 +1030,8 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
   if (numInChannel > SIX_CHANNEL) { /* Always use MPEG equations either with
                                        meta data or with default values. */
     FIXP_DMX dMixFactA, dMixFactB;
-    INT dMixScaleA, dMixScaleB;
-    int isValidCfg = TRUE;
+    int32_t dMixScaleA, dMixScaleB;
+    int32_t isValidCfg = TRUE;
 
     /* Get factors from meta data */
     dMixFactA = abMixLvlValueTab[pMetaData->dmixIdxA];
@@ -1131,9 +1131,9 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
     if ((isValidCfg == TRUE) &&
         (pMetaData->dmxGainIdx5 != 0)) { /* Apply DMX gain 5 */
       FIXP_DMX dmxGain;
-      INT dmxScale;
-      INT sign = (pMetaData->dmxGainIdx5 & 0x40) ? -1 : 1;
-      INT val = pMetaData->dmxGainIdx5 & 0x3F;
+      int32_t dmxScale;
+      int32_t sign = (pMetaData->dmxGainIdx5 & 0x40) ? -1 : 1;
+      int32_t val = pMetaData->dmxGainIdx5 & 0x3F;
 
       /* 10^(dmx_gain_5/80) */
       dmxGain = FX_DBL2FX_DMX(
@@ -1318,7 +1318,7 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
           default:
           case DMX_METHOD_MPEG_AMD4: {
             FIXP_DMX cMixLvl, sMixLvl, lMixLvl;
-            INT cMixScale, sMixScale, lMixScale;
+            int32_t cMixScale, sMixScale, lMixScale;
 
             /* Get factors from meta data */
             cMixLvl = abMixLvlValueTab[pMetaData->cLevIdx];
@@ -1374,9 +1374,9 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
             /* Add additional DMX gain */
             if (pMetaData->dmxGainIdx2 != 0) { /* Apply DMX gain 2 */
               FIXP_DMX dmxGain;
-              INT dmxScale;
-              INT sign = (pMetaData->dmxGainIdx2 & 0x40) ? -1 : 1;
-              INT val = pMetaData->dmxGainIdx2 & 0x3F;
+              int32_t dmxScale;
+              int32_t sign = (pMetaData->dmxGainIdx2 & 0x40) ? -1 : 1;
+              int32_t val = pMetaData->dmxGainIdx2 & 0x3F;
 
               /* 10^(dmx_gain_2/80) */
               dmxGain = FX_DBL2FX_DMX(
@@ -1458,14 +1458,14 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
     } /* switch (inChMode) */
 
     /* Mark the output channels */
-    FDKmemclear(valid, (8) * sizeof(unsigned int));
+    FDKmemclear(valid, (8) * sizeof(uint32_t));
     valid[LEFT_FRONT_CHANNEL] = 1;
     valid[RIGHT_FRONT_CHANNEL] = 1;
   }
 
   if (numOutChannel == ONE_CHANNEL) {
     FIXP_DMX monoMixLevel;
-    INT monoMixScale = 0;
+    int32_t monoMixScale = 0;
 
     dmxClearChannel(mixFactors, mixScales,
                     CENTER_FRONT_CHANNEL); /* C is not in the mix */
@@ -1501,7 +1501,7 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
     }
 
     /* Mark the output channel */
-    FDKmemclear(valid, (8) * sizeof(unsigned int));
+    FDKmemclear(valid, (8) * sizeof(uint32_t));
     valid[CENTER_FRONT_CHANNEL] = 1;
   }
 
@@ -1509,12 +1509,12 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
 
   {
     LONG chSum[(8)];
-    INT chSumMax = MAX_SEARCH_START_VAL;
+    int32_t chSumMax = MAX_SEARCH_START_VAL;
 
     /* Determine the current maximum scale factor */
     for (outCh = 0; outCh < (8); outCh += 1) {
       if (valid[outCh] != 0) {
-        unsigned int inCh;
+        uint32_t inCh;
         for (inCh = 0; inCh < (8); inCh += 1) {
           if (mixScales[outCh][inCh] > maxScale) { /* Store the new maximum */
             maxScale = mixScales[outCh][inCh];
@@ -1527,8 +1527,8 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
     for (outCh = 0; outCh < (8); outCh += 1) {
       chSum[outCh] = MAX_SEARCH_START_VAL;
       if (valid[outCh] != 0) {
-        int ovrflwProtScale = 0;
-        unsigned int inCh;
+        int32_t ovrflwProtScale = 0;
+        uint32_t inCh;
 
         /* Accumulate all factors for each output channel */
         chSum[outCh] = 0;
@@ -1568,7 +1568,7 @@ static PCMDMX_ERROR getMixFactors(const UCHAR inModeIsCfg,
     /* Normalize all factors */
     for (outCh = 0; outCh < (8); outCh += 1) {
       if (valid[outCh] != 0) {
-        unsigned int inCh;
+        uint32_t inCh;
         for (inCh = 0; inCh < (8); inCh += 1) {
           if (mixFactors[outCh][inCh] != (FIXP_DMX)0) {
             if (mixScales[outCh][inCh] <= maxScale) {
@@ -1620,7 +1620,7 @@ PCMDMX_ERROR pcmDmx_Open(HANDLE_PCM_DOWNMIX *pSelf) {
  * @param [in] Flags telling which parts of the module shall be reset.
  * @returns Returns an error code.
  **/
-PCMDMX_ERROR pcmDmx_Reset(HANDLE_PCM_DOWNMIX self, UINT flags) {
+PCMDMX_ERROR pcmDmx_Reset(HANDLE_PCM_DOWNMIX self, uint32_t flags) {
   if (self == NULL) {
     return (PCMDMX_INVALID_HANDLE);
   }
@@ -1639,7 +1639,7 @@ PCMDMX_ERROR pcmDmx_Reset(HANDLE_PCM_DOWNMIX self, UINT flags) {
   }
 
   if (flags & PCMDMX_RESET_BS_DATA) {
-    int slot;
+    int32_t slot;
     /* Init all slots with a default set */
     for (slot = 0; slot <= (1); slot += 1) {
       FDKmemcpy(&self->bsMetaData[slot], &dfltMetaData,
@@ -1657,7 +1657,7 @@ PCMDMX_ERROR pcmDmx_Reset(HANDLE_PCM_DOWNMIX self, UINT flags) {
  * @returns Returns an error code.
  **/
 PCMDMX_ERROR pcmDmx_SetParam(HANDLE_PCM_DOWNMIX self, const PCMDMX_PARAM param,
-                             const INT value) {
+                             const int32_t value) {
   switch (param) {
     case DMX_PROFILE_SETTING:
       switch ((DMX_PROFILE_TYPE)value) {
@@ -1675,7 +1675,7 @@ PCMDMX_ERROR pcmDmx_SetParam(HANDLE_PCM_DOWNMIX self, const PCMDMX_PARAM param,
 
     case DMX_BS_DATA_EXPIRY_FRAME:
       if (self == NULL) return (PCMDMX_INVALID_HANDLE);
-      self->userParams.expiryFrame = (value > 0) ? (UINT)value : 0;
+      self->userParams.expiryFrame = (value > 0) ? (uint32_t)value : 0;
       break;
 
     case DMX_BS_DATA_DELAY:
@@ -1780,7 +1780,7 @@ PCMDMX_ERROR pcmDmx_SetParam(HANDLE_PCM_DOWNMIX self, const PCMDMX_PARAM param,
  * @returns Returns an error code.
  **/
 PCMDMX_ERROR pcmDmx_GetParam(HANDLE_PCM_DOWNMIX self, const PCMDMX_PARAM param,
-                             INT *const pValue) {
+                             int32_t *const pValue) {
   PCM_DMX_USER_PARAMS *pUsrParams;
 
   if ((self == NULL) || (pValue == NULL)) {
@@ -1790,25 +1790,25 @@ PCMDMX_ERROR pcmDmx_GetParam(HANDLE_PCM_DOWNMIX self, const PCMDMX_PARAM param,
 
   switch (param) {
     case DMX_PROFILE_SETTING:
-      *pValue = (INT)pUsrParams->dmxProfile;
+      *pValue = (int32_t)pUsrParams->dmxProfile;
       break;
     case DMX_BS_DATA_EXPIRY_FRAME:
-      *pValue = (INT)pUsrParams->expiryFrame;
+      *pValue = (int32_t)pUsrParams->expiryFrame;
       break;
     case DMX_BS_DATA_DELAY:
-      *pValue = (INT)pUsrParams->frameDelay;
+      *pValue = (int32_t)pUsrParams->frameDelay;
       break;
     case MIN_NUMBER_OF_OUTPUT_CHANNELS:
-      *pValue = (INT)pUsrParams->numOutChannelsMin;
+      *pValue = (int32_t)pUsrParams->numOutChannelsMin;
       break;
     case MAX_NUMBER_OF_OUTPUT_CHANNELS:
-      *pValue = (INT)pUsrParams->numOutChannelsMax;
+      *pValue = (int32_t)pUsrParams->numOutChannelsMax;
       break;
     case DMX_DUAL_CHANNEL_MODE:
-      *pValue = (INT)pUsrParams->dualChannelMode;
+      *pValue = (int32_t)pUsrParams->dualChannelMode;
       break;
     case DMX_PSEUDO_SURROUND_MODE:
-      *pValue = (INT)pUsrParams->pseudoSurrMode;
+      *pValue = (int32_t)pUsrParams->pseudoSurrMode;
       break;
     default:
       return (PCMDMX_UNKNOWN_PARAM);
@@ -1821,7 +1821,7 @@ PCMDMX_ERROR pcmDmx_GetParam(HANDLE_PCM_DOWNMIX self, const PCMDMX_PARAM param,
  * Read DMX meta-data from a data stream element.
  */
 PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self, HANDLE_FDK_BITSTREAM hBs,
-                          UINT ancDataBits, int isMpeg2) {
+                          uint32_t ancDataBits, int32_t isMpeg2) {
   PCMDMX_ERROR errorStatus = PCMDMX_OK;
 
 #define MAX_DSE_ANC_BYTES (16)    /* 15 bytes */
@@ -1829,10 +1829,10 @@ PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self, HANDLE_FDK_BITSTREAM hBs,
 
   DMX_BS_META_DATA *pBsMetaData;
 
-  int skip4Dmx = 0, skip4Ext = 0;
-  int dmxLvlAvail = 0, extDataAvail = 0;
-  UINT foundNewData = 0;
-  UINT minAncBits = ((isMpeg2) ? 5 : 3) * 8;
+  int32_t skip4Dmx = 0, skip4Ext = 0;
+  int32_t dmxLvlAvail = 0, extDataAvail = 0;
+  uint32_t foundNewData = 0;
+  uint32_t minAncBits = ((isMpeg2) ? 5 : 3) * 8;
 
   if ((self == NULL) || (hBs == NULL)) {
     return (PCMDMX_INVALID_HANDLE);
@@ -1859,7 +1859,7 @@ PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self, HANDLE_FDK_BITSTREAM hBs,
   FDKpushFor(hBs, 4);
 
   if (isMpeg2) {
-    /* int numAncBytes = */ FDKreadBits(hBs, 4);
+    /* int32_t numAncBytes = */ FDKreadBits(hBs, 4);
     /* advanced dynamic range control */
     if (FDKreadBit(hBs)) skip4Dmx += 24;
     /* dialog normalization */
@@ -1914,7 +1914,7 @@ PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self, HANDLE_FDK_BITSTREAM hBs,
 
   /* anc data extension (MPEG-4 only) */
   if (extDataAvail) {
-    int extDmxLvlSt, extDmxGainSt, extDmxLfeSt;
+    int32_t extDmxLvlSt, extDmxGainSt, extDmxLfeSt;
 
     FDKreadBit(hBs); /* reserved bit */
     extDmxLvlSt = FDKreadBit(hBs);
@@ -1943,7 +1943,7 @@ PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self, HANDLE_FDK_BITSTREAM hBs,
   }
 
   /* final sanity check on the amount of read data */
-  if ((INT)FDKgetValidBits(hBs) < 0) {
+  if ((int32_t)FDKgetValidBits(hBs) < 0) {
     errorStatus = PCMDMX_CORRUPT_ANC_DATA;
   }
 
@@ -1961,7 +1961,7 @@ PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self, HANDLE_FDK_BITSTREAM hBs,
  * Read DMX meta-data from a data stream element.
  */
 PCMDMX_ERROR pcmDmx_ReadDvbAncData(HANDLE_PCM_DOWNMIX self, UCHAR *pAncDataBuf,
-                                   UINT ancDataBytes, int isMpeg2) {
+                                   uint32_t ancDataBytes, int32_t isMpeg2) {
   PCMDMX_ERROR errorStatus = PCMDMX_OK;
   FDK_BITSTREAM bs;
   HANDLE_FDK_BITSTREAM hBs = &bs;
@@ -1991,9 +1991,9 @@ PCMDMX_ERROR pcmDmx_ReadDvbAncData(HANDLE_PCM_DOWNMIX self, UCHAR *pAncDataBuf,
  * @returns Returns an error code.
  **/
 PCMDMX_ERROR pcmDmx_SetMatrixMixdownFromPce(HANDLE_PCM_DOWNMIX self,
-                                            int matrixMixdownPresent,
-                                            int matrixMixdownIdx,
-                                            int pseudoSurroundEnable) {
+                                            int32_t matrixMixdownPresent,
+                                            int32_t matrixMixdownIdx,
+                                            int32_t pseudoSurroundEnable) {
   if (self == NULL) {
     return (PCMDMX_INVALID_HANDLE);
   }
@@ -2032,22 +2032,22 @@ PCMDMX_ERROR pcmDmx_SetMatrixMixdownFromPce(HANDLE_PCM_DOWNMIX self,
  * @returns Returns an error code.
  **/
 PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
-                               const int pcmBufSize, UINT frameSize,
-                               INT *nChannels, INT fInterleaved,
+                               const int32_t pcmBufSize, uint32_t frameSize,
+                               int32_t *nChannels, int32_t fInterleaved,
                                AUDIO_CHANNEL_TYPE channelType[],
                                UCHAR channelIndices[],
                                const FDK_channelMapDescr *const mapDescr,
-                               INT *pDmxOutScale) {
+                               int32_t *pDmxOutScale) {
   PCM_DMX_USER_PARAMS *pParam = NULL;
   PCMDMX_ERROR errorStatus = PCMDMX_OK;
   DUAL_CHANNEL_MODE dualChannelMode;
   PCM_DMX_CHANNEL_MODE inChMode;
   PCM_DMX_CHANNEL_MODE outChMode;
-  INT devNull; /* Just a dummy to avoid a lot of branches in the code */
-  int numOutChannels, numInChannels;
-  int inStride, outStride, offset;
-  int dmxMaxScale, dmxScale;
-  int slot;
+  int32_t devNull; /* Just a dummy to avoid a lot of branches in the code */
+  int32_t numOutChannels, numInChannels;
+  int32_t inStride, outStride, offset;
+  int32_t dmxMaxScale, dmxScale;
+  int32_t slot;
   UCHAR inOffsetTable[(8)];
 
   DMX_BS_META_DATA bsMetaData;
@@ -2110,7 +2110,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
   }
 
   /* Check I/O buffer size */
-  if ((UINT)pcmBufSize < (UINT)numOutChannels * frameSize) {
+  if ((uint32_t)pcmBufSize < (uint32_t)numOutChannels * frameSize) {
     return (PCMDMX_OUTPUT_BUFFER_TOO_SMALL);
   }
 
@@ -2162,9 +2162,9 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
     DMX_PCM *pOutPcm[(8)] = {NULL};
     FIXP_DMX mixFactors[(8)][(8)];
     UCHAR outOffsetTable[(8)];
-    UINT sample;
-    int chCfg = 0;
-    int bypScale = 0;
+    uint32_t sample;
+    int32_t chCfg = 0;
+    int32_t bypScale = 0;
 
     if (numInChannels > SIX_CHANNEL) {
       AUDIO_CHANNEL_TYPE multiPurposeChType[2];
@@ -2226,8 +2226,8 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
     dmxScale -= bypScale;
 
     { /* Set channel pointer for input. Remove empty cols. */
-      int inCh, outCh, map[(8)];
-      int ch = 0;
+      int32_t inCh, outCh, map[(8)];
+      int32_t ch = 0;
       for (inCh = 0; inCh < (8); inCh += 1) {
         if (inOffsetTable[inCh] < (UCHAR)numInChannels) {
           pInPcm[ch] = &pPcmBuf[inOffsetTable[inCh] * offset];
@@ -2272,7 +2272,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
     for (sample = 0; sample < frameSize; sample++) {
       DMX_PCM tIn[(8)] = {0};
       int32_t tOut[(8)] = {(int32_t)0};
-      int inCh, outCh;
+      int32_t inCh, outCh;
 
       /* Preload all input samples */
       for (inCh = 0; inCh < numInChannels; inCh += 1) {
@@ -2312,7 +2312,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
     if (numInChannels == ONE_CHANNEL) {
       DMX_PCM *pInPcm[(8)];
       DMX_PCM *pOutLF, *pOutRF;
-      UINT sample;
+      uint32_t sample;
 
       /* Set this stages output stride and channel mode: */
       outStride = (fInterleaved) ? TWO_CHANNEL : 1;
@@ -2360,13 +2360,13 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
     if (numOutChannels > TWO_CHANNEL) {
       DMX_PCM *pIn[(8)] = {NULL};
       DMX_PCM *pOut[(8)] = {NULL};
-      UINT sample;
+      uint32_t sample;
       AUDIO_CHANNEL_TYPE inChTypes[(8)];
       UCHAR inChIndices[(8)];
       UCHAR numChPerGrp[2][(4)];
-      int nContentCh = 0; /* Number of channels with content */
-      int nEmptyCh = 0;   /* Number of channels with content */
-      int ch, chGrp, isCompatible = 1;
+      int32_t nContentCh = 0; /* Number of channels with content */
+      int32_t nEmptyCh = 0;   /* Number of channels with content */
+      int32_t ch, chGrp, isCompatible = 1;
 
       /* Do not change the signalling which is the channel types and indices.
          Just reorder and add channels. So first save the input signalling. */
@@ -2440,7 +2440,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
            This is just a safety appliance. We should never need it. */
         for (ch = 0; ch < (8); ch += 1) {
           if (inOffsetTable[ch] < 255) {
-            int outCh;
+            int32_t outCh;
             for (outCh = 0; outCh < (8); outCh += 1) {
               if (outOffsetTable[outCh] < 255) {
                 break;
@@ -2526,7 +2526,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
         DMX_PCM *pOutL, *pOutR;
         FIXP_DMX flev;
 
-        UINT sample;
+        uint32_t sample;
 
         if (fInterleaved) {
           inStride = numInChannels;
@@ -2622,7 +2622,7 @@ PCMDMX_ERROR pcmDmx_Close(HANDLE_PCM_DOWNMIX *pSelf) {
  * @returns Returns an error code.
  */
 PCMDMX_ERROR pcmDmx_GetLibInfo(LIB_INFO *info) {
-  int i;
+  int32_t i;
 
   if (info == NULL) {
     return PCMDMX_INVALID_ARGUMENT;

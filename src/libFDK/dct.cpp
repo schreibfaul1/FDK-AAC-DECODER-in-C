@@ -125,9 +125,9 @@ amm-info@iis.fraunhofer.de
 #include "fft.h"
 
 void dct_getTables(const FIXP_WTP **ptwiddle, const FIXP_STP **sin_twiddle,
-                   int *sin_step, int length) {
+                   int32_t *sin_step, int32_t length) {
   const FIXP_WTP *twiddle;
-  int ld2_length;
+  int32_t ld2_length;
 
   /* Get ld2 of length - 2 + 1
       -2: because first table entry is window of size 4
@@ -174,13 +174,13 @@ void dct_getTables(const FIXP_WTP **ptwiddle, const FIXP_STP **sin_twiddle,
 #if !defined(FUNCTION_dct_III)
 void dct_III(int32_t *pDat, /*!< pointer to input/output */
              int32_t *tmp,  /*!< pointer to temporal working buffer */
-             int L,          /*!< lenght of transform */
-             int *pDat_e) {
+             int32_t L,          /*!< lenght of transform */
+             int32_t *pDat_e) {
   const FIXP_WTP *sin_twiddle;
-  int i;
+  int32_t i;
   int32_t xr, accu1, accu2;
-  int inc, index;
-  int M = L >> 1;
+  int32_t inc, index;
+  int32_t M = L >> 1;
 
   FDK_ASSERT(L % 4 == 0);
   dct_getTables(NULL, &sin_twiddle, &inc, L);
@@ -259,10 +259,10 @@ void dct_III(int32_t *pDat, /*!< pointer to input/output */
 
 void dst_III(int32_t *pDat, /*!< pointer to input/output */
              int32_t *tmp,  /*!< pointer to temporal working buffer */
-             int L,          /*!< lenght of transform */
-             int *pDat_e) {
-  int L2 = L >> 1;
-  int i;
+             int32_t L,          /*!< lenght of transform */
+             int32_t *pDat_e) {
+  int32_t L2 = L >> 1;
+  int32_t i;
   int32_t t;
 
   /* note: DCT III is reused here, direct DST III implementation might be more
@@ -288,16 +288,16 @@ void dst_III(int32_t *pDat, /*!< pointer to input/output */
 void dct_II(
     int32_t *pDat, /*!< pointer to input/output */
     int32_t *tmp,  /*!< pointer to temporal working buffer */
-    int L, /*!< lenght of transform (has to be a multiple of 8 (or 4 in case
+    int32_t L, /*!< lenght of transform (has to be a multiple of 8 (or 4 in case
               DCT_II_L_MULTIPLE_OF_4_SUPPORT is defined) */
-    int *pDat_e) {
+    int32_t *pDat_e) {
   const FIXP_WTP *sin_twiddle;
   int32_t accu1, accu2;
   int32_t *pTmp_0, *pTmp_1;
 
-  int i;
-  int inc, index = 0;
-  int M = L >> 1;
+  int32_t i;
+  int32_t inc, index = 0;
+  int32_t M = L >> 1;
 
   FDK_ASSERT(L % 4 == 0);
   dct_getTables(NULL, &sin_twiddle, &inc, L);
@@ -370,9 +370,9 @@ void dct_II(
 
 #if !defined(FUNCTION_dct_IV)
 
-void dct_IV(int32_t *pDat, int L, int *pDat_e) {
-  int sin_step = 0;
-  int M = L >> 1;
+void dct_IV(int32_t *pDat, int32_t L, int32_t *pDat_e) {
+  int32_t sin_step = 0;
+  int32_t M = L >> 1;
 
   const FIXP_WTP *twiddle;
   const FIXP_STP *sin_twiddle;
@@ -386,7 +386,7 @@ void dct_IV(int32_t *pDat, int L, int *pDat_e) {
   {
     int32_t *RESTRICT pDat_0 = &pDat[0];
     int32_t *RESTRICT pDat_1 = &pDat[L - 2];
-    int i;
+    int32_t i;
 
     /* 29 cycles on ARM926 */
     for (i = 0; i < M - 1; i += 2, pDat_0 += 2, pDat_1 -= 2) {
@@ -424,7 +424,7 @@ void dct_IV(int32_t *pDat, int L, int *pDat_e) {
     int32_t *RESTRICT pDat_0 = &pDat[0];
     int32_t *RESTRICT pDat_1 = &pDat[L - 2];
     int32_t accu1, accu2, accu3, accu4;
-    int idx, i;
+    int32_t idx, i;
 
     /* Sin and Cos values are 0.0f and 1.0f */
     accu1 = pDat_1[0];
@@ -467,9 +467,9 @@ void dct_IV(int32_t *pDat, int L, int *pDat_e) {
 #endif /* defined (FUNCTION_dct_IV) */
 
 #if !defined(FUNCTION_dst_IV)
-void dst_IV(int32_t *pDat, int L, int *pDat_e) {
-  int sin_step = 0;
-  int M = L >> 1;
+void dst_IV(int32_t *pDat, int32_t L, int32_t *pDat_e) {
+  int32_t sin_step = 0;
+  int32_t M = L >> 1;
 
   const FIXP_WTP *twiddle;
   const FIXP_STP *sin_twiddle;
@@ -483,7 +483,7 @@ void dst_IV(int32_t *pDat, int L, int *pDat_e) {
   {
     int32_t *RESTRICT pDat_0 = &pDat[0];
     int32_t *RESTRICT pDat_1 = &pDat[L - 2];
-    int i;
+    int32_t i;
 
     /* 34 cycles on ARM926 */
     for (i = 0; i < M - 1; i += 2, pDat_0 += 2, pDat_1 -= 2) {
@@ -521,7 +521,7 @@ void dst_IV(int32_t *pDat, int L, int *pDat_e) {
     int32_t *RESTRICT pDat_0;
     int32_t *RESTRICT pDat_1;
     int32_t accu1, accu2, accu3, accu4;
-    int idx, i;
+    int32_t idx, i;
 
     pDat_0 = &pDat[0];
     pDat_1 = &pDat[L - 2];

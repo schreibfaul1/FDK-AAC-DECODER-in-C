@@ -310,16 +310,16 @@ struct PS_DEC {
 
 typedef struct PS_DEC *HANDLE_PS_DEC;
 
-int CreatePsDec(HANDLE_PS_DEC *h_PS_DEC, int aacSamplesPerFrame);
+int32_t CreatePsDec(HANDLE_PS_DEC *h_PS_DEC, int32_t aacSamplesPerFrame);
 
-int DeletePsDec(HANDLE_PS_DEC *h_PS_DEC);
+int32_t DeletePsDec(HANDLE_PS_DEC *h_PS_DEC);
 
 void PreparePsProcessing(HANDLE_PS_DEC h_ps_d,
                          const int32_t *const *const rIntBufferLeft,
                          const int32_t *const *const iIntBufferLeft,
-                         const int scaleFactorLowBand);
+                         const int32_t scaleFactorLowBand);
 
-void initSlotBasedRotation(HANDLE_PS_DEC h_ps_d, int env, int usb);
+void initSlotBasedRotation(HANDLE_PS_DEC h_ps_d, int32_t env, int32_t usb);
 
 void ApplyPsSlot(
     HANDLE_PS_DEC h_ps_d,      /* parametric stereo decoder handle    */
@@ -327,7 +327,7 @@ void ApplyPsSlot(
     int32_t **iIntBufferLeft, /* imag values of left qmf timeslot    */
     int32_t *rIntBufferRight, /* real values of right qmf timeslot   */
     int32_t *iIntBufferRight, /* imag values of right qmf timeslot   */
-    const int scaleFactorLowBand_no_ov, const int scaleFactorLowBand,
-    const int scaleFactorHighBand, const int lsb, const int usb);
+    const int32_t scaleFactorLowBand_no_ov, const int32_t scaleFactorLowBand,
+    const int32_t scaleFactorHighBand, const int32_t lsb, const int32_t usb);
 
 #endif /* PSDEC_H */

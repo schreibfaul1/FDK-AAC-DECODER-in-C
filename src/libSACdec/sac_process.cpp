@@ -136,17 +136,17 @@ FDK_INLINE int32_t interpolateParameter(const FIXP_SGL alpha, const int32_t a,
  * \return MPEG 4 PCE style channel index, corresponding to the given MPEG
  * Surround channel index.
  */
-static UINT mapChannel(spatialDec *self, UINT ch) {
+static uint32_t mapChannel(spatialDec *self, uint32_t ch) {
   static const UCHAR chanelIdx[][8] = {
       {0, 1, 2, 3, 4, 5, 6, 7}, /*  binaural, TREE_212, arbitrary tree */
   };
 
-  int idx = 0;
+  int32_t idx = 0;
 
   return (chanelIdx[idx][ch]);
 }
 
-int32_t getChGain(spatialDec *self, UINT ch, INT *scale) {
+int32_t getChGain(spatialDec *self, uint32_t ch, int32_t *scale) {
   /* init no gain modifier */
   int32_t gain = 0x80000000;
   *scale = 0;
@@ -162,11 +162,11 @@ int32_t getChGain(spatialDec *self, UINT ch, INT *scale) {
 }
 
 SACDEC_ERROR SpatialDecQMFAnalysis(spatialDec *self, const PCM_MPS *inData,
-                                   const INT ts, const INT bypassMode,
+                                   const int32_t ts, const int32_t bypassMode,
                                    int32_t **qmfReal, int32_t **qmfImag,
-                                   const int numInputChannels) {
+                                   const int32_t numInputChannels) {
   SACDEC_ERROR err = MPS_OK;
-  int ch, offset;
+  int32_t ch, offset;
 
   offset = self->pQmfDomain->globalConf.nBandsSynthesis *
            self->pQmfDomain->globalConf.nQmfTimeSlots;
@@ -183,7 +183,7 @@ SACDEC_ERROR SpatialDecQMFAnalysis(spatialDec *self, const PCM_MPS *inData,
                                 pQmfImagAnalysis);
 
       if (!isTwoChMode(self->upmixType) && !bypassMode) {
-        int i;
+        int32_t i;
         for (i = 0; i < self->qmfBands; i++) {
           qmfReal[ch][i] = fMult(
               scaleValueSaturate(qmfReal[ch][i], self->sacInDataHeadroom - (1)),
@@ -203,12 +203,12 @@ SACDEC_ERROR SpatialDecQMFAnalysis(spatialDec *self, const PCM_MPS *inData,
 }
 
 SACDEC_ERROR SpatialDecFeedQMF(spatialDec *self, int32_t **qmfInDataReal,
-                               int32_t **qmfInDataImag, const INT ts,
-                               const INT bypassMode, int32_t **qmfReal__FDK,
+                               int32_t **qmfInDataImag, const int32_t ts,
+                               const int32_t bypassMode, int32_t **qmfReal__FDK,
                                int32_t **qmfImag__FDK,
-                               const INT numInputChannels) {
+                               const int32_t numInputChannels) {
   SACDEC_ERROR err = MPS_OK;
-  int ch;
+  int32_t ch;
 
   {
     for (ch = 0; ch < numInputChannels; ch++) {
@@ -238,7 +238,7 @@ SACDEC_ERROR SpatialDecFeedQMF(spatialDec *self, int32_t **qmfInDataReal,
 
       /* Apply clip protection to output. */
       if (!isTwoChMode(self->upmixType) && !bypassMode) {
-        int i;
+        int32_t i;
         for (i = 0; i < self->qmfBands; i++) {
           qmfReal__FDK[ch][i] =
               fMult(qmfReal__FDK[ch][i], self->clipProtectGain__FDK);
@@ -280,16 +280,16 @@ self->hybInputImag[MAX_INPUT_CHANNELS][MAX_TIME_SLOTS][MAX_HYBRID_BANDS];
 SACDEC_ERROR SpatialDecHybridAnalysis(spatialDec *self, int32_t **qmfInputReal,
                                       int32_t **qmfInputImag,
                                       int32_t **hybOutputReal,
-                                      int32_t **hybOutputImag, const INT ts,
-                                      const INT numInputChannels) {
+                                      int32_t **hybOutputImag, const int32_t ts,
+                                      const int32_t numInputChannels) {
   SACDEC_ERROR err = MPS_OK;
-  int ch;
+  int32_t ch;
 
   for (ch = 0; ch < numInputChannels;
        ch++) /* hybrid filtering for down-mix signals */
   {
     if (self->pConfigCurrent->syntaxFlags & SACDEC_SYNTAX_LD) {
-      int k;
+      int32_t k;
       /* No hybrid filtering. Just copy the QMF data. */
       for (k = 0; k < self->hybridBands; k += 1) {
         hybOutputReal[ch][k] = qmfInputReal[ch][k];
@@ -322,7 +322,7 @@ SACDEC_ERROR SpatialDecCreateX(spatialDec *self, int32_t **hybInputReal,
                                int32_t **hybInputImag, int32_t **pxReal,
                                int32_t **pxImag) {
   SACDEC_ERROR err = MPS_OK;
-  int row;
+  int32_t row;
 
   /* Creating wDry */
   for (row = 0; row < self->numInputChannels; row++) {
@@ -337,15 +337,15 @@ SACDEC_ERROR SpatialDecCreateX(spatialDec *self, int32_t **hybInputReal,
 static void M2ParamToKernelMult(FIXP_SGL *RESTRICT pKernel,
                                 int32_t *RESTRICT Mparam,
                                 int32_t *RESTRICT MparamPrev,
-                                int *RESTRICT pWidth, FIXP_SGL alpha__FDK,
-                                int nBands) {
-  int pb;
+                                int32_t *RESTRICT pWidth, FIXP_SGL alpha__FDK,
+                                int32_t nBands) {
+  int32_t pb;
 
   for (pb = 0; pb < nBands; pb++) {
     FIXP_SGL tmp = FX_DBL2FX_SGL(
         interpolateParameter(alpha__FDK, Mparam[pb], MparamPrev[pb]));
 
-    int i = pWidth[pb];
+    int32_t i = pWidth[pb];
     if (i & 1) *pKernel++ = tmp;
     if (i & 2) {
       *pKernel++ = tmp;
@@ -364,7 +364,7 @@ SACDEC_ERROR SpatialDecApplyM1_CreateW_Mode212(
     spatialDec *self, const SPATIAL_BS_FRAME *frame, int32_t **xReal,
     int32_t **xImag, int32_t **vReal, int32_t **vImag) {
   SACDEC_ERROR err = MPS_OK;
-  int res;
+  int32_t res;
   int32_t *decorrInReal = vReal[0];
   int32_t *decorrInImag = vImag[0];
 
@@ -400,7 +400,7 @@ SACDEC_ERROR SpatialDecApplyM1_CreateW_Mode212(
 
   /* Write residual signal in approriate parameter bands */
   if (self->residualBands[res] > 0) {
-    int stopBand = self->param2hyb[self->residualBands[res]];
+    int32_t stopBand = self->param2hyb[self->residualBands[res]];
     FDKmemcpy(vReal[1], self->hybResidualReal__FDK[res],
               fixMin(stopBand, self->hybridBands) * sizeof(int32_t));
     FDKmemcpy(vImag[1], self->hybResidualImag__FDK[res],
@@ -410,20 +410,20 @@ SACDEC_ERROR SpatialDecApplyM1_CreateW_Mode212(
   return err;
 }
 
-SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, INT ps,
+SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, int32_t ps,
                                        const FIXP_SGL alpha, int32_t **wReal,
                                        int32_t **wImag,
                                        int32_t **hybOutputRealDry,
                                        int32_t **hybOutputImagDry) {
   SACDEC_ERROR err = MPS_OK;
-  INT row;
+  int32_t row;
 
-  INT *pWidth = self->kernels_width;
+  int32_t *pWidth = self->kernels_width;
   /* for stereoConfigIndex == 3 case hybridBands is < 71 */
-  INT pb_max = self->kernels[self->hybridBands - 1] + 1;
-  INT max_row = self->numOutputChannels;
+  int32_t pb_max = self->kernels[self->hybridBands - 1] + 1;
+  int32_t max_row = self->numOutputChannels;
 
-  INT M2_exp = 0;
+  int32_t M2_exp = 0;
   if (self->residualCoding) M2_exp = 3;
 
   for (row = 0; row < max_row; row++)  // 2 times
@@ -440,13 +440,13 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, INT ps,
     int32_t *RESTRICT pWReal1 = wReal[1];
     int32_t *RESTRICT pWImag0 = wImag[0];
     int32_t *RESTRICT pWImag1 = wImag[1];
-    for (INT pb = 0; pb < pb_max; pb++) {
+    for (int32_t pb = 0; pb < pb_max; pb++) {
       int32_t tmp0, tmp1;
 
       tmp0 = interpolateParameter(alpha, Mparam0[pb], MparamPrev0[pb]);
       tmp1 = interpolateParameter(alpha, Mparam1[pb], MparamPrev1[pb]);
 
-      INT i = pWidth[pb];
+      int32_t i = pWidth[pb];
 
       do  // about 3-4 times
       {
@@ -469,19 +469,19 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, INT ps,
 }
 
 SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
-    spatialDec *self, INT ps, const FIXP_SGL alpha, int32_t **wReal,
+    spatialDec *self, int32_t ps, const FIXP_SGL alpha, int32_t **wReal,
     int32_t **wImag, int32_t **hybOutputRealDry,
     int32_t **hybOutputImagDry) {
   SACDEC_ERROR err = MPS_OK;
-  INT row;
-  INT scale_param_m2;
-  INT *pWidth = self->kernels_width;
-  INT pb_max = self->kernels[self->hybridBands - 1] + 1;
+  int32_t row;
+  int32_t scale_param_m2;
+  int32_t *pWidth = self->kernels_width;
+  int32_t pb_max = self->kernels[self->hybridBands - 1] + 1;
 
   scale_param_m2 = SCALE_PARAM_M2_212_PRED + SCALE_DATA_APPLY_M2;
 
   for (row = 0; row < self->numM2rows; row++) {
-    INT qs, pb;
+    int32_t qs, pb;
 
     int32_t *RESTRICT pWReal0 = wReal[0];
     int32_t *RESTRICT pWImag0 = wImag[0];
@@ -502,7 +502,7 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
     FDK_ASSERT((pWidth[0] + pWidth[1]) >= 3);
 
     for (pb = 0, qs = 3; pb < 2; pb++) {
-      INT s;
+      int32_t s;
       int32_t maxVal;
       int32_t mReal1;
       int32_t mReal0, mImag0;
@@ -524,7 +524,7 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
 
       s = scale_param_m2 - s;
 
-      INT i = pWidth[pb];
+      int32_t i = pWidth[pb];
 
       do {
         int32_t real, imag, wReal0, wImag0, wReal1, wImag1;
@@ -547,7 +547,7 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
     }
 
     for (; pb < pb_max; pb++) {
-      INT s;
+      int32_t s;
       int32_t maxVal;
       FIXP_SGL mReal1;
       FIXP_SGL mReal0, mImag0;
@@ -569,7 +569,7 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
 
       s = scale_param_m2 - s;
 
-      INT i = pWidth[pb];
+      int32_t i = pWidth[pb];
 
       do {
         int32_t real, imag, wReal0, wImag0, wReal1, wImag1;
@@ -590,7 +590,7 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
   return err;
 }
 
-SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
+SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, int32_t ps, const FIXP_SGL alpha,
                                int32_t **wReal, int32_t **wImag,
                                int32_t **hybOutputRealDry,
                                int32_t **hybOutputImagDry,
@@ -599,11 +599,11 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
   SACDEC_ERROR err = MPS_OK;
 
   {
-    int qs, row, col;
-    int complexHybBands;
-    int complexParBands;
-    int scale_param_m2 = 0;
-    int toolsDisabled;
+    int32_t qs, row, col;
+    int32_t complexHybBands;
+    int32_t complexParBands;
+    int32_t scale_param_m2 = 0;
+    int32_t toolsDisabled;
 
     UCHAR activParamBands;
     int32_t *RESTRICT pWReal, *RESTRICT pWImag, *RESTRICT pHybOutRealDry,
@@ -742,8 +742,8 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
         }
 
         if (activParamBands) {
-          int resBandIndex;
-          int resHybIndex;
+          int32_t resBandIndex;
+          int32_t resHybIndex;
 
           resBandIndex =
               self->residualBands[SpatialDecGetResidualIndex(self, col)];
@@ -877,15 +877,15 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, INT ps, const FIXP_SGL alpha,
   return err;
 }
 
-SACDEC_ERROR SpatialDecSynthesis(spatialDec *self, const INT ts,
+SACDEC_ERROR SpatialDecSynthesis(spatialDec *self, const int32_t ts,
                                  int32_t **hybOutputReal,
                                  int32_t **hybOutputImag, PCM_MPS *timeOut,
-                                 const INT numInputChannels,
+                                 const int32_t numInputChannels,
                                  const FDK_channelMapDescr *const mapDescr) {
   SACDEC_ERROR err = MPS_OK;
 
-  int ch;
-  int stride, offset;
+  int32_t ch;
+  int32_t stride, offset;
 
   stride = self->numOutputChannelsAT;
   offset = 1;
@@ -897,7 +897,7 @@ SACDEC_ERROR SpatialDecSynthesis(spatialDec *self, const INT ts,
 
   for (ch = 0; ch < self->numOutputChannelsAT; ch++) {
     if (self->pConfigCurrent->syntaxFlags & SACDEC_SYNTAX_LD) {
-      int k;
+      int32_t k;
       /* No hybrid filtering. Just copy the QMF data. */
       for (k = 0; k < self->hybridBands; k += 1) {
         pQmfReal[k] = hybOutputReal[ch][k];
@@ -911,13 +911,13 @@ SACDEC_ERROR SpatialDecSynthesis(spatialDec *self, const INT ts,
     /* Map channel indices from MPEG Surround -> PCE style -> channelMapping[]
      */
     FDK_ASSERT(self->numOutputChannelsAT <= 6);
-    int outCh = FDK_chMapDescr_getMapValue(mapDescr, mapChannel(self, ch),
+    int32_t outCh = FDK_chMapDescr_getMapValue(mapDescr, mapChannel(self, ch),
                                            self->numOutputChannelsAT);
 
     {
       if (self->stereoConfigIndex == 3) {
         /* MPS -> SBR */
-        int i;
+        int32_t i;
         int32_t *pWorkBufReal, *pWorkBufImag;
         FDK_ASSERT((self->pQmfDomain->QmfDomainOut[outCh].fb.outGain_m ==
                     (int32_t)0x80000000) &&
@@ -956,8 +956,8 @@ bail:
 }
 
 void SpatialDecBufferMatrices(spatialDec *self) {
-  int row, col;
-  int complexParBands;
+  int32_t row, col;
+  int32_t complexParBands;
   complexParBands = self->numParameterBands;
 
   /*
@@ -1001,8 +1001,8 @@ static int32_t interp_angle__FDK(int32_t angle1, int32_t angle2,
  *
  */
 void SpatialDecApplyPhase(spatialDec *self, FIXP_SGL alpha__FDK,
-                          int lastSlotOfParamSet) {
-  int pb, qs;
+                          int32_t lastSlotOfParamSet) {
+  int32_t pb, qs;
   int32_t ppb[MAX_PARAMETER_BANDS *
                4]; /* left real, imag - right real, imag interleaved */
 

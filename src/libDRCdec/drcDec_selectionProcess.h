@@ -198,7 +198,7 @@ drcDec_SelectionProcess_SetCodecMode(HANDLE_DRC_SELECTION_PROCESS hInstance,
 DRCDEC_SELECTION_PROCESS_RETURN
 drcDec_SelectionProcess_SetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
                                  const SEL_PROC_USER_PARAM requestType,
-                                 int32_t requestValue, int* pDiff);
+                                 int32_t requestValue, int32_t* pDiff);
 
 int32_t
 drcDec_SelectionProcess_GetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
@@ -206,11 +206,11 @@ drcDec_SelectionProcess_GetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
 
 DRCDEC_SELECTION_PROCESS_RETURN
 drcDec_SelectionProcess_SetMpeghParams(
-    HANDLE_DRC_SELECTION_PROCESS hInstance, const int numGroupIdsRequested,
-    const int* groupIdRequested, const int numGroupPresetIdsRequested,
-    const int* groupPresetIdRequested,
-    const int* numMembersGroupPresetIdsRequested,
-    const int groupPresetIdRequestedPreference, int* pDiff);
+    HANDLE_DRC_SELECTION_PROCESS hInstance, const int32_t numGroupIdsRequested,
+    const int32_t* groupIdRequested, const int32_t numGroupPresetIdsRequested,
+    const int32_t* groupPresetIdRequested,
+    const int32_t* numMembersGroupPresetIdsRequested,
+    const int32_t groupPresetIdRequestedPreference, int32_t* pDiff);
 
 DRCDEC_SELECTION_PROCESS_RETURN
 drcDec_SelectionProcess_Process(HANDLE_DRC_SELECTION_PROCESS hInstance,

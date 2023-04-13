@@ -111,7 +111,7 @@ amm-info@iis.fraunhofer.de
 
 SACDEC_ERROR CalculateSpaceSynthesisQmf(
     const HANDLE_FDK_QMF_DOMAIN_OUT hQmfDomainOutCh, const int32_t *Sr,
-    const int32_t *Si, const INT stride, PCM_MPS *timeSig) {
+    const int32_t *Si, const int32_t stride, PCM_MPS *timeSig) {
   SACDEC_ERROR err = MPS_OK;
 
   if (hQmfDomainOutCh == NULL) {

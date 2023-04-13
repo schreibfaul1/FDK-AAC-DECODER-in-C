@@ -344,7 +344,7 @@ PCMDMX_ERROR pcmDmx_Open(HANDLE_PCM_DOWNMIX *pSelf);
  * @returns          Returns an error code of type ::PCMDMX_ERROR.
  **/
 PCMDMX_ERROR pcmDmx_SetParam(HANDLE_PCM_DOWNMIX self, const PCMDMX_PARAM param,
-                             const INT value);
+                             const int32_t value);
 
 /** Get one parameter value of a single PCM downmix module instance.
  * @param[in]  self    Handle of PCM downmix module instance.
@@ -354,7 +354,7 @@ PCMDMX_ERROR pcmDmx_SetParam(HANDLE_PCM_DOWNMIX self, const PCMDMX_PARAM param,
  * @returns            Returns an error code of type ::PCMDMX_ERROR.
  **/
 PCMDMX_ERROR pcmDmx_GetParam(HANDLE_PCM_DOWNMIX self, const PCMDMX_PARAM param,
-                             INT *const pValue);
+                             int32_t *const pValue);
 
 /** \cond
  *  Extract relevant downmix meta-data directly from a given bitstream. The
@@ -368,8 +368,8 @@ PCMDMX_ERROR pcmDmx_GetParam(HANDLE_PCM_DOWNMIX self, const PCMDMX_PARAM param,
  * @returns                Returns an error code of type ::PCMDMX_ERROR.
  **/
 PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self,
-                          HANDLE_FDK_BITSTREAM hBitStream, UINT ancDataBits,
-                          int isMpeg2);
+                          HANDLE_FDK_BITSTREAM hBitStream, uint32_t ancDataBits,
+                          int32_t isMpeg2);
 /** \endcond */
 
 /** Read from a given ancillary data buffer and extract the relevant downmix
@@ -383,7 +383,7 @@ PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self,
  * @returns                 Returns an error code of type ::PCMDMX_ERROR.
  **/
 PCMDMX_ERROR pcmDmx_ReadDvbAncData(HANDLE_PCM_DOWNMIX self, UCHAR *pAncDataBuf,
-                                   UINT ancDataBytes, int isMpeg2);
+                                   uint32_t ancDataBytes, int32_t isMpeg2);
 
 /** Set the matrix mixdown information extracted from the PCE of an AAC
  *bitstream.
@@ -398,9 +398,9 @@ PCMDMX_ERROR pcmDmx_ReadDvbAncData(HANDLE_PCM_DOWNMIX self, UCHAR *pAncDataBuf,
  *::PCMDMX_ERROR.
  **/
 PCMDMX_ERROR pcmDmx_SetMatrixMixdownFromPce(HANDLE_PCM_DOWNMIX self,
-                                            int matrixMixdownPresent,
-                                            int matrixMixdownIdx,
-                                            int pseudoSurroundEnable);
+                                            int32_t matrixMixdownPresent,
+                                            int32_t matrixMixdownIdx,
+                                            int32_t pseudoSurroundEnable);
 
 /** Reset the module.
  * @param[in] self   Handle of PCM downmix instance.
@@ -408,7 +408,7 @@ PCMDMX_ERROR pcmDmx_SetMatrixMixdownFromPce(HANDLE_PCM_DOWNMIX self,
  *                   See \ref pcmDmxResetFlags for details.
  * @returns          Returns an error code of type ::PCMDMX_ERROR.
  **/
-PCMDMX_ERROR pcmDmx_Reset(HANDLE_PCM_DOWNMIX self, UINT flags);
+PCMDMX_ERROR pcmDmx_Reset(HANDLE_PCM_DOWNMIX self, uint32_t flags);
 
 /** Create a mixdown, bypass or extend the output signal depending on the
  *modules settings and the respective given input configuration.
@@ -433,12 +433,12 @@ PCMDMX_ERROR pcmDmx_Reset(HANDLE_PCM_DOWNMIX self, UINT flags);
  * @returns                       Returns an error code of type ::PCMDMX_ERROR.
  **/
 PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
-                               const int pcmBufSize, UINT frameSize,
-                               INT *nChannels, INT fInterleaved,
+                               const int32_t pcmBufSize, uint32_t frameSize,
+                               int32_t *nChannels, int32_t fInterleaved,
                                AUDIO_CHANNEL_TYPE channelType[],
                                UCHAR channelIndices[],
                                const FDK_channelMapDescr *const mapDescr,
-                               INT *pDmxOutScale);
+                               int32_t *pDmxOutScale);
 
 /** Close an instance of the PCM downmix module.
  * @param[in,out] pSelf  Pointer to a buffer containing the handle of the

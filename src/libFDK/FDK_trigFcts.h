@@ -134,8 +134,8 @@ amm-info@iis.fraunhofer.de
 int32_t fixp_atan(int32_t x);
 int32_t fixp_atan2(int32_t y, int32_t x);
 
-int32_t fixp_cos(int32_t x, int scale);
-int32_t fixp_sin(int32_t x, int scale);
+int32_t fixp_cos(int32_t x, int32_t scale);
+int32_t fixp_sin(int32_t x, int32_t scale);
 
 #define FIXP_COS_SIN
 
@@ -152,14 +152,14 @@ int32_t fixp_sin(int32_t x, int scale);
  * Calculates coarse lookup index and sign for sine.
  * Returns delta x residual.
  */
-static inline int32_t fixp_sin_cos_residual_inline(int32_t x, int scale,
+static inline int32_t fixp_sin_cos_residual_inline(int32_t x, int32_t scale,
                                                     int32_t *sine,
                                                     int32_t *cosine) {
   int32_t residual;
-  int s;
-  int shift = (31 - scale - LD - 1);
-  int ssign = 1;
-  int csign = 1;
+  int32_t s;
+  int32_t shift = (31 - scale - LD - 1);
+  int32_t ssign = 1;
+  int32_t csign = 1;
 
   residual = fMult(x, FL2FXCONST_DBL(1.0 / M_PI));
   s = ((LONG)residual) >> shift;
@@ -226,7 +226,7 @@ static inline int32_t fixp_sin_cos_residual_inline(int32_t x, int scale,
  * cos(x2), sin(x2) will be stored into.
  */
 static inline void inline_fixp_cos_sin(int32_t x1, int32_t x2,
-                                       const int scale, int32_t *out) {
+                                       const int32_t scale, int32_t *out) {
   int32_t residual, error0, error1, sine, cosine;
   residual = fixp_sin_cos_residual_inline(x1, scale, &sine, &cosine);
   error0 = fMultDiv2(sine, residual);

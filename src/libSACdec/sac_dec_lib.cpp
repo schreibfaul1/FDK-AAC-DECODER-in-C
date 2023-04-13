@@ -199,7 +199,7 @@ struct MpegSurroundDecoder {
   HANDLE_FDK_QMF_DOMAIN pQmfDomain;
   UCHAR mpsData[MPS_DATA_BUFFER_SIZE]; /* Buffer for MPS payload accross more
                                           than one segment */
-  INT mpsDataBits;                     /* Amount of bits in mpsData */
+  int32_t mpsDataBits;                     /* Amount of bits in mpsData */
   /* MPEG Surround decoder */
   SPATIAL_SPECIFIC_CONFIG spatialSpecificConfig[1]; /* SSC delay line which is
                                                        used during decoding */
@@ -229,7 +229,7 @@ struct MpegSurroundDecoder {
 
   /* Internal flags */
   SPATIAL_DEC_UPMIX_TYPE upmixType;
-  int initFlags[1];
+  int32_t initFlags[1];
   MPEGS_ANCSTARTSTOP ancStartStopPrev;
   MPEGS_SYNCSTATE fOnSync[1];
 
@@ -239,18 +239,18 @@ struct MpegSurroundDecoder {
 
 SACDEC_ERROR
 static sscCheckOutOfBand(const SPATIAL_SPECIFIC_CONFIG *pSsc,
-                         const INT coreCodec, const INT sampleRate,
-                         const INT frameSize);
+                         const int32_t coreCodec, const int32_t sampleRate,
+                         const int32_t frameSize);
 
 static SACDEC_ERROR sscParseCheck(const SPATIAL_SPECIFIC_CONFIG *pSsc);
 
 /**
  * \brief Get the number of QMF bands from the sampling frequency (in Hz)
  **/
-static int mpegSurroundDecoder_GetNrOfQmfBands(
-    const SPATIAL_SPECIFIC_CONFIG *pSsc, UINT sampleRate) {
-  UINT samplingFrequency = sampleRate;
-  int qmfBands = 64;
+static int32_t mpegSurroundDecoder_GetNrOfQmfBands(
+    const SPATIAL_SPECIFIC_CONFIG *pSsc, uint32_t sampleRate) {
+  uint32_t samplingFrequency = sampleRate;
+  int32_t qmfBands = 64;
 
   if (pSsc != NULL) {
     switch (pSsc->coreCodec) {
@@ -283,12 +283,12 @@ static int mpegSurroundDecoder_GetNrOfQmfBands(
 /**
  * \brief Analyse init flags
  **/
-static int mpegSurroundDecoder_CalcInitFlags(SPATIAL_SPECIFIC_CONFIG *pSsc1,
+static int32_t mpegSurroundDecoder_CalcInitFlags(SPATIAL_SPECIFIC_CONFIG *pSsc1,
                                              SPATIAL_SPECIFIC_CONFIG *pSsc2,
-                                             int upmixTypeFlag,
-                                             int binauralQualityFlag,
-                                             int partiallyComplexFlag,
-                                             int *ctrlFlags) {
+                                             int32_t upmixTypeFlag,
+                                             int32_t binauralQualityFlag,
+                                             int32_t partiallyComplexFlag,
+                                             int32_t *ctrlFlags) {
   /* Analyse core coder */
   if (pSsc1->coreCodec != pSsc2->coreCodec) {
     *ctrlFlags |= MASK_MPEGS_INIT_ALL_STATES;
@@ -352,7 +352,7 @@ static int mpegSurroundDecoder_CalcInitFlags(SPATIAL_SPECIFIC_CONFIG *pSsc1,
  * \brief Reset MPEG Surround status info
  **/
 static void updateMpegSurroundDecoderStatus(
-    CMpegSurroundDecoder *pMpegSurroundDecoder, int initFlags,
+    CMpegSurroundDecoder *pMpegSurroundDecoder, int32_t initFlags,
     MPEGS_SYNCSTATE fOnSync, MPEGS_ANCSTARTSTOP ancStartStopPrev) {
   pMpegSurroundDecoder->initFlags[pMpegSurroundDecoder->bsFrameDecode] |=
       initFlags;
@@ -370,7 +370,7 @@ static void updateMpegSurroundDecoderStatus(
 }
 
 static SACDEC_ERROR mpegSurroundDecoder_Create(
-    CMpegSurroundDecoder **pMpegSurroundDecoder, int stereoConfigIndex,
+    CMpegSurroundDecoder **pMpegSurroundDecoder, int32_t stereoConfigIndex,
     HANDLE_FDK_QMF_DOMAIN pQmfDomain);
 
 SAC_INSTANCE_AVAIL
@@ -386,7 +386,7 @@ mpegSurroundDecoder_IsFullMpegSurroundDecoderInstanceAvailable(
 }
 
 SACDEC_ERROR mpegSurroundDecoder_Open(
-    CMpegSurroundDecoder **pMpegSurroundDecoder, int stereoConfigIndex,
+    CMpegSurroundDecoder **pMpegSurroundDecoder, int32_t stereoConfigIndex,
     HANDLE_FDK_QMF_DOMAIN pQmfDomain) {
   SACDEC_ERROR error;
 
@@ -415,7 +415,7 @@ SACDEC_ERROR mpegSurroundDecoder_Open(
 static SACDEC_ERROR check_UParam_Build_DecConfig(
     SPATIALDEC_PARAM const *pUserParams, SPATIAL_DEC_CONFIG const *pDecConfig,
     const SPATIAL_SPECIFIC_CONFIG *pSsc, SPATIAL_DEC_UPMIX_TYPE *pUpmixType) {
-  int dmxChannels, outChannels, maxNumOutChannels;
+  int32_t dmxChannels, outChannels, maxNumOutChannels;
 
   FDK_ASSERT(pUserParams != NULL);
   FDK_ASSERT(pUpmixType != NULL);
@@ -510,8 +510,8 @@ static SACDEC_ERROR check_UParam_Build_DecConfig(
 static SACDEC_ERROR initMpegSurroundDecoder(
     CMpegSurroundDecoder *pMpegSurroundDecoder) {
   SACDEC_ERROR err;
-  int initFlags = MPEGS_INIT_NONE, initFlagsDec;
-  int upmixTypeCurr = pMpegSurroundDecoder->upmixType;
+  int32_t initFlags = MPEGS_INIT_NONE, initFlagsDec;
+  int32_t upmixTypeCurr = pMpegSurroundDecoder->upmixType;
 
   FDK_ASSERT(pMpegSurroundDecoder != NULL);
 
@@ -564,7 +564,7 @@ static SACDEC_ERROR initMpegSurroundDecoder(
   }
 
   {
-    int nrOfQmfBands;
+    int32_t nrOfQmfBands;
     FDKmemcpy(pSSCtarget, pSSCinput, sizeof(SPATIAL_SPECIFIC_CONFIG));
 
     nrOfQmfBands = mpegSurroundDecoder_GetNrOfQmfBands(
@@ -610,7 +610,7 @@ SACDEC_ERROR mpegSurroundDecoder_Init(
  * \brief Open MPEG Surround decoder.
  **/
 static SACDEC_ERROR mpegSurroundDecoder_Create(
-    CMpegSurroundDecoder **pMpegSurroundDecoder, int stereoConfigIndex,
+    CMpegSurroundDecoder **pMpegSurroundDecoder, int32_t stereoConfigIndex,
     HANDLE_FDK_QMF_DOMAIN pQmfDomain) {
   SACDEC_ERROR err = MPS_OK;
   CMpegSurroundDecoder *sacDec = NULL;
@@ -623,7 +623,7 @@ static SACDEC_ERROR mpegSurroundDecoder_Create(
   if (*pMpegSurroundDecoder == NULL) {
     FDK_ALLOCATE_MEMORY_1D(*pMpegSurroundDecoder, 1, CMpegSurroundDecoder)
 
-    for (int i = 0; i < 1; i++) {
+    for (int32_t i = 0; i < 1; i++) {
       err = SpatialDecCreateBsFrame(&(*pMpegSurroundDecoder)->bsFrames[i],
                                     &(*pMpegSurroundDecoder)->llState);
       if (err != MPS_OK) {
@@ -699,8 +699,8 @@ bail:
  **/
 SACDEC_ERROR mpegSurroundDecoder_Config(
     CMpegSurroundDecoder *pMpegSurroundDecoder, HANDLE_FDK_BITSTREAM hBs,
-    AUDIO_OBJECT_TYPE coreCodec, INT samplingRate, INT frameSize,
-    INT stereoConfigIndex, INT coreSbrFrameLengthIndex, INT configBytes,
+    AUDIO_OBJECT_TYPE coreCodec, int32_t samplingRate, int32_t frameSize,
+    int32_t stereoConfigIndex, int32_t coreSbrFrameLengthIndex, int32_t configBytes,
     const UCHAR configMode, UCHAR *configChanged) {
   SACDEC_ERROR err = MPS_OK;
   SPATIAL_SPECIFIC_CONFIG spatialSpecificConfig;
@@ -801,7 +801,7 @@ bail:
  * \brief Determine MPEG Surround operation mode.
  **/
 static MPEGS_OPMODE mpegSurroundOperationMode(
-    CMpegSurroundDecoder *pMpegSurroundDecoder, int mpsDataBits) {
+    CMpegSurroundDecoder *pMpegSurroundDecoder, int32_t mpsDataBits) {
   MPEGS_OPMODE mode;
 
   {
@@ -910,9 +910,9 @@ static SACDEC_ERROR sscParseCheck(const SPATIAL_SPECIFIC_CONFIG *pSsc) {
  *
  * \return  error code
  */
-SACDEC_ERROR checkTimeSlots(int frameLength, int qmfBands, int timeSlots) {
-  int len;
-  int maxFrameLength;
+SACDEC_ERROR checkTimeSlots(int32_t frameLength, int32_t qmfBands, int32_t timeSlots) {
+  int32_t len;
+  int32_t maxFrameLength;
 
   if (qmfBands == 64) {
     /* normal MPEG Surround */
@@ -1006,9 +1006,9 @@ SACDEC_ERROR checkTimeSlots(int frameLength, int qmfBands, int timeSlots) {
  * \return  MPS_OK on sucess, and else on failure.
  */
 static SACDEC_ERROR sscCheckInBand(SPATIAL_SPECIFIC_CONFIG *pSsc,
-                                   int frameLength, int sampleRate) {
+                                   int32_t frameLength, int32_t sampleRate) {
   SACDEC_ERROR err = MPS_OK;
-  int qmfBands;
+  int32_t qmfBands;
 
   FDK_ASSERT(pSsc != NULL);
 
@@ -1034,7 +1034,7 @@ static SACDEC_ERROR sscCheckInBand(SPATIAL_SPECIFIC_CONFIG *pSsc,
 SACDEC_ERROR
 mpegSurroundDecoder_ConfigureQmfDomain(
     CMpegSurroundDecoder *pMpegSurroundDecoder,
-    SAC_INPUT_CONFIG sac_dec_interface, UINT coreSamplingRate,
+    SAC_INPUT_CONFIG sac_dec_interface, uint32_t coreSamplingRate,
     AUDIO_OBJECT_TYPE coreCodec) {
   SACDEC_ERROR err = MPS_OK;
   FDK_QMF_DOMAIN_GC *pGC = NULL;
@@ -1056,10 +1056,10 @@ mpegSurroundDecoder_ConfigureQmfDomain(
                                       SAC_INTERFACE_TIME */
       pGC->nBandsSynthesis_requested = pGC->nBandsAnalysis_requested;
       pGC->nInputChannels_requested =
-          fMax((UINT)pSSC->nInputChannels, (UINT)pGC->nInputChannels_requested);
+          fMax((uint32_t)pSSC->nInputChannels, (uint32_t)pGC->nInputChannels_requested);
     }
     pGC->nOutputChannels_requested =
-        fMax((UINT)pSSC->nOutputChannels, (UINT)pGC->nOutputChannels_requested);
+        fMax((uint32_t)pSSC->nOutputChannels, (uint32_t)pGC->nOutputChannels_requested);
   } else {
     if (sac_dec_interface == SAC_INTERFACE_TIME) {
       /* For SAC_INTERFACE_QMF these parameters are set by SBR. */
@@ -1075,7 +1075,7 @@ mpegSurroundDecoder_ConfigureQmfDomain(
   }
   pGC->nQmfProcBands_requested = 64;
   pGC->nQmfProcChannels_requested =
-      fMin((INT)pGC->nInputChannels_requested,
+      fMin((int32_t)pGC->nInputChannels_requested,
            pMpegSurroundDecoder->pSpatialDec->createParams.maxNumInputChannels);
 
   if (coreCodec == AOT_ER_AAC_ELD) {
@@ -1096,10 +1096,10 @@ mpegSurroundDecoder_ConfigureQmfDomain(
  * \return  errorStatus
  */
 SACDEC_ERROR
-sscCheckOutOfBand(const SPATIAL_SPECIFIC_CONFIG *pSsc, const INT coreCodec,
-                  const INT sampleRate, const INT frameSize) {
+sscCheckOutOfBand(const SPATIAL_SPECIFIC_CONFIG *pSsc, const int32_t coreCodec,
+                  const int32_t sampleRate, const int32_t frameSize) {
   FDK_ASSERT(pSsc != NULL);
-  int qmfBands = 0;
+  int32_t qmfBands = 0;
 
   /* check ssc for parse errors */
   if (sscParseCheck(pSsc) != MPS_OK) {
@@ -1166,12 +1166,12 @@ sscCheckOutOfBand(const SPATIAL_SPECIFIC_CONFIG *pSsc, const INT coreCodec,
 /**
  * \brief Decode MPEG Surround frame.
  **/
-int mpegSurroundDecoder_ParseNoHeader(
+int32_t mpegSurroundDecoder_ParseNoHeader(
     CMpegSurroundDecoder *pMpegSurroundDecoder, HANDLE_FDK_BITSTREAM hBs,
-    int *pMpsDataBits, int fGlobalIndependencyFlag) {
+    int32_t *pMpsDataBits, int32_t fGlobalIndependencyFlag) {
   SACDEC_ERROR err = MPS_OK;
   SPATIAL_SPECIFIC_CONFIG *sscParse;
-  int bitsAvail, numSacBits;
+  int32_t bitsAvail, numSacBits;
 
   if (pMpegSurroundDecoder == NULL || hBs == NULL) {
     return MPS_INVALID_HANDLE;
@@ -1206,7 +1206,7 @@ int mpegSurroundDecoder_ParseNoHeader(
     }
   }
 
-  numSacBits = bitsAvail - (INT)FDKgetValidBits(hBs);
+  numSacBits = bitsAvail - (int32_t)FDKgetValidBits(hBs);
 
   if (numSacBits > bitsAvail) {
     pMpegSurroundDecoder->bsFrames[pMpegSurroundDecoder->bsFrameParse]
@@ -1222,9 +1222,9 @@ int mpegSurroundDecoder_ParseNoHeader(
 /**
  * \brief Check, if ancType is valid.
  **/
-static int isValidAncType(CMpegSurroundDecoder *pMpegSurroundDecoder,
-                          int ancType) {
-  int ret = 1;
+static int32_t isValidAncType(CMpegSurroundDecoder *pMpegSurroundDecoder,
+                          int32_t ancType) {
+  int32_t ret = 1;
 
   if ((ancType != MPEGS_ANCTYPE_HEADER_AND_FRAME) &&
       (ancType != MPEGS_ANCTYPE_FRAME)) {
@@ -1243,9 +1243,9 @@ static int isValidAncType(CMpegSurroundDecoder *pMpegSurroundDecoder,
 /**
  * \brief Check, if ancStartStop is valid.
  **/
-static int isValidAncStartStop(CMpegSurroundDecoder *pMpegSurroundDecoder,
-                               int ancStartStop) {
-  int ret = 1;
+static int32_t isValidAncStartStop(CMpegSurroundDecoder *pMpegSurroundDecoder,
+                               int32_t ancStartStop) {
+  int32_t ret = 1;
 
   switch (ancStartStop) {
     case MPEGS_START:
@@ -1283,17 +1283,17 @@ static int isValidAncStartStop(CMpegSurroundDecoder *pMpegSurroundDecoder,
   return (ret);
 }
 
-int mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
-                              HANDLE_FDK_BITSTREAM hBs, int *pMpsDataBits,
-                              AUDIO_OBJECT_TYPE coreCodec, int sampleRate,
-                              int frameSize, int fGlobalIndependencyFlag) {
+int32_t mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
+                              HANDLE_FDK_BITSTREAM hBs, int32_t *pMpsDataBits,
+                              AUDIO_OBJECT_TYPE coreCodec, int32_t sampleRate,
+                              int32_t frameSize, int32_t fGlobalIndependencyFlag) {
   SACDEC_ERROR err = MPS_OK;
   SPATIAL_SPECIFIC_CONFIG *sscParse;
   SPATIAL_BS_FRAME *bsFrame;
   HANDLE_FDK_BITSTREAM hMpsBsData = NULL;
   FDK_BITSTREAM mpsBsData;
-  int mpsDataBits = *pMpsDataBits;
-  int mpsBsBits;
+  int32_t mpsDataBits = *pMpsDataBits;
+  int32_t mpsBsBits;
   MPEGS_ANCTYPE ancType;
   MPEGS_ANCSTARTSTOP ancStartStop;
 
@@ -1303,7 +1303,7 @@ int mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
 
   FDK_ASSERT(pMpegSurroundDecoder->pSpatialDec);
 
-  mpsBsBits = (INT)FDKgetValidBits(hBs);
+  mpsBsBits = (int32_t)FDKgetValidBits(hBs);
 
   sscParse = &pMpegSurroundDecoder
                   ->spatialSpecificConfig[pMpegSurroundDecoder->bsFrameParse];
@@ -1334,7 +1334,7 @@ int mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
               err = MPS_NOTOK;
               goto bail;
             }
-            for (int i = 0; i < mpsDataBits / 8; i++) {
+            for (int32_t i = 0; i < mpsDataBits / 8; i++) {
               pMpegSurroundDecoder->mpsData[i] = FDKreadBits(hBs, 8);
             }
             pMpegSurroundDecoder->mpsDataBits = mpsDataBits;
@@ -1349,7 +1349,7 @@ int mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
               err = MPS_NOTOK;
               goto bail;
             }
-            for (int i = 0; i < mpsDataBits / 8; i++) {
+            for (int32_t i = 0; i < mpsDataBits / 8; i++) {
               pMpegSurroundDecoder
                   ->mpsData[(pMpegSurroundDecoder->mpsDataBits / 8) + i] =
                   FDKreadBits(hBs, 8);
@@ -1374,19 +1374,19 @@ int mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
             (ancStartStop == MPEGS_START_STOP)) {
           switch (ancType) {
             case MPEGS_ANCTYPE_HEADER_AND_FRAME: {
-              int parseResult, bitsRead;
+              int32_t parseResult, bitsRead;
               SPATIAL_SPECIFIC_CONFIG spatialSpecificConfigTmp =
                   pMpegSurroundDecoder->spatialSpecificConfigBackup;
 
               /* Parse spatial specific config */
-              bitsRead = (INT)FDKgetValidBits(hMpsBsData);
+              bitsRead = (int32_t)FDKgetValidBits(hMpsBsData);
 
               err = SpatialDecParseSpecificConfigHeader(
                   hMpsBsData,
                   &pMpegSurroundDecoder->spatialSpecificConfigBackup, coreCodec,
                   pMpegSurroundDecoder->upmixType);
 
-              bitsRead = (bitsRead - (INT)FDKgetValidBits(hMpsBsData));
+              bitsRead = (bitsRead - (int32_t)FDKgetValidBits(hMpsBsData));
               parseResult = ((err == MPS_OK) ? bitsRead : -bitsRead);
 
               if (parseResult < 0) {
@@ -1446,7 +1446,7 @@ int mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
               if (pMpegSurroundDecoder
                       ->fOnSync[pMpegSurroundDecoder->bsFrameParse] >=
                   MPEGS_SYNC_FOUND) {
-                int nbits = 0, bitsAvail;
+                int32_t nbits = 0, bitsAvail;
 
                 if (err != MPS_OK) {
                   break;
@@ -1466,7 +1466,7 @@ int mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
                   }
                 }
 
-                nbits = bitsAvail - (INT)FDKgetValidBits(hMpsBsData);
+                nbits = bitsAvail - (int32_t)FDKgetValidBits(hMpsBsData);
 
                 if ((nbits > bitsAvail) ||
                     (nbits > pMpegSurroundDecoder->mpsDataBits) ||
@@ -1501,26 +1501,26 @@ int mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
 
 bail:
 
-  *pMpsDataBits -= (mpsBsBits - (INT)FDKgetValidBits(hBs));
+  *pMpsDataBits -= (mpsBsBits - (int32_t)FDKgetValidBits(hBs));
 
   return err;
 }
 
-int mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder,
+int32_t mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder,
                               PCM_MPS *input, PCM_MPS *pTimeData,
-                              const int timeDataSize, int timeDataFrameSize,
-                              int *nChannels, int *frameSize, int sampleRate,
+                              const int32_t timeDataSize, int32_t timeDataFrameSize,
+                              int32_t *nChannels, int32_t *frameSize, int32_t sampleRate,
                               AUDIO_OBJECT_TYPE coreCodec,
                               AUDIO_CHANNEL_TYPE channelType[],
                               UCHAR channelIndices[],
                               const FDK_channelMapDescr *const mapDescr,
-                              const INT inDataHeadroom, INT *outDataHeadroom) {
+                              const int32_t inDataHeadroom, int32_t *outDataHeadroom) {
   SACDEC_ERROR err = MPS_OK;
   PCM_MPS *pTimeOut = pTimeData;
   PCM_MPS *TDinput = NULL;
-  UINT initControlFlags = 0, controlFlags = 0;
-  int timeDataRequiredSize = 0;
-  int newData;
+  uint32_t initControlFlags = 0, controlFlags = 0;
+  int32_t timeDataRequiredSize = 0;
+  int32_t newData;
 
   if (pMpegSurroundDecoder == NULL) {
     return MPS_INVALID_HANDLE;
@@ -1537,7 +1537,7 @@ int mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder,
   }
 
   pMpegSurroundDecoder->pSpatialDec->sacInDataHeadroom = inDataHeadroom;
-  *outDataHeadroom = (INT)(8);
+  *outDataHeadroom = (int32_t)(8);
 
   pMpegSurroundDecoder->pSpatialDec->pConfigCurrent =
       &pMpegSurroundDecoder
@@ -1605,7 +1605,7 @@ int mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder,
   }
 
   if (pMpegSurroundDecoder->initFlags[pMpegSurroundDecoder->bsFrameDecode]) {
-    int startWithDfltCfg = 0;
+    int32_t startWithDfltCfg = 0;
     /*
      * Init with a default configuration if we came here and are still not
      * initialized.
@@ -1683,12 +1683,12 @@ int mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder,
     FDK_ASSERT(timeDataRequiredSize >= timeDataFrameSize * *nChannels);
     /* Place samples comprising QMF time slots spaced at QMF output Band raster
      * to allow slot wise processing */
-    int timeDataFrameSizeOut =
+    int32_t timeDataFrameSizeOut =
         (timeDataFrameSize *
          pMpegSurroundDecoder->pQmfDomain->globalConf.nBandsSynthesis) /
         pMpegSurroundDecoder->pQmfDomain->globalConf.nBandsAnalysis;
     TDinput = pTimeData + timeDataFrameSizeOut - timeDataFrameSize;
-    for (int i = *nChannels - 1; i >= 0; i--) {
+    for (int32_t i = *nChannels - 1; i >= 0; i--) {
       FDKmemmove(pTimeData + (i + 1) * timeDataFrameSizeOut - timeDataFrameSize,
                  pTimeData + timeDataFrameSize * i,
                  sizeof(PCM_MPS) * timeDataFrameSize);
@@ -1776,7 +1776,7 @@ void mpegSurroundDecoder_Close(CMpegSurroundDecoder *pMpegSurroundDecoder) {
     FDK_SpatialDecClose(pMpegSurroundDecoder->pSpatialDec);
     pMpegSurroundDecoder->pSpatialDec = NULL;
 
-    for (int i = 0; i < 1; i++) {
+    for (int32_t i = 0; i < 1; i++) {
       SpatialDecCloseBsFrame(&pMpegSurroundDecoder->bsFrames[i]);
     }
 
@@ -1788,8 +1788,8 @@ void mpegSurroundDecoder_Close(CMpegSurroundDecoder *pMpegSurroundDecoder) {
 #define SACDEC_VL1 1
 #define SACDEC_VL2 0
 
-int mpegSurroundDecoder_GetLibInfo(LIB_INFO *info) {
-  int i;
+int32_t mpegSurroundDecoder_GetLibInfo(LIB_INFO *info) {
+  int32_t i;
 
   if (info == NULL) {
     return -1;
@@ -1822,7 +1822,7 @@ int mpegSurroundDecoder_GetLibInfo(LIB_INFO *info) {
 
 SACDEC_ERROR mpegSurroundDecoder_SetParam(
     CMpegSurroundDecoder *pMpegSurroundDecoder, const SACDEC_PARAM param,
-    const INT value) {
+    const int32_t value) {
   SACDEC_ERROR err = MPS_OK;
   SPATIALDEC_PARAM *pUserParams = NULL;
 
@@ -1895,8 +1895,8 @@ SACDEC_ERROR mpegSurroundDecoder_SetParam(
       if (err != MPS_OK) {
         goto bail;
       }
-      if (pUserParams->concealNumKeepFrames != (UINT)value) {
-        pUserParams->concealNumKeepFrames = (UINT)value;
+      if (pUserParams->concealNumKeepFrames != (uint32_t)value) {
+        pUserParams->concealNumKeepFrames = (uint32_t)value;
         pMpegSurroundDecoder->initFlags[pMpegSurroundDecoder->bsFrameDecode] |=
             MPEGS_INIT_CHANGE_CONCEAL_PARAMS;
       }
@@ -1909,8 +1909,8 @@ SACDEC_ERROR mpegSurroundDecoder_SetParam(
       if (err != MPS_OK) {
         goto bail;
       }
-      if (pUserParams->concealFadeOutSlopeLength != (UINT)value) {
-        pUserParams->concealFadeOutSlopeLength = (UINT)value;
+      if (pUserParams->concealFadeOutSlopeLength != (uint32_t)value) {
+        pUserParams->concealFadeOutSlopeLength = (uint32_t)value;
         pMpegSurroundDecoder->initFlags[pMpegSurroundDecoder->bsFrameDecode] |=
             MPEGS_INIT_CHANGE_CONCEAL_PARAMS;
       }
@@ -1923,8 +1923,8 @@ SACDEC_ERROR mpegSurroundDecoder_SetParam(
       if (err != MPS_OK) {
         goto bail;
       }
-      if (pUserParams->concealFadeInSlopeLength != (UINT)value) {
-        pUserParams->concealFadeInSlopeLength = (UINT)value;
+      if (pUserParams->concealFadeInSlopeLength != (uint32_t)value) {
+        pUserParams->concealFadeInSlopeLength = (uint32_t)value;
         pMpegSurroundDecoder->initFlags[pMpegSurroundDecoder->bsFrameDecode] |=
             MPEGS_INIT_CHANGE_CONCEAL_PARAMS;
       }
@@ -1937,8 +1937,8 @@ SACDEC_ERROR mpegSurroundDecoder_SetParam(
       if (err != MPS_OK) {
         goto bail;
       }
-      if (pUserParams->concealNumReleaseFrames != (UINT)value) {
-        pUserParams->concealNumReleaseFrames = (UINT)value;
+      if (pUserParams->concealNumReleaseFrames != (uint32_t)value) {
+        pUserParams->concealNumReleaseFrames = (uint32_t)value;
         pMpegSurroundDecoder->initFlags[pMpegSurroundDecoder->bsFrameDecode] |=
             MPEGS_INIT_CHANGE_CONCEAL_PARAMS;
       }
@@ -1954,12 +1954,12 @@ bail:
 }
 
 SACDEC_ERROR mpegSurroundDecoder_IsPseudoLR(
-    CMpegSurroundDecoder *pMpegSurroundDecoder, int *bsPseudoLr) {
+    CMpegSurroundDecoder *pMpegSurroundDecoder, int32_t *bsPseudoLr) {
   if (pMpegSurroundDecoder != NULL) {
     const SPATIAL_SPECIFIC_CONFIG *sscDecode =
         &pMpegSurroundDecoder
              ->spatialSpecificConfig[pMpegSurroundDecoder->bsFrameDecode];
-    *bsPseudoLr = (int)sscDecode->bsPseudoLr;
+    *bsPseudoLr = (int32_t)sscDecode->bsPseudoLr;
     return MPS_OK;
   } else
     return MPS_INVALID_HANDLE;
@@ -1968,8 +1968,8 @@ SACDEC_ERROR mpegSurroundDecoder_IsPseudoLR(
 /**
  * \brief Get the signal delay caused by the MPEG Surround decoder module.
  **/
-UINT mpegSurroundDecoder_GetDelay(const CMpegSurroundDecoder *self) {
-  INT outputDelay = 0;
+uint32_t mpegSurroundDecoder_GetDelay(const CMpegSurroundDecoder *self) {
+  int32_t outputDelay = 0;
 
   if (self != NULL) {
     const SPATIAL_SPECIFIC_CONFIG *sscDecode =

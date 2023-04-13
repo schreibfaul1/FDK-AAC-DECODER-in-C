@@ -113,8 +113,8 @@ amm-info@iis.fraunhofer.de
  * \param frac fractional part of decoded pitch lag (0..3) (input)
  */
 void Pred_lt4(int32_t exc[], /* in/out: excitation buffer */
-              int T0,         /* input : integer pitch lag */
-              int frac        /* input : fraction of lag   */
+              int32_t T0,         /* input : integer pitch lag */
+              int32_t frac        /* input : fraction of lag   */
 );
 
 /**

@@ -120,8 +120,8 @@ amm-info@iis.fraunhofer.de
 #define SF_ALPHA1 8
 #define SF_BETA1 4
 
-void initBBEnv(spatialDec *self, int initStatesFlag) {
-  INT ch, k;
+void initBBEnv(spatialDec *self, int32_t initStatesFlag) {
+  int32_t ch, k;
 
   for (ch = 0; ch < self->numOutputChannels; ch++) {
     k = row2channelGES[self->treeConfig][ch];
@@ -155,9 +155,9 @@ void initBBEnv(spatialDec *self, int initStatesFlag) {
 
 static inline void getSlotNrgHQ(int32_t *RESTRICT pReal,
                                 int32_t *RESTRICT pImag,
-                                int32_t *RESTRICT slotNrg, INT maxValSF,
-                                INT hybBands) {
-  INT qs;
+                                int32_t *RESTRICT slotNrg, int32_t maxValSF,
+                                int32_t hybBands) {
+  int32_t qs;
   int32_t nrg;
 
   /* qs = 12, 13, 14 */
@@ -228,8 +228,8 @@ static inline void combineDryWet(int32_t *RESTRICT pReal,
                                  int32_t *RESTRICT pHybOutputImagDry,
                                  int32_t *RESTRICT pHybOutputRealWet,
                                  int32_t *RESTRICT pHybOutputImagWet,
-                                 INT cplxBands, INT hybBands) {
-  INT qs;
+                                 int32_t cplxBands, int32_t hybBands) {
+  int32_t qs;
 
   for (qs = 12; qs < cplxBands; qs++) {
     pReal[qs] = (pHybOutputRealDry[qs] >> 1) + (pHybOutputRealWet[qs] >> 1);
@@ -245,9 +245,9 @@ static inline void slotAmp(int32_t *RESTRICT slotAmp_dry,
                            int32_t *RESTRICT pHybOutputRealDry,
                            int32_t *RESTRICT pHybOutputImagDry,
                            int32_t *RESTRICT pHybOutputRealWet,
-                           int32_t *RESTRICT pHybOutputImagWet, INT cplxBands,
-                           INT hybBands) {
-  INT qs;
+                           int32_t *RESTRICT pHybOutputImagWet, int32_t cplxBands,
+                           int32_t hybBands) {
+  int32_t qs;
   int32_t dry, wet;
 
   dry = wet = FL2FXCONST_DBL(0.0f);
@@ -270,8 +270,8 @@ __attribute__((noinline))
 #endif
 static void
 shapeBBEnv(int32_t *pHybOutputRealDry, int32_t *pHybOutputImagDry,
-           int32_t dryFac, INT scale, INT cplxBands, INT hybBands) {
-  INT qs;
+           int32_t dryFac, int32_t scale, int32_t cplxBands, int32_t hybBands) {
+  int32_t qs;
 
   if (scale == 0) {
     for (qs = 0; qs < cplxBands; qs++) {
@@ -295,14 +295,14 @@ shapeBBEnv(int32_t *pHybOutputRealDry, int32_t *pHybOutputImagDry,
   }
 }
 
-static void extractBBEnv(spatialDec *self, INT inp, INT start, INT channels,
+static void extractBBEnv(spatialDec *self, int32_t inp, int32_t start, int32_t channels,
                          int32_t *pEnv, const SPATIAL_BS_FRAME *frame) {
-  INT ch, pb, prevChOffs;
-  INT clz, scale, scale_min, envSF;
-  INT scaleCur, scalePrev, commonScale;
-  INT slotNrgSF, partNrgSF, frameNrgSF;
-  INT *pPartNrgPrevSF, *pFrameNrgPrevSF;
-  INT *pNormNrgPrevSF, *pPartNrgPrev2SF;
+  int32_t ch, pb, prevChOffs;
+  int32_t clz, scale, scale_min, envSF;
+  int32_t scaleCur, scalePrev, commonScale;
+  int32_t slotNrgSF, partNrgSF, frameNrgSF;
+  int32_t *pPartNrgPrevSF, *pFrameNrgPrevSF;
+  int32_t *pNormNrgPrevSF, *pPartNrgPrev2SF;
 
   int32_t maxVal, env, frameNrg, normNrg;
   int32_t *pReal, *pImag;
@@ -311,7 +311,7 @@ static void extractBBEnv(spatialDec *self, INT inp, INT start, INT channels,
   C_ALLOC_SCRATCH_START(pScratchBuffer, int32_t,
                         (2 * 42 + MAX_PARAMETER_BANDS));
   C_ALLOC_SCRATCH_START(resPb, int32_t, (END_BB_ENV - START_BB_ENV));
-  C_ALLOC_SCRATCH_START(resPbSF, INT, (END_BB_ENV - START_BB_ENV));
+  C_ALLOC_SCRATCH_START(resPbSF, int32_t, (END_BB_ENV - START_BB_ENV));
 
   int32_t *slotNrg = pScratchBuffer + (2 * 42);
 
@@ -324,15 +324,15 @@ static void extractBBEnv(spatialDec *self, INT inp, INT start, INT channels,
   /*int32_t  beta1  = (FL2FXCONST_DBL(1.0f) - beta) << SF_BETA1;*/
   int32_t beta1 = ((int32_t)MAXVAL_DBL - beta) << SF_BETA1;
 
-  INT shapeActiv = 1;
-  INT hybBands = fixMin(42, self->hybridBands);
-  INT staticScale = self->staticDecScale + (1);
-  INT cplxBands;
+  int32_t shapeActiv = 1;
+  int32_t hybBands = fixMin(42, self->hybridBands);
+  int32_t staticScale = self->staticDecScale + (1);
+  int32_t cplxBands;
   cplxBands = fixMin(42, self->hybridBands);
 
   for (ch = start; ch < channels; ch++) {
     if (inp == INP_DRY_WET) {
-      INT ch2 = row2channelGES[self->treeConfig][ch];
+      int32_t ch2 = row2channelGES[self->treeConfig][ch];
       if (ch2 == -1) {
         continue;
       } else {
@@ -454,9 +454,9 @@ static void extractBBEnv(spatialDec *self, INT inp, INT start, INT channels,
     scale_min = DFRACT_BITS - 1;
     for (pb = START_BB_ENV; pb < END_BB_ENV; pb++) {
       if ((partNrg[pb] | slotNrg[pb]) != FL2FXCONST_DBL(0.0f)) {
-        INT s;
-        INT sc = 0;
-        INT sn = fixMax(0, CntLeadingZeros(slotNrg[pb]) - 1);
+        int32_t s;
+        int32_t sc = 0;
+        int32_t sn = fixMax(0, CntLeadingZeros(slotNrg[pb]) - 1);
         int32_t inv_sqrt = invSqrtNorm2(partNrg[pb], &sc);
         int32_t res = fMult(slotNrg[pb] << sn, fPow2(inv_sqrt));
 
@@ -477,7 +477,7 @@ static void extractBBEnv(spatialDec *self, INT inp, INT start, INT channels,
     scale_min = 4 - scale_min;
 
     for (pb = START_BB_ENV; pb < END_BB_ENV; pb++) {
-      INT sc = fixMax(fixMin(resPbSF[pb] + scale_min, DFRACT_BITS - 1),
+      int32_t sc = fixMax(fixMin(resPbSF[pb] + scale_min, DFRACT_BITS - 1),
                       -(DFRACT_BITS - 1));
 
       if (sc < 0) {
@@ -505,7 +505,7 @@ static void extractBBEnv(spatialDec *self, INT inp, INT start, INT channels,
 
     if (shapeActiv) {
       if ((env | normNrg) != FL2FXCONST_DBL(0.0f)) {
-        INT sc, se, sn;
+        int32_t sc, se, sn;
         se = fixMax(0, CntLeadingZeros(env) - 1);
         sc = commonScale + SF_DIV32 - envSF + se;
         env = fMult(sqrtFixp((env << se) >> (sc & 0x1)),
@@ -523,21 +523,21 @@ static void extractBBEnv(spatialDec *self, INT inp, INT start, INT channels,
     pEnv[ch] = env;
   }
 
-  C_ALLOC_SCRATCH_END(resPbSF, INT, (END_BB_ENV - START_BB_ENV));
+  C_ALLOC_SCRATCH_END(resPbSF, int32_t, (END_BB_ENV - START_BB_ENV));
   C_ALLOC_SCRATCH_END(resPb, int32_t, (END_BB_ENV - START_BB_ENV));
   C_ALLOC_SCRATCH_END(pScratchBuffer, int32_t, (2 * 42 + MAX_PARAMETER_BANDS));
 }
 
 void SpatialDecReshapeBBEnv(spatialDec *self, const SPATIAL_BS_FRAME *frame,
-                            INT ts) {
-  INT ch, scale;
-  INT dryFacSF, slotAmpSF;
+                            int32_t ts) {
+  int32_t ch, scale;
+  int32_t dryFacSF, slotAmpSF;
   int32_t tmp, dryFac, envShape;
   int32_t slotAmp_dry, slotAmp_wet, slotAmp_ratio;
   int32_t envDry[MAX_OUTPUT_CHANNELS], envDmx[2];
 
-  INT cplxBands;
-  INT hybBands = self->hybridBands - 6;
+  int32_t cplxBands;
+  int32_t hybBands = self->hybridBands - 6;
 
   cplxBands = self->hybridBands - 6;
 
@@ -552,14 +552,14 @@ void SpatialDecReshapeBBEnv(spatialDec *self, const SPATIAL_BS_FRAME *frame,
   extractBBEnv(self, INP_DRY_WET, 0, self->numOutputChannels, envDry, frame);
 
   for (ch = 0; ch < self->numOutputChannels; ch++) {
-    INT ch2;
+    int32_t ch2;
 
     ch2 = row2channelGES[self->treeConfig][ch];
 
     if (ch2 == -1) continue;
 
     if (frame->tempShapeEnableChannelGES[ch2]) {
-      INT sc;
+      int32_t sc;
 
       /* reshape dry and wet signals according to transmitted envelope */
 
@@ -622,19 +622,19 @@ void SpatialDecReshapeBBEnv(spatialDec *self, const SPATIAL_BS_FRAME *frame,
 
       /* limit dryFac */
       dryFac = fixMax(
-          FL2FXCONST_DBL(0.25f) >> (INT)fixMin(2 * scale, DFRACT_BITS - 1),
+          FL2FXCONST_DBL(0.25f) >> (int32_t)fixMin(2 * scale, DFRACT_BITS - 1),
           fMult(dryFac, slotAmp_ratio) -
               (slotAmp_ratio >> fixMin(scale, DFRACT_BITS - 1)) +
               (dryFac >> fixMin(scale, DFRACT_BITS - 1)));
       dryFac = fixMin(
-          FL2FXCONST_DBL(0.50f) >> (INT)fixMin(2 * scale - 3, DFRACT_BITS - 1),
+          FL2FXCONST_DBL(0.50f) >> (int32_t)fixMin(2 * scale - 3, DFRACT_BITS - 1),
           dryFac); /* reduce shift bits by 3, because upper
                       limit 4.0 is scaled with 3 bits */
       scale = 2 * scale + 1;
 
       /* improve precision for dryFac */
       sc = fixMax(0, CntLeadingZeros(dryFac) - 1);
-      dryFac = dryFac << (INT)fixMin(scale, sc);
+      dryFac = dryFac << (int32_t)fixMin(scale, sc);
       scale = scale - fixMin(scale, sc);
 
       /* shaping */

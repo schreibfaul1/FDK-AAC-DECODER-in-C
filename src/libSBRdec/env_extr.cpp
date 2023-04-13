@@ -162,7 +162,7 @@ amm-info@iis.fraunhofer.de
 #define DRM_PARAMETRIC_STEREO 0
 #define EXTENSION_ID_PS_CODING 2
 
-static int extractPvcFrameInfo(
+static int32_t extractPvcFrameInfo(
     HANDLE_FDK_BITSTREAM hBs,           /*!< bitbuffer handle */
     HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Static control data */
     HANDLE_SBR_FRAME_DATA h_frame_data, /*!< pointer to memory where the
@@ -171,36 +171,36 @@ static int extractPvcFrameInfo(
                                                      the previous frame-info
                                                      will be stored */
     UCHAR pvc_mode_last,                          /**< PVC mode of last frame */
-    const UINT flags);
-static int extractFrameInfo(HANDLE_FDK_BITSTREAM hBs,
+    const uint32_t flags);
+static int32_t extractFrameInfo(HANDLE_FDK_BITSTREAM hBs,
                             HANDLE_SBR_HEADER_DATA hHeaderData,
                             HANDLE_SBR_FRAME_DATA h_frame_data,
-                            const UINT nrOfChannels, const UINT flags);
+                            const uint32_t nrOfChannels, const uint32_t flags);
 
-static int sbrGetPvcEnvelope(HANDLE_SBR_HEADER_DATA hHeaderData,
+static int32_t sbrGetPvcEnvelope(HANDLE_SBR_HEADER_DATA hHeaderData,
                              HANDLE_SBR_FRAME_DATA h_frame_data,
-                             HANDLE_FDK_BITSTREAM hBs, const UINT flags,
-                             const UINT pvcMode);
-static int sbrGetEnvelope(HANDLE_SBR_HEADER_DATA hHeaderData,
+                             HANDLE_FDK_BITSTREAM hBs, const uint32_t flags,
+                             const uint32_t pvcMode);
+static int32_t sbrGetEnvelope(HANDLE_SBR_HEADER_DATA hHeaderData,
                           HANDLE_SBR_FRAME_DATA h_frame_data,
-                          HANDLE_FDK_BITSTREAM hBs, const UINT flags);
+                          HANDLE_FDK_BITSTREAM hBs, const uint32_t flags);
 
 static void sbrGetDirectionControlData(HANDLE_SBR_FRAME_DATA hFrameData,
                                        HANDLE_FDK_BITSTREAM hBs,
-                                       const UINT flags, const int bs_pvc_mode);
+                                       const uint32_t flags, const int32_t bs_pvc_mode);
 
 static void sbrGetNoiseFloorData(HANDLE_SBR_HEADER_DATA hHeaderData,
                                  HANDLE_SBR_FRAME_DATA h_frame_data,
                                  HANDLE_FDK_BITSTREAM hBs);
 
-static int checkFrameInfo(FRAME_INFO *pFrameInfo, int numberOfTimeSlots,
-                          int overlap, int timeStep);
+static int32_t checkFrameInfo(FRAME_INFO *pFrameInfo, int32_t numberOfTimeSlots,
+                          int32_t overlap, int32_t timeStep);
 
 /* Mapping to std samplerate table according to 14496-3 (4.6.18.2.6) */
 typedef struct SR_MAPPING {
-  UINT fsRangeLo; /* If fsRangeLo(n+1)>fs>=fsRangeLo(n), it will be mapped to...
+  uint32_t fsRangeLo; /* If fsRangeLo(n+1)>fs>=fsRangeLo(n), it will be mapped to...
                    */
-  UINT fsMapped;  /* fsMapped. */
+  uint32_t fsMapped;  /* fsMapped. */
 } SR_MAPPING;
 
 static const SR_MAPPING stdSampleRatesMapping[] = {
@@ -212,12 +212,12 @@ static const SR_MAPPING stdSampleRatesMappingUsac[] = {
     {35777, 40000}, {42000, 44100}, {46009, 48000}, {55426, 64000},
     {75132, 88200}, {92017, 96000}};
 
-UINT sbrdec_mapToStdSampleRate(UINT fs,
-                               UINT isUsac) /*!< Output sampling frequency */
+uint32_t sbrdec_mapToStdSampleRate(uint32_t fs,
+                               uint32_t isUsac) /*!< Output sampling frequency */
 {
-  UINT fsMapped = fs, tableSize = 0;
+  uint32_t fsMapped = fs, tableSize = 0;
   const SR_MAPPING *mappingTable;
-  int i;
+  int32_t i;
 
   if (!isUsac) {
     mappingTable = stdSampleRatesMapping;
@@ -238,14 +238,14 @@ UINT sbrdec_mapToStdSampleRate(UINT fs,
 }
 
 SBR_ERROR
-initHeaderData(HANDLE_SBR_HEADER_DATA hHeaderData, const int sampleRateIn,
-               const int sampleRateOut, const INT downscaleFactor,
-               const int samplesPerFrame, const UINT flags,
-               const int setDefaultHdr) {
+initHeaderData(HANDLE_SBR_HEADER_DATA hHeaderData, const int32_t sampleRateIn,
+               const int32_t sampleRateOut, const int32_t downscaleFactor,
+               const int32_t samplesPerFrame, const uint32_t flags,
+               const int32_t setDefaultHdr) {
   HANDLE_FREQ_BAND_DATA hFreq = &hHeaderData->freqBandData;
   SBR_ERROR sbrError = SBRDEC_OK;
-  int numAnalysisBands;
-  int sampleRateProc;
+  int32_t numAnalysisBands;
+  int32_t sampleRateProc;
 
   if (!(flags & (SBRDEC_SYNTAX_USAC | SBRDEC_SYNTAX_RSVD50))) {
     sampleRateProc =
@@ -348,9 +348,9 @@ bail:
 void initSbrPrevFrameData(
     HANDLE_SBR_PREV_FRAME_DATA
         h_prev_data, /*!< handle to struct SBR_PREV_FRAME_DATA */
-    int timeSlots)   /*!< Framelength in SBR-timeslots */
+    int32_t timeSlots)   /*!< Framelength in SBR-timeslots */
 {
-  int i;
+  int32_t i;
 
   /* Set previous energy and noise levels to 0 for the case
      that decoding starts in the middle of a bitstream */
@@ -374,12 +374,12 @@ void initSbrPrevFrameData(
 */
 SBR_HEADER_STATUS
 sbrGetHeaderData(HANDLE_SBR_HEADER_DATA hHeaderData, HANDLE_FDK_BITSTREAM hBs,
-                 const UINT flags, const int fIsSbrData,
+                 const uint32_t flags, const int32_t fIsSbrData,
                  const UCHAR configMode) {
   SBR_HEADER_DATA_BS *pBsData;
   SBR_HEADER_DATA_BS lastHeader;
   SBR_HEADER_DATA_BS_INFO lastInfo;
-  int headerExtra1 = 0, headerExtra2 = 0;
+  int32_t headerExtra1 = 0, headerExtra2 = 0;
 
   /* Read and discard new header in config change detection mode */
   if (configMode & AC_CM_DET_CFG_CHANGE) {
@@ -470,19 +470,19 @@ sbrGetHeaderData(HANDLE_SBR_HEADER_DATA hHeaderData, HANDLE_FDK_BITSTREAM hBs,
 
   \return  error status - 0 if ok
 */
-int sbrGetSyntheticCodedData(HANDLE_SBR_HEADER_DATA hHeaderData,
+int32_t sbrGetSyntheticCodedData(HANDLE_SBR_HEADER_DATA hHeaderData,
                              HANDLE_SBR_FRAME_DATA hFrameData,
-                             HANDLE_FDK_BITSTREAM hBs, const UINT flags) {
-  int i, bitsRead = 0;
+                             HANDLE_FDK_BITSTREAM hBs, const uint32_t flags) {
+  int32_t i, bitsRead = 0;
 
-  int add_harmonic_flag = FDKreadBits(hBs, 1);
+  int32_t add_harmonic_flag = FDKreadBits(hBs, 1);
   bitsRead++;
 
   if (add_harmonic_flag) {
-    int nSfb = hHeaderData->freqBandData.nSfb[1];
+    int32_t nSfb = hHeaderData->freqBandData.nSfb[1];
     for (i = 0; i < ADD_HARMONICS_FLAGS_SIZE; i++) {
       /* read maximum 32 bits and align them to the MSB */
-      int readBits = fMin(32, nSfb);
+      int32_t readBits = fMin(32, nSfb);
       nSfb -= readBits;
       if (readBits > 0) {
         hFrameData->addHarmonics[i] = FDKreadBits(hBs, readBits)
@@ -496,7 +496,7 @@ int sbrGetSyntheticCodedData(HANDLE_SBR_HEADER_DATA hHeaderData,
     /* bs_pvc_mode = 0 for Rsvd50 */
     if (flags & SBRDEC_SYNTAX_USAC) {
       if (hHeaderData->bs_info.pvc_mode) {
-        int bs_sinusoidal_position = 31;
+        int32_t bs_sinusoidal_position = 31;
         if (FDKreadBit(hBs) /* bs_sinusoidal_position_flag */) {
           bs_sinusoidal_position = FDKreadBits(hBs, 5);
         }
@@ -520,21 +520,21 @@ int sbrGetSyntheticCodedData(HANDLE_SBR_HEADER_DATA hHeaderData,
   are unused. The data should be skipped in order to update the number
   of read bits for the consistency check in applySBR().
 */
-static int extractExtendedData(
+static int32_t extractExtendedData(
     HANDLE_SBR_HEADER_DATA hHeaderData, /*!< handle to SBR header */
     HANDLE_FDK_BITSTREAM hBs            /*!< Handle to the bit buffer */
     ,
     HANDLE_PS_DEC hParametricStereoDec /*!< Parametric Stereo Decoder */
 ) {
-  INT nBitsLeft;
-  int extended_data;
-  int i, frameOk = 1;
+  int32_t nBitsLeft;
+  int32_t extended_data;
+  int32_t i, frameOk = 1;
 
   extended_data = FDKreadBits(hBs, 1);
 
   if (extended_data) {
-    int cnt;
-    int bPsRead = 0;
+    int32_t cnt;
+    int32_t bPsRead = 0;
 
     cnt = FDKreadBits(hBs, 4);
     if (cnt == (1 << 4) - 1) cnt += FDKreadBits(hBs, 8);
@@ -542,15 +542,15 @@ static int extractExtendedData(
     nBitsLeft = 8 * cnt;
 
     /* sanity check for cnt */
-    if (nBitsLeft > (INT)FDKgetValidBits(hBs)) {
+    if (nBitsLeft > (int32_t)FDKgetValidBits(hBs)) {
       /* limit nBitsLeft */
-      nBitsLeft = (INT)FDKgetValidBits(hBs);
+      nBitsLeft = (int32_t)FDKgetValidBits(hBs);
       /* set frame error */
       frameOk = 0;
     }
 
     while (nBitsLeft > 7) {
-      int extension_id = FDKreadBits(hBs, 2);
+      int32_t extension_id = FDKreadBits(hBs, 2);
       nBitsLeft -= 2;
 
       switch (extension_id) {
@@ -567,7 +567,7 @@ static int extractExtendedData(
               nBitsLeft -= cnt * 8;
             } else {
               nBitsLeft -=
-                  (INT)ReadPsData(hParametricStereoDec, hBs, nBitsLeft);
+                  (int32_t)ReadPsData(hParametricStereoDec, hBs, nBitsLeft);
               bPsRead = 1;
             }
           }
@@ -612,15 +612,15 @@ bail:
   \brief      Read bitstream elements of a SBR channel element
   \return     SbrFrameOK
 */
-int sbrGetChannelElement(HANDLE_SBR_HEADER_DATA hHeaderData,
+int32_t sbrGetChannelElement(HANDLE_SBR_HEADER_DATA hHeaderData,
                          HANDLE_SBR_FRAME_DATA hFrameDataLeft,
                          HANDLE_SBR_FRAME_DATA hFrameDataRight,
                          HANDLE_SBR_PREV_FRAME_DATA hFrameDataLeftPrev,
                          UCHAR pvc_mode_last, HANDLE_FDK_BITSTREAM hBs,
-                         HANDLE_PS_DEC hParametricStereoDec, const UINT flags,
-                         const int overlap) {
-  int i, bs_coupling = COUPLING_OFF;
-  const int nCh = (hFrameDataRight == NULL) ? 1 : 2;
+                         HANDLE_PS_DEC hParametricStereoDec, const uint32_t flags,
+                         const int32_t overlap) {
+  int32_t i, bs_coupling = COUPLING_OFF;
+  const int32_t nCh = (hFrameDataRight == NULL) ? 1 : 2;
 
   if (!(flags & (SBRDEC_SYNTAX_USAC | SBRDEC_SYNTAX_RSVD50))) {
     /* Reserved bits */
@@ -823,11 +823,11 @@ int sbrGetChannelElement(HANDLE_SBR_HEADER_DATA hHeaderData,
 void sbrGetDirectionControlData(
     HANDLE_SBR_FRAME_DATA h_frame_data, /*!< handle to struct SBR_FRAME_DATA */
     HANDLE_FDK_BITSTREAM hBs,           /*!< handle to struct BIT_BUF */
-    const UINT flags, const int bs_pvc_mode)
+    const uint32_t flags, const int32_t bs_pvc_mode)
 
 {
-  int i;
-  int indepFlag = 0;
+  int32_t i;
+  int32_t indepFlag = 0;
 
   if (flags & (SBRDEC_SYNTAX_USAC | SBRDEC_SYNTAX_RSVD50)) {
     indepFlag = flags & SBRDEC_USAC_INDEP;
@@ -860,14 +860,14 @@ void sbrGetNoiseFloorData(
     HANDLE_SBR_FRAME_DATA h_frame_data, /*!< handle to struct SBR_FRAME_DATA */
     HANDLE_FDK_BITSTREAM hBs)           /*!< handle to struct BIT_BUF */
 {
-  int i, j;
-  int delta;
+  int32_t i, j;
+  int32_t delta;
   COUPLING_MODE coupling;
-  int noNoiseBands = hHeaderData->freqBandData.nNfb;
+  int32_t noNoiseBands = hHeaderData->freqBandData.nNfb;
 
   Huffman hcb_noiseF;
   Huffman hcb_noise;
-  int envDataTableCompFactor;
+  int32_t envDataTableCompFactor;
 
   coupling = h_frame_data->coupling;
 
@@ -895,10 +895,10 @@ void sbrGetNoiseFloorData(
     if (h_frame_data->domain_vec_noise[i] == 0) {
       if (coupling == COUPLING_BAL) {
         h_frame_data->sbrNoiseFloorLevel[i * noNoiseBands] =
-            (FIXP_SGL)(((int)FDKreadBits(hBs, 5)) << envDataTableCompFactor);
+            (FIXP_SGL)(((int32_t)FDKreadBits(hBs, 5)) << envDataTableCompFactor);
       } else {
         h_frame_data->sbrNoiseFloorLevel[i * noNoiseBands] =
-            (FIXP_SGL)(int)FDKreadBits(hBs, 5);
+            (FIXP_SGL)(int32_t)FDKreadBits(hBs, 5);
       }
 
       for (j = 1; j < noNoiseBands; j++) {
@@ -922,13 +922,13 @@ static const UCHAR mapNsMode2ns[2][2] = {
     {12, 3}  /* pvcMode = 2 */
 };
 
-static int sbrGetPvcEnvelope(
+static int32_t sbrGetPvcEnvelope(
     HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Static control data */
     HANDLE_SBR_FRAME_DATA h_frame_data, /*!< handle to struct SBR_FRAME_DATA */
     HANDLE_FDK_BITSTREAM hBs,           /*!< handle to struct BIT_BUF */
-    const UINT flags, const UINT pvcMode) {
-  int divMode, nsMode;
-  int indepFlag = flags & SBRDEC_USAC_INDEP;
+    const uint32_t flags, const uint32_t pvcMode) {
+  int32_t divMode, nsMode;
+  int32_t indepFlag = flags & SBRDEC_USAC_INDEP;
   UCHAR *pvcID = h_frame_data->pvcID;
 
   divMode = FDKreadBits(hBs, PVC_DIVMODE_BITS);
@@ -937,7 +937,7 @@ static int sbrGetPvcEnvelope(
   h_frame_data->ns = mapNsMode2ns[pvcMode - 1][nsMode];
 
   if (divMode <= 3) {
-    int i, k = 1, sum_length = 0, reuse_pcvID;
+    int32_t i, k = 1, sum_length = 0, reuse_pcvID;
 
     /* special treatment for first time slot k=0 */
     indepFlag ? (reuse_pcvID = 0) : (reuse_pcvID = FDKreadBit(hBs));
@@ -949,7 +949,7 @@ static int sbrGetPvcEnvelope(
 
     /* other time slots k>0 */
     for (i = 0; i < divMode; i++) {
-      int length, numBits = 4;
+      int32_t length, numBits = 4;
 
       if (sum_length >= 13) {
         numBits = 1;
@@ -973,7 +973,7 @@ static int sbrGetPvcEnvelope(
       pvcID[k] = pvcID[k - 1];
     }
   } else { /* divMode >= 4 */
-    int num_grid_info, fixed_length, grid_info, j, k = 0;
+    int32_t num_grid_info, fixed_length, grid_info, j, k = 0;
 
     divMode -= 4;
     num_grid_info = 2 << divMode;
@@ -1017,20 +1017,20 @@ static int sbrGetPvcEnvelope(
 /*!
   \brief   Read envelope data from bitstream
 */
-static int sbrGetEnvelope(
+static int32_t sbrGetEnvelope(
     HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Static control data */
     HANDLE_SBR_FRAME_DATA h_frame_data, /*!< handle to struct SBR_FRAME_DATA */
     HANDLE_FDK_BITSTREAM hBs,           /*!< handle to struct BIT_BUF */
-    const UINT flags) {
-  int i, j;
+    const uint32_t flags) {
+  int32_t i, j;
   UCHAR no_band[MAX_ENVELOPES];
-  int delta = 0;
-  int offset = 0;
+  int32_t delta = 0;
+  int32_t offset = 0;
   COUPLING_MODE coupling = h_frame_data->coupling;
-  int ampRes = hHeaderData->bs_info.ampResolution;
-  int nEnvelopes = h_frame_data->frameInfo.nEnvelopes;
-  int envDataTableCompFactor;
-  int start_bits, start_bits_balance;
+  int32_t ampRes = hHeaderData->bs_info.ampResolution;
+  int32_t nEnvelopes = h_frame_data->frameInfo.nEnvelopes;
+  int32_t envDataTableCompFactor;
+  int32_t start_bits, start_bits_balance;
   Huffman hcb_t, hcb_f;
 
   h_frame_data->nScaleFactors = 0;
@@ -1095,11 +1095,11 @@ static int sbrGetEnvelope(
     if (h_frame_data->domain_vec[j] == 0) {
       if (coupling == COUPLING_BAL) {
         h_frame_data->iEnvelope[offset] =
-            (FIXP_SGL)(((int)FDKreadBits(hBs, start_bits_balance))
+            (FIXP_SGL)(((int32_t)FDKreadBits(hBs, start_bits_balance))
                        << envDataTableCompFactor);
       } else {
         h_frame_data->iEnvelope[offset] =
-            (FIXP_SGL)(int)FDKreadBits(hBs, start_bits);
+            (FIXP_SGL)(int32_t)FDKreadBits(hBs, start_bits);
       }
     }
 
@@ -1114,7 +1114,7 @@ static int sbrGetEnvelope(
           (FIXP_SGL)(delta << envDataTableCompFactor);
     }
     if ((flags & SBRDEC_SYNTAX_USAC) && (flags & SBRDEC_USAC_ITES)) {
-      int bs_temp_shape = FDKreadBit(hBs);
+      int32_t bs_temp_shape = FDKreadBit(hBs);
       FDK_ASSERT(j < 8);
       h_frame_data->iTESactive |= (UCHAR)(bs_temp_shape << j);
       if (bs_temp_shape) {
@@ -1128,7 +1128,7 @@ static int sbrGetEnvelope(
   }
 
 #if ENV_EXP_FRACT
-  /* Convert from int to scaled fract (ENV_EXP_FRACT bits for the fractional
+  /* Convert from int32_t to scaled fract (ENV_EXP_FRACT bits for the fractional
    * part) */
   for (i = 0; i < h_frame_data->nScaleFactors; i++) {
     h_frame_data->iEnvelope[i] <<= ENV_EXP_FRACT;
@@ -1145,10 +1145,10 @@ static int sbrGetEnvelope(
 
   \return   zero for error, one for correct.
  ****************************************************************************/
-static int generateFixFixOnly(FRAME_INFO *hSbrFrameInfo, int tranPosInternal,
-                              int numberTimeSlots, const UINT flags) {
-  int nEnv, i, tranIdx;
-  const int *pTable;
+static int32_t generateFixFixOnly(FRAME_INFO *hSbrFrameInfo, int32_t tranPosInternal,
+                              int32_t numberTimeSlots, const uint32_t flags) {
+  int32_t nEnv, i, tranIdx;
+  const int32_t *pTable;
 
   if (tranPosInternal >= numberTimeSlots) {
     return 0;
@@ -1197,15 +1197,15 @@ static int generateFixFixOnly(FRAME_INFO *hSbrFrameInfo, int tranPosInternal,
 
   \return zero for bitstream error, one for correct.
 */
-static int extractLowDelayGrid(
+static int32_t extractLowDelayGrid(
     HANDLE_FDK_BITSTREAM hBitBuf, /*!< bitbuffer handle */
     HANDLE_SBR_HEADER_DATA hHeaderData,
     HANDLE_SBR_FRAME_DATA
         h_frame_data, /*!< contains the FRAME_INFO struct to be filled */
-    int timeSlots, const UINT flags) {
+    int32_t timeSlots, const uint32_t flags) {
   FRAME_INFO *pFrameInfo = &h_frame_data->frameInfo;
-  INT numberTimeSlots = hHeaderData->numberTimeSlots;
-  INT temp = 0, k;
+  int32_t numberTimeSlots = hHeaderData->numberTimeSlots;
+  int32_t temp = 0, k;
 
   /* FIXFIXonly framing case */
   h_frame_data->frameInfo.frameClass = 0;
@@ -1250,7 +1250,7 @@ static int extractLowDelayGrid(
   \brief   Extract the PVC frame information (structure FRAME_INFO) from the
   bitstream \return  Zero for bitstream error, one for correct.
 */
-int extractPvcFrameInfo(
+int32_t extractPvcFrameInfo(
     HANDLE_FDK_BITSTREAM hBs,           /*!< bitbuffer handle */
     HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Static control data */
     HANDLE_SBR_FRAME_DATA h_frame_data, /*!< pointer to memory where the
@@ -1259,10 +1259,10 @@ int extractPvcFrameInfo(
                                                      the previous frame-info
                                                      will be stored */
     UCHAR pvc_mode_last,                          /**< PVC mode of last frame */
-    const UINT flags) {
+    const uint32_t flags) {
   FRAME_INFO *pFrameInfo = &h_frame_data->frameInfo;
   FRAME_INFO *pPrevFrameInfo = &h_prev_frame_data->prevFrameInfo;
-  int bs_var_len_hf, bs_noise_position;
+  int32_t bs_var_len_hf, bs_noise_position;
   bs_noise_position = FDKreadBits(hBs, 4); /* SBR_PVC_NOISEPOSITION_BITS 4 */
   bs_var_len_hf = FDKreadBit(hBs);
   pFrameInfo->noisePosition = bs_noise_position;
@@ -1327,7 +1327,7 @@ int extractPvcFrameInfo(
     pFrameInfo->pvcBorders[pFrameInfo->nEnvelopes] = 16;
 
     /* calculation of SBR noise-floor time-border vector: */
-    for (INT i = 0; i <= pFrameInfo->nNoiseEnvelopes; i++) {
+    for (int32_t i = 0; i <= pFrameInfo->nNoiseEnvelopes; i++) {
       pFrameInfo->bordersNoise[i] = pFrameInfo->borders[i];
     }
 
@@ -1340,15 +1340,15 @@ int extractPvcFrameInfo(
   \brief   Extract the frame information (structure FRAME_INFO) from the
   bitstream \return  Zero for bitstream error, one for correct.
 */
-int extractFrameInfo(
+int32_t extractFrameInfo(
     HANDLE_FDK_BITSTREAM hBs,           /*!< bitbuffer handle */
     HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Static control data */
     HANDLE_SBR_FRAME_DATA h_frame_data, /*!< pointer to memory where the
                                            frame-info will be stored */
-    const UINT nrOfChannels, const UINT flags) {
+    const uint32_t nrOfChannels, const uint32_t flags) {
   FRAME_INFO *pFrameInfo = &h_frame_data->frameInfo;
-  int numberTimeSlots = hHeaderData->numberTimeSlots;
-  int pointer_bits = 0, nEnv = 0, b = 0, border, i, n = 0, k, p, aL, aR, nL, nR,
+  int32_t numberTimeSlots = hHeaderData->numberTimeSlots;
+  int32_t pointer_bits = 0, nEnv = 0, b = 0, border, i, n = 0, k, p, aL, aR, nL, nR,
       temp = 0, staticFreqRes;
   UCHAR frameClass;
 
@@ -1361,7 +1361,7 @@ int extractFrameInfo(
        * SBR-Grid for FIXIFX */
       /* extract the AACLD-Sbr-Grid */
       pFrameInfo->frameClass = frameClass;
-      int err = 1;
+      int32_t err = 1;
       err = extractLowDelayGrid(hBs, hHeaderData, h_frame_data, numberTimeSlots,
                                 flags);
       return err;
@@ -1373,7 +1373,7 @@ int extractFrameInfo(
   switch (frameClass) {
     case 0:
       temp = FDKreadBits(hBs, 2); /* E [2 bits ] */
-      nEnv = (int)(1 << temp);    /* E -> e */
+      nEnv = (int32_t)(1 << temp);    /* E -> e */
 
       if ((flags & SBRDEC_ELD_GRID) && (nEnv == 1))
         h_frame_data->ampResolutionCurrentFrame =
@@ -1650,20 +1650,20 @@ int extractFrameInfo(
   \brief   Check if the frameInfo vector has reasonable values.
   \return  Zero for error, one for correct
 */
-static int checkFrameInfo(
+static int32_t checkFrameInfo(
     FRAME_INFO *pFrameInfo, /*!< pointer to frameInfo */
-    int numberOfTimeSlots,  /*!< QMF time slots per frame */
-    int overlap,            /*!< Amount of overlap QMF time slots */
-    int timeStep)           /*!< QMF slots to SBR slots step factor */
+    int32_t numberOfTimeSlots,  /*!< QMF time slots per frame */
+    int32_t overlap,            /*!< Amount of overlap QMF time slots */
+    int32_t timeStep)           /*!< QMF slots to SBR slots step factor */
 {
-  int maxPos, i, j;
-  int startPos;
-  int stopPos;
-  int tranEnv;
-  int startPosNoise;
-  int stopPosNoise;
-  int nEnvelopes = pFrameInfo->nEnvelopes;
-  int nNoiseEnvelopes = pFrameInfo->nNoiseEnvelopes;
+  int32_t maxPos, i, j;
+  int32_t startPos;
+  int32_t stopPos;
+  int32_t tranEnv;
+  int32_t startPosNoise;
+  int32_t stopPosNoise;
+  int32_t nEnvelopes = pFrameInfo->nEnvelopes;
+  int32_t nNoiseEnvelopes = pFrameInfo->nNoiseEnvelopes;
 
   if (nEnvelopes < 1 || nEnvelopes > MAX_ENVELOPES) return 0;
 

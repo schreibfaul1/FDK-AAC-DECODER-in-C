@@ -124,7 +124,7 @@ inline int32_t fixabs_D(int32_t x) {
 #endif
 
 #if !defined(FUNCTION_fixabs_I)
-inline INT fixabs_I(INT x) { return ((x) > (INT)(0)) ? (x) : -(x); }
+inline int32_t fixabs_I(int32_t x) { return ((x) > (int32_t)(0)) ? (x) : -(x); }
 #endif
 
 #if !defined(FUNCTION_fixabs_S)

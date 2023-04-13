@@ -108,8 +108,8 @@ amm-info@iis.fraunhofer.de
 #define MIN_ADIF_HEADERLENGTH 63 /* in bits */
 
 typedef struct {
-  INT NumProgramConfigElements;
-  UINT BitRate;
+  int32_t NumProgramConfigElements;
+  uint32_t BitRate;
   UCHAR CopyrightIdPresent;
   UCHAR OriginalCopy;
   UCHAR Home;

@@ -133,8 +133,8 @@ typedef enum {
 } AACDEC_DRC_PARAMETER_HANDLING;
 
 typedef struct {
-  UINT expiryCount;
-  UINT numBands;
+  uint32_t expiryCount;
+  uint32_t numBands;
   USHORT bandTop[MAX_DRC_BANDS];
   SHORT drcInterpolationScheme;
   UCHAR drcValue[MAX_DRC_BANDS];
@@ -143,7 +143,7 @@ typedef struct {
 } CDrcChannelData;
 
 typedef struct {
-  UINT excludedChnsMask;
+  uint32_t excludedChnsMask;
   SCHAR progRefLevel;
   SCHAR presMode; /* Presentation mode: 0 (not indicated), 1, 2, and 3
                      (reserved). */
@@ -166,7 +166,7 @@ typedef struct {
   SCHAR targetRefLevel; /* target reference level for loudness normalization */
   UCHAR applyHeavyCompression; /* heavy compression (DVB) flag */
 
-  UINT expiryFrame;
+  uint32_t expiryFrame;
   UCHAR bsDelayEnable;
 
   AACDEC_DRC_PARAMETER_HANDLING defaultPresentationMode;
@@ -185,8 +185,8 @@ typedef struct {
 
   UCHAR update; /* Flag indicating the change of a user or bitstream parameter
                    which affects aacDecoder_drcParameterHandling */
-  INT numOutChannels;     /* Number of output channels */
-  INT prevAacNumChannels; /* Previous number of channels of aac bitstream, used
+  int32_t numOutChannels;     /* Number of output channels */
+  int32_t prevAacNumChannels; /* Previous number of channels of aac bitstream, used
                              for update flag */
 
   USHORT numPayloads; /* The number of DRC data payload elements found within
@@ -197,15 +197,15 @@ typedef struct {
   SCHAR progRefLevel; /* Program reference level for all channels */
   UCHAR progRefLevelPresent; /* Program reference level found in bitstream */
 
-  UINT prlExpiryCount; /* Counter that can be used to monitor the life time of
+  uint32_t prlExpiryCount; /* Counter that can be used to monitor the life time of
                           the program reference level. */
 
   SCHAR presMode; /* Presentation mode as defined in ETSI TS 101 154 */
   UCHAR dvbAncDataAvailable; /* Flag that indicates whether DVB ancillary data
                                 is present or not */
-  UINT dvbAncDataPosition;   /* Used to store the DVB ancillary data payload
+  uint32_t dvbAncDataPosition;   /* Used to store the DVB ancillary data payload
                                 position in the bitstream (only one per frame) */
-  UINT drcPayloadPosition[MAX_DRC_THREADS]; /* Used to store the DRC payload
+  uint32_t drcPayloadPosition[MAX_DRC_THREADS]; /* Used to store the DRC payload
                                                positions in the bitstream */
 
   UCHAR

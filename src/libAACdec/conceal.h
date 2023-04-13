@@ -112,15 +112,15 @@ void CConcealment_InitCommonData(CConcealParams *pConcealCommonData);
 void CConcealment_InitChannelData(CConcealmentInfo *hConcealmentInfo,
                                   CConcealParams *pConcealCommonData,
                                   AACDEC_RENDER_MODE initRenderMode,
-                                  int samplesPerFrame);
+                                  int32_t samplesPerFrame);
 
 CConcealmentMethod CConcealment_GetMethod(CConcealParams *pConcealCommonData);
 
-UINT CConcealment_GetDelay(CConcealParams *pConcealCommonData);
+uint32_t CConcealment_GetDelay(CConcealParams *pConcealCommonData);
 
 AAC_DECODER_ERROR
-CConcealment_SetParams(CConcealParams *concealParams, int method,
-                       int fadeOutSlope, int fadeInSlope, int muteRelease,
+CConcealment_SetParams(CConcealParams *concealParams, int32_t method,
+                       int32_t fadeOutSlope, int32_t fadeInSlope, int32_t muteRelease,
                        int32_t comfNoiseLevel);
 
 CConcealmentState CConcealment_GetState(CConcealmentInfo *hConcealmentInfo);
@@ -135,18 +135,18 @@ void CConcealment_Store(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo);
 
-int CConcealment_Apply(
+int32_t CConcealment_Apply(
     CConcealmentInfo *hConcealmentInfo,
     CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, const int samplesPerFrame,
-    const UCHAR lastLpdMode, const int FrameOk, const UINT flags);
+    const SamplingRateInfo *pSamplingRateInfo, const int32_t samplesPerFrame,
+    const UCHAR lastLpdMode, const int32_t FrameOk, const uint32_t flags);
 
-int CConcealment_GetLastFrameOk(CConcealmentInfo *hConcealmentInfo,
-                                const int fBeforeApply);
+int32_t CConcealment_GetLastFrameOk(CConcealmentInfo *hConcealmentInfo,
+                                const int32_t fBeforeApply);
 
-INT CConcealment_TDFading(
-    int len, CAacDecoderStaticChannelInfo **ppAacDecoderStaticChannelInfo,
-    const INT aacOutDataHeadroom, int32_t *pcmdata, int32_t *pcmdata_1);
+int32_t CConcealment_TDFading(
+    int32_t len, CAacDecoderStaticChannelInfo **ppAacDecoderStaticChannelInfo,
+    const int32_t aacOutDataHeadroom, int32_t *pcmdata, int32_t *pcmdata_1);
 
 #endif /* #ifndef CONCEAL_H */

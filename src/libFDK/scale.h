@@ -117,29 +117,29 @@ amm-info@iis.fraunhofer.de
 
 // #endif
 
-void scaleValues(FIXP_SGL *vector, INT len, INT scalefactor);
-void scaleValues(int32_t *vector, INT len, INT scalefactor);
-void scaleValues(int32_t *dst, const int32_t *src, INT len, INT scalefactor);
+void scaleValues(FIXP_SGL *vector, int32_t len, int32_t scalefactor);
+void scaleValues(int32_t *vector, int32_t len, int32_t scalefactor);
+void scaleValues(int32_t *dst, const int32_t *src, int32_t len, int32_t scalefactor);
 #if (SAMPLE_BITS == 16)
-void scaleValues(FIXP_PCM *dst, const int32_t *src, INT len, INT scalefactor);
+void scaleValues(FIXP_PCM *dst, const int32_t *src, int32_t len, int32_t scalefactor);
 #endif
-void scaleValues(FIXP_SGL *dst, const FIXP_SGL *src, INT len, INT scalefactor);
+void scaleValues(FIXP_SGL *dst, const FIXP_SGL *src, int32_t len, int32_t scalefactor);
 void scaleCplxValues(int32_t *r_dst, int32_t *i_dst, const int32_t *r_src,
-                     const int32_t *i_src, INT len, INT scalefactor);
-void scaleValuesWithFactor(int32_t *vector, int32_t factor, INT len,
-                           INT scalefactor);
-void scaleValuesSaturate(int32_t *vector, INT len, INT scalefactor);
-void scaleValuesSaturate(int32_t *dst, const int32_t *src, INT len,
-                         INT scalefactor);
-void scaleValuesSaturate(FIXP_SGL *dst, const int32_t *src, INT len,
-                         INT scalefactor);
-void scaleValuesSaturate(FIXP_SGL *vector, INT len, INT scalefactor);
-void scaleValuesSaturate(FIXP_SGL *dst, const FIXP_SGL *src, INT len,
-                         INT scalefactor);
-INT getScalefactorShort(const SHORT *vector, INT len);
-INT getScalefactorPCM(const INT_PCM *vector, INT len, INT stride);
-INT getScalefactor(const int32_t *vector, INT len);
-INT getScalefactor(const FIXP_SGL *vector, INT len);
+                     const int32_t *i_src, int32_t len, int32_t scalefactor);
+void scaleValuesWithFactor(int32_t *vector, int32_t factor, int32_t len,
+                           int32_t scalefactor);
+void scaleValuesSaturate(int32_t *vector, int32_t len, int32_t scalefactor);
+void scaleValuesSaturate(int32_t *dst, const int32_t *src, int32_t len,
+                         int32_t scalefactor);
+void scaleValuesSaturate(FIXP_SGL *dst, const int32_t *src, int32_t len,
+                         int32_t scalefactor);
+void scaleValuesSaturate(FIXP_SGL *vector, int32_t len, int32_t scalefactor);
+void scaleValuesSaturate(FIXP_SGL *dst, const FIXP_SGL *src, int32_t len,
+                         int32_t scalefactor);
+int32_t getScalefactorShort(const SHORT *vector, int32_t len);
+int32_t getScalefactorPCM(const INT_PCM *vector, int32_t len, int32_t stride);
+int32_t getScalefactor(const int32_t *vector, int32_t len);
+int32_t getScalefactor(const FIXP_SGL *vector, int32_t len);
 
 #ifndef FUNCTION_scaleValue
 /*!
@@ -151,7 +151,7 @@ INT getScalefactor(const FIXP_SGL *vector, INT len);
  */
 #define FUNCTION_scaleValue
 inline int32_t scaleValue(const int32_t value, /*!< Value */
-                           INT scalefactor       /*!< Scalefactor */
+                           int32_t scalefactor       /*!< Scalefactor */
 ) {
   if (scalefactor > 0)
     return (value << scalefactor);
@@ -159,7 +159,7 @@ inline int32_t scaleValue(const int32_t value, /*!< Value */
     return (value >> (-scalefactor));
 }
 inline FIXP_SGL scaleValue(const FIXP_SGL value, /*!< Value */
-                           INT scalefactor       /*!< Scalefactor */
+                           int32_t scalefactor       /*!< Scalefactor */
 ) {
   if (scalefactor > 0)
     return (value << scalefactor);
@@ -179,10 +179,10 @@ inline FIXP_SGL scaleValue(const FIXP_SGL value, /*!< Value */
  */
 #define FUNCTION_scaleValueSaturate
 inline int32_t scaleValueSaturate(const int32_t value,
-                                   INT scalefactor /* in range -31 ... +31 */
+                                   int32_t scalefactor /* in range -31 ... +31 */
 ) {
-  int headroom = fixnormz_D(
-      (INT)value ^ (INT)((value >> 31))); /* headroom in range 1...32 */
+  int32_t headroom = fixnormz_D(
+      (int32_t)value ^ (int32_t)((value >> 31))); /* headroom in range 1...32 */
   if (scalefactor >= 0) {
     /* shift left: saturate in case of headroom less/equal scalefactor */
     if (headroom <= scalefactor) {
@@ -215,9 +215,9 @@ inline int32_t scaleValueSaturate(const int32_t value,
  */
 #define FUNCTION_scaleValueInPlace
 inline void scaleValueInPlace(int32_t *value, /*!< Value */
-                              INT scalefactor  /*!< Scalefactor */
+                              int32_t scalefactor  /*!< Scalefactor */
 ) {
-  INT newscale;
+  int32_t newscale;
   /* Note: The assignment inside the if conditional allows combining a load with
    * the compare to zero (on ARM and maybe others) */
   if ((newscale = (scalefactor)) >= 0) {

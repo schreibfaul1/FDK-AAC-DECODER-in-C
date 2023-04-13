@@ -798,14 +798,14 @@ typedef enum {
  */
 typedef struct {
   /* These five members are the only really relevant ones for the user. */
-  INT sampleRate; /*!< The sample rate in Hz of the decoded PCM audio signal. */
-  INT frameSize;  /*!< The frame size of the decoded PCM audio signal. \n
+  int32_t sampleRate; /*!< The sample rate in Hz of the decoded PCM audio signal. */
+  int32_t frameSize;  /*!< The frame size of the decoded PCM audio signal. \n
                        Typically this is: \n
                        1024 or 960 for AAC-LC \n
                        2048 or 1920 for HE-AAC (v2) \n
                        512 or 480 for AAC-LD and AAC-ELD \n
                        768, 1024, 2048 or 4096 for USAC  */
-  INT numChannels; /*!< The number of output audio channels before the rendering
+  int32_t numChannels; /*!< The number of output audio channels before the rendering
                       module, i.e. the original channel configuration. */
   AUDIO_CHANNEL_TYPE
   *pChannelType; /*!< Audio channel type of each output audio channel. */
@@ -814,37 +814,37 @@ typedef struct {
                              Explicit channel mapping using a
                              program_config_element() */
   /* Decoder internal members. */
-  INT aacSampleRate; /*!< Sampling rate in Hz without SBR (from configuration
+  int32_t aacSampleRate; /*!< Sampling rate in Hz without SBR (from configuration
                         info) divided by a (ELD) downscale factor if present. */
-  INT profile; /*!< MPEG-2 profile (from file header) (-1: not applicable (e. g.
+  int32_t profile; /*!< MPEG-2 profile (from file header) (-1: not applicable (e. g.
                   MPEG-4)).               */
   AUDIO_OBJECT_TYPE
   aot; /*!< Audio Object Type (from ASC): is set to the appropriate value
           for MPEG-2 bitstreams (e. g. 2 for AAC-LC). */
-  INT channelConfig; /*!< Channel configuration (0: PCE defined, 1: mono, 2:
+  int32_t channelConfig; /*!< Channel configuration (0: PCE defined, 1: mono, 2:
                         stereo, ...                       */
-  INT bitRate;       /*!< Instantaneous bit rate.                   */
-  INT aacSamplesPerFrame;   /*!< Samples per frame for the AAC core (from ASC)
+  int32_t bitRate;       /*!< Instantaneous bit rate.                   */
+  int32_t aacSamplesPerFrame;   /*!< Samples per frame for the AAC core (from ASC)
                                divided by a (ELD) downscale factor if present. \n
                                  Typically this is (with a downscale factor of 1):
                                \n   1024 or 960 for AAC-LC \n   512 or 480 for
                                AAC-LD   and AAC-ELD         */
-  INT aacNumChannels;       /*!< The number of audio channels after AAC core
+  int32_t aacNumChannels;       /*!< The number of audio channels after AAC core
                                processing (before PS or MPS processing).       CAUTION: This
                                are not the final number of output channels! */
   AUDIO_OBJECT_TYPE extAot; /*!< Extension Audio Object Type (from ASC)   */
-  INT extSamplingRate; /*!< Extension sampling rate in Hz (from ASC) divided by
+  int32_t extSamplingRate; /*!< Extension sampling rate in Hz (from ASC) divided by
                           a (ELD) downscale factor if present. */
 
-  UINT outputDelay; /*!< The number of samples the output is additionally
+  uint32_t outputDelay; /*!< The number of samples the output is additionally
                        delayed by.the decoder. */
-  UINT flags; /*!< Copy of internal flags. Only to be written by the decoder,
+  uint32_t flags; /*!< Copy of internal flags. Only to be written by the decoder,
                  and only to be read externally. */
 
   SCHAR epConfig; /*!< epConfig level (from ASC): only level 0 supported, -1
                      means no ER (e. g. AOT=2, MPEG-2 AAC, etc.)  */
   /* Statistics */
-  INT numLostAccessUnits; /*!< This integer will reflect the estimated amount of
+  int32_t numLostAccessUnits; /*!< This integer will reflect the estimated amount of
                              lost access units in case aacDecoder_DecodeFrame()
                                returns AAC_DEC_TRANSPORT_SYNC_ERROR. It will be
                              < 0 if the estimation failed. */
@@ -878,7 +878,7 @@ typedef struct {
                          metadata found in the bitstream \n   0: DRC presentation
                          mode not indicated \n   1: DRC presentation mode 1 \n   2:
                          DRC presentation mode 2 \n   3: Reserved */
-  INT outputLoudness; /*!< Audio output loudness in steps of -0.25 dB. Range: 0
+  int32_t outputLoudness; /*!< Audio output loudness in steps of -0.25 dB. Range: 0
                          (0 dBFS) to 231 (-57.75 dBFS).\n  A value of -1
                          indicates that no loudness metadata is present.\n  If
                          loudness normalization is active, the value corresponds
@@ -907,7 +907,7 @@ extern "C" {
  * \return        Error code.
  */
 AAC_DECODER_ERROR aacDecoder_AncDataInit(HANDLE_AACDECODER self,
-                                                    UCHAR *buffer, int size);
+                                                    UCHAR *buffer, int32_t size);
 
 /**
  * \brief Get one ancillary data element.
@@ -921,8 +921,8 @@ AAC_DECODER_ERROR aacDecoder_AncDataInit(HANDLE_AACDECODER self,
  * \return       Error code.
  */
 AAC_DECODER_ERROR aacDecoder_AncDataGet(HANDLE_AACDECODER self,
-                                                   int index, UCHAR **ptr,
-                                                   int *size);
+                                                   int32_t index, UCHAR **ptr,
+                                                   int32_t *size);
 
 /**
  * \brief Set one single decoder parameter.
@@ -934,7 +934,7 @@ AAC_DECODER_ERROR aacDecoder_AncDataGet(HANDLE_AACDECODER self,
  */
 AAC_DECODER_ERROR aacDecoder_SetParam(const HANDLE_AACDECODER self,
                                                  const AACDEC_PARAM param,
-                                                 const INT value);
+                                                 const int32_t value);
 
 /**
  * \brief              Get free bytes inside decoder internal buffer.
@@ -944,7 +944,7 @@ AAC_DECODER_ERROR aacDecoder_SetParam(const HANDLE_AACDECODER self,
  * \return             Error code.
  */
 AAC_DECODER_ERROR
-aacDecoder_GetFreeBytes(const HANDLE_AACDECODER self, UINT *pFreeBytes);
+aacDecoder_GetFreeBytes(const HANDLE_AACDECODER self, uint32_t *pFreeBytes);
 
 /**
  * \brief               Open an AAC decoder instance.
@@ -952,8 +952,8 @@ aacDecoder_GetFreeBytes(const HANDLE_AACDECODER self, UINT *pFreeBytes);
  * \param nrOfLayers    Number of transport layers.
  * \return              AAC decoder handle.
  */
-HANDLE_AACDECODER aacDecoder_Open(TRANSPORT_TYPE transportFmt, UINT nrOfLayers);
-int myfunction();
+HANDLE_AACDECODER aacDecoder_Open(TRANSPORT_TYPE transportFmt, uint32_t nrOfLayers);
+int32_t myfunction();
 /**
  * \brief Explicitly configure the decoder by passing a raw AudioSpecificConfig
  * (ASC) or a StreamMuxConfig (SMC), contained in a binary buffer. This is
@@ -970,7 +970,7 @@ int myfunction();
  */
 AAC_DECODER_ERROR aacDecoder_ConfigRaw(HANDLE_AACDECODER self,
                                                   UCHAR *conf[],
-                                                  const UINT length[]);
+                                                  const uint32_t length[]);
 
 /**
  * \brief Submit raw ISO base media file format boxes to decoder for parsing
@@ -984,7 +984,7 @@ AAC_DECODER_ERROR aacDecoder_ConfigRaw(HANDLE_AACDECODER self,
  */
 AAC_DECODER_ERROR aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self,
                                                        UCHAR *buffer,
-                                                       UINT length);
+                                                       uint32_t length);
 
 /**
  * \brief Fill AAC decoder's internal input buffer with bitstream data from the
@@ -1011,8 +1011,8 @@ AAC_DECODER_ERROR aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self,
  */
 AAC_DECODER_ERROR aacDecoder_Fill(HANDLE_AACDECODER self,
                                              UCHAR *pBuffer,
-                                             const UINT bufferSize,
-                                             UINT *bytesValid);
+                                             const uint32_t bufferSize,
+                                             uint32_t *bytesValid);
 
 /** Flag for aacDecoder_DecodeFrame(): Trigger the built-in error concealment
  * module to generate a substitute signal for one lost frame. New input data
@@ -1051,8 +1051,8 @@ AAC_DECODER_ERROR aacDecoder_Fill(HANDLE_AACDECODER self,
  */
 AAC_DECODER_ERROR aacDecoder_DecodeFrame(HANDLE_AACDECODER self,
                                                     INT_PCM *pTimeData,
-                                                    const INT timeDataSize,
-                                                    const UINT flags);
+                                                    const int32_t timeDataSize,
+                                                    const uint32_t flags);
 
 /**
  * \brief       De-allocate all resources of an AAC decoder instance.
@@ -1076,7 +1076,7 @@ CStreamInfo *aacDecoder_GetStreamInfo(HANDLE_AACDECODER self);
  * \param info  Pointer to an allocated LIB_INFO structure.
  * \return      0 on success.
  */
-INT aacDecoder_GetLibInfo(LIB_INFO *info);
+int32_t aacDecoder_GetLibInfo(LIB_INFO *info);
 
 #ifdef __cplusplus
 }

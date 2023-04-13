@@ -177,13 +177,13 @@ extern const UCHAR aDimCbShift[];
 extern const UCHAR aSignCb[];
 extern const UCHAR aCbPriority[];
 
-extern const UINT *aHuffTable[];
+extern const uint32_t *aHuffTable[];
 extern const SCHAR *aQuantTable[];
 
 extern const USHORT aLargestAbsoluteValue[];
 
-extern const UINT aHuffTreeRvlcEscape[];
-extern const UINT aHuffTreeRvlCodewds[];
+extern const uint32_t aHuffTreeRvlcEscape[];
+extern const uint32_t aHuffTreeRvlCodewds[];
 
 extern const UCHAR tns_max_bands_tbl[13][2];
 
@@ -201,7 +201,7 @@ extern const UCHAR FDKaacDec_tnsCoeff4_gain_ld[];
 extern const USHORT AacDec_randomSign[AAC_NF_NO_RANDOM_VAL / 16];
 
 extern const int32_t pow2_div24minus1[47];
-extern const int offsetTab[2][16];
+extern const int32_t offsetTab[2][16];
 
 /* Channel mapping indices for time domain I/O.
    The first dimension is the channel configuration index. */

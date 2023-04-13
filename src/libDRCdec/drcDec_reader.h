@@ -110,13 +110,13 @@ amm-info@iis.fraunhofer.de
 DRC_ERROR
 drcDec_readUniDrc(HANDLE_FDK_BITSTREAM hBs, HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
                   HANDLE_LOUDNESS_INFO_SET hLoudnessInfoSet,
-                  const int frameSize, const int deltaTminDefault,
+                  const int32_t frameSize, const int32_t deltaTminDefault,
                   HANDLE_UNI_DRC_GAIN hUniDrcGain);
 
 DRC_ERROR
 drcDec_readUniDrcGain(HANDLE_FDK_BITSTREAM hBs,
-                      HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int frameSize,
-                      const int deltaTminDefault,
+                      HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int32_t frameSize,
+                      const int32_t deltaTminDefault,
                       HANDLE_UNI_DRC_GAIN hUniDrcGain);
 
 DRC_ERROR

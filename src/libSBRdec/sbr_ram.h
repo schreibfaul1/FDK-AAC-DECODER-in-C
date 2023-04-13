@@ -127,7 +127,7 @@ typedef struct {
   MP4_ELEMENT_ID
   elementID;     /* Element ID set during initialization. Can be used for
                     concealment */
-  int nChannels; /* Number of elements output channels (=2 in case of PS) */
+  int32_t nChannels; /* Number of elements output channels (=2 in case of PS) */
 
   UCHAR frameErrorFlag[(1) + 1]; /* Frame error status (for every slot in the
                                     delay line). Will be copied into header at
@@ -152,15 +152,15 @@ struct SBR_DECODER_INSTANCE {
 
   /* Global parameters */
   AUDIO_OBJECT_TYPE coreCodec; /* AOT of core codec */
-  int numSbrElements;
-  int numSbrChannels;
-  INT sampleRateIn;  /* SBR decoder input sampling rate; might be different than
+  int32_t numSbrElements;
+  int32_t numSbrChannels;
+  int32_t sampleRateIn;  /* SBR decoder input sampling rate; might be different than
                         the transposer input sampling rate. */
-  INT sampleRateOut; /* Sampling rate of the SBR decoder output audio samples.
+  int32_t sampleRateOut; /* Sampling rate of the SBR decoder output audio samples.
                       */
   USHORT codecFrameSize;
   UCHAR synDownsampleFac;
-  INT downscaleFactor;
+  int32_t downscaleFactor;
   UCHAR numDelayFrames; /* The current number of additional delay frames used
                            for processing. */
   UCHAR harmonicSBR;
@@ -168,9 +168,9 @@ struct SBR_DECODER_INSTANCE {
   numFlushedFrames; /* The variable counts the number of frames which are
                        flushed consecutively. */
 
-  UINT flags;
+  uint32_t flags;
 
-  INT sbrInDataHeadroom; /* Headroom of the SBR input time signal to prevent
+  int32_t sbrInDataHeadroom; /* Headroom of the SBR input time signal to prevent
                             clipping */
 };
 

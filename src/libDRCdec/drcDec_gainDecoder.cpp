@@ -111,9 +111,9 @@ amm-info@iis.fraunhofer.de
 /* static functions                        */
 /*******************************************/
 
-static int _fitsLocation(DRC_INSTRUCTIONS_UNI_DRC* pInst,
+static int32_t _fitsLocation(DRC_INSTRUCTIONS_UNI_DRC* pInst,
                          const GAIN_DEC_LOCATION drcLocation) {
-  int downmixId = pInst->drcApplyToDownmix ? pInst->downmixId[0] : 0;
+  int32_t downmixId = pInst->drcApplyToDownmix ? pInst->downmixId[0] : 0;
   switch (drcLocation) {
     case GAIN_DEC_DRC1:
       return (downmixId == 0);
@@ -130,9 +130,9 @@ static int _fitsLocation(DRC_INSTRUCTIONS_UNI_DRC* pInst,
 }
 
 static void _setChannelGains(HANDLE_DRC_GAIN_DECODER hGainDec,
-                             const int numChannelGains,
+                             const int32_t numChannelGains,
                              const int32_t* channelGainDb) {
-  int i, channelGain_e;
+  int32_t i, channelGain_e;
   int32_t channelGain;
   FDK_ASSERT(numChannelGains <= 8);
   for (i = 0; i < numChannelGains; i++) {
@@ -184,7 +184,7 @@ drcDec_GainDecoder_Init(HANDLE_DRC_GAIN_DECODER hGainDec) {
 DRC_ERROR
 drcDec_GainDecoder_SetParam(HANDLE_DRC_GAIN_DECODER hGainDec,
                             const GAIN_DEC_PARAM paramType,
-                            const int paramValue) {
+                            const int32_t paramValue) {
   switch (paramType) {
     case GAIN_DEC_FRAME_SIZE:
       if (paramValue < 0) return DE_PARAM_OUT_OF_RANGE;
@@ -203,7 +203,7 @@ drcDec_GainDecoder_SetParam(HANDLE_DRC_GAIN_DECODER hGainDec,
 DRC_ERROR
 drcDec_GainDecoder_SetCodecDependentParameters(
     HANDLE_DRC_GAIN_DECODER hGainDec, const DELAY_MODE delayMode,
-    const int timeDomainSupported,
+    const int32_t timeDomainSupported,
     const SUBBAND_DOMAIN_MODE subbandDomainSupported) {
   if ((delayMode != DM_REGULAR_DELAY) && (delayMode != DM_LOW_DELAY)) {
     return DE_NOT_OK;
@@ -222,7 +222,7 @@ drcDec_GainDecoder_Config(HANDLE_DRC_GAIN_DECODER hGainDec,
                           const SCHAR* selectedDrcSetIds,
                           const UCHAR* selectedDownmixIds) {
   DRC_ERROR err = DE_OK;
-  int a;
+  int32_t a;
 
   hGainDec->nActiveDrcs = 0;
   hGainDec->multiBandActiveDrcIndex = -1;
@@ -255,7 +255,7 @@ drcDec_GainDecoder_Preprocess(HANDLE_DRC_GAIN_DECODER hGainDec,
                               const int32_t loudnessNormalizationGainDb,
                               const FIXP_SGL boost, const FIXP_SGL compress) {
   DRC_ERROR err = DE_OK;
-  int a, c;
+  int32_t a, c;
 
   /* lnbPointer is the index on the most recent node buffer */
   hGainDec->drcGainBuffers.lnbPointer++;
@@ -294,7 +294,7 @@ DRC_ERROR
 drcDec_GainDecoder_Conceal(HANDLE_DRC_GAIN_DECODER hGainDec,
                            HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
                            HANDLE_UNI_DRC_GAIN hUniDrcGain) {
-  int seq, gainSequenceCount;
+  int32_t seq, gainSequenceCount;
   DRC_COEFFICIENTS_UNI_DRC* pCoef =
       selectDrcCoefficients(hUniDrcConfig, LOCATION_SELECTED);
   if (pCoef && pCoef->gainSequenceCount) {
@@ -304,7 +304,7 @@ drcDec_GainDecoder_Conceal(HANDLE_DRC_GAIN_DECODER hGainDec,
   }
 
   for (seq = 0; seq < gainSequenceCount; seq++) {
-    int lastNodeIndex = 0;
+    int32_t lastNodeIndex = 0;
     FIXP_SGL lastGainDb = (FIXP_SGL)0;
 
     lastNodeIndex = hUniDrcGain->nNodes[seq] - 1;
@@ -326,12 +326,12 @@ drcDec_GainDecoder_Conceal(HANDLE_DRC_GAIN_DECODER hGainDec,
 }
 
 void drcDec_GainDecoder_SetChannelGains(HANDLE_DRC_GAIN_DECODER hGainDec,
-                                        const int numChannels,
-                                        const int frameSize,
+                                        const int32_t numChannels,
+                                        const int32_t frameSize,
                                         const int32_t* channelGainDb,
-                                        const int audioBufferChannelOffset,
+                                        const int32_t audioBufferChannelOffset,
                                         int32_t* audioBuffer) {
-  int c, i;
+  int32_t c, i;
 
   if (hGainDec->channelGainActiveDrcIndex >= 0) {
     /* channel gains will be applied in drcDec_GainDecoder_ProcessTimeDomain or
@@ -363,7 +363,7 @@ void drcDec_GainDecoder_SetChannelGains(HANDLE_DRC_GAIN_DECODER hGainDec,
     }
 
     for (c = 0; c < numChannels; c++) {
-      INT n_min = fMin(fMin(CntLeadingZeros(prevChannelGain[c]),
+      int32_t n_min = fMin(fMin(CntLeadingZeros(prevChannelGain[c]),
                             CntLeadingZeros(hGainDec->channelGain[c])) -
                            1,
                        9);
@@ -392,12 +392,12 @@ void drcDec_GainDecoder_SetChannelGains(HANDLE_DRC_GAIN_DECODER hGainDec,
 
 DRC_ERROR
 drcDec_GainDecoder_ProcessTimeDomain(
-    HANDLE_DRC_GAIN_DECODER hGainDec, const int delaySamples,
-    const GAIN_DEC_LOCATION drcLocation, const int channelOffset,
-    const int drcChannelOffset, const int numChannelsProcessed,
-    const int timeDataChannelOffset, int32_t* audioIOBuffer) {
+    HANDLE_DRC_GAIN_DECODER hGainDec, const int32_t delaySamples,
+    const GAIN_DEC_LOCATION drcLocation, const int32_t channelOffset,
+    const int32_t drcChannelOffset, const int32_t numChannelsProcessed,
+    const int32_t timeDataChannelOffset, int32_t* audioIOBuffer) {
   DRC_ERROR err = DE_OK;
-  int a;
+  int32_t a;
 
   if (!hGainDec->timeDomainSupported) {
     return DE_NOT_OK;
@@ -418,13 +418,13 @@ drcDec_GainDecoder_ProcessTimeDomain(
 
 DRC_ERROR
 drcDec_GainDecoder_ProcessSubbandDomain(
-    HANDLE_DRC_GAIN_DECODER hGainDec, const int delaySamples,
-    const GAIN_DEC_LOCATION drcLocation, const int channelOffset,
-    const int drcChannelOffset, const int numChannelsProcessed,
-    const int processSingleTimeslot, int32_t* audioIOBufferReal[],
+    HANDLE_DRC_GAIN_DECODER hGainDec, const int32_t delaySamples,
+    const GAIN_DEC_LOCATION drcLocation, const int32_t channelOffset,
+    const int32_t drcChannelOffset, const int32_t numChannelsProcessed,
+    const int32_t processSingleTimeslot, int32_t* audioIOBufferReal[],
     int32_t* audioIOBufferImag[]) {
   DRC_ERROR err = DE_OK;
-  int a;
+  int32_t a;
 
   if (hGainDec->subbandDomainSupported == SDM_OFF) {
     return DE_NOT_OK;
@@ -452,13 +452,13 @@ drcDec_GainDecoder_SetLoudnessNormalizationGainDb(
   return DE_OK;
 }
 
-int drcDec_GainDecoder_GetFrameSize(HANDLE_DRC_GAIN_DECODER hGainDec) {
+int32_t drcDec_GainDecoder_GetFrameSize(HANDLE_DRC_GAIN_DECODER hGainDec) {
   if (hGainDec == NULL) return -1;
 
   return hGainDec->frameSize;
 }
 
-int drcDec_GainDecoder_GetDeltaTminDefault(HANDLE_DRC_GAIN_DECODER hGainDec) {
+int32_t drcDec_GainDecoder_GetDeltaTminDefault(HANDLE_DRC_GAIN_DECODER hGainDec) {
   if (hGainDec == NULL) return -1;
 
   return hGainDec->deltaTminDefault;

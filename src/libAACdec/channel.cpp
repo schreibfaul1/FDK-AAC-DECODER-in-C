@@ -118,7 +118,7 @@ amm-info@iis.fraunhofer.de
 
 static void MapMidSideMaskToPnsCorrelation(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo[2]) {
-  int group;
+  int32_t group;
 
   for (group = 0; group < pAacDecoderChannelInfo[L]->icsInfo.WindowGroups;
        group++) {
@@ -143,10 +143,10 @@ static void MapMidSideMaskToPnsCorrelation(
 }
 
 static void Clean_Complex_Prediction_coefficients(
-    CJointStereoPersistentData *pJointStereoPersistentData, int windowGroups,
-    const int low_limit, const int high_limit) {
-  for (int group = 0; group < windowGroups; group++) {
-    for (int sfb = low_limit; sfb < high_limit; sfb++) {
+    CJointStereoPersistentData *pJointStereoPersistentData, int32_t windowGroups,
+    const int32_t low_limit, const int32_t high_limit) {
+  for (int32_t group = 0; group < windowGroups; group++) {
+    for (int32_t sfb = low_limit; sfb < high_limit; sfb++) {
       pJointStereoPersistentData->alpha_q_re_prev[group][sfb] = 0;
       pJointStereoPersistentData->alpha_q_im_prev[group][sfb] = 0;
     }
@@ -164,12 +164,12 @@ void CChannelElement_Decode(
     CAacDecoderChannelInfo
         *pAacDecoderChannelInfo[2], /*!< pointer to aac decoder channel info */
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[2],
-    SamplingRateInfo *pSamplingRateInfo, UINT flags, UINT elFlags,
-    int el_channels) {
-  int ch = 0;
+    SamplingRateInfo *pSamplingRateInfo, uint32_t flags, uint32_t elFlags,
+    int32_t el_channels) {
+  int32_t ch = 0;
 
-  int maxSfBandsL = 0, maxSfBandsR = 0;
-  int maybe_jstereo = (el_channels > 1);
+  int32_t maxSfBandsL = 0, maxSfBandsR = 0;
+  int32_t maybe_jstereo = (el_channels > 1);
 
   if (flags & (AC_USAC | AC_RSVD50 | AC_RSV603DA) && el_channels == 2) {
     if (pAacDecoderChannelInfo[L]->data.usac.core_mode ||
@@ -199,7 +199,7 @@ void CChannelElement_Decode(
            (pAacDecoderChannelInfo[L]->pDynData->specificTo.usac.tns_on_lr ==
             1)) ||
           ((flags & (AC_USAC | AC_RSVD50 | AC_RSV603DA)) == 0)) {
-        int max_sfb_ste = (INT)(pAacDecoderChannelInfo[L]->icsInfo.max_sfb_ste);
+        int32_t max_sfb_ste = (int32_t)(pAacDecoderChannelInfo[L]->icsInfo.max_sfb_ste);
 
         CJointStereo_ApplyMS(
             pAacDecoderChannelInfo, pAacDecoderStaticChannelInfo,
@@ -256,7 +256,7 @@ void CChannelElement_Decode(
            1)) {
         noSfbs = fMax(maxSfBandsL, maxSfBandsR);
       }
-      int CP_active = 0;
+      int32_t CP_active = 0;
       if (elFlags & AC_EL_USAC_CP_POSSIBLE) {
         CP_active = pAacDecoderChannelInfo[ch]
                         ->pComData->jointStereoData.cplx_pred_flag;
@@ -264,7 +264,7 @@ void CChannelElement_Decode(
 
       /* Omit writing of pAacDecoderChannelInfo[ch]->specScale for complex
          stereo prediction since scaling has already been carried out. */
-      int max_sfb_ste = (INT)(pAacDecoderChannelInfo[L]->icsInfo.max_sfb_ste);
+      int32_t max_sfb_ste = (int32_t)(pAacDecoderChannelInfo[L]->icsInfo.max_sfb_ste);
 
       if ((!CP_active) || (CP_active && (max_sfb_ste < noSfbs)) ||
           ((flags & (AC_USAC | AC_RSVD50 | AC_RSV603DA)) &&
@@ -278,13 +278,13 @@ void CChannelElement_Decode(
             (pAacDecoderChannelInfo[L]->pDynData->specificTo.usac.tns_on_lr ==
              0)) {
           if (IsLongBlock(&pAacDecoderChannelInfo[ch]->icsInfo)) {
-            for (int i = 0; i < noSfbs; i++) {
+            for (int32_t i = 0; i < noSfbs; i++) {
               pAacDecoderChannelInfo[ch]->pDynData->aSfbScale[i] =
                   pAacDecoderChannelInfo[ch]->specScale[0];
             }
           } else {
-            for (int i = 0; i < 8; i++) {
-              for (int j = 0; j < noSfbs; j++) {
+            for (int32_t i = 0; i < 8; i++) {
+              for (int32_t j = 0; j < noSfbs; j++) {
                 pAacDecoderChannelInfo[ch]->pDynData->aSfbScale[i * 16 + j] =
                     pAacDecoderChannelInfo[ch]->specScale[i];
               }
@@ -319,7 +319,7 @@ void CChannelElement_Decode(
     } else {
       if (!(flags & (AC_USAC | AC_RSVD50 | AC_RSV603DA))) {
         /* Use same seed for coupled channels (CPE) */
-        int pnsCh = (ch > 0) ? L : ch;
+        int32_t pnsCh = (ch > 0) ? L : ch;
         CPns_UpdateNoiseState(
             &pAacDecoderChannelInfo[ch]->data.aac.PnsData,
             pAacDecoderChannelInfo[pnsCh]->data.aac.PnsData.currentSeed,
@@ -345,7 +345,7 @@ void CChannelElement_Decode(
       if ((flags & (AC_USAC | AC_RSVD50 | AC_RSV603DA)) &&
           (pAacDecoderChannelInfo[L]->pDynData->specificTo.usac.tns_on_lr ==
            0)) {
-        int max_sfb_ste = (INT)(pAacDecoderChannelInfo[L]->icsInfo.max_sfb_ste);
+        int32_t max_sfb_ste = (int32_t)(pAacDecoderChannelInfo[L]->icsInfo.max_sfb_ste);
 
         CJointStereo_ApplyMS(
             pAacDecoderChannelInfo, pAacDecoderStaticChannelInfo,
@@ -384,8 +384,8 @@ void CChannelElement_Decode(
 
 void CChannel_CodebookTableInit(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo) {
-  int b, w, maxBands, maxWindows;
-  int maxSfb = GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);
+  int32_t b, w, maxBands, maxWindows;
+  int32_t maxSfb = GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);
   UCHAR *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
 
   if (IsLongBlock(&pAacDecoderChannelInfo->icsInfo)) {
@@ -414,15 +414,15 @@ AAC_DECODER_ERROR CChannelElement_Read(
     HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
     const AUDIO_OBJECT_TYPE aot, SamplingRateInfo *pSamplingRateInfo,
-    const UINT flags, const UINT elFlags, const UINT frame_length,
+    const uint32_t flags, const uint32_t elFlags, const uint32_t frame_length,
     const UCHAR numberOfChannels, const SCHAR epConfig,
     HANDLE_TRANSPORTDEC pTpDec) {
   AAC_DECODER_ERROR error = AAC_DEC_OK;
   const element_list_t *list;
-  int i, ch, decision_bit;
-  int crcReg1 = -1, crcReg2 = -1;
-  int cplxPred;
-  int ind_sw_cce_flag = 0, num_gain_element_lists = 0;
+  int32_t i, ch, decision_bit;
+  int32_t crcReg1 = -1, crcReg2 = -1;
+  int32_t cplxPred;
+  int32_t ind_sw_cce_flag = 0, num_gain_element_lists = 0;
 
   FDK_ASSERT((numberOfChannels == 1) || (numberOfChannels == 2));
 
@@ -530,8 +530,8 @@ AAC_DECODER_ERROR CChannelElement_Read(
 
       case ms:
 
-        INT max_sfb_ste;
-        INT max_sfb_ste_clear;
+        int32_t max_sfb_ste;
+        int32_t max_sfb_ste_clear;
 
         max_sfb_ste = GetScaleMaxFactorBandsTransmitted(
             &pAacDecoderChannelInfo[0]->icsInfo,
@@ -692,7 +692,7 @@ AAC_DECODER_ERROR CChannelElement_Read(
         pAacDecoderChannelInfo[ch]->renderMode = AACDEC_RENDER_LPD;
         break;
       case fac_data: {
-        int fFacDatPresent = FDKreadBit(hBs);
+        int32_t fFacDatPresent = FDKreadBit(hBs);
 
         /* Wee need a valid fac_data[0] even if no FAC data is present (as
          * temporal buffer) */
@@ -765,20 +765,20 @@ AAC_DECODER_ERROR CChannelElement_Read(
         break;
 
       case coupled_elements: {
-        int num_coupled_elements, c;
+        int32_t num_coupled_elements, c;
 
         ind_sw_cce_flag = FDKreadBit(hBs);
         num_coupled_elements = FDKreadBits(hBs, 3);
 
         for (c = 0; c < (num_coupled_elements + 1); c++) {
-          int cc_target_is_cpe;
+          int32_t cc_target_is_cpe;
 
           num_gain_element_lists++;
           cc_target_is_cpe = FDKreadBit(hBs); /* cc_target_is_cpe[c] */
           FDKreadBits(hBs, 4);                /* cc_target_tag_select[c] */
 
           if (cc_target_is_cpe) {
-            int cc_l, cc_r;
+            int32_t cc_l, cc_r;
 
             cc_l = FDKreadBit(hBs); /* cc_l[c] */
             cc_r = FDKreadBit(hBs); /* cc_r[c] */
@@ -796,13 +796,13 @@ AAC_DECODER_ERROR CChannelElement_Read(
       case gain_element_lists: {
         const CodeBookDescription *hcb;
         UCHAR *pCodeBook;
-        int c;
+        int32_t c;
 
         hcb = &AACcodeBookDescriptionTable[BOOKSCL];
         pCodeBook = pAacDecoderChannelInfo[ch]->pDynData->aCodeBook;
 
         for (c = 1; c < num_gain_element_lists; c++) {
-          int cge;
+          int32_t cge;
           if (ind_sw_cce_flag) {
             cge = 1;
           } else {
@@ -813,7 +813,7 @@ AAC_DECODER_ERROR CChannelElement_Read(
             CBlock_DecodeHuffmanWord(
                 hBs, hcb); /* hcod_sf[common_gain_element[c]] 1..19 */
           } else {
-            int g, sfb;
+            int32_t g, sfb;
             for (g = 0;
                  g < GetWindowGroups(&pAacDecoderChannelInfo[ch]->icsInfo);
                  g++) {

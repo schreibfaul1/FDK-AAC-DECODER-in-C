@@ -166,9 +166,9 @@ typedef enum {
 typedef struct DECORR_DEC *HANDLE_DECORR_DEC;
 
 typedef struct DUCKER_INSTANCE {
-  int hybridBands;
-  int parameterBands;
-  int partiallyComplex;
+  int32_t hybridBands;
+  int32_t parameterBands;
+  int32_t partiallyComplex;
   FDK_DUCKER_TYPE duckerType;
 
   const UCHAR *qs_next;
@@ -202,23 +202,23 @@ typedef struct DECORR_FILTER_INSTANCE {
 } DECORR_FILTER_INSTANCE;
 
 typedef struct DECORR_DEC {
-  INT L_stateBufferCplx;
+  int32_t L_stateBufferCplx;
   int32_t *stateBufferCplx;
-  INT L_delayBufferCplx;
+  int32_t L_delayBufferCplx;
   int32_t *delayBufferCplx;
 
   const REVBAND_FILT_TYPE *REV_filtType;
   const UCHAR *REV_bandOffset;
   const UCHAR *REV_delay;
   const SCHAR *REV_filterOrder;
-  INT reverbBandDelayBufferIndex[(4)];
+  int32_t reverbBandDelayBufferIndex[(4)];
   UCHAR stateBufferOffset[(3)];
 
   DECORR_FILTER_INSTANCE Filter[(71)];
   DUCKER_INSTANCE ducker;
 
-  int numbins;
-  int partiallyComplex;
+  int32_t numbins;
+  int32_t partiallyComplex;
 } DECORR_DEC;
 
 /**
@@ -233,8 +233,8 @@ typedef struct DECORR_DEC {
  *
  * \return  0 on success.
  */
-INT FDKdecorrelateOpen(HANDLE_DECORR_DEC hDecorrDec, int32_t *bufferCplx,
-                       const INT bufLen);
+int32_t FDKdecorrelateOpen(HANDLE_DECORR_DEC hDecorrDec, int32_t *bufferCplx,
+                       const int32_t bufLen);
 
 /**
  * \brief  Initialize and configure Decorrelator instance.
@@ -260,12 +260,12 @@ INT FDKdecorrelateOpen(HANDLE_DECORR_DEC hDecorrDec, int32_t *bufferCplx,
  *
  * \return  0 on success.
  */
-INT FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const INT nrHybBands,
+int32_t FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const int32_t nrHybBands,
                        const FDK_DECORR_TYPE decorrType,
-                       const FDK_DUCKER_TYPE duckerType, const INT decorrConfig,
-                       const INT seed, const INT partiallyComplex,
-                       const INT useFractDelay, const INT isLegacyPS,
-                       const INT initStatesFlag);
+                       const FDK_DUCKER_TYPE duckerType, const int32_t decorrConfig,
+                       const int32_t seed, const int32_t partiallyComplex,
+                       const int32_t useFractDelay, const int32_t isLegacyPS,
+                       const int32_t initStatesFlag);
 
 /**
  * \brief  Apply Decorrelator on input data.
@@ -284,9 +284,9 @@ INT FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const INT nrHybBands,
  *
  * \return  0 on success.
  */
-INT FDKdecorrelateApply(HANDLE_DECORR_DEC hDecorrDec, int32_t *dataRealIn,
+int32_t FDKdecorrelateApply(HANDLE_DECORR_DEC hDecorrDec, int32_t *dataRealIn,
                         int32_t *dataImagIn, int32_t *dataRealOut,
-                        int32_t *dataImagOut, const INT startHybBand);
+                        int32_t *dataImagOut, const int32_t startHybBand);
 
 /**
  * \brief  Destroy a Decorrelator instance.
@@ -298,7 +298,7 @@ INT FDKdecorrelateApply(HANDLE_DECORR_DEC hDecorrDec, int32_t *dataRealIn,
  *
  * \return  0 on success.
  */
-INT FDKdecorrelateClose(HANDLE_DECORR_DEC hDecorrDec);
+int32_t FDKdecorrelateClose(HANDLE_DECORR_DEC hDecorrDec);
 
 /**
  * \brief  Get max value address of direct signal.

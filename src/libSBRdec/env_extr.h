@@ -281,7 +281,7 @@ typedef struct {
   UCHAR numberTimeSlots;       /*!< AAC: 16,15 */
   UCHAR numberOfAnalysisBands; /*!< Number of QMF analysis bands */
   UCHAR timeStep;              /*!< Time resolution of SBR in QMF-slots */
-  UINT
+  uint32_t
       sbrProcSmplRate; /*!< SBR processing sampling frequency (!=
                           OutputSamplingRate)        (always: CoreSamplingRate *
                           UpSamplingFactor; even in single rate mode) */
@@ -331,7 +331,7 @@ typedef struct {
 typedef SBR_PREV_FRAME_DATA *HANDLE_SBR_PREV_FRAME_DATA;
 
 typedef struct {
-  int nScaleFactors; /*!< total number of scalefactors in frame */
+  int32_t nScaleFactors; /*!< total number of scalefactors in frame */
 
   FRAME_INFO frameInfo;            /*!< time grid for current frame */
   UCHAR domain_vec[MAX_ENVELOPES]; /*!< Bitfield containing direction of
@@ -343,7 +343,7 @@ typedef struct {
   INVF_MODE
   sbr_invf_mode[MAX_INVF_BANDS]; /*!< Strength of filtering in transposer */
   COUPLING_MODE coupling;        /*!< Stereo-mode */
-  int ampResolutionCurrentFrame; /*!< Amplitude resolution of envelope values
+  int32_t ampResolutionCurrentFrame; /*!< Amplitude resolution of envelope values
                                     (0: 1.5dB, 1: 3dB) */
 
   ULONG addHarmonics[ADD_HARMONICS_FLAGS_SIZE]; /*!< Flags for synthetic sine
@@ -378,24 +378,24 @@ The mapping is defined in 14496-3 (4.6.18.2.6), fs(SBR), and table 4.82
 
 \return  mapped sampling frequency
 */
-UINT sbrdec_mapToStdSampleRate(UINT fs,
-                               UINT isUsac); /*!< Output sampling frequency */
+uint32_t sbrdec_mapToStdSampleRate(uint32_t fs,
+                               uint32_t isUsac); /*!< Output sampling frequency */
 
 void initSbrPrevFrameData(HANDLE_SBR_PREV_FRAME_DATA h_prev_data,
-                          int timeSlots);
+                          int32_t timeSlots);
 
-int sbrGetChannelElement(HANDLE_SBR_HEADER_DATA hHeaderData,
+int32_t sbrGetChannelElement(HANDLE_SBR_HEADER_DATA hHeaderData,
                          HANDLE_SBR_FRAME_DATA hFrameDataLeft,
                          HANDLE_SBR_FRAME_DATA hFrameDataRight,
                          HANDLE_SBR_PREV_FRAME_DATA hFrameDataLeftPrev,
                          UCHAR pvc_mode_last, HANDLE_FDK_BITSTREAM hBitBuf,
-                         HANDLE_PS_DEC hParametricStereoDec, const UINT flags,
-                         const int overlap);
+                         HANDLE_PS_DEC hParametricStereoDec, const uint32_t flags,
+                         const int32_t overlap);
 
 SBR_HEADER_STATUS
 sbrGetHeaderData(HANDLE_SBR_HEADER_DATA headerData,
-                 HANDLE_FDK_BITSTREAM hBitBuf, const UINT flags,
-                 const int fIsSbrData, const UCHAR configMode);
+                 HANDLE_FDK_BITSTREAM hBitBuf, const uint32_t flags,
+                 const int32_t fIsSbrData, const UCHAR configMode);
 
 /*!
   \brief     Initialize SBR header data
@@ -404,10 +404,10 @@ sbrGetHeaderData(HANDLE_SBR_HEADER_DATA headerData,
   depending on the core codec.
 */
 SBR_ERROR
-initHeaderData(HANDLE_SBR_HEADER_DATA hHeaderData, const int sampleRateIn,
-               const int sampleRateOut, const INT downscaleFactor,
-               const int samplesPerFrame, const UINT flags,
-               const int setDefaultHdr);
+initHeaderData(HANDLE_SBR_HEADER_DATA hHeaderData, const int32_t sampleRateIn,
+               const int32_t sampleRateOut, const int32_t downscaleFactor,
+               const int32_t samplesPerFrame, const uint32_t flags,
+               const int32_t setDefaultHdr);
 #endif
 
 /* Convert headroom bits to exponent */

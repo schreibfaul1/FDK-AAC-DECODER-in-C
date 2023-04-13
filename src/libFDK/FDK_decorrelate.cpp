@@ -216,14 +216,14 @@ static const UCHAR kernels_23_to_64_offset[(23) + 1] = {
     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11,
     12, 14, 16, 18, 20, 23, 26, 30, 35, 41, 48, 64};
 
-static inline int SpatialDecGetProcessingBand(int hybridBand,
+static inline int32_t SpatialDecGetProcessingBand(int32_t hybridBand,
                                               const UCHAR *tab) {
   return tab[hybridBand];
 }
 
 /* helper inline function */
-static inline int SpatialDecGetQmfBand(int paramBand, const UCHAR *tab) {
-  return (int)tab[paramBand];
+static inline int32_t SpatialDecGetQmfBand(int32_t paramBand, const UCHAR *tab) {
+  return (int32_t)tab[paramBand];
 }
 
 #define DUCKER_MAX_NRG_SCALE (24)
@@ -491,14 +491,14 @@ int32_t *getAddrDirectSignalMaxVal(HANDLE_DECORR_DEC self) {
   return &(self->ducker.maxValDirectData);
 }
 
-static INT DecorrFilterInit(DECORR_FILTER_INSTANCE *const self,
+static int32_t DecorrFilterInit(DECORR_FILTER_INSTANCE *const self,
                             FIXP_MPS *pStateBufferCplx,
-                            int32_t *pDelayBufferCplx, INT *offsetStateBuffer,
-                            INT *offsetDelayBuffer, INT const decorr_seed,
-                            INT const reverb_band, INT const useFractDelay,
-                            INT const noSampleDelay, INT const filterOrder,
+                            int32_t *pDelayBufferCplx, int32_t *offsetStateBuffer,
+                            int32_t *offsetDelayBuffer, int32_t const decorr_seed,
+                            int32_t const reverb_band, int32_t const useFractDelay,
+                            int32_t const noSampleDelay, int32_t const filterOrder,
                             FDK_DECORR_TYPE const decorrType) {
-  INT errorCode = 0;
+  int32_t errorCode = 0;
   switch (decorrType) {
     case DECORR_USAC:
       if (useFractDelay) {
@@ -553,13 +553,13 @@ static INT DecorrFilterInit(DECORR_FILTER_INSTANCE *const self,
 
 /*******************************************************************************
 *******************************************************************************/
-static INT DecorrFilterInitPS(DECORR_FILTER_INSTANCE *const self,
+static int32_t DecorrFilterInitPS(DECORR_FILTER_INSTANCE *const self,
                               FIXP_MPS *pStateBufferCplx,
                               int32_t *pDelayBufferCplx,
-                              INT *offsetStateBuffer, INT *offsetDelayBuffer,
-                              INT const hybridBand, INT const reverbBand,
-                              INT const noSampleDelay) {
-  INT errorCode = 0;
+                              int32_t *offsetStateBuffer, int32_t *offsetDelayBuffer,
+                              int32_t const hybridBand, int32_t const reverbBand,
+                              int32_t const noSampleDelay) {
+  int32_t errorCode = 0;
 
   if (reverbBand == 0) {
     self->coeffsPacked = DecorrPsCoeffsCplx[hybridBand];
@@ -575,14 +575,14 @@ static INT DecorrFilterInitPS(DECORR_FILTER_INSTANCE *const self,
 }
 
 LNK_SECTION_CODE_L1
-static INT DecorrFilterApplyPASS(DECORR_FILTER_INSTANCE const filter[],
+static int32_t DecorrFilterApplyPASS(DECORR_FILTER_INSTANCE const filter[],
                                  int32_t *dataRealIn, int32_t *dataImagIn,
                                  int32_t *dataRealOut, int32_t *dataImagOut,
-                                 INT start, INT stop,
-                                 INT reverbBandNoSampleDelay,
-                                 INT reverbBandDelayBufferIndex) {
-  INT i;
-  INT offset = 2 * reverbBandNoSampleDelay;
+                                 int32_t start, int32_t stop,
+                                 int32_t reverbBandNoSampleDelay,
+                                 int32_t reverbBandDelayBufferIndex) {
+  int32_t i;
+  int32_t offset = 2 * reverbBandNoSampleDelay;
   FIXP_MPS *pDelayBuffer =
       &filter[start].DelayBufferCplx[reverbBandDelayBufferIndex];
 
@@ -622,27 +622,27 @@ static INT DecorrFilterApplyPASS(DECORR_FILTER_INSTANCE const filter[],
     }
   }
 
-  return (INT)0;
+  return (int32_t)0;
 }
 
 #ifndef FUNCTION_DecorrFilterApplyREAL
 LNK_SECTION_CODE_L1
-static INT DecorrFilterApplyREAL(DECORR_FILTER_INSTANCE const filter[],
+static int32_t DecorrFilterApplyREAL(DECORR_FILTER_INSTANCE const filter[],
                                  int32_t *dataRealIn, int32_t *dataImagIn,
                                  int32_t *dataRealOut, int32_t *dataImagOut,
-                                 INT start, INT stop, INT reverbFilterOrder,
-                                 INT reverbBandNoSampleDelay,
-                                 INT reverbBandDelayBufferIndex) {
-  INT i, j;
+                                 int32_t start, int32_t stop, int32_t reverbFilterOrder,
+                                 int32_t reverbBandNoSampleDelay,
+                                 int32_t reverbBandDelayBufferIndex) {
+  int32_t i, j;
   int32_t xReal, xImag, yReal, yImag;
 
   const FIXP_DECORR *pFilter = filter[start].numeratorReal;
 
-  INT offsetDelayBuffer = (2 * reverbBandNoSampleDelay) - 1;
+  int32_t offsetDelayBuffer = (2 * reverbBandNoSampleDelay) - 1;
   FIXP_MPS *pDelayBuffer =
       &filter[start].DelayBufferCplx[reverbBandDelayBufferIndex];
 
-  INT offsetStates = 2 * reverbFilterOrder;
+  int32_t offsetStates = 2 * reverbFilterOrder;
   int32_t *pStates = filter[start].stateCplx;
 
   /* Memory for the delayline has been allocated in a consecutive order, so we
@@ -802,17 +802,17 @@ static INT DecorrFilterApplyREAL(DECORR_FILTER_INSTANCE const filter[],
     }
   }
 
-  return (INT)0;
+  return (int32_t)0;
 }
 #endif /* #ifndef FUNCTION_DecorrFilterApplyREAL */
 
 #ifndef FUNCTION_DecorrFilterApplyCPLX_PS
 LNK_SECTION_CODE_L1
-static INT DecorrFilterApplyCPLX_PS(
+static int32_t DecorrFilterApplyCPLX_PS(
     DECORR_FILTER_INSTANCE const filter[], int32_t *dataRealIn,
     int32_t *dataImagIn, int32_t *dataRealOut, int32_t *dataImagOut,
-    INT start, INT stop, INT reverbFilterOrder, INT reverbBandNoSampleDelay,
-    INT reverbBandDelayBufferIndex, UCHAR *stateBufferOffset) {
+    int32_t start, int32_t stop, int32_t reverbFilterOrder, int32_t reverbBandNoSampleDelay,
+    int32_t reverbBandDelayBufferIndex, UCHAR *stateBufferOffset) {
   /* r = real, j = imaginary */
   int32_t r_data_a, j_data_a, r_data_b, j_data_b, r_stage_mult, j_stage_mult;
   FIXP_STP rj_coeff;
@@ -827,11 +827,11 @@ static INT DecorrFilterApplyCPLX_PS(
                                                                      function */
   /* determine the increment for this pointer to get to the correct position in
    * the delay buffer of the next filter */
-  INT offsetDelayBuffer = (2 * reverbBandNoSampleDelay) - 1;
+  int32_t offsetDelayBuffer = (2 * reverbBandNoSampleDelay) - 1;
 
   /* pointer to current position in state buffer */
   int32_t *pStates = filter[start].stateCplx;
-  INT pStatesIncrement = 2 * reverbFilterOrder;
+  int32_t pStatesIncrement = 2 * reverbFilterOrder;
 
   /* stateBufferOffset-pointers */
   int32_t *pStateBufferOffset0 = pStates + stateBufferOffset[0];
@@ -839,7 +839,7 @@ static INT DecorrFilterApplyCPLX_PS(
   int32_t *pStateBufferOffset2 = pStates + stateBufferOffset[2];
 
   /* traverse all hybrid-bands inbetween start- and stop-index */
-  for (int i = start; i < stop; i++) {
+  for (int32_t i = start; i < stop; i++) {
     /* 1. input delay (real/imaginary values interleaved) */
 
     /* load delayed real input value */
@@ -974,17 +974,17 @@ static INT DecorrFilterApplyCPLX_PS(
   else
     stateBufferOffset[2] += 2;
 
-  return (INT)0;
+  return (int32_t)0;
 }
 
 #endif /* FUNCTION_DecorrFilterApplyCPLX_PS */
 
 /*******************************************************************************
 *******************************************************************************/
-static INT DuckerInit(DUCKER_INSTANCE *const self, int const hybridBands,
-                      int partiallyComplex, const FDK_DUCKER_TYPE duckerType,
-                      const int nParamBands, int initStatesFlag) {
-  INT errorCode = 0;
+static int32_t DuckerInit(DUCKER_INSTANCE *const self, int32_t const hybridBands,
+                      int32_t partiallyComplex, const FDK_DUCKER_TYPE duckerType,
+                      const int32_t nParamBands, int32_t initStatesFlag) {
+  int32_t errorCode = 0;
 
   if (self) {
     switch (nParamBands) {
@@ -1021,7 +1021,7 @@ static INT DuckerInit(DUCKER_INSTANCE *const self, int const hybridBands,
     self->partiallyComplex = partiallyComplex;
 
     if (initStatesFlag && (duckerType == DUCKER_PS)) {
-      int pb;
+      int32_t pb;
       for (pb = 0; pb < self->parameterBands; pb++) {
         self->SmoothDirRevNrg[pb] = (FIXP_MPS)0;
       }
@@ -1036,23 +1036,23 @@ static INT DuckerInit(DUCKER_INSTANCE *const self, int const hybridBands,
   *******************************************************************************/
 
 #ifndef FUNCTION_DuckerCalcEnergy
-static INT DuckerCalcEnergy(DUCKER_INSTANCE *const self,
+static int32_t DuckerCalcEnergy(DUCKER_INSTANCE *const self,
                             int32_t const inputReal[(71)],
                             int32_t const inputImag[(71)],
                             int32_t energy[(28)], int32_t inputMaxVal,
-                            SCHAR *nrgScale, int mode, /* 1:(ps) 0:(else) */
-                            int startHybBand) {
-  INT err = 0;
-  int qs, maxHybBand;
-  int maxHybridBand = self->hybridBands - 1;
+                            SCHAR *nrgScale, int32_t mode, /* 1:(ps) 0:(else) */
+                            int32_t startHybBand) {
+  int32_t err = 0;
+  int32_t qs, maxHybBand;
+  int32_t maxHybridBand = self->hybridBands - 1;
 
   maxHybBand = maxHybridBand;
 
   FDKmemclear(energy, (28) * sizeof(int32_t));
 
   if (mode == 1) {
-    int pb;
-    int clz;
+    int32_t pb;
+    int32_t clz;
     int32_t maxVal = FL2FXCONST_DBL(-1.0f);
 
     if (maxVal == FL2FXCONST_DBL(-1.0f)) {
@@ -1084,16 +1084,16 @@ static INT DuckerCalcEnergy(DUCKER_INSTANCE *const self,
          pb++) {
       FDK_ASSERT(pb != SpatialDecGetProcessingBand(
                            qs - 1, self->mapHybBands2ProcBands));
-      int qs_next;
+      int32_t qs_next;
       int32_t nrg = 0;
-      qs_next = (int)self->qs_next[pb];
+      qs_next = (int32_t)self->qs_next[pb];
       for (; qs < qs_next; qs++) {
         nrg = fAddSaturate(nrg, fPow2Div2(inputReal[qs] << clz));
       }
       energy[pb] = nrg;
     }
   } else {
-    int clz;
+    int32_t clz;
     int32_t maxVal = FL2FXCONST_DBL(-1.0f);
 
     maxVal = inputMaxVal;
@@ -1111,7 +1111,7 @@ static INT DuckerCalcEnergy(DUCKER_INSTANCE *const self,
     *nrgScale = (SCHAR)clz << 1;
 
     for (qs = startHybBand; qs <= maxHybBand; qs++) {
-      int pb = SpatialDecGetProcessingBand(qs, self->mapHybBands2ProcBands);
+      int32_t pb = SpatialDecGetProcessingBand(qs, self->mapHybBands2ProcBands);
       energy[pb] = SATURATE_LEFT_SHIFT(
           (energy[pb] >> 1) + (fPow2Div2(inputReal[qs] << clz) >> 1) +
               (fPow2Div2(inputImag[qs] << clz) >> 1),
@@ -1119,7 +1119,7 @@ static INT DuckerCalcEnergy(DUCKER_INSTANCE *const self,
     }
 
     for (; qs <= maxHybridBand; qs++) {
-      int pb = SpatialDecGetProcessingBand(qs, self->mapHybBands2ProcBands);
+      int32_t pb = SpatialDecGetProcessingBand(qs, self->mapHybBands2ProcBands);
       energy[pb] = fAddSaturate(energy[pb], fPow2Div2(inputReal[qs] << clz));
     }
   }
@@ -1127,7 +1127,7 @@ static INT DuckerCalcEnergy(DUCKER_INSTANCE *const self,
   {
     /* Catch overflows which have been observed in erred bitstreams to avoid
      * assertion failures later. */
-    int pb;
+    int32_t pb;
     for (pb = 0; pb < (28); pb++) {
       energy[pb] = (int32_t)((LONG)energy[pb] & (LONG)MAXVAL_DBL);
     }
@@ -1137,27 +1137,27 @@ static INT DuckerCalcEnergy(DUCKER_INSTANCE *const self,
 #endif /* #ifndef FUNCTION_DuckerCalcEnergy */
 
 LNK_SECTION_CODE_L1
-static INT DuckerApply(DUCKER_INSTANCE *const self,
+static int32_t DuckerApply(DUCKER_INSTANCE *const self,
                        int32_t const directNrg[(28)],
                        int32_t outputReal[(71)], int32_t outputImag[(71)],
-                       int startHybBand) {
-  INT err = 0;
-  int qs = startHybBand;
-  int qs_next = 0;
-  int pb = 0;
-  int startParamBand = 0;
-  int hybBands;
-  int hybridBands = self->hybridBands;
+                       int32_t startHybBand) {
+  int32_t err = 0;
+  int32_t qs = startHybBand;
+  int32_t qs_next = 0;
+  int32_t pb = 0;
+  int32_t startParamBand = 0;
+  int32_t hybBands;
+  int32_t hybridBands = self->hybridBands;
 
   C_ALLOC_SCRATCH_START(reverbNrg, int32_t, (28));
 
   int32_t *smoothDirRevNrg = &self->SmoothDirRevNrg[0];
   FIXP_DUCK_GAIN duckGain = 0;
 
-  int doScaleNrg = 0;
-  int scaleDirectNrg = 0;
-  int scaleReverbNrg = 0;
-  int scaleSmoothDirRevNrg = 0;
+  int32_t doScaleNrg = 0;
+  int32_t scaleDirectNrg = 0;
+  int32_t scaleReverbNrg = 0;
+  int32_t scaleSmoothDirRevNrg = 0;
   int32_t maxDirRevNrg = FL2FXCONST_DBL(0.0);
 
   hybBands = hybridBands;
@@ -1172,7 +1172,7 @@ static INT DuckerApply(DUCKER_INSTANCE *const self,
   if ((self->scaleDirectNrg != self->scaleReverbNrg) ||
       (self->scaleDirectNrg != self->scaleSmoothDirRevNrg) ||
       (self->headroomSmoothDirRevNrg == 0)) {
-    int scale;
+    int32_t scale;
 
     scale = fixMin(self->scaleDirectNrg, self->scaleSmoothDirRevNrg +
                                              self->headroomSmoothDirRevNrg - 1);
@@ -1193,7 +1193,7 @@ static INT DuckerApply(DUCKER_INSTANCE *const self,
   for (pb = startParamBand; pb < self->parameterBands; pb++) {
     int32_t tmp1;
     int32_t tmp2;
-    INT s;
+    int32_t s;
 
     /* smoothDirRevNrg[2*pb  ] = fMult(smoothDirRevNrg[2*pb  ],DUCK_ALPHA_FDK) +
        fMultDiv2(directNrg[pb],DUCK_ONE_MINUS_ALPHA_X4_FDK);
@@ -1208,7 +1208,7 @@ static INT DuckerApply(DUCKER_INSTANCE *const self,
     tmp2 = fMult(tmp2, DUCK_ALPHA_FDK);
 
     if (doScaleNrg) {
-      int scaleSmoothDirRevNrg_asExponent = -scaleSmoothDirRevNrg;
+      int32_t scaleSmoothDirRevNrg_asExponent = -scaleSmoothDirRevNrg;
 
       tmp1 = scaleValue(tmp1, scaleSmoothDirRevNrg_asExponent);
       tmp2 = scaleValue(tmp2, scaleSmoothDirRevNrg_asExponent);
@@ -1230,7 +1230,7 @@ static INT DuckerApply(DUCKER_INSTANCE *const self,
     tmp1 = fMult(tmp1, DUCK_GAMMA_FDK);
     tmp2 = tmp2 >> 1;
 
-    qs_next = fMin((int)self->qs_next[pb], self->hybridBands);
+    qs_next = fMin((int32_t)self->qs_next[pb], self->hybridBands);
 
     if (tmp2 > tmp1) { /* true for about 20% */
       /* gain smaller than 1.0 */
@@ -1290,24 +1290,24 @@ static INT DuckerApply(DUCKER_INSTANCE *const self,
 }
 
 LNK_SECTION_CODE_L1
-static INT DuckerApplyPS(DUCKER_INSTANCE *const self,
+static int32_t DuckerApplyPS(DUCKER_INSTANCE *const self,
                          int32_t const directNrg[(28)],
                          int32_t outputReal[(71)], int32_t outputImag[(71)],
-                         int startHybBand) {
-  int qs = startHybBand;
-  int pb = 0;
-  int startParamBand =
+                         int32_t startHybBand) {
+  int32_t qs = startHybBand;
+  int32_t pb = 0;
+  int32_t startParamBand =
       SpatialDecGetProcessingBand(startHybBand, self->mapHybBands2ProcBands);
-  int hybBands;
+  int32_t hybBands;
 
-  int doScaleNrg = 0;
-  int scaleDirectNrg = 0;
-  int scaleSmoothDirRevNrg = 0;
+  int32_t doScaleNrg = 0;
+  int32_t scaleDirectNrg = 0;
+  int32_t scaleSmoothDirRevNrg = 0;
   int32_t maxDirRevNrg = FL2FXCONST_DBL(0.0);
 
   if ((self->scaleDirectNrg != self->scaleSmoothDirRevNrg) ||
       (self->headroomSmoothDirRevNrg == 0)) {
-    int scale;
+    int32_t scale;
 
     scale = fixMin(self->scaleDirectNrg, self->scaleSmoothDirRevNrg +
                                              self->headroomSmoothDirRevNrg - 2);
@@ -1355,10 +1355,10 @@ static INT DuckerApplyPS(DUCKER_INSTANCE *const self,
 
     if ((self->peakDiff[pb] == FL2FXCONST_DBL(0)) &&
         (self->SmoothDirRevNrg[pb] == FL2FXCONST_DBL(0))) {
-      int qs_next;
+      int32_t qs_next;
 
       qs = fMax(qs, SpatialDecGetQmfBand(pb, self->mapProcBands2HybBands));
-      qs_next = fMin((int)self->qs_next[pb], self->hybridBands);
+      qs_next = fMin((int32_t)self->qs_next[pb], self->hybridBands);
 
       int32_t *pOutputReal = &outputReal[qs];
       int32_t *pOutputImag = &outputImag[qs];
@@ -1378,7 +1378,7 @@ static INT DuckerApplyPS(DUCKER_INSTANCE *const self,
           fMult(FL2FXCONST_DUCK(0.75f), self->peakDiff[pb]);
       if (multiplication > (self->SmoothDirRevNrg[pb] >> 1)) {
         int32_t num, denom, duckGain;
-        int scale, qs_next;
+        int32_t scale, qs_next;
 
         /* implement x/y as (sqrt(x)*invSqrt(y))^2 */
         num = sqrtFixp(self->SmoothDirRevNrg[pb] >> 1);
@@ -1388,7 +1388,7 @@ static INT DuckerApplyPS(DUCKER_INSTANCE *const self,
 
         /* duck output whether duckGain != 1.f */
         qs = fMax(qs, SpatialDecGetQmfBand(pb, self->mapProcBands2HybBands));
-        qs_next = fMin((int)self->qs_next[pb], self->hybridBands);
+        qs_next = fMin((int32_t)self->qs_next[pb], self->hybridBands);
 
         duckGain = fMult(num, denom);
         duckGain = fPow2Div2(duckGain << scale);
@@ -1422,8 +1422,8 @@ static INT DuckerApplyPS(DUCKER_INSTANCE *const self,
   return 0;
 }
 
-INT FDKdecorrelateOpen(HANDLE_DECORR_DEC hDecorrDec, int32_t *bufferCplx,
-                       const INT bufLen) {
+int32_t FDKdecorrelateOpen(HANDLE_DECORR_DEC hDecorrDec, int32_t *bufferCplx,
+                       const int32_t bufLen) {
   HANDLE_DECORR_DEC self = hDecorrDec;
 
   if (bufLen < (2 * ((825) + (373)))) return 1;
@@ -1439,8 +1439,8 @@ INT FDKdecorrelateOpen(HANDLE_DECORR_DEC hDecorrDec, int32_t *bufferCplx,
   return 0;
 }
 
-static int distributeBuffer(HANDLE_DECORR_DEC self, const int L_stateBuf,
-                            const int L_delayBuf) {
+static int32_t distributeBuffer(HANDLE_DECORR_DEC self, const int32_t L_stateBuf,
+                            const int32_t L_delayBuf) {
   /* factor 2 because of complex values */
   if ((2 * ((825) + (373))) < 2 * (L_stateBuf + L_delayBuf)) {
     return 1;
@@ -1452,18 +1452,18 @@ static int distributeBuffer(HANDLE_DECORR_DEC self, const int L_stateBuf,
 
   return 0;
 }
-INT FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const INT nrHybBands,
+int32_t FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const int32_t nrHybBands,
                        const FDK_DECORR_TYPE decorrType,
-                       const FDK_DUCKER_TYPE duckerType, const INT decorrConfig,
-                       const INT seed, const INT partiallyComplex,
-                       const INT useFractDelay, const INT isLegacyPS,
-                       const INT initStatesFlag) {
-  INT errorCode = 0;
-  int i, rb, i_start;
-  int nParamBands = 28;
+                       const FDK_DUCKER_TYPE duckerType, const int32_t decorrConfig,
+                       const int32_t seed, const int32_t partiallyComplex,
+                       const int32_t useFractDelay, const int32_t isLegacyPS,
+                       const int32_t initStatesFlag) {
+  int32_t errorCode = 0;
+  int32_t i, rb, i_start;
+  int32_t nParamBands = 28;
 
-  INT offsetStateBuffer = 0;
-  INT offsetDelayBuffer = 0;
+  int32_t offsetStateBuffer = 0;
+  int32_t offsetDelayBuffer = 0;
 
   const UCHAR *REV_bandOffset;
 
@@ -1553,7 +1553,7 @@ INT FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const INT nrHybBands,
 
   i_start = 0;
   for (rb = 0; rb < (4); rb++) {
-    int i_stop;
+    int32_t i_stop;
 
     i_stop = REV_bandOffset[rb];
 
@@ -1618,8 +1618,8 @@ INT FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const INT nrHybBands,
   return errorCode;
 }
 
-INT FDKdecorrelateClose(HANDLE_DECORR_DEC hDecorrDec) {
-  INT err = 0;
+int32_t FDKdecorrelateClose(HANDLE_DECORR_DEC hDecorrDec) {
+  int32_t err = 0;
 
   if (hDecorrDec == NULL) {
     return 1;
@@ -1634,15 +1634,15 @@ INT FDKdecorrelateClose(HANDLE_DECORR_DEC hDecorrDec) {
 }
 
 LNK_SECTION_CODE_L1
-INT FDKdecorrelateApply(HANDLE_DECORR_DEC hDecorrDec, int32_t *dataRealIn,
+int32_t FDKdecorrelateApply(HANDLE_DECORR_DEC hDecorrDec, int32_t *dataRealIn,
                         int32_t *dataImagIn, int32_t *dataRealOut,
-                        int32_t *dataImagOut, const INT startHybBand) {
+                        int32_t *dataImagOut, const int32_t startHybBand) {
   HANDLE_DECORR_DEC self = hDecorrDec;
-  INT err = 0;
-  INT rb, stop, start;
+  int32_t err = 0;
+  int32_t rb, stop, start;
 
   if (self != NULL) {
-    int nHybBands = 0;
+    int32_t nHybBands = 0;
     /* copy new samples */
     nHybBands = self->numbins;
 

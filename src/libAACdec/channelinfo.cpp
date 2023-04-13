@@ -107,7 +107,7 @@ amm-info@iis.fraunhofer.de
 AAC_DECODER_ERROR IcsReadMaxSfb(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
                                 const SamplingRateInfo *pSamplingRateInfo) {
   AAC_DECODER_ERROR ErrorStatus = AAC_DEC_OK;
-  int nbits;
+  int32_t nbits;
 
   if (IsLongBlock(pIcsInfo)) {
     nbits = 6;
@@ -127,7 +127,7 @@ AAC_DECODER_ERROR IcsReadMaxSfb(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
 
 AAC_DECODER_ERROR IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
                           const SamplingRateInfo *pSamplingRateInfo,
-                          const UINT flags) {
+                          const uint32_t flags) {
   AAC_DECODER_ERROR ErrorStatus = AAC_DEC_OK;
 
   pIcsInfo->Valid = 0;
@@ -175,8 +175,8 @@ AAC_DECODER_ERROR IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
     pIcsInfo->WindowGroups = 1;
     pIcsInfo->WindowGroupLength[0] = 1;
   } else {
-    INT i;
-    UINT mask;
+    int32_t i;
+    uint32_t mask;
 
     pIcsInfo->ScaleFactorGrouping = (UCHAR)FDKreadBits(bs, 7);
 
@@ -221,17 +221,17 @@ bail:
   Table entries are sorted as following:
   | num_swb_long_window | sfbands_long | num_swb_short_window | sfbands_short |
 */
-AAC_DECODER_ERROR getSamplingRateInfo(SamplingRateInfo *t, UINT samplesPerFrame,
-                                      UINT samplingRateIndex,
-                                      UINT samplingRate) {
-  int index = 0;
+AAC_DECODER_ERROR getSamplingRateInfo(SamplingRateInfo *t, uint32_t samplesPerFrame,
+                                      uint32_t samplingRateIndex,
+                                      uint32_t samplingRate) {
+  int32_t index = 0;
 
   /* Search closest samplerate according to ISO/IEC 13818-7:2005(E) 8.2.4 (Table
    * 38): */
   if ((samplingRateIndex >= 15) || (samplesPerFrame == 768)) {
-    const UINT borders[] = {(UINT)-1, 92017, 75132, 55426, 46009, 37566,
+    const uint32_t borders[] = {(uint32_t)-1, 92017, 75132, 55426, 46009, 37566,
                             27713,    23004, 18783, 13856, 11502, 9391};
-    UINT i, samplingRateSearch = samplingRate;
+    uint32_t i, samplingRateSearch = samplingRate;
 
     if (samplesPerFrame == 768) {
       samplingRateSearch = (samplingRate * 4) / 3;
@@ -285,11 +285,11 @@ AAC_DECODER_ERROR getSamplingRateInfo(SamplingRateInfo *t, UINT samplesPerFrame,
     return AAC_DEC_UNSUPPORTED_FORMAT;
   }
 
-  FDK_ASSERT((UINT)t->ScaleFactorBands_Long[t->NumberOfScaleFactorBands_Long] ==
+  FDK_ASSERT((uint32_t)t->ScaleFactorBands_Long[t->NumberOfScaleFactorBands_Long] ==
              samplesPerFrame);
   FDK_ASSERT(
       t->ScaleFactorBands_Short == NULL ||
-      (UINT)t->ScaleFactorBands_Short[t->NumberOfScaleFactorBands_Short] * 8 ==
+      (uint32_t)t->ScaleFactorBands_Short[t->NumberOfScaleFactorBands_Short] * 8 ==
           samplesPerFrame);
 
   return AAC_DEC_OK;

@@ -106,7 +106,7 @@ amm-info@iis.fraunhofer.de
 #include "dct.h"
 #include "fixpoint_math.h"
 
-void mdct_init(H_MDCT hMdct, int32_t *overlap, INT overlapBufferSize) {
+void mdct_init(H_MDCT hMdct, int32_t *overlap, int32_t overlapBufferSize) {
   hMdct->overlap.freq = overlap;
   // FDKmemclear(overlap, overlapBufferSize*sizeof(int32_t));
   hMdct->prev_fr = 0;
@@ -132,18 +132,18 @@ sequentially, but together the program's structure is not easy to understand.
 Once the output (already windowed) block (-D-Cr,A-Br) is ready it is passed to
 the DCT IV for processing.
 */
-INT mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
-               const INT noInSamples, int32_t *RESTRICT mdctData,
-               const INT nSpec, const INT tl, const FIXP_WTP *pRightWindowPart,
-               const INT fr, SHORT *pMdctData_e) {
-  int i, n;
+int32_t mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
+               const int32_t noInSamples, int32_t *RESTRICT mdctData,
+               const int32_t nSpec, const int32_t tl, const FIXP_WTP *pRightWindowPart,
+               const int32_t fr, SHORT *pMdctData_e) {
+  int32_t i, n;
   /* tl: transform length
      fl: left window slope length
      nl: left window slope offset
      fr: right window slope length
      nr: right window slope offset
      See FDK_tools/doc/intern/mdct.tex for more detail. */
-  int fl, nl, nr;
+  int32_t fl, nl, nr;
   const FIXP_WTP *wls, *wrs;
 
   wrs = pRightWindowPart;
@@ -169,7 +169,7 @@ INT mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
      * + 1: fMultDiv2() in windowing.
      * + 1: Because of factor 1/2 in Princen-Bradley compliant windowed TDAC.
      */
-    INT mdctData_e = 1 + 1;
+    int32_t mdctData_e = 1 + 1;
 
     /* Derive left parameters */
     wls = hMdct->prev_wrs;
@@ -269,10 +269,10 @@ INT mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
   return nSpec * tl;
 }
 
-void imdct_gain(int32_t *pGain_m, int *pGain_e, int tl) {
+void imdct_gain(int32_t *pGain_m, int32_t *pGain_e, int32_t tl) {
   int32_t gain_m = *pGain_m;
-  int gain_e = *pGain_e;
-  int log2_tl;
+  int32_t gain_e = *pGain_e;
+  int32_t log2_tl;
 
   gain_e += -MDCT_OUTPUT_GAIN - MDCT_OUT_HEADROOM + 1;
   if (tl == 0) {
@@ -324,8 +324,8 @@ void imdct_gain(int32_t *pGain_m, int *pGain_e, int tl) {
   *pGain_e = gain_e;
 }
 
-INT imdct_drain(H_MDCT hMdct, int32_t *output, INT nrSamplesRoom) {
-  int buffered_samples = 0;
+int32_t imdct_drain(H_MDCT hMdct, int32_t *output, int32_t nrSamplesRoom) {
+  int32_t buffered_samples = 0;
 
   if (nrSamplesRoom > 0) {
     buffered_samples = hMdct->ov_offset;
@@ -341,9 +341,9 @@ INT imdct_drain(H_MDCT hMdct, int32_t *output, INT nrSamplesRoom) {
   return buffered_samples;
 }
 
-INT imdct_copy_ov_and_nr(H_MDCT hMdct, int32_t *pTimeData, INT nrSamples) {
+int32_t imdct_copy_ov_and_nr(H_MDCT hMdct, int32_t *pTimeData, int32_t nrSamples) {
   int32_t *pOvl;
-  int nt, nf, i;
+  int32_t nt, nf, i;
 
   nt = fMin(hMdct->ov_offset, nrSamples);
   nrSamples -= nt;
@@ -369,10 +369,10 @@ INT imdct_copy_ov_and_nr(H_MDCT hMdct, int32_t *pTimeData, INT nrSamples) {
   return (nt + nf);
 }
 
-void imdct_adapt_parameters(H_MDCT hMdct, int *pfl, int *pnl, int tl,
-                            const FIXP_WTP *wls, int noOutSamples) {
-  int fl = *pfl, nl = *pnl;
-  int window_diff, use_current = 0, use_previous = 0;
+void imdct_adapt_parameters(H_MDCT hMdct, int32_t *pfl, int32_t *pnl, int32_t tl,
+                            const FIXP_WTP *wls, int32_t noOutSamples) {
+  int32_t fl = *pfl, nl = *pnl;
+  int32_t window_diff, use_current = 0, use_previous = 0;
   if (hMdct->prev_tl == 0) {
     hMdct->prev_wrs = wls;
     hMdct->prev_fr = fl;
@@ -462,16 +462,16 @@ appropriate window functions.
 Once we have obtained the C and D segments the overlap buffer is emptied and the
 current buffer is sent in it, so that the E and F segments are available for
 decoding in the next algorithm pass.*/
-INT imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
-               const SHORT scalefactor[], const INT nSpec,
-               const INT noOutSamples, const INT tl, const FIXP_WTP *wls,
-               INT fl, const FIXP_WTP *wrs, const INT fr, int32_t gain,
-               int flags) {
+int32_t imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
+               const SHORT scalefactor[], const int32_t nSpec,
+               const int32_t noOutSamples, const int32_t tl, const FIXP_WTP *wls,
+               int32_t fl, const FIXP_WTP *wrs, const int32_t fr, int32_t gain,
+               int32_t flags) {
   int32_t *pOvl;
   int32_t *pOut0 = output, *pOut1;
-  INT nl, nr;
-  int w, i, nrSamples = 0, specShiftScale, transform_gain_e = 0;
-  int currAliasSymmetry = (flags & MLT_FLAG_CURR_ALIAS_SYMMETRY);
+  int32_t nl, nr;
+  int32_t w, i, nrSamples = 0, specShiftScale, transform_gain_e = 0;
+  int32_t currAliasSymmetry = (flags & MLT_FLAG_CURR_ALIAS_SYMMETRY);
 
   /* Derive NR and NL */
   nr = (tl - fr) >> 1;
@@ -547,8 +547,8 @@ INT imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
     }
 
     {
-      int loc_scale =
-          fixmin_I(scalefactor[w] + specShiftScale, (INT)DFRACT_BITS - 1);
+      int32_t loc_scale =
+          fixmin_I(scalefactor[w] + specShiftScale, (int32_t)DFRACT_BITS - 1);
       DWORD_ALIGNED(pSpec);
       scaleValuesSaturate(pSpec, tl, loc_scale);
     }

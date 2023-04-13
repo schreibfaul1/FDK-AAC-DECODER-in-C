@@ -128,15 +128,15 @@ amm-info@iis.fraunhofer.de
 
 #if !defined(FUNCTION_fixnormz_S)
 #ifdef FUNCTION_fixnormz_D
-inline INT fixnormz_S(SHORT a) {
+inline int32_t fixnormz_S(SHORT a) {
   if (a < 0) {
     return 0;
   }
-  return fixnormz_D((INT)(a)) - 16;
+  return fixnormz_D((int32_t)(a)) - 16;
 }
 #else
-inline INT fixnormz_S(SHORT a) {
-  int leadingBits = 0;
+inline int32_t fixnormz_S(SHORT a) {
+  int32_t leadingBits = 0;
   a = ~a;
   while (a & 0x8000) {
     leadingBits++;
@@ -149,8 +149,8 @@ inline INT fixnormz_S(SHORT a) {
 #endif
 
 #if !defined(FUNCTION_fixnormz_D)
-inline INT fixnormz_D(LONG a) {
-  INT leadingBits = 0;
+inline int32_t fixnormz_D(LONG a) {
+  int32_t leadingBits = 0;
   a = ~a;
   while (a & 0x80000000) {
     leadingBits++;
@@ -164,20 +164,20 @@ inline INT fixnormz_D(LONG a) {
 /*****************************************************************************
 
     functionname: fixnorm_D
-    description:  Count leading ones or zeros of operand val for dfract/LONG INT
+    description:  Count leading ones or zeros of operand val for dfract/LONG int32_t
 values. Return this value minus 1. Return 0 if operand==0.
 *****************************************************************************/
 #if !defined(FUNCTION_fixnorm_S)
 #ifdef FUNCTION_fixnorm_D
-inline INT fixnorm_S(FIXP_SGL val) {
+inline int32_t fixnorm_S(FIXP_SGL val) {
   if (val == (FIXP_SGL)0) {
     return 0;
   }
-  return fixnorm_D((INT)(val)) - 16;
+  return fixnorm_D((int32_t)(val)) - 16;
 }
 #else
-inline INT fixnorm_S(FIXP_SGL val) {
-  INT leadingBits = 0;
+inline int32_t fixnorm_S(FIXP_SGL val) {
+  int32_t leadingBits = 0;
   if (val != (FIXP_SGL)0) {
     if (val < (FIXP_SGL)0) {
       val = ~val;
@@ -190,8 +190,8 @@ inline INT fixnorm_S(FIXP_SGL val) {
 #endif
 
 #if !defined(FUNCTION_fixnorm_D)
-inline INT fixnorm_D(int32_t val) {
-  INT leadingBits = 0;
+inline int32_t fixnorm_D(int32_t val) {
+  int32_t leadingBits = 0;
   if (val != (int32_t)0) {
     if (val < (int32_t)0) {
       val = ~val;

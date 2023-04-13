@@ -129,19 +129,19 @@ SACDEC_ERROR SpatialDecParseSpecificConfigHeader(
 
 SACDEC_ERROR SpatialDecParseMps212Config(
     HANDLE_FDK_BITSTREAM bitstream,
-    SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig, int samplingRate,
-    AUDIO_OBJECT_TYPE coreCodec, INT stereoConfigIndex,
-    INT coreSbrFrameLengthIndex);
+    SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig, int32_t samplingRate,
+    AUDIO_OBJECT_TYPE coreCodec, int32_t stereoConfigIndex,
+    int32_t coreSbrFrameLengthIndex);
 
 SACDEC_ERROR SpatialDecParseSpecificConfig(
     HANDLE_FDK_BITSTREAM bitstream,
-    SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig, int sacHeaderLen,
+    SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig, int32_t sacHeaderLen,
     AUDIO_OBJECT_TYPE coreCodec);
 
-int SpatialDecDefaultSpecificConfig(
+int32_t SpatialDecDefaultSpecificConfig(
     SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
-    AUDIO_OBJECT_TYPE coreCodec, int samplingFreq, int nTimeSlots,
-    int sacDecoderLevel, int isBlind, int coreChannels);
+    AUDIO_OBJECT_TYPE coreCodec, int32_t samplingFreq, int32_t nTimeSlots,
+    int32_t sacDecoderLevel, int32_t isBlind, int32_t coreChannels);
 
 SACDEC_ERROR SpatialDecCreateBsFrame(SPATIAL_BS_FRAME *bsFrame,
                                      BS_LL_STATE *llState);
@@ -151,7 +151,7 @@ void SpatialDecCloseBsFrame(SPATIAL_BS_FRAME *bsFrame);
 SACDEC_ERROR SpatialDecParseFrameData(
     spatialDec *self, SPATIAL_BS_FRAME *frame, HANDLE_FDK_BITSTREAM bitstream,
     const SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig, UPMIXTYPE upmixType,
-    int fGlobalIndependencyFlag);
+    int32_t fGlobalIndependencyFlag);
 
 SACDEC_ERROR SpatialDecDecodeFrame(spatialDec *self, SPATIAL_BS_FRAME *frame);
 

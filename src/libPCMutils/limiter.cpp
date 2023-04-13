@@ -100,6 +100,8 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+
+#include <stdint.h>
 #include "limiter.h"
 #include "../libFDK/FDK_core.h"
 
@@ -109,17 +111,17 @@ amm-info@iis.fraunhofer.de
 #define TDLIMIT_LIB_TITLE "TD Limiter Lib"
 
 /* create limiter */
-TDLimiterPtr pcmLimiter_Create(unsigned int maxAttackMs, unsigned int releaseMs,
-                               int32_t threshold, unsigned int maxChannels,
-                               UINT maxSampleRate) {
+TDLimiterPtr pcmLimiter_Create(uint32_t maxAttackMs, uint32_t releaseMs,
+                               int32_t threshold, uint32_t maxChannels,
+                               uint32_t maxSampleRate) {
   TDLimiterPtr limiter = NULL;
-  unsigned int attack, release;
+  uint32_t attack, release;
   int32_t attackConst, releaseConst, exponent;
-  INT e_ans;
+  int32_t e_ans;
 
   /* calc attack and release time in samples */
-  attack = (unsigned int)(maxAttackMs * maxSampleRate / 1000);
-  release = (unsigned int)(releaseMs * maxSampleRate / 1000);
+  attack = (uint32_t)(maxAttackMs * maxSampleRate / 1000);
+  release = (uint32_t)(releaseMs * maxSampleRate / 1000);
 
   /* alloc limiter struct */
   limiter = (TDLimiterPtr)FDKcalloc(1, sizeof(struct TDLimiter));
@@ -166,28 +168,28 @@ TDLimiterPtr pcmLimiter_Create(unsigned int maxAttackMs, unsigned int releaseMs,
 /* apply limiter */
 TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
                                  INT_PCM* samplesOut, int32_t* pGainPerSample,
-                                 const INT scaling, const UINT nSamples) {
-  unsigned int i, j;
+                                 const int32_t scaling, const uint32_t nSamples) {
+  uint32_t i, j;
   int32_t tmp2;
   int32_t tmp, old, gain, additionalGain = 0;
   int32_t minGain = FL2FXCONST_DBL(1.0f / (1 << 1));
-  UINT additionalGainAvailable = 1;
+  uint32_t additionalGainAvailable = 1;
 
   if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;
 
   {
-    unsigned int channels = limiter->channels;
-    unsigned int attack = limiter->attack;
+    uint32_t channels = limiter->channels;
+    uint32_t attack = limiter->attack;
     int32_t attackConst = limiter->attackConst;
     int32_t releaseConst = limiter->releaseConst;
     int32_t threshold = limiter->threshold >> scaling;
 
     int32_t max = limiter->max;
     int32_t* maxBuf = limiter->maxBuf;
-    unsigned int maxBufIdx = limiter->maxBufIdx;
+    uint32_t maxBufIdx = limiter->maxBufIdx;
     int32_t cor = limiter->cor;
     int32_t* delayBuf = limiter->delayBuf;
-    unsigned int delayBufIdx = limiter->delayBufIdx;
+    uint32_t delayBufIdx = limiter->delayBufIdx;
 
     int32_t smoothState0 = limiter->smoothState0;
 
@@ -400,16 +402,16 @@ TDLIMITER_ERROR pcmLimiter_Destroy(TDLimiterPtr limiter) {
 }
 
 /* get delay in samples */
-unsigned int pcmLimiter_GetDelay(TDLimiterPtr limiter) {
+uint32_t pcmLimiter_GetDelay(TDLimiterPtr limiter) {
   FDK_ASSERT(limiter != NULL);
   return limiter->attack;
 }
 
 /* get maximum gain reduction of last processed block */
-INT pcmLimiter_GetMaxGainReduction(TDLimiterPtr limiter) {
+int32_t pcmLimiter_GetMaxGainReduction(TDLimiterPtr limiter) {
   /* maximum gain reduction in dB = -20 * log10(limiter->minGain)
      = -20 * log2(limiter->minGain)/log2(10) = -6.0206*log2(limiter->minGain) */
-  int e_ans;
+  int32_t e_ans;
   int32_t loggain, maxGainReduction;
 
   FDK_ASSERT(limiter != NULL);
@@ -423,7 +425,7 @@ INT pcmLimiter_GetMaxGainReduction(TDLimiterPtr limiter) {
 
 /* set number of channels */
 TDLIMITER_ERROR pcmLimiter_SetNChannels(TDLimiterPtr limiter,
-                                        unsigned int nChannels) {
+                                        uint32_t nChannels) {
   if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;
 
   if (nChannels > limiter->maxChannels) return TDLIMIT_INVALID_PARAMETER;
@@ -436,18 +438,18 @@ TDLIMITER_ERROR pcmLimiter_SetNChannels(TDLimiterPtr limiter,
 
 /* set sampling rate */
 TDLIMITER_ERROR pcmLimiter_SetSampleRate(TDLimiterPtr limiter,
-                                         UINT sampleRate) {
-  unsigned int attack, release;
+                                         uint32_t sampleRate) {
+  uint32_t attack, release;
   int32_t attackConst, releaseConst, exponent;
-  INT e_ans;
+  int32_t e_ans;
 
   if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;
 
   if (sampleRate > limiter->maxSampleRate) return TDLIMIT_INVALID_PARAMETER;
 
   /* update attack and release time in samples */
-  attack = (unsigned int)(limiter->attackMs * sampleRate / 1000);
-  release = (unsigned int)(limiter->releaseMs * sampleRate / 1000);
+  attack = (uint32_t)(limiter->attackMs * sampleRate / 1000);
+  release = (uint32_t)(limiter->releaseMs * sampleRate / 1000);
 
   /* attackConst = pow(0.1, 1.0 / (attack + 1)) */
   exponent = invFixp(attack + 1);
@@ -472,17 +474,17 @@ TDLIMITER_ERROR pcmLimiter_SetSampleRate(TDLimiterPtr limiter,
 
 /* set attack time */
 TDLIMITER_ERROR pcmLimiter_SetAttack(TDLimiterPtr limiter,
-                                     unsigned int attackMs) {
-  unsigned int attack;
+                                     uint32_t attackMs) {
+  uint32_t attack;
   int32_t attackConst, exponent;
-  INT e_ans;
+  int32_t e_ans;
 
   if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;
 
   if (attackMs > limiter->maxAttackMs) return TDLIMIT_INVALID_PARAMETER;
 
   /* calculate attack time in samples */
-  attack = (unsigned int)(attackMs * limiter->sampleRate / 1000);
+  attack = (uint32_t)(attackMs * limiter->sampleRate / 1000);
 
   /* attackConst = pow(0.1, 1.0 / (attack + 1)) */
   exponent = invFixp(attack + 1);
@@ -498,15 +500,15 @@ TDLIMITER_ERROR pcmLimiter_SetAttack(TDLimiterPtr limiter,
 
 /* set release time */
 TDLIMITER_ERROR pcmLimiter_SetRelease(TDLimiterPtr limiter,
-                                      unsigned int releaseMs) {
-  unsigned int release;
+                                      uint32_t releaseMs) {
+  uint32_t release;
   int32_t releaseConst, exponent;
-  INT e_ans;
+  int32_t e_ans;
 
   if (limiter == NULL) return TDLIMIT_INVALID_HANDLE;
 
   /* calculate  release time in samples */
-  release = (unsigned int)(releaseMs * limiter->sampleRate / 1000);
+  release = (uint32_t)(releaseMs * limiter->sampleRate / 1000);
 
   /* releaseConst  = (float)pow(0.1, 1.0 / (release + 1)) */
   exponent = invFixp(release + 1);
@@ -521,7 +523,7 @@ TDLIMITER_ERROR pcmLimiter_SetRelease(TDLimiterPtr limiter,
 
 /* Get library info for this module. */
 TDLIMITER_ERROR pcmLimiter_GetLibInfo(LIB_INFO* info) {
-  int i;
+  int32_t i;
 
   if (info == NULL) {
     return TDLIMIT_INVALID_PARAMETER;

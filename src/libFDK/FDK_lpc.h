@@ -143,9 +143,9 @@ typedef FIXP_SGL FIXP_LPC;
  * \param filtState Pointer to state buffer of size order
  * \param filtStateIndex pointer to state index storage
  */
-void CLpc_Analysis(int32_t signal[], const int signal_size,
-                   const FIXP_LPC lpcCoeff_m[], const int lpcCoeff_e,
-                   const int order, int32_t *filtState, int *filtStateIndex);
+void CLpc_Analysis(int32_t signal[], const int32_t signal_size,
+                   const FIXP_LPC lpcCoeff_m[], const int32_t lpcCoeff_e,
+                   const int32_t order, int32_t *filtState, int32_t *filtStateIndex);
 
 /**
  * \brief Synthesize signal fom residual through LPC synthesis, using LP
@@ -160,13 +160,13 @@ void CLpc_Analysis(int32_t signal[], const int signal_size,
  * \param state state buffer of size LPC_MAX_ORDER
  * \param pStateIndex pointer to state index storage
  */
-void CLpc_Synthesis(int32_t *signal, const int signal_size, const int signal_e,
-                    const int inc, const FIXP_LPC_TNS *lpcCoeff_m,
-                    const int lpcCoeff_e, const int order, int32_t *state,
-                    int *pStateIndex);
-void CLpc_Synthesis(int32_t *signal, const int signal_size, const int signal_e,
-                    const int inc, const FIXP_LPC coeff[], const int coeff_e,
-                    const int order, int32_t *filtState, int *pStateIndex);
+void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t signal_e,
+                    const int32_t inc, const FIXP_LPC_TNS *lpcCoeff_m,
+                    const int32_t lpcCoeff_e, const int32_t order, int32_t *state,
+                    int32_t *pStateIndex);
+void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t signal_e,
+                    const int32_t inc, const FIXP_LPC coeff[], const int32_t coeff_e,
+                    const int32_t order, int32_t *filtState, int32_t *pStateIndex);
 
 /**
  * \brief Synthesize signal fom residual through LPC synthesis, using ParCor
@@ -182,23 +182,23 @@ void CLpc_Synthesis(int32_t *signal, const int signal_size, const int signal_e,
  * \param order the LPC filter order (size of coeff)
  * \param state state buffer of size LPC_MAX_ORDER
  */
-void CLpc_SynthesisLattice(int32_t *signal, const int signal_size,
-                           const int signal_e, const int signal_e_out,
-                           const int inc, const FIXP_SGL *coeff,
-                           const int order, int32_t *state);
+void CLpc_SynthesisLattice(int32_t *signal, const int32_t signal_size,
+                           const int32_t signal_e, const int32_t signal_e_out,
+                           const int32_t inc, const FIXP_SGL *coeff,
+                           const int32_t order, int32_t *state);
 
-void CLpc_SynthesisLattice(int32_t *RESTRICT signal, const int signal_size,
-                           const int signal_e, const int signal_e_out,
-                           const int inc, const int32_t *RESTRICT coeff,
-                           const int order, int32_t *RESTRICT state);
+void CLpc_SynthesisLattice(int32_t *RESTRICT signal, const int32_t signal_size,
+                           const int32_t signal_e, const int32_t signal_e_out,
+                           const int32_t inc, const int32_t *RESTRICT coeff,
+                           const int32_t order, int32_t *RESTRICT state);
 
 /**
  * \brief
  */
-INT CLpc_ParcorToLpc(const FIXP_LPC_TNS reflCoeff[], FIXP_LPC_TNS LpcCoeff[],
-                     INT numOfCoeff, int32_t workBuffer[]);
-INT CLpc_ParcorToLpc(const FIXP_LPC reflCoeff[], FIXP_LPC LpcCoeff[],
-                     const int numOfCoeff, int32_t workBuffer[]);
+int32_t CLpc_ParcorToLpc(const FIXP_LPC_TNS reflCoeff[], FIXP_LPC_TNS LpcCoeff[],
+                     int32_t numOfCoeff, int32_t workBuffer[]);
+int32_t CLpc_ParcorToLpc(const FIXP_LPC reflCoeff[], FIXP_LPC LpcCoeff[],
+                     const int32_t numOfCoeff, int32_t workBuffer[]);
 
 /**
  * \brief Calculate ParCor (Partial autoCorrelation, reflection) coefficients
@@ -211,8 +211,8 @@ INT CLpc_ParcorToLpc(const FIXP_LPC reflCoeff[], FIXP_LPC LpcCoeff[],
  * \param pPredictionGain_m prediction gain mantissa
  * \param pPredictionGain_e prediction gain exponent
  */
-void CLpc_AutoToParcor(int32_t acorr[], const int acorr_e,
-                       FIXP_LPC reflCoeff[], const int order,
-                       int32_t *pPredictionGain_m, INT *pPredictionGain_e);
+void CLpc_AutoToParcor(int32_t acorr[], const int32_t acorr_e,
+                       FIXP_LPC reflCoeff[], const int32_t order,
+                       int32_t *pPredictionGain_m, int32_t *pPredictionGain_e);
 
 #endif /* FDK_LPC_H */

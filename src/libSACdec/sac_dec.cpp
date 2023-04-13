@@ -115,7 +115,7 @@ amm-info@iis.fraunhofer.de
 #include "../libFDK/FDK_trigFcts.h"
 #include "../libFDK/FDK_matrixCalloc.h"
 
-/* static int pbStrideTable[] = {1, 2, 5, 28}; see sac_rom.cpp */
+/* static int32_t pbStrideTable[] = {1, 2, 5, 28}; see sac_rom.cpp */
 
 enum {
   APPLY_M2_NONE = 0,    /* init value */
@@ -137,10 +137,10 @@ enum {
 /*                                                                                        */
 /* returns:  error code */
 /******************************************************************************************/
-int FDK_SpatialDecInitDefaultSpatialSpecificConfig(
+int32_t FDK_SpatialDecInitDefaultSpatialSpecificConfig(
     SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
-    AUDIO_OBJECT_TYPE coreCodec, int coreChannels, int samplingFreq,
-    int nTimeSlots, int decoderLevel, int isBlind) {
+    AUDIO_OBJECT_TYPE coreCodec, int32_t coreChannels, int32_t samplingFreq,
+    int32_t nTimeSlots, int32_t decoderLevel, int32_t isBlind) {
   return SpatialDecDefaultSpecificConfig(pSpatialSpecificConfig, coreCodec,
                                          samplingFreq, nTimeSlots, decoderLevel,
                                          isBlind, coreChannels);
@@ -153,9 +153,9 @@ int FDK_SpatialDecInitDefaultSpatialSpecificConfig(
 /* output:   - */
 /* returns:  error code (0 = equal, <>0 unequal) */
 /******************************************************************************************/
-int FDK_SpatialDecCompareSpatialSpecificConfigHeader(
+int32_t FDK_SpatialDecCompareSpatialSpecificConfigHeader(
     SPATIAL_SPECIFIC_CONFIG *pSsc1, SPATIAL_SPECIFIC_CONFIG *pSsc2) {
-  int result = MPS_OK;
+  int32_t result = MPS_OK;
 
   /* we assume: every bit must be equal */
   if (FDKmemcmp(pSsc1, pSsc2, sizeof(SPATIAL_SPECIFIC_CONFIG)) != 0) {
@@ -178,7 +178,7 @@ int FDK_SpatialDecCompareSpatialSpecificConfigHeader(
 static void SpatialDecClearFrameData(
     spatialDec *self, /* Shall be removed */
     SPATIAL_BS_FRAME *bsFrame, const SACDEC_CREATION_PARAMS *const setup) {
-  int i;
+  int32_t i;
 
   FDK_ASSERT(self != NULL);
   FDK_ASSERT(bsFrame != NULL);
@@ -203,7 +203,7 @@ static void SpatialDecClearFrameData(
 
   /* reset residual data */
   {
-    int resQmfBands, resTimeSlots = (1);
+    int32_t resQmfBands, resTimeSlots = (1);
 
     resQmfBands = setup->maxNumQmfBands;
 
@@ -212,8 +212,8 @@ static void SpatialDecClearFrameData(
                            setup->maxNumOttBoxes + setup->maxNumInputChannels)
                     : 0;
          i += 1) {
-      for (int j = 0; j < resTimeSlots; j += 1) {
-        for (int k = 0; k < resQmfBands; k += 1) {
+      for (int32_t j = 0; j < resTimeSlots; j += 1) {
+        for (int32_t k = 0; k < resQmfBands; k += 1) {
           self->qmfResidualReal__FDK[i][j][k] = FL2FXCONST_DBL(0.0f);
           self->qmfResidualImag__FDK[i][j][k] = FL2FXCONST_DBL(0.0f);
         }
@@ -236,9 +236,9 @@ static void SpatialDecClearFrameData(
 
 *******************************************************************************/
 spatialDec *FDK_SpatialDecOpen(const SPATIAL_DEC_CONFIG *config,
-                               int stereoConfigIndex) {
-  int i;
-  int lfSize, hfSize;
+                               int32_t stereoConfigIndex) {
+  int32_t i;
+  int32_t lfSize, hfSize;
   spatialDec *self = NULL;
   SACDEC_CREATION_PARAMS setup;
 
@@ -290,13 +290,13 @@ spatialDec *FDK_SpatialDecOpen(const SPATIAL_DEC_CONFIG *config,
 
   self->createParams = setup;
 
-  FDK_ALLOCATE_MEMORY_1D(self->param2hyb, MAX_PARAMETER_BANDS + 1, int)
+  FDK_ALLOCATE_MEMORY_1D(self->param2hyb, MAX_PARAMETER_BANDS + 1, int32_t)
 
-  FDK_ALLOCATE_MEMORY_1D(self->numOttBands, setup.maxNumOttBoxes, int)
+  FDK_ALLOCATE_MEMORY_1D(self->numOttBands, setup.maxNumOttBoxes, int32_t)
 
   /* allocate arrays */
 
-  FDK_ALLOCATE_MEMORY_1D(self->smgTime, MAX_PARAMETER_SETS, int)
+  FDK_ALLOCATE_MEMORY_1D(self->smgTime, MAX_PARAMETER_SETS, int32_t)
   FDK_ALLOCATE_MEMORY_2D(self->smgData, MAX_PARAMETER_SETS, MAX_PARAMETER_BANDS,
                          UCHAR)
 
@@ -373,10 +373,10 @@ spatialDec *FDK_SpatialDecOpen(const SPATIAL_DEC_CONFIG *config,
                            int32_t *)
 
     for (i = 0; i < setup.maxNumResChannels; i++) {
-      int resQmfBands = (config->decoderMode == EXT_LP_ONLY)
+      int32_t resQmfBands = (config->decoderMode == EXT_LP_ONLY)
                             ? PC_NUM_BANDS
                             : setup.maxNumQmfBands;
-      int resHybBands = (config->decoderMode == EXT_LP_ONLY)
+      int32_t resHybBands = (config->decoderMode == EXT_LP_ONLY)
                             ? PC_NUM_HYB_BANDS
                             : setup.maxNumHybridBands;
       /* Alignment is needed for USAC residuals because QMF analysis directly
@@ -521,7 +521,7 @@ bail:
  Return: 1: all okay
          0: configuration not supported
 *******************************************************************************/
-static int isValidConfig(spatialDec const *const self,
+static int32_t isValidConfig(spatialDec const *const self,
                          const SPATIAL_DEC_UPMIX_TYPE upmixType,
                          SPATIALDEC_PARAM const *const pUserParams,
                          const AUDIO_OBJECT_TYPE coreAot) {
@@ -546,10 +546,10 @@ static int isValidConfig(spatialDec const *const self,
 
 static SACDEC_ERROR CheckLevelTreeUpmixType(
     const SACDEC_CREATION_PARAMS *const pCreateParams,
-    const SPATIAL_SPECIFIC_CONFIG *const pSsc, const int decoderLevel,
+    const SPATIAL_SPECIFIC_CONFIG *const pSsc, const int32_t decoderLevel,
     const UPMIXTYPE upmixType) {
   SACDEC_ERROR err = MPS_OK;
-  int nOutputChannels, treeConfig;
+  int32_t nOutputChannels, treeConfig;
 
   FDK_ASSERT(pCreateParams != NULL);
   FDK_ASSERT(pSsc != NULL);
@@ -590,7 +590,7 @@ bail:
 }
 
 void SpatialDecInitParserContext(spatialDec *self) {
-  int i, j;
+  int32_t i, j;
 
   for (i = 0; i < self->createParams.maxNumOttBoxes; i += 1) {
     for (j = 0; j < MAX_PARAMETER_BANDS; j++) {
@@ -622,13 +622,13 @@ void SpatialDecInitParserContext(spatialDec *self) {
 
 SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
                                 SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
-                                int nQmfBands,
+                                int32_t nQmfBands,
                                 SPATIAL_DEC_UPMIX_TYPE const upmixType,
-                                SPATIALDEC_PARAM *pUserParams, UINT initFlags) {
+                                SPATIALDEC_PARAM *pUserParams, uint32_t initFlags) {
   SACDEC_ERROR err = MPS_OK;
-  int nCh, i, j, k;
-  int maxQmfBands;
-  int bypassMode = 0;
+  int32_t nCh, i, j, k;
+  int32_t maxQmfBands;
+  int32_t bypassMode = 0;
 
   self->useFDreverb = 0;
 
@@ -742,13 +742,13 @@ SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
   }
 
   {
-    UINT flags = 0;
-    INT initStatesFlag = (initFlags & MPEGS_INIT_STATES_ANA_QMF_FILTER) ? 1 : 0;
-    INT useLdFilter =
+    uint32_t flags = 0;
+    int32_t initStatesFlag = (initFlags & MPEGS_INIT_STATES_ANA_QMF_FILTER) ? 1 : 0;
+    int32_t useLdFilter =
         (self->pConfigCurrent->syntaxFlags & SACDEC_SYNTAX_LD) ? 1 : 0;
 
     flags = self->pQmfDomain->globalConf.flags_requested;
-    flags &= (~(UINT)QMF_FLAG_LP);
+    flags &= (~(uint32_t)QMF_FLAG_LP);
 
     if (initStatesFlag)
       flags &= ~QMF_FLAG_KEEP_STATES;
@@ -765,7 +765,7 @@ SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
 
     /* output scaling */
     for (nCh = 0; nCh < self->numOutputChannelsAT; nCh++) {
-      int outputScale = 0, outputGain_e = 0, scale = -(8) + (1);
+      int32_t outputScale = 0, outputGain_e = 0, scale = -(8) + (1);
       int32_t outputGain_m = getChGain(self, nCh, &outputGain_e);
 
       if (!isTwoChMode(self->upmixType) && !bypassMode) {
@@ -804,7 +804,7 @@ SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
 
   {
     for (k = 0; k < self->numDecorSignals; k++) {
-      int errCode, idec;
+      int32_t errCode, idec;
       FDK_DECORR_TYPE decorrType = DECORR_PS;
       decorrType = DECORR_LD;
       if (self->pConfigCurrent->syntaxFlags &
@@ -880,7 +880,7 @@ void SpatialDecChannelProperties(spatialDec *self,
 
   if (self->numOutputChannelsAT !=
       treePropertyTable[self->treeConfig].numOutputChannels) {
-    int ch;
+    int32_t ch;
     /* Declare all channels to be front channels: */
     for (ch = 0; ch < self->numOutputChannelsAT; ch += 1) {
       channelType[ch] = ACT_FRONT;
@@ -914,7 +914,7 @@ void SpatialDecChannelProperties(spatialDec *self,
 
 void FDK_SpatialDecClose(spatialDec *self) {
   if (self) {
-    int k;
+    int32_t k;
 
     if (self->apDecor != NULL) {
       for (k = 0; k < self->createParams.maxNumDecorChannels; k++) {
@@ -953,7 +953,7 @@ void FDK_SpatialDecClose(spatialDec *self) {
     FDK_FREE_MEMORY_2D(self->wReal__FDK);
 
     if (self->createParams.bProcResidual) {
-      int i;
+      int32_t i;
 
       for (i = 0; i < self->createParams.maxNumResChannels; i++) {
         if (self->hybResidualImag__FDK != NULL)
@@ -1037,14 +1037,14 @@ static void SpatialDecApplyBypass(spatialDec *self, int32_t **hybInputReal,
                                   int32_t **hybInputImag,
                                   int32_t **hybOutputReal,
                                   int32_t **hybOutputImag,
-                                  const int numInputChannels) {
-  int complexHybBands;
+                                  const int32_t numInputChannels) {
+  int32_t complexHybBands;
 
   complexHybBands = self->hybridBands;
 
   {
-    int ch;
-    int rf = -1, lf = -1, cf = -1; /* Right Front, Left Front, Center Front */
+    int32_t ch;
+    int32_t rf = -1, lf = -1, cf = -1; /* Right Front, Left Front, Center Front */
 
     /* Determine output channel indices according to tree config */
     switch (self->treeConfig) {
@@ -1113,20 +1113,20 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
     PCM_MPS *inData,          /* Time domain input  */
     int32_t **qmfInDataReal, /* QMF domain data l/r */
     int32_t **qmfInDataImag, /* QMF domain data l/r */
-    UINT nSamples, UINT controlFlags, int numInputChannels,
+    uint32_t nSamples, uint32_t controlFlags, int32_t numInputChannels,
     const FDK_channelMapDescr *const mapDescr) {
   SACDEC_ERROR err = MPS_OK;
 
   FIXP_SGL alpha;
 
-  int ts;
-  int ch;
-  int hyb;
+  int32_t ts;
+  int32_t ch;
+  int32_t hyb;
 
-  int prevSlot = self->prevTimeSlot;
-  int ps = self->curPs;
-  int ts_io = 0; /* i/o dependent slot */
-  int bypassMode = (controlFlags & MPEGS_BYPASSMODE) ? 1 : 0;
+  int32_t prevSlot = self->prevTimeSlot;
+  int32_t ps = self->curPs;
+  int32_t ts_io = 0; /* i/o dependent slot */
+  int32_t bypassMode = (controlFlags & MPEGS_BYPASSMODE) ? 1 : 0;
 
   /* Bypass can be triggered by the upmixType, too. */
   bypassMode |= ((self->upmixType == UPMIXTYPE_BYPASS) ? 1 : 0);
@@ -1135,10 +1135,10 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
    * Decode available slots
    */
   for (ts = self->curTimeSlot;
-       ts <= fixMin(self->curTimeSlot + (int)nSamples / self->qmfBands - 1,
+       ts <= fixMin(self->curTimeSlot + (int32_t)nSamples / self->qmfBands - 1,
                     self->timeSlots - 1);
        ts++, ts_io++) {
-    int currSlot = frame->paramSlot[ps];
+    int32_t currSlot = frame->paramSlot[ps];
 
     /*
      * Get new parameter set
@@ -1197,7 +1197,7 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
 
     if ((self->pConfigCurrent->syntaxFlags & SACDEC_SYNTAX_USAC) &&
         self->residualCoding) {
-      int offset;
+      int32_t offset;
       ch = 1;
 
       offset = self->pQmfDomain->globalConf.nBandsSynthesis *
@@ -1212,7 +1212,7 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
             self->qmfResidualReal__FDK[0][0], self->qmfResidualImag__FDK[0][0]);
 
         if (!isTwoChMode(self->upmixType) && !bypassMode) {
-          int i;
+          int32_t i;
           int32_t *RESTRICT self_qmfResidualReal__FDK_0_0 =
               &self->qmfResidualReal__FDK[0][0][0];
           int32_t *RESTRICT self_qmfResidualImag__FDK_0_0 =
@@ -1275,7 +1275,7 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
       }
       if (err != MPS_OK) goto bail;
 
-      int applyM2Config = APPLY_M2_NONE;
+      int32_t applyM2Config = APPLY_M2_NONE;
 
       applyM2Config = APPLY_M2;
       if ((self->pConfigCurrent->syntaxFlags &
@@ -1339,7 +1339,7 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
         /* The wet signal is added to the dry signal in applyM2 if GES and STP
          * are disabled */
         if ((self->tempShapeConfig == 1) || (self->tempShapeConfig == 2)) {
-          int nHybBands;
+          int32_t nHybBands;
           nHybBands = self->hybridBands;
 
           for (ch = 0; ch < self->numOutputChannels; ch++) {
@@ -1411,12 +1411,12 @@ SACDEC_ERROR SpatialDecApplyFrame(
     int32_t **qmfInDataReal,                         /* QMF domain data l/r */
     int32_t **qmfInDataImag,                         /* QMF domain data l/r */
     PCM_MPS *pcmOutBuf, /* MAX_OUTPUT_CHANNELS*MAX_TIME_SLOTS*NUM_QMF_BANDS] */
-    UINT nSamples, UINT *pControlFlags, int numInputChannels,
+    uint32_t nSamples, uint32_t *pControlFlags, int32_t numInputChannels,
     const FDK_channelMapDescr *const mapDescr) {
   SACDEC_ERROR err = MPS_OK;
 
-  int fDecAndMapFrameData;
-  int controlFlags;
+  int32_t fDecAndMapFrameData;
+  int32_t controlFlags;
 
   FDK_ASSERT(self != NULL);
   FDK_ASSERT(pControlFlags != NULL);
@@ -1449,7 +1449,7 @@ SACDEC_ERROR SpatialDecApplyFrame(
 
   if (((fDecAndMapFrameData ==
         0) /* assures that conceal flag will not be set for blind mode */
-       && (self->curTimeSlot + (int)nSamples / self->qmfBands >
+       && (self->curTimeSlot + (int32_t)nSamples / self->qmfBands >
            self->timeSlots)) ||
       (frame->numParameterSets ==
        0)) { /* New input samples but missing side info */

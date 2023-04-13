@@ -227,11 +227,11 @@ SBR_ERROR sbrDecoder_Open(HANDLE_SBRDECODER *pSelf,
  * \return  Error code.
  */
 SBR_ERROR sbrDecoder_InitElement(
-    HANDLE_SBRDECODER self, const int sampleRateIn, const int sampleRateOut,
-    const int samplesPerFrame, const AUDIO_OBJECT_TYPE coreCodec,
-    const MP4_ELEMENT_ID elementID, const int elementIndex,
+    HANDLE_SBRDECODER self, const int32_t sampleRateIn, const int32_t sampleRateOut,
+    const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE coreCodec,
+    const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
     const UCHAR harmonicSBR, const UCHAR stereoConfigIndex,
-    const UCHAR configMode, UCHAR *configChanged, const INT downscaleFactor);
+    const UCHAR configMode, UCHAR *configChanged, const int32_t downscaleFactor);
 
 /**
  * \brief Free config dependent SBR memory.
@@ -255,14 +255,14 @@ SBR_ERROR sbrDecoder_FreeMem(HANDLE_SBRDECODER *self);
  *
  * \return  Error code.
  */
-INT sbrDecoder_Header(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
-                      const INT sampleRateIn, const INT sampleRateOut,
-                      const INT samplesPerFrame,
+int32_t sbrDecoder_Header(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
+                      const int32_t sampleRateIn, const int32_t sampleRateOut,
+                      const int32_t samplesPerFrame,
                       const AUDIO_OBJECT_TYPE coreCodec,
-                      const MP4_ELEMENT_ID elementID, const INT elementIndex,
+                      const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
                       const UCHAR harmonicSBR, const UCHAR stereoConfigIndex,
                       const UCHAR configMode, UCHAR *configChanged,
-                      const INT downscaleFactor);
+                      const int32_t downscaleFactor);
 
 /**
  * \brief        Set a parameter of the SBR decoder runtime instance.
@@ -272,7 +272,7 @@ INT sbrDecoder_Header(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
  * \return       Error code.
  */
 SBR_ERROR sbrDecoder_SetParam(HANDLE_SBRDECODER self, const SBRDEC_PARAM param,
-                              const INT value);
+                              const int32_t value);
 
 /**
  * \brief  Feed DRC channel data into a SBR decoder runtime instance.
@@ -292,9 +292,9 @@ SBR_ERROR sbrDecoder_SetParam(HANDLE_SBRDECODER self, const SBRDEC_PARAM param,
  *
  * \return  Error code.
  */
-SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, INT ch,
-                                    UINT numBands, int32_t *pNextFact_mag,
-                                    INT nextFact_exp,
+SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, int32_t ch,
+                                    uint32_t numBands, int32_t *pNextFact_mag,
+                                    int32_t nextFact_exp,
                                     SHORT drcInterpolationScheme,
                                     UCHAR winSequence, USHORT *pBandTop);
 
@@ -306,7 +306,7 @@ SBR_ERROR sbrDecoder_drcFeedChannel(HANDLE_SBRDECODER self, INT ch,
  *
  * \return  None.
  */
-void sbrDecoder_drcDisable(HANDLE_SBRDECODER self, INT ch);
+void sbrDecoder_drcDisable(HANDLE_SBRDECODER self, int32_t ch);
 
 /**
  * \brief  Parse one SBR element data extension data block. The bit stream
@@ -333,9 +333,9 @@ void sbrDecoder_drcDisable(HANDLE_SBRDECODER self, INT ch);
  */
 SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
                            UCHAR *pDrmBsBuffer, USHORT drmBsBufferSize,
-                           int *count, int bsPayLen, int crcFlag,
-                           MP4_ELEMENT_ID prev_element, int element_index,
-                           UINT acFlags, UINT acElFlags[]);
+                           int32_t *count, int32_t bsPayLen, int32_t crcFlag,
+                           MP4_ELEMENT_ID prev_element, int32_t element_index,
+                           uint32_t acFlags, uint32_t acElFlags[]);
 
 /**
  * \brief  This function decodes the given SBR bitstreams and applies SBR to the
@@ -369,12 +369,12 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
  * \return  Error code.
  */
 SBR_ERROR sbrDecoder_Apply(HANDLE_SBRDECODER self, LONG *input, LONG *timeData,
-                           const int timeDataSize, int *numChannels,
-                           int *sampleRate,
+                           const int32_t timeDataSize, int32_t *numChannels,
+                           int32_t *sampleRate,
                            const FDK_channelMapDescr *const mapDescr,
-                           const int mapIdx, const int coreDecodedOk,
-                           UCHAR *psDecoded, const INT inDataHeadroom,
-                           INT *outDataHeadroom);
+                           const int32_t mapIdx, const int32_t coreDecodedOk,
+                           UCHAR *psDecoded, const int32_t inDataHeadroom,
+                           int32_t *outDataHeadroom);
 
 /**
  * \brief       Close SBR decoder instance and free memory.
@@ -390,14 +390,14 @@ SBR_ERROR sbrDecoder_Close(HANDLE_SBRDECODER *self);
  * \return      0 on success, -1 if invalid handle or if no free element is
  * available to write information to.
  */
-INT sbrDecoder_GetLibInfo(LIB_INFO *info);
+int32_t sbrDecoder_GetLibInfo(LIB_INFO *info);
 
 /**
  * \brief       Determine the modules output signal delay in samples.
  * \param self  SBR decoder handle.
  * \return      The number of samples signal delay added by the module.
  */
-UINT sbrDecoder_GetDelay(const HANDLE_SBRDECODER self);
+uint32_t sbrDecoder_GetDelay(const HANDLE_SBRDECODER self);
 
 #ifdef __cplusplus
 }

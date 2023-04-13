@@ -157,12 +157,12 @@ LONG CBlock_GetEscape(HANDLE_FDK_BITSTREAM bs, /*!< pointer to bitstream */
 
 AAC_DECODER_ERROR CBlock_ReadScaleFactorData(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo, HANDLE_FDK_BITSTREAM bs,
-    UINT flags) {
-  int temp;
-  int band;
-  int group;
-  int position = 0; /* accu for intensity delta coding */
-  int factor = pAacDecoderChannelInfo->pDynData->RawDataInfo
+    uint32_t flags) {
+  int32_t temp;
+  int32_t band;
+  int32_t group;
+  int32_t position = 0; /* accu for intensity delta coding */
+  int32_t factor = pAacDecoderChannelInfo->pDynData->RawDataInfo
                    .GlobalGain; /* accu for scale factor delta coding */
   UCHAR *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
   SHORT *pScaleFactor = pAacDecoderChannelInfo->pDynData->aScaleFactor;
@@ -170,7 +170,7 @@ AAC_DECODER_ERROR CBlock_ReadScaleFactorData(
 
   const USHORT(*CodeBook)[HuffmanEntries] = hcb->CodeBook;
 
-  int ScaleFactorBandsTransmitted =
+  int32_t ScaleFactorBandsTransmitted =
       GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);
   for (group = 0; group < GetWindowGroups(&pAacDecoderChannelInfo->icsInfo);
        group++) {
@@ -217,11 +217,11 @@ AAC_DECODER_ERROR CBlock_ReadScaleFactorData(
 void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                               UCHAR maxSfbs,
                               SamplingRateInfo *pSamplingRateInfo) {
-  int band;
-  int window;
+  int32_t band;
+  int32_t window;
   const SHORT *RESTRICT pSfbScale = pAacDecoderChannelInfo->pDynData->aSfbScale;
   SHORT *RESTRICT pSpecScale = pAacDecoderChannelInfo->specScale;
-  int groupwin, group;
+  int32_t groupwin, group;
   const SHORT *RESTRICT BandOffsets = GetScaleFactorBandOffsets(
       &pAacDecoderChannelInfo->icsInfo, pSamplingRateInfo);
   SPECTRAL_PTR RESTRICT pSpectralCoefficient =
@@ -234,21 +234,21 @@ void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     for (groupwin = 0; groupwin < GetWindowGroupLength(
                                       &pAacDecoderChannelInfo->icsInfo, group);
          groupwin++, window++) {
-      int SpecScale_window = pSpecScale[window];
+      int32_t SpecScale_window = pSpecScale[window];
       int32_t *pSpectrum = SPEC(pSpectralCoefficient, window,
                                  pAacDecoderChannelInfo->granuleLength);
 
       /* find scaling for current window */
       for (band = 0; band < maxSfbs; band++) {
         SpecScale_window =
-            fMax(SpecScale_window, (int)pSfbScale[window * 16 + band]);
+            fMax(SpecScale_window, (int32_t)pSfbScale[window * 16 + band]);
       }
 
       if (pAacDecoderChannelInfo->pDynData->TnsData.Active &&
           pAacDecoderChannelInfo->pDynData->TnsData.NumberOfFilters[window] >
               0) {
-        int filter_index, SpecScale_window_tns;
-        int tns_start, tns_stop;
+        int32_t filter_index, SpecScale_window_tns;
+        int32_t tns_start, tns_stop;
 
         /* Find max scale of TNS bands */
         SpecScale_window_tns = 0;
@@ -256,7 +256,7 @@ void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                                        pSamplingRateInfo->samplingRateIndex);
         tns_stop = 0;
         for (filter_index = 0;
-             filter_index < (int)pAacDecoderChannelInfo->pDynData->TnsData
+             filter_index < (int32_t)pAacDecoderChannelInfo->pDynData->TnsData
                                 .NumberOfFilters[window];
              filter_index++) {
           for (band = pAacDecoderChannelInfo->pDynData->TnsData
@@ -267,15 +267,15 @@ void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                           .StopBand;
                band++) {
             SpecScale_window_tns =
-                fMax(SpecScale_window_tns, (int)pSfbScale[window * 16 + band]);
+                fMax(SpecScale_window_tns, (int32_t)pSfbScale[window * 16 + band]);
           }
           /* Find TNS line boundaries for all TNS filters */
           tns_start =
-              fMin(tns_start, (int)pAacDecoderChannelInfo->pDynData->TnsData
+              fMin(tns_start, (int32_t)pAacDecoderChannelInfo->pDynData->TnsData
                                   .Filter[window][filter_index]
                                   .StartBand);
           tns_stop =
-              fMax(tns_stop, (int)pAacDecoderChannelInfo->pDynData->TnsData
+              fMax(tns_stop, (int32_t)pAacDecoderChannelInfo->pDynData->TnsData
                                  .Filter[window][filter_index]
                                  .StopBand);
         }
@@ -304,16 +304,16 @@ void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
 
 #else  /* FUNCTION_CBlock_ScaleSpectralData_func1 */
       for (band = 0; band < maxSfbs; band++) {
-        int scale = fMin(DFRACT_BITS - 1,
+        int32_t scale = fMin(DFRACT_BITS - 1,
                          SpecScale_window - pSfbScale[window * 16 + band]);
         if (scale) {
           FDK_ASSERT(scale > 0);
 
           /* following relation can be used for optimizations:
            * (BandOffsets[i]%4) == 0 for all i */
-          int max_index = BandOffsets[band + 1];
+          int32_t max_index = BandOffsets[band + 1];
           DWORD_ALIGNED(pSpectrum);
-          for (int index = BandOffsets[band]; index < max_index; index++) {
+          for (int32_t index = BandOffsets[band]; index < max_index; index++) {
             pSpectrum[index] >>= scale;
           }
         }
@@ -325,16 +325,16 @@ void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
 
 AAC_DECODER_ERROR CBlock_ReadSectionData(
     HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, const UINT flags) {
-  int top, band;
-  int sect_len, sect_len_incr;
-  int group;
+    const SamplingRateInfo *pSamplingRateInfo, const uint32_t flags) {
+  int32_t top, band;
+  int32_t sect_len, sect_len_incr;
+  int32_t group;
   UCHAR sect_cb;
   UCHAR *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
   /* HCR input (long) */
   SHORT *pNumLinesInSec =
       pAacDecoderChannelInfo->pDynData->specificTo.aac.aNumLineInSec4Hcr;
-  int numLinesInSecIdx = 0;
+  int32_t numLinesInSecIdx = 0;
   UCHAR *pHcrCodeBook =
       pAacDecoderChannelInfo->pDynData->specificTo.aac.aCodeBooks4Hcr;
   const SHORT *BandOffsets = GetScaleFactorBandOffsets(
@@ -344,10 +344,10 @@ AAC_DECODER_ERROR CBlock_ReadSectionData(
 
   FDKmemclear(pCodeBook, sizeof(UCHAR) * (8 * 16));
 
-  const int nbits =
+  const int32_t nbits =
       (IsLongBlock(&pAacDecoderChannelInfo->icsInfo) == 1) ? 5 : 3;
 
-  int sect_esc_val = (1 << nbits) - 1;
+  int32_t sect_esc_val = (1 << nbits) - 1;
 
   UCHAR ScaleFactorBandsTransmitted =
       GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);
@@ -380,7 +380,7 @@ AAC_DECODER_ERROR CBlock_ReadSectionData(
         if (numLinesInSecIdx >= MAX_SFB_HCR) {
           return AAC_DEC_PARSE_ERROR;
         }
-        if (top > (int)GetNumberOfScaleFactorBands(
+        if (top > (int32_t)GetNumberOfScaleFactorBands(
                       &pAacDecoderChannelInfo->icsInfo, pSamplingRateInfo)) {
           return AAC_DEC_PARSE_ERROR;
         }
@@ -436,26 +436,26 @@ AAC_DECODER_ERROR CBlock_ReadSectionData(
 static inline void InverseQuantizeBand(
     int32_t *RESTRICT spectrum, const int32_t *RESTRICT InverseQuantTabler,
     const int32_t *RESTRICT MantissaTabler,
-    const SCHAR *RESTRICT ExponentTabler, INT noLines, INT scale) {
+    const SCHAR *RESTRICT ExponentTabler, int32_t noLines, int32_t scale) {
   scale = scale + 1; /* +1 to compensate fMultDiv2 shift-right in loop */
 
   int32_t *RESTRICT ptr = spectrum;
   int32_t signedValue;
 
-  for (INT i = noLines; i--;) {
+  for (int32_t i = noLines; i--;) {
     if ((signedValue = *ptr++) != FL2FXCONST_DBL(0)) {
       int32_t value = fAbs(signedValue);
-      UINT freeBits = CntLeadingZeros(value);
-      UINT exponent = 32 - freeBits;
+      uint32_t freeBits = CntLeadingZeros(value);
+      uint32_t exponent = 32 - freeBits;
 
-      UINT x = (UINT)(LONG)value << (INT)freeBits;
+      uint32_t x = (uint32_t)(LONG)value << (int32_t)freeBits;
       x <<= 1; /* shift out sign bit to avoid masking later on */
-      UINT tableIndex = x >> 24;
+      uint32_t tableIndex = x >> 24;
       x = (x >> 20) & 0x0F;
 
-      UINT r0 = (UINT)(LONG)InverseQuantTabler[tableIndex + 0];
-      UINT r1 = (UINT)(LONG)InverseQuantTabler[tableIndex + 1];
-      UINT temp = (r1 - r0) * x + (r0 << 4);
+      uint32_t r0 = (uint32_t)(LONG)InverseQuantTabler[tableIndex + 0];
+      uint32_t r1 = (uint32_t)(LONG)InverseQuantTabler[tableIndex + 1];
+      uint32_t temp = (r1 - r0) * x + (r0 << 4);
 
       value = fMultDiv2((int32_t)temp, MantissaTabler[exponent]);
 
@@ -469,10 +469,10 @@ static inline void InverseQuantizeBand(
 }
 
 static inline int32_t maxabs_D(const int32_t *pSpectralCoefficient,
-                                const int noLines) {
+                                const int32_t noLines) {
   /* Find max spectral line value of the current sfb */
   int32_t locMax = (int32_t)0;
-  int i;
+  int32_t i;
 
   DWORD_ALIGNED(pSpectralCoefficient);
 
@@ -488,8 +488,8 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     SamplingRateInfo *pSamplingRateInfo, UCHAR *band_is_noise,
     UCHAR active_band_search) {
-  int window, group, groupwin, band;
-  int ScaleFactorBandsTransmitted =
+  int32_t window, group, groupwin, band;
+  int32_t ScaleFactorBandsTransmitted =
       GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);
   UCHAR *RESTRICT pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
   SHORT *RESTRICT pSfbScale = pAacDecoderChannelInfo->pDynData->aSfbScale;
@@ -515,8 +515,8 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
             BandOffsets[band];
         int32_t locMax;
 
-        const int noLines = BandOffsets[band + 1] - BandOffsets[band];
-        const int bnds = group * 16 + band;
+        const int32_t noLines = BandOffsets[band + 1] - BandOffsets[band];
+        const int32_t bnds = group * 16 + band;
 
         if ((pCodeBook[bnds] == ZERO_HCB) ||
             (pCodeBook[bnds] == INTENSITY_HCB) ||
@@ -578,13 +578,13 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
 
         */
 
-        int msb = pScaleFactor[bnds] >> 2;
+        int32_t msb = pScaleFactor[bnds] >> 2;
 
         /* Inverse quantize band only if it is not empty */
         if (locMax != int32_t(0)) {
-          int lsb = pScaleFactor[bnds] & 0x03;
+          int32_t lsb = pScaleFactor[bnds] & 0x03;
 
-          int scale = EvaluatePower43(&locMax, lsb);
+          int32_t scale = EvaluatePower43(&locMax, lsb);
 
           scale = CntLeadingZeros(locMax) - scale - 2;
 
@@ -601,7 +601,7 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
       /* Make sure the array is cleared to the end */
       SHORT start_clear = BandOffsets[ScaleFactorBandsTransmitted];
       SHORT end_clear = BandOffsets[total_bands];
-      int diff_clear = (int)(end_clear - start_clear);
+      int32_t diff_clear = (int32_t)(end_clear - start_clear);
       int32_t *pSpectralCoefficient =
           SPEC(pAacDecoderChannelInfo->pSpectralCoefficient, window,
                pAacDecoderChannelInfo->granuleLength) +
@@ -619,8 +619,8 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
 
 AAC_DECODER_ERROR CBlock_ReadSpectralData(
     HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, const UINT flags) {
-  int index, i;
+    const SamplingRateInfo *pSamplingRateInfo, const uint32_t flags) {
+  int32_t index, i;
   const SHORT *RESTRICT BandOffsets = GetScaleFactorBandOffsets(
       &pAacDecoderChannelInfo->icsInfo, pSamplingRateInfo);
 
@@ -632,29 +632,29 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
   FDKmemclear(pSpectralCoefficient, sizeof(SPECTRUM));
 
   if ((flags & AC_ER_HCR) == 0) {
-    int group;
-    int groupoffset;
+    int32_t group;
+    int32_t groupoffset;
     UCHAR *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
-    int ScaleFactorBandsTransmitted =
+    int32_t ScaleFactorBandsTransmitted =
         GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);
-    int granuleLength = pAacDecoderChannelInfo->granuleLength;
+    int32_t granuleLength = pAacDecoderChannelInfo->granuleLength;
 
     groupoffset = 0;
 
     /* plain huffman decoder  short */
-    int max_group = GetWindowGroups(&pAacDecoderChannelInfo->icsInfo);
+    int32_t max_group = GetWindowGroups(&pAacDecoderChannelInfo->icsInfo);
 
     for (group = 0; group < max_group; group++) {
-      int max_groupwin =
+      int32_t max_groupwin =
           GetWindowGroupLength(&pAacDecoderChannelInfo->icsInfo, group);
-      int band;
+      int32_t band;
 
-      int bnds = group * 16;
+      int32_t bnds = group * 16;
 
-      int bandOffset1 = BandOffsets[0];
+      int32_t bandOffset1 = BandOffsets[0];
       for (band = 0; band < ScaleFactorBandsTransmitted; band++, bnds++) {
         UCHAR currentCB = pCodeBook[bnds];
-        int bandOffset0 = bandOffset1;
+        int32_t bandOffset0 = bandOffset1;
         bandOffset1 = BandOffsets[band + 1];
 
         /* patch to run plain-huffman-decoder with vcb11 input codebooks
@@ -667,12 +667,12 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
              (currentCB != INTENSITY_HCB) && (currentCB != INTENSITY_HCB2))) {
           const CodeBookDescription *hcb =
               &AACcodeBookDescriptionTable[currentCB];
-          int step = hcb->Dimension;
-          int offset = hcb->Offset;
-          int bits = hcb->numBits;
-          int mask = (1 << bits) - 1;
+          int32_t step = hcb->Dimension;
+          int32_t offset = hcb->Offset;
+          int32_t bits = hcb->numBits;
+          int32_t mask = (1 << bits) - 1;
           const USHORT(*CodeBook)[HuffmanEntries] = hcb->CodeBook;
-          int groupwin;
+          int32_t groupwin;
 
           int32_t *mdctSpectrum =
               &pSpectralCoefficient[groupoffset * granuleLength];
@@ -680,7 +680,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
           if (offset == 0) {
             for (groupwin = 0; groupwin < max_groupwin; groupwin++) {
               for (index = bandOffset0; index < bandOffset1; index += step) {
-                int idx = CBlock_DecodeHuffmanWordCB(bs, CodeBook);
+                int32_t idx = CBlock_DecodeHuffmanWordCB(bs, CodeBook);
                 for (i = 0; i < step; i++, idx >>= bits) {
                   int32_t tmp = (int32_t)((idx & mask) - offset);
                   if (tmp != int32_t(0)) tmp = (FDKreadBit(bs)) ? -tmp : tmp;
@@ -688,7 +688,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
                 }
 
                 if (currentCB == ESCBOOK) {
-                  for (int j = 0; j < 2; j++)
+                  for (int32_t j = 0; j < 2; j++)
                     mdctSpectrum[index + j] = (int32_t)CBlock_GetEscape(
                         bs, (LONG)mdctSpectrum[index + j]);
                 }
@@ -698,12 +698,12 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
           } else {
             for (groupwin = 0; groupwin < max_groupwin; groupwin++) {
               for (index = bandOffset0; index < bandOffset1; index += step) {
-                int idx = CBlock_DecodeHuffmanWordCB(bs, CodeBook);
+                int32_t idx = CBlock_DecodeHuffmanWordCB(bs, CodeBook);
                 for (i = 0; i < step; i++, idx >>= bits) {
                   mdctSpectrum[index + i] = (int32_t)((idx & mask) - offset);
                 }
                 if (currentCB == ESCBOOK) {
-                  for (int j = 0; j < 2; j++)
+                  for (int32_t j = 0; j < 2; j++)
                     mdctSpectrum[index + j] = (int32_t)CBlock_GetEscape(
                         bs, (LONG)mdctSpectrum[index + j]);
                 }
@@ -724,7 +724,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
   {
     H_HCR_INFO hHcr = &pAacDecoderChannelInfo->pComData->overlay.aac.erHcrInfo;
 
-    int hcrStatus = 0;
+    int32_t hcrStatus = 0;
 
     /* advanced Huffman decoding starts here (HCR decoding :) */
     if (pAacDecoderChannelInfo->pDynData->specificTo.aac
@@ -785,22 +785,22 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                        UCHAR *band_is_noise) {
   const SHORT *swb_offset = GetScaleFactorBandOffsets(
       &pAacDecoderChannelInfo->icsInfo, pSamplingRateInfo);
-  int g, win, gwin, sfb, noiseFillingStartOffset, nfStartOffset_sfb;
+  int32_t g, win, gwin, sfb, noiseFillingStartOffset, nfStartOffset_sfb;
 
   /* Obtain noise level and scale factor offset. */
-  int noise_level = pAacDecoderChannelInfo->pDynData->specificTo.usac
+  int32_t noise_level = pAacDecoderChannelInfo->pDynData->specificTo.usac
                         .fd_noise_level_and_offset >>
                     5;
   const FIXP_SGL noiseVal_pos = noise_level_tab[noise_level];
 
   /* noise_offset can change even when noise_level=0. Neccesary for IGF stereo
    * filling */
-  const int noise_offset = (pAacDecoderChannelInfo->pDynData->specificTo.usac
+  const int32_t noise_offset = (pAacDecoderChannelInfo->pDynData->specificTo.usac
                                 .fd_noise_level_and_offset &
                             0x1f) -
                            16;
 
-  int max_sfb =
+  int32_t max_sfb =
       GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);
 
   noiseFillingStartOffset =
@@ -822,13 +822,13 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
   {
     for (g = 0, win = 0; g < GetWindowGroups(&pAacDecoderChannelInfo->icsInfo);
          g++) {
-      int windowGroupLength =
+      int32_t windowGroupLength =
           GetWindowGroupLength(&pAacDecoderChannelInfo->icsInfo, g);
       for (sfb = nfStartOffset_sfb; sfb < max_sfb; sfb++) {
-        int bin_start = swb_offset[sfb];
-        int bin_stop = swb_offset[sfb + 1];
+        int32_t bin_start = swb_offset[sfb];
+        int32_t bin_stop = swb_offset[sfb + 1];
 
-        int flagN = band_is_noise[g * 16 + sfb];
+        int32_t flagN = band_is_noise[g * 16 + sfb];
 
         /* if all bins of one sfb in one window group are zero modify the scale
          * factor by noise_offset */
@@ -845,11 +845,11 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
 
         ULONG seed = *nfRandomSeed;
         /* + 1 because exponent of MantissaTable[lsb][0] is always 1. */
-        int scale =
+        int32_t scale =
             (pAacDecoderChannelInfo->pDynData->aScaleFactor[g * 16 + sfb] >>
              2) +
             1;
-        int lsb =
+        int32_t lsb =
             pAacDecoderChannelInfo->pDynData->aScaleFactor[g * 16 + sfb] & 3;
         int32_t mantissa = MantissaTable[lsb][0];
 
@@ -858,7 +858,7 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
               SPEC(pAacDecoderChannelInfo->pSpectralCoefficient, win + gwin,
                    pAacDecoderChannelInfo->granuleLength);
 
-          int scale1 = scale - pAacDecoderChannelInfo->pDynData
+          int32_t scale1 = scale - pAacDecoderChannelInfo->pDynData
                                    ->aSfbScale[(win + gwin) * 16 + sfb];
           int32_t scaled_noiseVal_pos =
               scaleValue(fMultDiv2(noiseVal_pos, mantissa), scale1);
@@ -866,7 +866,7 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
 
           /* If the whole band is zero, just fill without checking */
           if (flagN) {
-            for (int bin = bin_start; bin < bin_stop; bin++) {
+            for (int32_t bin = bin_start; bin < bin_stop; bin++) {
               seed = (ULONG)(
                   (UINT64)seed * 69069 +
                   5); /* Inlined: UsacRandomSign - origin in usacdec_lpd.h */
@@ -876,7 +876,7 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
           }
           /*If band is sparsely filled, check for 0 and fill */
           else {
-            for (int bin = bin_start; bin < bin_stop; bin++) {
+            for (int32_t bin = bin_start; bin < bin_stop; bin++) {
               if (pSpec[bin] == (int32_t)0) {
                 seed = (ULONG)(
                     (UINT64)seed * 69069 +
@@ -899,11 +899,11 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
 AAC_DECODER_ERROR CBlock_ReadAcSpectralData(
     HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, const UINT frame_length,
-    const UINT flags) {
+    const SamplingRateInfo *pSamplingRateInfo, const uint32_t frame_length,
+    const uint32_t flags) {
   AAC_DECODER_ERROR errorAAC = AAC_DEC_OK;
   ARITH_CODING_ERROR error = ARITH_CODER_OK;
-  int arith_reset_flag, lg, numWin, win, winLen;
+  int32_t arith_reset_flag, lg, numWin, win, winLen;
   const SHORT *RESTRICT BandOffsets;
 
   /* number of transmitted spectral coefficients */
@@ -914,8 +914,8 @@ AAC_DECODER_ERROR CBlock_ReadAcSpectralData(
 
   numWin = GetWindowsPerFrame(&pAacDecoderChannelInfo->icsInfo);
   winLen = (IsLongBlock(&pAacDecoderChannelInfo->icsInfo))
-               ? (int)frame_length
-               : (int)frame_length / numWin;
+               ? (int32_t)frame_length
+               : (int32_t)frame_length / numWin;
 
   if (flags & AC_INDEP) {
     arith_reset_flag = 1;
@@ -943,9 +943,9 @@ bail:
 }
 
 void ApplyTools(CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
-                const SamplingRateInfo *pSamplingRateInfo, const UINT flags,
-                const UINT elFlags, const int channel,
-                const int common_window) {
+                const SamplingRateInfo *pSamplingRateInfo, const uint32_t flags,
+                const uint32_t elFlags, const int32_t channel,
+                const int32_t common_window) {
   if (!(flags & (AC_USAC | AC_RSVD50 | AC_MPEGD_RES | AC_RSV603DA))) {
     CPns_Apply(&pAacDecoderChannelInfo[channel]->data.aac.PnsData,
                &pAacDecoderChannelInfo[channel]->icsInfo,
@@ -966,8 +966,8 @@ void ApplyTools(CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
              nbands, (elFlags & AC_EL_ENHANCED_NOISE) ? 1 : 0, flags);
 }
 
-static int getWindow2Nr(int length, int shape) {
-  int nr = 0;
+static int32_t getWindow2Nr(int32_t length, int32_t shape) {
+  int32_t nr = 0;
 
   if (shape == 2) {
     /* Low Overlap, 3/4 zeroed */
@@ -977,35 +977,35 @@ static int getWindow2Nr(int length, int shape) {
   return nr;
 }
 
-int32_t get_gain(const int32_t *x, const int32_t *y, int n) {
+int32_t get_gain(const int32_t *x, const int32_t *y, int32_t n) {
   int32_t corr = (int32_t)0;
   int32_t ener = (int32_t)1;
 
-  int headroom_x = getScalefactor(x, n);
-  int headroom_y = getScalefactor(y, n);
+  int32_t headroom_x = getScalefactor(x, n);
+  int32_t headroom_y = getScalefactor(y, n);
 
   /*Calculate the normalization necessary due to addition*/
   /* Check for power of two /special case */
-  INT width_shift = (INT)(fNormz((int32_t)n));
+  int32_t width_shift = (int32_t)(fNormz((int32_t)n));
   /* Get the number of bits necessary minus one, because we need one sign bit
    * only */
   width_shift = 31 - width_shift;
 
-  for (int i = 0; i < n; i++) {
+  for (int32_t i = 0; i < n; i++) {
     corr +=
         fMultDiv2((x[i] << headroom_x), (y[i] << headroom_y)) >> width_shift;
     ener += fPow2Div2((y[i] << headroom_y)) >> width_shift;
   }
 
-  int exp_corr = (17 - headroom_x) + (17 - headroom_y) + width_shift + 1;
-  int exp_ener = ((17 - headroom_y) << 1) + width_shift + 1;
+  int32_t exp_corr = (17 - headroom_x) + (17 - headroom_y) + width_shift + 1;
+  int32_t exp_ener = ((17 - headroom_y) << 1) + width_shift + 1;
 
-  int temp_exp = 0;
+  int32_t temp_exp = 0;
   int32_t output = fDivNormSigned(corr, ener, &temp_exp);
 
-  int output_exp = (exp_corr - exp_ener) + temp_exp;
+  int32_t output_exp = (exp_corr - exp_ener) + temp_exp;
 
-  INT output_shift = 17 - output_exp;
+  int32_t output_shift = 17 - output_exp;
   output_shift = fMin(output_shift, 31);
 
   output = scaleValue(output, -output_shift);
@@ -1016,9 +1016,9 @@ int32_t get_gain(const int32_t *x, const int32_t *y, int n) {
 void CBlock_FrequencyToTime(
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
     CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t outSamples[],
-    const SHORT frameLen, const int frameOk, int32_t *pWorkBuffer1,
-    const INT aacOutDataHeadroom, UINT elFlags, INT elCh) {
-  int fr, fl, tl, nSpec;
+    const SHORT frameLen, const int32_t frameOk, int32_t *pWorkBuffer1,
+    const int32_t aacOutDataHeadroom, uint32_t elFlags, int32_t elCh) {
+  int32_t fr, fl, tl, nSpec;
 
 #if defined(FDK_ASSERT_ENABLE)
   LONG nSamples;
@@ -1063,10 +1063,10 @@ void CBlock_FrequencyToTime(
   }
 
   {
-    int last_frame_lost = pAacDecoderStaticChannelInfo->last_lpc_lost;
+    int32_t last_frame_lost = pAacDecoderStaticChannelInfo->last_lpc_lost;
 
     if (pAacDecoderStaticChannelInfo->last_core_mode == LPD) {
-      INT fac_FB = 1;
+      int32_t fac_FB = 1;
       if (elFlags & AC_EL_FULLBANDLPD) {
         fac_FB = 2;
       }
@@ -1081,20 +1081,20 @@ void CBlock_FrequencyToTime(
         synth = pWorkBuffer1 + PIT_MAX_MAX * fac_FB;
       }
 
-      int fac_length =
+      int32_t fac_length =
           (pAacDecoderChannelInfo->icsInfo.WindowSequence == BLOCK_SHORT)
               ? (frameLen >> 4)
               : (frameLen >> 3);
 
-      INT pitch[NB_SUBFR_SUPERFR + SYN_SFD];
+      int32_t pitch[NB_SUBFR_SUPERFR + SYN_SFD];
       int32_t pit_gain[NB_SUBFR_SUPERFR + SYN_SFD];
 
-      int nbDiv = (elFlags & AC_EL_FULLBANDLPD) ? 2 : 4;
-      int lFrame = (elFlags & AC_EL_FULLBANDLPD) ? frameLen / 2 : frameLen;
-      int nbSubfr =
+      int32_t nbDiv = (elFlags & AC_EL_FULLBANDLPD) ? 2 : 4;
+      int32_t lFrame = (elFlags & AC_EL_FULLBANDLPD) ? frameLen / 2 : frameLen;
+      int32_t nbSubfr =
           lFrame / (nbDiv * L_SUBFR); /* number of subframes per division */
-      int LpdSfd = (nbDiv * nbSubfr) >> 1;
-      int SynSfd = LpdSfd - BPF_SFD;
+      int32_t LpdSfd = (nbDiv * nbSubfr) >> 1;
+      int32_t SynSfd = LpdSfd - BPF_SFD;
 
       FDKmemclear(
           pitch,
@@ -1116,9 +1116,9 @@ void CBlock_FrequencyToTime(
           pAacDecoderChannelInfo->data.usac.fac_data_e[0] = 0;
         }
 
-        INT A_exp; /* linear prediction coefficients exponent */
+        int32_t A_exp; /* linear prediction coefficients exponent */
         {
-          for (int i = 0; i < M_LP_FILTER_ORDER; i++) {
+          for (int32_t i = 0; i < M_LP_FILTER_ORDER; i++) {
             A[i] = FX_DBL2FX_LPC(fixp_cos(
                 fMult(pAacDecoderStaticChannelInfo->lpc4_lsf[i],
                       FL2FXCONST_SGL((1 << LSPARG_SCALE) * M_PI / 6400.0)),
@@ -1170,11 +1170,11 @@ void CBlock_FrequencyToTime(
        * non-fullbandLpd*. The "else"-> just for fullbandLpd stereo*/
       if (!(elFlags & AC_EL_LPDSTEREOIDX)) {
         FDKmemcpy(pitch, pAacDecoderStaticChannelInfo->old_T_pf,
-                  SynSfd * sizeof(INT));
+                  SynSfd * sizeof(int32_t));
         FDKmemcpy(pit_gain, pAacDecoderStaticChannelInfo->old_gain_pf,
                   SynSfd * sizeof(int32_t));
 
-        for (int i = SynSfd; i < LpdSfd + 3; i++) {
+        for (int32_t i = SynSfd; i < LpdSfd + 3; i++) {
           pitch[i] = L_SUBFR;
           pit_gain[i] = (int32_t)0;
         }
@@ -1198,8 +1198,8 @@ void CBlock_FrequencyToTime(
         int32_t *p2_synth = pWorkBuffer1 + (PIT_MAX_MAX * fac_FB);
 
         /* recalculate pitch gain to allow postfilering on FAC area */
-        for (int i = 0; i < SynSfd + 2; i++) {
-          int T = pitch[i];
+        for (int32_t i = 0; i < SynSfd + 2; i++) {
+          int32_t T = pitch[i];
           int32_t gain = pit_gain[i];
 
           if (gain > (int32_t)0) {

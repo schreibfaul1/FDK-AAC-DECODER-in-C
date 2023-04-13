@@ -4245,7 +4245,7 @@ const FIXP_CFG BP_GF__FDK[] = {
     FL2FXCONST_CFG(0.66098278185255)};
 
 /* sac_bitdec */
-const INT samplingFreqTable[16] = {96000, 88200, 64000, 48000, 44100, 32000,
+const int32_t samplingFreqTable[16] = {96000, 88200, 64000, 48000, 44100, 32000,
                                    24000, 22050, 16000, 12000, 11025, 8000,
                                    7350,  0,     0,     0};
 
@@ -4416,7 +4416,7 @@ const UCHAR clipGainSFTable__FDK[] = {0, 1, 1, 1, 1, 2, 2, 2};
 
 const UCHAR pbStrideTable[] = {1, 2, 5, 28};
 
-const int smgTimeTable[] = {64, 128, 256, 512};
+const int32_t smgTimeTable[] = {64, 128, 256, 512};
 
 /* table is scaled by factor 0.5 */
 const FIXP_CFG envShapeDataTable__FDK[5][2] = {
@@ -4451,11 +4451,11 @@ const SCHAR row2residual[][MAX_M2_INPUT] = {{-1, 0},  {-1, 0},  {-1, -1},
  Return: nothing
 
 *******************************************************************************/
-void SpatialDequantGetCLDValues(int index, int32_t* cu, int32_t* cl) {
+void SpatialDequantGetCLDValues(int32_t index, int32_t* cu, int32_t* cl) {
   *cu = FX_CFG2FX_DBL(dequantCLD_c_l[index]);
   *cl = FX_CFG2FX_DBL(dequantCLD_c_l[31 - 1 - index]);
 }
 
-void SpatialDequantGetCLD2Values(int idx, int32_t* x) {
+void SpatialDequantGetCLD2Values(int32_t idx, int32_t* x) {
   *x = FX_CFG2FX_DBL(dequantCLD__FDK[idx]);
 }

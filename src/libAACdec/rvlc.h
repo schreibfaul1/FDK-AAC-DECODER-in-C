@@ -148,6 +148,6 @@ void CRvlc_Decode(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
 void CRvlc_ElementCheck(
     CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
-    const UINT flags, const INT elChannels);
+    const uint32_t flags, const int32_t elChannels);
 
 #endif /* RVLC_H */

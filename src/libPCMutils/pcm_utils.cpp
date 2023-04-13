@@ -107,11 +107,11 @@ change
 #include "version.h"
 
 void FDK_interleave(const int32_t *RESTRICT pIn, LONG *RESTRICT pOut,
-                    const UINT channels, const UINT frameSize,
-                    const UINT length) {
-  for (UINT sample = 0; sample < length; sample++) {
+                    const uint32_t channels, const uint32_t frameSize,
+                    const uint32_t length) {
+  for (uint32_t sample = 0; sample < length; sample++) {
     const int32_t *In = &pIn[sample];
-    for (UINT ch = 0; ch < channels; ch++) {
+    for (uint32_t ch = 0; ch < channels; ch++) {
       *pOut++ = (LONG)In[0];
       In += frameSize;
     }
@@ -119,11 +119,11 @@ void FDK_interleave(const int32_t *RESTRICT pIn, LONG *RESTRICT pOut,
 }
 
 void FDK_interleave(const int32_t *RESTRICT pIn, SHORT *RESTRICT pOut,
-                    const UINT channels, const UINT frameSize,
-                    const UINT length) {
-  for (UINT sample = 0; sample < length; sample++) {
+                    const uint32_t channels, const uint32_t frameSize,
+                    const uint32_t length) {
+  for (uint32_t sample = 0; sample < length; sample++) {
     const int32_t *In = &pIn[sample];
-    for (UINT ch = 0; ch < channels; ch++) {
+    for (uint32_t ch = 0; ch < channels; ch++) {
       *pOut++ = (SHORT)FX_DBL2FX_SGL(In[0]);
       In += frameSize;
     }
@@ -131,11 +131,11 @@ void FDK_interleave(const int32_t *RESTRICT pIn, SHORT *RESTRICT pOut,
 }
 
 void FDK_interleave(const FIXP_SGL *RESTRICT pIn, SHORT *RESTRICT pOut,
-                    const UINT channels, const UINT frameSize,
-                    const UINT length) {
-  for (UINT sample = 0; sample < length; sample++) {
+                    const uint32_t channels, const uint32_t frameSize,
+                    const uint32_t length) {
+  for (uint32_t sample = 0; sample < length; sample++) {
     const FIXP_SGL *In = &pIn[sample];
-    for (UINT ch = 0; ch < channels; ch++) {
+    for (uint32_t ch = 0; ch < channels; ch++) {
       *pOut++ = (SHORT)In[0];
       In += frameSize;
     }
@@ -143,12 +143,12 @@ void FDK_interleave(const FIXP_SGL *RESTRICT pIn, SHORT *RESTRICT pOut,
 }
 
 void FDK_deinterleave(const LONG *RESTRICT pIn, SHORT *RESTRICT _pOut,
-                      const UINT channels, const UINT frameSize,
-                      const UINT length) {
-  for (UINT ch = 0; ch < channels; ch++) {
+                      const uint32_t channels, const uint32_t frameSize,
+                      const uint32_t length) {
+  for (uint32_t ch = 0; ch < channels; ch++) {
     SHORT *pOut = _pOut + length * ch;
     const LONG *In = &pIn[ch];
-    for (UINT sample = 0; sample < frameSize; sample++) {
+    for (uint32_t sample = 0; sample < frameSize; sample++) {
       *pOut++ = (SHORT)(In[0] >> 16);
       In += channels;
     }
@@ -156,12 +156,12 @@ void FDK_deinterleave(const LONG *RESTRICT pIn, SHORT *RESTRICT _pOut,
 }
 
 void FDK_deinterleave(const LONG *RESTRICT pIn, LONG *RESTRICT _pOut,
-                      const UINT channels, const UINT frameSize,
-                      const UINT length) {
-  for (UINT ch = 0; ch < channels; ch++) {
+                      const uint32_t channels, const uint32_t frameSize,
+                      const uint32_t length) {
+  for (uint32_t ch = 0; ch < channels; ch++) {
     LONG *pOut = _pOut + length * ch;
     const LONG *In = &pIn[ch];
-    for (UINT sample = 0; sample < frameSize; sample++) {
+    for (uint32_t sample = 0; sample < frameSize; sample++) {
       *pOut++ = In[0];
       In += channels;
     }
@@ -169,12 +169,12 @@ void FDK_deinterleave(const LONG *RESTRICT pIn, LONG *RESTRICT _pOut,
 }
 
 void FDK_deinterleave(const SHORT *RESTRICT pIn, SHORT *RESTRICT _pOut,
-                      const UINT channels, const UINT frameSize,
-                      const UINT length) {
-  for (UINT ch = 0; ch < channels; ch++) {
+                      const uint32_t channels, const uint32_t frameSize,
+                      const uint32_t length) {
+  for (uint32_t ch = 0; ch < channels; ch++) {
     SHORT *pOut = _pOut + length * ch;
     const SHORT *In = &pIn[ch];
-    for (UINT sample = 0; sample < frameSize; sample++) {
+    for (uint32_t sample = 0; sample < frameSize; sample++) {
       *pOut++ = In[0];
       In += channels;
     }
@@ -182,12 +182,12 @@ void FDK_deinterleave(const SHORT *RESTRICT pIn, SHORT *RESTRICT _pOut,
 }
 
 void FDK_deinterleave(const SHORT *RESTRICT pIn, LONG *RESTRICT _pOut,
-                      const UINT channels, const UINT frameSize,
-                      const UINT length) {
-  for (UINT ch = 0; ch < channels; ch++) {
+                      const uint32_t channels, const uint32_t frameSize,
+                      const uint32_t length) {
+  for (uint32_t ch = 0; ch < channels; ch++) {
     LONG *pOut = _pOut + length * ch;
     const SHORT *In = &pIn[ch];
-    for (UINT sample = 0; sample < frameSize; sample++) {
+    for (uint32_t sample = 0; sample < frameSize; sample++) {
       *pOut++ = (LONG)In[0] << 16;
       In += channels;
     }

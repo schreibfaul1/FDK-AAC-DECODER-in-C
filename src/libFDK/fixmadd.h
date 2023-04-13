@@ -308,26 +308,26 @@ inline int32_t fixmsub_SS(int32_t x, const FIXP_SGL a, const FIXP_SGL b) {
 #ifdef FUNCTION_fixmadddiv2_DD
 #define fixpadddiv2_D(x, a) fixmadddiv2_DD(x, a, a)
 #else
-inline INT fixpadddiv2_D(int32_t x, const int32_t a) {
+inline int32_t fixpadddiv2_D(int32_t x, const int32_t a) {
   return (x + fPow2Div2(a));
 }
 #endif
 #endif
 #if !defined(FUNCTION_fixpow2add_D)
-inline INT fixpadd_D(int32_t x, const int32_t a) { return (x + fPow2(a)); }
+inline int32_t fixpadd_D(int32_t x, const int32_t a) { return (x + fPow2(a)); }
 #endif
 
 #if !defined(FUNCTION_fixpow2adddiv2_S)
 #ifdef FUNCTION_fixmadddiv2_SS
 #define fixpadddiv2_S(x, a) fixmadddiv2_SS(x, a, a)
 #else
-inline INT fixpadddiv2_S(int32_t x, const FIXP_SGL a) {
+inline int32_t fixpadddiv2_S(int32_t x, const FIXP_SGL a) {
   return (x + fPow2Div2(a));
 }
 #endif
 #endif
 #if !defined(FUNCTION_fixpow2add_S)
-inline INT fixpadd_S(int32_t x, const FIXP_SGL a) { return (x + fPow2(a)); }
+inline int32_t fixpadd_S(int32_t x, const FIXP_SGL a) { return (x + fPow2(a)); }
 #endif
 
 #endif /* FIXMADD_H */

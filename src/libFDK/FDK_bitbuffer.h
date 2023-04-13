@@ -103,6 +103,7 @@ amm-info@iis.fraunhofer.de
 #ifndef FDK_BITBUFFER_H
 #define FDK_BITBUFFER_H
 
+#include <stdint.h>
 #include "FDK_archdef.h"
 #include "../libSYS/machine_type.h"
 
@@ -110,14 +111,14 @@ amm-info@iis.fraunhofer.de
 #define MAX_BUFSIZE_BYTES (0x10000000)
 
 typedef struct {
-  UINT ValidBits;
-  UINT ReadOffset;
-  UINT WriteOffset;
-  UINT BitNdx;
+  uint32_t ValidBits;
+  uint32_t ReadOffset;
+  uint32_t WriteOffset;
+  uint32_t BitNdx;
 
   UCHAR *Buffer;
-  UINT bufSize;
-  UINT bufBits;
+  uint32_t bufSize;
+  uint32_t bufBits;
 } FDK_BITBUF;
 
 typedef FDK_BITBUF *HANDLE_FDK_BITBUF;
@@ -126,49 +127,49 @@ typedef FDK_BITBUF *HANDLE_FDK_BITBUF;
 extern "C" {
 #endif
 
-extern const UINT BitMask[32 + 1];
+extern const uint32_t BitMask[32 + 1];
 
 /**  The BitBuffer Functions are called straight from FDK_bitstream Interface.
      For Functions functional survey look there.
 */
 
 void FDK_CreateBitBuffer(HANDLE_FDK_BITBUF *hBitBuffer, UCHAR *pBuffer,
-                         UINT bufSize);
+                         uint32_t bufSize);
 
 void FDK_InitBitBuffer(HANDLE_FDK_BITBUF hBitBuffer, UCHAR *pBuffer,
-                       UINT bufSize, UINT validBits);
+                       uint32_t bufSize, uint32_t validBits);
 
 void FDK_ResetBitBuffer(HANDLE_FDK_BITBUF hBitBuffer);
 
 void FDK_DeleteBitBuffer(HANDLE_FDK_BITBUF hBitBuffer);
 
-INT FDK_get(HANDLE_FDK_BITBUF hBitBuffer, const UINT numberOfBits);
+int32_t FDK_get(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits);
 
-INT FDK_get32(HANDLE_FDK_BITBUF hBitBuf);
+int32_t FDK_get32(HANDLE_FDK_BITBUF hBitBuf);
 
-void FDK_put(HANDLE_FDK_BITBUF hBitBuffer, UINT value, const UINT numberOfBits);
+void FDK_put(HANDLE_FDK_BITBUF hBitBuffer, uint32_t value, const uint32_t numberOfBits);
 
-INT FDK_getBwd(HANDLE_FDK_BITBUF hBitBuffer, const UINT numberOfBits);
-void FDK_putBwd(HANDLE_FDK_BITBUF hBitBuffer, UINT value,
-                const UINT numberOfBits);
+int32_t FDK_getBwd(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits);
+void FDK_putBwd(HANDLE_FDK_BITBUF hBitBuffer, uint32_t value,
+                const uint32_t numberOfBits);
 
-void FDK_pushBack(HANDLE_FDK_BITBUF hBitBuffer, const UINT numberOfBits,
+void FDK_pushBack(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits,
                   UCHAR config);
 
-void FDK_pushForward(HANDLE_FDK_BITBUF hBitBuffer, const UINT numberOfBits,
+void FDK_pushForward(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits,
                      UCHAR config);
 
-UINT FDK_getValidBits(HANDLE_FDK_BITBUF hBitBuffer);
+uint32_t FDK_getValidBits(HANDLE_FDK_BITBUF hBitBuffer);
 
-INT FDK_getFreeBits(HANDLE_FDK_BITBUF hBitBuffer);
+int32_t FDK_getFreeBits(HANDLE_FDK_BITBUF hBitBuffer);
 
 void FDK_Feed(HANDLE_FDK_BITBUF hBitBuffer, const UCHAR inputBuffer[],
-              const UINT bufferSize, UINT *bytesValid);
+              const uint32_t bufferSize, uint32_t *bytesValid);
 
 void FDK_Copy(HANDLE_FDK_BITBUF hBitBufDst, HANDLE_FDK_BITBUF hBitBufSrc,
-              UINT *bytesValid);
+              uint32_t *bytesValid);
 
-void FDK_Fetch(HANDLE_FDK_BITBUF hBitBuffer, UCHAR outBuf[], UINT *writeBytes);
+void FDK_Fetch(HANDLE_FDK_BITBUF hBitBuffer, UCHAR outBuf[], uint32_t *writeBytes);
 
 #ifdef __cplusplus
 }

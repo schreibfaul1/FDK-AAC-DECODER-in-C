@@ -107,8 +107,8 @@ amm-info@iis.fraunhofer.de
 
 void initParameterSmoothing(spatialDec *self);
 void SpatialDecSmoothM1andM2(spatialDec *self, const SPATIAL_BS_FRAME *frame,
-                             int ps);
+                             int32_t ps);
 void SpatialDecSmoothOPD(spatialDec *self, const SPATIAL_BS_FRAME *frame,
-                         int ps);
+                         int32_t ps);
 
 #endif

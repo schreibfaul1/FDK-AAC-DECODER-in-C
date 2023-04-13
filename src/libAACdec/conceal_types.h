@@ -143,9 +143,9 @@ typedef struct {
 
   CConcealmentMethod method;
 
-  int numFadeOutFrames;
-  int numFadeInFrames;
-  int numMuteReleaseFrames;
+  int32_t numFadeOutFrames;
+  int32_t numFadeInFrames;
+  int32_t numMuteReleaseFrames;
   int32_t comfortNoiseLevel;
 
 } CConcealParams;
@@ -162,16 +162,16 @@ typedef struct {
   FIXP_CNCL spectralCoefficient[1024];
   SHORT specScale[8];
 
-  INT iRandomPhase;
-  INT prevFrameOk[2];
-  INT cntValidFrames;
-  INT cntFadeFrames; /* State for signal fade-in/out */
+  int32_t iRandomPhase;
+  int32_t prevFrameOk[2];
+  int32_t cntValidFrames;
+  int32_t cntFadeFrames; /* State for signal fade-in/out */
   /* States for signal fade-out of frames with more than one window/subframe -
     [0] used by Update CntFadeFrames mode of CConcealment_ApplyFadeOut, [1] used
     by FadeOut mode */
-  int winGrpOffset[2]; /* State for signal fade-out of frames with more than one
+  int32_t winGrpOffset[2]; /* State for signal fade-out of frames with more than one
                           window/subframe */
-  int attGrpOffset[2]; /* State for faster signal fade-out of frames with
+  int32_t attGrpOffset[2]; /* State for faster signal fade-out of frames with
                           transient signal parts */
 
   SCHAR lastRenderMode;
@@ -192,7 +192,7 @@ typedef struct {
 
   FIXP_LPC lsf4[M_LP_FILTER_ORDER];
   int32_t last_tcx_gain;
-  INT last_tcx_gain_e;
+  int32_t last_tcx_gain_e;
   ULONG TDNoiseSeed;
   int32_t TDNoiseStates[3];
   FIXP_SGL TDNoiseCoef[3];

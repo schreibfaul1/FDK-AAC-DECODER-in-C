@@ -172,9 +172,9 @@ C_AALLOC_MEM2(QmfOverlapBuffer16, int32_t, 2 * QMF_DOMAIN_OV_TIMESLOTS_16 * QMF_
 	Dimension: #((8) + (1))                                                   */
 C_AALLOC_MEM2(QmfOverlapBuffer32, int32_t, 2 * QMF_DOMAIN_OV_TIMESLOTS_32 * QMF_DOMAIN_MAX_QMF_PROC_BANDS, ((8) + (1)))
 
-static int FDK_QmfDomain_FreePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
-	int err = 0;
-	int ch;
+static int32_t FDK_QmfDomain_FreePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
+	int32_t err = 0;
+	int32_t ch;
 
 	for(ch = 0; ch < ((8) + (1)); ch++) {
 		if(qd->QmfDomainIn[ch].pAnaQmfStates) {
@@ -228,14 +228,14 @@ static int FDK_QmfDomain_FreePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
 	return err;
 }
 
-static int FDK_QmfDomain_AllocatePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
-	int                      err = 0;
-	int                      ch;
+static int32_t FDK_QmfDomain_AllocatePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
+	int32_t                      err = 0;
+	int32_t                      ch;
 	HANDLE_FDK_QMF_DOMAIN_GC gc = &qd->globalConf;
 
 	if((gc->nInputChannels > ((8) + (1))) || (gc->nOutputChannels > ((8) + (1)))) return err = 1;
 	for(ch = 0; ch < gc->nInputChannels; ch++) {
-		int size;
+		int32_t size;
 
 		size = gc->nBandsAnalysis * 10;
 		if(size > 0) {
@@ -316,7 +316,7 @@ static int FDK_QmfDomain_AllocatePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
 	}
 
 	for(ch = 0; ch < gc->nOutputChannels; ch++) {
-		int size = gc->nBandsSynthesis * 9;
+		int32_t size = gc->nBandsSynthesis * 9;
 		if(size > 0) {
 			if(qd->QmfDomainOut[ch].pSynQmfStates == NULL) {
 				if(NULL == (qd->QmfDomainOut[ch].pSynQmfStates = GetSynQmfStates(ch))) goto bail;
@@ -334,7 +334,7 @@ bail:
 
 QMF_DOMAIN_ERROR FDK_QmfDomain_ClearPersistentMemory(HANDLE_FDK_QMF_DOMAIN hqd) {
 	QMF_DOMAIN_ERROR err = QMF_DOMAIN_OK;
-	int              ch, size;
+	int32_t              ch, size;
 	if(hqd) {
 		HANDLE_FDK_QMF_DOMAIN_GC gc = &hqd->globalConf;
 
@@ -375,8 +375,8 @@ QMF_DOMAIN_ERROR FDK_QmfDomain_ClearPersistentMemory(HANDLE_FDK_QMF_DOMAIN hqd) 
 */
 static int32_t *FDK_getWorkBuffer(int32_t **pWorkBuffer, USHORT workBufferOffset, USHORT workBufferSectSize,
 								   USHORT memSize) {
-	int       idx1;
-	int       idx2;
+	int32_t       idx1;
+	int32_t       idx2;
 	int32_t *pwb;
 
 	/* a section must be a multiple of the number of processing bands (currently
@@ -402,10 +402,10 @@ static int32_t *FDK_getWorkBuffer(int32_t **pWorkBuffer, USHORT workBufferOffset
 	return pwb;
 }
 
-static int FDK_QmfDomain_FeedWorkBuffer(HANDLE_FDK_QMF_DOMAIN qd, int ch, int32_t **pWorkBuffer,
-										USHORT workBufferOffset, USHORT workBufferSectSize, int size) {
-	int err = 0;
-	int mem_needed;
+static int32_t FDK_QmfDomain_FeedWorkBuffer(HANDLE_FDK_QMF_DOMAIN qd, int32_t ch, int32_t **pWorkBuffer,
+										USHORT workBufferOffset, USHORT workBufferSectSize, int32_t size) {
+	int32_t err = 0;
+	int32_t mem_needed;
 
 	mem_needed = qd->QmfDomainIn[ch].workBuf_nBands * qd->QmfDomainIn[ch].workBuf_nTimeSlots * CMPLX_MOD;
 	if(mem_needed > size) { return (err = 1); }
@@ -416,20 +416,20 @@ static int FDK_QmfDomain_FeedWorkBuffer(HANDLE_FDK_QMF_DOMAIN qd, int ch, int32_
 	return err;
 }
 
-int FDK_QmfDomain_IsInitialized(const HANDLE_FDK_QMF_DOMAIN qd) {
+int32_t FDK_QmfDomain_IsInitialized(const HANDLE_FDK_QMF_DOMAIN qd) {
 	FDK_ASSERT(qd != NULL);
 	return ((qd->QmfDomainIn[0].pAnaQmfStates == NULL) && (qd->QmfDomainOut[0].pSynQmfStates == NULL)) ? 0 : 1;
 }
 
-int FDK_QmfDomain_InitFilterBank(HANDLE_FDK_QMF_DOMAIN qd, UINT extra_flags) {
+int32_t FDK_QmfDomain_InitFilterBank(HANDLE_FDK_QMF_DOMAIN qd, uint32_t extra_flags) {
 	FDK_ASSERT(qd != NULL);
-	int                      err = 0;
-	int                      ch, ts;
+	int32_t                      err = 0;
+	int32_t                      ch, ts;
 	HANDLE_FDK_QMF_DOMAIN_GC gc = &qd->globalConf;
-	int                      noCols = gc->nQmfTimeSlots;
-	int                      lsb = gc->nBandsAnalysis;
-	int                      usb = fMin((INT)gc->nBandsSynthesis, 64);
-	int                      nProcBands = gc->nQmfProcBands;
+	int32_t                      noCols = gc->nQmfTimeSlots;
+	int32_t                      lsb = gc->nBandsAnalysis;
+	int32_t                      usb = fMin((int32_t)gc->nBandsSynthesis, 64);
+	int32_t                      nProcBands = gc->nQmfProcBands;
 	FDK_ASSERT(nProcBands % ALIGNMENT_DEFAULT == 0);
 
 	if(extra_flags & QMF_FLAG_MPSLDFB) {
@@ -445,11 +445,11 @@ int FDK_QmfDomain_InitFilterBank(HANDLE_FDK_QMF_DOMAIN qd, UINT extra_flags) {
 		}
 		/* This assumes the workbuffer defined for ch0 is the big one being used to
 		 * hold one full frame of QMF data. */
-		int32_t **ptr = qd->QmfDomainIn[fMin(ch, fMax((INT)gc->nQmfProcChannels - 1, 0))]
+		int32_t **ptr = qd->QmfDomainIn[fMin(ch, fMax((int32_t)gc->nQmfProcChannels - 1, 0))]
 							 .pWorkBuffer; /* non-persistent workbuffer */
-		USHORT workBufferOffset = qd->QmfDomainIn[fMin(ch, fMax((INT)gc->nQmfProcChannels - 1, 0))].workBufferOffset;
+		USHORT workBufferOffset = qd->QmfDomainIn[fMin(ch, fMax((int32_t)gc->nQmfProcChannels - 1, 0))].workBufferOffset;
 		USHORT workBufferSectSize =
-			qd->QmfDomainIn[fMin(ch, fMax((INT)gc->nQmfProcChannels - 1, 0))].workBufferSectSize;
+			qd->QmfDomainIn[fMin(ch, fMax((int32_t)gc->nQmfProcChannels - 1, 0))].workBufferSectSize;
 
 		if((ptr == NULL) && (gc->nQmfTimeSlots != 0)) {
 			err = 1;
@@ -479,8 +479,8 @@ int FDK_QmfDomain_InitFilterBank(HANDLE_FDK_QMF_DOMAIN qd, UINT extra_flags) {
 
 	for(ch = 0; ch < gc->nOutputChannels; ch++) {
 		int32_t outGain_m = qd->QmfDomainOut[ch].fb.outGain_m;
-		int      outGain_e = qd->QmfDomainOut[ch].fb.outGain_e;
-		int      outScale = qmfGetOutScalefactor(&qd->QmfDomainOut[ch].fb);
+		int32_t      outGain_e = qd->QmfDomainOut[ch].fb.outGain_e;
+		int32_t      outScale = qmfGetOutScalefactor(&qd->QmfDomainOut[ch].fb);
 		err |= qmfInitSynthesisFilterBank(&qd->QmfDomainOut[ch].fb, qd->QmfDomainOut[ch].pSynQmfStates, noCols,
 										  (qd->QmfDomainOut[ch].fb.lsb == 0) ? lsb : qd->QmfDomainOut[ch].fb.lsb,
 										  (qd->QmfDomainOut[ch].fb.usb == 0) ? usb : qd->QmfDomainOut[ch].fb.usb,
@@ -492,13 +492,13 @@ int FDK_QmfDomain_InitFilterBank(HANDLE_FDK_QMF_DOMAIN qd, UINT extra_flags) {
 	return err;
 }
 
-void FDK_QmfDomain_SaveOverlap(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int offset) {
+void FDK_QmfDomain_SaveOverlap(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int32_t offset) {
 	FDK_ASSERT(qd_ch != NULL);
-	int                      ts;
+	int32_t                      ts;
 	HANDLE_FDK_QMF_DOMAIN_GC gc = qd_ch->pGlobalConf;
-	int                      ovSlots = gc->nQmfOvTimeSlots;
-	int                      nCols = gc->nQmfTimeSlots;
-	int                      nProcBands = gc->nQmfProcBands;
+	int32_t                      ovSlots = gc->nQmfOvTimeSlots;
+	int32_t                      nCols = gc->nQmfTimeSlots;
+	int32_t                      nProcBands = gc->nQmfProcBands;
 	int32_t               **qmfReal = qd_ch->hQmfSlotsReal;
 	int32_t               **qmfImag = qd_ch->hQmfSlotsImag;
 	QMF_SCALE_FACTOR        *pScaling = &qd_ch->scaling;
@@ -520,22 +520,22 @@ void FDK_QmfDomain_SaveOverlap(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int offset) {
 #define SCALE2EXP(s) (15 - (s))
 #define EXP2SCALE(e) (15 - (e))
 
-void FDK_QmfDomain_GetSlot(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int ts, const int start_band,
-						   const int stop_band, int32_t *pQmfOutReal, int32_t *pQmfOutImag, const int exp_out) {
+void FDK_QmfDomain_GetSlot(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int32_t ts, const int32_t start_band,
+						   const int32_t stop_band, int32_t *pQmfOutReal, int32_t *pQmfOutImag, const int32_t exp_out) {
 	FDK_ASSERT(qd_ch != NULL);
 	FDK_ASSERT(pQmfOutReal != NULL);
 	HANDLE_FDK_QMF_DOMAIN_GC gc = qd_ch->pGlobalConf;
 	const int32_t          *real = qd_ch->hQmfSlotsReal[ts];
 	const int32_t          *imag = qd_ch->hQmfSlotsImag[ts];
-	const int                ovSlots = gc->nQmfOvTimeSlots;
-	const int                exp_lb = SCALE2EXP((ts < ovSlots) ? qd_ch->scaling.ov_lb_scale : qd_ch->scaling.lb_scale);
-	const int                exp_hb = SCALE2EXP(qd_ch->scaling.hb_scale);
-	const int                lsb = qd_ch->fb.lsb;
-	const int                usb = qd_ch->fb.usb;
-	int                      b = start_band;
-	int                      lb_sf, hb_sf;
+	const int32_t                ovSlots = gc->nQmfOvTimeSlots;
+	const int32_t                exp_lb = SCALE2EXP((ts < ovSlots) ? qd_ch->scaling.ov_lb_scale : qd_ch->scaling.lb_scale);
+	const int32_t                exp_hb = SCALE2EXP(qd_ch->scaling.hb_scale);
+	const int32_t                lsb = qd_ch->fb.lsb;
+	const int32_t                usb = qd_ch->fb.usb;
+	int32_t                      b = start_band;
+	int32_t                      lb_sf, hb_sf;
 
-	int target_exp = ALGORITHMIC_SCALING_IN_ANALYSIS_FILTERBANK + qd_ch->fb.filterScale;
+	int32_t target_exp = ALGORITHMIC_SCALING_IN_ANALYSIS_FILTERBANK + qd_ch->fb.filterScale;
 
 	FDK_ASSERT(ts < (gc->nQmfTimeSlots + gc->nQmfOvTimeSlots));
 	FDK_ASSERT(start_band >= 0);
@@ -574,12 +574,12 @@ void FDK_QmfDomain_GetSlot(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int ts, c
 	}
 }
 
-void FDK_QmfDomain_GetWorkBuffer(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int ts, int32_t **ppQmfReal,
+void FDK_QmfDomain_GetWorkBuffer(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int32_t ts, int32_t **ppQmfReal,
 								 int32_t **ppQmfImag) {
 	FDK_ASSERT(qd_ch != NULL);
 	FDK_ASSERT(ppQmfReal != NULL);
 	FDK_ASSERT(ppQmfImag != NULL);
-	const int  bands = qd_ch->workBuf_nBands;
+	const int32_t  bands = qd_ch->workBuf_nBands;
 	int32_t **pWorkBuf = qd_ch->pWorkBuffer;
 	USHORT     workBufferOffset = qd_ch->workBufferOffset;
 	USHORT     workBufferSectSize = qd_ch->workBufferSectSize;
@@ -607,9 +607,9 @@ void FDK_QmfDomain_WorkBuffer2ProcChannel(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch) 
 	}
 	else {
 		/* copy parked new QMF data to processing channel */
-		const int bands = qd_ch->workBuf_nBands;
-		const int slots = qd_ch->workBuf_nTimeSlots;
-		int       ts;
+		const int32_t bands = qd_ch->workBuf_nBands;
+		const int32_t slots = qd_ch->workBuf_nTimeSlots;
+		int32_t       ts;
 		for(ts = 0; ts < slots; ts++) {
 			FDKmemcpy(qd_ch->hQmfSlotsReal[gc->nQmfOvTimeSlots + ts],
 					  FDK_getWorkBuffer(pWorkBuf, workBufferOffset, workBufferSectSize, bands),
@@ -635,9 +635,9 @@ void FDK_QmfDomain_QmfData2HBE(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int32_t **ppQmfRe
 	if(FDK_getWorkBuffer(pWorkBuf, workBufferOffset, workBufferSectSize,
 						 qd_ch->workBuf_nBands) ==
 	   qd_ch->hQmfSlotsReal[gc->nQmfOvTimeSlots]) {  // left channel (anaMatrix)
-		int       ts;
-		const int bands = gc->nBandsAnalysis;
-		const int slots = qd_ch->workBuf_nTimeSlots;
+		int32_t       ts;
+		const int32_t bands = gc->nBandsAnalysis;
+		const int32_t slots = qd_ch->workBuf_nTimeSlots;
 		FDK_ASSERT(bands <= 64);
 		for(ts = 0; ts < slots; ts++) {
 			/* copy current data of processing channel */
@@ -655,9 +655,9 @@ void FDK_QmfDomain_QmfData2HBE(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int32_t **ppQmfRe
 		}
 	}
 	else {  // right channel (parkBuf)
-		const int bands = qd_ch->workBuf_nBands;
-		const int slots = qd_ch->workBuf_nTimeSlots;
-		int       ts;
+		const int32_t bands = qd_ch->workBuf_nBands;
+		const int32_t slots = qd_ch->workBuf_nTimeSlots;
+		int32_t       ts;
 		FDK_ASSERT(qd_ch->workBuf_nBands == gc->nBandsAnalysis);
 		for(ts = 0; ts < slots; ts++) {
 			/* copy HBE QMF data buffer to processing channel */
@@ -703,7 +703,7 @@ static void FDK_QmfDomain_ClearConfigured(HANDLE_FDK_QMF_DOMAIN_GC hgc) {
 }
 
 static void FDK_QmfDomain_ClearFilterBank(HANDLE_FDK_QMF_DOMAIN hqd) {
-	int ch;
+	int32_t ch;
 
 	for(ch = 0; ch < ((8) + (1)); ch++) { FDKmemclear(&hqd->QmfDomainIn[ch].fb, sizeof(hqd->QmfDomainIn[ch].fb)); }
 
@@ -713,12 +713,12 @@ static void FDK_QmfDomain_ClearFilterBank(HANDLE_FDK_QMF_DOMAIN hqd) {
 QMF_DOMAIN_ERROR FDK_QmfDomain_Configure(HANDLE_FDK_QMF_DOMAIN hqd) {
 	FDK_ASSERT(hqd != NULL);
 	QMF_DOMAIN_ERROR err = QMF_DOMAIN_OK;
-	int              i, size_main, size, size_temp = 0;
+	int32_t              i, size_main, size, size_temp = 0;
 
 	HANDLE_FDK_QMF_DOMAIN_GC hgc = &hqd->globalConf;
 	int32_t               **pWorkBuffer = hgc->pWorkBuffer;
 
-	int hasChanged = 0;
+	int32_t hasChanged = 0;
 
 	if((hgc->nQmfProcChannels_requested > 0) && (hgc->nQmfProcBands_requested != 64)) { return QMF_DOMAIN_INIT_ERROR; }
 	if(hgc->nBandsAnalysis_requested > hgc->nQmfProcBands_requested) {
@@ -850,7 +850,7 @@ QMF_DOMAIN_ERROR FDK_QmfDomain_Configure(HANDLE_FDK_QMF_DOMAIN hqd) {
 				/* Although lsb and usb are set in the SBR module, they are initialized
 				 * at this point due to the case of using MPS without SBR. */
 				hqd->QmfDomainOut[i].fb.lsb = hgc->nBandsAnalysis_requested;
-				hqd->QmfDomainOut[i].fb.usb = fMin((INT)hgc->nBandsSynthesis_requested, 64);
+				hqd->QmfDomainOut[i].fb.usb = fMin((int32_t)hgc->nBandsSynthesis_requested, 64);
 			}
 		}
 		if(FDK_QmfDomain_InitFilterBank(hqd, 0)) { err = QMF_DOMAIN_INIT_ERROR; }

@@ -290,7 +290,7 @@ mpegSurroundDecoder_IsFullMpegSurroundDecoderInstanceAvailable(
  * \return SACDEC_ERROR error code
  */
 SACDEC_ERROR mpegSurroundDecoder_Open(
-    CMpegSurroundDecoder **pMpegSurroundDecoder, int stereoConfigIndex,
+    CMpegSurroundDecoder **pMpegSurroundDecoder, int32_t stereoConfigIndex,
     HANDLE_FDK_QMF_DOMAIN pQmfDomain);
 
 /**
@@ -315,14 +315,14 @@ SACDEC_ERROR mpegSurroundDecoder_Init(
  */
 SACDEC_ERROR mpegSurroundDecoder_Config(
     CMpegSurroundDecoder *pMpegSurroundDecoder, HANDLE_FDK_BITSTREAM hBs,
-    AUDIO_OBJECT_TYPE coreCodec, INT samplingRate, INT frameSize,
-    INT stereoConfigIndex, INT coreSbrFrameLengthIndex, INT configBytes,
+    AUDIO_OBJECT_TYPE coreCodec, int32_t samplingRate, int32_t frameSize,
+    int32_t stereoConfigIndex, int32_t coreSbrFrameLengthIndex, int32_t configBytes,
     const UCHAR configMode, UCHAR *configChanged);
 
 SACDEC_ERROR
 mpegSurroundDecoder_ConfigureQmfDomain(
     CMpegSurroundDecoder *pMpegSurroundDecoder,
-    SAC_INPUT_CONFIG sac_dec_interface, UINT coreSamplingRate,
+    SAC_INPUT_CONFIG sac_dec_interface, uint32_t coreSamplingRate,
     AUDIO_OBJECT_TYPE coreCodec);
 
 /**
@@ -336,9 +336,9 @@ mpegSurroundDecoder_ConfigureQmfDomain(
  *
  * \return  Error code.
  */
-int mpegSurroundDecoder_ParseNoHeader(
+int32_t mpegSurroundDecoder_ParseNoHeader(
     CMpegSurroundDecoder *pMpegSurroundDecoder, HANDLE_FDK_BITSTREAM hBs,
-    int *pMpsDataBits, int fGlobalIndependencyFlag);
+    int32_t *pMpsDataBits, int32_t fGlobalIndependencyFlag);
 
 /* #ifdef SACDEC_MPS_ENABLE */
 /**
@@ -359,10 +359,10 @@ int mpegSurroundDecoder_ParseNoHeader(
  *
  * \return  Error code.
  */
-int mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
-                              HANDLE_FDK_BITSTREAM hBs, int *pMpsDataBits,
-                              AUDIO_OBJECT_TYPE coreCodec, int sampleRate,
-                              int frameSize, int fGlobalIndependencyFlag);
+int32_t mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
+                              HANDLE_FDK_BITSTREAM hBs, int32_t *pMpsDataBits,
+                              AUDIO_OBJECT_TYPE coreCodec, int32_t sampleRate,
+                              int32_t frameSize, int32_t fGlobalIndependencyFlag);
 /* #endif */
 
 /**
@@ -408,15 +408,15 @@ int mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
  *
  * \return  Error code.
  */
-int mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder,
+int32_t mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder,
                               PCM_MPS *input, PCM_MPS *pTimeData,
-                              const int timeDataSize, int timeDataFrameSize,
-                              int *nChannels, int *frameSize, int sampleRate,
+                              const int32_t timeDataSize, int32_t timeDataFrameSize,
+                              int32_t *nChannels, int32_t *frameSize, int32_t sampleRate,
                               AUDIO_OBJECT_TYPE coreCodec,
                               AUDIO_CHANNEL_TYPE channelType[],
                               UCHAR channelIndices[],
                               const FDK_channelMapDescr *const mapDescr,
-                              const INT inDataHeadroom, INT *outDataHeadroom);
+                              const int32_t inDataHeadroom, int32_t *outDataHeadroom);
 
 /**
  * \brief                       Deallocate a MPEG Surround decoder instance.
@@ -445,14 +445,14 @@ SACDEC_ERROR mpegSurroundDecoder_FreeMem(
  */
 SACDEC_ERROR mpegSurroundDecoder_SetParam(
     CMpegSurroundDecoder *pMpegSurroundDecoder, const SACDEC_PARAM param,
-    const INT value);
+    const int32_t value);
 
 /**
  * \brief          Retrieve MPEG Surround decoder library info and fill info list with all depending library infos.
  * \param libInfo  Pointer to library info list to be filled.
  * \return         0 on sucess, and non-zero on failure.
  **/
-int mpegSurroundDecoder_GetLibInfo(LIB_INFO *libInfo);
+int32_t mpegSurroundDecoder_GetLibInfo(LIB_INFO *libInfo);
 
 /**
  * \brief  Set one single MPEG Surround decoder parameter.
@@ -461,7 +461,7 @@ int mpegSurroundDecoder_GetLibInfo(LIB_INFO *libInfo);
  *
  * \return  The additional signal delay caused by the module.
  */
-UINT mpegSurroundDecoder_GetDelay(const CMpegSurroundDecoder *self);
+uint32_t mpegSurroundDecoder_GetDelay(const CMpegSurroundDecoder *self);
 
 /**
  * \brief  Get info on whether the USAC pseudo LR feature is active.
@@ -473,7 +473,7 @@ UINT mpegSurroundDecoder_GetDelay(const CMpegSurroundDecoder *self);
  * \return  0 on sucess, and non-zero on failure.
  */
 SACDEC_ERROR mpegSurroundDecoder_IsPseudoLR(
-    CMpegSurroundDecoder *pMpegSurroundDecoder, int *bsPseudoLr);
+    CMpegSurroundDecoder *pMpegSurroundDecoder, int32_t *bsPseudoLr);
 
 #ifdef __cplusplus
 }

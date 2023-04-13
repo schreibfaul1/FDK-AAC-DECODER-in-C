@@ -113,12 +113,12 @@ amm-info@iis.fraunhofer.de
  *
  */
 #if !defined(FUNCTION_autoCorr2nd_real)
-INT autoCorr2nd_real(
+int32_t autoCorr2nd_real(
     ACORR_COEFS *ac,          /*!< Pointer to autocorrelation coeffs */
     const int32_t *reBuffer, /*!< Pointer to to real part of input samples */
-    const int len             /*!< Number input samples */
+    const int32_t len             /*!< Number input samples */
 ) {
-  int j, autoCorrScaling, mScale;
+  int32_t j, autoCorrScaling, mScale;
 
   int32_t accu1, accu2, accu3, accu4, accu5;
 
@@ -184,13 +184,13 @@ INT autoCorr2nd_real(
 #endif
 
 #if !defined(FUNCTION_autoCorr2nd_cplx)
-INT autoCorr2nd_cplx(
+int32_t autoCorr2nd_cplx(
     ACORR_COEFS *ac,          /*!< Pointer to autocorrelation coeffs */
     const int32_t *reBuffer, /*!< Pointer to real part of input samples */
     const int32_t *imBuffer, /*!< Pointer to imag part of input samples */
-    const int len /*!< Number of input samples (should be smaller than 128) */
+    const int32_t len /*!< Number of input samples (should be smaller than 128) */
 ) {
-  int j, autoCorrScaling, mScale, len_scale;
+  int32_t j, autoCorrScaling, mScale, len_scale;
 
   int32_t accu0, accu1, accu2, accu3, accu4, accu5, accu6, accu7, accu8;
 

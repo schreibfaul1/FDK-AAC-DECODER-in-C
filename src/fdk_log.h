@@ -18,7 +18,7 @@
 #include <stdio.h>
 #endif
 
-static const int log_buffer_size = 160;
+static const int32_t log_buffer_size = 160;
 static char log_buffer[log_buffer_size];
 enum LogLevelFDK {FDKDebug, FDKInfo, FDKWarning, FDKError};
 static LogLevelFDK LOGLEVEL_FDK = FDK_LOG_LEVEL;
@@ -45,7 +45,7 @@ static void printLogFDK(const char*msg){
 #endif
 }
 
-static void printLogFDK(const char* file, int line, LogLevelFDK current_level) {
+static void printLogFDK(const char* file, int32_t line, LogLevelFDK current_level) {
     const char* file_name = strrchr(file, '/') ? strrchr(file, '/') + 1 : file;
     const char* level_code = levelName(current_level);
     printLogFDK("[");

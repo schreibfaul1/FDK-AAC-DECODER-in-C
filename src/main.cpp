@@ -15,12 +15,12 @@ uint8_t inBuff[1024];
 int16_t pcmout[4096];
 AAC_DECODER_ERROR err;
 AAC_DECODER_ERROR decoderErr = AAC_DEC_NOT_ENOUGH_BITS;
-int samplesRead = 0;
+int32_t samplesRead = 0;
 
 
 
 
-int main() {
+int32_t main() {
 
 	FILE *fptrIn = NULL;
 	fptrIn = fopen("sample1.aac", "r");
@@ -53,7 +53,7 @@ int main() {
 
 
 
-	handle = aacDecoder_Open(TT_MP4_ADTS, (UINT)1);
+	handle = aacDecoder_Open(TT_MP4_ADTS, (uint32_t)1);
     if (!handle){
         printf("Fehler: Dekoder konnte nicht initialisiert werden!\n");
         exit(1);
@@ -69,12 +69,12 @@ int main() {
 
     // AAC-Daten aus dem Eingabe-Puffer lesen
     // Hier 4096 Bytes als Beispiel
-	UINT bytesRead = 0;
-	UINT bytesAvail = 10;
+	uint32_t bytesRead = 0;
+	uint32_t bytesAvail = 10;
 
 	fpos_t fptr;
 	fgetpos(fptrIn, &fptr);
-	uint pos = 0;
+	uint32_t pos = 0;
 
 	while(decoderErr == AAC_DEC_NOT_ENOUGH_BITS || bytesAvail > 0){
 	//	fsetpos(fptrIn, &fptr + pos);

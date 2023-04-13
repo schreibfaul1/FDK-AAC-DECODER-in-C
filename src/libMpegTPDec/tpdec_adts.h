@@ -174,8 +174,8 @@ void adtsRead_CrcInit(HANDLE_ADTS pAdts);
  *
  * \return  ID for the created region, -1 in case of an error
  */
-int adtsRead_CrcStartReg(HANDLE_ADTS pAdts, HANDLE_FDK_BITSTREAM hBs,
-                         int mBits);
+int32_t adtsRead_CrcStartReg(HANDLE_ADTS pAdts, HANDLE_FDK_BITSTREAM hBs,
+                         int32_t mBits);
 
 /**
  * \brief Ends CRC region identified by reg
@@ -186,7 +186,7 @@ int adtsRead_CrcStartReg(HANDLE_ADTS pAdts, HANDLE_FDK_BITSTREAM hBs,
  *
  * \return  none
  */
-void adtsRead_CrcEndReg(HANDLE_ADTS pAdts, HANDLE_FDK_BITSTREAM hBs, int reg);
+void adtsRead_CrcEndReg(HANDLE_ADTS pAdts, HANDLE_FDK_BITSTREAM hBs, int32_t reg);
 
 /**
  * \brief Check CRC
@@ -216,19 +216,19 @@ TRANSPORTDEC_ERROR adtsRead_CrcCheck(HANDLE_ADTS pAdts);
 TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
                                          CSAudioSpecificConfig *pAsc,
                                          HANDLE_FDK_BITSTREAM bs,
-                                         const INT ignoreBufferFullness);
+                                         const int32_t ignoreBufferFullness);
 
 /**
  * \brief Get the raw data block length of the given block number.
  *
  * \param pAdts ADTS data handle
  * \param blockNum current raw data block index
- * \param pLength pointer to an INT where the length of the given raw data block
+ * \param pLength pointer to an int32_t where the length of the given raw data block
  * is stored into the returned value might be -1, in which case the raw data
  * block length is unknown.
  *
  * \return  error status
  */
-int adtsRead_GetRawDataBlockLength(HANDLE_ADTS pAdts, INT blockNum);
+int32_t adtsRead_GetRawDataBlockLength(HANDLE_ADTS pAdts, int32_t blockNum);
 
 #endif /* TPDEC_ADTS_H */

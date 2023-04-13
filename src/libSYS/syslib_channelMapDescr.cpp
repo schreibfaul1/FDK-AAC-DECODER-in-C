@@ -104,6 +104,7 @@ amm-info@iis.fraunhofer.de
  *  \brief  Implementation of routines that handle the channel map descriptor.
  */
 
+#include <stdint.h>
 #include "syslib_channelMapDescr.h"
 
 #define DFLT_CH_MAP_TAB_LEN \
@@ -183,14 +184,14 @@ const CHANNEL_MAP_INFO FDK_mapInfoTabWg4[] =
      /* 13 */ {mapFallback, 24},  // Unhandled for Wg4 yet
      /* 14 */ {mapFallback, 24}}; // Unhandled for Wg4 yet
 
-const UINT FDK_mapInfoTabLenWg4 = sizeof(FDK_mapInfoTabWg4)/sizeof(FDK_mapInfoTabWg4[0]);
+const uint32_t FDK_mapInfoTabLenWg4 = sizeof(FDK_mapInfoTabWg4)/sizeof(FDK_mapInfoTabWg4[0]);
 
 
 /**
  * Get the mapping value for a specific channel and map index.
  */
 UCHAR FDK_chMapDescr_getMapValue(const FDK_channelMapDescr* const pMapDescr,
-                                 const UCHAR chIdx, const UINT mapIdx) {
+                                 const UCHAR chIdx, const uint32_t mapIdx) {
   UCHAR mapValue = chIdx; /* Pass through by default. */
 
   FDK_ASSERT(pMapDescr != NULL);
@@ -212,30 +213,30 @@ UCHAR FDK_chMapDescr_getMapValue(const FDK_channelMapDescr* const pMapDescr,
  * \param  pMapInfo  Pointer to channel map.
  * \return           Value unequal to zero if map is valid, otherwise zero.
  */
-static int fdk_chMapDescr_isValidMap(const CHANNEL_MAP_INFO* const pMapInfo) {
-  int result = 1;
-  UINT i;
+static int32_t fdk_chMapDescr_isValidMap(const CHANNEL_MAP_INFO* const pMapInfo) {
+  int32_t result = 1;
+  uint32_t i;
 
   if (pMapInfo == NULL) {
     result = 0;
   } else {
-    UINT numChannels = pMapInfo->numChannels;
+    uint32_t numChannels = pMapInfo->numChannels;
 
     /* Check for all map values if they are inside the range 0 to numChannels-1
      * and unique. */
     if (numChannels < 32) { /* Optimized version for less than 32 channels.
                                Needs only one loop. */
-      UINT mappedChMask = 0x0;
+      uint32_t mappedChMask = 0x0;
       for (i = 0; i < numChannels; i += 1) {
         mappedChMask |= 1 << pMapInfo->pChannelMap[i];
       }
-      if (mappedChMask != (((UINT)1 << numChannels) - 1)) {
+      if (mappedChMask != (((uint32_t)1 << numChannels) - 1)) {
         result = 0;
       }
     } else { /* General case that can handle all number of channels but needs
                 one more loop. */
       for (i = 0; (i < numChannels) && result; i += 1) {
-        UINT j;
+        uint32_t j;
         UCHAR value0 = pMapInfo->pChannelMap[i];
 
         if (value0 > numChannels - 1) { /* out of range? */
@@ -256,9 +257,9 @@ static int fdk_chMapDescr_isValidMap(const CHANNEL_MAP_INFO* const pMapInfo) {
 /**
  * Evaluate whether channel map descriptor is reasonable or not.
  */
-int FDK_chMapDescr_isValid(const FDK_channelMapDescr* const pMapDescr) {
-  int result = 0;
-  UINT i;
+int32_t FDK_chMapDescr_isValid(const FDK_channelMapDescr* const pMapDescr) {
+  int32_t result = 0;
+  uint32_t i;
 
   if (pMapDescr != NULL) {
     result = 1;
@@ -276,9 +277,9 @@ int FDK_chMapDescr_isValid(const FDK_channelMapDescr* const pMapDescr) {
  */
 void FDK_chMapDescr_init(FDK_channelMapDescr* const pMapDescr,
                          const CHANNEL_MAP_INFO* const pMapInfoTab,
-                         const UINT mapInfoTabLen, const UINT fPassThrough) {
+                         const uint32_t mapInfoTabLen, const uint32_t fPassThrough) {
   if (pMapDescr != NULL) {
-    int useDefaultTab = 1;
+    int32_t useDefaultTab = 1;
 
     pMapDescr->fPassThrough = (fPassThrough == 0) ? 0 : 1;
 
@@ -300,9 +301,9 @@ void FDK_chMapDescr_init(FDK_channelMapDescr* const pMapDescr,
 /**
  * Set channel mapping bypass flag in a given channel map descriptor.
  */
-int FDK_chMapDescr_setPassThrough(FDK_channelMapDescr* const pMapDescr,
-                                  UINT fPassThrough) {
-  int err = 1;
+int32_t FDK_chMapDescr_setPassThrough(FDK_channelMapDescr* const pMapDescr,
+                                  uint32_t fPassThrough) {
+  int32_t err = 1;
 
   if (pMapDescr != NULL) {
     if ((pMapDescr->pMapInfoTab != NULL) && (pMapDescr->mapInfoTabLen > 0)) {
