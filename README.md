@@ -8,17 +8,11 @@ AAC Low-Complexity (AAC-LC),
 High-Efficiency AAC v2 (HE-AAC v2),
 AAC Low-Delay (AAC-LD),
 AAC Enhanced Low-Delay (AAC-ELD v2),
-MPEG-D Extended High Efficiency AAC (xHE-AAC) / USAC,
-decoder
+MPEG-D Extended High Efficiency AAC (xHE-AAC) / USAC, decoder
+
 
 Fraunhofer Institute for Integrated Circuits IIS
 http://www.iis.fraunhofer.de/amm
-
-
-
-
-
-
 
 
 A development of the Fraunhofer Institute
