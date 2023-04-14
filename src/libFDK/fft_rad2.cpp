@@ -127,7 +127,6 @@ amm-info@iis.fraunhofer.de
 *****************************************************************************/
 
 #ifndef FUNCTION_dit_fft
-#define CHC(x) FX_DBL2FXCONST_SGL(x)
 void dit_fft(int32_t *x, const int32_t ldn, const FIXP_STP *trigdata,
              const int32_t trigDataSize) {
   const int32_t n = 1 << ldn;
