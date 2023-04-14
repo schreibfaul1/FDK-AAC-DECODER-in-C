@@ -105,7 +105,7 @@ amm-info@iis.fraunhofer.de
 
 #define STC(x) FX_DBL2FXCONST_SGL(x)
 
-#define W_PiFOURTH STC(0x5a82799a)
+#define W_PiFOURTH 23170
 //#define W_PiFOURTH ((int32_t)(0x5a82799a))
 #ifndef SUMDIFF_PIFOURTH
 #define SUMDIFF_PIFOURTH(diff, sum, a, b) \
@@ -194,7 +194,7 @@ static FDK_FORCEINLINE void fft2(int32_t * pDat) {
 }
 #endif /* FUNCTION_fft2 */
 
-#define C31 (STC(0x91261468)) /* FL2FXCONST_DBL(-0.86602540) = -sqrt(3)/2  */
+#define C31 (-28378) /* FL2FXCONST_DBL(-0.86602540) = -sqrt(3)/2  */
 
 #ifndef FUNCTION_fft3
 /* Performs the FFT of length 3 according to the algorithm after winograd. */
@@ -225,13 +225,11 @@ static FDK_FORCEINLINE void fft3(int32_t * pDat) {
 }
 #endif /* #ifndef FUNCTION_fft3 */
 
-#define F5C(x) STC(x)
-
-#define C51 (F5C(0x79bc3854)) /* FL2FXCONST_DBL( 0.95105652)   */
-#define C52 (F5C(0x9d839db0)) /* FL2FXCONST_DBL(-1.53884180/2) */
-#define C53 (F5C(0xd18053ce)) /* FL2FXCONST_DBL(-0.36327126)   */
-#define C54 (F5C(0x478dde64)) /* FL2FXCONST_DBL( 0.55901699)   */
-#define C55 (F5C(0xb0000001)) /* FL2FXCONST_DBL(-1.25/2)       */
+#define C51 (    31164) /* FL2FXCONST_DBL( 0.95105652)   */
+#define C52 (    -25212) /* FL2FXCONST_DBL(-1.53884180/2) */
+#define C53 (    -11904) /* FL2FXCONST_DBL(-0.36327126)   */
+#define C54 (    18318) /* FL2FXCONST_DBL( 0.55901699)   */
+#define C55 (    -20480) /* FL2FXCONST_DBL(-1.25/2)       */
 
 /* performs the FFT of length 5 according to the algorithm after winograd */
 /* This version works with a prescale of 2 instead of 3 */
@@ -290,13 +288,11 @@ static FDK_FORCEINLINE void fft5(int32_t * pDat) {
   pDat[7] = s3 - r4;
 }
 
-#define F5C(x) STC(x)
-
-#define C51 (F5C(0x79bc3854)) /* FL2FXCONST_DBL( 0.95105652)   */
-#define C52 (F5C(0x9d839db0)) /* FL2FXCONST_DBL(-1.53884180/2) */
-#define C53 (F5C(0xd18053ce)) /* FL2FXCONST_DBL(-0.36327126)   */
-#define C54 (F5C(0x478dde64)) /* FL2FXCONST_DBL( 0.55901699)   */
-#define C55 (F5C(0xb0000001)) /* FL2FXCONST_DBL(-1.25/2)       */
+#define C51 (    31164) /* FL2FXCONST_DBL( 0.95105652)   */
+#define C52 (    -25212) /* FL2FXCONST_DBL(-1.53884180/2) */
+#define C53 (    -11904) /* FL2FXCONST_DBL(-0.36327126)   */
+#define C54 (    18318) /* FL2FXCONST_DBL( 0.55901699)   */
+#define C55 (    -20480) /* FL2FXCONST_DBL(-1.25/2)       */
 /**
  * \brief    Function performs a complex 10-point FFT
  *           The FFT is performed inplace. The result of the FFT
@@ -461,7 +457,7 @@ static void fft10(int32_t *x)  // int32_t *re, int32_t *im, FIXP_SGL s)
 #define FUNCTION_fft12
 
 #undef C31
-#define C31 (STC(0x91261468)) /* FL2FXCONST_DBL(-0.86602540) = -sqrt(3)/2  */
+#define C31 (-28378) /* FL2FXCONST_DBL(-0.86602540) = -sqrt(3)/2  */
 
 static inline void fft12(int32_t *pInput) {
   int32_t aDst[24];
@@ -1000,7 +996,7 @@ static const FIXP_STP fft32_w32[6] = {
     STCP(0x7641af3d, 0x30fbc54d), STCP(0x30fbc54d, 0x7641af3d),
     STCP(0x7d8a5f40, 0x18f8b83c), STCP(0x6a6d98a4, 0x471cece7),
     STCP(0x471cece7, 0x6a6d98a4), STCP(0x18f8b83c, 0x7d8a5f40)};
-#define W_PiFOURTH STC(0x5a82799a)
+#define W_PiFOURTH 23170
 
 LNK_SECTION_CODE_L1
 inline void fft_32(int32_t *const _x) {

@@ -112,7 +112,6 @@ amm-info@iis.fraunhofer.de
 #define FX_DECORR2FX_SGL
 #define FX_DBL2FX_DECORR FX_DBL2FX_SGL
 #define FX_SGL2FX_DECORR
-#define DECORR(a) (FX_DBL2FXCONST_SGL(a))
 #define FL2FXCONST_DECORR FL2FXCONST_SGL
 
 
