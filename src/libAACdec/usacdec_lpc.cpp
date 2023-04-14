@@ -1024,10 +1024,10 @@ void CLpc_Conceal(FIXP_LPC lsp[][M_LP_FILTER_ORDER],
                   const int32_t first_lpd_flag) {
   int32_t i, j;
 
-#define BETA (FL2FXCONST_SGL(0.25f))
-#define ONE_BETA (FL2FXCONST_SGL(0.75f))
-#define BFI_FAC (FL2FXCONST_SGL(0.90f))
-#define ONE_BFI_FAC (FL2FXCONST_SGL(0.10f))
+#define BETA (  8192)
+#define ONE_BETA (  24576)
+#define BFI_FAC (  29491)
+#define ONE_BFI_FAC (  3277)
 
   /* Frame loss concealment (could be improved) */
 
@@ -1061,10 +1061,10 @@ void CLpc_Conceal(FIXP_LPC lsp[][M_LP_FILTER_ORDER],
          FL2FXCONST_LPC(0.1f)), lsf_adaptive_mean[i])); */
 
       FIXP_LPC lsf_mean = FX_DBL2FX_LPC(
-          fMult((int16_t)(BETA + (int16_t)(j * (int32_t)FL2FXCONST_SGL(0.1f))),
+          fMult((int16_t)(BETA + (int16_t)(j * (int32_t)  3277)),
                 (int16_t)fdk_dec_lsf_init[i]) +
           fMult(
-              (int16_t)(ONE_BETA - (int16_t)(j * (int32_t)FL2FXCONST_SGL(0.1f))),
+              (int16_t)(ONE_BETA - (int16_t)(j * (int32_t)  3277)),
               lsf_adaptive_mean[i]));
 
       lsp[j][i] = FX_DBL2FX_LPC(fMult(BFI_FAC, lsp[j - 1][i]) +

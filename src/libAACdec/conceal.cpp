@@ -187,10 +187,10 @@ typedef enum {
 } CConcealmentExpandType;
 
 static const int16_t facMod4Table[4] = {
-    FL2FXCONST_SGL(0.500000000f), /* int16_t(0x4000),  2^-(1-0,00) */
-    FL2FXCONST_SGL(0.594603558f), /* int16_t(0x4c1b),  2^-(1-0,25) */
-    FL2FXCONST_SGL(0.707106781f), /* int16_t(0x5a82),  2^-(1-0,50) */
-    FL2FXCONST_SGL(0.840896415f)  /* int16_t(0x6ba2)   2^-(1-0,75) */
+      16384, /* int16_t(0x4000),  2^-(1-0,00) */
+      19484, /* int16_t(0x4c1b),  2^-(1-0,25) */
+      23170, /* int16_t(0x5a82),  2^-(1-0,50) */
+      27554  /* int16_t(0x6ba2)   2^-(1-0,75) */
 
 };
 
@@ -326,9 +326,9 @@ void CConcealment_InitChannelData(CConcealmentInfo *pConcealChannelInfo,
   pConcealChannelInfo->TDNoiseSeed = 0;
   FDKmemclear(pConcealChannelInfo->TDNoiseStates,
               sizeof(pConcealChannelInfo->TDNoiseStates));
-  pConcealChannelInfo->TDNoiseCoef[0] = FL2FXCONST_SGL(0.05f);
-  pConcealChannelInfo->TDNoiseCoef[1] = FL2FXCONST_SGL(0.5f);
-  pConcealChannelInfo->TDNoiseCoef[2] = FL2FXCONST_SGL(0.45f);
+  pConcealChannelInfo->TDNoiseCoef[0] =   1638;
+  pConcealChannelInfo->TDNoiseCoef[1] =   16384;
+  pConcealChannelInfo->TDNoiseCoef[2] =   14746;
 
   pConcealChannelInfo->pConcealParams = pConcealCommonData;
 

@@ -1449,10 +1449,10 @@ int32_t applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn,
       /* Smooth additionalGain */
 
       /* [b,a] = butter(1, 0.01) */
-      static const int16_t b[] = {FL2FXCONST_SGL(0.015466 * 2.0),
-                                   FL2FXCONST_SGL(0.015466 * 2.0)};
+      static const int16_t b[] = {  507,
+                                     507};
       static const int16_t a[] = {(int16_t)MAXVAL_SGL,
-                                   FL2FXCONST_SGL(-0.96907)};
+                                     -31754};
 
       additionalGain = -fMult(additionalGainSmoothState, a[1]) +
                        fMultDiv2(additionalGainUnfiltered, b[0]) +

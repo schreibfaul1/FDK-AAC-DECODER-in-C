@@ -111,11 +111,11 @@ amm-info@iis.fraunhofer.de
 #define PIT_FR2_12k8 128 /* Minimum pitch lag with resolution 1/2      */
 #define PIT_FR1_12k8 160 /* Minimum pitch lag with resolution 1        */
 #define TILT_CODE2 \
-  FL2FXCONST_SGL(0.3f * 2.0f) /* ACELP code pre-emphasis factor ( *2 )      */
+    19661 /* ACELP code pre-emphasis factor ( *2 )      */
 #define PIT_SHARP \
-  FL2FXCONST_SGL(0.85f) /* pitch sharpening factor                    */
+    27853 /* pitch sharpening factor                    */
 #define PREEMPH_FAC \
-  FL2FXCONST_SGL(0.68f) /* ACELP synth pre-emphasis factor            */
+    22282 /* ACELP synth pre-emphasis factor            */
 
 #define ACELP_HEADROOM 1
 #define ACELP_OUTSCALE (MDCT_OUT_HEADROOM - ACELP_HEADROOM)

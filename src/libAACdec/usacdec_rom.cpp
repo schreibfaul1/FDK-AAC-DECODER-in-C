@@ -472,9 +472,9 @@ const int16_t fdk_t_qua_gain7b[128 * 2] = {
 
 /* ACELP: factor table for interpolation of LPC coeffs in LSP domain */
 const int16_t lsp_interpol_factor[2][NB_SUBFR] = {
-    {FL2FXCONST_SGL(0.125f), FL2FXCONST_SGL(0.375f), FL2FXCONST_SGL(0.625f),
-     FL2FXCONST_SGL(0.875f)}, /* for coreCoderFrameLength = 1024 */
-    {FL2FXCONST_SGL(0.166667f), FL2FXCONST_SGL(0.5f), FL2FXCONST_SGL(0.833333f),
+    {  4096,   12288,   20480,
+       28672}, /* for coreCoderFrameLength = 1024 */
+    {  5461,   16384,   27307,
      0x0} /* for coreCoderFrameLength = 768  */
 };
 
