@@ -765,17 +765,10 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
 }
 
 static const FIXP_SGL noise_level_tab[8] = {
-    /* FDKpow(2, (float)(noise_level-14)/3.0f) * 2; (*2 to compensate for
-       fMultDiv2) noise_level_tab(noise_level==0) == 0 by definition
-    */
-    FX_DBL2FXCONST_SGL(0x00000000 /*0x0a145173*/),
-    FX_DBL2FXCONST_SGL(0x0cb2ff5e),
-    FX_DBL2FXCONST_SGL(0x10000000),
-    FX_DBL2FXCONST_SGL(0x1428a2e7),
-    FX_DBL2FXCONST_SGL(0x1965febd),
-    FX_DBL2FXCONST_SGL(0x20000000),
-    FX_DBL2FXCONST_SGL(0x28514606),
-    FX_DBL2FXCONST_SGL(0x32cbfd33)};
+	/* FDKpow(2, (float)(noise_level-14)/3.0f) * 2; (*2 to compensate for
+	   fMultDiv2) noise_level_tab(noise_level==0) == 0 by definition
+	*/
+	0, 3251, 4096, 5161, 6502, 8192, 10321, 13004};
 
 void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                        SamplingRateInfo *pSamplingRateInfo, uint32_t *nfRandomSeed,
