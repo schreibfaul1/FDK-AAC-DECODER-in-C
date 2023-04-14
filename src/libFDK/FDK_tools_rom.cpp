@@ -102,6 +102,8 @@ amm-info@iis.fraunhofer.de
 
 #include "FDK_tools_rom.h"
 
+#define STC(x) FX_DBL2FXCONST_SGL(x)
+
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
 const FIXP_STP SineTable80[] = {

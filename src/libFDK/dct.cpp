@@ -124,6 +124,7 @@ amm-info@iis.fraunhofer.de
 #include "FDK_tools_rom.h"
 #include "fft.h"
 
+#define WTC(x) FX_DBL2FXCONST_SGL(x)
 void dct_getTables(const FIXP_WTP **ptwiddle, const FIXP_STP **sin_twiddle,
                    int32_t *sin_step, int32_t length) {
   const FIXP_WTP *twiddle;

@@ -242,36 +242,24 @@ amm-info@iis.fraunhofer.de
 
 #endif /* Architecture switches */
 
-#ifdef SINETABLE_16BIT
 #define FIXP_STB FIXP_SGL /* STB sinus Tab used in transformation */
 #define FIXP_STP FIXP_SPK
-#define STC(a) (FX_DBL2FXCONST_SGL(a))
-#else
-#define FIXP_STB int32_t
-#define FIXP_STP FIXP_DPK
-#define STC(a) ((int32_t)(int32_t)(a))
-#endif /* defined(SINETABLE_16BIT) */
+
+
 
 #define STCP(cos, sin)     \
   {                        \
-    { STC(cos), STC(sin) } \
+    { FX_DBL2FXCONST_SGL(cos), FX_DBL2FXCONST_SGL(sin) } \
   }
 
-#ifdef WINDOWTABLE_16BIT
 #define FIXP_WTB FIXP_SGL /* single FIXP_SGL values */
 #define FX_DBL2FX_WTB(x) FX_DBL2FX_SGL(x)
 #define FIXP_WTP FIXP_SPK /* packed FIXP_SGL values */
-#define WTC(a) FX_DBL2FXCONST_SGL(a)
-#else /* SINETABLE_16BIT */
-#define FIXP_WTB int32_t
-#define FX_DBL2FX_WTB(x) (x)
-#define FIXP_WTP FIXP_DPK
-#define WTC(a) (int32_t)(a)
-#endif /* SINETABLE_16BIT */
+
 
 #define WTCP(a, b)     \
   {                    \
-    { WTC(a), WTC(b) } \
+    { FX_DBL2FXCONST_SGL(a), FX_DBL2FXCONST_SGL(b) } \
   }
 
 #endif /* FDK_ARCHDEF_H */

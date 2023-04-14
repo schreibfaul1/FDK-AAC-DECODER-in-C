@@ -107,7 +107,6 @@ amm-info@iis.fraunhofer.de
 
 #define FIXP_MPS int32_t
 
-#ifndef ARCH_PREFER_MULT_32x32
 #define FIXP_DECORR FIXP_SGL
 #define FX_DECORR2FX_DBL FX_SGL2FX_DBL
 #define FX_DECORR2FX_SGL
@@ -115,15 +114,7 @@ amm-info@iis.fraunhofer.de
 #define FX_SGL2FX_DECORR
 #define DECORR(a) (FX_DBL2FXCONST_SGL(a))
 #define FL2FXCONST_DECORR FL2FXCONST_SGL
-#else
-#define FIXP_DECORR int32_t
-#define FX_DECORR2FX_DBL
-#define FX_DECORR2FX_SGL FX_DBL2FX_SGL
-#define FX_DBL2FX_DECORR
-#define FX_SGL2FX_DECORR FX_SGL2FX_DBL
-#define DECORR(a) int32_t(a)
-#define FL2FXCONST_DECORR FL2FXCONST_DBL
-#endif
+
 
 /*--------------- enums -------------------------------*/
 

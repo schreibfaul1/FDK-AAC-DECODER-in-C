@@ -11,6 +11,9 @@
 /* Prescale InverseQuantTable by 4 to save
    redundant shifts in invers quantization
  */
+#define WTC(x) FX_DBL2FXCONST_SGL(x)
+
+
 #define SCL_TAB(a) (a >> 4)
 const int32_t InverseQuantTable[INV_QUANT_TABLESIZE + 1] = {
 	SCL_TAB(0x32CBFD40), SCL_TAB(0x330FC340), SCL_TAB(0x33539FC0), SCL_TAB(0x33979280), SCL_TAB(0x33DB9BC0),
