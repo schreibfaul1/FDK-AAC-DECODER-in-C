@@ -118,7 +118,7 @@ typedef struct {
                                            and TsdSepData[ts]=1 */
 } TSD_DATA;
 
-FDK_INLINE int32_t isTsdActive(const TSD_DATA *pTsdData) {
+static inline int32_t isTsdActive(const TSD_DATA *pTsdData) {
   return (int32_t)pTsdData->bsTsdEnable;
 }
 

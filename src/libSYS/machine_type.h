@@ -30,15 +30,8 @@ typedef int16_t INT_PCM;
 
 
 #define ALIGNMENT_DEFAULT 8
-
-/* RAM_ALIGN keyword causes memory alignment of global variables. */
-#if defined(_MSC_VER)
-#define RAM_ALIGN __declspec(align(ALIGNMENT_DEFAULT))
-#elif defined(__GNUC__)
 #define RAM_ALIGN __attribute__((aligned(ALIGNMENT_DEFAULT)))
-#else
-#define RAM_ALIGN
-#endif
+
 
 /*-----------------------------------------------------------------------------------
  * ALIGN_SIZE
@@ -74,44 +67,13 @@ inline int32_t* ALIGN_PTR1(int32_t* a){
  * inlining some additional command might be necessary depending on the
  * platform.
  *
- * \def  FDK_INLINE
+ * \def  static inline
  *       Defines how the compiler is told to inline stuff.
  */
-#ifndef FDK_FORCEINLINE
-#if defined(__GNUC__) && !defined(__SDE_MIPS__)
+
+
 #define FDK_FORCEINLINE inline __attribute((always_inline))
-#else
-#define FDK_FORCEINLINE inline
-#endif
-#endif
 
-#define FDK_INLINE static inline
-
-/*!
- * \def  LNK_SECTION_DATA_L1
- *       The LNK_SECTION_* defines allow memory to be drawn from specific memory
- *       sections. Used as prefix before variable declaration.
- *
- * \def  LNK_SECTION_DATA_L2
- *       See ::LNK_SECTION_DATA_L1
- * \def  LNK_SECTION_L1_DATA_A
- *       See ::LNK_SECTION_DATA_L1
- * \def  LNK_SECTION_L1_DATA_B
- *       See ::LNK_SECTION_DATA_L1
- * \def  LNK_SECTION_CONSTDATA_L1
- *       See ::LNK_SECTION_DATA_L1
- * \def  LNK_SECTION_CONSTDATA
- *       See ::LNK_SECTION_DATA_L1
- * \def  LNK_SECTION_CODE_L1
- *       See ::LNK_SECTION_DATA_L1
- * \def  LNK_SECTION_CODE_L2
- *       See ::LNK_SECTION_DATA_L1
- * \def  LNK_SECTION_INITCODE
- *       See ::LNK_SECTION_DATA_L1
- */
-/**************************************************
- * Code Section macros
- **************************************************/
 #define LNK_SECTION_CODE_L1
 #define LNK_SECTION_CODE_L2
 #define LNK_SECTION_INITCODE
@@ -127,33 +89,6 @@ inline int32_t* ALIGN_PTR1(int32_t* a){
 #define LNK_SECTION_L1_DATA_A
 #define LNK_SECTION_L1_DATA_B
 
-/**************************************************
- * Macros regarding static code analysis
- **************************************************/
-#ifdef __cplusplus
-#if !defined(__has_cpp_attribute)
-#define __has_cpp_attribute(x) 0
-#endif
-#if defined(__clang__) && __has_cpp_attribute(clang::fallthrough)
-#define FDK_FALLTHROUGH [[clang::fallthrough]]
-#endif
-#endif
 
-#ifndef FDK_FALLTHROUGH
-#if defined(__GNUC__) && (__GNUC__ >= 7)
-#define FDK_FALLTHROUGH __attribute__((fallthrough))
-#else
-#define FDK_FALLTHROUGH
-#endif
-#endif
-
-#ifdef _MSC_VER
-/*
- * Sometimes certain features are excluded from compilation and therefore the
- * warning 4065 may occur: "switch statement contains 'default' but no 'case'
- * labels" We consider this warning irrelevant and disable it.
- */
-#pragma warning(disable : 4065)
-#endif
 
 

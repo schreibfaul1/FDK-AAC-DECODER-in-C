@@ -133,7 +133,7 @@ typedef FDK_BITSTREAM *HANDLE_FDK_BITSTREAM;
  * MAX_BUFSIZE_BYTES)
  * \param config   Initialize BitStream as Reader or Writer.
  */
-FDK_INLINE
+static inline
 HANDLE_FDK_BITSTREAM FDKcreateBitStream(uint8_t *pBuffer, uint32_t bufSize,
                                         FDK_BS_CFG config = BS_READER) {
   HANDLE_FDK_BITSTREAM hBitStream =
@@ -160,7 +160,7 @@ HANDLE_FDK_BITSTREAM FDKcreateBitStream(uint8_t *pBuffer, uint32_t bufSize,
  * \param config     Initialize BitStream as Reader or Writer.
  * \return void
  */
-FDK_INLINE
+static inline
 void FDKinitBitStream(HANDLE_FDK_BITSTREAM hBitStream, uint8_t *pBuffer,
                       uint32_t bufSize, uint32_t validBits,
                       FDK_BS_CFG config = BS_READER) {
@@ -178,7 +178,7 @@ void FDKinitBitStream(HANDLE_FDK_BITSTREAM hBitStream, uint8_t *pBuffer,
  * \param config     Initialize BitStream as Reader or Writer.
  * \return void
  */
-FDK_INLINE void FDKresetBitbuffer(HANDLE_FDK_BITSTREAM hBitStream,
+static inline void FDKresetBitbuffer(HANDLE_FDK_BITSTREAM hBitStream,
                                   FDK_BS_CFG config = BS_READER) {
   FDK_ResetBitBuffer(&hBitStream->hBitBuf);
 
@@ -191,7 +191,7 @@ FDK_INLINE void FDKresetBitbuffer(HANDLE_FDK_BITSTREAM hBitStream,
 
     Deletes the in Create Bitstream allocated BitStream and BitBuffer.
 */
-FDK_INLINE void FDKdeleteBitStream(HANDLE_FDK_BITSTREAM hBitStream) {
+static inline void FDKdeleteBitStream(HANDLE_FDK_BITSTREAM hBitStream) {
   FDK_DeleteBitBuffer(&hBitStream->hBitBuf);
   FDKfree(hBitStream);
 }
@@ -207,7 +207,7 @@ FDK_INLINE void FDKdeleteBitStream(HANDLE_FDK_BITSTREAM hBitStream) {
  * \return
  */
 
-FDK_INLINE uint32_t FDKreadBits(HANDLE_FDK_BITSTREAM hBitStream,
+static inline uint32_t FDKreadBits(HANDLE_FDK_BITSTREAM hBitStream,
                             const uint32_t numberOfBits) {
   uint32_t bits = 0;
   int32_t missingBits = (int32_t)numberOfBits - (int32_t)hBitStream->BitsInCache;
@@ -225,7 +225,7 @@ FDK_INLINE uint32_t FDKreadBits(HANDLE_FDK_BITSTREAM hBitStream,
          BitMask[numberOfBits];
 }
 
-FDK_INLINE uint32_t FDKreadBit(HANDLE_FDK_BITSTREAM hBitStream) {
+static inline uint32_t FDKreadBit(HANDLE_FDK_BITSTREAM hBitStream) {
   if (!hBitStream->BitsInCache) {
     hBitStream->CacheWord = FDK_get32(&hBitStream->hBitBuf);
     hBitStream->BitsInCache = CACHE_BITS - 1;
@@ -245,7 +245,7 @@ FDK_INLINE uint32_t FDKreadBit(HANDLE_FDK_BITSTREAM hBitStream) {
  * \return the requested bits, right aligned
  * \return
  */
-FDK_INLINE uint32_t FDKread2Bits(HANDLE_FDK_BITSTREAM hBitStream) {
+static inline uint32_t FDKread2Bits(HANDLE_FDK_BITSTREAM hBitStream) {
   /*
   ** Version corresponds to optimized FDKreadBits implementation
   ** calling FDK_get32, that keeps read pointer aligned.
@@ -271,7 +271,7 @@ FDK_INLINE uint32_t FDKread2Bits(HANDLE_FDK_BITSTREAM hBitStream) {
  * \param numberOfBits  The number of bits to be retrieved.
  * \return the requested bits, right aligned
  */
-FDK_INLINE uint32_t FDKreadBitsBwd(HANDLE_FDK_BITSTREAM hBitStream,
+static inline uint32_t FDKreadBitsBwd(HANDLE_FDK_BITSTREAM hBitStream,
                                const uint32_t numberOfBits) {
   const uint32_t validMask = BitMask[numberOfBits];
 
@@ -302,7 +302,7 @@ FDK_INLINE uint32_t FDKreadBitsBwd(HANDLE_FDK_BITSTREAM hBitStream,
  * \param nBits3  number of bits to read for a large integer value
  * \return integer value read from bitstream
  */
-FDK_INLINE uint32_t escapedValue(HANDLE_FDK_BITSTREAM hBitStream, int32_t nBits1,
+static inline uint32_t escapedValue(HANDLE_FDK_BITSTREAM hBitStream, int32_t nBits1,
                              int32_t nBits2, int32_t nBits3) {
   uint32_t value = FDKreadBits(hBitStream, nBits1);
 
@@ -326,7 +326,7 @@ FDK_INLINE uint32_t escapedValue(HANDLE_FDK_BITSTREAM hBitStream, int32_t nBits1
  * \param numBits The number of bits to be retrieved.
  * \return the requested bits, right aligned
  */
-FDK_INLINE uint32_t FDKgetBits(HANDLE_FDK_BITSTREAM hBitStream, uint32_t numBits) {
+static inline uint32_t FDKgetBits(HANDLE_FDK_BITSTREAM hBitStream, uint32_t numBits) {
   return FDK_get(&hBitStream->hBitBuf, numBits);
 }
 
@@ -339,7 +339,7 @@ FDK_INLINE uint32_t FDKgetBits(HANDLE_FDK_BITSTREAM hBitStream, uint32_t numBits
  * \param numberOfBits  The number of bits to be written
  * \return              Number of bits written
  */
-FDK_INLINE uint8_t FDKwriteBits(HANDLE_FDK_BITSTREAM hBitStream, uint32_t value,
+static inline uint8_t FDKwriteBits(HANDLE_FDK_BITSTREAM hBitStream, uint32_t value,
                               const uint32_t numberOfBits) {
   const uint32_t validMask = BitMask[numberOfBits];
 
@@ -384,7 +384,7 @@ FDK_INLINE uint8_t FDKwriteBits(HANDLE_FDK_BITSTREAM hBitStream, uint32_t value,
  * \param numberOfBits  The number of bits to be written.
  * \return number of bits written
  */
-FDK_INLINE uint8_t FDKwriteBitsBwd(HANDLE_FDK_BITSTREAM hBitStream, uint32_t value,
+static inline uint8_t FDKwriteBitsBwd(HANDLE_FDK_BITSTREAM hBitStream, uint32_t value,
                                  const uint32_t numberOfBits) {
   const uint32_t validMask = BitMask[numberOfBits];
 
@@ -417,7 +417,7 @@ FDK_INLINE uint8_t FDKwriteBitsBwd(HANDLE_FDK_BITSTREAM hBitStream, uint32_t val
  * \param nBits3  number of bits to write for a large integer value
  * \return number of bits written
  */
-FDK_INLINE uint8_t FDKwriteEscapedValue(HANDLE_FDK_BITSTREAM hBitStream,
+static inline uint8_t FDKwriteEscapedValue(HANDLE_FDK_BITSTREAM hBitStream,
                                       uint32_t value, uint32_t nBits1, uint32_t nBits2,
                                       uint32_t nBits3) {
   uint8_t nbits = 0;
@@ -449,7 +449,7 @@ FDK_INLINE uint8_t FDKwriteEscapedValue(HANDLE_FDK_BITSTREAM hBitStream,
  * \param hBitStream HANDLE_FDK_BITSTREAM handle
  * \return void
  */
-FDK_INLINE void FDKsyncCache(HANDLE_FDK_BITSTREAM hBitStream) {
+static inline void FDKsyncCache(HANDLE_FDK_BITSTREAM hBitStream) {
   if (hBitStream->ConfigCache == BS_READER)
     FDK_pushBack(&hBitStream->hBitBuf, hBitStream->BitsInCache,
                  hBitStream->ConfigCache);
@@ -467,7 +467,7 @@ FDK_INLINE void FDKsyncCache(HANDLE_FDK_BITSTREAM hBitStream) {
  * \param  hBitStream HANDLE_FDK_BITSTREAM handle
  * \return void
  */
-FDK_INLINE void FDKsyncCacheBwd(HANDLE_FDK_BITSTREAM hBitStream) {
+static inline void FDKsyncCacheBwd(HANDLE_FDK_BITSTREAM hBitStream) {
   if (hBitStream->ConfigCache == BS_READER) {
     FDK_pushForward(&hBitStream->hBitBuf, hBitStream->BitsInCache,
                     hBitStream->ConfigCache);
@@ -492,7 +492,7 @@ FDK_INLINE void FDKsyncCacheBwd(HANDLE_FDK_BITSTREAM hBitStream) {
  * alignment
  * \return void
  */
-FDK_INLINE void FDKbyteAlign(HANDLE_FDK_BITSTREAM hBitStream,
+static inline void FDKbyteAlign(HANDLE_FDK_BITSTREAM hBitStream,
                              uint32_t alignmentAnchor) {
   FDKsyncCache(hBitStream);
   if (hBitStream->ConfigCache == BS_READER) {
@@ -529,13 +529,13 @@ FDK_INLINE void FDKbyteAlign(HANDLE_FDK_BITSTREAM hBitStream,
  * \param numberOfBits  The number of bits to be pushed back/for.
  * \return void
  */
-FDK_INLINE void FDKpushBackCache(HANDLE_FDK_BITSTREAM hBitStream,
+static inline void FDKpushBackCache(HANDLE_FDK_BITSTREAM hBitStream,
                                  const uint32_t numberOfBits) {
   assert((hBitStream->BitsInCache + numberOfBits) <= CACHE_BITS);
   hBitStream->BitsInCache += numberOfBits;
 }
 
-FDK_INLINE void FDKpushBack(HANDLE_FDK_BITSTREAM hBitStream,
+static inline void FDKpushBack(HANDLE_FDK_BITSTREAM hBitStream,
                             const uint32_t numberOfBits) {
   if ((hBitStream->BitsInCache + numberOfBits) < CACHE_BITS &&
       (hBitStream->ConfigCache == BS_READER)) {
@@ -547,7 +547,7 @@ FDK_INLINE void FDKpushBack(HANDLE_FDK_BITSTREAM hBitStream,
   }
 }
 
-FDK_INLINE void FDKpushFor(HANDLE_FDK_BITSTREAM hBitStream,
+static inline void FDKpushFor(HANDLE_FDK_BITSTREAM hBitStream,
                            const uint32_t numberOfBits) {
   if ((hBitStream->BitsInCache > numberOfBits) &&
       (hBitStream->ConfigCache == BS_READER)) {
@@ -559,7 +559,7 @@ FDK_INLINE void FDKpushFor(HANDLE_FDK_BITSTREAM hBitStream,
   }
 }
 
-FDK_INLINE void FDKpushBiDirectional(HANDLE_FDK_BITSTREAM hBitStream,
+static inline void FDKpushBiDirectional(HANDLE_FDK_BITSTREAM hBitStream,
                                      const int32_t numberOfBits) {
   if (numberOfBits >= 0)
     FDKpushFor(hBitStream, numberOfBits);
@@ -574,7 +574,7 @@ FDK_INLINE void FDKpushBiDirectional(HANDLE_FDK_BITSTREAM hBitStream,
  * \return amount of valid bits that still can be read or were already written.
  *
  */
-FDK_INLINE uint32_t FDKgetValidBits(HANDLE_FDK_BITSTREAM hBitStream) {
+static inline uint32_t FDKgetValidBits(HANDLE_FDK_BITSTREAM hBitStream) {
   FDKsyncCache(hBitStream);
   return FDK_getValidBits(&hBitStream->hBitBuf);
 }
@@ -584,7 +584,7 @@ FDK_INLINE uint32_t FDKgetValidBits(HANDLE_FDK_BITSTREAM hBitStream) {
  * \param hBitStream HANDLE_FDK_BITSTREAM handle
  * \return amount of free bits that still can be written into the bitstream
  */
-FDK_INLINE int32_t FDKgetFreeBits(HANDLE_FDK_BITSTREAM hBitStream) {
+static inline int32_t FDKgetFreeBits(HANDLE_FDK_BITSTREAM hBitStream) {
   return FDK_getFreeBits(&hBitStream->hBitBuf);
 }
 
@@ -600,7 +600,7 @@ FDK_INLINE int32_t FDKgetFreeBits(HANDLE_FDK_BITSTREAM hBitStream) {
  * still left unread in inputBuffer.
  * \return void
  */
-FDK_INLINE void FDKfeedBuffer(HANDLE_FDK_BITSTREAM hBitStream,
+static inline void FDKfeedBuffer(HANDLE_FDK_BITSTREAM hBitStream,
                               const uint8_t inputBuffer[], const uint32_t bufferSize,
                               uint32_t *bytesValid) {
   FDKsyncCache(hBitStream);
@@ -618,7 +618,7 @@ FDK_INLINE void FDKfeedBuffer(HANDLE_FDK_BITSTREAM hBitStream,
  * bytes still left unread in inputBuffer.
  * \return void
  */
-FDK_INLINE void FDKcopyBuffer(HANDLE_FDK_BITSTREAM hBSDst,
+static inline void FDKcopyBuffer(HANDLE_FDK_BITSTREAM hBSDst,
                               HANDLE_FDK_BITSTREAM hBSSrc, uint32_t *bytesValid) {
   FDKsyncCache(hBSSrc);
   FDK_Copy(&hBSDst->hBitBuf, &hBSSrc->hBitBuf, bytesValid);
@@ -633,7 +633,7 @@ FDK_INLINE void FDKcopyBuffer(HANDLE_FDK_BITSTREAM hBSDst,
  * \param writeBytes    Number of bytes write to output buffer.
  * \return void
  */
-FDK_INLINE void FDKfetchBuffer(HANDLE_FDK_BITSTREAM hBitStream,
+static inline void FDKfetchBuffer(HANDLE_FDK_BITSTREAM hBitStream,
                                uint8_t *outputBuffer, uint32_t *writeBytes) {
   FDKsyncCache(hBitStream);
   FDK_Fetch(&hBitStream->hBitBuf, outputBuffer, writeBytes);

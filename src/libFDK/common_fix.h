@@ -240,36 +240,36 @@ typedef int16_t FIXP_SGL;
 /* ############################################################# */
 #include "fixmul.h"
 
-FDK_INLINE int32_t fMult(int16_t a, int16_t b) { return fixmul_SS(a, b); }
-FDK_INLINE int32_t fMult(int16_t a, int32_t b) { return fixmul_SD(a, b); }
-FDK_INLINE int32_t fMult(int32_t a, int16_t b) { return fixmul_DS(a, b); }
-FDK_INLINE int32_t fMult(int32_t a, int32_t b) { return fixmul_DD(a, b); }
-FDK_INLINE int32_t fPow2(int32_t a) { return fixpow2_D(a); }
-FDK_INLINE int32_t fPow2(int16_t a) { return fixpow2_S(a); }
+static inline int32_t fMult(int16_t a, int16_t b) { return fixmul_SS(a, b); }
+static inline int32_t fMult(int16_t a, int32_t b) { return fixmul_SD(a, b); }
+static inline int32_t fMult(int32_t a, int16_t b) { return fixmul_DS(a, b); }
+static inline int32_t fMult(int32_t a, int32_t b) { return fixmul_DD(a, b); }
+static inline int32_t fPow2(int32_t a) { return fixpow2_D(a); }
+static inline int32_t fPow2(int16_t a) { return fixpow2_S(a); }
 
-FDK_INLINE int32_t fMultDiv2(int16_t a, int16_t b) { return fixmuldiv2_SS(a, b); }
-FDK_INLINE int32_t fMultDiv2(int16_t a, int32_t b) { return fixmuldiv2_SD(a, b); }
-FDK_INLINE int32_t fMultDiv2(int32_t a, int16_t b) { return fixmuldiv2_DS(a, b); }
-FDK_INLINE int32_t fMultDiv2(int32_t a, int32_t b) { return fixmuldiv2_DD(a, b); }
-FDK_INLINE int32_t fPow2Div2(int32_t a) { return fixpow2div2_D(a); }
-FDK_INLINE int32_t fPow2Div2(int16_t a) { return fixpow2div2_S(a); }
+static inline int32_t fMultDiv2(int16_t a, int16_t b) { return fixmuldiv2_SS(a, b); }
+static inline int32_t fMultDiv2(int16_t a, int32_t b) { return fixmuldiv2_SD(a, b); }
+static inline int32_t fMultDiv2(int32_t a, int16_t b) { return fixmuldiv2_DS(a, b); }
+static inline int32_t fMultDiv2(int32_t a, int32_t b) { return fixmuldiv2_DD(a, b); }
+static inline int32_t fPow2Div2(int32_t a) { return fixpow2div2_D(a); }
+static inline int32_t fPow2Div2(int16_t a) { return fixpow2div2_S(a); }
 
-FDK_INLINE int32_t fMultDiv2BitExact(int32_t a, int32_t b) {
+static inline int32_t fMultDiv2BitExact(int32_t a, int32_t b) {
   return fixmuldiv2BitExact_DD(a, b);
 }
-FDK_INLINE int32_t fMultDiv2BitExact(int16_t a, int32_t b) {
+static inline int32_t fMultDiv2BitExact(int16_t a, int32_t b) {
   return fixmuldiv2BitExact_SD(a, b);
 }
-FDK_INLINE int32_t fMultDiv2BitExact(int32_t a, int16_t b) {
+static inline int32_t fMultDiv2BitExact(int32_t a, int16_t b) {
   return fixmuldiv2BitExact_DS(a, b);
 }
-FDK_INLINE int32_t fMultBitExact(int32_t a, int32_t b) {
+static inline int32_t fMultBitExact(int32_t a, int32_t b) {
   return fixmulBitExact_DD(a, b);
 }
-FDK_INLINE int32_t fMultBitExact(int16_t a, int32_t b) {
+static inline int32_t fMultBitExact(int16_t a, int32_t b) {
   return fixmulBitExact_SD(a, b);
 }
-FDK_INLINE int32_t fMultBitExact(int32_t a, int16_t b) {
+static inline int32_t fMultBitExact(int32_t a, int16_t b) {
   return fixmulBitExact_DS(a, b);
 }
 
@@ -277,11 +277,11 @@ FDK_INLINE int32_t fMultBitExact(int32_t a, int16_t b) {
  */
 #include "abs.h"
 
-FDK_INLINE int32_t fAbs(int32_t x) { return fixabs_D(x); }
-FDK_INLINE FIXP_SGL fAbs(FIXP_SGL x) { return fixabs_S(x); }
+static inline int32_t fAbs(int32_t x) { return fixabs_D(x); }
+static inline FIXP_SGL fAbs(FIXP_SGL x) { return fixabs_S(x); }
 
 #if !defined(__LP64__)
-FDK_INLINE int32_t fAbs(int32_t x) { return fixabs_I(x); }
+static inline int32_t fAbs(int32_t x) { return fixabs_I(x); }
 #endif
 
   /* ********************************************************************************
@@ -289,15 +289,15 @@ FDK_INLINE int32_t fAbs(int32_t x) { return fixabs_I(x); }
 
 #include "clz.h"
 
-FDK_INLINE int32_t fNormz(int64_t x) {
+static inline int32_t fNormz(int64_t x) {
   int32_t clz = fixnormz_D((int32_t)(x >> 32));
   if (clz == 32) clz += fixnormz_D((int32_t)x);
   return clz;
 }
-FDK_INLINE int32_t fNormz(int32_t x) { return fixnormz_D(x); }
-FDK_INLINE int32_t fNormz(FIXP_SGL x) { return fixnormz_S(x); }
-FDK_INLINE int32_t fNorm(int32_t x) { return fixnorm_D(x); }
-FDK_INLINE int32_t fNorm(FIXP_SGL x) { return fixnorm_S(x); }
+static inline int32_t fNormz(int32_t x) { return fixnormz_D(x); }
+static inline int32_t fNormz(FIXP_SGL x) { return fixnormz_S(x); }
+static inline int32_t fNorm(int32_t x) { return fixnorm_D(x); }
+static inline int32_t fNorm(FIXP_SGL x) { return fixnorm_S(x); }
 
   /* ********************************************************************************
    */
@@ -316,28 +316,28 @@ FDK_INLINE int32_t fNorm(FIXP_SGL x) { return fixnorm_S(x); }
 #include "fixmadd.h"
 
 /* y = (x+0.5*a*b) */
-FDK_INLINE int32_t fMultAddDiv2(int32_t x, int32_t a, int32_t b) {
+static inline int32_t fMultAddDiv2(int32_t x, int32_t a, int32_t b) {
   return fixmadddiv2_DD(x, a, b);
 }
-FDK_INLINE int32_t fMultAddDiv2(int32_t x, FIXP_SGL a, int32_t b) {
+static inline int32_t fMultAddDiv2(int32_t x, FIXP_SGL a, int32_t b) {
   return fixmadddiv2_SD(x, a, b);
 }
-FDK_INLINE int32_t fMultAddDiv2(int32_t x, int32_t a, FIXP_SGL b) {
+static inline int32_t fMultAddDiv2(int32_t x, int32_t a, FIXP_SGL b) {
   return fixmadddiv2_DS(x, a, b);
 }
-FDK_INLINE int32_t fMultAddDiv2(int32_t x, FIXP_SGL a, FIXP_SGL b) {
+static inline int32_t fMultAddDiv2(int32_t x, FIXP_SGL a, FIXP_SGL b) {
   return fixmadddiv2_SS(x, a, b);
 }
 
-FDK_INLINE int32_t fPow2AddDiv2(int32_t x, int32_t a) {
+static inline int32_t fPow2AddDiv2(int32_t x, int32_t a) {
   return fixpadddiv2_D(x, a);
 }
-FDK_INLINE int32_t fPow2AddDiv2(int32_t x, FIXP_SGL a) {
+static inline int32_t fPow2AddDiv2(int32_t x, FIXP_SGL a) {
   return fixpadddiv2_S(x, a);
 }
 
 /* y = 2*(x+0.5*a*b) = (2x+a*b) */
-FDK_INLINE int32_t fMultAdd(int32_t x, int32_t a, int32_t b) {
+static inline int32_t fMultAdd(int32_t x, int32_t a, int32_t b) {
   return fixmadd_DD(x, a, b);
 }
 inline int32_t fMultAdd(int32_t x, FIXP_SGL a, int32_t b) {
@@ -368,7 +368,7 @@ inline int32_t fMultSubDiv2(int32_t x, FIXP_SGL a, FIXP_SGL b) {
 }
 
 /* y = 2*(x-0.5*a*b) = (2*x-a*b) */
-FDK_INLINE int32_t fMultSub(int32_t x, int32_t a, int32_t b) {
+static inline int32_t fMultSub(int32_t x, int32_t a, int32_t b) {
   return fixmsub_DD(x, a, b);
 }
 inline int32_t fMultSub(int32_t x, FIXP_SGL a, int32_t b) {
@@ -381,36 +381,36 @@ inline int32_t fMultSub(int32_t x, FIXP_SGL a, FIXP_SGL b) {
   return fixmsub_SS(x, a, b);
 }
 
-FDK_INLINE int32_t fMultAddDiv2BitExact(int32_t x, int32_t a, int32_t b) {
+static inline int32_t fMultAddDiv2BitExact(int32_t x, int32_t a, int32_t b) {
   return fixmadddiv2BitExact_DD(x, a, b);
 }
-FDK_INLINE int32_t fMultAddDiv2BitExact(int32_t x, FIXP_SGL a, int32_t b) {
+static inline int32_t fMultAddDiv2BitExact(int32_t x, FIXP_SGL a, int32_t b) {
   return fixmadddiv2BitExact_SD(x, a, b);
 }
-FDK_INLINE int32_t fMultAddDiv2BitExact(int32_t x, int32_t a, FIXP_SGL b) {
+static inline int32_t fMultAddDiv2BitExact(int32_t x, int32_t a, FIXP_SGL b) {
   return fixmadddiv2BitExact_DS(x, a, b);
 }
-FDK_INLINE int32_t fMultSubDiv2BitExact(int32_t x, int32_t a, int32_t b) {
+static inline int32_t fMultSubDiv2BitExact(int32_t x, int32_t a, int32_t b) {
   return fixmsubdiv2BitExact_DD(x, a, b);
 }
-FDK_INLINE int32_t fMultSubDiv2BitExact(int32_t x, FIXP_SGL a, int32_t b) {
+static inline int32_t fMultSubDiv2BitExact(int32_t x, FIXP_SGL a, int32_t b) {
   return fixmsubdiv2BitExact_SD(x, a, b);
 }
-FDK_INLINE int32_t fMultSubDiv2BitExact(int32_t x, int32_t a, FIXP_SGL b) {
+static inline int32_t fMultSubDiv2BitExact(int32_t x, int32_t a, FIXP_SGL b) {
   return fixmsubdiv2BitExact_DS(x, a, b);
 }
 
 #include "fixminmax.h"
 
-FDK_INLINE int32_t fMin(int32_t a, int32_t b) { return fixmin_D(a, b); }
-FDK_INLINE int32_t fMax(int32_t a, int32_t b) { return fixmax_D(a, b); }
+static inline int32_t fMin(int32_t a, int32_t b) { return fixmin_D(a, b); }
+static inline int32_t fMax(int32_t a, int32_t b) { return fixmax_D(a, b); }
 
-FDK_INLINE FIXP_SGL fMin(FIXP_SGL a, FIXP_SGL b) { return fixmin_S(a, b); }
-FDK_INLINE FIXP_SGL fMax(FIXP_SGL a, FIXP_SGL b) { return fixmax_S(a, b); }
+static inline FIXP_SGL fMin(FIXP_SGL a, FIXP_SGL b) { return fixmin_S(a, b); }
+static inline FIXP_SGL fMax(FIXP_SGL a, FIXP_SGL b) { return fixmax_S(a, b); }
 
 #if !defined(__LP64__)
-FDK_INLINE int32_t fMax(int32_t a, int32_t b) { return fixmax_I(a, b); }
-FDK_INLINE int32_t fMin(int32_t a, int32_t b) { return fixmin_I(a, b); }
+static inline int32_t fMax(int32_t a, int32_t b) { return fixmax_I(a, b); }
+static inline int32_t fMin(int32_t a, int32_t b) { return fixmin_I(a, b); }
 #endif
 
 inline uint32_t fMax(uint32_t a, uint32_t b) { return fixmax_UI(a, b); }

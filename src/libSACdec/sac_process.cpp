@@ -124,7 +124,7 @@ amm-info@iis.fraunhofer.de
  *
  * \return Interpolated parameter value.
  */
-FDK_INLINE int32_t interpolateParameter(const FIXP_SGL alpha, const int32_t a,
+static inline int32_t interpolateParameter(const FIXP_SGL alpha, const int32_t a,
                                          const int32_t b) {
   return (b - fMult(alpha, b) + fMult(alpha, a));
 }

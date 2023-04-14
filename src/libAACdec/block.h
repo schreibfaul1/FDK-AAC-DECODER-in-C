@@ -244,7 +244,7 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
  * factor to the resulting inverse quantized value.
  * \return the exponent of the result (mantissa) stored into *pValue.
  */
-FDK_INLINE
+static inline
 int32_t EvaluatePower43(int32_t *pValue, uint32_t lsb) {
   int32_t value;
   uint32_t freeBits;
@@ -281,7 +281,7 @@ int32_t get_gain(const int32_t *x, const int32_t *y, int32_t n);
  * \brief determine the required shift scale for the given quantized value and
  * scale (factor % 4) value.
  */
-FDK_INLINE int32_t GetScaleFromValue(int32_t value, uint32_t lsb) {
+static inline int32_t GetScaleFromValue(int32_t value, uint32_t lsb) {
   if (value != (int32_t)0) {
     int32_t scale = EvaluatePower43(&value, lsb);
     return CntLeadingZeros(value) - scale - 2;

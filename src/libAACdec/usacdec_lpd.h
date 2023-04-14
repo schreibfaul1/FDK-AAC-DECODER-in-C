@@ -189,7 +189,7 @@ void bass_pf_1sf_delay(int32_t syn[], const int32_t T_sf[], int32_t *pit_gain,
  * \Note: This code is also implemented as a copy in block.cpp, grep for
  * "UsacRandomSign"
  */
-FDK_INLINE
+static inline
 int32_t UsacRandomSign(uint32_t *seed) {
   *seed = (uint32_t)((uint64_t)(*seed) * 69069 + 5);
 

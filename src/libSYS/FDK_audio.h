@@ -359,19 +359,19 @@ typedef enum {
 #define AC_EL_LFE 0x002000              /*!< The element is of type LFE. */
 
 /* CODER_CONFIG::flags */
-#define CC_MPEG_ID 0x00100000
-#define CC_IS_BASELAYER 0x00200000
-#define CC_PROTECTION 0x00400000
-#define CC_SBR 0x00800000
-#define CC_SBRCRC 0x00010000
-#define CC_SAC 0x00020000
-#define CC_RVLC 0x01000000
-#define CC_VCB11 0x02000000
-#define CC_HCR 0x04000000
+#define CC_MPEG_ID         0x00100000
+#define CC_IS_BASELAYER    0x00200000
+#define CC_PROTECTION      0x00400000
+#define CC_SBR             0x00800000
+#define CC_SBRCRC          0x00010000
+#define CC_SAC             0x00020000
+#define CC_RVLC            0x01000000
+#define CC_VCB11           0x02000000
+#define CC_HCR             0x04000000
 #define CC_PSEUDO_SURROUND 0x08000000
-#define CC_USAC_NOISE 0x10000000
-#define CC_USAC_TW 0x20000000
-#define CC_USAC_HBE 0x40000000
+#define CC_USAC_NOISE      0x10000000
+#define CC_USAC_TW         0x20000000
+#define CC_USAC_HBE        0x40000000
 
 /** Generic audio coder configuration structure. */
 typedef struct {

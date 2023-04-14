@@ -1420,7 +1420,7 @@ int32_t mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
                 pMpegSurroundDecoder->mpegSurroundSscIsGlobalCfg = 0;
               }
             }
-              FDK_FALLTHROUGH;
+              /* fall through */;
             case MPEGS_ANCTYPE_FRAME:
 
               if (pMpegSurroundDecoder

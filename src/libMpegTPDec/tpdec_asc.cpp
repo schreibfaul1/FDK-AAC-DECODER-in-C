@@ -467,7 +467,7 @@ void CProgramConfig_GetDefault(CProgramConfig *pPce, const uint32_t channelConfi
       pPce->BackElementIsCpe[1] = 1;
       pPce->NumChannels += 1;
       pPce->NumEffectiveChannels += 1;
-      FDK_FALLTHROUGH;
+      /* fall through */;
     case 11: /* 3/0/3.1ch */
       pPce->NumFrontChannelElements += 2;
       pPce->FrontElementIsCpe[0] = 0;
@@ -483,30 +483,30 @@ void CProgramConfig_GetDefault(CProgramConfig *pPce, const uint32_t channelConfi
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     case 14:                               /* 2/0/0-3/0/2-0.1ch front height */
       pPce->FrontElementHeightInfo[2] = 1; /* Top speaker */
-      FDK_FALLTHROUGH;
+      /* fall through */;
     case 7: /* 5/0/2.1ch front */
       pPce->NumFrontChannelElements += 1;
       pPce->FrontElementIsCpe[2] = 1;
       pPce->NumChannels += 2;
       pPce->NumEffectiveChannels += 2;
-      FDK_FALLTHROUGH;
+      /* fall through */;
     case 6: /* 3/0/2.1ch */
       pPce->NumLfeChannelElements += 1;
       pPce->NumChannels += 1;
-      FDK_FALLTHROUGH;
+      /* fall through */;
     case 5: /* 3/0/2.0ch */
     case 4: /* 3/0/1.0ch */
       pPce->NumBackChannelElements += 1;
       pPce->BackElementIsCpe[0] = (channelConfig > 4) ? 1 : 0;
       pPce->NumChannels += (channelConfig > 4) ? 2 : 1;
       pPce->NumEffectiveChannels += (channelConfig > 4) ? 2 : 1;
-      FDK_FALLTHROUGH;
+      /* fall through */;
     case 3: /* 3/0/0.0ch */
       pPce->NumFrontChannelElements += 1;
       pPce->FrontElementIsCpe[1] = 1;
       pPce->NumChannels += 2;
       pPce->NumEffectiveChannels += 2;
-      FDK_FALLTHROUGH;
+      /* fall through */;
     case 1: /* 1/0/0.0ch */
       pPce->NumFrontChannelElements += 1;
       pPce->FrontElementIsCpe[0] = 0;
@@ -719,7 +719,7 @@ int32_t CProgramConfig_LookupElement(CProgramConfig *pPce, uint32_t channelConfi
       switch (elType) {
         case ID_CPE:
           isCpe = 1;
-          FDK_FALLTHROUGH;
+          /* fall through */;
         case ID_SCE:
           /* search in front channels */
           for (i = 0; i < pPce->NumFrontChannelElements; i++) {
@@ -1428,7 +1428,7 @@ static TRANSPORTDEC_ERROR EldSpecificConfig_Parse(CSAudioSpecificConfig *asc,
           break;
         }
 
-        FDK_FALLTHROUGH;
+        /* fall through */;
       default:
         for (cnt = 0; cnt < eldExtLen; cnt++) {
           FDKreadBits(hBs, 8);
@@ -2056,7 +2056,7 @@ static TRANSPORTDEC_ERROR AudioSpecificConfig_ExtensionParse(
         break;
       case ASCEXT_MPS: /* 0x76a */
         if (self->m_extensionAudioObjectType == AOT_MPEGS) break;
-        FDK_FALLTHROUGH;
+        /* fall through */;
       case ASCEXT_LDMPS: /* 0x7cc */
         if ((ascExtId == ASCEXT_LDMPS) &&
             (self->m_extensionAudioObjectType == AOT_LD_MPEGS))
@@ -2563,7 +2563,7 @@ TRANSPORTDEC_ERROR DrmRawSdcAudioConfig_Parse(
         switch (audioMode) {
           case 1: /* parametric stereo */
             self->m_psPresentFlag = 1;
-            FDK_FALLTHROUGH;
+            /* fall through */;
           case 0: /* mono */
             self->m_channelConfiguration = 1;
             break;

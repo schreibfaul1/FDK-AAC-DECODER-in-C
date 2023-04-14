@@ -201,7 +201,7 @@ static int32_t longcompare(uint16_t a[], uint16_t b[], int32_t len) {
   return (a[i] >= b[i]) ? 1 : 0;
 }
 
-FDK_INLINE int32_t isTrSlot(const TSD_DATA *pTsdData, const int32_t ts) {
+static inline int32_t isTrSlot(const TSD_DATA *pTsdData, const int32_t ts) {
   return (pTsdData->bsTsdTrPhaseData[ts] >= 0);
 }
 

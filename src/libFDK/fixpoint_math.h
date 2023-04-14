@@ -170,7 +170,7 @@ extern const int32_t invSqrtTab[SQRT_VALUES];
  * \param b_e exponent of the second input value.
  * \return non-zero if (a_m*2^a_e) < (b_m*2^b_e), 0 otherwise
  */
-FDK_INLINE int32_t fIsLessThan(int32_t a_m, int32_t a_e, int32_t b_m, int32_t b_e) {
+static inline int32_t fIsLessThan(int32_t a_m, int32_t a_e, int32_t b_m, int32_t b_e) {
   int32_t n;
 
   n = fixnorm_D(a_m);
@@ -191,7 +191,7 @@ FDK_INLINE int32_t fIsLessThan(int32_t a_m, int32_t a_e, int32_t b_m, int32_t b_
   }
 }
 
-FDK_INLINE int32_t fIsLessThan(FIXP_SGL a_m, int32_t a_e, FIXP_SGL b_m, int32_t b_e) {
+static inline int32_t fIsLessThan(FIXP_SGL a_m, int32_t a_e, FIXP_SGL b_m, int32_t b_e) {
   int32_t n;
 
   n = fixnorm_S(a_m);
@@ -225,7 +225,7 @@ extern const uint32_t exp2w_tab_long[32];
 extern const uint32_t exp2x_tab_long[32];
 
 LNK_SECTION_CODE_L1
-FDK_INLINE int32_t CalcInvLdData(const int32_t x) {
+static inline int32_t CalcInvLdData(const int32_t x) {
   int32_t set_zero = (x < FL2FXCONST_DBL(-31.0 / 64.0)) ? 0 : 1;
   int32_t set_max = (x >= FL2FXCONST_DBL(31.0 / 64.0)) | (x == FL2FXCONST_DBL(0.0));
 
@@ -804,7 +804,7 @@ int32_t CalcLog2(int32_t arg, int32_t arg_e, int32_t *result_e);
  * \param pointer to an int32_t where the exponent of the result is returned into.
  * \return mantissa of the result.
  */
-FDK_INLINE int32_t fLog2(int32_t x_m, int32_t x_e, int32_t *result_e) {
+static inline int32_t fLog2(int32_t x_m, int32_t x_e, int32_t *result_e) {
   int32_t result_m;
 
   /* int16_t cut for zero and negative numbers. */
@@ -873,7 +873,7 @@ FDK_INLINE int32_t fLog2(int32_t x_m, int32_t x_e, int32_t *result_e) {
  * \param x_e exponent of the input value.
  * \return mantissa of the result with implicit exponent of LD_DATA_SHIFT.
  */
-FDK_INLINE int32_t fLog2(int32_t x_m, int32_t x_e) {
+static inline int32_t fLog2(int32_t x_m, int32_t x_e) {
   if (x_m <= FL2FXCONST_DBL(0.0f)) {
     x_m = FL2FXCONST_DBL(-1.0f);
   } else {

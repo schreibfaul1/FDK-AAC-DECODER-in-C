@@ -966,7 +966,7 @@ static TRANSPORTDEC_ERROR transportDec_readHeader(
         hTp->parser.latm.m_audioMuxLengthBytes = syncLayerFrameBits;
         syncLayerFrameBits <<= 3;
       }
-      FDK_FALLTHROUGH;
+      /* fall through */;
     case TT_MP4_LATM_MCP1:
     case TT_MP4_LATM_MCP0:
       if (hTp->numberOfRawDataBlocks <= 0) {

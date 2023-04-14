@@ -560,7 +560,7 @@ static void param2UMX_PS_IPD_OPD__FDK(
   }
 }
 
-FDK_INLINE void param2UMX_Prediction_Core__FDK(
+static inline void param2UMX_Prediction_Core__FDK(
     int32_t* H11re, int32_t* H11im, int32_t* H12re, int32_t* H12im,
     int32_t* H21re, int32_t* H21im, int32_t* H22re, int32_t* H22im,
     int32_t cldIdx, int32_t iccIdx, int32_t ipdIdx, int32_t band, int32_t numOttBandsIPD,
