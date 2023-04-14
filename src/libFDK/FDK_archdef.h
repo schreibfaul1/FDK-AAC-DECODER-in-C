@@ -245,21 +245,9 @@ amm-info@iis.fraunhofer.de
 #define FIXP_STB int16_t /* STB sinus Tab used in transformation */
 #define FIXP_STP FIXP_SPK
 
-
-
-#define STCP(cos, sin)     \
-  {                        \
-    { FX_DBL2FXCONST_SGL(cos), FX_DBL2FXCONST_SGL(sin) } \
-  }
-
 #define FIXP_WTB int16_t /* single int16_t values */
 #define FX_DBL2FX_WTB(x) FX_DBL2FX_SGL(x)
 #define FIXP_WTP FIXP_SPK /* packed int16_t values */
 
-
-#define WTCP(a, b)     \
-  {                    \
-    { FX_DBL2FXCONST_SGL(a), FX_DBL2FXCONST_SGL(b) } \
-  }
 
 #endif /* FDK_ARCHDEF_H */

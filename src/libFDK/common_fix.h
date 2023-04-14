@@ -162,14 +162,6 @@ amm-info@iis.fraunhofer.de
 #define MINVAL_DBL \
   ((signed)0x80000000) /* this has to be synchronized to DFRACT_BITS */
 
-#define FX_DBL2FXCONST_SGL(val)                                               \
-  ((((((val) >> (DFRACT_BITS - FRACT_BITS - 1)) + 1) >                        \
-     (((int32_t)1 << FRACT_BITS) - 1)) &&                                        \
-    ((int32_t)(val) > 0))                                                        \
-       ? (int16_t)(int16_t)(((int32_t)1 << (FRACT_BITS - 1)) - 1)                 \
-       : (int16_t)(int16_t)((((val) >> (DFRACT_BITS - FRACT_BITS - 1)) + 1) >> \
-                           1))
-
 #define shouldBeUnion union /* unions are possible */
 
 

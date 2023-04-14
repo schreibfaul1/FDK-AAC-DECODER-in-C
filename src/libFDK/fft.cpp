@@ -726,8 +726,9 @@ static inline void fft15(int32_t *pInput) {
 /* This defines prevents this array to be declared twice, if 16-bit fft is
  * enabled too */
 #define FUNCTION_DATA_fft_16_w16
-static const FIXP_STP fft16_w16[2] = {STCP(0x7641af3d, 0x30fbc54d),
-                                      STCP(0x30fbc54d, 0x7641af3d)};
+
+static const FIXP_STP fft16_w16[2] = {    30274, 12540,
+                                          12540, 30274};
 
 LNK_SECTION_CODE_L1
 inline void fft_16(int32_t * x) {
@@ -991,9 +992,9 @@ inline void fft_16(int32_t * x) {
 
 #ifndef FUNCTION_fft_32
 static const FIXP_STP fft32_w32[6] = {
-    STCP(0x7641af3d, 0x30fbc54d), STCP(0x30fbc54d, 0x7641af3d),
-    STCP(0x7d8a5f40, 0x18f8b83c), STCP(0x6a6d98a4, 0x471cece7),
-    STCP(0x471cece7, 0x6a6d98a4), STCP(0x18f8b83c, 0x7d8a5f40)};
+        30274, 12540,     12540, 30274,
+        32138, 6393,     27246, 18205,
+        18205, 27246,     6393, 32138};
 #define W_PiFOURTH 23170
 
 LNK_SECTION_CODE_L1
