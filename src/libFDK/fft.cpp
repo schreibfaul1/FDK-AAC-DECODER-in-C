@@ -170,7 +170,7 @@ amm-info@iis.fraunhofer.de
 
 /* Performs the FFT of length 2. Input vector unscaled, output vector scaled
  * with factor 0.5 */
-static FDK_FORCEINLINE void fft2(int32_t *RESTRICT pDat) {
+static FDK_FORCEINLINE void fft2(int32_t * pDat) {
   int32_t r1, i1;
   int32_t r2, i2;
 
@@ -196,7 +196,7 @@ static FDK_FORCEINLINE void fft2(int32_t *RESTRICT pDat) {
 
 #ifndef FUNCTION_fft3
 /* Performs the FFT of length 3 according to the algorithm after winograd. */
-static FDK_FORCEINLINE void fft3(int32_t *RESTRICT pDat) {
+static FDK_FORCEINLINE void fft3(int32_t * pDat) {
   int32_t r1, r2;
   int32_t s1, s2;
   int32_t pD;
@@ -233,7 +233,7 @@ static FDK_FORCEINLINE void fft3(int32_t *RESTRICT pDat) {
 
 /* performs the FFT of length 5 according to the algorithm after winograd */
 /* This version works with a prescale of 2 instead of 3 */
-static FDK_FORCEINLINE void fft5(int32_t *RESTRICT pDat) {
+static FDK_FORCEINLINE void fft5(int32_t * pDat) {
   int32_t r1, r2, r3, r4;
   int32_t s1, s2, s3, s4;
   int32_t t;
@@ -613,7 +613,7 @@ static inline void fft15(int32_t *pInput) {
   input3(12:14) = [input(12) input(2) input(7)]; */
   {
     const int32_t *pSrc = pInput;
-    int32_t *RESTRICT pDst = aDst;
+    int32_t * pDst = aDst;
     /* Merge 3 loops into one, skip call of fft3 */
     for (i = 0, l = 0, k = 0; i < N5; i++, k += 6) {
       pDst[k + 0] = pSrc[l];
@@ -661,7 +661,7 @@ static inline void fft15(int32_t *pInput) {
   /* Merge 2 loops into one, brings about 10% */
   {
     const int32_t *pSrc = aDst;
-    int32_t *RESTRICT pDst = aDst1;
+    int32_t * pDst = aDst1;
     for (i = 0, l = 0, k = 0; i < N3; i++, k += 10) {
       l = 2 * i;
       pDst[k + 0] = pSrc[l + 0];
@@ -684,7 +684,7 @@ static inline void fft15(int32_t *pInput) {
   /* optimize clumsy loop, brings about 5% */
   {
     const int32_t *pSrc = aDst1;
-    int32_t *RESTRICT pDst = pInput;
+    int32_t * pDst = pInput;
     for (i = 0, l = 0, k = 0; i < N3; i++, k += 10) {
       pDst[k + 0] = pSrc[l];
       pDst[k + 1] = pSrc[l + 1];
@@ -734,7 +734,7 @@ static const FIXP_STP fft16_w16[2] = {STCP(0x7641af3d, 0x30fbc54d),
                                       STCP(0x30fbc54d, 0x7641af3d)};
 
 LNK_SECTION_CODE_L1
-inline void fft_16(int32_t *RESTRICT x) {
+inline void fft_16(int32_t * x) {
   int32_t vr, ur;
   int32_t vr2, ur2;
   int32_t vr3, ur3;
@@ -1537,7 +1537,7 @@ inline void fft_32(int32_t *const _x) {
 #define noFFT_APPLY_ROT_VECTOR_HQ
 
 #ifndef FUNCTION_fft_apply_rot_vector__FIXP_DBL
-static inline void fft_apply_rot_vector(int32_t *RESTRICT pData, const int32_t cl,
+static inline void fft_apply_rot_vector(int32_t * pData, const int32_t cl,
                                         const int32_t l, const FIXP_STB *pVecRe,
                                         const FIXP_STB *pVecIm) {
   int32_t re, im;

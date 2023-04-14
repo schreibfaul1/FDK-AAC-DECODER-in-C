@@ -133,8 +133,8 @@ sequentially, but together the program's structure is not easy to understand.
 Once the output (already windowed) block (-D-Cr,A-Br) is ready it is passed to
 the DCT IV for processing.
 */
-int32_t mdct_block(H_MDCT hMdct, const INT_PCM *RESTRICT timeData,
-               const int32_t noInSamples, int32_t *RESTRICT mdctData,
+int32_t mdct_block(H_MDCT hMdct, const INT_PCM * timeData,
+               const int32_t noInSamples, int32_t * mdctData,
                const int32_t nSpec, const int32_t tl, const FIXP_WTP *pRightWindowPart,
                const int32_t fr, int16_t *pMdctData_e) {
   int32_t i, n;

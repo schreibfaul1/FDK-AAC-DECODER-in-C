@@ -251,7 +251,7 @@ void bass_pf_1sf_delay(
       if (tmp_result > point95) T = T2;
 
       /* prevent that noise calculation below reaches into not defined signal
-         parts at the end of the synth_buf or in other words restrict the below
+         parts at the end of the synth_buf or in other words  the below
          used index (i+i_subfr+T) < l_frame + l_next
       */
       lg = l_frame + l_next - T - i_subfr;

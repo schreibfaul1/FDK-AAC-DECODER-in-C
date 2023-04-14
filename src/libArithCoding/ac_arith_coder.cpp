@@ -307,7 +307,7 @@ typedef struct
 
 static inline int32_t mul_sbc_14bits(int32_t r, int32_t c) { return (((int32_t)r) * ((int32_t)c)) >> stat_bitsnew; }
 
-static inline int32_t ari_decode_14bits(HANDLE_FDK_BITSTREAM hBs, Tastat *s, const int16_t *RESTRICT c_freq, int32_t cfl) {
+static inline int32_t ari_decode_14bits(HANDLE_FDK_BITSTREAM hBs, Tastat *s, const int16_t * c_freq, int32_t cfl) {
 	int32_t          symbol;
 	int32_t          low, high, range, value;
 	int32_t          c;
@@ -445,8 +445,8 @@ static inline uint32_t get_pk_v2(uint32_t s) {
 	return (j & 0x3F);
 }
 
-static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf, uint8_t *RESTRICT c_prev,
-								  int32_t *RESTRICT pSpectralCoefficient, int32_t n, int32_t nt) {
+static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf, uint8_t * c_prev,
+								  int32_t * pSpectralCoefficient, int32_t n, int32_t nt) {
 	Tastat             as;
 	int32_t                i, l, r;
 	int32_t                lev, esc_nb, pki;
@@ -565,7 +565,7 @@ void CArco_Destroy(CArcoData *pArcoData) {
 }
 
 ARITH_CODING_ERROR CArco_DecodeArithData(CArcoData *pArcoData, HANDLE_FDK_BITSTREAM hBs,
-										 int32_t *RESTRICT mdctSpectrum, int32_t lg, int32_t lg_max, int32_t arith_reset_flag) {
+										 int32_t * mdctSpectrum, int32_t lg, int32_t lg_max, int32_t arith_reset_flag) {
 	ARITH_CODING_ERROR ErrorStatus = ARITH_CODER_OK;
 
 	/* Check lg and lg_max consistency. */

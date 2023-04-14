@@ -587,9 +587,9 @@ void CConcealment_Store(
       FDKmemcpy(hConcealmentInfo->spectralCoefficient, pSpectralCoefficient,
                 1024 * sizeof(FIXP_CNCL));
 #else
-      FIXP_CNCL *RESTRICT pCncl =
+      FIXP_CNCL * pCncl =
           &hConcealmentInfo->spectralCoefficient[1024 - 1];
-      int32_t *RESTRICT pSpec = &pSpectralCoefficient[1024 - 1];
+      int32_t * pSpec = &pSpectralCoefficient[1024 - 1];
       int32_t i;
       for (i = 1024; i != 0; i--) {
         *pCncl-- = FX_DBL2FX_CNCL(*pSpec--);
@@ -606,9 +606,9 @@ void CConcealment_Store(
                 1024 * sizeof(int32_t));
       C_ALLOC_SCRATCH_END(pSpecTmp, int32_t, 1024);
 #else
-      FIXP_CNCL *RESTRICT pCncl =
+      FIXP_CNCL * pCncl =
           &hConcealmentInfo->spectralCoefficient[1024 - 1];
-      int32_t *RESTRICT pSpec = &pSpectralCoefficient[1024 - 1];
+      int32_t * pSpec = &pSpectralCoefficient[1024 - 1];
       int32_t tSpec;
 
       for (int32_t i = 1024; i != 0; i--) {
@@ -753,9 +753,9 @@ int32_t CConcealment_Apply(
       int16_t *pSpecScale = pAacDecoderChannelInfo->specScale;
       CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
 #if (CNCL_FRACT_BITS != DFRACT_BITS)
-      FIXP_CNCL *RESTRICT pCncl =
+      FIXP_CNCL * pCncl =
           &hConcealmentInfo->spectralCoefficient[1024 - 1];
-      int32_t *RESTRICT pSpec = &pSpectralCoefficient[1024 - 1];
+      int32_t * pSpec = &pSpectralCoefficient[1024 - 1];
       int32_t i;
 #endif
 

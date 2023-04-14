@@ -1213,9 +1213,9 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
 
         if (!isTwoChMode(self->upmixType) && !bypassMode) {
           int32_t i;
-          int32_t *RESTRICT self_qmfResidualReal__FDK_0_0 =
+          int32_t * self_qmfResidualReal__FDK_0_0 =
               &self->qmfResidualReal__FDK[0][0][0];
-          int32_t *RESTRICT self_qmfResidualImag__FDK_0_0 =
+          int32_t * self_qmfResidualImag__FDK_0_0 =
               &self->qmfResidualImag__FDK[0][0][0];
 
           if ((self->pQmfDomain->globalConf.nBandsAnalysis == 24) &&
@@ -1343,10 +1343,10 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
           nHybBands = self->hybridBands;
 
           for (ch = 0; ch < self->numOutputChannels; ch++) {
-            int32_t *RESTRICT pRealDry = self->hybOutputRealDry__FDK[ch];
-            int32_t *RESTRICT pImagDry = self->hybOutputImagDry__FDK[ch];
-            int32_t *RESTRICT pRealWet = self->hybOutputRealWet__FDK[ch];
-            int32_t *RESTRICT pImagWet = self->hybOutputImagWet__FDK[ch];
+            int32_t * pRealDry = self->hybOutputRealDry__FDK[ch];
+            int32_t * pImagDry = self->hybOutputImagDry__FDK[ch];
+            int32_t * pRealWet = self->hybOutputRealWet__FDK[ch];
+            int32_t * pImagWet = self->hybOutputImagWet__FDK[ch];
             for (hyb = 0; hyb < nHybBands; hyb++) {
               pRealDry[hyb] = fAddSaturate(pRealDry[hyb], pRealWet[hyb]);
               pImagDry[hyb] = fAddSaturate(pImagDry[hyb], pImagWet[hyb]);

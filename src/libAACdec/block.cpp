@@ -219,12 +219,12 @@ void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
                               SamplingRateInfo *pSamplingRateInfo) {
   int32_t band;
   int32_t window;
-  const int16_t *RESTRICT pSfbScale = pAacDecoderChannelInfo->pDynData->aSfbScale;
-  int16_t *RESTRICT pSpecScale = pAacDecoderChannelInfo->specScale;
+  const int16_t * pSfbScale = pAacDecoderChannelInfo->pDynData->aSfbScale;
+  int16_t * pSpecScale = pAacDecoderChannelInfo->specScale;
   int32_t groupwin, group;
-  const int16_t *RESTRICT BandOffsets = GetScaleFactorBandOffsets(
+  const int16_t * BandOffsets = GetScaleFactorBandOffsets(
       &pAacDecoderChannelInfo->icsInfo, pSamplingRateInfo);
-  SPECTRAL_PTR RESTRICT pSpectralCoefficient =
+  SPECTRAL_PTR  pSpectralCoefficient =
       pAacDecoderChannelInfo->pSpectralCoefficient;
 
   FDKmemclear(pSpecScale, 8 * sizeof(int16_t));
@@ -433,12 +433,12 @@ AAC_DECODER_ERROR CBlock_ReadSectionData(
  * \param scale max allowed shift scale for the sfb.
  */
 static inline void InverseQuantizeBand(
-    int32_t *RESTRICT spectrum, const int32_t *RESTRICT InverseQuantTabler,
-    const int32_t *RESTRICT MantissaTabler,
-    const int8_t *RESTRICT ExponentTabler, int32_t noLines, int32_t scale) {
+    int32_t * spectrum, const int32_t * InverseQuantTabler,
+    const int32_t * MantissaTabler,
+    const int8_t * ExponentTabler, int32_t noLines, int32_t scale) {
   scale = scale + 1; /* +1 to compensate fMultDiv2 shift-right in loop */
 
-  int32_t *RESTRICT ptr = spectrum;
+  int32_t * ptr = spectrum;
   int32_t signedValue;
 
   for (int32_t i = noLines; i--;) {
@@ -488,10 +488,10 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
   int32_t window, group, groupwin, band;
   int32_t ScaleFactorBandsTransmitted =
       GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);
-  uint8_t *RESTRICT pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
-  int16_t *RESTRICT pSfbScale = pAacDecoderChannelInfo->pDynData->aSfbScale;
-  int16_t *RESTRICT pScaleFactor = pAacDecoderChannelInfo->pDynData->aScaleFactor;
-  const int16_t *RESTRICT BandOffsets = GetScaleFactorBandOffsets(
+  uint8_t * pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
+  int16_t * pSfbScale = pAacDecoderChannelInfo->pDynData->aSfbScale;
+  int16_t * pScaleFactor = pAacDecoderChannelInfo->pDynData->aScaleFactor;
+  const int16_t * BandOffsets = GetScaleFactorBandOffsets(
       &pAacDecoderChannelInfo->icsInfo, pSamplingRateInfo);
   const int16_t total_bands =
       GetScaleFactorBandsTotal(&pAacDecoderChannelInfo->icsInfo);
@@ -618,7 +618,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
     HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
     const SamplingRateInfo *pSamplingRateInfo, const uint32_t flags) {
   int32_t index, i;
-  const int16_t *RESTRICT BandOffsets = GetScaleFactorBandOffsets(
+  const int16_t * BandOffsets = GetScaleFactorBandOffsets(
       &pAacDecoderChannelInfo->icsInfo, pSamplingRateInfo);
 
   SPECTRAL_PTR pSpectralCoefficient =
@@ -901,7 +901,7 @@ AAC_DECODER_ERROR CBlock_ReadAcSpectralData(
   AAC_DECODER_ERROR errorAAC = AAC_DEC_OK;
   ARITH_CODING_ERROR error = ARITH_CODER_OK;
   int32_t arith_reset_flag, lg, numWin, win, winLen;
-  const int16_t *RESTRICT BandOffsets;
+  const int16_t * BandOffsets;
 
   /* number of transmitted spectral coefficients */
   BandOffsets = GetScaleFactorBandOffsets(&pAacDecoderChannelInfo->icsInfo,

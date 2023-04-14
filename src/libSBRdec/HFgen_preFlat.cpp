@@ -565,14 +565,14 @@ const backsubst_data bsd[N_NUMBANDS] = {
  * \param[out] x_sf      exponents of x[]
  */
 static void backsubst_fw(const int32_t numBands, const int32_t *const b,
-                         int32_t *RESTRICT x, int32_t *RESTRICT x_sf) {
+                         int32_t * x, int32_t * x_sf) {
   int32_t i, k;
   int32_t m; /* the trip counter that indexes incrementally through Lnorm1d[] */
 
-  const FIXP_CHB *RESTRICT pLnorm1d = bsd[numBands - BSD_IDX_OFFSET].Lnorm1d;
-  const int8_t *RESTRICT pLnorm1d_sf = bsd[numBands - BSD_IDX_OFFSET].Lnorm1d_sf;
-  const FIXP_CHB *RESTRICT pLnormii = bsd[numBands - BSD_IDX_OFFSET].Lnormii;
-  const int8_t *RESTRICT pLnormii_sf = bsd[numBands - BSD_IDX_OFFSET].Lnormii_sf;
+  const FIXP_CHB * pLnorm1d = bsd[numBands - BSD_IDX_OFFSET].Lnorm1d;
+  const int8_t * pLnorm1d_sf = bsd[numBands - BSD_IDX_OFFSET].Lnorm1d_sf;
+  const FIXP_CHB * pLnormii = bsd[numBands - BSD_IDX_OFFSET].Lnormii;
+  const int8_t * pLnormii_sf = bsd[numBands - BSD_IDX_OFFSET].Lnormii_sf;
 
   x[0] = b[0];
 
@@ -628,13 +628,13 @@ static void backsubst_fw(const int32_t numBands, const int32_t *const b,
  * \param[out] x_sf      exponents of x[]
  */
 static void backsubst_bw(const int32_t numBands, const int32_t *const b,
-                         int32_t *RESTRICT x, int32_t *RESTRICT x_sf) {
+                         int32_t * x, int32_t * x_sf) {
   int32_t i, k;
   int32_t m; /* the trip counter that indexes incrementally through LnormInv1d[] */
 
-  const FIXP_CHB *RESTRICT pLnormInv1d =
+  const FIXP_CHB * pLnormInv1d =
       bsd[numBands - BSD_IDX_OFFSET].LnormInv1d;
-  const int8_t *RESTRICT pLnormInv1d_sf =
+  const int8_t * pLnormInv1d_sf =
       bsd[numBands - BSD_IDX_OFFSET].LnormInv1d_sf;
 
   x[POLY_ORDER] = b[POLY_ORDER];
@@ -682,14 +682,14 @@ static void backsubst_bw(const int32_t numBands, const int32_t *const b,
  * \param[in,out] b_sf      input: exponent of b; output: exponent of solution
  * p.
  */
-static void choleskySolve(const int32_t numBands, int32_t *RESTRICT b,
-                          int32_t *RESTRICT b_sf) {
+static void choleskySolve(const int32_t numBands, int32_t * b,
+                          int32_t * b_sf) {
   int32_t i, e;
 
-  const FIXP_CHB *RESTRICT pBmul0 = bsd[numBands - BSD_IDX_OFFSET].Bmul0;
-  const int8_t *RESTRICT pBmul0_sf = bsd[numBands - BSD_IDX_OFFSET].Bmul0_sf;
-  const FIXP_CHB *RESTRICT pBmul1 = bsd[numBands - BSD_IDX_OFFSET].Bmul1;
-  const int8_t *RESTRICT pBmul1_sf = bsd[numBands - BSD_IDX_OFFSET].Bmul1_sf;
+  const FIXP_CHB * pBmul0 = bsd[numBands - BSD_IDX_OFFSET].Bmul0;
+  const int8_t * pBmul0_sf = bsd[numBands - BSD_IDX_OFFSET].Bmul0_sf;
+  const FIXP_CHB * pBmul1 = bsd[numBands - BSD_IDX_OFFSET].Bmul1;
+  const int8_t * pBmul1_sf = bsd[numBands - BSD_IDX_OFFSET].Bmul1_sf;
 
   /* normalize b */
   int32_t bnormed[POLY_ORDER + 1];
@@ -725,7 +725,7 @@ static void choleskySolve(const int32_t numBands, int32_t *RESTRICT b,
  * \param[out] p_sf      exponents of p[]
  */
 static void polyfit(const int32_t numBands, const int32_t *const y, const int32_t y_sf,
-                    int32_t *RESTRICT p, int32_t *RESTRICT p_sf) {
+                    int32_t * p, int32_t * p_sf) {
   int32_t i, k;
   int32_t v[POLY_ORDER + 1];
   int32_t sum_saftey = getLog2[numBands - 1];
@@ -863,7 +863,7 @@ void sbrDecoder_calculateGainVec(int32_t **sourceBufferReal,
                                  int32_t **sourceBufferImag,
                                  int32_t sourceBuf_e_overlap,
                                  int32_t sourceBuf_e_current, int32_t overlap,
-                                 int32_t *RESTRICT GainVec, int32_t *GainVec_exp,
+                                 int32_t * GainVec, int32_t *GainVec_exp,
                                  int32_t numBands, const int32_t startSample,
                                  const int32_t stopSample) {
   int32_t p[POLY_ORDER + 1];

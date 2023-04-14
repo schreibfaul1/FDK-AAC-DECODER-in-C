@@ -298,9 +298,9 @@ void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t si
 }
 
 /* FIR */
-void CLpc_Analysis(int32_t *RESTRICT signal, const int32_t signal_size,
+void CLpc_Analysis(int32_t * signal, const int32_t signal_size,
                    const FIXP_LPC lpcCoeff_m[], const int32_t lpcCoeff_e,
-                   const int32_t order, int32_t *RESTRICT filtState,
+                   const int32_t order, int32_t * filtState,
                    int32_t *filtStateIndex) {
   int32_t stateIndex;
   int32_t i, j, shift = lpcCoeff_e + 1; /* +1, because fMultDiv2 */

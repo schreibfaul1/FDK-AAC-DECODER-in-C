@@ -239,11 +239,11 @@ void CPns_Read(CPnsData *pPnsData, HANDLE_FDK_BITSTREAM bs,
  * \param pRandomState pointer to the state of the random generator being used.
  * \return exponent of generated noise vector.
  */
-static int32_t GenerateRandomVector(int32_t *RESTRICT spec, int32_t size,
+static int32_t GenerateRandomVector(int32_t * spec, int32_t size,
                                 int32_t *pRandomState) {
   int32_t i, invNrg_e = 0, nrg_e = 0;
   int32_t invNrg_m, nrg_m = FL2FXCONST_DBL(0.0f);
-  int32_t *RESTRICT ptr = spec;
+  int32_t * ptr = spec;
   int32_t randomState = *pRandomState;
 
 #define GEN_NOISE_NRG_SCALE 7
@@ -271,7 +271,7 @@ static int32_t GenerateRandomVector(int32_t *RESTRICT spec, int32_t size,
   return invNrg_e;
 }
 
-static void ScaleBand(int32_t *RESTRICT spec, int32_t size, int32_t scaleFactor,
+static void ScaleBand(int32_t * spec, int32_t size, int32_t scaleFactor,
                       int32_t specScale, int32_t noise_e, int32_t out_of_phase) {
   int32_t i, shift, sfExponent;
   int32_t sfMatissa;

@@ -2382,7 +2382,7 @@ static void calcAvgGain(
 }
 
 static void adjustTimeSlot_EldGrid(
-    int32_t *RESTRICT
+    int32_t *
         ptrReal, /*!< Subband samples to be adjusted, real part */
     ENV_CALC_NRGS *nrgs, uint8_t *ptrHarmIndex, /*!< Harmonic index */
     int32_t lowSubband, /*!< Lowest QMF-channel in the currently used SBR range. */
@@ -2398,9 +2398,9 @@ static void adjustTimeSlot_EldGrid(
   int32_t tone_count = 0;
 
   int32_t *pGain = nrgs->nrgGain; /*!< Gains of current envelope */
-  int32_t *RESTRICT pNoiseLevel =
+  int32_t * pNoiseLevel =
       nrgs->noiseLevel; /*!< Noise levels of current envelope */
-  int32_t *RESTRICT pSineLevel = nrgs->nrgSine; /*!< Sine levels */
+  int32_t * pSineLevel = nrgs->nrgSine; /*!< Sine levels */
 
   int32_t phaseIndex = *ptrPhaseIndex;
   uint8_t harmIndex = *ptrHarmIndex;
@@ -2673,9 +2673,9 @@ static void adjustTimeSlotLC(
 }
 
 static void adjustTimeSlotHQ_GainAndNoise(
-    int32_t *RESTRICT
+    int32_t *
         ptrReal, /*!< Subband samples to be adjusted, real part */
-    int32_t *RESTRICT
+    int32_t *
         ptrImag, /*!< Subband samples to be adjusted, imag part */
     HANDLE_SBR_CALCULATE_ENVELOPE h_sbr_cal_env, ENV_CALC_NRGS *nrgs,
     int32_t lowSubband, /*!< Lowest QMF-channel in the currently used SBR range. */
@@ -2685,16 +2685,16 @@ static void adjustTimeSlotHQ_GainAndNoise(
     int32_t noNoiseFlag,          /*!< Start index to random number array */
     int32_t filtBufferNoiseShift) /*!< Shift factor of filtBufferNoise */
 {
-  int32_t *RESTRICT gain = nrgs->nrgGain; /*!< Gains of current envelope */
-  int32_t *RESTRICT noiseLevel =
+  int32_t * gain = nrgs->nrgGain; /*!< Gains of current envelope */
+  int32_t * noiseLevel =
       nrgs->noiseLevel; /*!< Noise levels of current envelope */
-  int32_t *RESTRICT pSineLevel = nrgs->nrgSine; /*!< Sine levels */
+  int32_t * pSineLevel = nrgs->nrgSine; /*!< Sine levels */
 
-  int32_t *RESTRICT filtBuffer =
+  int32_t * filtBuffer =
       h_sbr_cal_env->filtBuffer; /*!< Gains of last envelope */
-  int32_t *RESTRICT filtBufferNoise =
+  int32_t * filtBufferNoise =
       h_sbr_cal_env->filtBufferNoise; /*!< Noise levels of last envelope */
-  int32_t *RESTRICT ptrPhaseIndex =
+  int32_t * ptrPhaseIndex =
       &h_sbr_cal_env->phaseIndex; /*!< Start index to random number array */
 
   int32_t k;
@@ -2800,9 +2800,9 @@ static void adjustTimeSlotHQ_GainAndNoise(
 }
 
 static void adjustTimeSlotHQ_AddHarmonics(
-    int32_t *RESTRICT
+    int32_t *
         ptrReal, /*!< Subband samples to be adjusted, real part */
-    int32_t *RESTRICT
+    int32_t *
         ptrImag, /*!< Subband samples to be adjusted, imag part */
     HANDLE_SBR_CALCULATE_ENVELOPE h_sbr_cal_env, ENV_CALC_NRGS *nrgs,
     int32_t lowSubband,  /*!< Lowest QMF-channel in the currently used SBR range. */
@@ -2810,8 +2810,8 @@ static void adjustTimeSlotHQ_AddHarmonics(
     int32_t scale_change /*!< Scale mismatch between QMF input and sineLevel
                         exponent. */
 ) {
-  int32_t *RESTRICT pSineLevel = nrgs->nrgSine; /*!< Sine levels */
-  uint8_t *RESTRICT ptrHarmIndex =
+  int32_t * pSineLevel = nrgs->nrgSine; /*!< Sine levels */
+  uint8_t * ptrHarmIndex =
       &h_sbr_cal_env->harmIndex; /*!< Harmonic index */
 
   int32_t k;
@@ -2846,9 +2846,9 @@ static void adjustTimeSlotHQ_AddHarmonics(
 }
 
 static void adjustTimeSlotHQ(
-    int32_t *RESTRICT
+    int32_t *
         ptrReal, /*!< Subband samples to be adjusted, real part */
-    int32_t *RESTRICT
+    int32_t *
         ptrImag, /*!< Subband samples to be adjusted, imag part */
     HANDLE_SBR_CALCULATE_ENVELOPE h_sbr_cal_env, ENV_CALC_NRGS *nrgs,
     int32_t lowSubband, /*!< Lowest QMF-channel in the currently used SBR range. */
@@ -2858,18 +2858,18 @@ static void adjustTimeSlotHQ(
     int32_t noNoiseFlag,          /*!< Start index to random number array */
     int32_t filtBufferNoiseShift) /*!< Shift factor of filtBufferNoise */
 {
-  int32_t *RESTRICT gain = nrgs->nrgGain; /*!< Gains of current envelope */
-  int32_t *RESTRICT noiseLevel =
+  int32_t * gain = nrgs->nrgGain; /*!< Gains of current envelope */
+  int32_t * noiseLevel =
       nrgs->noiseLevel; /*!< Noise levels of current envelope */
-  int32_t *RESTRICT pSineLevel = nrgs->nrgSine; /*!< Sine levels */
+  int32_t * pSineLevel = nrgs->nrgSine; /*!< Sine levels */
 
-  int32_t *RESTRICT filtBuffer =
+  int32_t * filtBuffer =
       h_sbr_cal_env->filtBuffer; /*!< Gains of last envelope */
-  int32_t *RESTRICT filtBufferNoise =
+  int32_t * filtBufferNoise =
       h_sbr_cal_env->filtBufferNoise; /*!< Noise levels of last envelope */
-  uint8_t *RESTRICT ptrHarmIndex =
+  uint8_t * ptrHarmIndex =
       &h_sbr_cal_env->harmIndex; /*!< Harmonic index */
-  int32_t *RESTRICT ptrPhaseIndex =
+  int32_t * ptrPhaseIndex =
       &h_sbr_cal_env->phaseIndex; /*!< Start index to random number array */
 
   int32_t k;
@@ -3181,7 +3181,7 @@ ResetLimiterBands(
       return SBRDEC_UNSUPPORTED_CONFIG;
     }
 
-    /* Restrict maximum value of limiter band table */
+    /*  maximum value of limiter band table */
     if (workLimiterBandTable[tempNoLim] > highSubband) {
       return SBRDEC_UNSUPPORTED_CONFIG;
     }

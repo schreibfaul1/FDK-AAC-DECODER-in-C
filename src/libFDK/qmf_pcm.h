@@ -131,17 +131,17 @@ void qmfSynPrototypeFirSlot(
 void qmfSynPrototypeFirSlot_fallback(
 #endif
     HANDLE_QMF_FILTER_BANK qmf,
-    int32_t *RESTRICT realSlot,      /*!< Input: Pointer to real Slot */
-    int32_t *RESTRICT imagSlot,      /*!< Input: Pointer to imag Slot */
-    INT_PCM_QMFOUT *RESTRICT timeOut, /*!< Time domain data */
+    int32_t * realSlot,      /*!< Input: Pointer to real Slot */
+    int32_t * imagSlot,      /*!< Input: Pointer to imag Slot */
+    INT_PCM_QMFOUT * timeOut, /*!< Time domain data */
     int32_t stride) {
   FIXP_QSS *FilterStates = (FIXP_QSS *)qmf->FilterStates;
   int32_t no_channels = qmf->no_channels;
   const FIXP_PFT *p_Filter = qmf->p_filter;
   int32_t p_stride = qmf->p_stride;
   int32_t j;
-  FIXP_QSS *RESTRICT sta = FilterStates;
-  const FIXP_PFT *RESTRICT p_flt, *RESTRICT p_fltm;
+  FIXP_QSS * sta = FilterStates;
+  const FIXP_PFT * p_flt, * p_fltm;
   int32_t scale = (DFRACT_BITS - SAMPLE_BITS_QMFOUT) - 1 - qmf->outScalefactor -
               qmf->outGain_e;
 
@@ -223,17 +223,17 @@ void qmfSynPrototypeFirSlot_fallback(
 */
 static void qmfSynPrototypeFirSlot_NonSymmetric(
     HANDLE_QMF_FILTER_BANK qmf,
-    int32_t *RESTRICT realSlot,      /*!< Input: Pointer to real Slot */
-    int32_t *RESTRICT imagSlot,      /*!< Input: Pointer to imag Slot */
-    INT_PCM_QMFOUT *RESTRICT timeOut, /*!< Time domain data */
+    int32_t * realSlot,      /*!< Input: Pointer to real Slot */
+    int32_t * imagSlot,      /*!< Input: Pointer to imag Slot */
+    INT_PCM_QMFOUT * timeOut, /*!< Time domain data */
     int32_t stride) {
   FIXP_QSS *FilterStates = (FIXP_QSS *)qmf->FilterStates;
   int32_t no_channels = qmf->no_channels;
   const FIXP_PFT *p_Filter = qmf->p_filter;
   int32_t p_stride = qmf->p_stride;
   int32_t j;
-  FIXP_QSS *RESTRICT sta = FilterStates;
-  const FIXP_PFT *RESTRICT p_flt, *RESTRICT p_fltm;
+  FIXP_QSS * sta = FilterStates;
+  const FIXP_PFT * p_flt, * p_fltm;
   int32_t scale = (DFRACT_BITS - SAMPLE_BITS_QMFOUT) - 1 - qmf->outScalefactor -
               qmf->outGain_e;
 
@@ -440,16 +440,16 @@ static void qmfAnaPrototypeFirSlot(
     int32_t *analysisBuffer,
     int32_t no_channels, /*!< Number channels of analysis filter */
     const FIXP_PFT *p_filter, int32_t p_stride, /*!< Stride of analysis filter    */
-    FIXP_QAS *RESTRICT pFilterStates) {
+    FIXP_QAS * pFilterStates) {
   int32_t k;
 
   int32_t accu;
-  const FIXP_PFT *RESTRICT p_flt = p_filter;
-  int32_t *RESTRICT pData_0 = analysisBuffer + 2 * no_channels - 1;
-  int32_t *RESTRICT pData_1 = analysisBuffer;
+  const FIXP_PFT * p_flt = p_filter;
+  int32_t * pData_0 = analysisBuffer + 2 * no_channels - 1;
+  int32_t * pData_1 = analysisBuffer;
 
-  FIXP_QAS *RESTRICT sta_0 = (FIXP_QAS *)pFilterStates;
-  FIXP_QAS *RESTRICT sta_1 =
+  FIXP_QAS * sta_0 = (FIXP_QAS *)pFilterStates;
+  FIXP_QAS * sta_1 =
       (FIXP_QAS *)pFilterStates + (2 * QMF_NO_POLY * no_channels) - 1;
   int32_t pfltStep = QMF_NO_POLY * (p_stride);
   int32_t staStep1 = no_channels << 1;
@@ -493,8 +493,8 @@ static void qmfAnaPrototypeFirSlot_NonSymmetric(
     int32_t *analysisBuffer,
     int32_t no_channels, /*!< Number channels of analysis filter */
     const FIXP_PFT *p_filter, int32_t p_stride, /*!< Stride of analysis filter    */
-    FIXP_QAS *RESTRICT pFilterStates) {
-  const FIXP_PFT *RESTRICT p_flt = p_filter;
+    FIXP_QAS * pFilterStates) {
+  const FIXP_PFT * p_flt = p_filter;
   int32_t p, k;
 
   for (k = 0; k < 2 * no_channels; k++) {
@@ -526,7 +526,7 @@ void qmfAnalysisFilteringSlot(
     HANDLE_QMF_FILTER_BANK anaQmf,        /*!< Handle of Qmf Synthesis Bank  */
     int32_t *qmfReal,                    /*!< Low and High band, real */
     int32_t *qmfImag,                    /*!< Low and High band, imag */
-    const INT_PCM_QMFIN *RESTRICT timeIn, /*!< Pointer to input */
+    const INT_PCM_QMFIN * timeIn, /*!< Pointer to input */
     const int32_t stride,                     /*!< stride factor of input */
     int32_t *pWorkBuffer /*!< pointer to temporal working buffer */
 ) {

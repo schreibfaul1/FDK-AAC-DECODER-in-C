@@ -187,10 +187,10 @@ void CLpc_SynthesisLattice(int32_t *signal, const int32_t signal_size,
                            const int32_t inc, const FIXP_SGL *coeff,
                            const int32_t order, int32_t *state);
 
-void CLpc_SynthesisLattice(int32_t *RESTRICT signal, const int32_t signal_size,
+void CLpc_SynthesisLattice(int32_t * signal, const int32_t signal_size,
                            const int32_t signal_e, const int32_t signal_e_out,
-                           const int32_t inc, const int32_t *RESTRICT coeff,
-                           const int32_t order, int32_t *RESTRICT state);
+                           const int32_t inc, const int32_t * coeff,
+                           const int32_t order, int32_t * state);
 
 /**
  * \brief

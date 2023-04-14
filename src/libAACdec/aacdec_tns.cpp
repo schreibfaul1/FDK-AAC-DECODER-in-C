@@ -271,7 +271,7 @@ void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData *pTnsData0,
 
   \return  none
 */
-void CTns_Apply(CTnsData *RESTRICT pTnsData, /*!< pointer to aac decoder info */
+void CTns_Apply(CTnsData * pTnsData, /*!< pointer to aac decoder info */
                 const CIcsInfo *pIcsInfo, SPECTRAL_PTR pSpectralCoefficient,
                 const SamplingRateInfo *pSamplingRateInfo,
                 const int32_t granuleLength, const uint8_t nbands,

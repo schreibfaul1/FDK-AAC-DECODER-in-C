@@ -334,10 +334,10 @@ SACDEC_ERROR SpatialDecCreateX(spatialDec *self, int32_t **hybInputReal,
   return err;
 }
 
-static void M2ParamToKernelMult(FIXP_SGL *RESTRICT pKernel,
-                                int32_t *RESTRICT Mparam,
-                                int32_t *RESTRICT MparamPrev,
-                                int32_t *RESTRICT pWidth, FIXP_SGL alpha__FDK,
+static void M2ParamToKernelMult(FIXP_SGL * pKernel,
+                                int32_t * Mparam,
+                                int32_t * MparamPrev,
+                                int32_t * pWidth, FIXP_SGL alpha__FDK,
                                 int32_t nBands) {
   int32_t pb;
 
@@ -433,13 +433,13 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, int32_t ps,
     int32_t *MparamPrev0 = self->M2RealPrev__FDK[row][0];
     int32_t *MparamPrev1 = self->M2RealPrev__FDK[row][1];
 
-    int32_t *RESTRICT pHybOutRealDry = hybOutputRealDry[row];
-    int32_t *RESTRICT pHybOutImagDry = hybOutputImagDry[row];
+    int32_t * pHybOutRealDry = hybOutputRealDry[row];
+    int32_t * pHybOutImagDry = hybOutputImagDry[row];
 
-    int32_t *RESTRICT pWReal0 = wReal[0];
-    int32_t *RESTRICT pWReal1 = wReal[1];
-    int32_t *RESTRICT pWImag0 = wImag[0];
-    int32_t *RESTRICT pWImag1 = wImag[1];
+    int32_t * pWReal0 = wReal[0];
+    int32_t * pWReal1 = wReal[1];
+    int32_t * pWImag0 = wImag[0];
+    int32_t * pWImag1 = wImag[1];
     for (int32_t pb = 0; pb < pb_max; pb++) {
       int32_t tmp0, tmp1;
 
@@ -483,10 +483,10 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
   for (row = 0; row < self->numM2rows; row++) {
     int32_t qs, pb;
 
-    int32_t *RESTRICT pWReal0 = wReal[0];
-    int32_t *RESTRICT pWImag0 = wImag[0];
-    int32_t *RESTRICT pWReal1 = wReal[1];
-    int32_t *RESTRICT pWImag1 = wImag[1];
+    int32_t * pWReal0 = wReal[0];
+    int32_t * pWImag0 = wImag[0];
+    int32_t * pWReal1 = wReal[1];
+    int32_t * pWImag1 = wImag[1];
 
     int32_t *MReal0 = self->M2Real__FDK[row][0];
     int32_t *MImag0 = self->M2Imag__FDK[row][0];
@@ -495,8 +495,8 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
     int32_t *MImagPrev0 = self->M2ImagPrev__FDK[row][0];
     int32_t *MRealPrev1 = self->M2RealPrev__FDK[row][1];
 
-    int32_t *RESTRICT pHybOutRealDry = hybOutputRealDry[row];
-    int32_t *RESTRICT pHybOutImagDry = hybOutputImagDry[row];
+    int32_t * pHybOutRealDry = hybOutputRealDry[row];
+    int32_t * pHybOutImagDry = hybOutputImagDry[row];
 
     assert(!(self->pConfigCurrent->syntaxFlags & SACDEC_SYNTAX_LD));
     assert((pWidth[0] + pWidth[1]) >= 3);
@@ -606,9 +606,9 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, int32_t ps, const FIXP_SGL alph
     int32_t toolsDisabled;
 
     uint8_t activParamBands;
-    int32_t *RESTRICT pWReal, *RESTRICT pWImag, *RESTRICT pHybOutRealDry,
-        *RESTRICT pHybOutImagDry, *RESTRICT pHybOutRealWet,
-        *RESTRICT pHybOutImagWet;
+    int32_t * pWReal, * pWImag, * pHybOutRealDry,
+        * pHybOutImagDry, * pHybOutRealWet,
+        * pHybOutImagWet;
     C_ALLOC_SCRATCH_START(pKernel, FIXP_SGL, MAX_HYBRID_BANDS);
 
     /* The wet signal is added to the dry signal directly in applyM2 if GES and
@@ -770,8 +770,8 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, int32_t ps, const FIXP_SGL alph
             }
           } else { /* self->upmixType */
             /* residual signals */
-            int32_t *RESTRICT pHybOutReal;
-            int32_t *RESTRICT pHybOutImag;
+            int32_t * pHybOutReal;
+            int32_t * pHybOutImag;
 
             for (qs = 0; qs < resHybIndex; qs++) {
               pHybOutRealDry[qs] += SAC_DEC_APPLY_M2_SCALE(

@@ -40,22 +40,6 @@ typedef int16_t INT_PCM;
 #define RAM_ALIGN
 #endif
 
-/*!
- * \def  RESTRICT
- *       The restrict keyword is supported by some platforms and RESTRICT maps
- * to either the corresponding keyword on each platform or to void if the
- *       compiler does not provide such feature. It tells the compiler that a
- * pointer points to memory that does not overlap with other memories pointed to
- * by other pointers. If this keyword is used and the assumption of no
- * overlap is not true the resulting code might crash.
- *
- *
- *
- */
-#define RESTRICT
-
-
-
 /*-----------------------------------------------------------------------------------
  * ALIGN_SIZE
  *-----------------------------------------------------------------------------------*/

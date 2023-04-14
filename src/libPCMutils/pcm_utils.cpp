@@ -106,7 +106,7 @@ change
 /* library version */
 #include "version.h"
 
-void FDK_interleave(const int32_t *RESTRICT pIn, int32_t *RESTRICT pOut,
+void FDK_interleave(const int32_t * pIn, int32_t * pOut,
                     const uint32_t channels, const uint32_t frameSize,
                     const uint32_t length) {
   for (uint32_t sample = 0; sample < length; sample++) {
@@ -118,7 +118,7 @@ void FDK_interleave(const int32_t *RESTRICT pIn, int32_t *RESTRICT pOut,
   }
 }
 
-void FDK_interleave(const int32_t *RESTRICT pIn, int16_t *RESTRICT pOut,
+void FDK_interleave(const int32_t * pIn, int16_t * pOut,
                     const uint32_t channels, const uint32_t frameSize,
                     const uint32_t length) {
   for (uint32_t sample = 0; sample < length; sample++) {
@@ -130,7 +130,7 @@ void FDK_interleave(const int32_t *RESTRICT pIn, int16_t *RESTRICT pOut,
   }
 }
 
-void FDK_interleave(const FIXP_SGL *RESTRICT pIn, int16_t *RESTRICT pOut,
+void FDK_interleave(const FIXP_SGL * pIn, int16_t * pOut,
                     const uint32_t channels, const uint32_t frameSize,
                     const uint32_t length) {
   for (uint32_t sample = 0; sample < length; sample++) {
@@ -142,7 +142,7 @@ void FDK_interleave(const FIXP_SGL *RESTRICT pIn, int16_t *RESTRICT pOut,
   }
 }
 
-void FDK_deinterleave(const int32_t *RESTRICT pIn, int16_t *RESTRICT _pOut,
+void FDK_deinterleave(const int32_t * pIn, int16_t * _pOut,
                       const uint32_t channels, const uint32_t frameSize,
                       const uint32_t length) {
   for (uint32_t ch = 0; ch < channels; ch++) {
@@ -155,7 +155,7 @@ void FDK_deinterleave(const int32_t *RESTRICT pIn, int16_t *RESTRICT _pOut,
   }
 }
 
-void FDK_deinterleave(const int32_t *RESTRICT pIn, int32_t *RESTRICT _pOut,
+void FDK_deinterleave(const int32_t * pIn, int32_t * _pOut,
                       const uint32_t channels, const uint32_t frameSize,
                       const uint32_t length) {
   for (uint32_t ch = 0; ch < channels; ch++) {
@@ -168,7 +168,7 @@ void FDK_deinterleave(const int32_t *RESTRICT pIn, int32_t *RESTRICT _pOut,
   }
 }
 
-void FDK_deinterleave(const int16_t *RESTRICT pIn, int16_t *RESTRICT _pOut,
+void FDK_deinterleave(const int16_t * pIn, int16_t * _pOut,
                       const uint32_t channels, const uint32_t frameSize,
                       const uint32_t length) {
   for (uint32_t ch = 0; ch < channels; ch++) {
@@ -181,7 +181,7 @@ void FDK_deinterleave(const int16_t *RESTRICT pIn, int16_t *RESTRICT _pOut,
   }
 }
 
-void FDK_deinterleave(const int16_t *RESTRICT pIn, int32_t *RESTRICT _pOut,
+void FDK_deinterleave(const int16_t * pIn, int32_t * _pOut,
                       const uint32_t channels, const uint32_t frameSize,
                       const uint32_t length) {
   for (uint32_t ch = 0; ch < channels; ch++) {

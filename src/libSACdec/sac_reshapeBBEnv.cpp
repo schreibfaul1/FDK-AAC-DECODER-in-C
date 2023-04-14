@@ -153,9 +153,9 @@ void initBBEnv(spatialDec *self, int32_t initStatesFlag) {
       FL2FXCONST_DBL(0.96436909488f); /* FDKexp(-64 / (0.04f * 44100)) */
 }
 
-static inline void getSlotNrgHQ(int32_t *RESTRICT pReal,
-                                int32_t *RESTRICT pImag,
-                                int32_t *RESTRICT slotNrg, int32_t maxValSF,
+static inline void getSlotNrgHQ(int32_t * pReal,
+                                int32_t * pImag,
+                                int32_t * slotNrg, int32_t maxValSF,
                                 int32_t hybBands) {
   int32_t qs;
   int32_t nrg;
@@ -222,12 +222,12 @@ static inline void getSlotNrgHQ(int32_t *RESTRICT pReal,
   }
 }
 
-static inline void combineDryWet(int32_t *RESTRICT pReal,
-                                 int32_t *RESTRICT pImag,
-                                 int32_t *RESTRICT pHybOutputRealDry,
-                                 int32_t *RESTRICT pHybOutputImagDry,
-                                 int32_t *RESTRICT pHybOutputRealWet,
-                                 int32_t *RESTRICT pHybOutputImagWet,
+static inline void combineDryWet(int32_t * pReal,
+                                 int32_t * pImag,
+                                 int32_t * pHybOutputRealDry,
+                                 int32_t * pHybOutputImagDry,
+                                 int32_t * pHybOutputRealWet,
+                                 int32_t * pHybOutputImagWet,
                                  int32_t cplxBands, int32_t hybBands) {
   int32_t qs;
 
@@ -240,12 +240,12 @@ static inline void combineDryWet(int32_t *RESTRICT pReal,
   }
 }
 
-static inline void slotAmp(int32_t *RESTRICT slotAmp_dry,
-                           int32_t *RESTRICT slotAmp_wet,
-                           int32_t *RESTRICT pHybOutputRealDry,
-                           int32_t *RESTRICT pHybOutputImagDry,
-                           int32_t *RESTRICT pHybOutputRealWet,
-                           int32_t *RESTRICT pHybOutputImagWet, int32_t cplxBands,
+static inline void slotAmp(int32_t * slotAmp_dry,
+                           int32_t * slotAmp_wet,
+                           int32_t * pHybOutputRealDry,
+                           int32_t * pHybOutputImagDry,
+                           int32_t * pHybOutputRealWet,
+                           int32_t * pHybOutputImagWet, int32_t cplxBands,
                            int32_t hybBands) {
   int32_t qs;
   int32_t dry, wet;

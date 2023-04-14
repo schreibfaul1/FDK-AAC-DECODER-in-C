@@ -174,15 +174,29 @@ struct SBR_DECODER_INSTANCE {
                             clipping */
 };
 
-H_ALLOC_MEM(Ram_SbrDecElement, SBR_DECODER_ELEMENT)
-H_ALLOC_MEM(Ram_SbrDecChannel, SBR_CHANNEL)
-H_ALLOC_MEM(Ram_SbrDecoder, struct SBR_DECODER_INSTANCE)
 
-H_ALLOC_MEM(Ram_sbr_QmfStatesSynthesis, FIXP_QSS)
-H_ALLOC_MEM(Ram_sbr_OverlapBuffer, int32_t)
 
-H_ALLOC_MEM(Ram_sbr_HBEOverlapBuffer, int32_t)
 
-H_ALLOC_MEM(Ram_ps_dec, PS_DEC)
+
+
+
+
+
+int32_t *GetRam_sbr_QmfStatesSynthesis(int32_t n = 0);
+void FreeRam_sbr_QmfStatesSynthesis(int32_t **p);
+uint32_t GetRequiredMemRam_sbr_QmfStatesSynthesis(void);
+
+int32_t *GetRam_sbr_OverlapBuffer(int32_t n = 0);
+void FreeRam_sbr_OverlapBuffer(int32_t **p);
+uint32_t GetRequiredMemRam_sbr_OverlapBuffer(void);
+
+int32_t *GetRam_sbr_HBEOverlapBuffer(int32_t n = 0);
+void FreeRam_sbr_HBEOverlapBuffer(int32_t **p);
+uint32_t GetRequiredMemRam_sbr_HBEOverlapBuffer(void);
+
+
+
+
+
 
 #endif /* SBR_RAM_H */

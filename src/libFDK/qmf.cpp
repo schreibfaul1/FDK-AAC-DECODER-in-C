@@ -220,9 +220,9 @@ static void qmfForwardModulationLP_odd(
 #if !defined(FUNCTION_qmfForwardModulationHQ)
 static void qmfForwardModulationHQ(
     HANDLE_QMF_FILTER_BANK anaQmf,   /*!< Handle of Qmf Analysis Bank  */
-    const int32_t *RESTRICT timeIn, /*!< Time Signal */
-    int32_t *RESTRICT rSubband,     /*!< Real Output */
-    int32_t *RESTRICT iSubband      /*!< Imaginary Output */
+    const int32_t * timeIn, /*!< Time Signal */
+    int32_t * rSubband,     /*!< Real Output */
+    int32_t * iSubband      /*!< Imaginary Output */
 ) {
   int32_t i;
   int32_t L = anaQmf->no_channels;
@@ -318,8 +318,8 @@ inline static void qmfInverseModulationLP_even(
   int32_t M = L >> 1;
   int32_t scale = 0;
   int32_t tmp;
-  int32_t *RESTRICT tReal = pTimeOut;
-  int32_t *RESTRICT tImag = pTimeOut + L;
+  int32_t * tReal = pTimeOut;
+  int32_t * tImag = pTimeOut + L;
 
   /* Move input to output vector with offset */
   scaleValuesSaturate(&tReal[0], &qmfReal[0], synQmf->lsb, scaleFactorLowBand);
@@ -407,8 +407,8 @@ inline static void qmfInverseModulationHQ(
   int32_t L = synQmf->no_channels;
   int32_t M = L >> 1;
   int32_t shift = 0;
-  int32_t *RESTRICT tReal = pWorkBuffer;
-  int32_t *RESTRICT tImag = pWorkBuffer + L;
+  int32_t * tReal = pWorkBuffer;
+  int32_t * tImag = pWorkBuffer + L;
 
   if (synQmf->flags & QMF_FLAG_CLDFB) {
     for (i = 0; i < synQmf->usb; i++) {

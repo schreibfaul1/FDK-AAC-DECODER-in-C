@@ -363,7 +363,7 @@ int32_t FDK_getFreeBits(HANDLE_FDK_BITBUF hBitBuf) {
   return (hBitBuf->bufBits - hBitBuf->ValidBits);
 }
 
-void FDK_Feed(HANDLE_FDK_BITBUF hBitBuf, const uint8_t *RESTRICT inputBuffer,
+void FDK_Feed(HANDLE_FDK_BITBUF hBitBuf, const uint8_t * inputBuffer,
               const uint32_t bufferSize, uint32_t *bytesValid) {
   inputBuffer = &inputBuffer[bufferSize - *bytesValid];
 
@@ -400,12 +400,12 @@ void FDK_Feed(HANDLE_FDK_BITBUF hBitBuf, const uint8_t *RESTRICT inputBuffer,
   *bytesValid -= bTotal;
 }
 
-void CopyAlignedBlock(HANDLE_FDK_BITBUF h_BitBufSrc, uint8_t *RESTRICT dstBuffer,
+void CopyAlignedBlock(HANDLE_FDK_BITBUF h_BitBufSrc, uint8_t * dstBuffer,
                       uint32_t bToRead) {
   uint32_t byteOffset = h_BitBufSrc->BitNdx >> 3;
   const uint32_t byteMask = h_BitBufSrc->bufSize - 1;
 
-  uint8_t *RESTRICT pBBB = h_BitBufSrc->Buffer;
+  uint8_t * pBBB = h_BitBufSrc->Buffer;
   for (uint32_t i = 0; i < bToRead; i++) {
     dstBuffer[i] = pBBB[(byteOffset + i) & byteMask];
   }
@@ -461,7 +461,7 @@ void FDK_Copy(HANDLE_FDK_BITBUF h_BitBufDst, HANDLE_FDK_BITBUF h_BitBufSrc,
 }
 
 void FDK_Fetch(HANDLE_FDK_BITBUF hBitBuf, uint8_t *outBuf, uint32_t *writeBytes) {
-  uint8_t *RESTRICT outputBuffer = outBuf;
+  uint8_t * outputBuffer = outBuf;
   uint32_t bTotal = 0;
 
   uint32_t bToWrite = (hBitBuf->ValidBits) >> 3;

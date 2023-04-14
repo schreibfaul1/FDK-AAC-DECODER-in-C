@@ -1497,7 +1497,7 @@ static int32_t DecodePCW_Sign(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor,
 */
 void HcrMuteErroneousLines(H_HCR_INFO hHcr) {
   int32_t c;
-  int32_t *RESTRICT pLong =
+  int32_t * pLong =
       SPEC_LONG(hHcr->decInOut.pQuantizedSpectralCoefficientsBase);
 
   /* if there is a line with value Q_VALUE_INVALID mute it */

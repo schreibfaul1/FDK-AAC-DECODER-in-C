@@ -384,8 +384,8 @@ void dct_IV(int32_t *pDat, int32_t L, int32_t *pDat_e) {
   dct_getTables(&twiddle, &sin_twiddle, &sin_step, L);
 
   {
-    int32_t *RESTRICT pDat_0 = &pDat[0];
-    int32_t *RESTRICT pDat_1 = &pDat[L - 2];
+    int32_t * pDat_0 = &pDat[0];
+    int32_t * pDat_1 = &pDat[L - 2];
     int32_t i;
 
     /* 29 cycles on ARM926 */
@@ -421,8 +421,8 @@ void dct_IV(int32_t *pDat, int32_t L, int32_t *pDat_e) {
   fft(M, pDat, pDat_e);
 
   {
-    int32_t *RESTRICT pDat_0 = &pDat[0];
-    int32_t *RESTRICT pDat_1 = &pDat[L - 2];
+    int32_t * pDat_0 = &pDat[0];
+    int32_t * pDat_1 = &pDat[L - 2];
     int32_t accu1, accu2, accu3, accu4;
     int32_t idx, i;
 
@@ -481,8 +481,8 @@ void dst_IV(int32_t *pDat, int32_t L, int32_t *pDat_e) {
   dct_getTables(&twiddle, &sin_twiddle, &sin_step, L);
 
   {
-    int32_t *RESTRICT pDat_0 = &pDat[0];
-    int32_t *RESTRICT pDat_1 = &pDat[L - 2];
+    int32_t * pDat_0 = &pDat[0];
+    int32_t * pDat_1 = &pDat[L - 2];
     int32_t i;
 
     /* 34 cycles on ARM926 */
@@ -518,8 +518,8 @@ void dst_IV(int32_t *pDat, int32_t L, int32_t *pDat_e) {
   fft(M, pDat, pDat_e);
 
   {
-    int32_t *RESTRICT pDat_0;
-    int32_t *RESTRICT pDat_1;
+    int32_t * pDat_0;
+    int32_t * pDat_1;
     int32_t accu1, accu2, accu3, accu4;
     int32_t idx, i;
 
