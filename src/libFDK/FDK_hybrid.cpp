@@ -125,21 +125,15 @@ amm-info@iis.fraunhofer.de
 
 /*--------------- structure definitions ---------------*/
 
-#if defined(ARCH_PREFER_MULT_32x16)
+
 #define FIXP_HTB int16_t              /* SGL data type. */
 #define FIXP_HTP FIXP_SPK              /* Packed SGL data type. */
-#define HTC(a) (FX_DBL2FXCONST_SGL(a)) /* Cast to SGL */
 #define FL2FXCONST_HTB FL2FXCONST_SGL
-#else
-#define FIXP_HTB int32_t            /* SGL data type. */
-#define FIXP_HTP FIXP_DPK            /* Packed DBL data type. */
-#define HTC(a) ((int32_t)(int32_t)(a)) /* Cast to DBL */
-#define FL2FXCONST_HTB FL2FXCONST_DBL
-#endif
+
 
 #define HTCP(real, imag)     \
   {                          \
-    { HTC(real), HTC(imag) } \
+    { FX_DBL2FXCONST_SGL(real), FX_DBL2FXCONST_SGL(imag) } \
   } /* How to arrange the packed values. */
 
 struct FDK_HYBRID_SETUP {

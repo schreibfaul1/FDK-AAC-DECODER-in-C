@@ -124,7 +124,7 @@ amm-info@iis.fraunhofer.de
 #include "FDK_tools_rom.h"
 #include "fft.h"
 
-#define WTC(x) FX_DBL2FXCONST_SGL(x)
+
 void dct_getTables(const FIXP_WTP **ptwiddle, const FIXP_STP **sin_twiddle,
                    int32_t *sin_step, int32_t length) {
   const FIXP_WTP *twiddle;
@@ -454,8 +454,8 @@ void dct_IV(int32_t *pDat, int32_t L, int32_t *pDat_e) {
 
     if ((M & 1) == 0) {
       /* Last Sin and Cos value pair are the same */
-      accu1 = fMult(accu1, WTC(0x5a82799a));
-      accu2 = fMult(accu2, WTC(0x5a82799a));
+    accu1 = fMult(accu1, (int16_t) 23170);
+    accu2 = fMult(accu2, (int16_t) 23170);
 
       pDat_1[0] = accu1 + accu2;
       pDat_0[1] = accu1 - accu2;
@@ -555,8 +555,8 @@ void dst_IV(int32_t *pDat, int32_t L, int32_t *pDat_e) {
 
     if ((M & 1) == 0) {
       /* Last Sin and Cos value pair are the same */
-      accu1 = fMult(accu1, WTC(0x5a82799a));
-      accu2 = fMult(accu2, WTC(0x5a82799a));
+      accu1 = fMult(accu1, (int16_t)    23170);
+      accu2 = fMult(accu2, (int16_t)    23170);
 
       pDat_0[1] = -accu1 - accu2;
       pDat_1[0] = accu2 - accu1;
