@@ -103,8 +103,6 @@ amm-info@iis.fraunhofer.de
 #include "fft_rad2.h"
 #include "FDK_tools_rom.h"
 
-#define STC(x) FX_DBL2FXCONST_SGL(x)
-
 #define W_PiFOURTH 23170
 //#define W_PiFOURTH ((int32_t)(0x5a82799a))
 #ifndef SUMDIFF_PIFOURTH

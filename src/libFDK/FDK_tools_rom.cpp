@@ -4112,15 +4112,10 @@ const FIXP_WTP *FDKgetWindowSlope(int32_t length, int32_t shape) {
    * QMF filter and twiddle tables
    */
 
-#ifdef QMF_COEFF_16BIT
+
 #define QFC(x) FX_DBL2FXCONST_SGL(x)
 #define QTCFL(x) FL2FXCONST_SGL(x)
-#define QTC(x) FX_DBL2FXCONST_SGL(x)
-#else
-#define QFC(x) ((int32_t)(x))
-#define QTCFL(x) FL2FXCONST_DBL(x)
-#define QTC(x) ((int32_t)(x))
-#endif /* ARCH_PREFER_MULT_32x16 */
+
 
 /*!
   \name QMF
@@ -4245,31 +4240,31 @@ const FIXP_PFT qmf_pfilt200[] = {
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
 const FIXP_QTW qmf_phaseshift_cos40[] = {
-    QTC(0x7fef5260), QTC(0x7f69ff76), QTC(0x7e5fe493), QTC(0x7cd21707),
-    QTC(0x7ac23561), QTC(0x783265c0), QTC(0x75255392), QTC(0x719e2cd2),
-    QTC(0x6da09eb1), QTC(0x6930d1c4), QTC(0x645365b2), QTC(0x5f0d6c5b),
-    QTC(0x59646498), QTC(0x535e3479), QTC(0x4d012324), QTC(0x4653d24b),
-    QTC(0x3f5d373e), QTC(0x382493b0), QTC(0x30b16e23), QTC(0x290b8a12),
-    QTC(0x213adfda), QTC(0x1947946c), QTC(0x1139f0cf), QTC(0x091a597e),
-    QTC(0x00f145ab), QTC(0xf8c73668), QTC(0xf0a4adcf), QTC(0xe8922622),
-    QTC(0xe09808f5), QTC(0xd8bea66a), QTC(0xd10e2c89), QTC(0xc98e9eb5),
-    QTC(0xc247cd5a), QTC(0xbb414dc0), QTC(0xb4827228), QTC(0xae12422c),
-    QTC(0xa7f7736a), QTC(0xa2386284), QTC(0x9cdb0c83), QTC(0x97e50896),
+        32751,     32618,     32352,     31954,
+        31426,     30770,     29989,     29086,
+        28065,     26929,     25683,     24333,
+        22884,     21342,     19713,     18004,
+        16221,     14373,     12465,     10508,
+        8507,     6472,     4410,     2330,
+        241,     -1849,     -3931,     -5998,
+        -8040,     -10049,     -12018,     -13937,
+        -15800,     -17599,     -19326,     -20974,
+        -22537,     -24008,     -25381,     -26651,
 };
 
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
 const FIXP_QTW qmf_phaseshift_sin40[] = {
-    QTC(0x0415583b), QTC(0x0c3bc74f), QTC(0x145576b1), QTC(0x1c59f557),
-    QTC(0x2440e84d), QTC(0x2c021369), QTC(0x339561e1), QTC(0x3af2eeb7),
-    QTC(0x42130cf0), QTC(0x48ee4f98), QTC(0x4f7d917c), QTC(0x55b9fc9e),
-    QTC(0x5b9d1154), QTC(0x6120ad0d), QTC(0x663f10b7), QTC(0x6af2e6bc),
-    QTC(0x6f374891), QTC(0x7307c3d0), QTC(0x76605edb), QTC(0x793d9d03),
-    QTC(0x7b9c8226), QTC(0x7d7a95cf), QTC(0x7ed5e5c6), QTC(0x7fad081b),
-    QTC(0x7fff1c9b), QTC(0x7fcbcdbc), QTC(0x7f1350f8), QTC(0x7dd6668f),
-    QTC(0x7c1658c5), QTC(0x79d4fa89), QTC(0x7714a58b), QTC(0x73d837ca),
-    QTC(0x7023109a), QTC(0x6bf90d1d), QTC(0x675e843e), QTC(0x6258422c),
-    QTC(0x5ceb8355), QTC(0x571deefa), QTC(0x50f59141), QTC(0x4a78d4f0),
+        1045,     3132,     5205,     7258,
+        9281,     11266,     13205,     15091,
+        16915,     18670,     20350,     21946,
+        23453,     24865,     26175,     27379,
+        28471,     29448,     30304,     31038,
+        31645,     32123,     32470,     32685,
+        32767,     32716,     32531,     32214,
+        31766,     31189,     30485,     29656,
+        28707,     27641,     26463,     25176,
+        23788,     22302,     20726,     19065,
 };
 
 /* This filter is scaled (0.8*pfilt) */
@@ -4332,16 +4327,16 @@ const FIXP_PFT qmf_pfilt400[] = {
 };
 
 const FIXP_QTW qmf_phaseshift_cos16[] = {
-    QTC(0x7fc25596), QTC(0x7dd6668f), QTC(0x7a05eead), QTC(0x745f9dd1),
-    QTC(0x6cf934fc), QTC(0x63ef3290), QTC(0x59646498), QTC(0x4d8162c4),
-    QTC(0x4073f21d), QTC(0x326e54c7), QTC(0x23a6887f), QTC(0x145576b1),
-    QTC(0x04b6195d), QTC(0xf50497fb), QTC(0xe57d5fda), QTC(0xd65c3b7b),
+        32706,     32214,     31238,     29792,
+        27897,     25583,     22884,     19841,
+        16500,     12910,     9127,     5205,
+        1206,     -2811,     -6787,     -10660,
 };
 const FIXP_QTW qmf_phaseshift_sin16[] = {
-    QTC(0x07d95b9e), QTC(0x176dd9de), QTC(0x26a82186), QTC(0x354d9057),
-    QTC(0x4325c135), QTC(0x4ffb654d), QTC(0x5b9d1154), QTC(0x65ddfbd3),
-    QTC(0x6e96a99d), QTC(0x75a585cf), QTC(0x7aef6323), QTC(0x7e5fe493),
-    QTC(0x7fe9cbc0), QTC(0x7f872bf3), QTC(0x7d3980ec), QTC(0x7909a92d),
+        2009,     5998,     9896,     13646,
+        17190,     20475,     23453,     26078,
+        28311,     30118,     31471,     32352,
+        32746,     32647,     32058,     30986,
 };
 
 RAM_ALIGN
@@ -4386,23 +4381,23 @@ const FIXP_PFT qmf_pfilt240[] = {
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
 const FIXP_QTW qmf_phaseshift_cos24[] = {
-    QTC(0x7fded530), QTC(0x7ed5e5c6), QTC(0x7cc62bdf), QTC(0x79b3ece0),
-    QTC(0x75a585cf), QTC(0x70a35e25), QTC(0x6ab7d663), QTC(0x63ef3290),
-    QTC(0x5c5780d3), QTC(0x54007c51), QTC(0x4afb6c98), QTC(0x415b01ce),
-    QTC(0x37332dfd), QTC(0x2c98fbba), QTC(0x21a26295), QTC(0x1666198d),
-    QTC(0x0afb6805), QTC(0xff79f587), QTC(0xf3f998c0), QTC(0xe8922622),
-    QTC(0xdd5b3e7b), QTC(0xd26c1e08), QTC(0xc7db6c50), QTC(0xbdbf0d2f),
+        32735,     32470,     31942,     31156,
+        30118,     28835,     27320,     25583,
+        23640,     21504,     19195,     16731,
+        14131,     11417,     8610,     5734,
+        2811,     -134,     -3078,     -5998,
+        -8869,     -11668,     -14373,     -16961,
 };
 
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
 const FIXP_QTW qmf_phaseshift_sin24[] = {
-    QTC(0x05c1f4e7), QTC(0x1139f0cf), QTC(0x1c8e3bbe), QTC(0x27a75c95),
-    QTC(0x326e54c7), QTC(0x3cccd004), QTC(0x46ad5278), QTC(0x4ffb654d),
-    QTC(0x58a3c118), QTC(0x609475c3), QTC(0x67bd0fbd), QTC(0x6e0eba0c),
-    QTC(0x737c5d0b), QTC(0x77fab989), QTC(0x7b808015), QTC(0x7e06644c),
-    QTC(0x7f872bf3), QTC(0x7fffb9d1), QTC(0x7f6f141f), QTC(0x7dd6668f),
-    QTC(0x7b38ffde), QTC(0x779c4afc), QTC(0x7307c3d0), QTC(0x6d84e7b7),
+        1474,     4410,     7310,     10151,
+        12910,     15565,     18093,     20475,
+        22692,     24724,     26557,     28175,
+        29564,     30715,     31617,     32262,
+        32647,     32767,     32623,     32214,
+        31545,     30620,     29448,     28037,
 };
 
 /* qmf_pfilt640 is used with stride 2 instead of qmf_pfilt320[] */
@@ -4410,55 +4405,54 @@ const FIXP_QTW qmf_phaseshift_sin24[] = {
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
 const FIXP_QTW qmf_phaseshift_cos32[] = {
-    QTC(0x7fe9cbc0), QTC(0x7f3857f6), QTC(0x7dd6668f), QTC(0x7bc5e290),
-    QTC(0x7909a92d), QTC(0x75a585cf), QTC(0x719e2cd2), QTC(0x6cf934fc),
-    QTC(0x67bd0fbd), QTC(0x61f1003f), QTC(0x5b9d1154), QTC(0x54ca0a4b),
-    QTC(0x4d8162c4), QTC(0x45cd358f), QTC(0x3db832a6), QTC(0x354d9057),
-    QTC(0x2c98fbba), QTC(0x23a6887f), QTC(0x1a82a026), QTC(0x1139f0cf),
-    QTC(0x07d95b9e), QTC(0xfe6de2e0), QTC(0xf50497fb), QTC(0xebaa894f),
-    QTC(0xe26cb01b), QTC(0xd957de7a), QTC(0xd078ad9e), QTC(0xc7db6c50),
-    QTC(0xbf8c0de3), QTC(0xb796199b), QTC(0xb0049ab3), QTC(0xa8e21106),
+        32746,     32568,     32214,     31686,
+        30986,     30118,     29086,     27897,
+        26557,     25073,     23453,     21706,
+        19841,     17869,     15800,     13646,
+        11417,     9127,     6787,     4410,
+        2009,     -402,     -2811,     -5205,
+        -7571,     -9896,     -12167,     -14373,
+        -16500,     -18538,     -20475,     -22302,
 };
 
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
 const FIXP_QTW qmf_phaseshift_sin32[] = {
-    QTC(0x04b6195d), QTC(0x0e1bc2e4), QTC(0x176dd9de), QTC(0x209f701c),
-    QTC(0x29a3c485), QTC(0x326e54c7), QTC(0x3af2eeb7), QTC(0x4325c135),
-    QTC(0x4afb6c98), QTC(0x5269126e), QTC(0x59646498), QTC(0x5fe3b38d),
-    QTC(0x65ddfbd3), QTC(0x6b4af279), QTC(0x7023109a), QTC(0x745f9dd1),
-    QTC(0x77fab989), QTC(0x7aef6323), QTC(0x7d3980ec), QTC(0x7ed5e5c6),
-    QTC(0x7fc25596), QTC(0x7ffd885a), QTC(0x7f872bf3), QTC(0x7e5fe493),
-    QTC(0x7c894bde), QTC(0x7a05eead), QTC(0x76d94989), QTC(0x7307c3d0),
-    QTC(0x6e96a99d), QTC(0x698c246c), QTC(0x63ef3290), QTC(0x5dc79d7c),
+        1206,     3612,     5998,     8351,
+        10660,     12910,     15091,     17190,
+        19195,     21097,     22884,     24548,
+        26078,     27467,     28707,     29792,
+        30715,     31471,     32058,     32470,
+        32706,     32766,     32647,     32352,
+        31881,     31238,     30425,     29448,
+        28311,     27020,     25583,     24008,
 };
 
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
 const FIXP_QTW qmf_phaseshift_cos_downsamp32[] = {
-    QTC(0x7fd8878e), QTC(0x7e9d55fc), QTC(0x7c29fbee), QTC(0x78848414),
-    QTC(0x73b5ebd1), QTC(0x6dca0d14), QTC(0x66cf8120), QTC(0x5ed77c8a),
-    QTC(0x55f5a4d2), QTC(0x4c3fdff4), QTC(0x41ce1e65), QTC(0x36ba2014),
-    QTC(0x2b1f34eb), QTC(0x1f19f97b), QTC(0x12c8106f), QTC(0x0647d97c),
-    QTC(0xf9b82684), QTC(0xed37ef91), QTC(0xe0e60685), QTC(0xd4e0cb15),
-    QTC(0xc945dfec), QTC(0xbe31e19b), QTC(0xb3c0200c), QTC(0xaa0a5b2e),
-    QTC(0xa1288376), QTC(0x99307ee0), QTC(0x9235f2ec), QTC(0x8c4a142f),
-    QTC(0x877b7bec), QTC(0x83d60412), QTC(0x8162aa04), QTC(0x80277872),
+        32729,     32413,     31786,     30853,
+        29622,     28106,     26320,     24279,
+        22006,     19520,     16846,     14010,
+        11039,     7962,     4808,     1608,
+        -1608,     -4808,     -7962,     -11039,
+        -14010,     -16846,     -19520,     -22006,
+        -24279,     -26320,     -28106,     -29622,
+        -30853,     -31786,     -32413,     -32729,
 };
 
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
 const FIXP_QTW qmf_phaseshift_sin_downsamp32[] = {
-    QTC(0x0647d97c), QTC(0x12c8106f), QTC(0x1f19f97b), QTC(0x2b1f34eb),
-    QTC(0x36ba2014), QTC(0x41ce1e65), QTC(0x4c3fdff4), QTC(0x55f5a4d2),
-    QTC(0x5ed77c8a), QTC(0x66cf8120), QTC(0x6dca0d14), QTC(0x73b5ebd1),
-    QTC(0x78848414), QTC(0x7c29fbee), QTC(0x7e9d55fc), QTC(0x7fd8878e),
-    QTC(0x7fd8878e), QTC(0x7e9d55fc), QTC(0x7c29fbee), QTC(0x78848414),
-    QTC(0x73b5ebd1), QTC(0x6dca0d14), QTC(0x66cf8120), QTC(0x5ed77c8a),
-    QTC(0x55f5a4d2), QTC(0x4c3fdff4), QTC(0x41ce1e65), QTC(0x36ba2014),
-    QTC(0x2b1f34eb), QTC(0x1f19f97b), QTC(0x12c8106f), QTC(0x0647d97c),
+        1608,     4808,     7962,     11039,
+        14010,     16846,     19520,     22006,
+        24279,     26320,     28106,     29622,
+        30853,     31786,     32413,     32729,
+        32729,     32413,     31786,     30853,
+        29622,     28106,     26320,     24279,
+        22006,     19520,     16846,     14010,
+        11039,     7962,     4808,     1608,
 };
-
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
 const FIXP_PFT qmf_pfilt640[] = {
@@ -5236,45 +5230,44 @@ const FIXP_PFT qmf_pfilt640_vector[] = {
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
 const FIXP_QTW qmf_phaseshift_cos64[] = {
-    QTC(0x7ff62182), QTC(0x7fa736b4), QTC(0x7f0991c4), QTC(0x7e1d93ea),
-    QTC(0x7ce3ceb2), QTC(0x7b5d039e), QTC(0x798a23b1), QTC(0x776c4edb),
-    QTC(0x7504d345), QTC(0x72552c85), QTC(0x6f5f02b2), QTC(0x6c242960),
-    QTC(0x68a69e81), QTC(0x64e88926), QTC(0x60ec3830), QTC(0x5cb420e0),
-    QTC(0x5842dd54), QTC(0x539b2af0), QTC(0x4ebfe8a5), QTC(0x49b41533),
-    QTC(0x447acd50), QTC(0x3f1749b8), QTC(0x398cdd32), QTC(0x33def287),
-    QTC(0x2e110a62), QTC(0x2826b928), QTC(0x2223a4c5), QTC(0x1c0b826a),
-    QTC(0x15e21445), QTC(0x0fab272b), QTC(0x096a9049), QTC(0x03242abf),
-    QTC(0xfcdbd541), QTC(0xf6956fb7), QTC(0xf054d8d5), QTC(0xea1debbb),
-    QTC(0xe3f47d96), QTC(0xdddc5b3b), QTC(0xd7d946d8), QTC(0xd1eef59e),
-    QTC(0xcc210d79), QTC(0xc67322ce), QTC(0xc0e8b648), QTC(0xbb8532b0),
-    QTC(0xb64beacd), QTC(0xb140175b), QTC(0xac64d510), QTC(0xa7bd22ac),
-    QTC(0xa34bdf20), QTC(0x9f13c7d0), QTC(0x9b1776da), QTC(0x9759617f),
-    QTC(0x93dbd6a0), QTC(0x90a0fd4e), QTC(0x8daad37b), QTC(0x8afb2cbb),
-    QTC(0x8893b125), QTC(0x8675dc4f), QTC(0x84a2fc62), QTC(0x831c314e),
-    QTC(0x81e26c16), QTC(0x80f66e3c), QTC(0x8058c94c), QTC(0x8009de7e),
+        32758,     32679,     32522,     32286,
+        31972,     31581,     31114,     30572,
+        29957,     29269,     28511,     27684,
+        26791,     25833,     24812,     23732,
+        22595,     21403,     20160,     18868,
+        17531,     16151,     14733,     13279,
+        11793,     10279,     8740,     7180,
+        5602,     4011,     2411,     804,
+        -804,     -2411,     -4011,     -5602,
+        -7180,     -8740,     -10279,     -11793,
+        -13279,     -14733,     -16151,     -17531,
+        -18868,     -20160,     -21403,     -22595,
+        -23732,     -24812,     -25833,     -26791,
+        -27684,     -28511,     -29269,     -29957,
+        -30572,     -31114,     -31581,     -31972,
+        -32286,     -32522,     -32679,     -32758,
 };
 
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
 const FIXP_QTW qmf_phaseshift_sin64[] = {
-    QTC(0x03242abf), QTC(0x096a9049), QTC(0x0fab272b), QTC(0x15e21445),
-    QTC(0x1c0b826a), QTC(0x2223a4c5), QTC(0x2826b928), QTC(0x2e110a62),
-    QTC(0x33def287), QTC(0x398cdd32), QTC(0x3f1749b8), QTC(0x447acd50),
-    QTC(0x49b41533), QTC(0x4ebfe8a5), QTC(0x539b2af0), QTC(0x5842dd54),
-    QTC(0x5cb420e0), QTC(0x60ec3830), QTC(0x64e88926), QTC(0x68a69e81),
-    QTC(0x6c242960), QTC(0x6f5f02b2), QTC(0x72552c85), QTC(0x7504d345),
-    QTC(0x776c4edb), QTC(0x798a23b1), QTC(0x7b5d039e), QTC(0x7ce3ceb2),
-    QTC(0x7e1d93ea), QTC(0x7f0991c4), QTC(0x7fa736b4), QTC(0x7ff62182),
-    QTC(0x7ff62182), QTC(0x7fa736b4), QTC(0x7f0991c4), QTC(0x7e1d93ea),
-    QTC(0x7ce3ceb2), QTC(0x7b5d039e), QTC(0x798a23b1), QTC(0x776c4edb),
-    QTC(0x7504d345), QTC(0x72552c85), QTC(0x6f5f02b2), QTC(0x6c242960),
-    QTC(0x68a69e81), QTC(0x64e88926), QTC(0x60ec3830), QTC(0x5cb420e0),
-    QTC(0x5842dd54), QTC(0x539b2af0), QTC(0x4ebfe8a5), QTC(0x49b41533),
-    QTC(0x447acd50), QTC(0x3f1749b8), QTC(0x398cdd32), QTC(0x33def287),
-    QTC(0x2e110a62), QTC(0x2826b928), QTC(0x2223a4c5), QTC(0x1c0b826a),
-    QTC(0x15e21445), QTC(0x0fab272b), QTC(0x096a9049), QTC(0x03242abf),
+        804,     2411,     4011,     5602,
+        7180,     8740,     10279,     11793,
+        13279,     14733,     16151,     17531,
+        18868,     20160,     21403,     22595,
+        23732,     24812,     25833,     26791,
+        27684,     28511,     29269,     29957,
+        30572,     31114,     31581,     31972,
+        32286,     32522,     32679,     32758,
+        32758,     32679,     32522,     32286,
+        31972,     31581,     31114,     30572,
+        29957,     29269,     28511,     27684,
+        26791,     25833,     24812,     23732,
+        22595,     21403,     20160,     18868,
+        17531,     16151,     14733,     13279,
+        11793,     10279,     8740,     7180,
+        5602,     4011,     2411,     804,
 };
-
 /*
  * Low Delay QMF aka CLDFB
  */
@@ -5910,13 +5903,8 @@ const FIXP_PFT qmf_cldfb_80[QMF80_CLDFB_PFT_TABLE_SIZE] = {
     QTCFLLD(-4.351740e-01), QTCFLLD(5.276687e-02),
 };
 
-#if defined(QMF_COEFF_16BIT)
 #define QTMFLLD(x) FL2FXCONST_SGL(x / (float)(1 << QMF_MPSLDFB_PFT_SCALE))
-#define QTMFLLDT(x) FX_DBL2FXCONST_SGL(x)
-#else
-#define QTMFLLD(x) FL2FXCONST_DBL(x / (float)(1 << QMF_MPSLDFB_PFT_SCALE))
-#define QTMFLLDT(x) (int32_t)(x)
-#endif
+
 
 /*!
   \name QMF
