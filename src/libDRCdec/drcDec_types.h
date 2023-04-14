@@ -114,7 +114,7 @@ amm-info@iis.fraunhofer.de
 /**************/
 
 typedef struct {
-  FIXP_SGL gainDb; /* e = 7 */
+  int16_t gainDb; /* e = 7 */
   int16_t time;
 } GAIN_NODE;
 
@@ -180,7 +180,7 @@ typedef enum {
 
 typedef struct {
   uint8_t duckingScalingPresent;
-  FIXP_SGL duckingScaling; /* e = 2 */
+  int16_t duckingScaling; /* e = 2 */
 } DUCKING_MODIFICATION;
 
 typedef struct {
@@ -189,10 +189,10 @@ typedef struct {
   uint8_t targetCharacteristicRightPresent;
   uint8_t targetCharacteristicRightIndex;
   uint8_t gainScalingPresent;
-  FIXP_SGL attenuationScaling;   /* e = 2 */
-  FIXP_SGL amplificationScaling; /* e = 2 */
+  int16_t attenuationScaling;   /* e = 2 */
+  int16_t amplificationScaling; /* e = 2 */
   uint8_t gainOffsetPresent;
-  FIXP_SGL gainOffset; /* e = 4 */
+  int16_t gainOffset; /* e = 4 */
 } GAIN_MODIFICATION;
 
 typedef union {
@@ -229,16 +229,16 @@ typedef struct {
 } GAIN_SET;
 
 typedef struct {
-  FIXP_SGL gain;    /* e = 6 */
-  FIXP_SGL ioRatio; /* e = 2 */
-  FIXP_SGL exp;     /* e = 5 */
+  int16_t gain;    /* e = 6 */
+  int16_t ioRatio; /* e = 2 */
+  int16_t exp;     /* e = 5 */
   uint8_t flipSign;
 } CUSTOM_DRC_CHAR_SIGMOID;
 
 typedef struct {
   uint8_t characteristicNodeCount;
-  FIXP_SGL nodeLevel[4 + 1]; /* e = 7 */
-  FIXP_SGL nodeGain[4 + 1];  /* e = 7 */
+  int16_t nodeLevel[4 + 1]; /* e = 7 */
+  int16_t nodeGain[4 + 1];  /* e = 7 */
 } CUSTOM_DRC_CHAR_NODES;
 
 typedef shouldBeUnion {
@@ -276,7 +276,7 @@ typedef struct {
   uint8_t downmixId[8];
   uint16_t drcSetEffect;
   uint8_t limiterPeakTargetPresent;
-  FIXP_SGL limiterPeakTarget; /* e = 5 */
+  int16_t limiterPeakTarget; /* e = 5 */
   uint8_t drcSetTargetLoudnessPresent;
   int8_t drcSetTargetLoudnessValueUpper;
   int8_t drcSetTargetLoudnessValueLower;

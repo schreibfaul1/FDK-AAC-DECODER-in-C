@@ -107,7 +107,7 @@ amm-info@iis.fraunhofer.de
 
 #define FIXP_MPS int32_t
 
-#define FIXP_DECORR FIXP_SGL
+#define FIXP_DECORR int16_t
 #define FX_DECORR2FX_DBL FX_SGL2FX_DBL
 #define FX_DECORR2FX_SGL
 #define FX_DBL2FX_DECORR FX_DBL2FX_SGL

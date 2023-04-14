@@ -219,7 +219,7 @@ extern const MP4_ELEMENT_ID elementsTab[AACDEC_MAX_CH_CONF]
 /* With int32_t loss of precision is possible for SF_FNA_COEFFS > 11.    */
 
 #ifdef CPLX_PRED_FILTER_16BIT
-#define FIXP_FILT FIXP_SGL
+#define FIXP_FILT int16_t
 #define FILT(a) ((FL2FXCONST_SGL(a)) >> SF_FNA_COEFFS)
 #else
 #define FIXP_FILT int32_t

@@ -126,7 +126,7 @@ amm-info@iis.fraunhofer.de
 /*--------------- structure definitions ---------------*/
 
 #if defined(ARCH_PREFER_MULT_32x16)
-#define FIXP_HTB FIXP_SGL              /* SGL data type. */
+#define FIXP_HTB int16_t              /* SGL data type. */
 #define FIXP_HTP FIXP_SPK              /* Packed SGL data type. */
 #define HTC(a) (FX_DBL2FXCONST_SGL(a)) /* Cast to SGL */
 #define FL2FXCONST_HTB FL2FXCONST_SGL

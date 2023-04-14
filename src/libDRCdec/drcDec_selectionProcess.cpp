@@ -208,8 +208,8 @@ typedef struct {
   DRC_FEATURE_REQUEST drcFeatureRequest[MAX_REQUESTS_DRC_FEATURE];
 
   /* other */
-  FIXP_SGL boost;                /* e = 1 */
-  FIXP_SGL compress;             /* e = 1 */
+  int16_t boost;                /* e = 1 */
+  int16_t compress;             /* e = 1 */
   uint8_t drcCharacteristicTarget; /* not supported */
 } SEL_PROC_INPUT, *HANDLE_SEL_PROC_INPUT;
 
@@ -280,7 +280,7 @@ static inline int32_t _compAssign(int32_t* dest, const int32_t src) {
   return diff;
 }
 
-static inline int32_t _compAssign(FIXP_SGL* dest, const FIXP_SGL src) {
+static inline int32_t _compAssign(int16_t* dest, const int16_t src) {
   int32_t diff = 0;
   if (*dest != src) diff = 1;
   *dest = src;
@@ -605,7 +605,7 @@ drcDec_SelectionProcess_SetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
           &pSelProcInput->boost,
           FX_DBL2FX_SGL(
               requestValue +
-              (int32_t)(1 << 15))); /* convert to FIXP_SGL with rounding */
+              (int32_t)(1 << 15))); /* convert to int16_t with rounding */
       break;
     case SEL_PROC_COMPRESS:
       if ((requestValue < (int32_t)0) ||
@@ -615,7 +615,7 @@ drcDec_SelectionProcess_SetParam(HANDLE_DRC_SELECTION_PROCESS hInstance,
           &pSelProcInput->compress,
           FX_DBL2FX_SGL(
               requestValue +
-              (int32_t)(1 << 15))); /* convert to FIXP_SGL with rounding */
+              (int32_t)(1 << 15))); /* convert to int16_t with rounding */
       break;
     default:
       return DRCDEC_SELECTION_PROCESS_INVALID_PARAM;
@@ -2055,8 +2055,8 @@ static DRCDEC_SELECTION_PROCESS_RETURN _generateOutputInfo(
   int32_t mixingLevel = 0;
   int32_t albumMode = hSelProcInput->albumMode;
   uint8_t* pDownmixIdRequested = hSelProcInput->downmixIdRequested;
-  FIXP_SGL boost = hSelProcInput->boost;
-  FIXP_SGL compress = hSelProcInput->compress;
+  int16_t boost = hSelProcInput->boost;
+  int16_t compress = hSelProcInput->compress;
 
   hSelProcOutput->numSelectedDrcSets = 1;
   hSelProcOutput->selectedDrcSetIds[0] = pSelectionData->pInst->drcSetId;

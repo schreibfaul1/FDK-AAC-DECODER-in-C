@@ -452,7 +452,7 @@ const FIXP_LPC fdk_dec_dico_lsf_abs_8b[] = {
    adaptive codebook gain g_p (left column). Scaled by 2.0f.
    innovative codebook gain g_c (right column). Scaled by 16.0f.
 */
-const FIXP_SGL fdk_t_qua_gain7b[128 * 2] = {
+const int16_t fdk_t_qua_gain7b[128 * 2] = {
     204,   441,   464,   1977,  869,   1077,  1072,  3062,  1281,  4759,  1647,  1539,  1845,  7020,  1853,  634,
     1995,  2336,  2351,  15400, 2661,  1165,  2702,  3900,  2710,  10133, 3195,  1752,  3498,  2624,  3663,  849,
     3984,  5697,  4214,  3399,  4415,  1304,  4695,  2056,  5376,  4558,  5386,  676,   5518,  23554, 5567,  7794,
@@ -471,7 +471,7 @@ const FIXP_SGL fdk_t_qua_gain7b[128 * 2] = {
     19271, 13757, 19317, 4120,  19460, 1973,  19654, 10018, 19764, 6792,  19912, 5135,  20040, 2841,  21234, 19833};
 
 /* ACELP: factor table for interpolation of LPC coeffs in LSP domain */
-const FIXP_SGL lsp_interpol_factor[2][NB_SUBFR] = {
+const int16_t lsp_interpol_factor[2][NB_SUBFR] = {
     {FL2FXCONST_SGL(0.125f), FL2FXCONST_SGL(0.375f), FL2FXCONST_SGL(0.625f),
      FL2FXCONST_SGL(0.875f)}, /* for coreCoderFrameLength = 1024 */
     {FL2FXCONST_SGL(0.166667f), FL2FXCONST_SGL(0.5f), FL2FXCONST_SGL(0.833333f),
@@ -480,7 +480,7 @@ const FIXP_SGL lsp_interpol_factor[2][NB_SUBFR] = {
 
 /* For bass post filter */
 #ifndef TABLE_filt_lp
-const FIXP_SGL fdk_dec_filt_lp[1 + L_FILT] = {
+const int16_t fdk_dec_filt_lp[1 + L_FILT] = {
     FL2FXCONST_SGL_FILT(0.088250f), FL2FXCONST_SGL_FILT(0.086410f), FL2FXCONST_SGL_FILT(0.081074f),
     FL2FXCONST_SGL_FILT(0.072768f), FL2FXCONST_SGL_FILT(0.062294f), FL2FXCONST_SGL_FILT(0.050623f),
     FL2FXCONST_SGL_FILT(0.038774f), FL2FXCONST_SGL_FILT(0.027692f), FL2FXCONST_SGL_FILT(0.018130f),

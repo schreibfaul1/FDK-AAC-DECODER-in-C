@@ -229,7 +229,7 @@ DRC_ERROR
 drcDec_GainDecoder_Preprocess(HANDLE_DRC_GAIN_DECODER hGainDec,
                               HANDLE_UNI_DRC_GAIN hUniDrcGain,
                               const int32_t loudnessNormalizationGainDb,
-                              const FIXP_SGL boost, const FIXP_SGL compress);
+                              const int16_t boost, const int16_t compress);
 
 /* Then call one of drcDec_GainDecoder_ProcessTimeDomain or
  * drcDec_GainDecoder_ProcessSubbandDomain */

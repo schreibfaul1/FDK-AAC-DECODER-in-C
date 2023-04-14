@@ -128,7 +128,7 @@ static const int32_t ldCoeff[MAX_LD_PRECISION] = {
     FL2FXCONST_DBL(-1.0 / 9.0), FL2FXCONST_DBL(-1.0 / 10.0)};
 #else  /* LDCOEFF_16BIT */
 LNK_SECTION_CONSTDATA_L1
-static const FIXP_SGL ldCoeff[MAX_LD_PRECISION] = {
+static const int16_t ldCoeff[MAX_LD_PRECISION] = {
     FL2FXCONST_SGL(-1.0),       FL2FXCONST_SGL(-1.0 / 2.0),
     FL2FXCONST_SGL(-1.0 / 3.0), FL2FXCONST_SGL(-1.0 / 4.0),
     FL2FXCONST_SGL(-1.0 / 5.0), FL2FXCONST_SGL(-1.0 / 6.0),
@@ -191,7 +191,7 @@ static inline int32_t fIsLessThan(int32_t a_m, int32_t a_e, int32_t b_m, int32_t
   }
 }
 
-static inline int32_t fIsLessThan(FIXP_SGL a_m, int32_t a_e, FIXP_SGL b_m, int32_t b_e) {
+static inline int32_t fIsLessThan(int16_t a_m, int32_t a_e, int16_t b_m, int32_t b_e) {
   int32_t n;
 
   n = fixnorm_S(a_m);
@@ -202,8 +202,8 @@ static inline int32_t fIsLessThan(FIXP_SGL a_m, int32_t a_e, FIXP_SGL b_m, int32
   b_m <<= n;
   b_e -= n;
 
-  if (a_m == (FIXP_SGL)0) a_e = b_e;
-  if (b_m == (FIXP_SGL)0) b_e = a_e;
+  if (a_m == (int16_t)0) a_e = b_e;
+  if (b_m == (int16_t)0) b_e = a_e;
 
   if (a_e > b_e) {
     return ((b_m >> fMin(a_e - b_e, FRACT_BITS - 1)) > a_m);
@@ -229,7 +229,7 @@ static inline int32_t CalcInvLdData(const int32_t x) {
   int32_t set_zero = (x < FL2FXCONST_DBL(-31.0 / 64.0)) ? 0 : 1;
   int32_t set_max = (x >= FL2FXCONST_DBL(31.0 / 64.0)) | (x == FL2FXCONST_DBL(0.0));
 
-  FIXP_SGL frac = (FIXP_SGL)((int32_t)x & 0x3FF);
+  int16_t frac = (int16_t)((int32_t)x & 0x3FF);
   uint32_t index3 = (uint32_t)(int32_t)(x >> 10) & 0x1F;
   uint32_t index2 = (uint32_t)(int32_t)(x >> 15) & 0x1F;
   uint32_t index1 = (uint32_t)(int32_t)(x >> 20) & 0x1F;
@@ -240,7 +240,7 @@ static inline int32_t CalcInvLdData(const int32_t x) {
   uint32_t lookup2 = exp2w_tab_long[index2];
   uint32_t lookup3 = exp2x_tab_long[index3];
   uint32_t lookup3f =
-      lookup3 + (uint32_t)(int32_t)fMultDiv2((int32_t)(0x0016302F), (FIXP_SGL)frac);
+      lookup3 + (uint32_t)(int32_t)fMultDiv2((int32_t)(0x0016302F), (int16_t)frac);
 
   uint32_t lookup12 = (uint32_t)(int32_t)fMult((int32_t)lookup1, (int32_t)lookup2);
   uint32_t lookup = (uint32_t)(int32_t)fMult((int32_t)lookup12, (int32_t)lookup3f);
@@ -440,7 +440,7 @@ int32_t schur_div(int32_t num, int32_t denum, int32_t count);
 
 #endif /* FUNCTION_schur_div */
 
-int32_t mul_dbl_sgl_rnd(const int32_t op1, const FIXP_SGL op2);
+int32_t mul_dbl_sgl_rnd(const int32_t op1, const int16_t op2);
 
 #ifndef FUNCTION_fMultNorm
 /**
@@ -893,12 +893,12 @@ static inline int32_t fLog2(int32_t x_m, int32_t x_e) {
  * \param b second summand
  * \return saturated sum of a and b.
  */
-inline FIXP_SGL fAddSaturate(const FIXP_SGL a, const FIXP_SGL b) {
+inline int16_t fAddSaturate(const int16_t a, const int16_t b) {
   int32_t sum;
 
   sum = (int32_t)(int16_t)a + (int32_t)(int16_t)b;
   sum = fMax(fMin((int32_t)sum, (int32_t)MAXVAL_SGL), (int32_t)MINVAL_SGL);
-  return (FIXP_SGL)(int16_t)sum;
+  return (int16_t)(int16_t)sum;
 }
 
 /**

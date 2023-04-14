@@ -213,8 +213,8 @@ extern const FIXP_WTP sin_twiddle_L64[];
 #define QMF_NO_POLY 5
 
 #ifdef QMF_COEFF_16BIT
-#define FIXP_PFT FIXP_SGL
-#define FIXP_QTW FIXP_SGL
+#define FIXP_PFT int16_t
+#define FIXP_QTW int16_t
 #define FX_DBL2FX_QTW(x) FX_DBL2FX_SGL(x)
 #else
 #define FIXP_PFT int32_t

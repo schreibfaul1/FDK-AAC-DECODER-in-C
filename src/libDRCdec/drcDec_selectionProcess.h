@@ -175,8 +175,8 @@ typedef struct s_selection_process_output {
   uint8_t downmixMatrixPresent;
   int32_t downmixMatrix[8][8]; /* e = 2 */
 
-  FIXP_SGL boost;    /* e = 1 */
-  FIXP_SGL compress; /* e = 1 */
+  int16_t boost;    /* e = 1 */
+  int16_t compress; /* e = 1 */
 
   int32_t mixingLevel; /* e = 7 */
 

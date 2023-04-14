@@ -127,10 +127,10 @@ amm-info@iis.fraunhofer.de
 #define FX_PCM2FX_DBL(x) ((int32_t)(x))
 #define FX_DBL2FX_PCM(x) ((INT_PCM)(x))
 #elif (SAMPLE_BITS == FRACT_BITS)
-#define FIXP_PCM FIXP_SGL
+#define FIXP_PCM int16_t
 #define MAXVAL_FIXP_PCM MAXVAL_SGL
 #define MINVAL_FIXP_PCM MINVAL_SGL
-#define FX_PCM2FX_DBL(x) FX_SGL2FX_DBL((FIXP_SGL)(x))
+#define FX_PCM2FX_DBL(x) FX_SGL2FX_DBL((int16_t)(x))
 #define FX_DBL2FX_PCM(x) FX_DBL2FX_SGL(x)
 #else
 #error SAMPLE_BITS different from FRACT_BITS or DFRACT_BITS not implemented!
@@ -142,7 +142,7 @@ amm-info@iis.fraunhofer.de
 #define SGL_MASK ((1UL << FRACT_BITS) - 1) /* 16bit: (2^16)-1 = 0xFFFF */
 
 #define MAX_SHIFT_SGL \
-  (FRACT_BITS - 1) /* maximum possible shift for FIXP_SGL values */
+  (FRACT_BITS - 1) /* maximum possible shift for int16_t values */
 #define MAX_SHIFT_DBL \
   (DFRACT_BITS - 1) /* maximum possible shift for int32_t values */
 
@@ -166,13 +166,12 @@ amm-info@iis.fraunhofer.de
   ((((((val) >> (DFRACT_BITS - FRACT_BITS - 1)) + 1) >                        \
      (((int32_t)1 << FRACT_BITS) - 1)) &&                                        \
     ((int32_t)(val) > 0))                                                        \
-       ? (FIXP_SGL)(int16_t)(((int32_t)1 << (FRACT_BITS - 1)) - 1)                 \
-       : (FIXP_SGL)(int16_t)((((val) >> (DFRACT_BITS - FRACT_BITS - 1)) + 1) >> \
+       ? (int16_t)(int16_t)(((int32_t)1 << (FRACT_BITS - 1)) - 1)                 \
+       : (int16_t)(int16_t)((((val) >> (DFRACT_BITS - FRACT_BITS - 1)) + 1) >> \
                            1))
 
 #define shouldBeUnion union /* unions are possible */
 
-typedef int16_t FIXP_SGL;
 
 
 /* macros for compile-time conversion of constant float values to fixedpoint */
@@ -182,7 +181,7 @@ typedef int16_t FIXP_SGL;
 #define MINVAL_SGL_CONST MINVAL_SGL
 
 #define FL2FXCONST_SGL(val)                                                  \
-  (FIXP_SGL)(                                                                \
+  (int16_t)(                                                                \
       ((val) >= 0)                                                           \
           ? ((((double)(val) * (FRACT_FIX_SCALE) + 0.5) >=                   \
               (double)(MAXVAL_SGL))                                          \
@@ -217,12 +216,12 @@ typedef int16_t FIXP_SGL;
 
 /* macros for runtime conversion of fixedpoint values to other fixedpoint. NO
  * ROUNDING!!! */
-#define FX_ACC2FX_SGL(val) ((FIXP_SGL)((val) >> (ACCU_BITS - FRACT_BITS)))
+#define FX_ACC2FX_SGL(val) ((int16_t)((val) >> (ACCU_BITS - FRACT_BITS)))
 #define FX_ACC2FX_DBL(val) ((int32_t)((val) >> (ACCU_BITS - DFRACT_BITS)))
 #define FX_SGL2FX_ACC(val) ((FIXP_ACC)((int32_t)(val) << (ACCU_BITS - FRACT_BITS)))
 #define FX_SGL2FX_DBL(val) \
   ((int32_t)((int32_t)(val) << (DFRACT_BITS - FRACT_BITS)))
-#define FX_DBL2FX_SGL(val) ((FIXP_SGL)((val) >> (DFRACT_BITS - FRACT_BITS)))
+#define FX_DBL2FX_SGL(val) ((int16_t)((val) >> (DFRACT_BITS - FRACT_BITS)))
 
 /* ############################################################# */
 
@@ -278,7 +277,7 @@ static inline int32_t fMultBitExact(int32_t a, int16_t b) {
 #include "abs.h"
 
 static inline int32_t fAbs(int32_t x) { return fixabs_D(x); }
-static inline FIXP_SGL fAbs(FIXP_SGL x) { return fixabs_S(x); }
+static inline int16_t fAbs(int16_t x) { return fixabs_S(x); }
 
 #if !defined(__LP64__)
 static inline int32_t fAbs(int32_t x) { return fixabs_I(x); }
@@ -295,9 +294,9 @@ static inline int32_t fNormz(int64_t x) {
   return clz;
 }
 static inline int32_t fNormz(int32_t x) { return fixnormz_D(x); }
-static inline int32_t fNormz(FIXP_SGL x) { return fixnormz_S(x); }
+static inline int32_t fNormz(int16_t x) { return fixnormz_S(x); }
 static inline int32_t fNorm(int32_t x) { return fixnorm_D(x); }
-static inline int32_t fNorm(FIXP_SGL x) { return fixnorm_S(x); }
+static inline int32_t fNorm(int16_t x) { return fixnorm_S(x); }
 
   /* ********************************************************************************
    */
@@ -319,20 +318,20 @@ static inline int32_t fNorm(FIXP_SGL x) { return fixnorm_S(x); }
 static inline int32_t fMultAddDiv2(int32_t x, int32_t a, int32_t b) {
   return fixmadddiv2_DD(x, a, b);
 }
-static inline int32_t fMultAddDiv2(int32_t x, FIXP_SGL a, int32_t b) {
+static inline int32_t fMultAddDiv2(int32_t x, int16_t a, int32_t b) {
   return fixmadddiv2_SD(x, a, b);
 }
-static inline int32_t fMultAddDiv2(int32_t x, int32_t a, FIXP_SGL b) {
+static inline int32_t fMultAddDiv2(int32_t x, int32_t a, int16_t b) {
   return fixmadddiv2_DS(x, a, b);
 }
-static inline int32_t fMultAddDiv2(int32_t x, FIXP_SGL a, FIXP_SGL b) {
+static inline int32_t fMultAddDiv2(int32_t x, int16_t a, int16_t b) {
   return fixmadddiv2_SS(x, a, b);
 }
 
 static inline int32_t fPow2AddDiv2(int32_t x, int32_t a) {
   return fixpadddiv2_D(x, a);
 }
-static inline int32_t fPow2AddDiv2(int32_t x, FIXP_SGL a) {
+static inline int32_t fPow2AddDiv2(int32_t x, int16_t a) {
   return fixpadddiv2_S(x, a);
 }
 
@@ -340,30 +339,30 @@ static inline int32_t fPow2AddDiv2(int32_t x, FIXP_SGL a) {
 static inline int32_t fMultAdd(int32_t x, int32_t a, int32_t b) {
   return fixmadd_DD(x, a, b);
 }
-inline int32_t fMultAdd(int32_t x, FIXP_SGL a, int32_t b) {
+inline int32_t fMultAdd(int32_t x, int16_t a, int32_t b) {
   return fixmadd_SD(x, a, b);
 }
-inline int32_t fMultAdd(int32_t x, int32_t a, FIXP_SGL b) {
+inline int32_t fMultAdd(int32_t x, int32_t a, int16_t b) {
   return fixmadd_DS(x, a, b);
 }
-inline int32_t fMultAdd(int32_t x, FIXP_SGL a, FIXP_SGL b) {
+inline int32_t fMultAdd(int32_t x, int16_t a, int16_t b) {
   return fixmadd_SS(x, a, b);
 }
 
 inline int32_t fPow2Add(int32_t x, int32_t a) { return fixpadd_D(x, a); }
-inline int32_t fPow2Add(int32_t x, FIXP_SGL a) { return fixpadd_S(x, a); }
+inline int32_t fPow2Add(int32_t x, int16_t a) { return fixpadd_S(x, a); }
 
 /* y = (x-0.5*a*b) */
 inline int32_t fMultSubDiv2(int32_t x, int32_t a, int32_t b) {
   return fixmsubdiv2_DD(x, a, b);
 }
-inline int32_t fMultSubDiv2(int32_t x, FIXP_SGL a, int32_t b) {
+inline int32_t fMultSubDiv2(int32_t x, int16_t a, int32_t b) {
   return fixmsubdiv2_SD(x, a, b);
 }
-inline int32_t fMultSubDiv2(int32_t x, int32_t a, FIXP_SGL b) {
+inline int32_t fMultSubDiv2(int32_t x, int32_t a, int16_t b) {
   return fixmsubdiv2_DS(x, a, b);
 }
-inline int32_t fMultSubDiv2(int32_t x, FIXP_SGL a, FIXP_SGL b) {
+inline int32_t fMultSubDiv2(int32_t x, int16_t a, int16_t b) {
   return fixmsubdiv2_SS(x, a, b);
 }
 
@@ -371,32 +370,32 @@ inline int32_t fMultSubDiv2(int32_t x, FIXP_SGL a, FIXP_SGL b) {
 static inline int32_t fMultSub(int32_t x, int32_t a, int32_t b) {
   return fixmsub_DD(x, a, b);
 }
-inline int32_t fMultSub(int32_t x, FIXP_SGL a, int32_t b) {
+inline int32_t fMultSub(int32_t x, int16_t a, int32_t b) {
   return fixmsub_SD(x, a, b);
 }
-inline int32_t fMultSub(int32_t x, int32_t a, FIXP_SGL b) {
+inline int32_t fMultSub(int32_t x, int32_t a, int16_t b) {
   return fixmsub_DS(x, a, b);
 }
-inline int32_t fMultSub(int32_t x, FIXP_SGL a, FIXP_SGL b) {
+inline int32_t fMultSub(int32_t x, int16_t a, int16_t b) {
   return fixmsub_SS(x, a, b);
 }
 
 static inline int32_t fMultAddDiv2BitExact(int32_t x, int32_t a, int32_t b) {
   return fixmadddiv2BitExact_DD(x, a, b);
 }
-static inline int32_t fMultAddDiv2BitExact(int32_t x, FIXP_SGL a, int32_t b) {
+static inline int32_t fMultAddDiv2BitExact(int32_t x, int16_t a, int32_t b) {
   return fixmadddiv2BitExact_SD(x, a, b);
 }
-static inline int32_t fMultAddDiv2BitExact(int32_t x, int32_t a, FIXP_SGL b) {
+static inline int32_t fMultAddDiv2BitExact(int32_t x, int32_t a, int16_t b) {
   return fixmadddiv2BitExact_DS(x, a, b);
 }
 static inline int32_t fMultSubDiv2BitExact(int32_t x, int32_t a, int32_t b) {
   return fixmsubdiv2BitExact_DD(x, a, b);
 }
-static inline int32_t fMultSubDiv2BitExact(int32_t x, FIXP_SGL a, int32_t b) {
+static inline int32_t fMultSubDiv2BitExact(int32_t x, int16_t a, int32_t b) {
   return fixmsubdiv2BitExact_SD(x, a, b);
 }
-static inline int32_t fMultSubDiv2BitExact(int32_t x, int32_t a, FIXP_SGL b) {
+static inline int32_t fMultSubDiv2BitExact(int32_t x, int32_t a, int16_t b) {
   return fixmsubdiv2BitExact_DS(x, a, b);
 }
 
@@ -405,8 +404,8 @@ static inline int32_t fMultSubDiv2BitExact(int32_t x, int32_t a, FIXP_SGL b) {
 static inline int32_t fMin(int32_t a, int32_t b) { return fixmin_D(a, b); }
 static inline int32_t fMax(int32_t a, int32_t b) { return fixmax_D(a, b); }
 
-static inline FIXP_SGL fMin(FIXP_SGL a, FIXP_SGL b) { return fixmin_S(a, b); }
-static inline FIXP_SGL fMax(FIXP_SGL a, FIXP_SGL b) { return fixmax_S(a, b); }
+static inline int16_t fMin(int16_t a, int16_t b) { return fixmin_S(a, b); }
+static inline int16_t fMax(int16_t a, int16_t b) { return fixmax_S(a, b); }
 
 #if !defined(__LP64__)
 static inline int32_t fMax(int32_t a, int32_t b) { return fixmax_I(a, b); }
@@ -427,8 +426,8 @@ inline uint8_t fMin(uint8_t a, uint8_t b) {
 typedef shouldBeUnion {
   /* vector representation for arithmetic */
   struct {
-    FIXP_SGL re;
-    FIXP_SGL im;
+    int16_t re;
+    int16_t im;
   } v;
   /* word representation for memory move */
   int32_t w;

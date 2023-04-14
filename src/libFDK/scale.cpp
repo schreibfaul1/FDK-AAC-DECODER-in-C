@@ -129,7 +129,7 @@ amm-info@iis.fraunhofer.de
  *
  */
 #define FUNCTION_scaleValues_SGL
-void scaleValues(FIXP_SGL *vector, /*!< Vector */
+void scaleValues(int16_t *vector, /*!< Vector */
                  int32_t len,          /*!< Length */
                  int32_t scalefactor   /*!< Scalefactor */
 ) {
@@ -278,7 +278,7 @@ void scaleValuesSaturate(int32_t *dst,       /*!< Output */
 /*!
  *
  *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
- *  \param dst         destination buffer (FIXP_SGL)
+ *  \param dst         destination buffer (int16_t)
  *  \param src         source buffer (int32_t)
  *  \param len         length of vector
  *  \param scalefactor amount of shifts to be applied
@@ -287,7 +287,7 @@ void scaleValuesSaturate(int32_t *dst,       /*!< Output */
  */
 #define FUNCTION_scaleValuesSaturate_SGL_DBL
 SCALE_INLINE
-void scaleValuesSaturate(FIXP_SGL *dst,       /*!< Output */
+void scaleValuesSaturate(int16_t *dst,       /*!< Output */
                          const int32_t *src, /*!< Input   */
                          int32_t len,             /*!< Length */
                          int32_t scalefactor)     /*!< Scalefactor */
@@ -315,7 +315,7 @@ void scaleValuesSaturate(FIXP_SGL *dst,       /*!< Output */
  */
 #define FUNCTION_scaleValuesSaturate_SGL
 SCALE_INLINE
-void scaleValuesSaturate(FIXP_SGL *vector, /*!< Vector */
+void scaleValuesSaturate(int16_t *vector, /*!< Vector */
                          int32_t len,          /*!< Length */
                          int32_t scalefactor   /*!< Scalefactor */
 ) {
@@ -347,8 +347,8 @@ void scaleValuesSaturate(FIXP_SGL *vector, /*!< Vector */
  */
 #define FUNCTION_scaleValuesSaturate_SGL_SGL
 SCALE_INLINE
-void scaleValuesSaturate(FIXP_SGL *dst,       /*!< Output */
-                         const FIXP_SGL *src, /*!< Input */
+void scaleValuesSaturate(int16_t *dst,       /*!< Output */
+                         const int16_t *src, /*!< Input */
                          int32_t len,             /*!< Length */
                          int32_t scalefactor      /*!< Scalefactor */
 ) {
@@ -356,7 +356,7 @@ void scaleValuesSaturate(FIXP_SGL *dst,       /*!< Output */
 
   /* Return if scalefactor is Zero */
   if (scalefactor == 0) {
-    FDKmemmove(dst, src, len * sizeof(FIXP_SGL));
+    FDKmemmove(dst, src, len * sizeof(int16_t));
     return;
   }
 
@@ -490,8 +490,8 @@ void scaleValues(FIXP_PCM *dst,       /*!< dst Vector */
  */
 #define FUNCTION_scaleValues_SGLSGL
 SCALE_INLINE
-void scaleValues(FIXP_SGL *dst,       /*!< dst Vector */
-                 const FIXP_SGL *src, /*!< src Vector */
+void scaleValues(int16_t *dst,       /*!< dst Vector */
+                 const int16_t *src, /*!< src Vector */
                  int32_t len,             /*!< Length */
                  int32_t scalefactor      /*!< Scalefactor */
 ) {
@@ -706,17 +706,17 @@ int32_t getScalefactor(const int32_t *vector, /*!< Pointer to input vector */
 #ifndef FUNCTION_getScalefactor_SGL
 #define FUNCTION_getScalefactor_SGL
 SCALE_INLINE
-int32_t getScalefactor(const FIXP_SGL *vector, /*!< Pointer to input vector */
+int32_t getScalefactor(const int16_t *vector, /*!< Pointer to input vector */
                    int32_t len)                /*!< Length of input vector */
 {
   int32_t i;
-  int16_t temp, maxVal = (FIXP_SGL)0;
+  int16_t temp, maxVal = (int16_t)0;
 
   for (i = len; i != 0; i--) {
     temp = (int16_t)(*vector++);
     maxVal |= (temp ^ (temp >> (FRACT_BITS - 1)));
   }
 
-  return fixmax_I((int32_t)0, (int32_t)(fixnormz_S((FIXP_SGL)maxVal)) - 1);
+  return fixmax_I((int32_t)0, (int32_t)(fixnormz_S((int16_t)maxVal)) - 1);
 }
 #endif

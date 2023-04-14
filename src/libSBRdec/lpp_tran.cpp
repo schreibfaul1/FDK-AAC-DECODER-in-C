@@ -220,7 +220,7 @@ static inline void calc_qmfBufferReal(int32_t **qmfBufferReal,
                                       const int32_t startSample,
                                       const int32_t stopSample, const uint8_t hiBand,
                                       const int32_t dynamicScale, const int32_t descale,
-                                      const FIXP_SGL a0r, const FIXP_SGL a1r) {
+                                      const int16_t a0r, const int16_t a1r) {
   int32_t accu1, accu2;
   int32_t i;
 
@@ -281,9 +281,9 @@ void lppTransposer(
   PATCH_PARAM *patchParam = pSettings->patchParam;
   int32_t patch;
 
-  FIXP_SGL alphar[LPC_ORDER], a0r, a1r;
-  FIXP_SGL alphai[LPC_ORDER], a0i = 0, a1i = 0;
-  FIXP_SGL bw = FL2FXCONST_SGL(0.0f);
+  int16_t alphar[LPC_ORDER], a0r, a1r;
+  int16_t alphai[LPC_ORDER], a0i = 0, a1i = 0;
+  int16_t bw = FL2FXCONST_SGL(0.0f);
 
   int32_t autoCorrLength;
 
@@ -888,9 +888,9 @@ void lppTransposerHBE(
   TRANSPOSER_SETTINGS *pSettings = hLppTrans->pSettings;
   PATCH_PARAM *patchParam = pSettings->patchParam;
 
-  FIXP_SGL alphar[LPC_ORDER], a0r, a1r;
-  FIXP_SGL alphai[LPC_ORDER], a0i = 0, a1i = 0;
-  FIXP_SGL bw = FL2FXCONST_SGL(0.0f);
+  int16_t alphar[LPC_ORDER], a0r, a1r;
+  int16_t alphai[LPC_ORDER], a0i = 0, a1i = 0;
+  int16_t bw = FL2FXCONST_SGL(0.0f);
 
   int32_t autoCorrLength;
 

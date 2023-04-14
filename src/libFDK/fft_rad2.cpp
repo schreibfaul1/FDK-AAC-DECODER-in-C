@@ -101,7 +101,7 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include "fft_rad2.h"
-
+#include  <stdio.h>
 #include "scramble.h"
 
 #define __FFT_RAD2_CPP__
@@ -127,7 +127,7 @@ amm-info@iis.fraunhofer.de
 *****************************************************************************/
 
 #ifndef FUNCTION_dit_fft
-#define STC(x) FX_DBL2FXCONST_SGL(x)
+#define CHC(x) FX_DBL2FXCONST_SGL(x)
 void dit_fft(int32_t *x, const int32_t ldn, const FIXP_STP *trigdata,
              const int32_t trigDataSize) {
   const int32_t n = 1 << ldn;
@@ -183,7 +183,7 @@ void dit_fft(int32_t *x, const int32_t ldn, const FIXP_STP *trigdata,
         int32_t t2 = t1 + (mh << 1);
         int32_t vr, vi, ur, ui;
 
-        // cplxMultDiv2(&vi, &vr, x[t2+1], x[t2], (FIXP_SGL)1.0, (FIXP_SGL)0.0);
+        // cplxMultDiv2(&vi, &vr, x[t2+1], x[t2], (int16_t)1.0, (int16_t)0.0);
         vi = x[t2 + 1] >> 1;
         vr = x[t2] >> 1;
 
@@ -199,7 +199,7 @@ void dit_fft(int32_t *x, const int32_t ldn, const FIXP_STP *trigdata,
         t1 += mh;
         t2 = t1 + (mh << 1);
 
-        // cplxMultDiv2(&vr, &vi, x[t2+1], x[t2], (FIXP_SGL)1.0, (FIXP_SGL)0.0);
+        // cplxMultDiv2(&vr, &vi, x[t2+1], x[t2], (int16_t)1.0, (int16_t)0.0);
         vr = x[t2 + 1] >> 1;
         vi = x[t2] >> 1;
 
@@ -289,8 +289,8 @@ void dit_fft(int32_t *x, const int32_t ldn, const FIXP_STP *trigdata,
         int32_t t2 = t1 + (mh << 1);
         int32_t vr, vi, ur, ui;
 
-        cplxMultDiv2(&vi, &vr, x[t2 + 1], x[t2], STC(0x5a82799a),
-                     STC(0x5a82799a));
+        cplxMultDiv2(&vi, &vr, x[t2 + 1], x[t2], (int16_t)23170,  (int16_t)23170);
+
 
         ur = x[t1] >> 1;
         ui = x[t1 + 1] >> 1;
@@ -304,8 +304,7 @@ void dit_fft(int32_t *x, const int32_t ldn, const FIXP_STP *trigdata,
         t1 += mh;
         t2 = t1 + (mh << 1);
 
-        cplxMultDiv2(&vr, &vi, x[t2 + 1], x[t2], STC(0x5a82799a),
-                     STC(0x5a82799a));
+        cplxMultDiv2(&vr, &vi, x[t2 + 1], x[t2],(int16_t)23170,  (int16_t)23170);
 
         ur = x[t1] >> 1;
         ui = x[t1 + 1] >> 1;

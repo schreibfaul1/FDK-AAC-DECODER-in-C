@@ -895,22 +895,22 @@ void sbrGetNoiseFloorData(
     if (h_frame_data->domain_vec_noise[i] == 0) {
       if (coupling == COUPLING_BAL) {
         h_frame_data->sbrNoiseFloorLevel[i * noNoiseBands] =
-            (FIXP_SGL)(((int32_t)FDKreadBits(hBs, 5)) << envDataTableCompFactor);
+            (int16_t)(((int32_t)FDKreadBits(hBs, 5)) << envDataTableCompFactor);
       } else {
         h_frame_data->sbrNoiseFloorLevel[i * noNoiseBands] =
-            (FIXP_SGL)(int32_t)FDKreadBits(hBs, 5);
+            (int16_t)(int32_t)FDKreadBits(hBs, 5);
       }
 
       for (j = 1; j < noNoiseBands; j++) {
         delta = DecodeHuffmanCW(hcb_noiseF, hBs);
         h_frame_data->sbrNoiseFloorLevel[i * noNoiseBands + j] =
-            (FIXP_SGL)(delta << envDataTableCompFactor);
+            (int16_t)(delta << envDataTableCompFactor);
       }
     } else {
       for (j = 0; j < noNoiseBands; j++) {
         delta = DecodeHuffmanCW(hcb_noise, hBs);
         h_frame_data->sbrNoiseFloorLevel[i * noNoiseBands + j] =
-            (FIXP_SGL)(delta << envDataTableCompFactor);
+            (int16_t)(delta << envDataTableCompFactor);
       }
     }
   }
@@ -1095,11 +1095,11 @@ static int32_t sbrGetEnvelope(
     if (h_frame_data->domain_vec[j] == 0) {
       if (coupling == COUPLING_BAL) {
         h_frame_data->iEnvelope[offset] =
-            (FIXP_SGL)(((int32_t)FDKreadBits(hBs, start_bits_balance))
+            (int16_t)(((int32_t)FDKreadBits(hBs, start_bits_balance))
                        << envDataTableCompFactor);
       } else {
         h_frame_data->iEnvelope[offset] =
-            (FIXP_SGL)(int32_t)FDKreadBits(hBs, start_bits);
+            (int16_t)(int32_t)FDKreadBits(hBs, start_bits);
       }
     }
 
@@ -1111,7 +1111,7 @@ static int32_t sbrGetEnvelope(
       }
 
       h_frame_data->iEnvelope[offset + i] =
-          (FIXP_SGL)(delta << envDataTableCompFactor);
+          (int16_t)(delta << envDataTableCompFactor);
     }
     if ((flags & SBRDEC_SYNTAX_USAC) && (flags & SBRDEC_USAC_ITES)) {
       int32_t bs_temp_shape = FDKreadBit(hBs);

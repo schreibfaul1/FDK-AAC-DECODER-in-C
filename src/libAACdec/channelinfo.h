@@ -239,7 +239,7 @@ typedef struct {
                                     point of last tcx frame */
   int32_t lp_coeff_old_exp[2];
 
-  FIXP_SGL
+  int16_t
   oldStability; /* LPC coeff stability value from last frame (required for
                    TCX concealment). */
   uint32_t numLostLpdFrames; /* Number of consecutive lost subframes. */
@@ -385,7 +385,7 @@ typedef struct {
           [M_LP_FILTER_ORDER]; /* concealment: is copied to
                   CAacDecoderStaticChannelInfo->lsf_adaptive_mean once frame is
                   assumed to be correct*/
-      FIXP_SGL aStability[4];  /* LPC coeff stability values required for ACELP
+      int16_t aStability[4];  /* LPC coeff stability values required for ACELP
                                   and TCX (concealment) */
 
       CAcelpChannelData acelp[4];

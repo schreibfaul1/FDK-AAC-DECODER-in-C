@@ -206,7 +206,7 @@ const int32_t
 //@{
 
 /*! Mantissas of gain limits */
-const FIXP_SGL FDK_sbrDecoder_sbr_limGains_m[4] = {
+const int16_t FDK_sbrDecoder_sbr_limGains_m[4] = {
     FL2FXCONST_SGL(0.5011932025f), /*!< -3 dB. Gain limit when limiterGains in
                                       frameData is 0 */
     FL2FXCONST_SGL(
@@ -221,7 +221,7 @@ const FIXP_SGL FDK_sbrDecoder_sbr_limGains_m[4] = {
 const uint8_t FDK_sbrDecoder_sbr_limGains_e[4] = {0, 1, 1, 67};
 
 /*! Constants for calculating the number of limiter bands */
-const FIXP_SGL FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4[4] = {
+const int16_t FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4[4] = {
     FL2FXCONST_SGL(1.0f / 4.0f), FL2FXCONST_SGL(1.2f / 4.0f),
     FL2FXCONST_SGL(2.0f / 4.0f), FL2FXCONST_SGL(3.0f / 4.0f)};
 
@@ -232,7 +232,7 @@ const int32_t FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4_DBL[4] = {
 
 /*! Ratio of old gains and noise levels for the first 4 timeslots of an envelope
  */
-const FIXP_SGL FDK_sbrDecoder_sbr_smoothFilter[4] = {
+const int16_t FDK_sbrDecoder_sbr_smoothFilter[4] = {
     FL2FXCONST_SGL(0.66666666666666f), FL2FXCONST_SGL(0.36516383427084f),
     FL2FXCONST_SGL(0.14699433520835f), FL2FXCONST_SGL(0.03183050093751f)};
 
@@ -240,7 +240,7 @@ const FIXP_SGL FDK_sbrDecoder_sbr_smoothFilter[4] = {
   to the desired level. An accuracy of 13 bits is sufficient for these
   random numbers.
 */
-const FIXP_SGL FDK_sbrDecoder_sbr_randomPhase[SBR_NF_NO_RANDOM_VAL][2] = {
+const int16_t FDK_sbrDecoder_sbr_randomPhase[SBR_NF_NO_RANDOM_VAL][2] = {
     {FL2FXCONST_SGL(-0.99948153278296f), FL2FXCONST_SGL(-0.59483417516607f)},
     {FL2FXCONST_SGL(0.97113454393991f), FL2FXCONST_SGL(-0.67528515225647f)},
     {FL2FXCONST_SGL(0.14130051758487f), FL2FXCONST_SGL(-0.95090983575689f)},
@@ -756,7 +756,7 @@ const FIXP_SGL FDK_sbrDecoder_sbr_randomPhase[SBR_NF_NO_RANDOM_VAL][2] = {
 //@}
 
 /*
-static const FIXP_SGL harmonicPhase [2][4] = {
+static const int16_t harmonicPhase [2][4] = {
   { 1.0, 0.0, -1.0,  0.0},
   { 0.0, 1.0,  0.0, -1.0}
 };
@@ -1161,7 +1161,7 @@ const uint8_t FDK_sbrDecoder_aNoIccBins[3] = {
          invTable[i] = FL2FX_SGL(d);
        }
 */
-const FIXP_SGL FDK_sbrDecoder_invTable[INV_TABLE_SIZE] = {
+const int16_t FDK_sbrDecoder_invTable[INV_TABLE_SIZE] = {
     0x7f80, 0x7f01, 0x7e83, 0x7e07, 0x7d8b, 0x7d11, 0x7c97, 0x7c1e, 0x7ba6,
     0x7b2f, 0x7ab9, 0x7a44, 0x79cf, 0x795c, 0x78e9, 0x7878, 0x7807, 0x7796,
     0x7727, 0x76b9, 0x764b, 0x75de, 0x7572, 0x7506, 0x749c, 0x7432, 0x73c9,

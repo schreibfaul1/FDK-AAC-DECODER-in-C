@@ -169,7 +169,7 @@ static FDK_FORCEINLINE void fft_4(int32_t *x) {
 #ifndef FUNCTION_fft_8
 LNK_SECTION_CODE_L1
 static FDK_FORCEINLINE void fft_8(int32_t *x) {
-  FIXP_SPK w_PiFOURTH = {{FIXP_SGL(0x5A82), FIXP_SGL(0x5A82)}};
+  FIXP_SPK w_PiFOURTH = {{int16_t(0x5A82), int16_t(0x5A82)}};
 
   int32_t a00, a10, a20, a30;
   int32_t y[16];

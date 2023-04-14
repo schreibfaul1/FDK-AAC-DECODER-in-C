@@ -186,11 +186,11 @@ typedef enum {
   CConcealment_Compress
 } CConcealmentExpandType;
 
-static const FIXP_SGL facMod4Table[4] = {
-    FL2FXCONST_SGL(0.500000000f), /* FIXP_SGL(0x4000),  2^-(1-0,00) */
-    FL2FXCONST_SGL(0.594603558f), /* FIXP_SGL(0x4c1b),  2^-(1-0,25) */
-    FL2FXCONST_SGL(0.707106781f), /* FIXP_SGL(0x5a82),  2^-(1-0,50) */
-    FL2FXCONST_SGL(0.840896415f)  /* FIXP_SGL(0x6ba2)   2^-(1-0,75) */
+static const int16_t facMod4Table[4] = {
+    FL2FXCONST_SGL(0.500000000f), /* int16_t(0x4000),  2^-(1-0,00) */
+    FL2FXCONST_SGL(0.594603558f), /* int16_t(0x4c1b),  2^-(1-0,25) */
+    FL2FXCONST_SGL(0.707106781f), /* int16_t(0x5a82),  2^-(1-0,50) */
+    FL2FXCONST_SGL(0.840896415f)  /* int16_t(0x6ba2)   2^-(1-0,75) */
 };
 
 static void CConcealment_CalcBandEnergy(
@@ -1262,9 +1262,9 @@ static void CConcealment_InterpolateBuffer(int32_t *spectrum,
 
 static int32_t findEquiFadeFrame(CConcealParams *pConcealCommonData,
                              int32_t actFadeIndex, int32_t direction) {
-  FIXP_SGL *pFactor;
-  FIXP_SGL referenceVal;
-  FIXP_SGL minDiff = (FIXP_SGL)MAXVAL_SGL;
+  int16_t *pFactor;
+  int16_t referenceVal;
+  int16_t minDiff = (int16_t)MAXVAL_SGL;
 
   int32_t nextFadeIndex = 0;
 
@@ -1273,14 +1273,14 @@ static int32_t findEquiFadeFrame(CConcealParams *pConcealCommonData,
   /* init depending on direction */
   if (direction == 0) { /* FADE-OUT => FADE-IN */
     if (actFadeIndex < 0) {
-      referenceVal = (FIXP_SGL)MAXVAL_SGL;
+      referenceVal = (int16_t)MAXVAL_SGL;
     } else {
       referenceVal = pConcealCommonData->fadeOutFactor[actFadeIndex] >> 1;
     }
     pFactor = pConcealCommonData->fadeInFactor;
   } else { /* FADE-IN => FADE-OUT */
     if (actFadeIndex < 0) {
-      referenceVal = (FIXP_SGL)MAXVAL_SGL;
+      referenceVal = (int16_t)MAXVAL_SGL;
     } else {
       referenceVal = pConcealCommonData->fadeInFactor[actFadeIndex] >> 1;
     }
@@ -1289,7 +1289,7 @@ static int32_t findEquiFadeFrame(CConcealParams *pConcealCommonData,
 
   /* search for minimum difference */
   for (i = 0; i < CONCEAL_MAX_NUM_FADE_FACTORS; i++) {
-    FIXP_SGL diff = fixp_abs((pFactor[i] >> 1) - referenceVal);
+    int16_t diff = fixp_abs((pFactor[i] >> 1) - referenceVal);
     if (diff < minDiff) {
       minDiff = diff;
       nextFadeIndex = i;
@@ -1865,7 +1865,7 @@ int32_t CConcealment_TDFading(
   const int32_t fadeStart =
       pConcealmentInfo
           ->fade_old; /* start fading at last end-of-frame attenuation */
-  FIXP_SGL *fadeFactor = pConcealParams->fadeOutFactor;
+  int16_t *fadeFactor = pConcealParams->fadeOutFactor;
   const int32_t cntFadeFrames = pConcealmentInfo->cntFadeFrames;
   int32_t TDFadeOutStopBeforeMute = 1;
   int32_t TDFadeInStopBeforeFullLevel = 1;
@@ -2059,7 +2059,7 @@ static void CConcealment_TDNoise_Apply(CConcealmentInfo *const pConcealmentInfo,
   int32_t *states = pConcealmentInfo->TDNoiseStates;
   int32_t noiseVal;
   int32_t noiseValLong;
-  FIXP_SGL *coef = pConcealmentInfo->TDNoiseCoef;
+  int16_t *coef = pConcealmentInfo->TDNoiseCoef;
   int32_t TDNoiseAtt;
   uint32_t seed = pConcealmentInfo->TDNoiseSeed =
       (uint32_t)CConcealment_TDNoise_Random(&pConcealmentInfo->TDNoiseSeed) + 1;

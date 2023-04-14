@@ -1117,7 +1117,7 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
     const FDK_channelMapDescr *const mapDescr) {
   SACDEC_ERROR err = MPS_OK;
 
-  FIXP_SGL alpha;
+  int16_t alpha;
 
   int32_t ts;
   int32_t ch;

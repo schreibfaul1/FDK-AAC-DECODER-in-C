@@ -128,7 +128,7 @@ typedef struct {
   uint8_t harmIndex;     /*!< Current phase of synthetic sine */
   int32_t sbrPatchingMode; /*!< Current patching mode           */
 
-  FIXP_SGL prevSbrNoiseFloorLevel[MAX_NOISE_COEFFS];
+  int16_t prevSbrNoiseFloorLevel[MAX_NOISE_COEFFS];
   uint8_t prevNNfb;
   uint8_t prevNSfb[2];
   uint8_t prevLoSubband;

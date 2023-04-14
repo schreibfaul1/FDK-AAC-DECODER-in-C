@@ -110,7 +110,7 @@ amm-info@iis.fraunhofer.de
 
 #include "sac_dec.h"
 
-void SpatialDecApplyPhase(spatialDec *self, FIXP_SGL alpha,
+void SpatialDecApplyPhase(spatialDec *self, int16_t alpha,
                           int32_t lastSlotOfParamSet);
 
 /**
@@ -226,7 +226,7 @@ SACDEC_ERROR SpatialDecApplyM1_CreateW_Mode212(
  *
  * \return  Error status.
  */
-SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, int32_t ps, const FIXP_SGL alpha,
+SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, int32_t ps, const int16_t alpha,
                                int32_t **wReal, int32_t **wImag,
                                int32_t **hybOutputRealDry,
                                int32_t **hybOutputImagDry,
@@ -249,7 +249,7 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, int32_t ps, const FIXP_SGL alph
  * \return error
  */
 SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
-    spatialDec *self, int32_t ps, const FIXP_SGL alpha, int32_t **wReal,
+    spatialDec *self, int32_t ps, const int16_t alpha, int32_t **wReal,
     int32_t **wImag, int32_t **hybOutputRealDry, int32_t **hybOutputImagDry);
 
 /**
@@ -268,7 +268,7 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
  * \return error
  */
 SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, int32_t ps,
-                                       const FIXP_SGL alpha, int32_t **wReal,
+                                       const int16_t alpha, int32_t **wReal,
                                        int32_t **wImag,
                                        int32_t **hybOutputRealDry,
                                        int32_t **hybOutputImagDry);

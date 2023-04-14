@@ -146,7 +146,7 @@ amm-info@iis.fraunhofer.de
   (((int8_t)-1) ^ \
    MASK_E) /*!< a CHAR-constant with all bits above our sign-bit set */
 #define ROUNDING                                                           \
-  ((FIXP_SGL)(                                                             \
+  ((int16_t)(                                                             \
       1 << (EXP_BITS - 1))) /*!< 0.5-offset for rounding the mantissa of a \
                                pseudo-float envelope value */
 #define NRG_EXP_OFFSET                                                         \
@@ -313,9 +313,9 @@ typedef struct {
 } FRAME_INFO;
 
 typedef struct {
-  FIXP_SGL sfb_nrg_prev[MAX_FREQ_COEFFS]; /*!< Previous envelope (required for
+  int16_t sfb_nrg_prev[MAX_FREQ_COEFFS]; /*!< Previous envelope (required for
                                              differential-coded values) */
-  FIXP_SGL
+  int16_t
   prevNoiseLevel[MAX_NOISE_COEFFS]; /*!< Previous noise envelope (required
                                        for differential-coded values) */
   COUPLING_MODE coupling;           /*!< Stereo-mode of previous frame */
@@ -349,8 +349,8 @@ typedef struct {
   uint32_t addHarmonics[ADD_HARMONICS_FLAGS_SIZE]; /*!< Flags for synthetic sine
                                                    addition (aligned to MSB) */
 
-  FIXP_SGL iEnvelope[MAX_NUM_ENVELOPE_VALUES];       /*!< Envelope data */
-  FIXP_SGL sbrNoiseFloorLevel[MAX_NUM_NOISE_VALUES]; /*!< Noise envelope data */
+  int16_t iEnvelope[MAX_NUM_ENVELOPE_VALUES];       /*!< Envelope data */
+  int16_t sbrNoiseFloorLevel[MAX_NUM_NOISE_VALUES]; /*!< Noise envelope data */
   uint8_t iTESactive; /*!< One flag for each envelope to enable USAC inter-TES */
   uint8_t
   interTempShapeMode[MAX_ENVELOPES]; /*!< USAC inter-TES:

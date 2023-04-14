@@ -168,12 +168,12 @@ deriveDrcChannelGroups(
 {
   int32_t duckingSequence = -1;
   int32_t c, n, g, match, idx;
-  FIXP_SGL factor;
-  FIXP_SGL uniqueScaling[8];
+  int16_t factor;
+  int16_t uniqueScaling[8];
 
   for (g = 0; g < 8; g++) {
     uniqueIndex[g] = -10;
-    uniqueScaling[g] = FIXP_SGL(-1.0f);
+    uniqueScaling[g] = int16_t(-1.0f);
   }
 
   g = 0;

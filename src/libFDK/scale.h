@@ -117,13 +117,13 @@ amm-info@iis.fraunhofer.de
 
 // #endif
 
-void scaleValues(FIXP_SGL *vector, int32_t len, int32_t scalefactor);
+void scaleValues(int16_t *vector, int32_t len, int32_t scalefactor);
 void scaleValues(int32_t *vector, int32_t len, int32_t scalefactor);
 void scaleValues(int32_t *dst, const int32_t *src, int32_t len, int32_t scalefactor);
 #if (SAMPLE_BITS == 16)
 void scaleValues(FIXP_PCM *dst, const int32_t *src, int32_t len, int32_t scalefactor);
 #endif
-void scaleValues(FIXP_SGL *dst, const FIXP_SGL *src, int32_t len, int32_t scalefactor);
+void scaleValues(int16_t *dst, const int16_t *src, int32_t len, int32_t scalefactor);
 void scaleCplxValues(int32_t *r_dst, int32_t *i_dst, const int32_t *r_src,
                      const int32_t *i_src, int32_t len, int32_t scalefactor);
 void scaleValuesWithFactor(int32_t *vector, int32_t factor, int32_t len,
@@ -131,15 +131,15 @@ void scaleValuesWithFactor(int32_t *vector, int32_t factor, int32_t len,
 void scaleValuesSaturate(int32_t *vector, int32_t len, int32_t scalefactor);
 void scaleValuesSaturate(int32_t *dst, const int32_t *src, int32_t len,
                          int32_t scalefactor);
-void scaleValuesSaturate(FIXP_SGL *dst, const int32_t *src, int32_t len,
+void scaleValuesSaturate(int16_t *dst, const int32_t *src, int32_t len,
                          int32_t scalefactor);
-void scaleValuesSaturate(FIXP_SGL *vector, int32_t len, int32_t scalefactor);
-void scaleValuesSaturate(FIXP_SGL *dst, const FIXP_SGL *src, int32_t len,
+void scaleValuesSaturate(int16_t *vector, int32_t len, int32_t scalefactor);
+void scaleValuesSaturate(int16_t *dst, const int16_t *src, int32_t len,
                          int32_t scalefactor);
 int32_t getScalefactorShort(const int16_t *vector, int32_t len);
 int32_t getScalefactorPCM(const INT_PCM *vector, int32_t len, int32_t stride);
 int32_t getScalefactor(const int32_t *vector, int32_t len);
-int32_t getScalefactor(const FIXP_SGL *vector, int32_t len);
+int32_t getScalefactor(const int16_t *vector, int32_t len);
 
 #ifndef FUNCTION_scaleValue
 /*!
@@ -158,7 +158,7 @@ inline int32_t scaleValue(const int32_t value, /*!< Value */
   else
     return (value >> (-scalefactor));
 }
-inline FIXP_SGL scaleValue(const FIXP_SGL value, /*!< Value */
+inline int16_t scaleValue(const int16_t value, /*!< Value */
                            int32_t scalefactor       /*!< Scalefactor */
 ) {
   if (scalefactor > 0)

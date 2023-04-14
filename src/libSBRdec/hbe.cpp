@@ -486,10 +486,10 @@ static const int32_t twiddle[121] = {1073741824,
                                       70226075,
                                       0};
 
-#if FIXP_QTW == FIXP_SGL
+#if FIXP_QTW == int16_t
 #define HTW(x) (x)
 #else
-#define HTW(x) FX_DBL2FX_QTW(FX_SGL2FX_DBL((const FIXP_SGL)x))
+#define HTW(x) FX_DBL2FX_QTW(FX_SGL2FX_DBL((const int16_t)x))
 #endif
 
 static const FIXP_QTW post_twiddle_cos_8[8] = {
@@ -675,7 +675,7 @@ static
    * where 2^(exp/3) = 2^k'*2 or 2^k'*2^(1/3) or 2^k'*2^(2/3) */
   exponent = exponent - *op_e + 3;
   int32_t shift_tmp =
-      ((int32_t)fMultDiv2((FIXP_SGL)fAbs(exponent), (FIXP_SGL)0x5556)) >> 16;
+      ((int32_t)fMultDiv2((int16_t)fAbs(exponent), (int16_t)0x5556)) >> 16;
   if (exponent < 0) {
     shift_tmp = -shift_tmp;
   }

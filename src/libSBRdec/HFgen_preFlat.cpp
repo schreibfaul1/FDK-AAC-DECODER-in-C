@@ -110,7 +110,7 @@ amm-info@iis.fraunhofer.de
 #define LOG10FAC     0.752574989159953f /* == 10/log2(10) * 2^-2 */
 #define LOG10FAC_INV 0.664385618977472f /* == log2(10)/20 * 2^2  */
 
-#define FIXP_CHB         FIXP_SGL /* STB sinus Tab used in transformation */
+#define FIXP_CHB         int16_t /* STB sinus Tab used in transformation */
 #define FX_CHB2FX_DBL(a) FX_SGL2FX_DBL(a)
 
 typedef struct backsubst_data

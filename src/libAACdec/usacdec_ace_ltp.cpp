@@ -164,38 +164,38 @@ void Pred_lt4(int32_t exc[], /* in/out: excitation buffer              */
     filt = *interpol++;
     x0 = *xi++;
     x1 = *xi++;
-    L_sumt = fMultDiv2(x0, (FIXP_SGL)((int16_t)(filt >> 16)));
-    L_sumb = fMultDiv2(x1, (FIXP_SGL)((int16_t)filt));
+    L_sumt = fMultDiv2(x0, (int16_t)((int16_t)(filt >> 16)));
+    L_sumb = fMultDiv2(x1, (int16_t)((int16_t)filt));
     do {
       filt = *interpol++;
       x0 = *xi++;
       x1 = *xi++;
-      L_sumt = fMultAddDiv2(L_sumt, x0, (FIXP_SGL)((int16_t)(filt >> 16)));
-      L_sumb = fMultAddDiv2(L_sumb, x1, (FIXP_SGL)((int16_t)filt));
+      L_sumt = fMultAddDiv2(L_sumt, x0, (int16_t)((int16_t)(filt >> 16)));
+      L_sumb = fMultAddDiv2(L_sumb, x1, (int16_t)((int16_t)filt));
 
       filt = *interpol++;
       x0 = *xi++;
       x1 = *xi++;
-      L_sumt = fMultAddDiv2(L_sumt, x0, (FIXP_SGL)((int16_t)(filt >> 16)));
-      L_sumb = fMultAddDiv2(L_sumb, x1, (FIXP_SGL)((int16_t)filt));
+      L_sumt = fMultAddDiv2(L_sumt, x0, (int16_t)((int16_t)(filt >> 16)));
+      L_sumb = fMultAddDiv2(L_sumb, x1, (int16_t)((int16_t)filt));
 
       filt = *interpol++;
       x0 = *xi++;
       x1 = *xi++;
-      L_sumt = fMultAddDiv2(L_sumt, x0, (FIXP_SGL)((int16_t)(filt >> 16)));
-      L_sumb = fMultAddDiv2(L_sumb, x1, (FIXP_SGL)((int16_t)filt));
+      L_sumt = fMultAddDiv2(L_sumt, x0, (int16_t)((int16_t)(filt >> 16)));
+      L_sumb = fMultAddDiv2(L_sumb, x1, (int16_t)((int16_t)filt));
 
       filt = *interpol++;
       x0 = *xi++;
       x1 = *xi++;
-      L_sumt = fMultAddDiv2(L_sumt, x0, (FIXP_SGL)((int16_t)(filt >> 16)));
-      L_sumb = fMultAddDiv2(L_sumb, x1, (FIXP_SGL)((int16_t)filt));
+      L_sumt = fMultAddDiv2(L_sumt, x0, (int16_t)((int16_t)(filt >> 16)));
+      L_sumb = fMultAddDiv2(L_sumb, x1, (int16_t)((int16_t)filt));
 
       filt = *interpol++;
       x0 = *xi++;
       x1 = *xi++;
-      L_sumt = fMultAddDiv2(L_sumt, x0, (FIXP_SGL)((int16_t)(filt >> 16)));
-      L_sumb = fMultAddDiv2(L_sumb, x1, (FIXP_SGL)((int16_t)filt));
+      L_sumt = fMultAddDiv2(L_sumt, x0, (int16_t)((int16_t)(filt >> 16)));
+      L_sumb = fMultAddDiv2(L_sumb, x1, (int16_t)((int16_t)filt));
     } while (--i != 0);
 
     L_sumb <<= 1;

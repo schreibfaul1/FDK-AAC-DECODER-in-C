@@ -253,7 +253,7 @@ DRC_ERROR
 drcDec_GainDecoder_Preprocess(HANDLE_DRC_GAIN_DECODER hGainDec,
                               HANDLE_UNI_DRC_GAIN hUniDrcGain,
                               const int32_t loudnessNormalizationGainDb,
-                              const FIXP_SGL boost, const FIXP_SGL compress) {
+                              const int16_t boost, const int16_t compress) {
   DRC_ERROR err = DE_OK;
   int32_t a, c;
 
@@ -305,7 +305,7 @@ drcDec_GainDecoder_Conceal(HANDLE_DRC_GAIN_DECODER hGainDec,
 
   for (seq = 0; seq < gainSequenceCount; seq++) {
     int32_t lastNodeIndex = 0;
-    FIXP_SGL lastGainDb = (FIXP_SGL)0;
+    int16_t lastGainDb = (int16_t)0;
 
     lastNodeIndex = hUniDrcGain->nNodes[seq] - 1;
     if ((lastNodeIndex >= 0) && (lastNodeIndex < 16)) {
@@ -313,7 +313,7 @@ drcDec_GainDecoder_Conceal(HANDLE_DRC_GAIN_DECODER hGainDec,
     }
 
     hUniDrcGain->nNodes[seq] = 1;
-    if (lastGainDb > (FIXP_SGL)0) {
+    if (lastGainDb > (int16_t)0) {
       hUniDrcGain->gainNode[seq][0].gainDb =
           FX_DBL2FX_SGL(fMult(FL2FXCONST_SGL(0.9f), lastGainDb));
     } else {

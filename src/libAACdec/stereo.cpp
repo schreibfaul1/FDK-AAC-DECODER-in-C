@@ -998,22 +998,22 @@ void CJointStereo_ApplyMS(
 
         for (band = 0; band < max_sfb_ste_outside; band++) {
           if (pJointStereoData->MsUsed[band] & groupMask) {
-            FIXP_SGL tempRe =
-                (FIXP_SGL)cplxPredictionData->alpha_q_re[group][band];
-            FIXP_SGL tempIm =
-                (FIXP_SGL)cplxPredictionData->alpha_q_im[group][band];
+            int16_t tempRe =
+                (int16_t)cplxPredictionData->alpha_q_re[group][band];
+            int16_t tempIm =
+                (int16_t)cplxPredictionData->alpha_q_im[group][band];
 
             /* Find the minimum common headroom for alpha_re and alpha_im */
             int32_t alpha_re_headroom = CountLeadingBits((int32_t)tempRe) - 16;
-            if (tempRe == (FIXP_SGL)0) alpha_re_headroom = 15;
+            if (tempRe == (int16_t)0) alpha_re_headroom = 15;
             int32_t alpha_im_headroom = CountLeadingBits((int32_t)tempIm) - 16;
-            if (tempIm == (FIXP_SGL)0) alpha_im_headroom = 15;
+            if (tempIm == (int16_t)0) alpha_im_headroom = 15;
             int32_t val = fMin(alpha_re_headroom, alpha_im_headroom);
 
             /* Multiply alpha by 0.1 with maximum precision */
             assert(val >= 0);
-            int32_t alpha_re_tmp = fMult((FIXP_SGL)(tempRe << val), pointOne);
-            int32_t alpha_im_tmp = fMult((FIXP_SGL)(tempIm << val), pointOne);
+            int32_t alpha_re_tmp = fMult((int16_t)(tempRe << val), pointOne);
+            int32_t alpha_im_tmp = fMult((int16_t)(tempIm << val), pointOne);
 
             /* Calculate alpha exponent */
             /* (Q-3.34 * Q15.0) shifted left by "val" */

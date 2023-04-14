@@ -209,36 +209,36 @@ drcDec_readUniDrc(HANDLE_FDK_BITSTREAM hBs, HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
 /* uniDrcGain */
 /**************/
 
-static FIXP_SGL _decodeGainInitial(
+static int16_t _decodeGainInitial(
     HANDLE_FDK_BITSTREAM hBs, const GAIN_CODING_PROFILE gainCodingProfile) {
   int32_t sign, magn;
-  FIXP_SGL gainInitial = (FIXP_SGL)0;
+  int16_t gainInitial = (int16_t)0;
   switch (gainCodingProfile) {
     case GCP_REGULAR:
       sign = FDKreadBits(hBs, 1);
       magn = FDKreadBits(hBs, 8);
 
       gainInitial =
-          (FIXP_SGL)(magn << (FRACT_BITS - 1 - 3 - 7)); /* magn * 0.125; */
+          (int16_t)(magn << (FRACT_BITS - 1 - 3 - 7)); /* magn * 0.125; */
       if (sign) gainInitial = -gainInitial;
       break;
     case GCP_FADING:
       sign = FDKreadBits(hBs, 1);
       if (sign == 0)
-        gainInitial = (FIXP_SGL)0;
+        gainInitial = (int16_t)0;
       else {
         magn = FDKreadBits(hBs, 10);
-        gainInitial = -(FIXP_SGL)(
+        gainInitial = -(int16_t)(
             (magn + 1) << (FRACT_BITS - 1 - 3 - 7)); /* - (magn + 1) * 0.125; */
       }
       break;
     case GCP_CLIPPING_DUCKING:
       sign = FDKreadBits(hBs, 1);
       if (sign == 0)
-        gainInitial = (FIXP_SGL)0;
+        gainInitial = (int16_t)0;
       else {
         magn = FDKreadBits(hBs, 8);
-        gainInitial = -(FIXP_SGL)(
+        gainInitial = -(int16_t)(
             (magn + 1) << (FRACT_BITS - 1 - 3 - 7)); /* - (magn + 1) * 0.125; */
       }
       break;
@@ -280,7 +280,7 @@ static void _decodeGains(HANDLE_FDK_BITSTREAM hBs,
     /* gain_dB_e = 7 */
     pNodes[k].gainDb =
         pNodes[k - 1].gainDb +
-        (FIXP_SGL)(deltaGain << (FRACT_BITS - 1 - 7 -
+        (int16_t)(deltaGain << (FRACT_BITS - 1 - 7 -
                                  3)); /* pNodes[k-1].gainDb + 0.125*deltaGain */
   }
 }
@@ -414,7 +414,7 @@ static void _readDrcGainSequence(HANDLE_FDK_BITSTREAM hBs, GAIN_SET* gainSet,
   if (gainSet->gainCodingProfile == GCP_CONSTANT) {
     *pNNodes = 1;
     pNodes[0].time = frameSize - 1;
-    pNodes[0].gainDb = (FIXP_SGL)0;
+    pNodes[0].gainDb = (int16_t)0;
   } else {
     _readNodes(hBs, gainSet, frameSize, timeDeltaMin, pNNodes, pNodes);
 
@@ -542,14 +542,14 @@ static void _decodeDuckingModification(HANDLE_FDK_BITSTREAM hBs,
     mu = bsDuckingScaling & 0x7;
 
     if (sigma) {
-      pDMod->duckingScaling = (FIXP_SGL)(
+      pDMod->duckingScaling = (int16_t)(
           (7 - mu) << (FRACT_BITS - 1 - 3 - 2)); /* 1.0 - 0.125 * (1 + mu); */
     } else {
-      pDMod->duckingScaling = (FIXP_SGL)(
+      pDMod->duckingScaling = (int16_t)(
           (9 + mu) << (FRACT_BITS - 1 - 3 - 2)); /* 1.0 + 0.125 * (1 + mu); */
     }
   } else {
-    pDMod->duckingScaling = (FIXP_SGL)(1 << (FRACT_BITS - 1 - 2)); /* 1.0 */
+    pDMod->duckingScaling = (int16_t)(1 << (FRACT_BITS - 1 - 2)); /* 1.0 */
   }
 }
 
@@ -590,11 +590,11 @@ static void _decodeGainModification(HANDLE_FDK_BITSTREAM hBs, const int32_t vers
       if (!isBox) pGMod[b].gainScalingPresent = FDKreadBits(hBs, 1);
       if (pGMod[b].gainScalingPresent) {
         bsAttenuationScaling = FDKreadBits(hBs, 4);
-        pGMod[b].attenuationScaling = (FIXP_SGL)(
+        pGMod[b].attenuationScaling = (int16_t)(
             bsAttenuationScaling
             << (FRACT_BITS - 1 - 3 - 2)); /* bsAttenuationScaling * 0.125; */
         bsAmplificationScaling = FDKreadBits(hBs, 4);
-        pGMod[b].amplificationScaling = (FIXP_SGL)(
+        pGMod[b].amplificationScaling = (int16_t)(
             bsAmplificationScaling
             << (FRACT_BITS - 1 - 3 - 2)); /* bsAmplificationScaling * 0.125; */
       }
@@ -603,7 +603,7 @@ static void _decodeGainModification(HANDLE_FDK_BITSTREAM hBs, const int32_t vers
         if (isBox) FDKpushFor(hBs, 2); /* reserved */
         sign = FDKreadBits(hBs, 1);
         bsGainOffset = FDKreadBits(hBs, 5);
-        pGMod[b].gainOffset = (FIXP_SGL)(
+        pGMod[b].gainOffset = (int16_t)(
             (1 + bsGainOffset)
             << (FRACT_BITS - 1 - 2 - 4)); /* (1+bsGainOffset) * 0.25; */
         if (sign) {
@@ -622,18 +622,18 @@ static void _decodeGainModification(HANDLE_FDK_BITSTREAM hBs, const int32_t vers
     }
   } else {
     int32_t b, gainScalingPresent, gainOffsetPresent;
-    FIXP_SGL attenuationScaling = FL2FXCONST_SGL(1.0f / (float)(1 << 2)),
+    int16_t attenuationScaling = FL2FXCONST_SGL(1.0f / (float)(1 << 2)),
              amplificationScaling = FL2FXCONST_SGL(1.0f / (float)(1 << 2)),
-             gainOffset = (FIXP_SGL)0;
+             gainOffset = (int16_t)0;
     if (isBox) FDKpushFor(hBs, 7); /* reserved */
     gainScalingPresent = FDKreadBits(hBs, 1);
     if (gainScalingPresent) {
       bsAttenuationScaling = FDKreadBits(hBs, 4);
-      attenuationScaling = (FIXP_SGL)(
+      attenuationScaling = (int16_t)(
           bsAttenuationScaling
           << (FRACT_BITS - 1 - 3 - 2)); /* bsAttenuationScaling * 0.125; */
       bsAmplificationScaling = FDKreadBits(hBs, 4);
-      amplificationScaling = (FIXP_SGL)(
+      amplificationScaling = (int16_t)(
           bsAmplificationScaling
           << (FRACT_BITS - 1 - 3 - 2)); /* bsAmplificationScaling * 0.125; */
     }
@@ -644,7 +644,7 @@ static void _decodeGainModification(HANDLE_FDK_BITSTREAM hBs, const int32_t vers
       sign = FDKreadBits(hBs, 1);
       bsGainOffset = FDKreadBits(hBs, 5);
       gainOffset =
-          (FIXP_SGL)((1 + bsGainOffset) << (FRACT_BITS - 1 - 2 -
+          (int16_t)((1 + bsGainOffset) << (FRACT_BITS - 1 - 2 -
                                             4)); /* (1+bsGainOffset) * 0.25; */
       if (sign) {
         gainOffset = -gainOffset;
@@ -769,20 +769,20 @@ static DRC_ERROR _readCustomDrcCharacteristic(HANDLE_FDK_BITSTREAM hBs,
     if (isBox) FDKpushFor(hBs, 1); /* reserved */
     bsGain = FDKreadBits(hBs, 6);
     if (side == CS_LEFT) {
-      pCChar->sigmoid.gain = (FIXP_SGL)(bsGain << (FRACT_BITS - 1 - 6));
+      pCChar->sigmoid.gain = (int16_t)(bsGain << (FRACT_BITS - 1 - 6));
     } else {
-      pCChar->sigmoid.gain = (FIXP_SGL)(-bsGain << (FRACT_BITS - 1 - 6));
+      pCChar->sigmoid.gain = (int16_t)(-bsGain << (FRACT_BITS - 1 - 6));
     }
     bsIoRatio = FDKreadBits(hBs, 4);
     /* pCChar->sigmoid.ioRatio = 0.05 + 0.15 * bsIoRatio; */
     pCChar->sigmoid.ioRatio =
         FL2FXCONST_SGL(0.05f / (float)(1 << 2)) +
-        (FIXP_SGL)((((3 * bsIoRatio) << (FRACT_BITS - 1)) / 5) >> 4);
+        (int16_t)((((3 * bsIoRatio) << (FRACT_BITS - 1)) / 5) >> 4);
     bsExp = FDKreadBits(hBs, 4);
     if (bsExp < 15) {
-      pCChar->sigmoid.exp = (FIXP_SGL)((1 + 2 * bsExp) << (FRACT_BITS - 1 - 5));
+      pCChar->sigmoid.exp = (int16_t)((1 + 2 * bsExp) << (FRACT_BITS - 1 - 5));
     } else {
-      pCChar->sigmoid.exp = (FIXP_SGL)MAXVAL_SGL; /* represents infinity */
+      pCChar->sigmoid.exp = (int16_t)MAXVAL_SGL; /* represents infinity */
     }
     pCChar->sigmoid.flipSign = FDKreadBits(hBs, 1);
   } else { /* CF_NODES */
@@ -792,21 +792,21 @@ static DRC_ERROR _readCustomDrcCharacteristic(HANDLE_FDK_BITSTREAM hBs,
     pCChar->nodes.characteristicNodeCount = bsCharacteristicNodeCount + 1;
     if (pCChar->nodes.characteristicNodeCount > 4) return DE_MEMORY_ERROR;
     pCChar->nodes.nodeLevel[0] = DRC_INPUT_LOUDNESS_TARGET_SGL;
-    pCChar->nodes.nodeGain[0] = (FIXP_SGL)0;
+    pCChar->nodes.nodeGain[0] = (int16_t)0;
     for (i = 0; i < pCChar->nodes.characteristicNodeCount; i++) {
       if (isBox) FDKpushFor(hBs, 3); /* reserved */
       bsNodeLevelDelta = FDKreadBits(hBs, 5);
       if (side == CS_LEFT) {
         pCChar->nodes.nodeLevel[i + 1] =
             pCChar->nodes.nodeLevel[i] -
-            (FIXP_SGL)((1 + bsNodeLevelDelta) << (FRACT_BITS - 1 - 7));
+            (int16_t)((1 + bsNodeLevelDelta) << (FRACT_BITS - 1 - 7));
       } else {
         pCChar->nodes.nodeLevel[i + 1] =
             pCChar->nodes.nodeLevel[i] +
-            (FIXP_SGL)((1 + bsNodeLevelDelta) << (FRACT_BITS - 1 - 7));
+            (int16_t)((1 + bsNodeLevelDelta) << (FRACT_BITS - 1 - 7));
       }
       bsNodeGain = FDKreadBits(hBs, 8);
-      pCChar->nodes.nodeGain[i + 1] = (FIXP_SGL)(
+      pCChar->nodes.nodeGain[i + 1] = (int16_t)(
           (bsNodeGain - 128)
           << (FRACT_BITS - 1 - 1 - 7)); /* 0.5f * bsNodeGain - 64.0f; */
     }
@@ -1303,7 +1303,7 @@ static DRC_ERROR _readDrcInstructionsUniDrc(HANDLE_FDK_BITSTREAM hBs,
     pInst->limiterPeakTargetPresent = FDKreadBits(hBs, 1);
     if (pInst->limiterPeakTargetPresent) {
       bsLimiterPeakTarget = FDKreadBits(hBs, 8);
-      pInst->limiterPeakTarget = -(FIXP_SGL)(
+      pInst->limiterPeakTarget = -(int16_t)(
           bsLimiterPeakTarget
           << (FRACT_BITS - 1 - 3 - 5)); /* - bsLimiterPeakTarget * 0.125; */
     }

@@ -128,8 +128,8 @@ inline int32_t fixabs_I(int32_t x) { return ((x) > (int32_t)(0)) ? (x) : -(x); }
 #endif
 
 #if !defined(FUNCTION_fixabs_S)
-inline FIXP_SGL fixabs_S(FIXP_SGL x) {
-  return ((x) > (FIXP_SGL)(0)) ? (x) : -(x);
+inline int16_t fixabs_S(int16_t x) {
+  return ((x) > (int16_t)(0)) ? (x) : -(x);
 }
 #endif
 

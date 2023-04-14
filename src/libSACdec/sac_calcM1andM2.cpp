@@ -390,7 +390,7 @@ static const int32_t sinIpd_tab[N_IPD] = {
 #define SIN_IPD(a) (sinIpd_tab[(a)])
 #define COS_IPD(a) (sinIpd_tab[((a) + 4) & 15])  //(cosIpd_tab[(a)])
 
-static const FIXP_SGL sqrt_one_minus_ICC2[8] = {
+static const int16_t sqrt_one_minus_ICC2[8] = {
     FL2FXCONST_SGL(0.0f),
     FL2FXCONST_SGL(0.349329357483736f),
     FL2FXCONST_SGL(0.540755219669676f),

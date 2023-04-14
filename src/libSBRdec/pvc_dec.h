@@ -142,7 +142,7 @@ typedef struct {
       *pPvcID; /**< Pointer to prediction coefficient matrix index table */
   uint8_t pastEsgSlotsAvail;   /**< Number of past Esg(ksg,t) which are available
                                 for smoothing filter */
-  const FIXP_SGL *pSCcoeffs; /**< Pointer to smoothing window table */
+  const int16_t *pSCcoeffs; /**< Pointer to smoothing window table */
   int8_t
   sg_offset_low[PVC_NBLOW + 1]; /**< Offset table for PVC grouping of SBR
                                    subbands below SBR range */

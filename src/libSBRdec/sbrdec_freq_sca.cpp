@@ -115,7 +115,7 @@ amm-info@iis.fraunhofer.de
 #define MAX_OCTAVE 29
 #define MAX_SECOND_REGION 50
 
-static int32_t numberOfBands(FIXP_SGL bpo_div16, int32_t start, int32_t stop, int32_t warpFlag);
+static int32_t numberOfBands(int16_t bpo_div16, int32_t start, int32_t stop, int32_t warpFlag);
 static void CalcBands(uint8_t *diff, uint8_t start, uint8_t stop, uint8_t num_bands);
 static SBR_ERROR modifyBands(uint8_t max_band, uint8_t *diff, uint8_t length);
 static void cumSum(uint8_t start_value, uint8_t *diff, uint8_t length,
@@ -302,7 +302,7 @@ sbrdecUpdateFreqScale(
     uint32_t fs,           /*!< SBR working sampling rate */
     HANDLE_SBR_HEADER_DATA hHeaderData, /*!< Control data from bitstream */
     uint32_t flags) {
-  FIXP_SGL bpo_div16; /* bands_per_octave divided by 16 */
+  int16_t bpo_div16; /* bands_per_octave divided by 16 */
   int32_t dk = 0;
 
   /* Internal variables */
@@ -351,7 +351,7 @@ sbrdecUpdateFreqScale(
      * 4:1 system when bs_freq_scale > 0 */
     if (flags & SBRDEC_QUAD_RATE) {
       if ((int16_t)k0 < (int16_t)(bpo_div16 >> ((FRACT_BITS - 1) - 4))) {
-        bpo_div16 = (FIXP_SGL)(k0 & (uint8_t)0xfe)
+        bpo_div16 = (int16_t)(k0 & (uint8_t)0xfe)
                     << ((FRACT_BITS - 1) - 4); /* bpo_div16 = floor(k0/2)*2 */
       }
     }
@@ -481,7 +481,7 @@ sbrdecUpdateFreqScale(
 
  \return    num_band-th root of k_start/k_stop
 */
-static FIXP_SGL calcFactorPerBand(int32_t k_start, int32_t k_stop, int32_t num_bands) {
+static int16_t calcFactorPerBand(int32_t k_start, int32_t k_stop, int32_t num_bands) {
   /* Scaled bandfactor and step 1 bit right to avoid overflow
    * use double data type */
   int32_t bandfactor = FL2FXCONST_DBL(0.25f); /* Start value */
@@ -490,7 +490,7 @@ static FIXP_SGL calcFactorPerBand(int32_t k_start, int32_t k_stop, int32_t num_b
   int32_t direction = 1;
 
   /* Because saturation can't be done in int32_t IIS,
-   * changed start and stop data type from FIXP_SGL to int32_t */
+   * changed start and stop data type from int16_t to int32_t */
   int32_t start = k_start << (DFRACT_BITS - 8);
   int32_t stop = k_stop << (DFRACT_BITS - 8);
 
@@ -524,7 +524,7 @@ static FIXP_SGL calcFactorPerBand(int32_t k_start, int32_t k_stop, int32_t num_b
       step = FL2FXCONST_DBL(0.0f);
     }
   }
-  return (bandfactor >= FL2FXCONST_DBL(0.5)) ? (FIXP_SGL)MAXVAL_SGL
+  return (bandfactor >= FL2FXCONST_DBL(0.5)) ? (int16_t)MAXVAL_SGL
                                              : FX_DBL2FX_SGL(bandfactor << 1);
 }
 
@@ -539,12 +539,12 @@ static FIXP_SGL calcFactorPerBand(int32_t k_start, int32_t k_stop, int32_t num_b
   \return    number of bands
 */
 static int32_t numberOfBands(
-    FIXP_SGL bpo_div16, /*!< Input: number of bands per octave divided by 16 */
+    int16_t bpo_div16, /*!< Input: number of bands per octave divided by 16 */
     int32_t start,          /*!< First QMF band of SBR frequency range */
     int32_t stop,           /*!< Last QMF band of SBR frequency range + 1 */
     int32_t warpFlag)       /*!< Stretching flag */
 {
-  FIXP_SGL num_bands_div128;
+  int16_t num_bands_div128;
   int32_t num_bands;
 
   num_bands_div128 =
@@ -582,11 +582,11 @@ static void CalcBands(uint8_t *diff,     /*!< Vector of widths to be calculated 
   int32_t i;
   int32_t previous;
   int32_t current;
-  FIXP_SGL exact, temp;
-  FIXP_SGL bandfactor = calcFactorPerBand(start, stop, num_bands);
+  int16_t exact, temp;
+  int16_t bandfactor = calcFactorPerBand(start, stop, num_bands);
 
   previous = stop; /* Start with highest QMF channel */
-  exact = (FIXP_SGL)(
+  exact = (int16_t)(
       stop << (FRACT_BITS - 8)); /* Shift left to gain some accuracy */
 
   for (i = num_bands - 1; i >= 0; i--) {

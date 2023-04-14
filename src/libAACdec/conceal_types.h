@@ -138,8 +138,8 @@ typedef enum {
 } CConcealmentState;
 
 typedef struct {
-  FIXP_SGL fadeOutFactor[CONCEAL_MAX_NUM_FADE_FACTORS];
-  FIXP_SGL fadeInFactor[CONCEAL_MAX_NUM_FADE_FACTORS];
+  int16_t fadeOutFactor[CONCEAL_MAX_NUM_FADE_FACTORS];
+  int16_t fadeInFactor[CONCEAL_MAX_NUM_FADE_FACTORS];
 
   CConcealmentMethod method;
 
@@ -195,8 +195,8 @@ typedef struct {
   int32_t last_tcx_gain_e;
   uint32_t TDNoiseSeed;
   int32_t TDNoiseStates[3];
-  FIXP_SGL TDNoiseCoef[3];
-  FIXP_SGL TDNoiseAtt;
+  int16_t TDNoiseCoef[3];
+  int16_t TDNoiseAtt;
 
 } CConcealmentInfo;
 

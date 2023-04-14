@@ -125,7 +125,7 @@ typedef int32_t FIXP_LPC_TNS;
 #define FL2FXCONST_LPC_TNS(val) FL2FXCONST_DBL(val)
 #define MAXVAL_LPC_TNS MAXVAL_DBL
 
-typedef FIXP_SGL FIXP_LPC;
+typedef int16_t FIXP_LPC;
 #define FX_DBL2FX_LPC(x) FX_DBL2FX_SGL((int32_t)(x))
 #define FX_LPC2FX_DBL(x) FX_SGL2FX_DBL(x)
 #define FL2FXCONST_LPC(val) FL2FXCONST_SGL(val)
@@ -183,7 +183,7 @@ void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t si
  */
 void CLpc_SynthesisLattice(int32_t *signal, const int32_t signal_size,
                            const int32_t signal_e, const int32_t signal_e_out,
-                           const int32_t inc, const FIXP_SGL *coeff,
+                           const int32_t inc, const int16_t *coeff,
                            const int32_t order, int32_t *state);
 
 void CLpc_SynthesisLattice(int32_t * signal, const int32_t signal_size,

@@ -115,7 +115,7 @@ static int8_t order_ld[LPC_MAX_ORDER] = {
 #ifndef FUNCTION_CLpc_SynthesisLattice_SGL
 void CLpc_SynthesisLattice(int32_t *signal, const int32_t signal_size,
                            const int32_t signal_e, const int32_t signal_e_out,
-                           const int32_t inc, const FIXP_SGL *coeff,
+                           const int32_t inc, const int16_t *coeff,
                            const int32_t order, int32_t *state) {
   int32_t i, j;
   int32_t *pSignal;
@@ -144,7 +144,7 @@ void CLpc_SynthesisLattice(int32_t *signal, const int32_t signal_size,
 
   for (i = signal_size; i != 0; i--) {
     int32_t *pState = state + order - 1;
-    const FIXP_SGL *pCoeff = coeff + order - 1;
+    const int16_t *pCoeff = coeff + order - 1;
     int32_t tmp;
 
     tmp = scaleValue(*pSignal, shift + signal_e) -

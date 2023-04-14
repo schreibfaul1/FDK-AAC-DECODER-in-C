@@ -119,7 +119,7 @@ const int8_t deltaGain_codingProfile_2_huffman[48][2] = {
     {41, 42},   {-80, -81}, {-82, 43},  {44, -49},  {45, -84},  {-83, -89},
     {-86, 46},  {-90, -85}, {-91, -93}, {-92, 47},  {-88, -87}, {-95, -94}};
 
-const FIXP_SGL slopeSteepness[] = {FL2FXCONST_SGL(-3.0518f / (float)(1 << 2)),
+const int16_t slopeSteepness[] = {FL2FXCONST_SGL(-3.0518f / (float)(1 << 2)),
                                    FL2FXCONST_SGL(-1.2207f / (float)(1 << 2)),
                                    FL2FXCONST_SGL(-0.4883f / (float)(1 << 2)),
                                    FL2FXCONST_SGL(-0.1953f / (float)(1 << 2)),

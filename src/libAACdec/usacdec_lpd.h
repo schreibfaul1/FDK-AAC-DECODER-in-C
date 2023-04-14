@@ -158,7 +158,7 @@ static inline int32_t CLpd_FAC_getLength(int32_t fNotShortBlock, int32_t fac_len
 }
 
 void filtLP(const int32_t *syn, int32_t *syn_out, int32_t *noise,
-            const FIXP_SGL *filt, const int32_t aacOutDataHeadroom, int32_t stop,
+            const int16_t *filt, const int32_t aacOutDataHeadroom, int32_t stop,
             int32_t len);
 
 /**

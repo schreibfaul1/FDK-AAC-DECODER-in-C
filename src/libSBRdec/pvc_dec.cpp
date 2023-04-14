@@ -127,19 +127,19 @@ amm-info@iis.fraunhofer.de
 
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
-static const FIXP_SGL pvc_SC_16[] = {
+static const int16_t pvc_SC_16[] = {
 	5185, 5173, 5135, 5072, 4984, 4869, 4728, 4559, 4360, 4130, 3865, 3560, 3208, 2794, 2290, 1623,
 };
 
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
-static const FIXP_SGL pvc_SC_12[] = {
+static const int16_t pvc_SC_12[] = {
 	6842, 6813, 6725, 6577, 6368, 6095, 5754, 5339, 4838, 4233, 3481, 2472,
 };
 
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
-static const FIXP_SGL pvc_SC_4[] = {
+static const int16_t pvc_SC_4[] = {
 	19159,
 	18415,
 	16110,
@@ -148,7 +148,7 @@ static const FIXP_SGL pvc_SC_4[] = {
 
 RAM_ALIGN
 LNK_SECTION_CONSTDATA
-static const FIXP_SGL pvc_SC_3[] = {
+static const int16_t pvc_SC_3[] = {
 	24846,
 	23122,
 	17569,
@@ -545,7 +545,7 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
   {
     int32_t idx = pPvcStaticData->Esg_slot_index;
     int32_t *pEsg_filt;
-    FIXP_SGL SCcoeff;
+    int16_t SCcoeff;
 
     E[0] = E[1] = E[2] = (int32_t)0;
     for (i = 0; i < pPvcDynamicData->ns; i++) {
@@ -586,7 +586,7 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
                   ->pPVCTab1[pvcTab1ID * PVC_NBLOW * pPvcDynamicData->nbHigh]);
     pTab2 = &(pPvcDynamicData->pPVCTab2[pvcTab2ID * pPvcDynamicData->nbHigh]);
     for (ksg = 0; ksg < pPvcDynamicData->nbHigh; ksg++) {
-      FIXP_SGL predCoeff;
+      int16_t predCoeff;
       int32_t accu;
       int32_t predCoeff_exp, kb;
       E_high_exp[ksg] = 0;
@@ -597,7 +597,7 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
 
       /* linear combination of lower grouped energies part */
       for (kb = 0; kb < PVC_NBLOW; kb++) {
-        predCoeff = (FIXP_SGL)(
+        predCoeff = (int16_t)(
             (int16_t)(int8_t)pTab1[kb * pPvcDynamicData->nbHigh + ksg] << 8);
         predCoeff_exp = -(pPvcDynamicData->pScalingCoef[kb] + 1 -
                           2); /* +1 to compensate for Div2; -2 for accu */

@@ -184,8 +184,8 @@ static int32_t indexLow2High(int32_t offset, /*!< mapping factor */
   corresponding high-res bands.
 */
 static void mapLowResEnergyVal(
-    FIXP_SGL currVal,   /*!< current energy value */
-    FIXP_SGL *prevData, /*!< pointer to previous data vector */
+    int16_t currVal,   /*!< current energy value */
+    int16_t *prevData, /*!< pointer to previous data vector */
     int32_t offset,         /*!< mapping factor */
     int32_t index,          /*!< index to scalefactor band */
     int32_t res)            /*!< frequeny resolution */
@@ -237,13 +237,13 @@ void decodeSbrData(
     HANDLE_SBR_PREV_FRAME_DATA
         h_prev_data_right) /*!< pointer to right channel previous frame data */
 {
-  FIXP_SGL tempSfbNrgPrev[MAX_FREQ_COEFFS];
+  int16_t tempSfbNrgPrev[MAX_FREQ_COEFFS];
   int32_t errLeft;
 
   /* Save previous energy values to be able to reuse them later for concealment.
    */
   FDKmemcpy(tempSfbNrgPrev, h_prev_data_left->sfb_nrg_prev,
-            MAX_FREQ_COEFFS * sizeof(FIXP_SGL));
+            MAX_FREQ_COEFFS * sizeof(int16_t));
 
   if (hHeaderData->frameErrorFlag || hHeaderData->bs_info.pvc_mode == 0) {
     decodeEnvelope(hHeaderData, h_data_left, h_prev_data_left,
@@ -271,7 +271,7 @@ void decodeSbrData(
       /* Restore previous energy values for concealment, because the values have
          been overwritten by the first call of decodeEnvelope(). */
       FDKmemcpy(h_prev_data_left->sfb_nrg_prev, tempSfbNrgPrev,
-                MAX_FREQ_COEFFS * sizeof(FIXP_SGL));
+                MAX_FREQ_COEFFS * sizeof(int16_t));
       /* Do concealment */
       decodeEnvelope(hHeaderData, h_data_left, h_prev_data_left,
                      h_prev_data_right);
@@ -294,18 +294,18 @@ static void sbr_envelope_unmapping(
     HANDLE_SBR_FRAME_DATA h_data_right) /*!< pointer to right channel */
 {
   int32_t i;
-  FIXP_SGL tempL_m, tempR_m, tempRplus1_m, newL_m, newR_m;
+  int16_t tempL_m, tempR_m, tempRplus1_m, newL_m, newR_m;
   int8_t tempL_e, tempR_e, tempRplus1_e, newL_e, newR_e;
 
   /* 1. Unmap (already dequantized) coupled envelope energies */
 
   for (i = 0; i < h_data_left->nScaleFactors; i++) {
-    tempR_m = (FIXP_SGL)((int32_t)h_data_right->iEnvelope[i] & MASK_M);
+    tempR_m = (int16_t)((int32_t)h_data_right->iEnvelope[i] & MASK_M);
     tempR_e = (int8_t)((int32_t)h_data_right->iEnvelope[i] & MASK_E);
 
     tempR_e -= (18 + NRG_EXP_OFFSET); /* -18 = ld(UNMAPPING_SCALE /
                                          h_data_right->nChannels) */
-    tempL_m = (FIXP_SGL)((int32_t)h_data_left->iEnvelope[i] & MASK_M);
+    tempL_m = (int16_t)((int32_t)h_data_left->iEnvelope[i] & MASK_M);
     tempL_e = (int8_t)((int32_t)h_data_left->iEnvelope[i] & MASK_E);
 
     tempL_e -= NRG_EXP_OFFSET;
@@ -317,7 +317,7 @@ static void sbr_envelope_unmapping(
     FDK_divide_MantExp(tempL_m, tempL_e + 1, /*  2 * tempLeft */
                        tempRplus1_m, tempRplus1_e, &newR_m, &newR_e);
 
-    if (newR_m >= ((FIXP_SGL)MAXVAL_SGL - ROUNDING)) {
+    if (newR_m >= ((int16_t)MAXVAL_SGL - ROUNDING)) {
       newR_m >>= 1;
       newR_e += 1;
     }
@@ -326,11 +326,11 @@ static void sbr_envelope_unmapping(
     newL_e = tempR_e + newR_e;
 
     h_data_right->iEnvelope[i] =
-        ((FIXP_SGL)((int16_t)(FIXP_SGL)(newR_m + ROUNDING) & MASK_M)) +
-        (FIXP_SGL)((int16_t)(FIXP_SGL)(newR_e + NRG_EXP_OFFSET) & MASK_E);
+        ((int16_t)((int16_t)(int16_t)(newR_m + ROUNDING) & MASK_M)) +
+        (int16_t)((int16_t)(int16_t)(newR_e + NRG_EXP_OFFSET) & MASK_E);
     h_data_left->iEnvelope[i] =
-        ((FIXP_SGL)((int16_t)(FIXP_SGL)(newL_m + ROUNDING) & MASK_M)) +
-        (FIXP_SGL)((int16_t)(FIXP_SGL)(newL_e + NRG_EXP_OFFSET) & MASK_E);
+        ((int16_t)((int16_t)(int16_t)(newL_m + ROUNDING) & MASK_M)) +
+        (int16_t)((int16_t)(int16_t)(newL_e + NRG_EXP_OFFSET) & MASK_E);
   }
 
   /* 2. Dequantize and unmap coupled noise floor levels */
@@ -351,7 +351,7 @@ static void sbr_envelope_unmapping(
     FDK_divide_MantExp(FL2FXCONST_SGL(0.5f), tempL_e + 2, /*  2 * tempLeft */
                        tempRplus1_m, tempRplus1_e, &newR_m, &newR_e);
 
-    /* if (newR_m >= ((FIXP_SGL)MAXVAL_SGL - ROUNDING)) {
+    /* if (newR_m >= ((int16_t)MAXVAL_SGL - ROUNDING)) {
       newR_m >>= 1;
       newR_e += 1;
     } */
@@ -360,11 +360,11 @@ static void sbr_envelope_unmapping(
     newL_m = newR_m;
     newL_e = newR_e + tempR_e;
     h_data_right->sbrNoiseFloorLevel[i] =
-        ((FIXP_SGL)((int16_t)(FIXP_SGL)(newR_m + ROUNDING) & MASK_M)) +
-        (FIXP_SGL)((int16_t)(FIXP_SGL)(newR_e + NOISE_EXP_OFFSET) & MASK_E);
+        ((int16_t)((int16_t)(int16_t)(newR_m + ROUNDING) & MASK_M)) +
+        (int16_t)((int16_t)(int16_t)(newR_e + NOISE_EXP_OFFSET) & MASK_E);
     h_data_left->sbrNoiseFloorLevel[i] =
-        ((FIXP_SGL)((int16_t)(FIXP_SGL)(newL_m + ROUNDING) & MASK_M)) +
-        (FIXP_SGL)((int16_t)(FIXP_SGL)(newL_e + NOISE_EXP_OFFSET) & MASK_E);
+        ((int16_t)((int16_t)(int16_t)(newL_m + ROUNDING) & MASK_M)) +
+        (int16_t)((int16_t)(int16_t)(newL_e + NOISE_EXP_OFFSET) & MASK_E);
   }
 }
 
@@ -381,8 +381,8 @@ static void leanSbrConcealment(
     HANDLE_SBR_FRAME_DATA h_sbr_data,      /*!< pointer to current data */
     HANDLE_SBR_PREV_FRAME_DATA h_prev_data /*!< pointer to data of last frame */
 ) {
-  FIXP_SGL target; /* targeted level for sfb_nrg_prev during fade-down */
-  FIXP_SGL step;   /* speed of fade */
+  int16_t target; /* targeted level for sfb_nrg_prev during fade-down */
+  int16_t step;   /* speed of fade */
   int32_t i;
 
   int32_t currentStartPos =
@@ -413,11 +413,11 @@ static void leanSbrConcealment(
   h_sbr_data->domain_vec[0] = 1;
 
   if (h_sbr_data->coupling == COUPLING_BAL) {
-    target = (FIXP_SGL)SBR_ENERGY_PAN_OFFSET;
-    step = (FIXP_SGL)DECAY_COUPLING;
+    target = (int16_t)SBR_ENERGY_PAN_OFFSET;
+    step = (int16_t)DECAY_COUPLING;
   } else {
     target = FL2FXCONST_SGL(0.0f);
-    step = (FIXP_SGL)DECAY;
+    step = (int16_t)DECAY;
   }
   if (hHeaderData->bs_info.ampResolution == 0) {
     target <<= 1;
@@ -455,7 +455,7 @@ static void decodeEnvelope(
 ) {
   int32_t i;
   int32_t fFrameError = hHeaderData->frameErrorFlag;
-  FIXP_SGL tempSfbNrgPrev[MAX_FREQ_COEFFS];
+  int16_t tempSfbNrgPrev[MAX_FREQ_COEFFS];
 
   if (!fFrameError) {
     /*
@@ -508,7 +508,7 @@ static void decodeEnvelope(
           if (h_prev_data->coupling == COUPLING_BAL) {
             h_prev_data->sfb_nrg_prev[i] =
                 (otherChannel != NULL) ? otherChannel->sfb_nrg_prev[i]
-                                       : (FIXP_SGL)SBR_ENERGY_PAN_OFFSET;
+                                       : (int16_t)SBR_ENERGY_PAN_OFFSET;
           }
           /* Former L/R will be combined as the new Level-Channel */
           else if (h_sbr_data->coupling == COUPLING_LEVEL &&
@@ -517,13 +517,13 @@ static void decodeEnvelope(
                                             otherChannel->sfb_nrg_prev[i]) >>
                                            1;
           } else if (h_sbr_data->coupling == COUPLING_BAL) {
-            h_prev_data->sfb_nrg_prev[i] = (FIXP_SGL)SBR_ENERGY_PAN_OFFSET;
+            h_prev_data->sfb_nrg_prev[i] = (int16_t)SBR_ENERGY_PAN_OFFSET;
           }
         }
       }
     }
     FDKmemcpy(tempSfbNrgPrev, h_prev_data->sfb_nrg_prev,
-              MAX_FREQ_COEFFS * sizeof(FIXP_SGL));
+              MAX_FREQ_COEFFS * sizeof(int16_t));
 
     deltaToLinearPcmEnvelopeDecoding(hHeaderData, h_sbr_data, h_prev_data);
 
@@ -532,7 +532,7 @@ static void decodeEnvelope(
     if (fFrameError) {
       hHeaderData->frameErrorFlag = 1;
       FDKmemcpy(h_prev_data->sfb_nrg_prev, tempSfbNrgPrev,
-                MAX_FREQ_COEFFS * sizeof(FIXP_SGL));
+                MAX_FREQ_COEFFS * sizeof(int16_t));
       decodeEnvelope(hHeaderData, h_sbr_data, h_prev_data, otherChannel);
       return;
     }
@@ -552,10 +552,10 @@ static int32_t checkEnvelopeData(
     HANDLE_SBR_FRAME_DATA h_sbr_data,      /*!< pointer to current data */
     HANDLE_SBR_PREV_FRAME_DATA h_prev_data /*!< pointer to data of last frame */
 ) {
-  FIXP_SGL *iEnvelope = h_sbr_data->iEnvelope;
-  FIXP_SGL *sfb_nrg_prev = h_prev_data->sfb_nrg_prev;
+  int16_t *iEnvelope = h_sbr_data->iEnvelope;
+  int16_t *sfb_nrg_prev = h_prev_data->sfb_nrg_prev;
   int32_t i = 0, errorFlag = 0;
-  FIXP_SGL sbr_max_energy = (h_sbr_data->ampResolutionCurrentFrame == 1)
+  int16_t sbr_max_energy = (h_sbr_data->ampResolutionCurrentFrame == 1)
                                 ? SBR_MAX_ENERGY
                                 : (SBR_MAX_ENERGY << 1);
 
@@ -603,9 +603,9 @@ static void limitNoiseLevels(
   accumulation of the delta-coded noise levels.
 */
 #define lowerLimit \
-  ((FIXP_SGL)0) /* lowerLimit actually refers to the _highest_ noise energy */
+  ((int16_t)0) /* lowerLimit actually refers to the _highest_ noise energy */
 #define upperLimit \
-  ((FIXP_SGL)35) /* upperLimit actually refers to the _lowest_ noise energy */
+  ((int16_t)35) /* upperLimit actually refers to the _lowest_ noise energy */
 
   /*
     Range check for current noise levels
@@ -633,7 +633,7 @@ static void timeCompensateFirstEnvelope(
   int32_t estimatedStartPos =
       fMax(0, h_prev_data->stopPos - hHeaderData->numberTimeSlots);
   int32_t refLen, newLen, shift;
-  FIXP_SGL deltaExp;
+  int16_t deltaExp;
 
   /* Original length of first envelope according to bitstream */
   refLen = pFrameInfo->borders[1] - pFrameInfo->borders[0];
@@ -689,7 +689,7 @@ static void timeCompensateFirstEnvelope(
 static void requantizeEnvelopeData(HANDLE_SBR_FRAME_DATA h_sbr_data,
                                    int32_t ampResolution) {
   int32_t i;
-  FIXP_SGL mantissa;
+  int16_t mantissa;
   int32_t ampShift = 1 - ampResolution;
   int32_t exponent;
 
@@ -697,7 +697,7 @@ static void requantizeEnvelopeData(HANDLE_SBR_FRAME_DATA h_sbr_data,
      the initialization of this array has to be adapted!
   */
 #if ENV_EXP_FRACT
-  static const FIXP_SGL pow2[ENV_EXP_FRACT] = {
+  static const int16_t pow2[ENV_EXP_FRACT] = {
       FL2FXCONST_SGL(0.5f * pow(2.0f, pow(0.5f, 1))), /* 0.7071 */
       FL2FXCONST_SGL(0.5f * pow(2.0f, pow(0.5f, 2))), /* 0.5946 */
       FL2FXCONST_SGL(0.5f * pow(2.0f, pow(0.5f, 3))),
@@ -728,7 +728,7 @@ static void requantizeEnvelopeData(HANDLE_SBR_FRAME_DATA h_sbr_data,
       if (exponent & mask) {
         /* The current bit of the exponent is set,
            multiply mantissa with the corresponding factor: */
-        mantissa = (FIXP_SGL)((mantissa * pow2[bit]) << 1);
+        mantissa = (int16_t)((mantissa * pow2[bit]) << 1);
       }
       /* Advance to next bit */
       mask = mask << 1;
@@ -755,8 +755,8 @@ static void requantizeEnvelopeData(HANDLE_SBR_FRAME_DATA h_sbr_data,
 
     /* Combine mantissa and exponent and write back the result */
     h_sbr_data->iEnvelope[i] =
-        ((FIXP_SGL)((int16_t)(FIXP_SGL)mantissa & MASK_M)) +
-        (FIXP_SGL)((int16_t)(FIXP_SGL)exponent & MASK_E);
+        ((int16_t)((int16_t)(int16_t)mantissa & MASK_M)) +
+        (int16_t)((int16_t)(int16_t)exponent & MASK_E);
   }
 }
 
@@ -770,8 +770,8 @@ static void deltaToLinearPcmEnvelopeDecoding(
 {
   int32_t i, domain, no_of_bands, band, freqRes;
 
-  FIXP_SGL *sfb_nrg_prev = h_prev_data->sfb_nrg_prev;
-  FIXP_SGL *ptr_nrg = h_sbr_data->iEnvelope;
+  int16_t *sfb_nrg_prev = h_prev_data->sfb_nrg_prev;
+  int16_t *ptr_nrg = h_sbr_data->iEnvelope;
 
   int32_t offset =
       2 * hHeaderData->freqBandData.nSfb[0] - hHeaderData->freqBandData.nSfb[1];
@@ -820,7 +820,7 @@ static void decodeNoiseFloorlevels(
   /* Decode first noise envelope */
 
   if (h_sbr_data->domain_vec_noise[0] == 0) {
-    FIXP_SGL noiseLevel = h_sbr_data->sbrNoiseFloorLevel[0];
+    int16_t noiseLevel = h_sbr_data->sbrNoiseFloorLevel[0];
     for (i = 1; i < nNfb; i++) {
       noiseLevel += h_sbr_data->sbrNoiseFloorLevel[i];
       h_sbr_data->sbrNoiseFloorLevel[i] = noiseLevel;
@@ -836,7 +836,7 @@ static void decodeNoiseFloorlevels(
 
   if (nNoiseFloorEnvelopes > 1) {
     if (h_sbr_data->domain_vec_noise[1] == 0) {
-      FIXP_SGL noiseLevel = h_sbr_data->sbrNoiseFloorLevel[nNfb];
+      int16_t noiseLevel = h_sbr_data->sbrNoiseFloorLevel[nNfb];
       for (i = nNfb + 1; i < 2 * nNfb; i++) {
         noiseLevel += h_sbr_data->sbrNoiseFloorLevel[i];
         h_sbr_data->sbrNoiseFloorLevel[i] = noiseLevel;
@@ -865,7 +865,7 @@ static void decodeNoiseFloorlevels(
       /* +1 to compensate for a mantissa of 0.5 instead of 1.0 */
 
       h_sbr_data->sbrNoiseFloorLevel[i] =
-          (FIXP_SGL)(((int32_t)FL2FXCONST_SGL(0.5f)) + /* mantissa */
+          (int16_t)(((int32_t)FL2FXCONST_SGL(0.5f)) + /* mantissa */
                      (nf_e & MASK_E));              /* exponent */
     }
   }

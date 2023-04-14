@@ -132,13 +132,13 @@ extern const FIXP_LPC fdk_dec_dico_lsf_abs_8b[16 * 256];
 
 /* ACELP tables */
 #define SF_QUA_GAIN7B 4
-extern const FIXP_SGL fdk_t_qua_gain7b[128 * 2];
-extern const FIXP_SGL lsp_interpol_factor[2][NB_SUBFR];
+extern const int16_t fdk_t_qua_gain7b[128 * 2];
+extern const int16_t lsp_interpol_factor[2][NB_SUBFR];
 
 /* For bass post filter */
 #define L_FILT 12 /* Delay of up-sampling filter                */
 
-extern const FIXP_SGL fdk_dec_filt_lp[1 + L_FILT];
+extern const int16_t fdk_dec_filt_lp[1 + L_FILT];
 
 extern const FIXP_WTB FacWindowSynth128[128];
 extern const FIXP_WTB FacWindowZir128[128];

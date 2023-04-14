@@ -189,7 +189,7 @@ void nearest_neighbor_2D8(FIXP_ZF x[8], int32_t y[8]) {
   */
   if (sum % 4) {
     /* find j = arg max_i | xi -yi| */
-    em = (FIXP_SGL)0;
+    em = (int16_t)0;
     j = 0;
     for (i = 0; i < 8; i++) {
       /* compute ei = xi-yi */
@@ -536,7 +536,7 @@ static int32_t RE8_dec(int32_t n, int32_t I, int32_t *k, int32_t *y) {
  */
 static void lsf_weight_2st(FIXP_LPC *lsfq, int32_t *xq, int32_t nk_mode) {
   FIXP_LPC d[M_LP_FILTER_ORDER + 1];
-  FIXP_SGL factor;
+  int16_t factor;
   int32_t w; /* inverse weight factor */
   int32_t i;
 
@@ -764,7 +764,7 @@ int32_t CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *pOutput, int32_t nk_mo
 int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
               FIXP_LPC lpc4_lsf[M_LP_FILTER_ORDER],
               FIXP_LPC lsf_adaptive_mean_cand[M_LP_FILTER_ORDER],
-              FIXP_SGL pStability[], uint8_t *mod, int32_t first_lpd_flag,
+              int16_t pStability[], uint8_t *mod, int32_t first_lpd_flag,
               int32_t last_lpc_lost, int32_t last_frame_ok) {
   int32_t i, k, err;
   int32_t mode_lpc_bin = 0; /* mode_lpc bitstream representation */
@@ -979,7 +979,7 @@ int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
 
         /* sum = tmp * 2^(LSF_SCALE*2 + 4) */
         for (j = 0; j < M_LP_FILTER_ORDER; j++) {
-          tmp += fPow2Div2((FIXP_SGL)(lsf_curr[j] - lsf_prev[j])) >> 3;
+          tmp += fPow2Div2((int16_t)(lsf_curr[j] - lsf_prev[j])) >> 3;
         }
 
         /* tmp = (float)(FL2FXCONST_DBL(1.25f) - fMult(tmp,
@@ -998,7 +998,7 @@ int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
         k = i;
       } else {
         /* Mark stability value as undefined. */
-        pStability[i] = (FIXP_SGL)-1;
+        pStability[i] = (int16_t)-1;
       }
     }
   }
@@ -1061,10 +1061,10 @@ void CLpc_Conceal(FIXP_LPC lsp[][M_LP_FILTER_ORDER],
          FL2FXCONST_LPC(0.1f)), lsf_adaptive_mean[i])); */
 
       FIXP_LPC lsf_mean = FX_DBL2FX_LPC(
-          fMult((FIXP_SGL)(BETA + (FIXP_SGL)(j * (int32_t)FL2FXCONST_SGL(0.1f))),
-                (FIXP_SGL)fdk_dec_lsf_init[i]) +
+          fMult((int16_t)(BETA + (int16_t)(j * (int32_t)FL2FXCONST_SGL(0.1f))),
+                (int16_t)fdk_dec_lsf_init[i]) +
           fMult(
-              (FIXP_SGL)(ONE_BETA - (FIXP_SGL)(j * (int32_t)FL2FXCONST_SGL(0.1f))),
+              (int16_t)(ONE_BETA - (int16_t)(j * (int32_t)FL2FXCONST_SGL(0.1f))),
               lsf_adaptive_mean[i]));
 
       lsp[j][i] = FX_DBL2FX_LPC(fMult(BFI_FAC, lsp[j - 1][i]) +

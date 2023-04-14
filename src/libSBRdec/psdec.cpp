@@ -300,7 +300,7 @@ void initSlotBasedRotation(HANDLE_PS_DEC h_ps_d, /*!< pointer to the module stat
 	int32_t bin = 0;
 	int32_t noIidSteps;
 
-	FIXP_SGL invL;
+	int16_t invL;
 	int32_t  ScaleL, ScaleR;
 	int32_t  Alpha, Beta;
 	int32_t  h11r, h12r, h21r, h22r;

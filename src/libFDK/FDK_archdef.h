@@ -242,7 +242,7 @@ amm-info@iis.fraunhofer.de
 
 #endif /* Architecture switches */
 
-#define FIXP_STB FIXP_SGL /* STB sinus Tab used in transformation */
+#define FIXP_STB int16_t /* STB sinus Tab used in transformation */
 #define FIXP_STP FIXP_SPK
 
 
@@ -252,9 +252,9 @@ amm-info@iis.fraunhofer.de
     { FX_DBL2FXCONST_SGL(cos), FX_DBL2FXCONST_SGL(sin) } \
   }
 
-#define FIXP_WTB FIXP_SGL /* single FIXP_SGL values */
+#define FIXP_WTB int16_t /* single int16_t values */
 #define FX_DBL2FX_WTB(x) FX_DBL2FX_SGL(x)
-#define FIXP_WTP FIXP_SPK /* packed FIXP_SGL values */
+#define FIXP_WTP FIXP_SPK /* packed int16_t values */
 
 
 #define WTCP(a, b)     \

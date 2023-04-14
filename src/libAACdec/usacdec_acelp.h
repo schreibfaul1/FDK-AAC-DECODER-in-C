@@ -114,11 +114,11 @@ amm-info@iis.fraunhofer.de
 typedef struct {
   int32_t old_exc_mem[PIT_MAX_MAX + L_INTERPOL];
   int32_t old_syn_mem[M_LP_FILTER_ORDER]; /* synthesis filter states */
-  FIXP_SGL A[M_LP_FILTER_ORDER];
+  int16_t A[M_LP_FILTER_ORDER];
   int32_t A_exp;
   int32_t gc_threshold;
   int32_t de_emph_mem;
-  FIXP_SGL past_gpit;
+  int16_t past_gpit;
   int32_t past_gcode;
   uint16_t old_T0;
   uint8_t old_T0_frac;
@@ -208,7 +208,7 @@ void Acelp_PostProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch
 void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, int32_t i_offset,
                       const FIXP_LPC lsp_old[M_LP_FILTER_ORDER],
                       const FIXP_LPC lsp_new[M_LP_FILTER_ORDER],
-                      FIXP_SGL stab_fac, CAcelpChannelData *acelpData,
+                      int16_t stab_fac, CAcelpChannelData *acelpData,
                       int32_t numLostSubframes, int32_t lastLpcLost, int32_t frameCnt,
                       int32_t synth[], int32_t pT[], int32_t *pit_gain,
                       int32_t coreCoderFrameLength);
@@ -269,7 +269,7 @@ int32_t *CLpd_ACELP_GetFreeExcMem(CAcelpStaticMem *acelp_mem, int32_t length);
 void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, int16_t *pitch,
                        const FIXP_LPC lsp_old[M_LP_FILTER_ORDER],
                        const FIXP_LPC lsp_new[M_LP_FILTER_ORDER],
-                       const FIXP_SGL stab_fac, int32_t numLostSubframes,
+                       const int16_t stab_fac, int32_t numLostSubframes,
                        int32_t synth[], int32_t coreCoderFrameLength,
                        uint8_t last_tcx_noise_factor);
 

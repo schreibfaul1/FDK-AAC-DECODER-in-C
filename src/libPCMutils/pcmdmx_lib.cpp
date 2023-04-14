@@ -118,8 +118,8 @@ amm-info@iis.fraunhofer.de
 #define OUT 1
 
 /* Type definitions: */
-#define FIXP_DMX FIXP_SGL
-#define FX_DMX2FX_DBL(x) FX_SGL2FX_DBL((FIXP_SGL)(x))
+#define FIXP_DMX int16_t
+#define FX_DMX2FX_DBL(x) FX_SGL2FX_DBL((int16_t)(x))
 #define FX_DBL2FX_DMX(x) FX_DBL2FX_SGL(x)
 #define FL2FXCONST_DMX(x) FL2FXCONST_SGL(x)
 #define MAXVAL_DMX MAXVAL_SGL

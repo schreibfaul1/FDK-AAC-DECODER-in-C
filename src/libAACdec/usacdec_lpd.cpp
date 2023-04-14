@@ -123,7 +123,7 @@ amm-info@iis.fraunhofer.de
 #include "../libArithCoding/ac_arith_coder.h"
 
 void filtLP(const int32_t *syn, int32_t *syn_out, int32_t *noise,
-            const FIXP_SGL *filt, const int32_t aacOutDataHeadroom, int32_t stop,
+            const int16_t *filt, const int32_t aacOutDataHeadroom, int32_t stop,
             int32_t len) {
   int32_t i, j;
   int32_t tmp;
@@ -335,7 +335,7 @@ void bass_pf_1sf_delay(
       s1 = CntLeadingZeros(gain) - 1;
       s1 -= 16; /* Leading bits for SGL */
 
-      FIXP_SGL gainSGL = FX_DBL2FX_SGL(gain << 16);
+      int16_t gainSGL = FX_DBL2FX_SGL(gain << 16);
 
       gainSGL = gainSGL << s1;
 
@@ -1625,7 +1625,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
 
   if (!frameOk) {
     int32_t old_tcx_gain;
-    FIXP_SGL old_stab;
+    int16_t old_stab;
     int8_t old_tcx_gain_e;
     int32_t nLostSf;
 
@@ -1832,7 +1832,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
 
       } else {
         assert(pAacDecoderChannelInfo->data.usac.aStability[k] >=
-                   (FIXP_SGL)0);
+                   (int16_t)0);
         CLpd_AcelpDecode(&pAacDecoderStaticChannelInfo->acelp, i_offset,
                          pAacDecoderChannelInfo->data.usac.lsp_coeff[k],
                          pAacDecoderChannelInfo->data.usac.lsp_coeff[k + 1],
@@ -1945,7 +1945,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
   if (frameOk) {
     /* assume data was ok => store for concealment */
     assert(pAacDecoderChannelInfo->data.usac.aStability[last_k] >=
-               (FIXP_SGL)0);
+               (int16_t)0);
     pAacDecoderStaticChannelInfo->oldStability =
         pAacDecoderChannelInfo->data.usac.aStability[last_k];
     FDKmemcpy(pAacDecoderStaticChannelInfo->lsf_adaptive_mean,

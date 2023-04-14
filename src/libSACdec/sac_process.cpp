@@ -124,7 +124,7 @@ amm-info@iis.fraunhofer.de
  *
  * \return Interpolated parameter value.
  */
-static inline int32_t interpolateParameter(const FIXP_SGL alpha, const int32_t a,
+static inline int32_t interpolateParameter(const int16_t alpha, const int32_t a,
                                          const int32_t b) {
   return (b - fMult(alpha, b) + fMult(alpha, a));
 }
@@ -334,15 +334,15 @@ SACDEC_ERROR SpatialDecCreateX(spatialDec *self, int32_t **hybInputReal,
   return err;
 }
 
-static void M2ParamToKernelMult(FIXP_SGL * pKernel,
+static void M2ParamToKernelMult(int16_t * pKernel,
                                 int32_t * Mparam,
                                 int32_t * MparamPrev,
-                                int32_t * pWidth, FIXP_SGL alpha__FDK,
+                                int32_t * pWidth, int16_t alpha__FDK,
                                 int32_t nBands) {
   int32_t pb;
 
   for (pb = 0; pb < nBands; pb++) {
-    FIXP_SGL tmp = FX_DBL2FX_SGL(
+    int16_t tmp = FX_DBL2FX_SGL(
         interpolateParameter(alpha__FDK, Mparam[pb], MparamPrev[pb]));
 
     int32_t i = pWidth[pb];
@@ -411,7 +411,7 @@ SACDEC_ERROR SpatialDecApplyM1_CreateW_Mode212(
 }
 
 SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, int32_t ps,
-                                       const FIXP_SGL alpha, int32_t **wReal,
+                                       const int16_t alpha, int32_t **wReal,
                                        int32_t **wImag,
                                        int32_t **hybOutputRealDry,
                                        int32_t **hybOutputImagDry) {
@@ -469,7 +469,7 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212(spatialDec *self, int32_t ps,
 }
 
 SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
-    spatialDec *self, int32_t ps, const FIXP_SGL alpha, int32_t **wReal,
+    spatialDec *self, int32_t ps, const int16_t alpha, int32_t **wReal,
     int32_t **wImag, int32_t **hybOutputRealDry,
     int32_t **hybOutputImagDry) {
   SACDEC_ERROR err = MPS_OK;
@@ -549,8 +549,8 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
     for (; pb < pb_max; pb++) {
       int32_t s;
       int32_t maxVal;
-      FIXP_SGL mReal1;
-      FIXP_SGL mReal0, mImag0;
+      int16_t mReal1;
+      int16_t mReal0, mImag0;
       int32_t iReal0, iImag0, iReal1;
 
       iReal0 = interpolateParameter(alpha, MReal0[pb], MRealPrev0[pb]);
@@ -590,7 +590,7 @@ SACDEC_ERROR SpatialDecApplyM2_Mode212_ResidualsPlusPhaseCoding(
   return err;
 }
 
-SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, int32_t ps, const FIXP_SGL alpha,
+SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, int32_t ps, const int16_t alpha,
                                int32_t **wReal, int32_t **wImag,
                                int32_t **hybOutputRealDry,
                                int32_t **hybOutputImagDry,
@@ -609,7 +609,7 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, int32_t ps, const FIXP_SGL alph
     int32_t * pWReal, * pWImag, * pHybOutRealDry,
         * pHybOutImagDry, * pHybOutRealWet,
         * pHybOutImagWet;
-    C_ALLOC_SCRATCH_START(pKernel, FIXP_SGL, MAX_HYBRID_BANDS);
+    C_ALLOC_SCRATCH_START(pKernel, int16_t, MAX_HYBRID_BANDS);
 
     /* The wet signal is added to the dry signal directly in applyM2 if GES and
      * STP are disabled */
@@ -871,7 +871,7 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, int32_t ps, const FIXP_SGL alph
       }
     }
 
-    C_ALLOC_SCRATCH_END(pKernel, FIXP_SGL, MAX_HYBRID_BANDS);
+    C_ALLOC_SCRATCH_END(pKernel, int16_t, MAX_HYBRID_BANDS);
   }
 
   return err;
@@ -989,7 +989,7 @@ void SpatialDecBufferMatrices(spatialDec *self) {
 
 /* For better precision, PI (pi_x2) is already doubled */
 static int32_t interp_angle__FDK(int32_t angle1, int32_t angle2,
-                                  FIXP_SGL alpha, int32_t pi_x2) {
+                                  int16_t alpha, int32_t pi_x2) {
   if (angle2 - angle1 > (pi_x2 >> 1)) angle2 -= pi_x2;
 
   if (angle1 - angle2 > (pi_x2 >> 1)) angle1 -= pi_x2;
@@ -1000,7 +1000,7 @@ static int32_t interp_angle__FDK(int32_t angle1, int32_t angle2,
 /*
  *
  */
-void SpatialDecApplyPhase(spatialDec *self, FIXP_SGL alpha__FDK,
+void SpatialDecApplyPhase(spatialDec *self, int16_t alpha__FDK,
                           int32_t lastSlotOfParamSet) {
   int32_t pb, qs;
   int32_t ppb[MAX_PARAMETER_BANDS *

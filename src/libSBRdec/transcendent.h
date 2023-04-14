@@ -122,7 +122,7 @@ amm-info@iis.fraunhofer.de
   \return   ld(a/b) / 8
 */
 /************************************************************************/
-static inline FIXP_SGL FDK_getNumOctavesDiv8(int32_t a, /*!< lower band */
+static inline int16_t FDK_getNumOctavesDiv8(int32_t a, /*!< lower band */
                                              int32_t b) /*!< upper band */
 {
   return ((int16_t)((int32_t)(CalcLdInt(b) - CalcLdInt(a)) >> (FRACT_BITS - 3)));
@@ -136,11 +136,11 @@ static inline FIXP_SGL FDK_getNumOctavesDiv8(int32_t a, /*!< lower band */
   The base for exponents is 2.  Example:  \f$  a = a\_m * 2^{a\_e}  \f$<br>
 */
 /************************************************************************/
-inline void FDK_add_MantExp(FIXP_SGL a_m, /*!< Mantissa of 1st operand a */
+inline void FDK_add_MantExp(int16_t a_m, /*!< Mantissa of 1st operand a */
                             int8_t a_e,    /*!< Exponent of 1st operand a */
-                            FIXP_SGL b_m, /*!< Mantissa of 2nd operand b */
+                            int16_t b_m, /*!< Mantissa of 2nd operand b */
                             int8_t b_e,    /*!< Exponent of 2nd operand b */
-                            FIXP_SGL *ptrSum_m, /*!< Mantissa of result */
+                            int16_t *ptrSum_m, /*!< Mantissa of result */
                             int8_t *ptrSum_e)    /*!< Exponent of result */
 {
   int32_t accu;
@@ -225,17 +225,17 @@ inline void FDK_add_MantExp(int32_t a,       /*!< Mantissa of 1st operand a */
 */
 /************************************************************************/
 static inline void FDK_divide_MantExp(
-    FIXP_SGL a_m,          /*!< Mantissa of dividend a */
+    int16_t a_m,          /*!< Mantissa of dividend a */
     int8_t a_e,             /*!< Exponent of dividend a */
-    FIXP_SGL b_m,          /*!< Mantissa of divisor b */
+    int16_t b_m,          /*!< Mantissa of divisor b */
     int8_t b_e,             /*!< Exponent of divisor b */
-    FIXP_SGL *ptrResult_m, /*!< Mantissa of quotient a/b */
+    int16_t *ptrResult_m, /*!< Mantissa of quotient a/b */
     int8_t *ptrResult_e)    /*!< Exponent of quotient a/b */
 
 {
   int32_t preShift, postShift, index, shift;
   int32_t ratio_m;
-  FIXP_SGL bInv_m = FL2FXCONST_SGL(0.0f);
+  int16_t bInv_m = FL2FXCONST_SGL(0.0f);
 
   preShift = CntLeadingZeros(FX_SGL2FX_DBL(b_m));
 
@@ -291,7 +291,7 @@ static inline void FDK_divide_MantExp(
 {
   int32_t preShift, postShift, index, shift;
   int32_t ratio_m;
-  FIXP_SGL bInv_m = FL2FXCONST_SGL(0.0f);
+  int16_t bInv_m = FL2FXCONST_SGL(0.0f);
 
   preShift = CntLeadingZeros(b_m);
 

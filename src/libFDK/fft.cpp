@@ -116,7 +116,7 @@ amm-info@iis.fraunhofer.de
   }
 #define SUMDIFF_PIFOURTH16(diff, sum, a, b)       \
   {                                               \
-    FIXP_SGL wa, wb;                              \
+    int16_t wa, wb;                              \
     wa = FX_DBL2FX_SGL(fMultDiv2(a, W_PiFOURTH)); \
     wb = FX_DBL2FX_SGL(fMultDiv2(b, W_PiFOURTH)); \
     diff = wb - wa;                               \
@@ -305,7 +305,7 @@ static FDK_FORCEINLINE void fft5(int32_t * pDat) {
  *
  * \return   void
  */
-static void fft10(int32_t *x)  // int32_t *re, int32_t *im, FIXP_SGL s)
+static void fft10(int32_t *x)  // int32_t *re, int32_t *im, int16_t s)
 {
   int32_t t;
   int32_t x0, x1, x2, x3, x4;

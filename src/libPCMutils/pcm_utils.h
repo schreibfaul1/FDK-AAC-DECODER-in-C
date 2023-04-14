@@ -112,7 +112,7 @@ void FDK_interleave(const int32_t * pIn, int32_t * pOut,
 void FDK_interleave(const int32_t * pIn, int16_t * pOut,
                     const uint32_t channels, const uint32_t frameSize,
                     const uint32_t length);
-void FDK_interleave(const FIXP_SGL * pIn, int16_t * pOut,
+void FDK_interleave(const int16_t * pIn, int16_t * pOut,
                     const uint32_t channels, const uint32_t frameSize,
                     const uint32_t length);
 

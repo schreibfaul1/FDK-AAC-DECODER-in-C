@@ -217,7 +217,7 @@ static inline int32_t SpatialDecGetQmfBand(int32_t paramBand, const uint8_t *tab
     #define FX_DBL2FX_DUCK_GAIN
     #define FL2FXCONST_DUCK FL2FXCONST_DBL
 #else
-    #define FIXP_DUCK_GAIN      FIXP_SGL
+    #define FIXP_DUCK_GAIN      int16_t
     #define FX_DBL2FX_DUCK_GAIN FX_DBL2FX_SGL
     #define FL2FXCONST_DUCK     FL2FXCONST_SGL
 #endif

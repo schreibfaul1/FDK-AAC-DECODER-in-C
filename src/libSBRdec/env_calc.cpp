@@ -211,7 +211,7 @@ static void adjustTimeSlotLC(int32_t *ptrReal, ENV_CALC_NRGS *nrgs,
 static void adjustTimeSlotHQ_GainAndNoise(
     int32_t *ptrReal, int32_t *ptrImag,
     HANDLE_SBR_CALCULATE_ENVELOPE h_sbr_cal_env, ENV_CALC_NRGS *nrgs,
-    int32_t lowSubbands, int32_t noSubbands, int32_t scale_change, FIXP_SGL smooth_ratio,
+    int32_t lowSubbands, int32_t noSubbands, int32_t scale_change, int16_t smooth_ratio,
     int32_t noNoiseFlag, int32_t filtBufferNoiseShift);
 /**
  * \brief Variant of adjustTimeSlotHQ() which only adds the additional harmonics
@@ -225,7 +225,7 @@ static void adjustTimeSlotHQ(int32_t *ptrReal, int32_t *ptrImag,
                              HANDLE_SBR_CALCULATE_ENVELOPE h_sbr_cal_env,
                              ENV_CALC_NRGS *nrgs, int32_t lowSubbands,
                              int32_t noSubbands, int32_t scale_change,
-                             FIXP_SGL smooth_ratio, int32_t noNoiseFlag,
+                             int16_t smooth_ratio, int32_t noNoiseFlag,
                              int32_t filtBufferNoiseShift);
 
 /*!
@@ -892,7 +892,7 @@ void calculateSbrEnvelope(
   int32_t pvc_mode = pPvcDynamicData->pvc_mode;
   int32_t first_start =
       ((pvc_mode > 0) ? bordersPvc[0] : borders[0]) * hHeaderData->timeStep;
-  FIXP_SGL *noiseLevels = hFrameData->sbrNoiseFloorLevel;
+  int16_t *noiseLevels = hFrameData->sbrNoiseFloorLevel;
   HANDLE_FREQ_BAND_DATA hFreq = &hHeaderData->freqBandData;
   uint8_t **pFreqBandTable = hFreq->freqBandTable;
   uint8_t *pFreqBandTableNoise = hFreq->freqBandTableNoise;
@@ -921,7 +921,7 @@ void calculateSbrEnvelope(
 
   uint8_t smooth_length = 0;
 
-  FIXP_SGL *pIenv = hFrameData->iEnvelope;
+  int16_t *pIenv = hFrameData->iEnvelope;
 
   C_ALLOC_SCRATCH_START(useAliasReduction, uint8_t, 64)
 
@@ -1175,10 +1175,10 @@ void calculateSbrEnvelope(
           &pFreqBandTableNoise[1]; /*! Upper limit of the current noise floor
                                       band. */
 
-      FIXP_SGL *pNoiseLevels = noiseLevels;
+      int16_t *pNoiseLevels = noiseLevels;
 
       int32_t tmpNoise =
-          FX_SGL2FX_DBL((FIXP_SGL)((int32_t)(*pNoiseLevels) & MASK_M));
+          FX_SGL2FX_DBL((int16_t)((int32_t)(*pNoiseLevels) & MASK_M));
       int8_t tmpNoise_e =
           (uint8_t)((int32_t)(*pNoiseLevels++) & MASK_E) - NOISE_EXP_OFFSET;
 
@@ -1201,7 +1201,7 @@ void calculateSbrEnvelope(
 
             if (k >= *pUiNoise) {
               tmpNoise =
-                  FX_SGL2FX_DBL((FIXP_SGL)((int32_t)(*pNoiseLevels) & MASK_M));
+                  FX_SGL2FX_DBL((int16_t)((int32_t)(*pNoiseLevels) & MASK_M));
               tmpNoise_e =
                   (int8_t)((int32_t)(*pNoiseLevels++) & MASK_E) - NOISE_EXP_OFFSET;
 
@@ -1223,7 +1223,7 @@ void calculateSbrEnvelope(
         }
       } else {
         for (j = 0; j < noSubFrameBands[freq_res]; j++) {
-          int32_t refNrg = FX_SGL2FX_DBL((FIXP_SGL)((int32_t)(*pIenv) & MASK_M));
+          int32_t refNrg = FX_SGL2FX_DBL((int16_t)((int32_t)(*pIenv) & MASK_M));
           int8_t refNrg_e = (int8_t)((int32_t)(*pIenv) & MASK_E) - NRG_EXP_OFFSET;
 
           uint8_t sinePresentFlag = 0;
@@ -1238,7 +1238,7 @@ void calculateSbrEnvelope(
           for (k = li; k < ui; k++) {
             if (k >= *pUiNoise) {
               tmpNoise =
-                  FX_SGL2FX_DBL((FIXP_SGL)((int32_t)(*pNoiseLevels) & MASK_M));
+                  FX_SGL2FX_DBL((int16_t)((int32_t)(*pNoiseLevels) & MASK_M));
               tmpNoise_e =
                   (int8_t)((int32_t)(*pNoiseLevels++) & MASK_E) - NOISE_EXP_OFFSET;
 
@@ -1415,7 +1415,7 @@ void calculateSbrEnvelope(
     /* assembleHfSignals() */
     {
       int32_t scale_change, sc_change;
-      FIXP_SGL smooth_ratio;
+      int16_t smooth_ratio;
       int32_t filtBufferNoiseShift = 0;
 
       /* Initialize smoothing buffers with the first valid values */
@@ -1722,7 +1722,7 @@ void calculateSbrEnvelope(
                 hFreq->freqBandTableNoise, sizeof(hFreq->freqBandTableNoise));
 
       FDKmemcpy(h_sbr_cal_env->prevSbrNoiseFloorLevel, noiseLevels,
-                MAX_NOISE_COEFFS * sizeof(FIXP_SGL));
+                MAX_NOISE_COEFFS * sizeof(int16_t));
     }
   }
 
@@ -1993,7 +1993,7 @@ static void calcNrgPerSubband(
     int32_t *nrgEst,            /*!< resulting Energy (0..1) */
     int8_t *nrgEst_e)             /*!< Exponent of resulting Energy */
 {
-  FIXP_SGL invWidth;
+  int16_t invWidth;
   int8_t preShift;
   int8_t shift;
   int32_t sum;
@@ -2121,7 +2121,7 @@ static void calcNrgPerSfb(
     int32_t *nrgEst,            /*!< resulting Energy (0..1) */
     int8_t *nrgEst_e)             /*!< Exponent of resulting Energy */
 {
-  FIXP_SGL invWidth;
+  int16_t invWidth;
   int32_t temp;
   int8_t preShift;
   int8_t shift, sum_e;
@@ -2514,8 +2514,8 @@ static void adjustTimeSlotLC(
   const int32_t max_val = MAX_VAL_NRG_HEADROOM >> scale_change;
   const int32_t min_val = -max_val;
 
-#define C1 ((FIXP_SGL)FL2FXCONST_SGL(2.f * 0.00815f))
-#define C1_CLDFB ((FIXP_SGL)FL2FXCONST_SGL(2.f * 0.16773f))
+#define C1 ((int16_t)FL2FXCONST_SGL(2.f * 0.00815f))
+#define C1_CLDFB ((int16_t)FL2FXCONST_SGL(2.f * 0.16773f))
 
   /*
     First pass for k=0 pulled out of the loop:
@@ -2681,7 +2681,7 @@ static void adjustTimeSlotHQ_GainAndNoise(
     int32_t lowSubband, /*!< Lowest QMF-channel in the currently used SBR range. */
     int32_t noSubbands, /*!< Number of QMF subbands */
     int32_t scale_change,         /*!< Number of bits to shift adjusted samples */
-    FIXP_SGL smooth_ratio,    /*!< Impact of last envelope */
+    int16_t smooth_ratio,    /*!< Impact of last envelope */
     int32_t noNoiseFlag,          /*!< Start index to random number array */
     int32_t filtBufferNoiseShift) /*!< Shift factor of filtBufferNoise */
 {
@@ -2701,8 +2701,8 @@ static void adjustTimeSlotHQ_GainAndNoise(
   int32_t signalReal, signalImag;
   int32_t noiseReal, noiseImag;
   int32_t smoothedGain, smoothedNoise;
-  FIXP_SGL direct_ratio =
-      /*FL2FXCONST_SGL(1.0f) */ (FIXP_SGL)MAXVAL_SGL - smooth_ratio;
+  int16_t direct_ratio =
+      /*FL2FXCONST_SGL(1.0f) */ (int16_t)MAXVAL_SGL - smooth_ratio;
   int32_t index = *ptrPhaseIndex;
   int32_t shift;
   int32_t max_val_noise = 0, min_val_noise = 0;
@@ -2854,7 +2854,7 @@ static void adjustTimeSlotHQ(
     int32_t lowSubband, /*!< Lowest QMF-channel in the currently used SBR range. */
     int32_t noSubbands, /*!< Number of QMF subbands */
     int32_t scale_change,         /*!< Number of bits to shift adjusted samples */
-    FIXP_SGL smooth_ratio,    /*!< Impact of last envelope */
+    int16_t smooth_ratio,    /*!< Impact of last envelope */
     int32_t noNoiseFlag,          /*!< Start index to random number array */
     int32_t filtBufferNoiseShift) /*!< Shift factor of filtBufferNoise */
 {
@@ -2876,8 +2876,8 @@ static void adjustTimeSlotHQ(
   int32_t signalReal, signalImag;
   int32_t noiseReal, noiseImag;
   int32_t smoothedGain, smoothedNoise;
-  FIXP_SGL direct_ratio =
-      /*FL2FXCONST_SGL(1.0f) */ (FIXP_SGL)MAXVAL_SGL - smooth_ratio;
+  int16_t direct_ratio =
+      /*FL2FXCONST_SGL(1.0f) */ (int16_t)MAXVAL_SGL - smooth_ratio;
   int32_t index = *ptrPhaseIndex;
   uint8_t harmIndex = *ptrHarmIndex;
   int32_t freqInvFlag = (lowSubband & 1);

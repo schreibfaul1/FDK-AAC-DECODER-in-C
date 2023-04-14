@@ -169,17 +169,17 @@ values. Return this value minus 1. Return 0 if operand==0.
 *****************************************************************************/
 #if !defined(FUNCTION_fixnorm_S)
 #ifdef FUNCTION_fixnorm_D
-inline int32_t fixnorm_S(FIXP_SGL val) {
-  if (val == (FIXP_SGL)0) {
+inline int32_t fixnorm_S(int16_t val) {
+  if (val == (int16_t)0) {
     return 0;
   }
   return fixnorm_D((int32_t)(val)) - 16;
 }
 #else
-inline int32_t fixnorm_S(FIXP_SGL val) {
+inline int32_t fixnorm_S(int16_t val) {
   int32_t leadingBits = 0;
-  if (val != (FIXP_SGL)0) {
-    if (val < (FIXP_SGL)0) {
+  if (val != (int16_t)0) {
+    if (val < (int16_t)0) {
       val = ~val;
     }
     leadingBits = fixnormz_S(val) - 1;

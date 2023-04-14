@@ -145,14 +145,14 @@ extern const int32_t
 /*
   Envelope Adjustor
 */
-extern const FIXP_SGL FDK_sbrDecoder_sbr_limGains_m[4];
+extern const int16_t FDK_sbrDecoder_sbr_limGains_m[4];
 extern const uint8_t FDK_sbrDecoder_sbr_limGains_e[4];
-extern const FIXP_SGL FDK_sbrDecoder_sbr_limGainsPvc_m[4];
+extern const int16_t FDK_sbrDecoder_sbr_limGainsPvc_m[4];
 extern const uint8_t FDK_sbrDecoder_sbr_limGainsPvc_e[4];
-extern const FIXP_SGL FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4[4];
+extern const int16_t FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4[4];
 extern const int32_t FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4_DBL[4];
-extern const FIXP_SGL FDK_sbrDecoder_sbr_smoothFilter[4];
-extern const FIXP_SGL FDK_sbrDecoder_sbr_randomPhase[SBR_NF_NO_RANDOM_VAL][2];
+extern const int16_t FDK_sbrDecoder_sbr_smoothFilter[4];
+extern const int16_t FDK_sbrDecoder_sbr_randomPhase[SBR_NF_NO_RANDOM_VAL][2];
 
 /*
   Envelope Extractor
@@ -211,6 +211,6 @@ extern const uint8_t FDK_sbrDecoder_aNoIccBins[3];
 
 #define INV_TABLE_BITS 8
 #define INV_TABLE_SIZE (1 << INV_TABLE_BITS)
-extern const FIXP_SGL FDK_sbrDecoder_invTable[INV_TABLE_SIZE];
+extern const int16_t FDK_sbrDecoder_invTable[INV_TABLE_SIZE];
 
 #endif  // SBR_ROM_H

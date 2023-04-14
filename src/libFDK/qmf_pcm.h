@@ -150,7 +150,7 @@ void qmfSynPrototypeFirSlot_fallback(
   p_fltm = p_Filter + (qmf->FilterSize / 2) -
            p_stride * QMF_NO_POLY; /* 5 + (320 - 2*5) = 315th of 330 */
 
-  FIXP_SGL gain = FX_DBL2FX_SGL(qmf->outGain_m);
+  int16_t gain = FX_DBL2FX_SGL(qmf->outGain_m);
 
   int32_t rnd_val = 0;
 
@@ -176,7 +176,7 @@ void qmfSynPrototypeFirSlot_fallback(
          - apply shift left (or right) with saturation to 32 (or 16) bits
          - store output with --stride in 32 (or 16) bit format
       */
-      if (gain != (FIXP_SGL)(-32768)) /* -1.0f */
+      if (gain != (int16_t)(-32768)) /* -1.0f */
       {
         Are = fMult(Are, gain);
       }
@@ -241,7 +241,7 @@ static void qmfSynPrototypeFirSlot_NonSymmetric(
   p_fltm =
       &p_flt[qmf->FilterSize / 2]; /* at index 320, overall 640 coefficients */
 
-  FIXP_SGL gain = FX_DBL2FX_SGL(qmf->outGain_m);
+  int16_t gain = FX_DBL2FX_SGL(qmf->outGain_m);
 
   int32_t rnd_val = (int32_t)0;
 
@@ -267,7 +267,7 @@ static void qmfSynPrototypeFirSlot_NonSymmetric(
          - apply shift left (or right) with saturation to 32 (or 16) bits
          - store output with --stride in 32 (or 16) bit format
       */
-      if (gain != (FIXP_SGL)(-32768)) /* -1.0f */
+      if (gain != (int16_t)(-32768)) /* -1.0f */
       {
         Are = fMult(Are, gain);
       }

@@ -764,7 +764,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
   return AAC_DEC_OK;
 }
 
-static const FIXP_SGL noise_level_tab[8] = {
+static const int16_t noise_level_tab[8] = {
 	/* FDKpow(2, (float)(noise_level-14)/3.0f) * 2; (*2 to compensate for
 	   fMultDiv2) noise_level_tab(noise_level==0) == 0 by definition
 	*/
@@ -781,7 +781,7 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
   int32_t noise_level = pAacDecoderChannelInfo->pDynData->specificTo.usac
                         .fd_noise_level_and_offset >>
                     5;
-  const FIXP_SGL noiseVal_pos = noise_level_tab[noise_level];
+  const int16_t noiseVal_pos = noise_level_tab[noise_level];
 
   /* noise_offset can change even when noise_level=0. Neccesary for IGF stereo
    * filling */
