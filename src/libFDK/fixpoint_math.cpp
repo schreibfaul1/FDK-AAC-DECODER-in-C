@@ -101,7 +101,7 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include "fixpoint_math.h"
-
+#include <stdio.h>
 /*
  * Hardware specific implementations
  */
@@ -136,20 +136,6 @@ void LdDataVector(int32_t *srcVector, int32_t *destVector, int32_t n) {
   To evaluate the taylor series around x = 0, the coefficients are: 1/!i *
   ln(2)^i
  */
-#ifndef POW2COEFF_16BIT
-RAM_ALIGN
-LNK_SECTION_CONSTDATA_L1
-static const int32_t pow2Coeff[MAX_POW2_PRECISION] = {
-    FL2FXCONST_DBL(0.693147180559945309417232121458177),   /* ln(2)^1 /1! */
-    FL2FXCONST_DBL(0.240226506959100712333551263163332),   /* ln(2)^2 /2! */
-    FL2FXCONST_DBL(0.0555041086648215799531422637686218),  /* ln(2)^3 /3! */
-    FL2FXCONST_DBL(0.00961812910762847716197907157365887), /* ln(2)^4 /4! */
-    FL2FXCONST_DBL(0.00133335581464284434234122219879962), /* ln(2)^5 /5! */
-    FL2FXCONST_DBL(1.54035303933816099544370973327423e-4), /* ln(2)^6 /6! */
-    FL2FXCONST_DBL(1.52527338040598402800254390120096e-5), /* ln(2)^7 /7! */
-    FL2FXCONST_DBL(1.32154867901443094884037582282884e-6)  /* ln(2)^8 /8! */
-};
-#else
 RAM_ALIGN
 LNK_SECTION_CONSTDATA_L1
 static const int16_t pow2Coeff[MAX_POW2_PRECISION] = {
@@ -162,7 +148,7 @@ static const int16_t pow2Coeff[MAX_POW2_PRECISION] = {
     FL2FXCONST_SGL(1.52527338040598402800254390120096e-5), /* ln(2)^7 /7! */
     FL2FXCONST_SGL(1.32154867901443094884037582282884e-6)  /* ln(2)^8 /8! */
 };
-#endif
+
 
 /*****************************************************************************
 
@@ -245,56 +231,11 @@ const uint32_t exp2x_tab_long[32] = {
     description:  Create and access table with integer LdData (0 to
 LD_INT_TAB_LEN)
 *****************************************************************************/
-#ifndef LD_INT_TAB_LEN
-#define LD_INT_TAB_LEN \
-  193 /* Default tab length. Lower value should be set in fix.h */
-#endif
 
-#if (LD_INT_TAB_LEN <= 120)
-LNK_SECTION_CONSTDATA_L1
-static const int32_t ldIntCoeff[] = {
-    (int32_t)0x80000001, (int32_t)0x00000000, (int32_t)0x02000000,
-    (int32_t)0x032b8034, (int32_t)0x04000000, (int32_t)0x04a4d3c2,
-    (int32_t)0x052b8034, (int32_t)0x059d5da0, (int32_t)0x06000000,
-    (int32_t)0x06570069, (int32_t)0x06a4d3c2, (int32_t)0x06eb3a9f,
-    (int32_t)0x072b8034, (int32_t)0x0766a009, (int32_t)0x079d5da0,
-    (int32_t)0x07d053f7, (int32_t)0x08000000, (int32_t)0x082cc7ee,
-    (int32_t)0x08570069, (int32_t)0x087ef05b, (int32_t)0x08a4d3c2,
-    (int32_t)0x08c8ddd4, (int32_t)0x08eb3a9f, (int32_t)0x090c1050,
-    (int32_t)0x092b8034, (int32_t)0x0949a785, (int32_t)0x0966a009,
-    (int32_t)0x0982809d, (int32_t)0x099d5da0, (int32_t)0x09b74949,
-    (int32_t)0x09d053f7, (int32_t)0x09e88c6b, (int32_t)0x0a000000,
-    (int32_t)0x0a16bad3, (int32_t)0x0a2cc7ee, (int32_t)0x0a423162,
-    (int32_t)0x0a570069, (int32_t)0x0a6b3d79, (int32_t)0x0a7ef05b,
-    (int32_t)0x0a92203d, (int32_t)0x0aa4d3c2, (int32_t)0x0ab7110e,
-    (int32_t)0x0ac8ddd4, (int32_t)0x0ada3f60, (int32_t)0x0aeb3a9f,
-    (int32_t)0x0afbd42b, (int32_t)0x0b0c1050, (int32_t)0x0b1bf312,
-    (int32_t)0x0b2b8034, (int32_t)0x0b3abb40, (int32_t)0x0b49a785,
-    (int32_t)0x0b584822, (int32_t)0x0b66a009, (int32_t)0x0b74b1fd,
-    (int32_t)0x0b82809d, (int32_t)0x0b900e61, (int32_t)0x0b9d5da0,
-    (int32_t)0x0baa708f, (int32_t)0x0bb74949, (int32_t)0x0bc3e9ca,
-    (int32_t)0x0bd053f7, (int32_t)0x0bdc899b, (int32_t)0x0be88c6b,
-    (int32_t)0x0bf45e09, (int32_t)0x0c000000, (int32_t)0x0c0b73cb,
-    (int32_t)0x0c16bad3, (int32_t)0x0c21d671, (int32_t)0x0c2cc7ee,
-    (int32_t)0x0c379085, (int32_t)0x0c423162, (int32_t)0x0c4caba8,
-    (int32_t)0x0c570069, (int32_t)0x0c6130af, (int32_t)0x0c6b3d79,
-    (int32_t)0x0c7527b9, (int32_t)0x0c7ef05b, (int32_t)0x0c88983f,
-    (int32_t)0x0c92203d, (int32_t)0x0c9b8926, (int32_t)0x0ca4d3c2,
-    (int32_t)0x0cae00d2, (int32_t)0x0cb7110e, (int32_t)0x0cc0052b,
-    (int32_t)0x0cc8ddd4, (int32_t)0x0cd19bb0, (int32_t)0x0cda3f60,
-    (int32_t)0x0ce2c97d, (int32_t)0x0ceb3a9f, (int32_t)0x0cf39355,
-    (int32_t)0x0cfbd42b, (int32_t)0x0d03fda9, (int32_t)0x0d0c1050,
-    (int32_t)0x0d140ca0, (int32_t)0x0d1bf312, (int32_t)0x0d23c41d,
-    (int32_t)0x0d2b8034, (int32_t)0x0d3327c7, (int32_t)0x0d3abb40,
-    (int32_t)0x0d423b08, (int32_t)0x0d49a785, (int32_t)0x0d510118,
-    (int32_t)0x0d584822, (int32_t)0x0d5f7cff, (int32_t)0x0d66a009,
-    (int32_t)0x0d6db197, (int32_t)0x0d74b1fd, (int32_t)0x0d7ba190,
-    (int32_t)0x0d82809d, (int32_t)0x0d894f75, (int32_t)0x0d900e61,
-    (int32_t)0x0d96bdad, (int32_t)0x0d9d5da0, (int32_t)0x0da3ee7f,
-    (int32_t)0x0daa708f, (int32_t)0x0db0e412, (int32_t)0x0db74949,
-    (int32_t)0x0dbda072, (int32_t)0x0dc3e9ca, (int32_t)0x0dca258e};
+#define LD_INT_TAB_LEN  193 /* Default tab length. Lower value should be set in fix.h */
 
-#elif (LD_INT_TAB_LEN <= 193)
+
+
 LNK_SECTION_CONSTDATA_L1
 static const int32_t ldIntCoeff[] = {
     (int32_t)0x80000001, (int32_t)0x00000000, (int32_t)0x02000000,
@@ -363,10 +304,6 @@ static const int32_t ldIntCoeff[] = {
     (int32_t)0x0f1fde3d, (int32_t)0x0f23c41d, (int32_t)0x0f27a4c0,
     (int32_t)0x0f2b8034};
 
-#else
-#error "ldInt table size too small"
-
-#endif
 
 LNK_SECTION_INITCODE
 void InitLdInt() { /* nothing to do! Use preinitialized logarithm table */

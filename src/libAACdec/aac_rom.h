@@ -218,13 +218,10 @@ extern const MP4_ELEMENT_ID elementsTab[AACDEC_MAX_CH_CONF]
 /* (i.e. if CPLX_PRED_FILTER_16BIT is not defined).                       */
 /* With int32_t loss of precision is possible for SF_FNA_COEFFS > 11.    */
 
-#ifdef CPLX_PRED_FILTER_16BIT
-#define FIXP_FILT int16_t
-#define FILT(a) ((FL2FXCONST_SGL(a)) >> SF_FNA_COEFFS)
-#else
+
 #define FIXP_FILT int32_t
 #define FILT(a) ((FL2FXCONST_DBL(a)) >> SF_FNA_COEFFS)
-#endif
+
 
 extern const FIXP_FILT mdst_filt_coef_curr[20][3]; /* MDST-filter coefficient
                                                       tables used for current

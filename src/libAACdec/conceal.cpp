@@ -191,6 +191,7 @@ static const int16_t facMod4Table[4] = {
     FL2FXCONST_SGL(0.594603558f), /* int16_t(0x4c1b),  2^-(1-0,25) */
     FL2FXCONST_SGL(0.707106781f), /* int16_t(0x5a82),  2^-(1-0,50) */
     FL2FXCONST_SGL(0.840896415f)  /* int16_t(0x6ba2)   2^-(1-0,75) */
+
 };
 
 static void CConcealment_CalcBandEnergy(
