@@ -312,7 +312,6 @@ void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
           /* following relation can be used for optimizations:
            * (BandOffsets[i]%4) == 0 for all i */
           int32_t max_index = BandOffsets[band + 1];
-          DWORD_ALIGNED(pSpectrum);
           for (int32_t index = BandOffsets[band]; index < max_index; index++) {
             pSpectrum[index] >>= scale;
           }
@@ -473,8 +472,6 @@ static inline int32_t maxabs_D(const int32_t *pSpectralCoefficient,
   /* Find max spectral line value of the current sfb */
   int32_t locMax = (int32_t)0;
   int32_t i;
-
-  DWORD_ALIGNED(pSpectralCoefficient);
 
   for (i = noLines; i-- > 0;) {
     /* Expensive memory access */

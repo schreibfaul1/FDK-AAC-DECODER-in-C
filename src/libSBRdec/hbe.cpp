@@ -1486,7 +1486,6 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
           hQmfTransposer->inBuf_F + hQmfTransposer->synthSize * (z + 1), 1,
           pWorkBuffer);
 
-      C_AALLOC_SCRATCH_END(pWorkBuffer, int32_t, (HBE_MAX_QMF_BANDS << 1));
     }
 
     C_AALLOC_SCRATCH_START(pWorkBuffer, int32_t, (HBE_MAX_QMF_BANDS << 1));
@@ -1496,7 +1495,6 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
                              hQmfTransposer->qmfInBufImag_F[QMF_WIN_LEN - 1],
                              hQmfTransposer->inBuf_F + 1, 1, pWorkBuffer);
 
-    C_AALLOC_SCRATCH_END(pWorkBuffer, int32_t, (HBE_MAX_QMF_BANDS << 1));
 
     if ((keepStatesSyncedMode == KEEP_STATES_SYNCED_NORMAL) &&
         j <= qmfVocoderColsIn - ((LPC_ORDER + ov_len + QMF_WIN_LEN - 1) >> 1)) {

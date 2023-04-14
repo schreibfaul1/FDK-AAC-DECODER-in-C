@@ -2436,7 +2436,6 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 													   AC_EL_GA_CCE, self->streamInfo.aacSamplesPerFrame, 1,
 													   self->streamInfo.epConfig, self->hInput);
 
-					C_AALLOC_SCRATCH_END(mdctSpec, int32_t, 1024);
 
 					if(ErrorStatus) { self->frameOK = 0; }
 

@@ -1697,8 +1697,6 @@ static inline void fftN2_func(int32_t *pInput, const int32_t length,
     C_AALLOC_SCRATCH_START(aDst2, DATA_TYPE, 2 * dim2)                     \
     fftN2_func(pInput, length, dim1, dim2, fft_func1, fft_func2,           \
                RotVectorReal, RotVectorImag, aDst, aDst2);                 \
-    C_AALLOC_SCRATCH_END(aDst2, DATA_TYPE, 2 * dim2)                       \
-    C_AALLOC_SCRATCH_END(aDst, DATA_TYPE, 2 * length)                      \
   }
 
   /*!
@@ -1799,7 +1797,6 @@ static inline void fft480(int32_t *pInput) {
 
 void fft(int32_t length, int32_t *pInput, int32_t *pScalefactor) {
   /* Ensure, that the io-ptr is always (at least 8-byte) aligned */
-  C_ALLOC_ALIGNED_CHECK(pInput);
 
   if (length == 32) {
     fft_32(pInput);

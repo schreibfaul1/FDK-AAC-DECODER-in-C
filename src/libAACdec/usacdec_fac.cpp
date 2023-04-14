@@ -99,7 +99,7 @@ amm-info@iis.fraunhofer.de
    Description: USAC FAC
 
 *******************************************************************************/
-
+#include <stdio.h>
 #include "usacdec_fac.h"
 
 #include "usacdec_const.h"
@@ -524,10 +524,11 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
     dct_IV(pSpec, tl, &scale);
   } else {
     int32_t _tmp[1024 + ALIGNMENT_DEFAULT / sizeof(int32_t)];
+
     int32_t *tmp = (int32_t *)ALIGN_PTR(_tmp);
-    C_ALLOC_ALIGNED_REGISTER(tmp, sizeof(_tmp));
+
+
     dst_III(pSpec, tmp, tl, &scale);
-    C_ALLOC_ALIGNED_UNREGISTER(tmp);
   }
 
   /* Optional scaling of time domain - no yet windowed - of current spectrum */

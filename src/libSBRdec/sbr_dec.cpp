@@ -344,8 +344,6 @@ void sbr_dec(
     qmfAnalysisFiltering(&hSbrDec->qmfDomainInCh->fb, pReal, pImag,
                          &hSbrDec->qmfDomainInCh->scaling, pTimeInQmf,
                          0 + sbrInDataHeadroom, 1, qmfTemp);
-
-    C_AALLOC_SCRATCH_END(qmfTemp, int32_t, 2 * (64));
   }
 
   /*
@@ -703,11 +701,6 @@ void sbr_dec(
         /* restore saved value */
         hSbrDec->qmfDomainOutCh->fb.usb = save_usb;
         hFreq->ov_highSubband = save_usb;
-#if (QMF_MAX_SYNTHESIS_BANDS <= 64)
-        C_AALLOC_SCRATCH_END(qmfTemp, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
-#else
-        C_AALLOC_STACK_END(qmfTemp, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
-#endif
       }
     }
 
@@ -852,11 +845,6 @@ void sbr_dec(
               pWorkBuffer);
         }
       } /* no_col loop  i  */
-#if (QMF_MAX_SYNTHESIS_BANDS <= 64)
-      C_AALLOC_SCRATCH_END(pWorkBuffer, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
-#else
-      C_AALLOC_STACK_END(pWorkBuffer, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
-#endif
     }
   }
 

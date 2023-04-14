@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdio.h>
 #include "FDK_hybrid.h"
 
 #include "fft.h"
@@ -696,6 +697,7 @@ static void eightChannelFiltering(const int32_t *const pQmfReal,
   int32_t k, sc;
 
   int32_t mfft[16 + ALIGNMENT_DEFAULT];
+
   int32_t *pfft = (int32_t *)ALIGN_PTR(mfft);
 
   int32_t accu1, accu2, accu3, accu4;

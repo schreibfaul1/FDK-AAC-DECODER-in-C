@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdio.h>
 #include "mdct.h"
 
 #include "FDK_tools_rom.h"
@@ -521,17 +522,13 @@ int32_t imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
       } else {
         int32_t _tmp[1024 + ALIGNMENT_DEFAULT / sizeof(int32_t)];
         int32_t *tmp = (int32_t *)ALIGN_PTR(_tmp);
-        C_ALLOC_ALIGNED_REGISTER(tmp, sizeof(_tmp));
         dct_III(pSpec, tmp, tl, &specShiftScale);
-        C_ALLOC_ALIGNED_UNREGISTER(tmp);
       }
     } else {
       if (hMdct->prevAliasSymmetry == 0) {
         int32_t _tmp[1024 + ALIGNMENT_DEFAULT / sizeof(int32_t)];
         int32_t *tmp = (int32_t *)ALIGN_PTR(_tmp);
-        C_ALLOC_ALIGNED_REGISTER(tmp, sizeof(_tmp));
         dst_III(pSpec, tmp, tl, &specShiftScale);
-        C_ALLOC_ALIGNED_UNREGISTER(tmp);
       } else {
         dst_IV(pSpec, tl, &specShiftScale);
       }
@@ -549,7 +546,6 @@ int32_t imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
     {
       int32_t loc_scale =
           fixmin_I(scalefactor[w] + specShiftScale, (int32_t)DFRACT_BITS - 1);
-      DWORD_ALIGNED(pSpec);
       scaleValuesSaturate(pSpec, tl, loc_scale);
     }
 
@@ -609,10 +605,6 @@ int32_t imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
     /* output samples after window crossing point TL/2 .. TL/2+FL/2.
      * -overlap[0..FL/2] - current[TL/2..FL/2] */
     pCurr = pSpec + tl - fl / 2;
-    DWORD_ALIGNED(pCurr);
-    C_ALLOC_ALIGNED_REGISTER(pWindow, fl);
-    DWORD_ALIGNED(pWindow);
-    C_ALLOC_ALIGNED_UNREGISTER(pWindow);
 
     if (hMdct->prevPrevAliasSymmetry == 0) {
       if (hMdct->prevAliasSymmetry == 0) {

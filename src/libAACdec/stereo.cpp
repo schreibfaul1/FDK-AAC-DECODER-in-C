@@ -1068,7 +1068,6 @@ void CJointStereo_ApplyMS(
     } /* for ( window = 0, group = 0; group < windowGroups; group++ ) */
 
     /* free scratch buffer */
-    C_AALLOC_SCRATCH_END(dmx_im, int32_t, 1024);
 
   } else {
     /* MS stereo */

@@ -128,11 +128,6 @@ SACDEC_ERROR CalculateSpaceSynthesisQmf(
     qmfSynthesisFilteringSlot(hSpaceSynthesisQmf, Sr, Si, 0, 0, timeSig, stride,
                               pWorkBuffer);
 
-#if (QMF_MAX_SYNTHESIS_BANDS <= 64)
-    C_AALLOC_SCRATCH_END(pWorkBuffer, int32_t, (QMF_MAX_SYNTHESIS_BANDS << 1));
-#else
-    C_AALLOC_STACK_END(pWorkBuffer, int32_t, (QMF_MAX_SYNTHESIS_BANDS << 1));
-#endif
   }
 
   return err;
@@ -150,7 +145,6 @@ SACDEC_ERROR CalculateSpaceAnalysisQmf(
 
     qmfAnalysisFilteringSlot(hSpaceAnalysisQmf, Sr, Si, timeSig, 1,
                              pWorkBuffer);
-    C_AALLOC_SCRATCH_END(pWorkBuffer, int32_t, (64 << 1));
   }
 
   return err;

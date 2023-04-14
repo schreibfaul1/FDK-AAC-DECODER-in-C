@@ -256,7 +256,6 @@ void *FDKaalloc(const uint32_t size, const uint32_t alignment) {
     result = ALIGN_PTR((unsigned char *)addr +
                        sizeof(void *)); /* Get aligned memory base address. */
     *(((void **)result) - 1) = addr;    /* Save malloc'ed memory pointer.   */
-    C_ALLOC_ALIGNED_REGISTER(result, size);
   }
 
   return result; /* Return aligned address.          */
@@ -265,9 +264,6 @@ void *FDKaalloc(const uint32_t size, const uint32_t alignment) {
 void FDKafree(void *ptr) {
   void *addr;
   addr = *(((void **)ptr) - 1); /* Get pointer to malloc'ed memory. */
-
-  C_ALLOC_ALIGNED_UNREGISTER(ptr);
-
   FDKfree(addr); /* Free malloc'ed memory area.      */
 }
 
@@ -290,10 +286,12 @@ void *FDKaalloc_L(const uint32_t size, const uint32_t alignment, MEMORY_SECTION 
                      s); /* Malloc and clear memory.         */
 
   if (addr != NULL) {
+
+
+
     result = ALIGN_PTR((unsigned char *)addr +
                        sizeof(void *)); /* Get aligned memory base address. */
     *(((void **)result) - 1) = addr;    /* Save malloc'ed memory pointer.   */
-    C_ALLOC_ALIGNED_REGISTER(result, size);
   }
 
   return result; /* Return aligned address.          */
@@ -303,9 +301,6 @@ void FDKafree_L(void *ptr) {
   void *addr;
 
   addr = *(((void **)ptr) - 1); /* Get pointer to malloc'ed memory. */
-
-  C_ALLOC_ALIGNED_UNREGISTER(ptr);
-
   FDKfree_L(addr); /* Free malloc'ed memory area.      */
 }
 

@@ -356,6 +356,5 @@ void CTns_Apply(CTnsData *RESTRICT pTnsData, /*!< pointer to aac decoder info */
         }
       }
     }
-    C_AALLOC_SCRATCH_END(coeff, FIXP_TCC, TNS_MAXIMUM_ORDER)
   }
 }

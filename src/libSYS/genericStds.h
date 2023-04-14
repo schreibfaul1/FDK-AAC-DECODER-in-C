@@ -319,13 +319,11 @@ typedef enum {
 #define C_AALLOC_SCRATCH_START(name, type, n)                 \
   type _##name[(n) + (ALIGNMENT_DEFAULT + sizeof(type) - 1)]; \
   type *name = (type *)ALIGN_PTR(_##name);                    \
-  C_ALLOC_ALIGNED_REGISTER(name, (n) * sizeof(type));
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define C_ALLOC_SCRATCH_START(name, type, n) type name[n];
 
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
-#define C_AALLOC_SCRATCH_END(name, type, n) C_ALLOC_ALIGNED_UNREGISTER(name);
 /** See \ref SYSLIB_MEMORY_MACROS for description. */
 #define C_ALLOC_SCRATCH_END(name, type, n)
 
@@ -333,17 +331,11 @@ typedef enum {
 #define C_AALLOC_STACK_START(name, type, n)                   \
   type _##name[(n) + (ALIGNMENT_DEFAULT + sizeof(type) - 1)]; \
   type *name = (type *)ALIGN_PTR(_##name);                    \
-  C_ALLOC_ALIGNED_REGISTER(name, (n) * sizeof(type));
 
-/** See \ref SYSLIB_MEMORY_MACROS for description. */
-#define C_AALLOC_STACK_END(name, type, n) C_ALLOC_ALIGNED_UNREGISTER(name);
 
 /*! @} */
 
-#define C_ALLOC_ALIGNED_REGISTER(x, size)
-#define C_ALLOC_ALIGNED_UNREGISTER(x)
-#define C_ALLOC_ALIGNED_CHECK(x)
-#define C_ALLOC_ALIGNED_CHECK2(x, y)
+
 #define FDK_showBacktrace(a, b)
 
 /*! \addtogroup SYSLIB_EXITCODES Unified exit codes

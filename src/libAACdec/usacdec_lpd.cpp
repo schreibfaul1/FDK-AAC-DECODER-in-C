@@ -726,7 +726,6 @@ void lpc2mdctAndNoiseShaping(int32_t *r, int16_t *pScale, const int32_t lg,
   /* end of mdct_IntNoiseShaping() */
   { *pScale += NSHAPE_SCALE; }
 
-  C_AALLOC_SCRATCH_END(tmp1, int32_t, FDNS_NPTS * 8)
 }
 
 /**
@@ -1912,7 +1911,6 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
             pit_gain[(k * nbSubfr) + synSfd] =
                 pit_gain[(k * nbSubfr) + synSfd - 1];
 
-        C_AALLOC_SCRATCH_END(fac_buf, int32_t, 1024 / 8);
       } else {
         int32_t tl = lg;
         int32_t fl = lDiv;

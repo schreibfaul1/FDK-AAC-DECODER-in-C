@@ -128,7 +128,6 @@ amm-info@iis.fraunhofer.de
 inline void scramble(int32_t *x, int32_t length) {
   int32_t m, k, j;
   assert(!(((int32_t)(int64_t)x) & (ALIGNMENT_DEFAULT - 1)));
-  C_ALLOC_ALIGNED_CHECK(x);
 
   for (m = 1, j = 0; m < length - 1; m++) {
     {

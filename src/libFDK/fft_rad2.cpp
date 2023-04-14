@@ -133,7 +133,6 @@ void dit_fft(int32_t *x, const int32_t ldn, const FIXP_STP *trigdata,
   const int32_t n = 1 << ldn;
   int32_t trigstep, i, ldm;
 
-  C_ALLOC_ALIGNED_CHECK(x);
 
   scramble(x, n);
   /*

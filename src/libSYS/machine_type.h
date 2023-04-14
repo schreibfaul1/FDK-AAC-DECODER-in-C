@@ -27,27 +27,7 @@ typedef int16_t INT_PCM;
 #define SAMPLE_MAX ((INT_PCM)(((uint32_t)1 << (SAMPLE_BITS - 1)) - 1))
 #define SAMPLE_MIN (~SAMPLE_MAX)
 
-/*!
-* \def    RAM_ALIGN
-*  Used to align memory as prefix before memory declaration. For example:
-   \code
-   RAM_ALIGN
-   int myArray[16];
-   \endcode
 
-   Note, that not all platforms support this mechanism. For example with TI
-compilers a preprocessor pragma is used, but to do something like
-
-   \code
-   #define RAM_ALIGN #pragma DATA_ALIGN(x)
-   \endcode
-
-   would require the preprocessor to process this line twice to fully resolve
-it. Hence, a fully platform-independant way to use alignment is not supported.
-
-* \def    ALIGNMENT_DEFAULT
-*         Default alignment in bytes.
-*/
 
 #define ALIGNMENT_DEFAULT 8
 
@@ -69,37 +49,17 @@ it. Hence, a fully platform-independant way to use alignment is not supported.
  * by other pointers. If this keyword is used and the assumption of no
  * overlap is not true the resulting code might crash.
  *
- * \def  WORD_ALIGNED(x)
- *       Tells the compiler that pointer x is 16 bit aligned. It does not cause
- * the address itself to be aligned, but serves as a hint to the optimizer. The
- * alignment of the pointer must be guarranteed, if not the code might
- * crash.
  *
- * \def  DWORD_ALIGNED(x)
- *       Tells the compiler that pointer x is 32 bit aligned. It does not cause
- * the address itself to be aligned, but serves as a hint to the optimizer. The
- * alignment of the pointer must be guarranteed, if not the code might
- * crash.
  *
  */
 #define RESTRICT
-#define WORD_ALIGNED(x) C_ALLOC_ALIGNED_CHECK2((const void *)(x), 2);
-#define DWORD_ALIGNED(x) C_ALLOC_ALIGNED_CHECK2((const void *)(x), 4);
+
+
 
 /*-----------------------------------------------------------------------------------
  * ALIGN_SIZE
  *-----------------------------------------------------------------------------------*/
 /*!
- * \brief  This macro aligns a given value depending on ::ALIGNMENT_DEFAULT.
- *
- * For example if #ALIGNMENT_DEFAULT equals 8, then:
- * - ALIGN_SIZE(3) returns 8
- * - ALIGN_SIZE(8) returns 8
- * - ALIGN_SIZE(9) returns 16
- */
-#define ALIGN_SIZE(a)                                                          \
-  ((a) + (((int32_t)ALIGNMENT_DEFAULT - ((size_t)(a) & (ALIGNMENT_DEFAULT - 1))) & \
-          (ALIGNMENT_DEFAULT - 1)))
 
 /*!
  * \brief  This macro aligns a given address depending on ::ALIGNMENT_DEFAULT.
@@ -109,6 +69,14 @@ it. Hence, a fully platform-independant way to use alignment is not supported.
             ((((int32_t)ALIGNMENT_DEFAULT -                   \
                ((size_t)(a) & (ALIGNMENT_DEFAULT - 1))) & \
               (ALIGNMENT_DEFAULT - 1)))))
+
+inline int32_t* ALIGN_PTR1(int32_t* a){
+         return  a + ((int32_t)8 - ((size_t)a & 7) & 7);
+}
+
+
+
+
 
 /* Alignment macro for libSYS heap implementation */
 #define ALIGNMENT_EXTRES (ALIGNMENT_DEFAULT)
