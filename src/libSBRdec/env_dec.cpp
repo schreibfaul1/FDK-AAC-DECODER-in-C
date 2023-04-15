@@ -696,20 +696,6 @@ static void requantizeEnvelopeData(HANDLE_SBR_FRAME_DATA h_sbr_data,
   /* In case that ENV_EXP_FRACT is changed to something else but 0 or 8,
      the initialization of this array has to be adapted!
   */
-#if ENV_EXP_FRACT
-  static const int16_t pow2[ENV_EXP_FRACT] = {
-      FL2FXCONST_SGL(0.5f * pow(2.0f, pow(0.5f, 1))), /* 0.7071 */
-      FL2FXCONST_SGL(0.5f * pow(2.0f, pow(0.5f, 2))), /* 0.5946 */
-      FL2FXCONST_SGL(0.5f * pow(2.0f, pow(0.5f, 3))),
-      FL2FXCONST_SGL(0.5f * pow(2.0f, pow(0.5f, 4))),
-      FL2FXCONST_SGL(0.5f * pow(2.0f, pow(0.5f, 5))),
-      FL2FXCONST_SGL(0.5f * pow(2.0f, pow(0.5f, 6))),
-      FL2FXCONST_SGL(0.5f * pow(2.0f, pow(0.5f, 7))),
-      FL2FXCONST_SGL(0.5f * pow(2.0f, pow(0.5f, 8))) /* 0.5013 */
-  };
-
-  int32_t bit, mask;
-#endif
 
   for (i = 0; i < h_sbr_data->nScaleFactors; i++) {
     exponent = (int32_t)h_sbr_data->iEnvelope[i];

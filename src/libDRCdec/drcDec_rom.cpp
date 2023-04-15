@@ -120,21 +120,9 @@ const int8_t deltaGain_codingProfile_2_huffman[48][2] = {
     {41, 42},   {-80, -81}, {-82, 43},  {44, -49},  {45, -84},  {-83, -89},
     {-86, 46},  {-90, -85}, {-91, -93}, {-92, 47},  {-88, -87}, {-95, -94}};
 
-const int16_t slopeSteepness[] = {FL2FXCONST_SGL(-3.0518f / (float)(1 << 2)),
-                                   FL2FXCONST_SGL(-1.2207f / (float)(1 << 2)),
-                                   FL2FXCONST_SGL(-0.4883f / (float)(1 << 2)),
-                                   FL2FXCONST_SGL(-0.1953f / (float)(1 << 2)),
-                                   FL2FXCONST_SGL(-0.0781f / (float)(1 << 2)),
-                                   FL2FXCONST_SGL(-0.0312f / (float)(1 << 2)),
-                                   FL2FXCONST_SGL(-0.005f / (float)(1 << 2)),
-                                   FL2FXCONST_SGL(0.0f / (float)(1 << 2)),
-                                   FL2FXCONST_SGL(0.005f / (float)(1 << 2)),
-                                   FL2FXCONST_SGL(0.0312f / (float)(1 << 2)),
-                                   FL2FXCONST_SGL(0.0781f / (float)(1 << 2)),
-                                   FL2FXCONST_SGL(0.1953f / (float)(1 << 2)),
-                                   FL2FXCONST_SGL(0.4883f / (float)(1 << 2)),
-                                   FL2FXCONST_SGL(1.2207f / (float)(1 << 2)),
-                                   FL2FXCONST_SGL(3.0518f / (float)(1 << 2))};
+const int16_t slopeSteepness[] = {
+    -25000, -10000, -4000, -1600, -640, -256, -41, 0, 41, 256, 640, 1600, 4000, 10000, 25000,
+};
 
 const int8_t slopeSteepness_huffman[14][2] = {
     {1, -57},  {-58, 2},   {3, 4},    {5, 6},    {7, -56},
@@ -194,131 +182,141 @@ const int32_t downmixCoeffV1[] = {
     FL2FXCONST_DBL(0.0000000000 / (float)(1 << 2))};
 
 const CUSTOM_DRC_CHAR_SIGMOID cicpDrcCharSigmoidLeft[] = {
-    {FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.0f / (float)(1 << 2)),
-     FL2FXCONST_SGL(9.0f / (float)(1 << 5)), 0}, /* 1 */
-    {FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.2f / (float)(1 << 2)),
-     FL2FXCONST_SGL(9.0f / (float)(1 << 5)), 0}, /* 2 */
-    {FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.4f / (float)(1 << 2)),
-     FL2FXCONST_SGL(9.0f / (float)(1 << 5)), 0}, /* 3 */
-    {FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.6f / (float)(1 << 2)),
-     FL2FXCONST_SGL(9.0f / (float)(1 << 5)), 0}, /* 4 */
-    {FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.8f / (float)(1 << 2)),
-     FL2FXCONST_SGL(6.0f / (float)(1 << 5)), 0}, /* 5 */
-    {FL2FXCONST_SGL(32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(1.0f / (float)(1 << 2)),
-     FL2FXCONST_SGL(5.0f / (float)(1 << 5)), 0}, /* 6 */
+    {16384, 0,    9216, 0},    /* 1 */
+    {16384, 1638, 9216, 0}, /* 2 */
+    {16384, 3277, 9216, 0}, /* 3 */
+    {16384, 4915, 9216, 0}, /* 4 */
+    {16384, 6554, 6144, 0}, /* 5 */
+    {16384, 8192, 5120, 0}, /* 6 */
 };
 
 const CUSTOM_DRC_CHAR_SIGMOID cicpDrcCharSigmoidRight[] = {
-    {FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.0f / (float)(1 << 2)),
-     FL2FXCONST_SGL(12.0f / (float)(1 << 5)), 0}, /* 1 */
-    {FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.2f / (float)(1 << 2)),
-     FL2FXCONST_SGL(12.0f / (float)(1 << 5)), 0}, /* 2 */
-    {FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.4f / (float)(1 << 2)),
-     FL2FXCONST_SGL(12.0f / (float)(1 << 5)), 0}, /* 3 */
-    {FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.6f / (float)(1 << 2)),
-     FL2FXCONST_SGL(10.0f / (float)(1 << 5)), 0}, /* 4 */
-    {FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(0.8f / (float)(1 << 2)),
-     FL2FXCONST_SGL(8.0f / (float)(1 << 5)), 0}, /* 5 */
-    {FL2FXCONST_SGL(-32.0f / (float)(1 << 6)),
-     FL2FXCONST_SGL(1.0f / (float)(1 << 2)),
-     FL2FXCONST_SGL(6.0f / (float)(1 << 5)), 0}, /* 6 */
+    {-16384, 0,    12288, 0},    /* 1 */
+    {-16384, 1638, 12288, 0}, /* 2 */
+    {-16384, 3277, 12288, 0}, /* 3 */
+    {-16384, 4915, 10240, 0}, /* 4 */
+    {-16384, 6554, 8192,  0},  /* 5 */
+    {-16384, 8192, 6144,  0},  /* 6 */
 };
 
 const CUSTOM_DRC_CHAR_NODES cicpDrcCharNodesLeft[] = {
     {2,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-41.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-53.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(6.0f / (float)(1 << 7))}}, /* 7 */
+     {
+         -7936,
+         -10496,
+         -13568,
+     },
+     {
+         0,
+         0,
+         1536,
+     }}, /* 7 */
     {1,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-43.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(6.0f / (float)(1 << 7))}}, /* 8 */
+     {
+         -7936,
+         -11008,
+     },
+     {
+         0,
+         1536,
+     }}, /* 8 */
     {2,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-41.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-65.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(12.0f / (float)(1 << 7))}}, /* 9 */
+     {
+         -7936,
+         -10496,
+         -16640,
+     },
+     {
+         0,
+         0,
+         3072,
+     }}, /* 9 */
     {1,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-55.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(12.0f / (float)(1 << 7))}}, /* 10 */
+     {
+         -7936,
+         -14080,
+     },
+     {
+         0,
+         3072,
+     }}, /* 10 */
     {1,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-50.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(15.0f / (float)(1 << 7))}} /* 11 */
+     {
+         -7936,
+         -12800,
+     },
+     {
+         0,
+         3840,
+     }} /* 11 */
 };
 
 const CUSTOM_DRC_CHAR_NODES cicpDrcCharNodesRight[] = {
     {4,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-21.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-11.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(9.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(19.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-5.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-24.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-34.0f / (float)(1 << 7))}}, /* 7 */
+     {-7936, -5376, -2816, 2304, 4864},
+     {
+         0,
+         0,
+         -1280,
+         -6144,
+         -8704,
+     }}, /* 7 */
     {4,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-26.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-16.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(4.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(14.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-5.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-24.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-34.0f / (float)(1 << 7))}}, /* 8 */
+     {
+         -7936,
+         -6656,
+         -4096,
+         1024,
+         3584,
+     },
+     {
+         0,
+         0,
+         -1280,
+         -6144,
+         -8704,
+     }}, /* 8 */
     {3,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-21.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(9.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(29.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-15.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-35.0f / (float)(1 << 7))}}, /* 9 */
+     {
+         -7936,
+         -5376,
+         2304,
+         7424,
+     },
+     {
+         0,
+         0,
+         -3840,
+         -8960,
+     }}, /* 9 */
     {4,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-26.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-16.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(4.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(14.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-5.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-24.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-34.0f / (float)(1 << 7))}}, /* 10 */
+     {
+         -7936,
+         -6656,
+         -4096,
+         1024,
+         3584,
+     },
+     {
+         0,
+         0,
+         -1280,
+         -6144,
+         -8704,
+     }}, /* 10 */
     {4,
-     {FL2FXCONST_SGL(-31.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-26.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-16.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(4.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(14.0f / (float)(1 << 7))},
-     {FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(0.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-5.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-24.0f / (float)(1 << 7)),
-      FL2FXCONST_SGL(-34.0f / (float)(1 << 7))}} /* 11 */
+     {
+         -7936,
+         -6656,
+         -4096,
+         1024,
+         3584,
+     },
+     {
+         0,
+         0,
+         -1280,
+         -6144,
+         -8704,
+     }} /* 11 */
 };
