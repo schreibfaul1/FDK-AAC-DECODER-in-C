@@ -126,19 +126,19 @@ amm-info@iis.fraunhofer.de
 #define LOG10FAC_INV 0.664385618977472f /* == log2(10)/10 * 2^1 */
 
 RAM_ALIGN
-LNK_SECTION_CONSTDATA
+
 static const int16_t pvc_SC_16[] = {
 	5185, 5173, 5135, 5072, 4984, 4869, 4728, 4559, 4360, 4130, 3865, 3560, 3208, 2794, 2290, 1623,
 };
 
 RAM_ALIGN
-LNK_SECTION_CONSTDATA
+
 static const int16_t pvc_SC_12[] = {
 	6842, 6813, 6725, 6577, 6368, 6095, 5754, 5339, 4838, 4233, 3481, 2472,
 };
 
 RAM_ALIGN
-LNK_SECTION_CONSTDATA
+
 static const int16_t pvc_SC_4[] = {
 	19159,
 	18415,
@@ -147,7 +147,7 @@ static const int16_t pvc_SC_4[] = {
 };
 
 RAM_ALIGN
-LNK_SECTION_CONSTDATA
+
 static const int16_t pvc_SC_3[] = {
 	24846,
 	23122,

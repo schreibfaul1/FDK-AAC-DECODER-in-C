@@ -137,7 +137,7 @@ void scaleValuesSaturate(int16_t *vector, int32_t len, int32_t scalefactor);
 void scaleValuesSaturate(int16_t *dst, const int16_t *src, int32_t len,
                          int32_t scalefactor);
 int32_t getScalefactorShort(const int16_t *vector, int32_t len);
-int32_t getScalefactorPCM(const INT_PCM *vector, int32_t len, int32_t stride);
+int32_t getScalefactorPCM(const int16_t *vector, int32_t len, int32_t stride);
 int32_t getScalefactor(const int32_t *vector, int32_t len);
 int32_t getScalefactor(const int16_t *vector, int32_t len);
 

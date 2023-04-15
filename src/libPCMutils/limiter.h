@@ -259,7 +259,7 @@ TDLIMITER_ERROR pcmLimiter_SetThreshold(TDLimiterPtr limiter,
  * returns:    error code                                                      *
  ******************************************************************************/
 TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
-                                 INT_PCM* samplesOut, int32_t* pGainPerSample,
+                                 int16_t* samplesOut, int32_t* pGainPerSample,
                                  const int32_t scaling, const uint32_t nSamples);
 
 #endif /* #ifndef LIMITER_H */

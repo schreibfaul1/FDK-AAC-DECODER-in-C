@@ -813,7 +813,7 @@ void qmfChangeOutGain(
   synQmf->outGain_e = outputGainScale;
 }
 
-#define INT_PCM_QMFOUT INT_PCM
+#define INT_PCM_QMFOUT int16_t
 #define SAMPLE_BITS_QMFOUT SAMPLE_BITS
 #include "qmf_pcm.h"
 #if SAMPLE_BITS == 16

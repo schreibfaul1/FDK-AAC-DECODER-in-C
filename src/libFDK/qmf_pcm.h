@@ -539,7 +539,7 @@ void qmfAnalysisFilteringSlot(
 
     /* Feed and scale actual time in slot */
     for (int32_t i = anaQmf->no_channels >> 1; i != 0; i--) {
-      /* Place INT_PCM value left aligned in scaledTimeIn */
+      /* Place int16_t value left aligned in scaledTimeIn */
       *FilterStatesAnaTmp++ = (FIXP_QAS)*timeIn;
       timeIn += stride;
       *FilterStatesAnaTmp++ = (FIXP_QAS)*timeIn;

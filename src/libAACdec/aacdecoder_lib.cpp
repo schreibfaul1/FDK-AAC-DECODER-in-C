@@ -1012,7 +1012,7 @@ static int32_t aacDecoder_EstimateNumberOfLostFrames(HANDLE_AACDECODER self) {
 	return n;
 }
 
-AAC_DECODER_ERROR aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeData, const int32_t timeDataSize,
+AAC_DECODER_ERROR aacDecoder_DecodeFrame(HANDLE_AACDECODER self, int16_t *pTimeData, const int32_t timeDataSize,
 										 const uint32_t flags) {
 	AAC_DECODER_ERROR    ErrorStatus;
 	int32_t                  layer;
@@ -1712,10 +1712,10 @@ AAC_DECODER_ERROR aacDecoder_DecodeFrame(HANDLE_AACDECODER self, INT_PCM *pTimeD
 											self->streamInfo.frameSize * self->streamInfo.numChannels, pcmLimiterScale);
 					}
 					else {
-						scaleValuesSaturate((INT_PCM *)self->workBufferCore2, pTimeData2,
+						scaleValuesSaturate((int16_t *)self->workBufferCore2, pTimeData2,
 											self->streamInfo.frameSize * self->streamInfo.numChannels, pcmLimiterScale);
 						/* Interleave ouput buffer */
-						FDK_interleave((INT_PCM *)self->workBufferCore2, pTimeData, self->streamInfo.numChannels,
+						FDK_interleave((int16_t *)self->workBufferCore2, pTimeData, self->streamInfo.numChannels,
 									   self->streamInfo.frameSize, self->streamInfo.frameSize);
 					}
 				}

@@ -1050,7 +1050,7 @@ AAC_DECODER_ERROR aacDecoder_Fill(HANDLE_AACDECODER self,
  * \return              Error code.
  */
 AAC_DECODER_ERROR aacDecoder_DecodeFrame(HANDLE_AACDECODER self,
-                                                    INT_PCM *pTimeData,
+                                                    int16_t *pTimeData,
                                                     const int32_t timeDataSize,
                                                     const uint32_t flags);
 

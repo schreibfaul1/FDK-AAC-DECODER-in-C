@@ -119,7 +119,7 @@ amm-info@iis.fraunhofer.de
 /* Taylor series coefficients for ln(1-x), centered at 0 (MacLaurin polynomial).
  */
 #ifndef LDCOEFF_16BIT
-LNK_SECTION_CONSTDATA_L1
+
 static const int32_t ldCoeff[MAX_LD_PRECISION] = {
     FL2FXCONST_DBL(-1.0),       FL2FXCONST_DBL(-1.0 / 2.0),
     FL2FXCONST_DBL(-1.0 / 3.0), FL2FXCONST_DBL(-1.0 / 4.0),
@@ -127,7 +127,7 @@ static const int32_t ldCoeff[MAX_LD_PRECISION] = {
     FL2FXCONST_DBL(-1.0 / 7.0), FL2FXCONST_DBL(-1.0 / 8.0),
     FL2FXCONST_DBL(-1.0 / 9.0), FL2FXCONST_DBL(-1.0 / 10.0)};
 #else  /* LDCOEFF_16BIT */
-LNK_SECTION_CONSTDATA_L1
+
 static const int16_t ldCoeff[MAX_LD_PRECISION] = {-32768, -16384, -10923, -8192, -6554,
                                                   -5461,  -4681,  -4096,  -3641, -3277};
 #endif /* LDCOEFF_16BIT */
@@ -220,7 +220,7 @@ extern const uint32_t exp2_tab_long[32];
 extern const uint32_t exp2w_tab_long[32];
 extern const uint32_t exp2x_tab_long[32];
 
-LNK_SECTION_CODE_L1
+
 static inline int32_t CalcInvLdData(const int32_t x) {
   int32_t set_zero = (x < FL2FXCONST_DBL(-31.0 / 64.0)) ? 0 : 1;
   int32_t set_max = (x >= FL2FXCONST_DBL(31.0 / 64.0)) | (x == FL2FXCONST_DBL(0.0));
@@ -313,7 +313,7 @@ void InitInvSqrtTab();
       Q(n+1) = Q(n) + Q(n) * (0.5 - 2 * V * Q(n)^2)
       with Q = 0.5* V ^-0.5; 0.5 <= V < 1.0
 *****************************************************************************/
-static FDK_FORCEINLINE int32_t invSqrtNorm2(int32_t op, int32_t *shift) {
+static inline int32_t invSqrtNorm2(int32_t op, int32_t *shift) {
   int32_t val = op;
   int32_t reg1, reg2;
 
@@ -370,7 +370,7 @@ static FDK_FORCEINLINE int32_t invSqrtNorm2(int32_t op, int32_t *shift) {
 #endif /* FUNCTION_invSqrtNorm2 */
 
 #ifndef FUNCTION_sqrtFixp
-static FDK_FORCEINLINE int32_t sqrtFixp(int32_t op) {
+static inline int32_t sqrtFixp(int32_t op) {
   int32_t tmp_exp = 0;
   int32_t tmp_inv = invSqrtNorm2(op, &tmp_exp);
 
@@ -932,7 +932,7 @@ int32_t fixp_round(int32_t f_inp, int32_t sf);
 
 extern const int32_t invCount[80];
 
-LNK_SECTION_INITCODE
+
 inline void InitInvInt(void) {}
 
 /**

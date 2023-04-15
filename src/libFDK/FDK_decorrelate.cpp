@@ -499,7 +499,7 @@ static int32_t DecorrFilterInitPS(DECORR_FILTER_INSTANCE *const self, FIXP_MPS *
     return errorCode;
 }
 
-LNK_SECTION_CODE_L1
+
 static int32_t DecorrFilterApplyPASS(DECORR_FILTER_INSTANCE const filter[], int32_t *dataRealIn, int32_t *dataImagIn,
                                      int32_t *dataRealOut, int32_t *dataImagOut, int32_t start, int32_t stop,
                                      int32_t reverbBandNoSampleDelay, int32_t reverbBandDelayBufferIndex) {
@@ -548,7 +548,7 @@ static int32_t DecorrFilterApplyPASS(DECORR_FILTER_INSTANCE const filter[], int3
 }
 
 #ifndef FUNCTION_DecorrFilterApplyREAL
-LNK_SECTION_CODE_L1
+
 static int32_t DecorrFilterApplyREAL(DECORR_FILTER_INSTANCE const filter[], int32_t *dataRealIn, int32_t *dataImagIn,
                                      int32_t *dataRealOut, int32_t *dataImagOut, int32_t start, int32_t stop,
                                      int32_t reverbFilterOrder, int32_t reverbBandNoSampleDelay,
@@ -709,7 +709,7 @@ static int32_t DecorrFilterApplyREAL(DECORR_FILTER_INSTANCE const filter[], int3
 #endif /* #ifndef FUNCTION_DecorrFilterApplyREAL */
 
 #ifndef FUNCTION_DecorrFilterApplyCPLX_PS
-LNK_SECTION_CODE_L1
+
 static int32_t DecorrFilterApplyCPLX_PS(DECORR_FILTER_INSTANCE const filter[], int32_t *dataRealIn, int32_t *dataImagIn,
                                         int32_t *dataRealOut, int32_t *dataImagOut, int32_t start, int32_t stop,
                                         int32_t reverbFilterOrder, int32_t reverbBandNoSampleDelay,
@@ -1015,7 +1015,7 @@ static int32_t DuckerCalcEnergy(DUCKER_INSTANCE *const self, int32_t const input
 }
 #endif /* #ifndef FUNCTION_DuckerCalcEnergy */
 
-LNK_SECTION_CODE_L1
+
 static int32_t DuckerApply(DUCKER_INSTANCE *const self, int32_t const directNrg[(28)], int32_t outputReal[(71)],
                            int32_t outputImag[(71)], int32_t startHybBand) {
     int32_t err = 0;
@@ -1157,7 +1157,7 @@ static int32_t DuckerApply(DUCKER_INSTANCE *const self, int32_t const directNrg[
     return err;
 }
 
-LNK_SECTION_CODE_L1
+
 static int32_t DuckerApplyPS(DUCKER_INSTANCE *const self, int32_t const directNrg[(28)], int32_t outputReal[(71)],
                              int32_t outputImag[(71)], int32_t startHybBand) {
     int32_t qs = startHybBand;
@@ -1454,7 +1454,7 @@ int32_t FDKdecorrelateClose(HANDLE_DECORR_DEC hDecorrDec) {
     return err;
 }
 
-LNK_SECTION_CODE_L1
+
 int32_t FDKdecorrelateApply(HANDLE_DECORR_DEC hDecorrDec, int32_t *dataRealIn, int32_t *dataImagIn,
                             int32_t *dataRealOut, int32_t *dataImagOut, const int32_t startHybBand) {
     HANDLE_DECORR_DEC self = hDecorrDec;

@@ -179,7 +179,7 @@ void mdct_init(H_MDCT hMdct, int32_t *overlap, int32_t overlapBufferSize);
  * return for output data.
  * \return number of input samples processed.
  */
-int32_t mdct_block(H_MDCT hMdct, const INT_PCM *pTimeData, const int32_t noInSamples,
+int32_t mdct_block(H_MDCT hMdct, const int16_t *pTimeData, const int32_t noInSamples,
                int32_t * mdctData, const int32_t nSpec, const int32_t tl,
                const FIXP_WTP *pRightWindowPart, const int32_t fr,
                int16_t *pMdctData_e);

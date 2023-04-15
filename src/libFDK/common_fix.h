@@ -125,7 +125,7 @@ amm-info@iis.fraunhofer.de
 #define MAXVAL_FIXP_PCM MAXVAL_DBL__vsclgbu8wtk
 #define MINVAL_FIXP_PCM MINVAL_DBL
 #define FX_PCM2FX_DBL(x) ((int32_t)(x))
-#define FX_DBL2FX_PCM(x) ((INT_PCM)(x))
+#define FX_DBL2FX_PCM(x) ((int16_t)(x))
 #elif (SAMPLE_BITS == FRACT_BITS)
 #define FIXP_PCM int16_t
 #define MAXVAL_FIXP_PCM MAXVAL_SGL
@@ -153,14 +153,10 @@ amm-info@iis.fraunhofer.de
 
 /* Max and Min values for saturation purposes. DO NOT USE THESE VALUES AS SCALE
  * VALUES !! */
-#define MAXVAL_SGL \
-  ((signed)0x00007FFF) /* this has to be synchronized to FRACT_BITS */
-#define MINVAL_SGL \
-  ((signed)0xFFFF8000) /* this has to be synchronized to FRACT_BITS */
-#define MAXVAL_DBL \
-  ((signed)0x7FFFFFFF) /* this has to be synchronized to DFRACT_BITS */
-#define MINVAL_DBL \
-  ((signed)0x80000000) /* this has to be synchronized to DFRACT_BITS */
+#define MAXVAL_SGL ((signed)0x00007FFF) /* this has to be synchronized to FRACT_BITS */
+#define MINVAL_SGL ((signed)0xFFFF8000) /* this has to be synchronized to FRACT_BITS */
+#define MAXVAL_DBL ((signed)0x7FFFFFFF) /* this has to be synchronized to DFRACT_BITS */
+#define MINVAL_DBL ((signed)0x80000000) /* this has to be synchronized to DFRACT_BITS */
 
 #define shouldBeUnion union /* unions are possible */
 

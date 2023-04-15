@@ -587,7 +587,7 @@ static const int32_t preModSin[32] = {
 /* (int32_t) (1.0/cuberoot((op)));                    */
 /* Implicit exponent is 1.                        */
 
-LNK_SECTION_CONSTDATA
+
 static const int32_t invCubeRootTab[CUBE_ROOT_VALUES] = {
     (0x50a28be6), (0x506d1172), (0x503823c4), (0x5003c05a), (0x4fcfe4c0),
     (0x4f9c8e92), (0x4f69bb7d), (0x4f37693b), (0x4f059594), (0x4ed43e5f),
@@ -641,7 +641,7 @@ static const int32_t invCubeRootCorrection[3] = {0x40000000, 0x50A28BE6,
  */
 static
 #ifdef __arm__
-    int32_t FDK_FORCEINLINE
+    int32_t inline
     invCubeRootNorm2(int32_t op_m, int32_t* op_e)
 #else
     int32_t
@@ -704,7 +704,7 @@ static
 #define FOURTHROOT_BITS_MASK 0x7f
 #define FOURTHROOT_FRACT_BITS_MASK 0x007FFFFF
 
-LNK_SECTION_CONSTDATA
+
 static const int32_t invFourthRootTab[FOURTHROOT_VALUES] = {
     (0x4c1bf829), (0x4bf61977), (0x4bd09843), (0x4bab72ef), (0x4b86a7eb),
     (0x4b6235ac), (0x4b3e1ab6), (0x4b1a5592), (0x4af6e4d4), (0x4ad3c718),
@@ -763,7 +763,7 @@ static const int32_t invFourthRootCorrection[4] = {0x40000000, 0x4C1BF829,
 
 static
 #ifdef __arm__
-    int32_t FDK_FORCEINLINE
+    int32_t inline
     invFourthRootNorm2(int32_t op_m, int32_t* op_e)
 #else
     int32_t
@@ -816,7 +816,7 @@ of the OUTPUT
 #define THREEIGTHROOT_BITS_MASK 0x7f
 #define THREEIGTHROOT_FRACT_BITS_MASK 0x007FFFFF
 
-LNK_SECTION_CONSTDATA
+
 static const int32_t inv3EigthRootTab[THREEIGTHROOT_VALUES] = {
     (0x45cae0f2), (0x45b981bf), (0x45a8492a), (0x45973691), (0x45864959),
     (0x457580e6), (0x4564dca4), (0x45545c00), (0x4543fe6b), (0x4533c35a),
@@ -879,7 +879,7 @@ static const int32_t inv3EigthRootCorrection[8] = {
 
 static
 #ifdef __arm__
-    int32_t FDK_FORCEINLINE
+    int32_t inline
     inv3EigthRootNorm2(int32_t op_m, int32_t* op_e)
 #else
     int32_t

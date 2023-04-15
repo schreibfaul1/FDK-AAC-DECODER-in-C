@@ -516,7 +516,7 @@ static int32_t CProgramConfigElement_Read(HANDLE_FDK_BITSTREAM bs, HANDLE_TRANSP
 
   \return  Error code
 */
-AAC_DECODER_ERROR CAacDecoder_PrepareCrossFade(const INT_PCM *pTimeData, INT_PCM **pTimeDataFlush,
+AAC_DECODER_ERROR CAacDecoder_PrepareCrossFade(const int16_t *pTimeData, int16_t **pTimeDataFlush,
 											   const int32_t numChannels, const int32_t frameSize, const int32_t interleaved) {
 	int32_t               i, ch, s1, s2;
 	AAC_DECODER_ERROR ErrorStatus;
@@ -533,7 +533,7 @@ AAC_DECODER_ERROR CAacDecoder_PrepareCrossFade(const INT_PCM *pTimeData, INT_PCM
 	}
 
 	for(ch = 0; ch < numChannels; ch++) {
-		const INT_PCM *pIn = &pTimeData[ch * s1];
+		const int16_t *pIn = &pTimeData[ch * s1];
 		for(i = 0; i < TIME_DATA_FLUSH_SIZE; i++) {
 			pTimeDataFlush[ch][i] = *pIn;
 			pIn += s2;
@@ -554,7 +554,7 @@ AAC_DECODER_ERROR CAacDecoder_PrepareCrossFade(const INT_PCM *pTimeData, INT_PCM
 
   \return  Error code
 */
-AAC_DECODER_ERROR CAacDecoder_ApplyCrossFade(INT_PCM *pTimeData, INT_PCM **pTimeDataFlush, const int32_t numChannels,
+AAC_DECODER_ERROR CAacDecoder_ApplyCrossFade(int16_t *pTimeData, int16_t **pTimeDataFlush, const int32_t numChannels,
 											 const int32_t frameSize, const int32_t interleaved) {
 	int32_t               i, ch, s1, s2;
 	AAC_DECODER_ERROR ErrorStatus;
@@ -571,13 +571,13 @@ AAC_DECODER_ERROR CAacDecoder_ApplyCrossFade(INT_PCM *pTimeData, INT_PCM **pTime
 	}
 
 	for(ch = 0; ch < numChannels; ch++) {
-		INT_PCM *pIn = &pTimeData[ch * s1];
+		int16_t *pIn = &pTimeData[ch * s1];
 		for(i = 0; i < TIME_DATA_FLUSH_SIZE; i++) {
 			int16_t alpha = (int16_t)i << (FRACT_BITS - 1 - TIME_DATA_FLUSH_SIZE_SF);
 			int32_t time = FX_PCM2FX_DBL(*pIn);
 			int32_t timeFlush = FX_PCM2FX_DBL(pTimeDataFlush[ch][i]);
 
-			*pIn = (INT_PCM)(FIXP_PCM)FX_DBL2FX_PCM(timeFlush - fMult(timeFlush, alpha) + fMult(time, alpha));
+			*pIn = (int16_t)(FIXP_PCM)FX_DBL2FX_PCM(timeFlush - fMult(timeFlush, alpha) + fMult(time, alpha));
 			pIn += s2;
 		}
 	}
@@ -1984,7 +1984,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, uint8
 				for(int32_t _ch = 0; _ch < flushChannels; _ch++) {
 					ch = aacChannelsOffset + _ch;
 					if(self->pTimeDataFlush[ch] == NULL) {
-						self->pTimeDataFlush[ch] = (INT_PCM *)FDKcalloc((128), sizeof(INT_PCM));
+						self->pTimeDataFlush[ch] = (int16_t *)FDKcalloc((128), sizeof(int16_t));
 						if(self->pTimeDataFlush[ch] == NULL) { goto bail; }
 					}
 				}

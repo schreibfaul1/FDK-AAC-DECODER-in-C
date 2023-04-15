@@ -138,8 +138,8 @@ void ifft(int32_t length, int32_t *pInput, int32_t *scalefactor);
  * \param pInput Input/Output data buffer. The input data must have at least 1
  * bit scale headroom. The values are interleaved, real/imag pairs.
  */
-LNK_SECTION_CODE_L1
-static FDK_FORCEINLINE void fft_4(int32_t *x) {
+
+static inline void fft_4(int32_t *x) {
   int32_t a00, a10, a20, a30, tmp0, tmp1;
 
   a00 = (x[0] + x[4]) >> 1; /* Re A + Re B */
@@ -167,8 +167,8 @@ static FDK_FORCEINLINE void fft_4(int32_t *x) {
 #endif /* FUNCTION_fft_4 */
 
 #ifndef FUNCTION_fft_8
-LNK_SECTION_CODE_L1
-static FDK_FORCEINLINE void fft_8(int32_t *x) {
+
+static inline void fft_8(int32_t *x) {
   FIXP_SPK w_PiFOURTH = {{int16_t(0x5A82), int16_t(0x5A82)}};
 
   int32_t a00, a10, a20, a30;

@@ -628,16 +628,16 @@ int32_t getScalefactorShort(const int16_t *vector, /*!< Pointer to input vector 
  */
 #define FUNCTION_getScalefactorPCM
 SCALE_INLINE
-int32_t getScalefactorPCM(const INT_PCM *vector, /*!< Pointer to input vector */
+int32_t getScalefactorPCM(const int16_t *vector, /*!< Pointer to input vector */
                       int32_t len,               /*!< Length of input vector */
                       int32_t stride) {
   int32_t i;
-  INT_PCM temp, maxVal = 0;
+  int16_t temp, maxVal = 0;
 
   for (i = len; i != 0; i--) {
-    temp = (INT_PCM)(*vector);
+    temp = (int16_t)(*vector);
     vector += stride;
-    maxVal |= (temp ^ (temp >> ((sizeof(INT_PCM) * 8) - 1)));
+    maxVal |= (temp ^ (temp >> ((sizeof(int16_t) * 8) - 1)));
   }
   return fixmax_I((int32_t)0, (int32_t)(fixnormz_D((int32_t)maxVal) - (int32_t)1 -
                                 (int32_t)(DFRACT_BITS - SAMPLE_BITS)));

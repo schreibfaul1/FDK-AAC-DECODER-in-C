@@ -113,7 +113,7 @@ amm-info@iis.fraunhofer.de
 /*****************************************************************************
   functionname: LdDataVector
 *****************************************************************************/
-LNK_SECTION_CODE_L1
+
 void LdDataVector(int32_t *srcVector, int32_t *destVector, int32_t n) {
   int32_t i;
   for (i = 0; i < n; i++) {
@@ -137,7 +137,7 @@ void LdDataVector(int32_t *srcVector, int32_t *destVector, int32_t n) {
   ln(2)^i
  */
 RAM_ALIGN
-LNK_SECTION_CONSTDATA_L1
+
 static const int16_t pow2Coeff[MAX_POW2_PRECISION] = {
     22713, 7872, 1819, 315, 44, 5, 0, 0,
 };
@@ -182,7 +182,7 @@ values.
 
 /* This table is used for lookup 2^x with   */
 /* x in range [0...1.0[ in steps of 1/32 */
-LNK_SECTION_DATA_L1
+
 const uint32_t exp2_tab_long[32] = {
     0x40000000, 0x4166C34C, 0x42D561B4, 0x444C0740, 0x45CAE0F2, 0x47521CC6,
     0x48E1E9BA, 0x4A7A77D4, 0x4C1BF829, 0x4DC69CDD, 0x4F7A9930, 0x51382182,
@@ -195,7 +195,7 @@ const uint32_t exp2_tab_long[32] = {
 
 /* This table is used for lookup 2^x with   */
 /* x in range [0...1/32[ in steps of 1/1024 */
-LNK_SECTION_DATA_L1
+
 const uint32_t exp2w_tab_long[32] = {
     0x40000000, 0x400B1818, 0x4016321B, 0x40214E0C, 0x402C6BE9, 0x40378BB4,
     0x4042AD6D, 0x404DD113, 0x4058F6A8, 0x40641E2B, 0x406F479E, 0x407A7300,
@@ -207,7 +207,7 @@ const uint32_t exp2w_tab_long[32] = {
 };
 /* This table is used for lookup 2^x with   */
 /* x in range [0...1/1024[ in steps of 1/32768 */
-LNK_SECTION_DATA_L1
+
 const uint32_t exp2x_tab_long[32] = {
     0x40000000, 0x400058B9, 0x4000B173, 0x40010A2D, 0x400162E8, 0x4001BBA3,
     0x4002145F, 0x40026D1B, 0x4002C5D8, 0x40031E95, 0x40037752, 0x4003D011,
@@ -228,7 +228,7 @@ LD_INT_TAB_LEN)
 
 
 
-LNK_SECTION_CONSTDATA_L1
+
 static const int32_t ldIntCoeff[] = {
     (int32_t)0x80000001, (int32_t)0x00000000, (int32_t)0x02000000,
     (int32_t)0x032b8034, (int32_t)0x04000000, (int32_t)0x04a4d3c2,
@@ -297,13 +297,13 @@ static const int32_t ldIntCoeff[] = {
     (int32_t)0x0f2b8034};
 
 
-LNK_SECTION_INITCODE
+
 void InitLdInt() { /* nothing to do! Use preinitialized logarithm table */
 }
 
 #if (LD_INT_TAB_LEN != 0)
 
-LNK_SECTION_CODE_L1
+
 int32_t CalcLdInt(int32_t i) {
   /* calculates ld(op)/LD_DATA_SCALING */
   /* op is assumed to be an integer value between 1 and LD_INT_TAB_LEN */

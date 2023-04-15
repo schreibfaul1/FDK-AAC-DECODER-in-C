@@ -17,17 +17,10 @@
 #include <stddef.h> /* Needed to define size_t */
 #include <stdint.h>
 
-
-
-typedef int16_t INT_PCM;
-#define MAXVAL_PCM MAXVAL_SGL
-#define MINVAL_PCM MINVAL_SGL
 #define WAV_BITS 16
 #define SAMPLE_BITS 16
-#define SAMPLE_MAX ((INT_PCM)(((uint32_t)1 << (SAMPLE_BITS - 1)) - 1))
+#define SAMPLE_MAX ((int16_t)(((uint32_t)1 << (SAMPLE_BITS - 1)) - 1))
 #define SAMPLE_MIN (~SAMPLE_MAX)
-
-
 
 #define ALIGNMENT_DEFAULT 8
 #define RAM_ALIGN __attribute__((aligned(ALIGNMENT_DEFAULT)))
@@ -51,43 +44,12 @@ inline int32_t* ALIGN_PTR1(int32_t* a){
          return  a + ((int32_t)8 - ((size_t)a & 7) & 7);
 }
 
-
-
-
-
 /* Alignment macro for libSYS heap implementation */
 #define ALIGNMENT_EXTRES (ALIGNMENT_DEFAULT)
 #define ALGN_SIZE_EXTRES(a)                                               \
   ((a) + (((int32_t)ALIGNMENT_EXTRES - ((int32_t)(a) & (ALIGNMENT_EXTRES - 1))) & \
           (ALIGNMENT_EXTRES - 1)))
 
-/*!
- * \def  FDK_FORCEINLINE
- *       Sometimes compiler do not do what they are told to do, and in case of
- * inlining some additional command might be necessary depending on the
- * platform.
- *
- * \def  static inline
- *       Defines how the compiler is told to inline stuff.
- */
-
-
-#define FDK_FORCEINLINE inline __attribute((always_inline))
-
-#define LNK_SECTION_CODE_L1
-#define LNK_SECTION_CODE_L2
-#define LNK_SECTION_INITCODE
-
-/* Memory section macros. */
-
-/* default fall back */
-#define LNK_SECTION_DATA_L1
-#define LNK_SECTION_DATA_L2
-#define LNK_SECTION_CONSTDATA
-#define LNK_SECTION_CONSTDATA_L1
-
-#define LNK_SECTION_L1_DATA_A
-#define LNK_SECTION_L1_DATA_B
 
 
 

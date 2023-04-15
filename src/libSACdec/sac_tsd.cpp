@@ -108,13 +108,13 @@ amm-info@iis.fraunhofer.de
 
 /*** Tables ***/
 RAM_ALIGN
-LNK_SECTION_CONSTDATA
+
 static const uint8_t nBitsTsdCW_32slots[32] = {
     5,  9,  13, 16, 18, 20, 22, 24, 25, 26, 27, 28, 29, 29, 30, 30,
     30, 29, 29, 28, 27, 26, 25, 24, 22, 20, 18, 16, 13, 9,  5,  0};
 
 RAM_ALIGN
-LNK_SECTION_CONSTDATA
+
 static const uint8_t nBitsTsdCW_64slots[64] = {
     6,  11, 16, 20, 23, 27, 30, 33, 35, 38, 40, 42, 44, 46, 48, 49,
     51, 52, 53, 55, 56, 57, 58, 58, 59, 60, 60, 60, 61, 61, 61, 61,
@@ -122,7 +122,7 @@ static const uint8_t nBitsTsdCW_64slots[64] = {
     48, 46, 44, 42, 40, 38, 35, 33, 30, 27, 23, 20, 16, 11, 6,  0};
 
 RAM_ALIGN
-LNK_SECTION_CONSTDATA
+
 static const FIXP_DPK phiTsd[8] = {
     {{(int32_t)0x7fffffff, (int32_t)0x00000000}},
     {{(int32_t)0x5a82799a, (int32_t)0x5a82799a}},

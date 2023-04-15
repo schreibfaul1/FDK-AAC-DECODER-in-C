@@ -167,7 +167,7 @@ TDLimiterPtr pcmLimiter_Create(uint32_t maxAttackMs, uint32_t releaseMs,
 
 /* apply limiter */
 TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
-                                 INT_PCM* samplesOut, int32_t* pGainPerSample,
+                                 int16_t* samplesOut, int32_t* pGainPerSample,
                                  const int32_t scaling, const uint32_t nSamples) {
   uint32_t i, j;
   int32_t tmp2;
@@ -296,10 +296,10 @@ TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
           /* Apply gain to delayed signal */
           tmp = fMultDiv2(tmp, gain);
 #if (SAMPLE_BITS == DFRACT_BITS)
-          samplesOut[j] = (INT_PCM)FX_DBL2FX_PCM(
+          samplesOut[j] = (int16_t)FX_DBL2FX_PCM(
               (int32_t)SATURATE_LEFT_SHIFT(tmp, scaling + 1, DFRACT_BITS));
 #else
-          samplesOut[j] = (INT_PCM)FX_DBL2FX_PCM((int32_t)SATURATE_LEFT_SHIFT(
+          samplesOut[j] = (int16_t)FX_DBL2FX_PCM((int32_t)SATURATE_LEFT_SHIFT(
               tmp + ((int32_t)0x8000 >> (scaling + 1)), scaling + 1,
               DFRACT_BITS));
 #endif
@@ -316,10 +316,10 @@ TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
           }
 
 #if (SAMPLE_BITS == DFRACT_BITS)
-          samplesOut[j] = (INT_PCM)FX_DBL2FX_PCM(
+          samplesOut[j] = (int16_t)FX_DBL2FX_PCM(
               (int32_t)SATURATE_LEFT_SHIFT(tmp, scaling, DFRACT_BITS));
 #else
-          samplesOut[j] = (INT_PCM)FX_DBL2FX_PCM((int32_t)SATURATE_LEFT_SHIFT(
+          samplesOut[j] = (int16_t)FX_DBL2FX_PCM((int32_t)SATURATE_LEFT_SHIFT(
               tmp + ((int32_t)0x8000 >> scaling), scaling, DFRACT_BITS));
 #endif
         }

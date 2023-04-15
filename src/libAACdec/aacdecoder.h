@@ -325,7 +325,7 @@ This structure is allocated once for each CPE. */
   uint32_t loudnessInfoSetPosition[3];
   int8_t defaultTargetLoudness;
 
-  INT_PCM
+  int16_t
   *pTimeDataFlush[((8) * 2)]; /*!< Pointer to the flushed time data which
                                  will be used for the crossfade in case of
                                  an USAC DASH IPF config change */
@@ -439,12 +439,12 @@ AAC_DECODER_ERROR CAacDecoder_FreeMem(HANDLE_AACDECODER self,
 
 /* Prepare crossfade for USAC DASH IPF config change */
 AAC_DECODER_ERROR CAacDecoder_PrepareCrossFade(
-    const INT_PCM *pTimeData, INT_PCM **pTimeDataFlush, const int32_t numChannels,
+    const int16_t *pTimeData, int16_t **pTimeDataFlush, const int32_t numChannels,
     const int32_t frameSize, const int32_t interleaved);
 
 /* Apply crossfade for USAC DASH IPF config change */
 AAC_DECODER_ERROR CAacDecoder_ApplyCrossFade(
-    INT_PCM *pTimeData, INT_PCM **pTimeDataFlush, const int32_t numChannels,
+    int16_t *pTimeData, int16_t **pTimeDataFlush, const int32_t numChannels,
     const int32_t frameSize, const int32_t interleaved);
 
 /* Set flush and build up mode */

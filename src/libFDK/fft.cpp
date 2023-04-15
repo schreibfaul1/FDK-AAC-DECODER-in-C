@@ -170,7 +170,7 @@ amm-info@iis.fraunhofer.de
 
 /* Performs the FFT of length 2. Input vector unscaled, output vector scaled
  * with factor 0.5 */
-static FDK_FORCEINLINE void fft2(int32_t * pDat) {
+static inline void fft2(int32_t * pDat) {
   int32_t r1, i1;
   int32_t r2, i2;
 
@@ -196,7 +196,7 @@ static FDK_FORCEINLINE void fft2(int32_t * pDat) {
 
 #ifndef FUNCTION_fft3
 /* Performs the FFT of length 3 according to the algorithm after winograd. */
-static FDK_FORCEINLINE void fft3(int32_t * pDat) {
+static inline void fft3(int32_t * pDat) {
   int32_t r1, r2;
   int32_t s1, s2;
   int32_t pD;
@@ -231,7 +231,7 @@ static FDK_FORCEINLINE void fft3(int32_t * pDat) {
 
 /* performs the FFT of length 5 according to the algorithm after winograd */
 /* This version works with a prescale of 2 instead of 3 */
-static FDK_FORCEINLINE void fft5(int32_t * pDat) {
+static inline void fft5(int32_t * pDat) {
   int32_t r1, r2, r3, r4;
   int32_t s1, s2, s3, s4;
   int32_t t;
@@ -730,7 +730,7 @@ static inline void fft15(int32_t *pInput) {
 static const FIXP_STP fft16_w16[2] = {    30274, 12540,
                                           12540, 30274};
 
-LNK_SECTION_CODE_L1
+
 inline void fft_16(int32_t * x) {
   int32_t vr, ur;
   int32_t vr2, ur2;
@@ -997,7 +997,7 @@ static const FIXP_STP fft32_w32[6] = {
         18205, 27246,     6393, 32138};
 #define W_PiFOURTH 23170
 
-LNK_SECTION_CODE_L1
+
 inline void fft_32(int32_t *const _x) {
   /*
    * 1+2 stage radix 4
