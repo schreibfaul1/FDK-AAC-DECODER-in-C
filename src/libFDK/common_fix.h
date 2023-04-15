@@ -264,12 +264,9 @@ static inline int32_t fMultBitExact(int32_t a, int16_t b) {
  */
 #include "abs.h"
 
-static inline int32_t fAbs(int32_t x) { return fixabs_D(x); }
-static inline int16_t fAbs(int16_t x) { return fixabs_S(x); }
+static inline int32_t fAbs(int32_t x) { if(x > (int32_t)0) return x; return -x; }
+static inline int16_t fAbs(int16_t x) { if(x > (int16_t)0) return x; return -x; }
 
-#if !defined(__LP64__)
-static inline int32_t fAbs(int32_t x) { return fixabs_I(x); }
-#endif
 
   /* ********************************************************************************
    */
