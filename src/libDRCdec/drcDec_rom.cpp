@@ -103,6 +103,7 @@ amm-info@iis.fraunhofer.de
 #include "drcDec_types.h"
 #include "drcDec_rom.h"
 
+
 const int8_t deltaGain_codingProfile_0_1_huffman[24][2] = {
     {1, 2},    {3, 4},     {-63, -65}, {5, -66},   {-64, 6},   {-80, 7},
     {8, 9},    {-68, 10},  {11, 12},   {-56, -67}, {-61, 13},  {-62, -69},
