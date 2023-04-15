@@ -370,9 +370,6 @@ void bass_pf_1sf_delay(
                 (L_FILT + L_SUBFR) * sizeof(int32_t));
     }
 
-    /* substract from voiced speech low-pass filtered noise */
-    /* filter coefficients are scaled with factor SF_FILT_LP (1) */
-
     {
       filtLP(&syn[i_subfr - L_SUBFR], &synth_out[i_subfr], noise,
              fdk_dec_filt_lp, aacOutDataHeadroom, L_SUBFR, L_FILT);

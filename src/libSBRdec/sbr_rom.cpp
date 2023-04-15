@@ -209,8 +209,7 @@ const int16_t FDK_sbrDecoder_sbr_limGains_m[4] = {
 const uint8_t FDK_sbrDecoder_sbr_limGains_e[4] = {0, 1, 1, 67};
 
 /*! Constants for calculating the number of limiter bands */
-const int16_t FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4[4] = {
-    FL2FXCONST_SGL(1.0f / 4.0f), FL2FXCONST_SGL(1.2f / 4.0f), FL2FXCONST_SGL(2.0f / 4.0f), FL2FXCONST_SGL(3.0f / 4.0f)};
+const int16_t FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4[4] = {8192, 9830, 16384, 24576};
 
 /*! Constants for calculating the number of limiter bands */
 const int32_t FDK_sbrDecoder_sbr_limiterBandsPerOctaveDiv4_DBL[4] = {

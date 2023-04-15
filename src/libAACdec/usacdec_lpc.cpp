@@ -989,7 +989,7 @@ int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
         if (tmp >= FL2FXCONST_DBL(1.0f / (1 << LSF_SCALE))) {
           pStability[k] = FL2FXCONST_SGL(1.0f / 2.0f);
         } else if (tmp < FL2FXCONST_DBL(0.0f)) {
-          pStability[k] = FL2FXCONST_SGL(0.0f);
+          pStability[k] = 0;
         } else {
           pStability[k] = FX_DBL2FX_SGL(tmp << (LSF_SCALE - 1));
         }

@@ -391,14 +391,7 @@ static const int32_t sinIpd_tab[N_IPD] = {
 #define COS_IPD(a) (sinIpd_tab[((a) + 4) & 15])  //(cosIpd_tab[(a)])
 
 static const int16_t sqrt_one_minus_ICC2[8] = {
-    FL2FXCONST_SGL(0.0f),
-    FL2FXCONST_SGL(0.349329357483736f),
-    FL2FXCONST_SGL(0.540755219669676f),
-    FL2FXCONST_SGL(0.799309172723546f),
-    FL2FXCONST_SGL(0.929968187843004f),
-    32767,
-    FL2FXCONST_SGL(0.80813303360276f),
-    FL2FXCONST_SGL(0.141067359796659f),
+    0, 11447, 17719, 26192, 30473, 32767, 26481, 4622,
 };
 
 /* exponent of sqrt(CLD) */

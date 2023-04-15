@@ -283,7 +283,7 @@ void lppTransposer(
 
   int16_t alphar[LPC_ORDER], a0r, a1r;
   int16_t alphai[LPC_ORDER], a0i = 0, a1i = 0;
-  int16_t bw = FL2FXCONST_SGL(0.0f);
+  int16_t bw = 0;
 
   int32_t autoCorrLength;
 
@@ -299,8 +299,8 @@ void lppTransposer(
   int32_t lowBandShift;
   /*  int32_t ovHighBandShift;*/
 
-  alphai[0] = FL2FXCONST_SGL(0.0f);
-  alphai[1] = FL2FXCONST_SGL(0.0f);
+  alphai[0] = 0;
+  alphai[1] = 0;
 
   startSample = firstSlotOffs * timeStep;
   stopSample = pSettings->nCols + lastSlotOffs * timeStep;
@@ -499,8 +499,8 @@ void lppTransposer(
       resetLPCCoeffs = 1;
     }
 
-    alphar[1] = FL2FXCONST_SGL(0.0f);
-    if (!useLP) alphai[1] = FL2FXCONST_SGL(0.0f);
+    alphar[1] = 0;
+    if (!useLP) alphai[1] = 0;
 
     if (ac.det != FL2FXCONST_DBL(0.0f)) {
       int32_t tmp, absTmp, absDet;
@@ -565,8 +565,8 @@ void lppTransposer(
       }
     }
 
-    alphar[0] = FL2FXCONST_SGL(0.0f);
-    if (!useLP) alphai[0] = FL2FXCONST_SGL(0.0f);
+    alphar[0] = 0;
+    if (!useLP) alphai[0] = 0;
 
     if (ac.r11r != FL2FXCONST_DBL(0.0f)) {
       /* ac.r11r is always >=0 */
@@ -633,11 +633,11 @@ void lppTransposer(
     }
 
     if (resetLPCCoeffs) {
-      alphar[0] = FL2FXCONST_SGL(0.0f);
-      alphar[1] = FL2FXCONST_SGL(0.0f);
+      alphar[0] = 0;
+      alphar[1] = 0;
       if (!useLP) {
-        alphai[0] = FL2FXCONST_SGL(0.0f);
-        alphai[1] = FL2FXCONST_SGL(0.0f);
+        alphai[0] = 0;
+        alphai[1] = 0;
       }
     }
 
@@ -648,11 +648,11 @@ void lppTransposer(
       } else {
         if (fixp_abs(ac.r01r) >= fixp_abs(ac.r11r)) {
           if (fMultDiv2(ac.r01r, ac.r11r) < FL2FX_DBL(0.0f)) {
-            k1 = (int32_t)MAXVAL_DBL /*FL2FXCONST_SGL(1.0f)*/;
+            k1 = (int32_t)MAXVAL_DBL;
           } else {
             /* Since this value is squared later, it must not ever become -1.0f.
              */
-            k1 = (int32_t)(MINVAL_DBL + 1) /*FL2FXCONST_SGL(-1.0f)*/;
+            k1 = (int32_t)(MINVAL_DBL + 1);
           }
         } else {
           int32_t scale;
@@ -741,7 +741,7 @@ void lppTransposer(
       /*
         Filter Step 3: insert the middle part which won't be windowed
       */
-      if (bw <= FL2FXCONST_SGL(0.0f)) {
+      if (bw <= 0) {
         if (!useLP) {
           int32_t descale =
               fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
@@ -890,7 +890,7 @@ void lppTransposerHBE(
 
   int16_t alphar[LPC_ORDER], a0r, a1r;
   int16_t alphai[LPC_ORDER], a0i = 0, a1i = 0;
-  int16_t bw = FL2FXCONST_SGL(0.0f);
+  int16_t bw = 0;
 
   int32_t autoCorrLength;
 
@@ -904,8 +904,8 @@ void lppTransposerHBE(
   int32_t lowBandShift;
   /*  int32_t ovHighBandShift;*/
 
-  alphai[0] = FL2FXCONST_SGL(0.0f);
-  alphai[1] = FL2FXCONST_SGL(0.0f);
+  alphai[0] = 0;
+  alphai[1] = 0;
 
   startSample = firstSlotOffs * timeStep;
   stopSample = pSettings->nCols + lastSlotOffs * timeStep;
@@ -1041,8 +1041,8 @@ void lppTransposerHBE(
       resetLPCCoeffs = 1;
     }
 
-    alphar[1] = FL2FXCONST_SGL(0.0f);
-    alphai[1] = FL2FXCONST_SGL(0.0f);
+    alphar[1] = 0;
+    alphai[1] = 0;
 
     if (ac.det != FL2FXCONST_DBL(0.0f)) {
       int32_t tmp, absTmp, absDet;
@@ -1099,8 +1099,8 @@ void lppTransposerHBE(
       }
     }
 
-    alphar[0] = FL2FXCONST_SGL(0.0f);
-    alphai[0] = FL2FXCONST_SGL(0.0f);
+    alphar[0] = 0;
+    alphai[0] = 0;
 
     if (ac.r11r != FL2FXCONST_DBL(0.0f)) {
       /* ac.r11r is always >=0 */
@@ -1157,10 +1157,10 @@ void lppTransposerHBE(
     }
 
     if (resetLPCCoeffs) {
-      alphar[0] = FL2FXCONST_SGL(0.0f);
-      alphar[1] = FL2FXCONST_SGL(0.0f);
-      alphai[0] = FL2FXCONST_SGL(0.0f);
-      alphai[1] = FL2FXCONST_SGL(0.0f);
+      alphar[0] = 0;
+      alphar[1] = 0;
+      alphai[0] = 0;
+      alphai[1] = 0;
     }
 
     while (bwIndex < MAX_NUM_PATCHES - 1 &&
@@ -1184,7 +1184,7 @@ void lppTransposerHBE(
     /*
     Filter Step 3: insert the middle part which won't be windowed
     */
-    if (bw <= FL2FXCONST_SGL(0.0f)) {
+    if (bw <= 0) {
       int32_t descale = fixMin(DFRACT_BITS - 1, (LPC_SCALE_FACTOR + dynamicScale));
       for (i = startSample; i < stopSample; i++) {
         qmfBufferReal[i][loBand] = lowBandReal[LPC_ORDER + i] >> descale;

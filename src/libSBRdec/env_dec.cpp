@@ -416,7 +416,7 @@ static void leanSbrConcealment(
     target = (int16_t)SBR_ENERGY_PAN_OFFSET;
     step = (int16_t)DECAY_COUPLING;
   } else {
-    target = FL2FXCONST_SGL(0.0f);
+    target = 0;
     step = (int16_t)DECAY;
   }
   if (hHeaderData->bs_info.ampResolution == 0) {
@@ -566,9 +566,9 @@ static int32_t checkEnvelopeData(
     if (iEnvelope[i] > sbr_max_energy) {
       errorFlag = 1;
     }
-    if (iEnvelope[i] < FL2FXCONST_SGL(0.0f)) {
+    if (iEnvelope[i] < 0) {
       errorFlag = 1;
-      /* iEnvelope[i] = FL2FXCONST_SGL(0.0f); */
+      /* iEnvelope[i] = 0; */
     }
   }
 
@@ -576,7 +576,7 @@ static int32_t checkEnvelopeData(
     Range check for previous energies
   */
   for (i = 0; i < hHeaderData->freqBandData.nSfb[1]; i++) {
-    sfb_nrg_prev[i] = fixMax(sfb_nrg_prev[i], FL2FXCONST_SGL(0.0f));
+    sfb_nrg_prev[i] = fixMax(sfb_nrg_prev[i], (int16_t)0);
     sfb_nrg_prev[i] = fixMin(sfb_nrg_prev[i], sbr_max_energy);
   }
 
@@ -851,7 +851,7 @@ static void decodeNoiseFloorlevels(
       /* +1 to compensate for a mantissa of 0.5 instead of 1.0 */
 
       h_sbr_data->sbrNoiseFloorLevel[i] =
-          (int16_t)(((int32_t)FL2FXCONST_SGL(0.5f)) + /* mantissa */
+          (int16_t)(((int32_t)16384) + /* mantissa */
                      (nf_e & MASK_E));              /* exponent */
     }
   }

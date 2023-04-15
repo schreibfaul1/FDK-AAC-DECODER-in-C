@@ -108,9 +108,6 @@ amm-info@iis.fraunhofer.de
 #define NB_LDQ3   9
 #define NB_LDQ4   28
 
-/* For bass post filter */
-#define FL2FXCONST_SGL_FILT(a) FL2FXCONST_SGL(a * (1 << SF_FILT_LP))
-#define SF_FILT_LP             1
 
 /* table of factorial */
 const uint32_t fdk_dec_tab_factorial[8] = {5040, 720, 120, 24, 6, 2, 1, 1};
@@ -479,14 +476,10 @@ const int16_t lsp_interpol_factor[2][NB_SUBFR] = {
 };
 
 /* For bass post filter */
-#ifndef TABLE_filt_lp
 const int16_t fdk_dec_filt_lp[1 + L_FILT] = {
-    FL2FXCONST_SGL_FILT(0.088250f), FL2FXCONST_SGL_FILT(0.086410f), FL2FXCONST_SGL_FILT(0.081074f),
-    FL2FXCONST_SGL_FILT(0.072768f), FL2FXCONST_SGL_FILT(0.062294f), FL2FXCONST_SGL_FILT(0.050623f),
-    FL2FXCONST_SGL_FILT(0.038774f), FL2FXCONST_SGL_FILT(0.027692f), FL2FXCONST_SGL_FILT(0.018130f),
-    FL2FXCONST_SGL_FILT(0.010578f), FL2FXCONST_SGL_FILT(0.005221f), FL2FXCONST_SGL_FILT(0.001946f),
-    FL2FXCONST_SGL_FILT(0.000385f)};
-#endif
+    5784, 5663, 5313, 4769, 4082, 3318, 2541, 1815, 1188, 693, 342, 128, 25,
+};
+
 
 /* FAC window tables for coreCoderFrameLength = 1024 */
 const FIXP_WTB FacWindowSynth128[] = {

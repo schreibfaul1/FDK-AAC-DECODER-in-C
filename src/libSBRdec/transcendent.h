@@ -235,7 +235,7 @@ static inline void FDK_divide_MantExp(
 {
   int32_t preShift, postShift, index, shift;
   int32_t ratio_m;
-  int16_t bInv_m = FL2FXCONST_SGL(0.0f);
+  int16_t bInv_m = 0;
 
   preShift = CntLeadingZeros(FX_SGL2FX_DBL(b_m));
 
@@ -291,7 +291,7 @@ static inline void FDK_divide_MantExp(
 {
   int32_t preShift, postShift, index, shift;
   int32_t ratio_m;
-  int16_t bInv_m = FL2FXCONST_SGL(0.0f);
+  int16_t bInv_m = 0;
 
   preShift = CntLeadingZeros(b_m);
 

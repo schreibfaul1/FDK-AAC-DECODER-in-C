@@ -892,7 +892,7 @@ void sbrDecoder_calculateGainVec(int32_t **sourceBufferReal, int32_t **sourceBuf
 			int32_t exp_log2;
 			nrg = CalcLog2(nrg, exp_new, &exp_log2);
 			nrg = scaleValue(nrg, exp_log2 - 6);
-			nrg = fMult(FL2FXCONST_SGL(LOG10FAC), nrg);
+			nrg = fMult((int16_t)24660, nrg);
 		}
 		else { nrg = (int32_t)0; }
 		LowEnv[loBand] = nrg;
@@ -921,7 +921,7 @@ void sbrDecoder_calculateGainVec(int32_t **sourceBufferReal, int32_t **sourceBuf
 			int32_t tmp = polyval(p, p_sf, i, &sf);
 
 			/* GainVec = 10^((mean(y)-y)/20) = 2^( (mean(y)-y) * log2(10)/20 ) */
-			tmp = fMult(tmp, FL2FXCONST_SGL(LOG10FAC_INV));
+			tmp = fMult(tmp, (int16_t)21771);
 			GainVec[i] = f2Pow(tmp, sf - 2, &GainVec_exp[i]); /* -2 is exponent of LOG10FAC_INV */
 		}
 	}
@@ -933,7 +933,7 @@ void sbrDecoder_calculateGainVec(int32_t **sourceBufferReal, int32_t **sourceBuf
 			int32_t tmp = LowEnv[i];
 
 			/* GainVec = 10^((mean(y)-y)/20) = 2^( (mean(y)-y) * log2(10)/20 ) */
-			tmp = fMult(tmp, FL2FXCONST_SGL(LOG10FAC_INV));
+			tmp = fMult(tmp, (int16_t)21771);
 			GainVec[i] = f2Pow(tmp, sf - 2, &GainVec_exp[i]); /* -2 is exponent of LOG10FAC_INV */
 		}
 	}

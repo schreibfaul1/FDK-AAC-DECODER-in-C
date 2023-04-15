@@ -532,7 +532,7 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
       /* 10/log2(10) = 0.752574989159953 * 2^2 */
       int32_t exp_log;
       int32_t nrg = CalcLog2(E[ksg], 2 * qmfExponent + 2, &exp_log);
-      nrg = fMult(nrg, FL2FXCONST_SGL(LOG10FAC));
+      nrg = fMult(nrg, (int16_t)24660);
       nrg = scaleValue(nrg, exp_log - PVC_ESG_EXP + 2);
       pEsg[ksg] = fMax(nrg, FL2FXCONST_DBL(-10.0 / (1 << PVC_ESG_EXP)));
     } else {
@@ -604,7 +604,7 @@ void pvcDecodeTimeSlot(PVC_STATIC_DATA *pPvcStaticData,
         accu += fMultDiv2(E[kb], predCoeff) >> predCoeff_exp;
       }
       /* convert back to linear domain */
-      accu = fMult(accu, FL2FXCONST_SGL(LOG10FAC_INV));
+      accu = fMult(accu, (int16_t)21771);
       accu = f2Pow(accu, PVC_ESG_EXP - 1 + 2,
                    &predCoeff_exp); /* -1 compensates for exponent of
                                        LOG10FAC_INV; +2 for accu */

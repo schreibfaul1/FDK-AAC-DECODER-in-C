@@ -340,11 +340,11 @@ sbrdecUpdateFreqScale(
     int32_t k1;
 
     if (hHeaderData->bs_data.freqScale == 1) {
-      bpo_div16 = FL2FXCONST_SGL(12.0f / 16.0f);
+      bpo_div16 = 24576;
     } else if (hHeaderData->bs_data.freqScale == 2) {
-      bpo_div16 = FL2FXCONST_SGL(10.0f / 16.0f);
+      bpo_div16 = 20480;
     } else {
-      bpo_div16 = FL2FXCONST_SGL(8.0f / 16.0f);
+      bpo_div16 = 16384;
     }
 
     /* Ref: ISO/IEC 23003-3, Figure 12 - Flowchart calculation of fMaster for
@@ -556,11 +556,11 @@ static int32_t numberOfBands(
        of rounding.
     */
     num_bands_div128 = FX_DBL2FX_SGL(
-        fMult(num_bands_div128, FL2FXCONST_SGL(25200.0 / 32768.0)));
+        fMult(num_bands_div128, 25200));
   }
 
   /* add scaled 1 for rounding to even numbers: */
-  num_bands_div128 = num_bands_div128 + FL2FXCONST_SGL(1.0f / 128.0f);
+  num_bands_div128 = num_bands_div128 + 256;
   /* scale back to right aligned integer and double the value: */
   num_bands = 2 * ((int32_t)num_bands_div128 >> (FRACT_BITS - 7));
 
@@ -596,7 +596,7 @@ static void CalcBands(uint8_t *diff,     /*!< Vector of widths to be calculated 
     /* Add scaled 0.5 for rounding:
        We use a value 128/256 instead of 0.5 to avoid some critical cases of
        rounding. */
-    temp = exact + FL2FXCONST_SGL(128.0 / 32768.0);
+    temp = exact + 128;
 
     /* scale back to right alinged integer: */
     current = (int32_t)temp >> (FRACT_BITS - 8);
@@ -806,7 +806,7 @@ resetFreqBandTables(HANDLE_SBR_HEADER_DATA hHeaderData, const uint32_t flags) {
     intTemp = intTemp * hHeaderData->bs_data.noise_bands;
 
     /* Add scaled 0.5 for rounding: */
-    intTemp = intTemp + (int32_t)FL2FXCONST_SGL(0.5f / 32.0f);
+    intTemp = intTemp + (int32_t)512;
 
     /* Convert to right-aligned integer: */
     intTemp = intTemp >> (FRACT_BITS - 1 /*sign*/ - 5 /* rescale */);

@@ -1551,7 +1551,7 @@ void calculateSbrEnvelope(
           if (j - start_pos < smooth_length)
             smooth_ratio = FDK_sbrDecoder_sbr_smoothFilter[j - start_pos];
           else
-            smooth_ratio = FL2FXCONST_SGL(0.0f);
+            smooth_ratio = 0;
 
           if (iTES_enable) {
             /* adjustTimeSlotHQ() without adding of additional harmonics */
@@ -2721,7 +2721,7 @@ static void adjustTimeSlotHQ_GainAndNoise(
     min_val_noise = -max_val_noise;
   }
 
-  if (smooth_ratio > FL2FXCONST_SGL(0.0f)) {
+  if (smooth_ratio > 0) {
     for (k = 0; k < noSubbands; k++) {
       /*
         Smoothing: The old envelope has been bufferd and a certain ratio
@@ -2909,7 +2909,7 @@ static void adjustTimeSlotHQ(
     min_val_noise = -max_val_noise;
   }
 
-  if (smooth_ratio > FL2FXCONST_SGL(0.0f)) {
+  if (smooth_ratio > 0) {
     for (k = 0; k < noSubbands; k++) {
       /*
         Smoothing: The old envelope has been bufferd and a certain ratio
