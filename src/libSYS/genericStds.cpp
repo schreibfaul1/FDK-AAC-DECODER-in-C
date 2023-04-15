@@ -224,9 +224,9 @@ char *FDKstrncpy(char *dest, const char *src, uint32_t n) {
 	  void *ptr;
 
 	  ptr = calloc(n, size);
-	  LOG_FDK(FDKInfo, "==> calloc(%d,%d) -> %p", n, size, ptr);
+	  printf(" ==> calloc(%d,%d) -> %p\n", n, size, ptr);
 	  if (ptr==nullptr) {
-	    LOG_FDK(FDKError, "Memory allocations error!!! calloc(%d,%d) -> %p", n, size, ptr);
+	    printf("Memory allocations error!!! calloc(%d,%d) -> %p\n", n, size, ptr);
 	  }
 
 	  return ptr;
@@ -238,9 +238,9 @@ void *FDKmalloc(const uint32_t size) {
   void *ptr;
 
   ptr = malloc(size);
-	LOG_FDK(FDKInfo, "==> malloc(%d) -> %p", size, ptr);
+	printf(" ==> malloc(%d) -> %p\n", size, ptr);
 	if (ptr==nullptr) {
-	  LOG_FDK(FDKError, "Memory allocations error!!! malloc(%d) -> %p", size, ptr);
+	  printf("Memory allocations error!!! malloc(%d) -> %p\n", size, ptr);
 	}
 
   return ptr;
