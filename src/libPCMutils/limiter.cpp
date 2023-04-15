@@ -260,11 +260,7 @@ TDLIMITER_ERROR pcmLimiter_Apply(TDLimiterPtr limiter, PCM_LIM* samplesIn,
       /* correct the 'aiming' value of the exponential attack to avoid the
        * remaining overshoot */
       if (gain < smoothState0) {
-        cor = fMin(cor,
-                   fMultDiv2((gain - fMultDiv2(FL2FXCONST_SGL(0.1f * (1 << 1)),
-                                               smoothState0)),
-                             FL2FXCONST_SGL(1.11111111f / (1 << 1)))
-                       << 2);
+        cor = fMin(cor, fMultDiv2((gain - fMultDiv2((int16_t)6554, smoothState0)), (int16_t)18204) << 2);
       } else {
         cor = gain;
       }

@@ -311,7 +311,7 @@ static void sbr_envelope_unmapping(
     tempL_e -= NRG_EXP_OFFSET;
 
     /* Calculate tempRight+1 */
-    FDK_add_MantExp(tempR_m, tempR_e, FL2FXCONST_SGL(0.5f), 1, /* 1.0 */
+    FDK_add_MantExp(tempR_m, tempR_e, (int16_t)16384, 1, /* 1.0 */
                     &tempRplus1_m, &tempRplus1_e);
 
     FDK_divide_MantExp(tempL_m, tempL_e + 1, /*  2 * tempLeft */
@@ -343,12 +343,12 @@ static void sbr_envelope_unmapping(
                       12) /*SBR_ENERGY_PAN_OFFSET*/;
 
     /* Calculate tempR+1 */
-    FDK_add_MantExp(FL2FXCONST_SGL(0.5f), 1 + tempR_e, /* tempR */
-                    FL2FXCONST_SGL(0.5f), 1,           /*  1.0  */
+    FDK_add_MantExp((int16_t)16384, 1 + tempR_e, /* tempR */
+                    (int16_t)16384, 1,           /*  1.0  */
                     &tempRplus1_m, &tempRplus1_e);
 
     /* Calculate 2*tempLeft/(tempR+1) */
-    FDK_divide_MantExp(FL2FXCONST_SGL(0.5f), tempL_e + 2, /*  2 * tempLeft */
+    FDK_divide_MantExp((int16_t)16384, tempL_e + 2, /*  2 * tempLeft */
                        tempRplus1_m, tempRplus1_e, &newR_m, &newR_e);
 
     /* if (newR_m >= ((int16_t)MAXVAL_SGL - ROUNDING)) {
@@ -727,8 +727,8 @@ static void requantizeEnvelopeData(HANDLE_SBR_FRAME_DATA h_sbr_data,
     /* In case of the high amplitude resolution, 1 bit of the exponent gets lost
        by the shift. This will be compensated by a mantissa of 0.5*sqrt(2)
        instead of 0.5 if that bit is 1. */
-    mantissa = (exponent & ampShift) ? FL2FXCONST_SGL(0.707106781186548f)
-                                     : FL2FXCONST_SGL(0.5f);
+    mantissa = (exponent & ampShift) ? 23170
+                                     : 16384;
     exponent = exponent >> ampShift;
 #endif
 

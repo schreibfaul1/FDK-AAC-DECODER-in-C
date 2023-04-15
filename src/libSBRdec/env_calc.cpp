@@ -2514,8 +2514,8 @@ static void adjustTimeSlotLC(
   const int32_t max_val = MAX_VAL_NRG_HEADROOM >> scale_change;
   const int32_t min_val = -max_val;
 
-#define C1 ((int16_t)FL2FXCONST_SGL(2.f * 0.00815f))
-#define C1_CLDFB ((int16_t)FL2FXCONST_SGL(2.f * 0.16773f))
+#define C1 ((int16_t)534)
+#define C1_CLDFB ((int16_t)10992)
 
   /*
     First pass for k=0 pulled out of the loop:
@@ -2701,8 +2701,7 @@ static void adjustTimeSlotHQ_GainAndNoise(
   int32_t signalReal, signalImag;
   int32_t noiseReal, noiseImag;
   int32_t smoothedGain, smoothedNoise;
-  int16_t direct_ratio =
-      /*FL2FXCONST_SGL(1.0f) */ (int16_t)MAXVAL_SGL - smooth_ratio;
+  int16_t direct_ratio = (int16_t)MAXVAL_SGL - smooth_ratio;
   int32_t index = *ptrPhaseIndex;
   int32_t shift;
   int32_t max_val_noise = 0, min_val_noise = 0;
@@ -2876,8 +2875,7 @@ static void adjustTimeSlotHQ(
   int32_t signalReal, signalImag;
   int32_t noiseReal, noiseImag;
   int32_t smoothedGain, smoothedNoise;
-  int16_t direct_ratio =
-      /*FL2FXCONST_SGL(1.0f) */ (int16_t)MAXVAL_SGL - smooth_ratio;
+  int16_t direct_ratio = (int16_t)MAXVAL_SGL - smooth_ratio;
   int32_t index = *ptrPhaseIndex;
   uint8_t harmIndex = *ptrHarmIndex;
   int32_t freqInvFlag = (lowSubband & 1);

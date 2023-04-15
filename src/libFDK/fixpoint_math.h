@@ -128,12 +128,8 @@ static const int32_t ldCoeff[MAX_LD_PRECISION] = {
     FL2FXCONST_DBL(-1.0 / 9.0), FL2FXCONST_DBL(-1.0 / 10.0)};
 #else  /* LDCOEFF_16BIT */
 LNK_SECTION_CONSTDATA_L1
-static const int16_t ldCoeff[MAX_LD_PRECISION] = {
-    FL2FXCONST_SGL(-1.0),       FL2FXCONST_SGL(-1.0 / 2.0),
-    FL2FXCONST_SGL(-1.0 / 3.0), FL2FXCONST_SGL(-1.0 / 4.0),
-    FL2FXCONST_SGL(-1.0 / 5.0), FL2FXCONST_SGL(-1.0 / 6.0),
-    FL2FXCONST_SGL(-1.0 / 7.0), FL2FXCONST_SGL(-1.0 / 8.0),
-    FL2FXCONST_SGL(-1.0 / 9.0), FL2FXCONST_SGL(-1.0 / 10.0)};
+static const int16_t ldCoeff[MAX_LD_PRECISION] = {-32768, -16384, -10923, -8192, -6554,
+                                                  -5461,  -4681,  -4096,  -3641, -3277};
 #endif /* LDCOEFF_16BIT */
 
 /*****************************************************************************
