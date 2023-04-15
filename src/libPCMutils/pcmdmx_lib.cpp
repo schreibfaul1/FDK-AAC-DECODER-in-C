@@ -117,13 +117,6 @@ amm-info@iis.fraunhofer.de
 #define IN 0
 #define OUT 1
 
-/* Type definitions: */
-#define FIXP_DMX int16_t
-#define FX_DMX2FX_DBL(x) FX_SGL2FX_DBL((int16_t)(x))
-#define FX_DBL2FX_DMX(x) FX_DBL2FX_SGL(x)
-#define MAXVAL_DMX MAXVAL_SGL
-#define FX_DMX2SHRT(x) ((int16_t)(x))
-#define FX_DMX2FL(x) FX_DBL2FL(FX_DMX2FX_DBL(x))
 
 /* Fixed and unique channel group indices.
  * The last group index has to be smaller than ( 4 ). */
@@ -272,13 +265,13 @@ static const PCM_DMX_CHANNEL_MODE outChModeTable[(8) + 1] = {
     CH_MODE_3_0_4_1  /* 8 channels */
 };
 
-static const FIXP_DMX abMixLvlValueTab[8] = {
+static const int16_t abMixLvlValueTab[8] = {
       16384, /* scaled by 1 */
       27558,   23167,   19530,
       16384,   13828,   11633,
       0};
 
-static const FIXP_DMX lfeMixLvlValueTab[16] = {
+static const int16_t lfeMixLvlValueTab[16] = {
     /*             value,        scale */
       25903, /*     2 */
       16384, /*     2 */
@@ -306,11 +299,11 @@ static const FIXP_DMX lfeMixLvlValueTab[16] = {
 
     M = (3 + 2A)^-1 * [L + C + R + A*(Ls + Rs)];
 */
-static const FIXP_DMX mpegMixDownIdx2Coef[4] = {
+static const int16_t mpegMixDownIdx2Coef[4] = {
       23170,   16384,
       11585,   0};
 
-static const FIXP_DMX mpegMixDownIdx2PreFact[3][4] = {
+static const int16_t mpegMixDownIdx2PreFact[3][4] = {
     {/* Set 1: */
        13573,   14847,
        15902,   19195},
@@ -844,7 +837,7 @@ static void getChannelDescription(
  * @param [in]    Index of channel (row) to be initialized.
  * @returns       Nothing to return.
  **/
-static void dmxInitChannel(FIXP_DMX mixFactors[(8)][(8)],
+static void dmxInitChannel(int16_t mixFactors[(8)][(8)],
                            int32_t mixScales[(8)][(8)], const uint32_t outCh) {
   uint32_t inCh;
   for (inCh = 0; inCh < (8); inCh += 1) {
@@ -866,10 +859,10 @@ static void dmxInitChannel(FIXP_DMX mixFactors[(8)][(8)],
  * @param [in]    Index of channel (row) to be cleared/reset.
  * @returns       Nothing to return.
  **/
-static void dmxClearChannel(FIXP_DMX mixFactors[(8)][(8)],
+static void dmxClearChannel(int16_t mixFactors[(8)][(8)],
                             int32_t mixScales[(8)][(8)], const uint32_t outCh) {
   assert((outCh >= 0) && (outCh < (8)));
-  FDKmemclear(&mixFactors[outCh], (8) * sizeof(FIXP_DMX));
+  FDKmemclear(&mixFactors[outCh], (8) * sizeof(int16_t));
   FDKmemclear(&mixScales[outCh], (8) * sizeof(int32_t));
 }
 
@@ -886,15 +879,15 @@ static void dmxClearChannel(FIXP_DMX mixFactors[(8)][(8)],
  * @param [in]    Scale factor of mix factor to be applied.
  * @returns       Nothing to return.
  **/
-static void dmxSetChannel(FIXP_DMX mixFactors[(8)][(8)],
+static void dmxSetChannel(int16_t mixFactors[(8)][(8)],
                           int32_t mixScales[(8)][(8)], const uint32_t dstCh,
-                          const uint32_t srcCh, const FIXP_DMX factor,
+                          const uint32_t srcCh, const int16_t factor,
                           const int32_t scale) {
   int32_t ch;
   for (ch = 0; ch < (8); ch += 1) {
-    if (mixFactors[srcCh][ch] != (FIXP_DMX)0) {
+    if (mixFactors[srcCh][ch] != (int16_t)0) {
       mixFactors[dstCh][ch] =
-          FX_DBL2FX_DMX(fMult(mixFactors[srcCh][ch], factor));
+          FX_DBL2FX_SGL(fMult(mixFactors[srcCh][ch], factor));
       mixScales[dstCh][ch] = mixScales[srcCh][ch] + scale;
     }
   }
@@ -912,16 +905,16 @@ static void dmxSetChannel(FIXP_DMX mixFactors[(8)][(8)],
  * @param [in]    Scale factor of mix factor to be applied.
  * @returns       Nothing to return.
  **/
-static void dmxAddChannel(FIXP_DMX mixFactors[(8)][(8)],
+static void dmxAddChannel(int16_t mixFactors[(8)][(8)],
                           int32_t mixScales[(8)][(8)], const uint32_t dstCh,
-                          const uint32_t srcCh, const FIXP_DMX factor,
+                          const uint32_t srcCh, const int16_t factor,
                           const int32_t scale) {
   int32_t ch;
   for (ch = 0; ch < (8); ch += 1) {
     int32_t addFact = fMult(mixFactors[srcCh][ch], factor);
-    if (addFact != (FIXP_DMX)0) {
+    if (addFact != (int16_t)0) {
       int32_t newScale = mixScales[srcCh][ch] + scale;
-      if (mixFactors[dstCh][ch] != (FIXP_DMX)0) {
+      if (mixFactors[dstCh][ch] != (int16_t)0) {
         if (newScale > mixScales[dstCh][ch]) {
           mixFactors[dstCh][ch] >>= newScale - mixScales[dstCh][ch];
         } else {
@@ -929,7 +922,7 @@ static void dmxAddChannel(FIXP_DMX mixFactors[(8)][(8)],
           newScale = mixScales[dstCh][ch];
         }
       }
-      mixFactors[dstCh][ch] += FX_DBL2FX_DMX(addFact);
+      mixFactors[dstCh][ch] += FX_DBL2FX_SGL(addFact);
       mixScales[dstCh][ch] = newScale;
     }
   }
@@ -958,7 +951,7 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
                                   const PCM_DMX_CHANNEL_MODE outChMode,
                                   const PCM_DMX_USER_PARAMS *pParams,
                                   const DMX_BS_META_DATA *pMetaData,
-                                  FIXP_DMX mixFactors[(8)][(8)],
+                                  int16_t mixFactors[(8)][(8)],
                                   int32_t *pOutScale) {
   PCMDMX_ERROR err = PCMDMX_OK;
   int32_t mixScales[(8)][(8)];
@@ -1027,7 +1020,7 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
   /* FIRST STAGE: */
   if (numInChannel > SIX_CHANNEL) { /* Always use MPEG equations either with
                                        meta data or with default values. */
-    FIXP_DMX dMixFactA, dMixFactB;
+    int16_t dMixFactA, dMixFactB;
     int32_t dMixScaleA, dMixScaleB;
     int32_t isValidCfg = TRUE;
 
@@ -1128,13 +1121,13 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
     /* Add additional DMX gain */
     if ((isValidCfg == TRUE) &&
         (pMetaData->dmxGainIdx5 != 0)) { /* Apply DMX gain 5 */
-      FIXP_DMX dmxGain;
+      int16_t dmxGain;
       int32_t dmxScale;
       int32_t sign = (pMetaData->dmxGainIdx5 & 0x40) ? -1 : 1;
       int32_t val = pMetaData->dmxGainIdx5 & 0x3F;
 
       /* 10^(dmx_gain_5/80) */
-      dmxGain = FX_DBL2FX_DMX(
+      dmxGain = FX_DBL2FX_SGL(
           fLdPow(FL2FXCONST_DBL(0.830482023721841f), 2, /* log2(10) */
                  (int32_t)(sign * val * (int32_t)FL2FXCONST_DBL(0.0125f)), 0,
                  &dmxScale));
@@ -1246,7 +1239,7 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
       /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
        * - - - - - - - - - - - - - - - - - - - */
       case CH_MODE_2_0_1_0: {
-        FIXP_DMX sMixLvl;
+        int16_t sMixLvl;
         if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
           /* L' = 0.707*L + 0.5*S;  R' = 0.707*R + 0.5*S; */
           dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
@@ -1266,7 +1259,7 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
        * - - - - - - - - - - - - - - - - - - - */
       case CH_MODE_3_0_0_0: /* chCfg 3 */
       {
-        FIXP_DMX cMixLvl;
+        int16_t cMixLvl;
         if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
           /* L' = 0.707*L + 0.5*C;  R' = 0.707*R + 0.5*C; */
           dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
@@ -1286,7 +1279,7 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
        * - - - - - - - - - - - - - - - - - - - */
       case CH_MODE_3_0_1_0: /* chCfg 4 */
       {
-        FIXP_DMX csMixLvl;
+        int16_t csMixLvl;
         if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
           /* L' = 0.707*L + 0.5*C + 0.5*S;  R' = 0.707*R + 0.5*C + 0.5*S; */
           dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
@@ -1315,7 +1308,7 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
         switch (dmxMethod) {
           default:
           case DMX_METHOD_MPEG_AMD4: {
-            FIXP_DMX cMixLvl, sMixLvl, lMixLvl;
+            int16_t cMixLvl, sMixLvl, lMixLvl;
             int32_t cMixScale, sMixScale, lMixScale;
 
             /* Get factors from meta data */
@@ -1371,13 +1364,13 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
 
             /* Add additional DMX gain */
             if (pMetaData->dmxGainIdx2 != 0) { /* Apply DMX gain 2 */
-              FIXP_DMX dmxGain;
+              int16_t dmxGain;
               int32_t dmxScale;
               int32_t sign = (pMetaData->dmxGainIdx2 & 0x40) ? -1 : 1;
               int32_t val = pMetaData->dmxGainIdx2 & 0x3F;
 
               /* 10^(dmx_gain_2/80) */
-              dmxGain = FX_DBL2FX_DMX(
+              dmxGain = FX_DBL2FX_SGL(
                   fLdPow(FL2FXCONST_DBL(0.830482023721841f), 2, /* log2(10) */
                          (int32_t)(sign * val * (int32_t)FL2FXCONST_DBL(0.0125f)),
                          0, &dmxScale));
@@ -1395,8 +1388,8 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
           } break;
           case DMX_METHOD_ARIB_JAPAN:
           case DMX_METHOD_MPEG_LEGACY: {
-            FIXP_DMX flev, clev, slevLL, slevLR, slevRL, slevRR;
-            FIXP_DMX mtrxMixDwnCoef =
+            int16_t flev, clev, slevLL, slevLR, slevRL, slevRR;
+            int16_t mtrxMixDwnCoef =
                 mpegMixDownIdx2Coef[pMetaData->matrixMixdownIdx];
 
             if ((pParams->pseudoSurrMode == FORCE_PS_DMX) ||
@@ -1411,7 +1404,7 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
                           [R+0.707*C+A*Ls+A*Rs]; */
                 flev = mpegMixDownIdx2PreFact[1][pMetaData->matrixMixdownIdx];
               }
-              slevRR = slevRL = FX_DBL2FX_DMX(fMult(flev, mtrxMixDwnCoef));
+              slevRR = slevRL = FX_DBL2FX_SGL(fMult(flev, mtrxMixDwnCoef));
               slevLL = slevLR = -slevRL;
             } else {
               if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
@@ -1422,12 +1415,12 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
                                      R' = (1.707+A)^-1 * [R+0.707*C+A*Rs]; */
                 flev = mpegMixDownIdx2PreFact[0][pMetaData->matrixMixdownIdx];
               }
-              slevRR = slevLL = FX_DBL2FX_DMX(fMult(flev, mtrxMixDwnCoef));
-              slevLR = slevRL = (FIXP_DMX)0;
+              slevRR = slevLL = FX_DBL2FX_SGL(fMult(flev, mtrxMixDwnCoef));
+              slevLR = slevRL = (int16_t)0;
             }
             /* common factor */
             clev =
-                FX_DBL2FX_DMX(fMult(flev, mpegMixDownIdx2Coef[0] /* 0.707 */));
+                FX_DBL2FX_SGL(fMult(flev, mpegMixDownIdx2Coef[0] /* 0.707 */));
 
             dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
                           LEFT_FRONT_CHANNEL, flev, 0);
@@ -1462,7 +1455,7 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
   }
 
   if (numOutChannel == ONE_CHANNEL) {
-    FIXP_DMX monoMixLevel;
+    int16_t monoMixLevel;
     int32_t monoMixScale = 0;
 
     dmxClearChannel(mixFactors, mixScales,
@@ -1475,8 +1468,7 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
       mixFactors[CENTER_FRONT_CHANNEL][CENTER_FRONT_CHANNEL] = monoMixLevel;
       mixFactors[CENTER_FRONT_CHANNEL][LEFT_FRONT_CHANNEL] = monoMixLevel;
       mixFactors[CENTER_FRONT_CHANNEL][RIGHT_FRONT_CHANNEL] = monoMixLevel;
-      monoMixLevel = FX_DBL2FX_DMX(fMult(
-          monoMixLevel, mpegMixDownIdx2Coef[pMetaData->matrixMixdownIdx]));
+      monoMixLevel = FX_DBL2FX_SGL(fMult(monoMixLevel, mpegMixDownIdx2Coef[pMetaData->matrixMixdownIdx]));
       mixFactors[CENTER_FRONT_CHANNEL][LEFT_REAR_CHANNEL] = monoMixLevel;
       mixFactors[CENTER_FRONT_CHANNEL][RIGHT_REAR_CHANNEL] = monoMixLevel;
     } else {
@@ -1531,7 +1523,7 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
         /* Accumulate all factors for each output channel */
         chSum[outCh] = 0;
         for (inCh = 0; inCh < (8); inCh += 1) {
-          int16_t addFact = FX_DMX2SHRT(mixFactors[outCh][inCh]);
+          int16_t addFact = (int16_t)(mixFactors[outCh][inCh]);
           if (mixScales[outCh][inCh] <= maxScale) {
             addFact >>= maxScale - mixScales[outCh][inCh];
           } else {
@@ -1568,7 +1560,7 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
       if (valid[outCh] != 0) {
         uint32_t inCh;
         for (inCh = 0; inCh < (8); inCh += 1) {
-          if (mixFactors[outCh][inCh] != (FIXP_DMX)0) {
+          if (mixFactors[outCh][inCh] != (int16_t)0) {
             if (mixScales[outCh][inCh] <= maxScale) {
               mixFactors[outCh][inCh] >>= maxScale - mixScales[outCh][inCh];
             } else {
@@ -2156,7 +2148,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
   if (numInChannels > numOutChannels) { /* Apply downmix */
     DMX_PCM *pInPcm[(8)] = {NULL};
     DMX_PCM *pOutPcm[(8)] = {NULL};
-    FIXP_DMX mixFactors[(8)][(8)];
+    int16_t mixFactors[(8)][(8)];
     uint8_t outOffsetTable[(8)];
     uint32_t sample;
     int32_t chCfg = 0;
@@ -2259,7 +2251,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
       for (outCh = 0; outCh < numOutChannels; outCh += 1) {
         if (outCh != map[outCh]) {
           FDKmemcpy(&mixFactors[outCh], &mixFactors[map[outCh]],
-                    (8) * sizeof(FIXP_DMX));
+                    (8) * sizeof(int16_t));
         }
       }
     }
@@ -2520,7 +2512,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
       case 2: { /* Set up channel pointer */
         DMX_PCM *pInPcm[(8)];
         DMX_PCM *pOutL, *pOutR;
-        FIXP_DMX flev;
+        int16_t flev;
 
         uint32_t sample;
 
