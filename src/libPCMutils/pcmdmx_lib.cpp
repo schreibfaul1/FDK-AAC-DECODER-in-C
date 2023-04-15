@@ -121,7 +121,6 @@ amm-info@iis.fraunhofer.de
 #define FIXP_DMX int16_t
 #define FX_DMX2FX_DBL(x) FX_SGL2FX_DBL((int16_t)(x))
 #define FX_DBL2FX_DMX(x) FX_DBL2FX_SGL(x)
-#define FL2FXCONST_DMX(x) FL2FXCONST_SGL(x)
 #define MAXVAL_DMX MAXVAL_SGL
 #define FX_DMX2SHRT(x) ((int16_t)(x))
 #define FX_DMX2FL(x) FX_DBL2FL(FX_DMX2FX_DBL(x))
@@ -274,31 +273,30 @@ static const PCM_DMX_CHANNEL_MODE outChModeTable[(8) + 1] = {
 };
 
 static const FIXP_DMX abMixLvlValueTab[8] = {
-    FL2FXCONST_DMX(0.500f), /* scaled by 1 */
-    FL2FXCONST_DMX(0.841f), FL2FXCONST_DMX(0.707f), FL2FXCONST_DMX(0.596f),
-    FL2FXCONST_DMX(0.500f), FL2FXCONST_DMX(0.422f), FL2FXCONST_DMX(0.355f),
-    FL2FXCONST_DMX(0.0f)};
+      16384, /* scaled by 1 */
+      27558,   23167,   19530,
+      16384,   13828,   11633,
+      0};
 
 static const FIXP_DMX lfeMixLvlValueTab[16] = {
     /*             value,        scale */
-    FL2FXCONST_DMX(0.7905f), /*     2 */
-    FL2FXCONST_DMX(0.5000f), /*     2 */
-    FL2FXCONST_DMX(0.8395f), /*     1 */
-    FL2FXCONST_DMX(0.7065f), /*     1 */
-    FL2FXCONST_DMX(0.5945f), /*     1 */
-    FL2FXCONST_DMX(0.500f),  /*     1 */
-    FL2FXCONST_DMX(0.841f),  /*     0 */
-    FL2FXCONST_DMX(0.707f),  /*     0 */
-    FL2FXCONST_DMX(0.596f),  /*     0 */
-    FL2FXCONST_DMX(0.500f),  /*     0 */
-    FL2FXCONST_DMX(0.316f),  /*     0 */
-    FL2FXCONST_DMX(0.178f),  /*     0 */
-    FL2FXCONST_DMX(0.100f),  /*     0 */
-    FL2FXCONST_DMX(0.032f),  /*     0 */
-    FL2FXCONST_DMX(0.010f),  /*     0 */
-    FL2FXCONST_DMX(0.000f)   /*     0 */
+      25903, /*     2 */
+      16384, /*     2 */
+      27509, /*     1 */
+      23151, /*     1 */
+      19481, /*     1 */
+      16384,  /*     1 */
+      27558,  /*     0 */
+      23167,  /*     0 */
+      19530,  /*     0 */
+      16384,  /*     0 */
+      10355,  /*     0 */
+      5833,  /*     0 */
+      3277,  /*     0 */
+      1049,  /*     0 */
+      328,  /*     0 */
+      0   /*     0 */
 };
-
 /* MPEG matrix mixdown:
     Set 1:  L' = (1 + 2^-0.5 + A )^-1 * [L + C * 2^-0.5 + A * Ls];
             R' = (1 + 2^-0.5 + A )^-1 * [R + C * 2^-0.5 + A * Rs];
@@ -309,19 +307,19 @@ static const FIXP_DMX lfeMixLvlValueTab[16] = {
     M = (3 + 2A)^-1 * [L + C + R + A*(Ls + Rs)];
 */
 static const FIXP_DMX mpegMixDownIdx2Coef[4] = {
-    FL2FXCONST_DMX(0.70710678f), FL2FXCONST_DMX(0.5f),
-    FL2FXCONST_DMX(0.35355339f), FL2FXCONST_DMX(0.0f)};
+      23170,   16384,
+      11585,   0};
 
 static const FIXP_DMX mpegMixDownIdx2PreFact[3][4] = {
     {/* Set 1: */
-     FL2FXCONST_DMX(0.4142135623730950f), FL2FXCONST_DMX(0.4530818393219728f),
-     FL2FXCONST_DMX(0.4852813742385703f), FL2FXCONST_DMX(0.5857864376269050f)},
+       13573,   14847,
+       15902,   19195},
     {/* Set 2: */
-     FL2FXCONST_DMX(0.3203772410170407f), FL2FXCONST_DMX(0.3693980625181293f),
-     FL2FXCONST_DMX(0.4142135623730950f), FL2FXCONST_DMX(0.5857864376269050f)},
+       10498,   12104,
+       13573,   19195},
     {/* Mono DMX set: */
-     FL2FXCONST_DMX(0.2265409196609864f), FL2FXCONST_DMX(0.25f),
-     FL2FXCONST_DMX(0.2697521433898179f), FL2FXCONST_DMX(0.3333333333333333f)}};
+       7423,   8192,
+       8839,   10923}};
 
 #define TYPE_NONE (0x00)
 #define TYPE_PCE_DATA (0x01)
@@ -851,10 +849,10 @@ static void dmxInitChannel(FIXP_DMX mixFactors[(8)][(8)],
   uint32_t inCh;
   for (inCh = 0; inCh < (8); inCh += 1) {
     if (inCh == outCh) {
-      mixFactors[outCh][inCh] = FL2FXCONST_DMX(0.5f);
+      mixFactors[outCh][inCh] =   16384;
       mixScales[outCh][inCh] = 1;
     } else {
-      mixFactors[outCh][inCh] = FL2FXCONST_DMX(0.0f);
+      mixFactors[outCh][inCh] =   0;
       mixScales[outCh][inCh] = 0;
     }
   }
@@ -1080,9 +1078,9 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
         dmxClearChannel(mixFactors, mixScales,
                         RIGHT_REAR_CHANNEL); /* clear empty input channel */
         dmxSetChannel(mixFactors, mixScales, RIGHT_REAR_CHANNEL,
-                      LEFT_REAR_CHANNEL, FL2FXCONST_DMX(0.5f), 1);
+                      LEFT_REAR_CHANNEL,   16384, 1);
         dmxSetChannel(mixFactors, mixScales, LEFT_REAR_CHANNEL,
-                      LEFT_REAR_CHANNEL, FL2FXCONST_DMX(0.5f), 1);
+                      LEFT_REAR_CHANNEL,   16384, 1);
         /* fall through */;
       case CH_MODE_5_2_1_0:
         isValidCfg = FALSE;
@@ -1113,11 +1111,11 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
           dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
                         LEFT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
           dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                        LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 1);
+                        LEFT_FRONT_CHANNEL,   16384, 1);
           dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
                         RIGHT_MULTIPRPS_CHANNEL, dMixFactB, dMixScaleB);
           dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                        RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 1);
+                        RIGHT_FRONT_CHANNEL,   16384, 1);
         }
         break;
       default:
@@ -1217,27 +1215,27 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
           case CH1_MODE: /* L' = 0.707 * Ch1;
                             R' = 0.707 * Ch1; */
             dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                          LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+                          LEFT_FRONT_CHANNEL,   23167, 0);
             dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                          LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+                          LEFT_FRONT_CHANNEL,   23167, 0);
             break;
           case CH2_MODE: /* L' = 0.707 * Ch2;
                             R' = 0.707 * Ch2; */
             dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                          RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+                          RIGHT_FRONT_CHANNEL,   23167, 0);
             dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                          RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+                          RIGHT_FRONT_CHANNEL,   23167, 0);
             break;
           case MIXED_MODE: /* L' = 0.5*Ch1 + 0.5*Ch2;
                               R' = 0.5*Ch1 + 0.5*Ch2; */
             dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                          LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 0);
+                          LEFT_FRONT_CHANNEL,   16384, 0);
             dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                          RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 0);
+                          RIGHT_FRONT_CHANNEL,   16384, 0);
             dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                          LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 0);
+                          LEFT_FRONT_CHANNEL,   16384, 0);
             dmxAddChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                          RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.5f), 0);
+                          RIGHT_FRONT_CHANNEL,   16384, 0);
             break;
           default:
           case STEREO_MODE:
@@ -1252,12 +1250,12 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
         if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
           /* L' = 0.707*L + 0.5*S;  R' = 0.707*R + 0.5*S; */
           dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                        LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+                        LEFT_FRONT_CHANNEL,   23167, 0);
           dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                        RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
-          sMixLvl = FL2FXCONST_DMX(0.5f);
+                        RIGHT_FRONT_CHANNEL,   23167, 0);
+          sMixLvl =   16384;
         } else { /* L' = L + 0.707*S;  R' = R + 0.707*S; */
-          sMixLvl = FL2FXCONST_DMX(0.707f);
+          sMixLvl =   23167;
         }
         dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
                       LEFT_REAR_CHANNEL, sMixLvl, 0);
@@ -1272,12 +1270,12 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
         if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
           /* L' = 0.707*L + 0.5*C;  R' = 0.707*R + 0.5*C; */
           dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                        LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+                        LEFT_FRONT_CHANNEL,   23167, 0);
           dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                        RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
-          cMixLvl = FL2FXCONST_DMX(0.5f);
+                        RIGHT_FRONT_CHANNEL,   23167, 0);
+          cMixLvl =   16384;
         } else { /* L' = L + 0.707*C;  R' = R + 0.707*C; */
-          cMixLvl = FL2FXCONST_DMX(0.707f);
+          cMixLvl =   23167;
         }
         dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
                       CENTER_FRONT_CHANNEL, cMixLvl, 0);
@@ -1292,13 +1290,13 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
         if (dmxMethod == DMX_METHOD_ARIB_JAPAN) {
           /* L' = 0.707*L + 0.5*C + 0.5*S;  R' = 0.707*R + 0.5*C + 0.5*S; */
           dmxSetChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
-                        LEFT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
+                        LEFT_FRONT_CHANNEL,   23167, 0);
           dmxSetChannel(mixFactors, mixScales, RIGHT_FRONT_CHANNEL,
-                        RIGHT_FRONT_CHANNEL, FL2FXCONST_DMX(0.707f), 0);
-          csMixLvl = FL2FXCONST_DMX(0.5f);
+                        RIGHT_FRONT_CHANNEL,   23167, 0);
+          csMixLvl =   16384;
         } else { /* L' = L + 0.707*C + 0.707*S;
                     R' = R + 0.707*C + 0.707*S; */
-          csMixLvl = FL2FXCONST_DMX(0.707f);
+          csMixLvl =   23167;
         }
         dmxAddChannel(mixFactors, mixScales, LEFT_FRONT_CHANNEL,
                       CENTER_FRONT_CHANNEL, csMixLvl, 0);
@@ -1485,12 +1483,12 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
       switch (dmxMethod) {
         case DMX_METHOD_MPEG_AMD4:
           /* C' = L + R; */
-          monoMixLevel = FL2FXCONST_DMX(0.5f);
+          monoMixLevel =   16384;
           monoMixScale = 1;
           break;
         default:
           /* C' = 0.5*L + 0.5*R; */
-          monoMixLevel = FL2FXCONST_DMX(0.5f);
+          monoMixLevel =   16384;
           monoMixScale = 0;
           break;
       }
@@ -2548,7 +2546,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
         pOutR = pInPcm[RIGHT_FRONT_CHANNEL];
 
         /* Set downmix levels: */
-        flev = FL2FXCONST_DMX(0.70710678f);
+        flev =   23170;
         /* 2/0 input: */
         switch (dualChannelMode) {
           case CH1_MODE: /* L' = 0.707 * Ch1;  R' = 0.707 * Ch1 */
