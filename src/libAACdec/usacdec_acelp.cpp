@@ -604,10 +604,12 @@ void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, int32_t i_offset, const FIXP_L
     int32_t n;
     int32_t bfi = (numLostSubframes > 0) ? 1 : 0;
 
-    C_ALLOC_SCRATCH_START(exc_buf, int32_t, PIT_MAX_MAX + L_INTERPOL + L_DIV + 1); /* 411 + 17 + 256 + 1 = 685 */
-    C_ALLOC_SCRATCH_START(syn_buf, int32_t, M_LP_FILTER_ORDER + L_DIV);            /* 16 + 256 = 272 */
+
+    int32_t exc_buf[PIT_MAX_MAX + L_INTERPOL + L_DIV_1024 + 1];  /* 411 + 17 + 256 + 1 = 685 */
+    int32_t syn_buf[M_LP_FILTER_ORDER + L_DIV_1024];  /* 16 + 256 = 272 */
+
     /* use same memory for code[L_SUBFR] and exc2[L_SUBFR] */
-    C_ALLOC_SCRATCH_START(tmp_buf, int32_t, L_SUBFR); /* 64 */
+    int32_t tmp_buf[L_SUBFR]; /* 64 */
     /* make sure they don't overlap if they are accessed alternatingly in
      * BuildAdaptiveExcitation() */
 #if(COD_BITS == FRACT_BITS)

@@ -101,6 +101,7 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include <stdlib.h>
+#include "../libAACdec/newAACDecoder.h"
 #include "drcDec_types.h"
 #include "drcDec_gainDecoder.h"
 #include "drcGainDec_preprocess.h"

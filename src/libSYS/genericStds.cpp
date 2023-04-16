@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../libAACdec/newAACDecoder.h"
 
 #ifdef ESP32
     #include "esp_heap_caps.h"
@@ -90,11 +91,11 @@ void FDKafree(void *ptr) {
     free(addr);                /* Free malloc'ed memory area.      */
 }
 //----------------------------------------------------------------------------------------------------------------------
-void *FDKcalloc_L(const uint32_t dim, const uint32_t size, MEMORY_SECTION s) { return FDKcalloc(dim, size); }
+void *FDKcalloc_L(const uint32_t dim, const uint32_t size, MEMORY_SECTION_t s) { return FDKcalloc(dim, size); }
 //----------------------------------------------------------------------------------------------------------------------
 void FDKfree_L(void *p) { free(p); }
 //----------------------------------------------------------------------------------------------------------------------
-void *FDKaalloc_L(const uint32_t size, const uint32_t alignment, MEMORY_SECTION s) {
+void *FDKaalloc_L(const uint32_t size, const uint32_t alignment, MEMORY_SECTION_t s) {
     void *addr, *result = NULL;
     addr = FDKcalloc_L(1, size + alignment + (uint32_t)sizeof(void *), s); /* Malloc and clear memory.         */
 
@@ -112,30 +113,3 @@ void FDKafree_L(void *ptr) {
     addr = *(((void **)ptr) - 1); /* Get pointer to malloc'ed memory. */
     FDKfree_L(addr);              /* Free malloc'ed memory area.      */
 }
-
-//----------------------------------------------------------------------------------------------------------------------
-
-/* ==================== FILE I/O ====================== */
-
-FDKFILE      *FDKfopen(const char *filename, const char *mode) { return fopen(filename, mode); }
-int32_t       FDKfclose(FDKFILE *fp) { return fclose((FILE *)fp); }
-// int32_t       FDKfseek(FDKFILE *fp, int32_t OFFSET, int32_t WHENCE) { return fseek((FILE *)fp, OFFSET, WHENCE); }
-// int32_t       FDKftell(FDKFILE *fp) { return ftell((FILE *)fp); }
-// int32_t       FDKfflush(FDKFILE *fp) { return fflush((FILE *)fp); }
-// const int32_t FDKSEEK_SET = SEEK_SET;
-// const int32_t FDKSEEK_CUR = SEEK_CUR;
-// const int32_t FDKSEEK_END = SEEK_END;
-
-uint32_t FDKfwrite(const void *ptrf, int32_t size, uint32_t nmemb, FDKFILE *fp) {
-    return (uint32_t)fwrite(ptrf, size, nmemb, (FILE *)fp);
-}
-uint32_t FDKfread(void *dst, int32_t size, uint32_t nmemb, FDKFILE *fp) {
-    return (uint32_t)fread(dst, size, nmemb, (FILE *)fp);
-}
-char *FDKfgets(void *dst, int32_t size, FDKFILE *fp) { return fgets((char *)dst, size, (FILE *)fp); }
-//void  FDKrewind(FDKFILE *fp) { FDKfseek((FILE *)fp, 0, FDKSEEK_SET); }
-
-
-//----------------------------------------------------------------------------------------------------------------------
-int32_t FDKfeof(FDKFILE *fp) { return feof((FILE *)fp); }
-

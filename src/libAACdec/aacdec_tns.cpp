@@ -348,8 +348,7 @@ void CTns_Apply(CTnsData * pTnsData, /*!< pointer to aac decoder info */
           size = stop - start;
 
           if (size) {
-            C_ALLOC_SCRATCH_START(state, int32_t, TNS_MAXIMUM_ORDER)
-
+            int32_t state[TNS_MAXIMUM_ORDER];
             memset(state, 0, TNS_MAXIMUM_ORDER * sizeof(int32_t));
             CLpc_SynthesisLattice(pSpectrum + start, size, 0, 0,
                                   filter->Direction, coeff, filter->Order,

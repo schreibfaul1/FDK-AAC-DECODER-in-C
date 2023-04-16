@@ -466,8 +466,7 @@ static int32_t CProgramConfigElement_Read(HANDLE_FDK_BITSTREAM bs, HANDLE_TRANSP
 	int32_t crcReg;
 
 	/* read PCE to temporal buffer first */
-	C_ALLOC_SCRATCH_START(tmpPce, CProgramConfig, 1);
-
+	CProgramConfig tmpPce[1];
 	CProgramConfig_Init(tmpPce);
 
 	crcReg = transportDec_CrcStartReg(pTp, 0);
@@ -1441,8 +1440,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, uint8
 		   channel_config (on a temporal buffer) to find out wheter we can keep it
 		   (and its metadata) or not. */
 		int32_t pceCmpResult;
-		C_ALLOC_SCRATCH_START(tmpPce, CProgramConfig, 1);
-
+		CProgramConfig tmpPce[1];
 		CProgramConfig_GetDefault(tmpPce, asc->m_channelConfiguration);
 		pceCmpResult = CProgramConfig_Compare(&self->pce, tmpPce);
 		if((pceCmpResult < 0)       /* Reset if PCEs are completely different ... */

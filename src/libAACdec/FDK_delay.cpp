@@ -39,7 +39,7 @@ void FDK_Delay_Apply(FDK_SignalDelay* data, int32_t* time_buffer,
   assert(data != NULL);
 
   if (data->delay > 0) {
-    C_ALLOC_SCRATCH_START(tmp, int32_t, MAX_FRAME_LENGTH)
+    int32_t tmp[MAX_FRAME_LENGTH];
     assert(frame_length <= MAX_FRAME_LENGTH);
     assert(channel < data->num_channels);
     assert(time_buffer != NULL);

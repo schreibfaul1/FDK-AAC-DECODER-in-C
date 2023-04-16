@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+#define M_PI 3.14159265358979323846 /*!< Pi. Only used in example projects. */
+
 
 typedef struct {                // Contains information needed for a single channel map.
     const uint8_t* pChannelMap; // Actual channel mapping for one single configuration.
@@ -15,7 +17,17 @@ typedef struct {                             // This is the main data struct for
                                              (value: 0) or the input just gets passed through (MPEG mapping). */
 } FDK_channelMapDescr_t;
 
-
+typedef enum{
+	/* Internal */                //Identifiers for various memory locations. They are used along with memory
+	SECT_DATA_L1 = 0x2000,        // allocation functions like FDKcalloc_L() to specify the requested memory's location.
+	SECT_DATA_L2,
+	SECT_DATA_L1_A,
+	SECT_DATA_L1_B,
+	SECT_CONSTDATA_L1,
+	/* External */
+	SECT_DATA_EXTERN = 0x4000,
+	SECT_CONSTDATA_EXTERN
+} MEMORY_SECTION_t;
 
 
 
@@ -29,4 +41,11 @@ int32_t FDK_chMapDescr_setPassThrough(FDK_channelMapDescr_t* const pMapDescr, ui
 int32_t FDK_chMapDescr_isValid(const FDK_channelMapDescr_t* const pMapDescr);
 void FDK_chMapDescr_init(FDK_channelMapDescr_t* const pMapDescr, const CHANNEL_MAP_INFO_t* const pMapInfoTab, const uint32_t mapInfoTabLen, const uint32_t fPassThrough);
 
-
+void *FDKcalloc(const uint32_t n, const uint32_t size);
+void *FDKmalloc(const uint32_t size);
+void *FDKaalloc(const uint32_t size, const uint32_t alignment);
+void FDKafree(void *ptr);
+void *FDKcalloc_L(const uint32_t n, const uint32_t size, MEMORY_SECTION_t s);
+void *FDKaalloc_L(const uint32_t size, const uint32_t alignment, MEMORY_SECTION_t s);
+void FDKfree_L(void *ptr);
+void FDKafree_L(void *ptr);

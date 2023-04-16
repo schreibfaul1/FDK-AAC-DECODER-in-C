@@ -109,11 +109,11 @@ void *fdkCallocMatrix1D_aligned(uint32_t dim1, uint32_t size) {
   return FDKaalloc(dim1 * size, ALIGNMENT_DEFAULT);
 }
 
-void *fdkCallocMatrix1D_int(uint32_t dim, uint32_t size, MEMORY_SECTION s) {
+void *fdkCallocMatrix1D_int(uint32_t dim, uint32_t size, MEMORY_SECTION_t s) {
   return FDKcalloc_L(dim, size, s);
 }
 
-void *fdkCallocMatrix1D_int_aligned(uint32_t dim, uint32_t size, MEMORY_SECTION s) {
+void *fdkCallocMatrix1D_int_aligned(uint32_t dim, uint32_t size, MEMORY_SECTION_t s) {
   return FDKaalloc_L(dim * size, ALIGNMENT_DEFAULT, s);
 }
 
@@ -187,7 +187,7 @@ void fdkFreeMatrix2D_aligned(void **p) {
 }
 
 void **fdkCallocMatrix2D_int(uint32_t dim1, uint32_t dim2, uint32_t size,
-                             MEMORY_SECTION s) {
+                             MEMORY_SECTION_t s) {
   void **p1;
   uint32_t i;
   char *p2;
@@ -210,7 +210,7 @@ bail:
 }
 
 void **fdkCallocMatrix2D_int_aligned(uint32_t dim1, uint32_t dim2, uint32_t size,
-                                     MEMORY_SECTION s) {
+                                     MEMORY_SECTION_t s) {
   void **p1;
   uint32_t i;
   char *p2;
@@ -277,7 +277,7 @@ void fdkFreeMatrix3D(void ***p) {
 }
 
 void ***fdkCallocMatrix3D_int(uint32_t dim1, uint32_t dim2, uint32_t dim3, uint32_t size,
-                              MEMORY_SECTION s) {
+                              MEMORY_SECTION_t s) {
   void ***p1;
   uint32_t i, j;
   void **p2;

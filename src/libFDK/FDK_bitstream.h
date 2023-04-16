@@ -105,6 +105,7 @@ amm-info@iis.fraunhofer.de
 #include <stdlib.h>
 #include <assert.h>
 #include "FDK_bitbuffer.h"
+#include "../libAACdec/newAACDecoder.h"
 #include "../libSYS/machine_type.h"
 
 #include "../libSYS/genericStds.h"

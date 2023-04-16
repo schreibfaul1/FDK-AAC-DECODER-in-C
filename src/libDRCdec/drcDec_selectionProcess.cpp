@@ -102,6 +102,7 @@ amm-info@iis.fraunhofer.de
 
 #include <stdlib.h>
 #include <memory.h>
+#include "../libAACdec/newAACDecoder.h"
 #include "drcDec_selectionProcess.h"
 #include "drcDec_tools.h"
 

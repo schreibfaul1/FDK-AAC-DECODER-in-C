@@ -103,6 +103,7 @@ amm-info@iis.fraunhofer.de
 #ifndef FDK_MATRIXCALLOC_H
 #define FDK_MATRIXCALLOC_H
 
+#include "../libAACdec/newAACDecoder.h"
 #include "../libSYS/machine_type.h"
 #include "../libSYS/genericStds.h"
 
@@ -112,8 +113,8 @@ void* fdkCallocMatrix1D(uint32_t dim1, uint32_t size);
 void* fdkCallocMatrix1D_aligned(uint32_t dim1, uint32_t size);
 /* It is recommended to use FDK_ALLOCATE_MEMORY_1D_INT instead of
  * fdkCallocMatrix1D_int */
-void* fdkCallocMatrix1D_int(uint32_t dim1, uint32_t size, MEMORY_SECTION s);
-void* fdkCallocMatrix1D_int_aligned(uint32_t dim1, uint32_t size, MEMORY_SECTION s);
+void* fdkCallocMatrix1D_int(uint32_t dim1, uint32_t size, MEMORY_SECTION_t s);
+void* fdkCallocMatrix1D_int_aligned(uint32_t dim1, uint32_t size, MEMORY_SECTION_t s);
 /* It is recommended to use FDK_FREE_MEMORY_1D instead of fdkFreeMatrix1D */
 void fdkFreeMatrix1D(void* p);
 void fdkFreeMatrix1D_aligned(void* p);
@@ -124,11 +125,11 @@ void** fdkCallocMatrix2D(uint32_t dim1, uint32_t dim2, uint32_t size);
 void** fdkCallocMatrix2D_aligned(uint32_t dim1, uint32_t dim2, uint32_t size);
 /* It is recommended to use FDK_ALLOCATE_MEMORY_2D_INT instead of
  * fdkCallocMatrix2D_int */
-void** fdkCallocMatrix2D_int(uint32_t dim1, uint32_t dim2, uint32_t size, MEMORY_SECTION s);
+void** fdkCallocMatrix2D_int(uint32_t dim1, uint32_t dim2, uint32_t size, MEMORY_SECTION_t s);
 /* It is recommended to use FDK_ALLOCATE_MEMORY_2D_INT_ALIGNED instead of
  * fdkCallocMatrix2D_int_aligned */
 void** fdkCallocMatrix2D_int_aligned(uint32_t dim1, uint32_t dim2, uint32_t size,
-                                     MEMORY_SECTION s);
+                                     MEMORY_SECTION_t s);
 /* It is recommended to use FDK_FREE_MEMORY_2D instead of fdkFreeMatrix2D */
 void fdkFreeMatrix2D(void** p);
 /* It is recommended to use FDK_FREE_MEMORY_2D_ALIGNED instead of
@@ -141,7 +142,7 @@ void*** fdkCallocMatrix3D(uint32_t dim1, uint32_t dim2, uint32_t dim3, uint32_t 
 /* It is recommended to use FDK_ALLOCATE_MEMORY_3D_INT instead of
  * fdkCallocMatrix3D_int */
 void*** fdkCallocMatrix3D_int(uint32_t dim1, uint32_t dim2, uint32_t dim3, uint32_t size,
-                              MEMORY_SECTION s);
+                              MEMORY_SECTION_t s);
 /* It is recommended to use FDK_FREE_MEMORY_3D instead of fdkFreeMatrix3D */
 void fdkFreeMatrix3D(void*** p);
 

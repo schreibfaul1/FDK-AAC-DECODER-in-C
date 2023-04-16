@@ -601,7 +601,7 @@ void CConcealment_Store(
     } else {
     /* swap spectral data */
 #if (FIXP_CNCL == int32_t)
-      C_ALLOC_SCRATCH_START(pSpecTmp, int32_t, 1024);
+      int32_t pSpecTmp[1024];
       memcpy(pSpecTmp, pSpectralCoefficient, 1024 * sizeof(int32_t));
       memcpy(pSpectralCoefficient, hConcealmentInfo->spectralCoefficient,
                 1024 * sizeof(int32_t));
