@@ -507,12 +507,12 @@ void FDK_QmfDomain_SaveOverlap(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int32_t offset) {
 	/* for high part it would be enough to save only used part of overlap area */
 	if(qmfImag != NULL) {
 		for(ts = offset; ts < ovSlots; ts++) {
-			FDKmemcpy(qmfReal[ts], qmfReal[nCols + ts], sizeof(int32_t) * nProcBands);
-			FDKmemcpy(qmfImag[ts], qmfImag[nCols + ts], sizeof(int32_t) * nProcBands);
+			memcpy(qmfReal[ts], qmfReal[nCols + ts], sizeof(int32_t) * nProcBands);
+			memcpy(qmfImag[ts], qmfImag[nCols + ts], sizeof(int32_t) * nProcBands);
 		}
 	}
 	else {
-		for(ts = 0; ts < ovSlots; ts++) { FDKmemcpy(qmfReal[ts], qmfReal[nCols + ts], sizeof(int32_t) * nProcBands); }
+		for(ts = 0; ts < ovSlots; ts++) { memcpy(qmfReal[ts], qmfReal[nCols + ts], sizeof(int32_t) * nProcBands); }
 	}
 	pScaling->ov_lb_scale = pScaling->lb_scale;
 }
@@ -612,11 +612,11 @@ void FDK_QmfDomain_WorkBuffer2ProcChannel(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch) 
 		const int32_t slots = qd_ch->workBuf_nTimeSlots;
 		int32_t       ts;
 		for(ts = 0; ts < slots; ts++) {
-			FDKmemcpy(qd_ch->hQmfSlotsReal[gc->nQmfOvTimeSlots + ts],
+			memcpy(qd_ch->hQmfSlotsReal[gc->nQmfOvTimeSlots + ts],
 					  FDK_getWorkBuffer(pWorkBuf, workBufferOffset, workBufferSectSize, bands),
 					  sizeof(int32_t) * bands);  // parkBuf_to_anaMatrix
 			workBufferOffset += bands;
-			FDKmemcpy(qd_ch->hQmfSlotsImag[gc->nQmfOvTimeSlots + ts],
+			memcpy(qd_ch->hQmfSlotsImag[gc->nQmfOvTimeSlots + ts],
 					  FDK_getWorkBuffer(pWorkBuf, workBufferOffset, workBufferSectSize, bands),
 					  sizeof(int32_t) * bands);
 			workBufferOffset += bands;
@@ -644,15 +644,15 @@ void FDK_QmfDomain_QmfData2HBE(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int32_t **ppQmfRe
 			/* copy current data of processing channel */
 			int32_t tmp[64];  // one slot
 			/* real */
-			FDKmemcpy(tmp, qd_ch->hQmfSlotsReal[gc->nQmfOvTimeSlots + ts],
+			memcpy(tmp, qd_ch->hQmfSlotsReal[gc->nQmfOvTimeSlots + ts],
 					  sizeof(int32_t) * bands);  // anaMatrix_to_tmp
-			FDKmemcpy(qd_ch->hQmfSlotsReal[gc->nQmfOvTimeSlots + ts], ppQmfReal[ts],
+			memcpy(qd_ch->hQmfSlotsReal[gc->nQmfOvTimeSlots + ts], ppQmfReal[ts],
 					  sizeof(int32_t) * bands);                      // HBE_to_anaMatrix
-			FDKmemcpy(ppQmfReal[ts], tmp, sizeof(int32_t) * bands);  // tmp_to_HBE
+			memcpy(ppQmfReal[ts], tmp, sizeof(int32_t) * bands);  // tmp_to_HBE
 			/* imag */
-			FDKmemcpy(tmp, qd_ch->hQmfSlotsImag[gc->nQmfOvTimeSlots + ts], sizeof(int32_t) * bands);
-			FDKmemcpy(qd_ch->hQmfSlotsImag[gc->nQmfOvTimeSlots + ts], ppQmfImag[ts], sizeof(int32_t) * bands);
-			FDKmemcpy(ppQmfImag[ts], tmp, sizeof(int32_t) * bands);
+			memcpy(tmp, qd_ch->hQmfSlotsImag[gc->nQmfOvTimeSlots + ts], sizeof(int32_t) * bands);
+			memcpy(qd_ch->hQmfSlotsImag[gc->nQmfOvTimeSlots + ts], ppQmfImag[ts], sizeof(int32_t) * bands);
+			memcpy(ppQmfImag[ts], tmp, sizeof(int32_t) * bands);
 		}
 	}
 	else {  // right channel (parkBuf)
@@ -662,14 +662,14 @@ void FDK_QmfDomain_QmfData2HBE(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int32_t **ppQmfRe
 		assert(qd_ch->workBuf_nBands == gc->nBandsAnalysis);
 		for(ts = 0; ts < slots; ts++) {
 			/* copy HBE QMF data buffer to processing channel */
-			FDKmemcpy(qd_ch->hQmfSlotsReal[gc->nQmfOvTimeSlots + ts], ppQmfReal[ts],
+			memcpy(qd_ch->hQmfSlotsReal[gc->nQmfOvTimeSlots + ts], ppQmfReal[ts],
 					  sizeof(int32_t) * bands);  // HBE_to_anaMatrix
-			FDKmemcpy(qd_ch->hQmfSlotsImag[gc->nQmfOvTimeSlots + ts], ppQmfImag[ts], sizeof(int32_t) * bands);
+			memcpy(qd_ch->hQmfSlotsImag[gc->nQmfOvTimeSlots + ts], ppQmfImag[ts], sizeof(int32_t) * bands);
 			/* copy parked new QMF data to HBE QMF data buffer */
-			FDKmemcpy(ppQmfReal[ts], FDK_getWorkBuffer(pWorkBuf, workBufferOffset, workBufferSectSize, bands),
+			memcpy(ppQmfReal[ts], FDK_getWorkBuffer(pWorkBuf, workBufferOffset, workBufferSectSize, bands),
 					  sizeof(int32_t) * bands);  // parkBuf_to_HBE
 			workBufferOffset += bands;
-			FDKmemcpy(ppQmfImag[ts], FDK_getWorkBuffer(pWorkBuf, workBufferOffset, workBufferSectSize, bands),
+			memcpy(ppQmfImag[ts], FDK_getWorkBuffer(pWorkBuf, workBufferOffset, workBufferSectSize, bands),
 					  sizeof(int32_t) * bands);
 			workBufferOffset += bands;
 		}

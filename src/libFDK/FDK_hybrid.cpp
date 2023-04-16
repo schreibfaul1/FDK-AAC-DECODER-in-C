@@ -378,29 +378,29 @@ int32_t FDKhybridAnalysisApply(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
      */
     if (hAnalysisHybFilter->hfMode != 0) {
       /* HF delay compensation was applied outside. */
-      FDKmemcpy(
+      memcpy(
           pHybridReal + hybOffset, &pQmfReal[nrQmfBandsLF],
           (hAnalysisHybFilter->nrBands - nrQmfBandsLF) * sizeof(int32_t));
-      FDKmemcpy(
+      memcpy(
           pHybridImag + hybOffset, &pQmfImag[nrQmfBandsLF],
           (hAnalysisHybFilter->cplxBands - nrQmfBandsLF) * sizeof(int32_t));
     } else {
       assert(hAnalysisHybFilter->HFmemorySize != 0);
       /* HF delay compensation, filterlength/2. */
-      FDKmemcpy(
+      memcpy(
           pHybridReal + hybOffset,
           hAnalysisHybFilter->bufferHFReal[hAnalysisHybFilter->bufferHFpos],
           (hAnalysisHybFilter->nrBands - nrQmfBandsLF) * sizeof(int32_t));
-      FDKmemcpy(
+      memcpy(
           pHybridImag + hybOffset,
           hAnalysisHybFilter->bufferHFImag[hAnalysisHybFilter->bufferHFpos],
           (hAnalysisHybFilter->cplxBands - nrQmfBandsLF) * sizeof(int32_t));
 
-      FDKmemcpy(
+      memcpy(
           hAnalysisHybFilter->bufferHFReal[hAnalysisHybFilter->bufferHFpos],
           &pQmfReal[nrQmfBandsLF],
           (hAnalysisHybFilter->nrBands - nrQmfBandsLF) * sizeof(int32_t));
-      FDKmemcpy(
+      memcpy(
           hAnalysisHybFilter->bufferHFImag[hAnalysisHybFilter->bufferHFpos],
           &pQmfImag[nrQmfBandsLF],
           (hAnalysisHybFilter->cplxBands - nrQmfBandsLF) * sizeof(int32_t));
@@ -489,9 +489,9 @@ void FDKhybridSynthesisApply(HANDLE_FDK_SYN_HYB_FILTER hSynthesisHybFilter,
     /*
      * HF buffer.
      */
-    FDKmemcpy(&pQmfReal[nrQmfBandsLF], &pHybridReal[hybOffset],
+    memcpy(&pQmfReal[nrQmfBandsLF], &pHybridReal[hybOffset],
               (hSynthesisHybFilter->nrBands - nrQmfBandsLF) * sizeof(int32_t));
-    FDKmemcpy(
+    memcpy(
         &pQmfImag[nrQmfBandsLF], &pHybridImag[hybOffset],
         (hSynthesisHybFilter->cplxBands - nrQmfBandsLF) * sizeof(int32_t));
   }

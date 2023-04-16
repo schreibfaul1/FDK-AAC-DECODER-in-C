@@ -573,7 +573,7 @@ void CConcealment_Store(
     tWindowShape = hConcealmentInfo->windowShape;
 
     /* store old scale factors for swapping */
-    FDKmemcpy(tSpecScale, hConcealmentInfo->specScale, 8 * sizeof(int16_t));
+    memcpy(tSpecScale, hConcealmentInfo->specScale, 8 * sizeof(int16_t));
 
     /* store new window infos */
     hConcealmentInfo->windowSequence = GetWindowSequence(pIcsInfo);
@@ -582,12 +582,12 @@ void CConcealment_Store(
         *(GetWindowGroupLengthTable(pIcsInfo) + GetWindowGroups(pIcsInfo) - 1);
 
     /* store new scale factors */
-    FDKmemcpy(hConcealmentInfo->specScale, pSpecScale, 8 * sizeof(int16_t));
+    memcpy(hConcealmentInfo->specScale, pSpecScale, 8 * sizeof(int16_t));
 
     if (hConcealmentInfo->pConcealParams->method < ConcealMethodInter) {
     /* store new spectral bins */
 #if (CNCL_FRACT_BITS == DFRACT_BITS)
-      FDKmemcpy(hConcealmentInfo->spectralCoefficient, pSpectralCoefficient,
+      memcpy(hConcealmentInfo->spectralCoefficient, pSpectralCoefficient,
                 1024 * sizeof(FIXP_CNCL));
 #else
       FIXP_CNCL * pCncl =
@@ -602,10 +602,10 @@ void CConcealment_Store(
     /* swap spectral data */
 #if (FIXP_CNCL == int32_t)
       C_ALLOC_SCRATCH_START(pSpecTmp, int32_t, 1024);
-      FDKmemcpy(pSpecTmp, pSpectralCoefficient, 1024 * sizeof(int32_t));
-      FDKmemcpy(pSpectralCoefficient, hConcealmentInfo->spectralCoefficient,
+      memcpy(pSpecTmp, pSpectralCoefficient, 1024 * sizeof(int32_t));
+      memcpy(pSpectralCoefficient, hConcealmentInfo->spectralCoefficient,
                 1024 * sizeof(int32_t));
-      FDKmemcpy(hConcealmentInfo->spectralCoefficient, pSpecTmp,
+      memcpy(hConcealmentInfo->spectralCoefficient, pSpecTmp,
                 1024 * sizeof(int32_t));
       C_ALLOC_SCRATCH_END(pSpecTmp, int32_t, 1024);
 #else
@@ -626,13 +626,13 @@ void CConcealment_Store(
       pIcsInfo->WindowShape = tWindowShape;
 
       /* complete swapping of scale factors */
-      FDKmemcpy(pSpecScale, tSpecScale, 8 * sizeof(int16_t));
+      memcpy(pSpecScale, tSpecScale, 8 * sizeof(int16_t));
     }
   }
 
   if (pAacDecoderChannelInfo->renderMode == AACDEC_RENDER_LPD) {
     /* Store LSF4 */
-    FDKmemcpy(hConcealmentInfo->lsf4, pAacDecoderStaticChannelInfo->lpc4_lsf,
+    memcpy(hConcealmentInfo->lsf4, pAacDecoderStaticChannelInfo->lpc4_lsf,
               sizeof(hConcealmentInfo->lsf4));
     /* Store TCX gain */
     hConcealmentInfo->last_tcx_gain =
@@ -698,7 +698,7 @@ int32_t CConcealment_Apply(
                    pAacDecoderStaticChannelInfo->lpc4_lsf,
                    pAacDecoderStaticChannelInfo->lsf_adaptive_mean,
                    hConcealmentInfo->lastRenderMode == AACDEC_RENDER_IMDCT);
-      FDKmemcpy(hConcealmentInfo->lsf4, pAacDecoderStaticChannelInfo->lpc4_lsf,
+      memcpy(hConcealmentInfo->lsf4, pAacDecoderStaticChannelInfo->lpc4_lsf,
                 sizeof(pAacDecoderStaticChannelInfo->lpc4_lsf));
     }
 
@@ -708,7 +708,7 @@ int32_t CConcealment_Apply(
     if ((!frameOk || mute_release_active) &&
         (pAacDecoderChannelInfo->renderMode == AACDEC_RENDER_LPD)) {
       /* Restore old LSF4 */
-      FDKmemcpy(pAacDecoderStaticChannelInfo->lpc4_lsf, hConcealmentInfo->lsf4,
+      memcpy(pAacDecoderStaticChannelInfo->lpc4_lsf, hConcealmentInfo->lsf4,
                 sizeof(pAacDecoderStaticChannelInfo->lpc4_lsf));
       /* Restore old TCX gain */
       pAacDecoderStaticChannelInfo->last_tcx_gain =
@@ -768,11 +768,11 @@ int32_t CConcealment_Apply(
 
       if (hConcealmentInfo->concealState != ConcealState_Mute) {
         /* restore scale factors */
-        FDKmemcpy(pSpecScale, hConcealmentInfo->specScale, 8 * sizeof(int16_t));
+        memcpy(pSpecScale, hConcealmentInfo->specScale, 8 * sizeof(int16_t));
 
         /* restore spectral bins */
 #if (CNCL_FRACT_BITS == DFRACT_BITS)
-        FDKmemcpy(pSpectralCoefficient, hConcealmentInfo->spectralCoefficient,
+        memcpy(pSpectralCoefficient, hConcealmentInfo->spectralCoefficient,
                   1024 * sizeof(int32_t));
 #else
         for (i = 1024; i != 0; i--) {
@@ -908,7 +908,7 @@ static int32_t CConcealment_ApplyInter(
     }
 
     /* Restore scale factors */
-    FDKmemcpy(pSpecScale, pConcealmentInfo->specScale, 8 * sizeof(int16_t));
+    memcpy(pSpecScale, pConcealmentInfo->specScale, 8 * sizeof(int16_t));
   }
 
   /* if previous frame was not ok */

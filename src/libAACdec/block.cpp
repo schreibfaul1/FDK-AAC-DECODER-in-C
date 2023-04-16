@@ -1155,9 +1155,9 @@ void CBlock_FrequencyToTime(
       /* The "if" clause is entered both for fullbandLpd mono and
        * non-fullbandLpd*. The "else"-> just for fullbandLpd stereo*/
       if (!(elFlags & AC_EL_LPDSTEREOIDX)) {
-        FDKmemcpy(pitch, pAacDecoderStaticChannelInfo->old_T_pf,
+        memcpy(pitch, pAacDecoderStaticChannelInfo->old_T_pf,
                   SynSfd * sizeof(int32_t));
-        FDKmemcpy(pit_gain, pAacDecoderStaticChannelInfo->old_gain_pf,
+        memcpy(pit_gain, pAacDecoderStaticChannelInfo->old_gain_pf,
                   SynSfd * sizeof(int32_t));
 
         for (int32_t i = SynSfd; i < LpdSfd + 3; i++) {
@@ -1176,7 +1176,7 @@ void CBlock_FrequencyToTime(
 
         /* Copy old data to the beginning of the buffer */
         {
-          FDKmemcpy(
+          memcpy(
               pWorkBuffer1, pAacDecoderStaticChannelInfo->old_synth,
               ((PIT_MAX_MAX - (1 * L_SUBFR)) * fac_FB) * sizeof(int32_t));
         }

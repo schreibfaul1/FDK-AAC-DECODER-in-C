@@ -221,8 +221,8 @@ void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t si
   int32_t stateIndex = *pStateIndex;
 
   FIXP_LPC_TNS coeff[2 * LPC_MAX_ORDER];
-  FDKmemcpy(&coeff[0], lpcCoeff_m, order * sizeof(FIXP_LPC_TNS));
-  FDKmemcpy(&coeff[order], lpcCoeff_m, order * sizeof(FIXP_LPC_TNS));
+  memcpy(&coeff[0], lpcCoeff_m, order * sizeof(FIXP_LPC_TNS));
+  memcpy(&coeff[order], lpcCoeff_m, order * sizeof(FIXP_LPC_TNS));
 
   assert(order <= LPC_MAX_ORDER);
   assert(stateIndex < order);
@@ -264,8 +264,8 @@ void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t si
   int32_t stateIndex = *pStateIndex;
 
   FIXP_LPC coeff[2 * LPC_MAX_ORDER];
-  FDKmemcpy(&coeff[0], lpcCoeff_m, order * sizeof(FIXP_LPC));
-  FDKmemcpy(&coeff[order], lpcCoeff_m, order * sizeof(FIXP_LPC));
+  memcpy(&coeff[0], lpcCoeff_m, order * sizeof(FIXP_LPC));
+  memcpy(&coeff[order], lpcCoeff_m, order * sizeof(FIXP_LPC));
 
   assert(order <= LPC_MAX_ORDER);
   assert(stateIndex < order);
@@ -320,8 +320,8 @@ void CLpc_Analysis(int32_t * signal, const int32_t signal_size,
      modulo state buffer */
   FIXP_LPC coeff[2 * LPC_MAX_ORDER];
   FIXP_LPC *pCoeff;
-  FDKmemcpy(&coeff[0], lpcCoeff_m, order * sizeof(FIXP_LPC));
-  FDKmemcpy(&coeff[order], lpcCoeff_m, order * sizeof(FIXP_LPC));
+  memcpy(&coeff[0], lpcCoeff_m, order * sizeof(FIXP_LPC));
+  memcpy(&coeff[order], lpcCoeff_m, order * sizeof(FIXP_LPC));
 
   /*
       # Analysis filter, obtain residual.
@@ -448,7 +448,7 @@ void CLpc_AutoToParcor(int32_t acorr[], const int32_t acorr_e,
     return;
   }
 
-  FDKmemcpy(workBuffer, acorr + 1, numOfCoeff * sizeof(int32_t));
+  memcpy(workBuffer, acorr + 1, numOfCoeff * sizeof(int32_t));
   for (i = 0; i < numOfCoeff; i++) {
     int32_t sign = ((int32_t)workBuffer[0] >> (DFRACT_BITS - 1));
     int32_t tmp = (int32_t)((int32_t)workBuffer[0] ^ sign);

@@ -1634,7 +1634,7 @@ PCMDMX_ERROR pcmDmx_Reset(HANDLE_PCM_DOWNMIX self, uint32_t flags) {
     int32_t slot;
     /* Init all slots with a default set */
     for (slot = 0; slot <= (1); slot += 1) {
-      FDKmemcpy(&self->bsMetaData[slot], &dfltMetaData,
+      memcpy(&self->bsMetaData[slot], &dfltMetaData,
                 sizeof(DMX_BS_META_DATA));
     }
   }
@@ -2137,11 +2137,11 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
     assert(err == PCMDMX_OK);
 
   }
-  FDKmemcpy(&bsMetaData, &self->bsMetaData[pParam->frameDelay],
+  memcpy(&bsMetaData, &self->bsMetaData[pParam->frameDelay],
             sizeof(DMX_BS_META_DATA));
   /* Maintain delay line */
   for (slot = pParam->frameDelay; slot > 0; slot -= 1) {
-    FDKmemcpy(&self->bsMetaData[slot], &self->bsMetaData[slot - 1],
+    memcpy(&self->bsMetaData[slot], &self->bsMetaData[slot - 1],
               sizeof(DMX_BS_META_DATA));
   }
 
@@ -2252,7 +2252,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
       /* Remove unused rows from factor matrix */
       for (outCh = 0; outCh < numOutChannels; outCh += 1) {
         if (outCh != map[outCh]) {
-          FDKmemcpy(&mixFactors[outCh], &mixFactors[map[outCh]],
+          memcpy(&mixFactors[outCh], &mixFactors[map[outCh]],
                     (8) * sizeof(int16_t));
         }
       }
@@ -2341,7 +2341,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
       /* Prepare for next stage: */
       inStride = outStride;
       inChMode = outChMode;
-      FDKmemcpy(inOffsetTable, outOffsetTable, (8) * sizeof(uint8_t));
+      memcpy(inOffsetTable, outOffsetTable, (8) * sizeof(uint8_t));
     }
 
     /* SECOND STAGE
@@ -2360,11 +2360,11 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
 
       /* Do not change the signalling which is the channel types and indices.
          Just reorder and add channels. So first save the input signalling. */
-      FDKmemcpy(inChTypes, channelType,
+      memcpy(inChTypes, channelType,
                 numInChannels * sizeof(AUDIO_CHANNEL_TYPE));
       memset(inChTypes + numInChannels, 0,
                   ((8) - numInChannels) * sizeof(AUDIO_CHANNEL_TYPE));
-      FDKmemcpy(inChIndices, channelIndices, numInChannels * sizeof(uint8_t));
+      memcpy(inChIndices, channelIndices, numInChannels * sizeof(uint8_t));
       memset(inChIndices + numInChannels, 0,
                   ((8) - numInChannels) * sizeof(uint8_t));
 
@@ -2404,7 +2404,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
         }
       } else {
         /* Just copy and extend the original config */
-        FDKmemcpy(outOffsetTable, inOffsetTable, (8) * sizeof(uint8_t));
+        memcpy(outOffsetTable, inOffsetTable, (8) * sizeof(uint8_t));
       }
 
       /* Set I/O channel pointer.

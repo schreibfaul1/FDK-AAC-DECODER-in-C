@@ -1060,31 +1060,31 @@ static void SpatialDecApplyBypass(spatialDec *self, int32_t **hybInputReal,
     switch (numInputChannels) {
       case 1:
         if (cf > 0) {
-          FDKmemcpy(hybOutputReal[cf], hybInputReal[0],
+          memcpy(hybOutputReal[cf], hybInputReal[0],
                     self->hybridBands * sizeof(int32_t));
-          FDKmemcpy(hybOutputImag[cf], hybInputImag[0],
+          memcpy(hybOutputImag[cf], hybInputImag[0],
                     complexHybBands * sizeof(int32_t));
         } else {
-          FDKmemcpy(hybOutputReal[lf], hybInputReal[0],
+          memcpy(hybOutputReal[lf], hybInputReal[0],
                     self->hybridBands * sizeof(int32_t));
-          FDKmemcpy(hybOutputReal[rf], hybInputReal[0],
+          memcpy(hybOutputReal[rf], hybInputReal[0],
                     self->hybridBands * sizeof(int32_t));
-          FDKmemcpy(hybOutputImag[lf], hybInputImag[0],
+          memcpy(hybOutputImag[lf], hybInputImag[0],
                     complexHybBands * sizeof(int32_t));
-          FDKmemcpy(hybOutputImag[rf], hybInputImag[0],
+          memcpy(hybOutputImag[rf], hybInputImag[0],
                     complexHybBands * sizeof(int32_t));
         }
         break;
       case 2:
         assert(lf != -1);
         assert(rf != -1);
-        FDKmemcpy(hybOutputReal[lf], hybInputReal[0],
+        memcpy(hybOutputReal[lf], hybInputReal[0],
                   self->hybridBands * sizeof(int32_t));
-        FDKmemcpy(hybOutputReal[rf], hybInputReal[1],
+        memcpy(hybOutputReal[rf], hybInputReal[1],
                   self->hybridBands * sizeof(int32_t));
-        FDKmemcpy(hybOutputImag[lf], hybInputImag[0],
+        memcpy(hybOutputImag[lf], hybInputImag[0],
                   complexHybBands * sizeof(int32_t));
-        FDKmemcpy(hybOutputImag[rf], hybInputImag[1],
+        memcpy(hybOutputImag[rf], hybInputImag[1],
                   complexHybBands * sizeof(int32_t));
         break;
     }

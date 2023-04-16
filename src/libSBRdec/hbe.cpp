@@ -1501,11 +1501,11 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
         j <= qmfVocoderColsIn - ((LPC_ORDER + ov_len + QMF_WIN_LEN - 1) >> 1)) {
       /* update in buffer */
       for (i = 0; i < QMF_WIN_LEN - 1; i++) {
-        FDKmemcpy(
+        memcpy(
             hQmfTransposer->qmfInBufReal_F[i],
             hQmfTransposer->qmfInBufReal_F[i + 1],
             sizeof(int32_t) * hQmfTransposer->HBEAnalysiscQMF.no_channels);
-        FDKmemcpy(
+        memcpy(
             hQmfTransposer->qmfInBufImag_F[i],
             hQmfTransposer->qmfInBufImag_F[i + 1],
             sizeof(int32_t) * hQmfTransposer->HBEAnalysiscQMF.no_channels);
@@ -2069,10 +2069,10 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
     }       /* for stretch */
 
     for (i = 0; i < QMF_WIN_LEN - 1; i++) {
-      FDKmemcpy(hQmfTransposer->qmfInBufReal_F[i],
+      memcpy(hQmfTransposer->qmfInBufReal_F[i],
                 hQmfTransposer->qmfInBufReal_F[i + 1],
                 sizeof(int32_t) * hQmfTransposer->HBEAnalysiscQMF.no_channels);
-      FDKmemcpy(hQmfTransposer->qmfInBufImag_F[i],
+      memcpy(hQmfTransposer->qmfInBufImag_F[i],
                 hQmfTransposer->qmfInBufImag_F[i + 1],
                 sizeof(int32_t) * hQmfTransposer->HBEAnalysiscQMF.no_channels);
     }
@@ -2082,13 +2082,13 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
         /* copy first two slots of internal buffer to output */
         if (keepStatesSyncedMode == KEEP_STATES_SYNCED_OUTDIFF) {
           for (i = 0; i < 2; i++) {
-            FDKmemcpy(&ppQmfBufferOutReal_F[2 * j - offset + i]
+            memcpy(&ppQmfBufferOutReal_F[2 * j - offset + i]
                                            [hQmfTransposer->xOverQmf[0]],
                       &hQmfTransposer
                            ->qmfHBEBufReal_F[i][hQmfTransposer->xOverQmf[0]],
                       (QMF_SYNTH_CHANNELS - hQmfTransposer->xOverQmf[0]) *
                           sizeof(int32_t));
-            FDKmemcpy(&ppQmfBufferOutImag_F[2 * j - offset + i]
+            memcpy(&ppQmfBufferOutImag_F[2 * j - offset + i]
                                            [hQmfTransposer->xOverQmf[0]],
                       &hQmfTransposer
                            ->qmfHBEBufImag_F[i][hQmfTransposer->xOverQmf[0]],
@@ -2097,13 +2097,13 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
           }
         } else {
           for (i = 0; i < 2; i++) {
-            FDKmemcpy(&ppQmfBufferOutReal_F[2 * j + i + ov_len]
+            memcpy(&ppQmfBufferOutReal_F[2 * j + i + ov_len]
                                            [hQmfTransposer->xOverQmf[0]],
                       &hQmfTransposer
                            ->qmfHBEBufReal_F[i][hQmfTransposer->xOverQmf[0]],
                       (QMF_SYNTH_CHANNELS - hQmfTransposer->xOverQmf[0]) *
                           sizeof(int32_t));
-            FDKmemcpy(&ppQmfBufferOutImag_F[2 * j + i + ov_len]
+            memcpy(&ppQmfBufferOutImag_F[2 * j + i + ov_len]
                                            [hQmfTransposer->xOverQmf[0]],
                       &hQmfTransposer
                            ->qmfHBEBufImag_F[i][hQmfTransposer->xOverQmf[0]],
@@ -2116,12 +2116,12 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
 
     /* move slots up */
     for (i = 0; i < HBE_MAX_OUT_SLOTS - 2; i++) {
-      FDKmemcpy(
+      memcpy(
           &hQmfTransposer->qmfHBEBufReal_F[i][hQmfTransposer->xOverQmf[0]],
           &hQmfTransposer->qmfHBEBufReal_F[i + 2][hQmfTransposer->xOverQmf[0]],
           (QMF_SYNTH_CHANNELS - hQmfTransposer->xOverQmf[0]) *
               sizeof(int32_t));
-      FDKmemcpy(
+      memcpy(
           &hQmfTransposer->qmfHBEBufImag_F[i][hQmfTransposer->xOverQmf[0]],
           &hQmfTransposer->qmfHBEBufImag_F[i + 2][hQmfTransposer->xOverQmf[0]],
           (QMF_SYNTH_CHANNELS - hQmfTransposer->xOverQmf[0]) *

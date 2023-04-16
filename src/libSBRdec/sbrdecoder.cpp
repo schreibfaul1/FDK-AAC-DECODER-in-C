@@ -207,7 +207,7 @@ static uint8_t getHeaderSlot(uint8_t currentSlot, uint8_t hdrSlotUsage[(1) + 1])
 
 static void copySbrHeader(HANDLE_SBR_HEADER_DATA hDst, const HANDLE_SBR_HEADER_DATA hSrc) {
 	/* copy the whole header memory (including pointers) */
-	FDKmemcpy(hDst, hSrc, sizeof(SBR_HEADER_DATA));
+	memcpy(hDst, hSrc, sizeof(SBR_HEADER_DATA));
 
 	/* update pointers */
 	hDst->freqBandData.freqBandTable[0] = hDst->freqBandData.freqBandTableLo;
@@ -1083,8 +1083,8 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs, uin
 	}
 
 	/* store frameData; new parsed frameData possibly corrupted */
-	FDKmemcpy(&frameDataLeftCopy, hFrameDataLeft, sizeof(SBR_FRAME_DATA));
-	if(stereo) { FDKmemcpy(&frameDataRightCopy, hFrameDataRight, sizeof(SBR_FRAME_DATA)); }
+	memcpy(&frameDataLeftCopy, hFrameDataLeft, sizeof(SBR_FRAME_DATA));
+	if(stereo) { memcpy(&frameDataRightCopy, hFrameDataRight, sizeof(SBR_FRAME_DATA)); }
 
 	/* reset PS flag; will be set after PS was found */
 	self->flags &= ~SBRDEC_PS_DECODED;
@@ -1307,8 +1307,8 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs, uin
 		/* Set error flag for this slot to trigger concealment */
 		setFrameErrorFlag(self->pSbrElement[elementIndex], FRAME_ERROR);
 		/* restore old frameData for concealment */
-		FDKmemcpy(hFrameDataLeft, &frameDataLeftCopy, sizeof(SBR_FRAME_DATA));
-		if(stereo) { FDKmemcpy(hFrameDataRight, &frameDataRightCopy, sizeof(SBR_FRAME_DATA)); }
+		memcpy(hFrameDataLeft, &frameDataLeftCopy, sizeof(SBR_FRAME_DATA));
+		if(stereo) { memcpy(hFrameDataRight, &frameDataRightCopy, sizeof(SBR_FRAME_DATA)); }
 		errorStatus = SBRDEC_PARSE_ERROR;
 	}
 	else {

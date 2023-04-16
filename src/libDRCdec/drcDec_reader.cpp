@@ -509,7 +509,7 @@ drcDec_readUniDrcGain(HANDLE_FDK_BITSTREAM hBs,
                          tmpNodes);
 
     hUniDrcGain->nNodes[seq] = tmpNNodes;
-    FDKmemcpy(hUniDrcGain->gainNode[seq], tmpNodes,
+    memcpy(hUniDrcGain->gainNode[seq], tmpNodes,
               fMin(tmpNNodes, (uint8_t)16) * sizeof(GAIN_NODE));
   }
 

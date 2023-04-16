@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "nlc_dec.h"
 #include "FDK_tools_rom.h"
 
@@ -1035,9 +1036,9 @@ ERROR_t EcDataPairDec(DECODER_TYPE DECODER, HANDLE_FDK_BITSTREAM strm,
   } /* End: Differential/Huffman/LSB Coding */
 
   /* Copy data to output arrays */
-  FDKmemcpy(aaOutData1 + startBand, aaDataPair[0], sizeof(int8_t) * dataBands);
+  memcpy(aaOutData1 + startBand, aaDataPair[0], sizeof(int8_t) * dataBands);
   if (pair_flag) {
-    FDKmemcpy(aaOutData2 + startBand, aaDataPair[1], sizeof(int8_t) * dataBands);
+    memcpy(aaOutData2 + startBand, aaDataPair[1], sizeof(int8_t) * dataBands);
   }
 
 bail:

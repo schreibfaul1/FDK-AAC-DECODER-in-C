@@ -243,7 +243,7 @@ void decodeSbrData(
 
   /* Save previous energy values to be able to reuse them later for concealment.
    */
-  FDKmemcpy(tempSfbNrgPrev, h_prev_data_left->sfb_nrg_prev,
+  memcpy(tempSfbNrgPrev, h_prev_data_left->sfb_nrg_prev,
             MAX_FREQ_COEFFS * sizeof(int16_t));
 
   if (hHeaderData->frameErrorFlag || hHeaderData->bs_info.pvc_mode == 0) {
@@ -271,7 +271,7 @@ void decodeSbrData(
       */
       /* Restore previous energy values for concealment, because the values have
          been overwritten by the first call of decodeEnvelope(). */
-      FDKmemcpy(h_prev_data_left->sfb_nrg_prev, tempSfbNrgPrev,
+      memcpy(h_prev_data_left->sfb_nrg_prev, tempSfbNrgPrev,
                 MAX_FREQ_COEFFS * sizeof(int16_t));
       /* Do concealment */
       decodeEnvelope(hHeaderData, h_data_left, h_prev_data_left,
@@ -521,7 +521,7 @@ static void decodeEnvelope(
         }
       }
     }
-    FDKmemcpy(tempSfbNrgPrev, h_prev_data->sfb_nrg_prev,
+    memcpy(tempSfbNrgPrev, h_prev_data->sfb_nrg_prev,
               MAX_FREQ_COEFFS * sizeof(int16_t));
 
     deltaToLinearPcmEnvelopeDecoding(hHeaderData, h_sbr_data, h_prev_data);
@@ -530,7 +530,7 @@ static void decodeEnvelope(
 
     if (fFrameError) {
       hHeaderData->frameErrorFlag = 1;
-      FDKmemcpy(h_prev_data->sfb_nrg_prev, tempSfbNrgPrev,
+      memcpy(h_prev_data->sfb_nrg_prev, tempSfbNrgPrev,
                 MAX_FREQ_COEFFS * sizeof(int16_t));
       decodeEnvelope(hHeaderData, h_sbr_data, h_prev_data, otherChannel);
       return;

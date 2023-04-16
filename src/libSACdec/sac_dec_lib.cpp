@@ -419,7 +419,7 @@ static SACDEC_ERROR initMpegSurroundDecoder(CMpegSurroundDecoder *pMpegSurroundD
 
     {
         int32_t nrOfQmfBands;
-        FDKmemcpy(pSSCtarget, pSSCinput, sizeof(SPATIAL_SPECIFIC_CONFIG));
+        memcpy(pSSCtarget, pSSCinput, sizeof(SPATIAL_SPECIFIC_CONFIG));
 
         nrOfQmfBands = mpegSurroundDecoder_GetNrOfQmfBands(pSSCtarget, pSSCtarget->samplingFreq);
         err = FDK_SpatialDecInit(pMpegSurroundDecoder->pSpatialDec,
@@ -966,7 +966,7 @@ int32_t mpegSurroundDecoder_ParseNoHeader(CMpegSurroundDecoder *pMpegSurroundDec
      * second spatialSpecificConfigBackup is copied into
      * spatialSpecificConfig[bsFrameDecode] */
     if(pMpegSurroundDecoder->initFlags[pMpegSurroundDecoder->bsFrameParse]) {
-        FDKmemcpy(sscParse, &pMpegSurroundDecoder->spatialSpecificConfigBackup, sizeof(SPATIAL_SPECIFIC_CONFIG));
+        memcpy(sscParse, &pMpegSurroundDecoder->spatialSpecificConfigBackup, sizeof(SPATIAL_SPECIFIC_CONFIG));
         pMpegSurroundDecoder->fOnSync[pMpegSurroundDecoder->bsFrameParse] = MPEGS_SYNC_FOUND;
     }
 
@@ -1182,7 +1182,7 @@ int32_t mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder, HA
                              * spatialSpecificConfigBackup, second spatialSpecificConfigBackup
                              * is copied into spatialSpecificConfig[bsFrameDecode] */
                             if(pMpegSurroundDecoder->initFlags[pMpegSurroundDecoder->bsFrameParse]) {
-                                FDKmemcpy(sscParse, &pMpegSurroundDecoder->spatialSpecificConfigBackup,
+                                memcpy(sscParse, &pMpegSurroundDecoder->spatialSpecificConfigBackup,
                                           sizeof(SPATIAL_SPECIFIC_CONFIG));
                                 pMpegSurroundDecoder->fOnSync[pMpegSurroundDecoder->bsFrameParse] = MPEGS_SYNC_FOUND;
                             }
@@ -1397,7 +1397,7 @@ int32_t mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder, PC
     }
     else {
         if(pMpegSurroundDecoder->mpegSurroundUseTimeInterface) {
-            FDKmemcpy(input, pTimeData, sizeof(PCM_MPS) * (*nChannels) * (*frameSize));
+            memcpy(input, pTimeData, sizeof(PCM_MPS) * (*nChannels) * (*frameSize));
             TDinput = input;
         }
     }

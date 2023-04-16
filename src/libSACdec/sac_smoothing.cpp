@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "sac_dec.h"
 #include "sac_bitdec.h"
 #include "sac_smoothing.h"
@@ -228,9 +229,9 @@ void SpatialDecSmoothOPD(spatialDec *self, const SPATIAL_BS_FRAME *frame,
   quantCoarse = frame->IPDLosslessData[0].bsQuantCoarseXXX[ps];
 
   if (frame->OpdSmoothingMode == 0) {
-    FDKmemcpy(phaseLeftSmooth__FDK, self->PhaseLeft__FDK,
+    memcpy(phaseLeftSmooth__FDK, self->PhaseLeft__FDK,
               self->numParameterBands * sizeof(int32_t));
-    FDKmemcpy(phaseRightSmooth__FDK, self->PhaseRight__FDK,
+    memcpy(phaseRightSmooth__FDK, self->PhaseRight__FDK,
               self->numParameterBands * sizeof(int32_t));
   } else {
     if (ps == 0) {

@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "tpdec_adts.h"
 
 #include "../libFDK/FDK_bitstream.h"
@@ -178,7 +179,7 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
   CProgramConfig oldPce;
   /* Store the old PCE temporarily. Maybe we'll need it later if we
      have channelConfig=0 and no PCE in this frame. */
-  FDKmemcpy(&oldPce, &pAsc->m_progrConfigElement, sizeof(CProgramConfig));
+  memcpy(&oldPce, &pAsc->m_progrConfigElement, sizeof(CProgramConfig));
 
   valBits = FDKgetValidBits(hBs) + ADTS_SYNCLENGTH;
 
@@ -329,25 +330,25 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
           switch (CProgramConfig_Compare(&tmpPce, &oldPce)) {
             case 0: /* Nothing to do because PCE matches the old one exactly. */
             case 1: /* Channel configuration not changed. Just new metadata. */
-              FDKmemcpy(&pAsc->m_progrConfigElement, &tmpPce,
+              memcpy(&pAsc->m_progrConfigElement, &tmpPce,
                         sizeof(CProgramConfig));
               break;
             case 2:  /* The number of channels are identical but not the config
                       */
             case -1: /* The channel configuration is completely different */
             default:
-              FDKmemcpy(&pAsc->m_progrConfigElement, &oldPce,
+              memcpy(&pAsc->m_progrConfigElement, &oldPce,
                         sizeof(CProgramConfig));
               FDKpushBack(hBs, adtsHeaderLength);
               return TRANSPORTDEC_PARSE_ERROR;
           }
         } else {
-          FDKmemcpy(&pAsc->m_progrConfigElement, &tmpPce,
+          memcpy(&pAsc->m_progrConfigElement, &tmpPce,
                     sizeof(CProgramConfig));
         }
       } else {
         if (CProgramConfig_IsValid(&oldPce)) {
-          FDKmemcpy(&pAsc->m_progrConfigElement, &oldPce,
+          memcpy(&pAsc->m_progrConfigElement, &oldPce,
                     sizeof(CProgramConfig));
         } else {
           FDKpushBack(hBs, adtsHeaderLength);
@@ -379,7 +380,7 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
           &&
           (bs.mpeg_id ==
            pAdts->bs.mpeg_id)) { /* Restore previous PCE which is still valid */
-        FDKmemcpy(&pAsc->m_progrConfigElement, &oldPce, sizeof(CProgramConfig));
+        memcpy(&pAsc->m_progrConfigElement, &oldPce, sizeof(CProgramConfig));
       } else if (bs.mpeg_id == 0) {
         /* If not it seems that we have a implicit channel configuration.
            This mode is not allowed in the context of ISO/IEC 14496-3.
@@ -396,7 +397,7 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
 
   /* Copy bit stream data struct to persistent memory now, once we passed all
    * sanity checks above. */
-  FDKmemcpy(&pAdts->bs, &bs, sizeof(STRUCT_ADTS_BS));
+  memcpy(&pAdts->bs, &bs, sizeof(STRUCT_ADTS_BS));
 
   return TRANSPORTDEC_OK;
 

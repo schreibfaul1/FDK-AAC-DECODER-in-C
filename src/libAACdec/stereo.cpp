@@ -827,7 +827,7 @@ void CJointStereo_ApplyMS(
               /* In case that we use INF we have to preserve the state of the
               "dmx_re_prev" (original or computed). This is necessary because we
               have to apply MS over the separate IGF tiles. */
-              FDKmemcpy(store_dmx_re_prev, &dmx_re_prev[0],
+              memcpy(store_dmx_re_prev, &dmx_re_prev[0],
                         windowLen * sizeof(int32_t));
 
               /* Particular exponent of the computed/original "dmx_re_prev" must
@@ -864,7 +864,7 @@ void CJointStereo_ApplyMS(
               }
             } else {
               if (mainband_flag == 0) {
-                FDKmemcpy(dmx_re_prev, store_dmx_re_prev,
+                memcpy(dmx_re_prev, store_dmx_re_prev,
                           windowLen * sizeof(int32_t));
               }
               specScaleL[0] = dmx_re_prev_e;

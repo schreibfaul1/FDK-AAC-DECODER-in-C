@@ -312,7 +312,7 @@ static void mapSineFlags(
       curFlags++;
     }
   }
-  FDKmemcpy(harmFlagsPrev, harmFlagsQmfBands,
+  memcpy(harmFlagsPrev, harmFlagsQmfBands,
             sizeof(uint32_t) * ADD_HARMONICS_FLAGS_SIZE);
 }
 
@@ -1423,11 +1423,11 @@ void calculateSbrEnvelope(
         if (!useLP) {
           h_sbr_cal_env->filtBufferNoise_e = noise_e;
 
-          FDKmemcpy(h_sbr_cal_env->filtBuffer_e, pNrgs->nrgGain_e,
+          memcpy(h_sbr_cal_env->filtBuffer_e, pNrgs->nrgGain_e,
                     noSubbands * sizeof(int8_t));
-          FDKmemcpy(h_sbr_cal_env->filtBufferNoise, pNrgs->noiseLevel,
+          memcpy(h_sbr_cal_env->filtBufferNoise, pNrgs->noiseLevel,
                     noSubbands * sizeof(int32_t));
-          FDKmemcpy(h_sbr_cal_env->filtBuffer, pNrgs->nrgGain,
+          memcpy(h_sbr_cal_env->filtBuffer, pNrgs->nrgGain,
                     noSubbands * sizeof(int32_t));
         }
         h_sbr_cal_env->startUp = 0;
@@ -1632,11 +1632,11 @@ void calculateSbrEnvelope(
            into the buffer. This has to be done at the end of each envelope as
            the values are required for a smooth transition to the next envelope.
          */
-        FDKmemcpy(h_sbr_cal_env->filtBuffer, pNrgs->nrgGain,
+        memcpy(h_sbr_cal_env->filtBuffer, pNrgs->nrgGain,
                   noSubbands * sizeof(int32_t));
-        FDKmemcpy(h_sbr_cal_env->filtBuffer_e, pNrgs->nrgGain_e,
+        memcpy(h_sbr_cal_env->filtBuffer_e, pNrgs->nrgGain_e,
                   noSubbands * sizeof(int8_t));
-        FDKmemcpy(h_sbr_cal_env->filtBufferNoise, pNrgs->noiseLevel,
+        memcpy(h_sbr_cal_env->filtBufferNoise, pNrgs->noiseLevel,
                   noSubbands * sizeof(int32_t));
       }
     }
@@ -1714,14 +1714,14 @@ void calculateSbrEnvelope(
       h_sbr_cal_env->prevHiSubband = highSubband;
       h_sbr_cal_env->prev_ov_highSubband = ov_highSubband;
 
-      FDKmemcpy(h_sbr_cal_env->prevFreqBandTableLo, pFreqBandTable[0],
+      memcpy(h_sbr_cal_env->prevFreqBandTableLo, pFreqBandTable[0],
                 noSubFrameBands[0] + 1);
-      FDKmemcpy(h_sbr_cal_env->prevFreqBandTableHi, pFreqBandTable[1],
+      memcpy(h_sbr_cal_env->prevFreqBandTableHi, pFreqBandTable[1],
                 noSubFrameBands[1] + 1);
-      FDKmemcpy(h_sbr_cal_env->prevFreqBandTableNoise,
+      memcpy(h_sbr_cal_env->prevFreqBandTableNoise,
                 hFreq->freqBandTableNoise, sizeof(hFreq->freqBandTableNoise));
 
-      FDKmemcpy(h_sbr_cal_env->prevSbrNoiseFloorLevel, noiseLevels,
+      memcpy(h_sbr_cal_env->prevSbrNoiseFloorLevel, noiseLevels,
                 MAX_NOISE_COEFFS * sizeof(int16_t));
     }
   }

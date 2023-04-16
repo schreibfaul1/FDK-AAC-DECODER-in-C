@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h> 
 #include "tpdec_lib.h"
 
 /* library version */
@@ -278,7 +279,7 @@ TRANSPORTDEC_ERROR transportDec_OutOfBandConfig(HANDLE_TRANSPORTDEC hTp,
   if (length > 1024) {
     return TRANSPORTDEC_UNSUPPORTED_FORMAT;
   }
-  FDKmemcpy(tmpConf, conf, length);
+  memcpy(tmpConf, conf, length);
   FDKinitBitStream(hBs, tmpConf, 1024, length << 3, BS_READER);
 
   for (i = 0; i < 2; i++) {
@@ -527,7 +528,7 @@ TRANSPORTDEC_ERROR transportDec_InBandConfig(HANDLE_TRANSPORTDEC hTp,
     if (err == TRANSPORTDEC_OK) {
       if (hTp->asc->m_aot == AOT_USAC) {
         hTp->asc->m_sc.m_usacConfig.UsacConfigBits = newConfigLength << 3;
-        FDKmemcpy(hTp->asc->m_sc.m_usacConfig.UsacConfig, newConfig,
+        memcpy(hTp->asc->m_sc.m_usacConfig.UsacConfig, newConfig,
                   newConfigLength);
         /* in case of USAC reset transportDecoder variables here because
          * otherwise without IPF they are not reset */
@@ -1233,7 +1234,7 @@ static TRANSPORTDEC_ERROR synchronization(HANDLE_TRANSPORTDEC hTp,
           rawDataBlockLengthFirstFrame = rawDataBlockLength;
           headerBitsFirstFrame = headerBits;
           errFirstFrame = err;
-          FDKmemcpy(contextFirstFrame, &hTp->parser,
+          memcpy(contextFirstFrame, &hTp->parser,
                     sizeof(transportdec_parser_t));
         }
 
@@ -1266,7 +1267,7 @@ static TRANSPORTDEC_ERROR synchronization(HANDLE_TRANSPORTDEC hTp,
   /* Restore context in case of ECD frame traversal */
   if (startPosFirstFrame != -1 && (fConfigFound || err != TRANSPORTDEC_OK)) {
     FDKpushBiDirectional(hBs, FDKgetValidBits(hBs) - startPosFirstFrame);
-    FDKmemcpy(&hTp->parser, contextFirstFrame, sizeof(transportdec_parser_t));
+    memcpy(&hTp->parser, contextFirstFrame, sizeof(transportdec_parser_t));
     hTp->numberOfRawDataBlocks = numRawDataBlocksFirstFrame;
     hTp->globalFramePos = globalFramePosFirstFrame;
     rawDataBlockLength = rawDataBlockLengthFirstFrame;

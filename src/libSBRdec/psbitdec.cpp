@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "psbitdec.h"
 #include "sbr_rom.h"
 #include "huff_dec.h"
@@ -464,7 +465,7 @@ uint32_t ReadPsData(
 
   if (h_ps_d->bsReadSlot != h_ps_d->bsLastSlot) {
     /* Copy last header data */
-    FDKmemcpy(pBsData, &h_ps_d->bsData[h_ps_d->bsLastSlot].mpeg,
+    memcpy(pBsData, &h_ps_d->bsData[h_ps_d->bsLastSlot].mpeg,
               sizeof(MPEG_PS_BS_DATA));
   }
 

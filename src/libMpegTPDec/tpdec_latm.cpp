@@ -338,7 +338,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
 
         if (useSameConfig) {
           if (lay > 0) {
-            FDKmemcpy(&pAsc[TPDEC_TRACKINDEX(prog, lay)],
+            memcpy(&pAsc[TPDEC_TRACKINDEX(prog, lay)],
                       &pAsc[TPDEC_TRACKINDEX(prog, lay - 1)],
                       sizeof(CSAudioSpecificConfig));
           } else {
@@ -361,7 +361,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
               goto bail;
             }
             memset(usacConfigPrev, 0, TP_USAC_MAX_CONFIG_LEN);
-            FDKmemcpy(
+            memcpy(
                 usacConfigPrev,
                 &pAsc[TPDEC_TRACKINDEX(prog, lay)].m_sc.m_usacConfig.UsacConfig,
                 usacConfigLengthPrev); /* store previous USAC config */
@@ -436,7 +436,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
                 memset(&pAsc[TPDEC_TRACKINDEX(prog, lay)]
                                  .m_sc.m_usacConfig.UsacConfig, 0,
                             TP_USAC_MAX_CONFIG_LEN);
-                FDKmemcpy(&pAsc[TPDEC_TRACKINDEX(prog, lay)]
+                memcpy(&pAsc[TPDEC_TRACKINDEX(prog, lay)]
                                .m_sc.m_usacConfig.UsacConfig,
                           &pAscDummy->m_sc.m_usacConfig.UsacConfig,
                           usacConfigLength); /* store new USAC config */
@@ -451,7 +451,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
                   memset(&pAsc[TPDEC_TRACKINDEX(prog, lay)]
                                    .m_sc.m_usacConfig.UsacConfig, 0,
                               TP_USAC_MAX_CONFIG_LEN);
-                  FDKmemcpy(&pAsc[TPDEC_TRACKINDEX(prog, lay)]
+                  memcpy(&pAsc[TPDEC_TRACKINDEX(prog, lay)]
                                  .m_sc.m_usacConfig.UsacConfig,
                             &pAscDummy->m_sc.m_usacConfig.UsacConfig,
                             usacConfigLength); /* store new USAC config */

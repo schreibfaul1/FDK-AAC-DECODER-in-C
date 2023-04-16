@@ -325,9 +325,9 @@ void sbr_dec(
     } else {
       /* We have to move old hbe frame data to lb area of buffer */
       for (i = 0; i < noCols; i++) {
-        FDKmemcpy(pLowBandReal[ov_len + i], hSbrDec->hQmfHBESlotsReal[i],
+        memcpy(pLowBandReal[ov_len + i], hSbrDec->hQmfHBESlotsReal[i],
                   hHeaderData->numberOfAnalysisBands * sizeof(int32_t));
-        FDKmemcpy(pLowBandImag[ov_len + i], hSbrDec->hQmfHBESlotsImag[i],
+        memcpy(pLowBandImag[ov_len + i], hSbrDec->hQmfHBESlotsImag[i],
                   hHeaderData->numberOfAnalysisBands * sizeof(int32_t));
       }
     }
@@ -450,11 +450,11 @@ void sbr_dec(
           /* copy saved states from previous frame to legacy SBR lpc filterstate
            * buffer   */
           for (i = 0; i < LPC_ORDER + ov_len; i++) {
-            FDKmemcpy(
+            memcpy(
                 hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[i],
                 hSbrDec->codecQMFBufferReal[noCols - LPC_ORDER - ov_len + i],
                 hSbrDec->hHBE->noChannels * sizeof(int32_t));
-            FDKmemcpy(
+            memcpy(
                 hSbrDec->LppTrans.lpcFilterStatesImagLegSBR[i],
                 hSbrDec->codecQMFBufferImag[noCols - LPC_ORDER - ov_len + i],
                 hSbrDec->hHBE->noChannels * sizeof(int32_t));
@@ -464,9 +464,9 @@ void sbr_dec(
         /* saving unmodified QMF states in case we are switching from legacy SBR
          * to HBE */
         for (i = 0; i < hSbrDec->hHBE->noCols; i++) {
-          FDKmemcpy(hSbrDec->codecQMFBufferReal[i], pLowBandReal[ov_len + i],
+          memcpy(hSbrDec->codecQMFBufferReal[i], pLowBandReal[ov_len + i],
                     hSbrDec->hHBE->noChannels * sizeof(int32_t));
-          FDKmemcpy(hSbrDec->codecQMFBufferImag[i], pLowBandImag[ov_len + i],
+          memcpy(hSbrDec->codecQMFBufferImag[i], pLowBandImag[ov_len + i],
                     hSbrDec->hHBE->noChannels * sizeof(int32_t));
         }
 
@@ -505,11 +505,11 @@ void sbr_dec(
           Store the unmodified qmf Slots values for upper part of spectrum
           (required for LPC filtering) required if next frame is a HBE frame
           */
-          FDKmemcpy(hSbrDec->LppTrans.lpcFilterStatesRealHBE[i],
+          memcpy(hSbrDec->LppTrans.lpcFilterStatesRealHBE[i],
                     hSbrDec->qmfDomainInCh
                         ->hQmfSlotsReal[hSbrDec->hHBE->noCols - LPC_ORDER + i],
                     (64) * sizeof(int32_t));
-          FDKmemcpy(hSbrDec->LppTrans.lpcFilterStatesImagHBE[i],
+          memcpy(hSbrDec->LppTrans.lpcFilterStatesImagHBE[i],
                     hSbrDec->qmfDomainInCh
                         ->hQmfSlotsImag[hSbrDec->hHBE->noCols - LPC_ORDER + i],
                     (64) * sizeof(int32_t));
@@ -591,7 +591,7 @@ void sbr_dec(
     hPrevFrameData->prevSbrPitchInBins = hFrameData->sbrPitchInBins;
     /* could be done in extractFrameInfo_pvc() but hPrevFrameData is not
      * available there */
-    FDKmemcpy(&hPrevFrameData->prevFrameInfo, &hFrameData->frameInfo,
+    memcpy(&hPrevFrameData->prevFrameInfo, &hFrameData->frameInfo,
               sizeof(FRAME_INFO));
   } else {
     /* rescale from lsb to nAnalysisBands in order to compensate scaling with
@@ -635,14 +635,14 @@ void sbr_dec(
         Store the unmodified qmf Slots values (required for LPC filtering)
       */
       if (!(flags & SBRDEC_LOW_POWER)) {
-        FDKmemcpy(hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[i],
+        memcpy(hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[i],
                   pLowBandReal[noCols - LPC_ORDER + i],
                   length * sizeof(int32_t));
-        FDKmemcpy(hSbrDec->LppTrans.lpcFilterStatesImagLegSBR[i],
+        memcpy(hSbrDec->LppTrans.lpcFilterStatesImagLegSBR[i],
                   pLowBandImag[noCols - LPC_ORDER + i],
                   length * sizeof(int32_t));
       } else
-        FDKmemcpy(hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[i],
+        memcpy(hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[i],
                   pLowBandReal[noCols - LPC_ORDER + i],
                   length * sizeof(int32_t));
     }
@@ -735,7 +735,7 @@ void sbr_dec(
       assert(hSbrDec->qmfDomainInCh->pGlobalConf->nBandsSynthesis <=
                  QMF_MAX_SYNTHESIS_BANDS);
       qmfChangeOutScalefactor(synQmfRight, -(8));
-      FDKmemcpy(synQmfRight->FilterStates, synQmf->FilterStates,
+      memcpy(synQmfRight->FilterStates, synQmf->FilterStates,
                 9 * hSbrDec->qmfDomainInCh->pGlobalConf->nBandsSynthesis *
                     sizeof(FIXP_QSS));
     }
@@ -775,7 +775,7 @@ void sbr_dec(
 
       /* copy DRC data to right channel (with PS both channels use the same DRC
        * gains) */
-      FDKmemcpy(&hSbrDecRight->sbrDrcChannel, &hSbrDec->sbrDrcChannel,
+      memcpy(&hSbrDecRight->sbrDrcChannel, &hSbrDec->sbrDrcChannel,
                 sizeof(SBRDEC_DRC_CHANNEL));
 
       for (i = 0; i < synQmf->no_col; i++) { /* ----- no_col loop ----- */
@@ -1248,12 +1248,12 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
     /* copy saved states from previous frame to legacy SBR lpc filterstate
      * buffer   */
     for (i = 0; i < LPC_ORDER + hSbrDec->LppTrans.pSettings->overlap; i++) {
-      FDKmemcpy(
+      memcpy(
           hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[i],
           hSbrDec->codecQMFBufferReal[hSbrDec->hHBE->noCols - LPC_ORDER -
                                       hSbrDec->LppTrans.pSettings->overlap + i],
           hSbrDec->hHBE->noChannels * sizeof(int32_t));
-      FDKmemcpy(
+      memcpy(
           hSbrDec->LppTrans.lpcFilterStatesImagLegSBR[i],
           hSbrDec->codecQMFBufferImag[hSbrDec->hHBE->noCols - LPC_ORDER -
                                       hSbrDec->LppTrans.pSettings->overlap + i],
@@ -1357,10 +1357,10 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
           Store the unmodified qmf Slots values for upper part of spectrum
           (required for LPC filtering) required if next frame is a HBE frame
           */
-          FDKmemcpy(hSbrDec->qmfDomainInCh->hQmfSlotsReal[i],
+          memcpy(hSbrDec->qmfDomainInCh->hQmfSlotsReal[i],
                     hSbrDec->LppTrans.lpcFilterStatesRealHBE[i + LPC_ORDER],
                     (64) * sizeof(int32_t));
-          FDKmemcpy(hSbrDec->qmfDomainInCh->hQmfSlotsImag[i],
+          memcpy(hSbrDec->qmfDomainInCh->hQmfSlotsImag[i],
                     hSbrDec->LppTrans.lpcFilterStatesImagHBE[i + LPC_ORDER],
                     (64) * sizeof(int32_t));
         }
@@ -1370,13 +1370,13 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
           Store the unmodified qmf Slots values for upper part of spectrum
           (required for LPC filtering) required if next frame is a HBE frame
           */
-          FDKmemcpy(
+          memcpy(
               hSbrDec->qmfDomainInCh->hQmfSlotsReal[i],
               hSbrDec->codecQMFBufferReal[hSbrDec->hHBE->noCols -
                                           hSbrDec->LppTrans.pSettings->overlap +
                                           i],
               new_lsb * sizeof(int32_t));
-          FDKmemcpy(
+          memcpy(
               hSbrDec->qmfDomainInCh->hQmfSlotsImag[i],
               hSbrDec->codecQMFBufferImag[hSbrDec->hHBE->noCols -
                                           hSbrDec->LppTrans.pSettings->overlap +
@@ -1424,12 +1424,12 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
          * filterstates buffer */
         /* in case of legacy SBR we leave these values zeroed out */
         for (i = startSlot; i < hSbrDec->LppTrans.pSettings->overlap; i++) {
-          FDKmemcpy(&OverlapBufferReal[i][old_lsb],
+          memcpy(&OverlapBufferReal[i][old_lsb],
                     &hSbrDec->LppTrans
                          .lpcFilterStatesRealLegSBR[LPC_ORDER + i][old_lsb],
                     fMax(new_lsb - old_lsb, 0) * sizeof(int32_t));
           if (!useLP) {
-            FDKmemcpy(&OverlapBufferImag[i][old_lsb],
+            memcpy(&OverlapBufferImag[i][old_lsb],
                       &hSbrDec->LppTrans
                            .lpcFilterStatesImagLegSBR[LPC_ORDER + i][old_lsb],
                       fMax(new_lsb - old_lsb, 0) * sizeof(int32_t));

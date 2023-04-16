@@ -365,9 +365,9 @@ void bass_pf_1sf_delay(
     }
 
     {
-      FDKmemcpy(noise_buf, mem_bpf, (L_FILT + L_SUBFR) * sizeof(int32_t));
+      memcpy(noise_buf, mem_bpf, (L_FILT + L_SUBFR) * sizeof(int32_t));
 
-      FDKmemcpy(mem_bpf, noise_buf + L_SUBFR,
+      memcpy(mem_bpf, noise_buf + L_SUBFR,
                 (L_FILT + L_SUBFR) * sizeof(int32_t));
     }
 
@@ -1411,7 +1411,7 @@ AAC_DECODER_ERROR CLpdChannelStream_Read(
     } else { /* last_lpd_mode was TCX */
       /* Copy old LPC4 LP domain coefficients to LPC0 LP domain buffer (to avoid
        * converting LSP coefficients again). */
-      FDKmemcpy(pAacDecoderChannelInfo->data.usac.lp_coeff[0],
+      memcpy(pAacDecoderChannelInfo->data.usac.lp_coeff[0],
                 pAacDecoderStaticChannelInfo->lp_coeff_old[0],
                 M_LP_FILTER_ORDER * sizeof(FIXP_LPC));
       pAacDecoderChannelInfo->data.usac.lp_coeff_exp[0] =
@@ -1665,7 +1665,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
     if ((last_lpd_mode > 0) && (last_lpd_mode < 255)) {
       /* Copy old LPC4 LP domain coefficients to LPC0 LP domain buffer (to avoid
        * converting LSP coefficients again). */
-      FDKmemcpy(pAacDecoderChannelInfo->data.usac.lp_coeff[0],
+      memcpy(pAacDecoderChannelInfo->data.usac.lp_coeff[0],
                 pAacDecoderStaticChannelInfo->lp_coeff_old[0],
                 M_LP_FILTER_ORDER * sizeof(FIXP_LPC));
       pAacDecoderChannelInfo->data.usac.lp_coeff_exp[0] =
@@ -1693,7 +1693,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
     if ((pAacDecoderStaticChannelInfo->last_lpd_mode == 4) && (mod[0] > 0)) {
       /* Copy old LPC4 LP domain coefficients to LPC0 LP domain buffer (to avoid
        * converting LSP coefficients again). */
-      FDKmemcpy(pAacDecoderChannelInfo->data.usac.lp_coeff[0],
+      memcpy(pAacDecoderChannelInfo->data.usac.lp_coeff[0],
                 pAacDecoderStaticChannelInfo->lp_coeff_old[0],
                 M_LP_FILTER_ORDER * sizeof(FIXP_LPC));
       pAacDecoderChannelInfo->data.usac.lp_coeff_exp[0] =
@@ -1752,7 +1752,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
             (pAacDecoderStaticChannelInfo->last_core_mode != LPD) && (k == 0),
             0);
 
-        FDKmemcpy(
+        memcpy(
             synth + nrSamples, pAacDecoderStaticChannelInfo->IMdct.overlap.time,
             pAacDecoderStaticChannelInfo->IMdct.ov_offset * sizeof(int32_t));
         {
@@ -1941,7 +1941,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
                (int16_t)0);
     pAacDecoderStaticChannelInfo->oldStability =
         pAacDecoderChannelInfo->data.usac.aStability[last_k];
-    FDKmemcpy(pAacDecoderStaticChannelInfo->lsf_adaptive_mean,
+    memcpy(pAacDecoderStaticChannelInfo->lsf_adaptive_mean,
               pAacDecoderChannelInfo->data.usac.lsf_adaptive_mean_cand,
               M_LP_FILTER_ORDER * sizeof(FIXP_LPC));
   }
@@ -1949,12 +1949,12 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
   /* store past lp coeffs for next superframe (they are only valid and needed if
    * last_lpd_mode was tcx) */
   if (last_lpd_mode > 0) {
-    FDKmemcpy(pAacDecoderStaticChannelInfo->lp_coeff_old[0],
+    memcpy(pAacDecoderStaticChannelInfo->lp_coeff_old[0],
               pAacDecoderChannelInfo->data.usac.lp_coeff[nbDiv],
               M_LP_FILTER_ORDER * sizeof(FIXP_LPC));
     pAacDecoderStaticChannelInfo->lp_coeff_old_exp[0] =
         pAacDecoderChannelInfo->data.usac.lp_coeff_exp[nbDiv];
-    FDKmemcpy(pAacDecoderStaticChannelInfo->lp_coeff_old[1],
+    memcpy(pAacDecoderStaticChannelInfo->lp_coeff_old[1],
               pAacDecoderChannelInfo->data.usac.lp_coeff[last_k],
               M_LP_FILTER_ORDER * sizeof(FIXP_LPC));
     pAacDecoderStaticChannelInfo->lp_coeff_old_exp[1] =

@@ -732,7 +732,7 @@ int32_t sbrGetChannelElement(HANDLE_SBR_HEADER_DATA hHeaderData,
   }
   if (nCh == 2) {
     if (hFrameDataLeft->coupling) {
-      FDKmemcpy(&hFrameDataRight->frameInfo, &hFrameDataLeft->frameInfo,
+      memcpy(&hFrameDataRight->frameInfo, &hFrameDataLeft->frameInfo,
                 sizeof(FRAME_INFO));
       hFrameDataRight->ampResolutionCurrentFrame =
           hFrameDataLeft->ampResolutionCurrentFrame;
@@ -1391,11 +1391,11 @@ int32_t extractFrameInfo(
         case 1:
           switch (numberTimeSlots) {
             case 15:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info1_15,
+              memcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info1_15,
                         sizeof(FRAME_INFO));
               break;
             case 16:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info1_16,
+              memcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info1_16,
                         sizeof(FRAME_INFO));
               break;
             default:
@@ -1405,11 +1405,11 @@ int32_t extractFrameInfo(
         case 2:
           switch (numberTimeSlots) {
             case 15:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info2_15,
+              memcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info2_15,
                         sizeof(FRAME_INFO));
               break;
             case 16:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info2_16,
+              memcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info2_16,
                         sizeof(FRAME_INFO));
               break;
             default:
@@ -1419,11 +1419,11 @@ int32_t extractFrameInfo(
         case 4:
           switch (numberTimeSlots) {
             case 15:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info4_15,
+              memcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info4_15,
                         sizeof(FRAME_INFO));
               break;
             case 16:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info4_16,
+              memcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info4_16,
                         sizeof(FRAME_INFO));
               break;
             default:
@@ -1434,11 +1434,11 @@ int32_t extractFrameInfo(
 #if (MAX_ENVELOPES >= 8)
           switch (numberTimeSlots) {
             case 15:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info8_15,
+              memcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info8_15,
                         sizeof(FRAME_INFO));
               break;
             case 16:
-              FDKmemcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info8_16,
+              memcpy(pFrameInfo, &FDK_sbrDecoder_sbr_frame_info8_16,
                         sizeof(FRAME_INFO));
               break;
             default:

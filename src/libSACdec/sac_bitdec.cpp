@@ -1761,11 +1761,11 @@ static SACDEC_ERROR decodeAndMapFrameSmg(HANDLE_SPATIAL_DEC self,
       case 1:
         if (ps > 0) {
           self->smgTime[ps] = self->smgTime[ps - 1];
-          FDKmemcpy(self->smgData[ps], self->smgData[ps - 1],
+          memcpy(self->smgData[ps], self->smgData[ps - 1],
                     self->bitstreamParameterBands * sizeof(uint8_t));
         } else {
           self->smgTime[ps] = self->smoothState->prevSmgTime;
-          FDKmemcpy(self->smgData[ps], self->smoothState->prevSmgData,
+          memcpy(self->smgData[ps], self->smoothState->prevSmgData,
                     self->bitstreamParameterBands * sizeof(uint8_t));
         }
         break;
@@ -1794,14 +1794,14 @@ static SACDEC_ERROR decodeAndMapFrameSmg(HANDLE_SPATIAL_DEC self,
   }
 
   self->smoothState->prevSmgTime = self->smgTime[frame->numParameterSets - 1];
-  FDKmemcpy(self->smoothState->prevSmgData,
+  memcpy(self->smoothState->prevSmgData,
             self->smgData[frame->numParameterSets - 1],
             self->bitstreamParameterBands * sizeof(uint8_t));
 
   if (self->extendFrame) {
     self->smgTime[frame->numParameterSets] =
         self->smgTime[frame->numParameterSets - 1];
-    FDKmemcpy(self->smgData[frame->numParameterSets],
+    memcpy(self->smgData[frame->numParameterSets],
               self->smgData[frame->numParameterSets - 1],
               self->bitstreamParameterBands * sizeof(uint8_t));
   }

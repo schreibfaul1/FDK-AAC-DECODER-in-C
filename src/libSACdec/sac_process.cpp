@@ -374,8 +374,8 @@ SACDEC_ERROR SpatialDecApplyM1_CreateW_Mode212(
   assert(self->numVChannels == 2);
   assert(self->numDirektSignals == 1);
   assert(self->numDecorSignals == 1);
-  FDKmemcpy(vReal[0], xReal[0], self->hybridBands * sizeof(int32_t));
-  FDKmemcpy(vImag[0], xImag[0], self->hybridBands * sizeof(int32_t));
+  memcpy(vReal[0], xReal[0], self->hybridBands * sizeof(int32_t));
+  memcpy(vImag[0], xImag[0], self->hybridBands * sizeof(int32_t));
 
   if (isTsdActive(frame->TsdData)) {
     /* Generate v_{x,nonTr} as input for allpass based decorrelator */
@@ -403,9 +403,9 @@ SACDEC_ERROR SpatialDecApplyM1_CreateW_Mode212(
   /* Write residual signal in approriate parameter bands */
   if (self->residualBands[res] > 0) {
     int32_t stopBand = self->param2hyb[self->residualBands[res]];
-    FDKmemcpy(vReal[1], self->hybResidualReal__FDK[res],
+    memcpy(vReal[1], self->hybResidualReal__FDK[res],
               fixMin(stopBand, self->hybridBands) * sizeof(int32_t));
-    FDKmemcpy(vImag[1], self->hybResidualImag__FDK[res],
+    memcpy(vImag[1], self->hybResidualImag__FDK[res],
               fixMin(stopBand, self->hybridBands) * sizeof(int32_t));
   } /* (self->residualBands[res]>0) */
 
@@ -967,19 +967,19 @@ void SpatialDecBufferMatrices(spatialDec *self) {
   */
   for (row = 0; row < self->numM2rows; row++) {
     for (col = 0; col < self->numVChannels; col++) {
-      FDKmemcpy(self->M2RealPrev__FDK[row][col], self->M2Real__FDK[row][col],
+      memcpy(self->M2RealPrev__FDK[row][col], self->M2Real__FDK[row][col],
                 self->numParameterBands * sizeof(int32_t));
       if (0 || (self->phaseCoding == 3)) {
-        FDKmemcpy(self->M2ImagPrev__FDK[row][col], self->M2Imag__FDK[row][col],
+        memcpy(self->M2ImagPrev__FDK[row][col], self->M2Imag__FDK[row][col],
                   complexParBands * sizeof(int32_t));
       }
     }
   }
 
   /* buffer phase */
-  FDKmemcpy(self->PhasePrevLeft__FDK, self->PhaseLeft__FDK,
+  memcpy(self->PhasePrevLeft__FDK, self->PhaseLeft__FDK,
             self->numParameterBands * sizeof(int32_t));
-  FDKmemcpy(self->PhasePrevRight__FDK, self->PhaseRight__FDK,
+  memcpy(self->PhasePrevRight__FDK, self->PhaseRight__FDK,
             self->numParameterBands * sizeof(int32_t));
 }
 

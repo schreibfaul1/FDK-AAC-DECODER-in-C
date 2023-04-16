@@ -486,7 +486,7 @@ static int32_t CProgramConfigElement_Read(HANDLE_FDK_BITSTREAM bs, HANDLE_TRANSP
 			/* Compare the new and the old PCE (tags ignored) */
 			switch(CProgramConfig_Compare(pce, tmpPce)) {
 				case 1: /* Channel configuration not changed. Just new metadata. */
-					FDKmemcpy(pce, tmpPce, sizeof(CProgramConfig)); /* Store the complete PCE */
+					memcpy(pce, tmpPce, sizeof(CProgramConfig)); /* Store the complete PCE */
 					pceStatus = 1;                                  /* New PCE but no change of config */
 					break;
 				case 2:             /* The number of channels are identical but not the config */
@@ -1469,7 +1469,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, uint8
 							int32_t el_tmp;
 							/* valid number of channels -> copy program config element (PCE)
 							 * from ASC */
-							FDKmemcpy(&self->pce, &asc->m_progrConfigElement, sizeof(CProgramConfig));
+							memcpy(&self->pce, &asc->m_progrConfigElement, sizeof(CProgramConfig));
 							/* Built element table */
 							el_tmp = CProgramConfig_GetElementTable(&asc->m_progrConfigElement, self->elements,
 																	(((8)) + (8)), &self->chMapIndex);
@@ -2732,16 +2732,16 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 		aacChannels = self->aacChannelsPrev;
 		/* Because the downmix could be active, its necessary to restore the channel
 		 * type and indices. */
-		FDKmemcpy(self->channelType, self->channelTypePrev, (8) * sizeof(AUDIO_CHANNEL_TYPE)); /* restore */
-		FDKmemcpy(self->channelIndices, self->channelIndicesPrev, (8) * sizeof(uint8_t));        /* restore */
+		memcpy(self->channelType, self->channelTypePrev, (8) * sizeof(AUDIO_CHANNEL_TYPE)); /* restore */
+		memcpy(self->channelIndices, self->channelIndicesPrev, (8) * sizeof(uint8_t));        /* restore */
 		self->sbrEnabled = self->sbrEnabledPrev;
 	}
 	else {
 		/* store or restore the number of channels and the corresponding info */
 		if(self->frameOK && !(flags & AACDEC_CONCEAL)) {
 			self->aacChannelsPrev = aacChannels;                                                   /* store */
-			FDKmemcpy(self->channelTypePrev, self->channelType, (8) * sizeof(AUDIO_CHANNEL_TYPE)); /* store */
-			FDKmemcpy(self->channelIndicesPrev, self->channelIndices, (8) * sizeof(uint8_t));        /* store */
+			memcpy(self->channelTypePrev, self->channelType, (8) * sizeof(AUDIO_CHANNEL_TYPE)); /* store */
+			memcpy(self->channelIndicesPrev, self->channelIndices, (8) * sizeof(uint8_t));        /* store */
 			self->sbrEnabledPrev = self->sbrEnabled;
 		}
 		else {
@@ -2753,8 +2753,8 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 					self->aacChannelsPrev = aacChannels; /* store */
 				}
 				else { aacChannels = self->aacChannelsPrev; /* restore */ }
-				FDKmemcpy(self->channelType, self->channelTypePrev, (8) * sizeof(AUDIO_CHANNEL_TYPE)); /* restore */
-				FDKmemcpy(self->channelIndices, self->channelIndicesPrev, (8) * sizeof(uint8_t));        /* restore */
+				memcpy(self->channelType, self->channelTypePrev, (8) * sizeof(AUDIO_CHANNEL_TYPE)); /* restore */
+				memcpy(self->channelIndices, self->channelIndicesPrev, (8) * sizeof(uint8_t));        /* restore */
 				self->sbrEnabled = self->sbrEnabledPrev;
 			}
 		}
@@ -2822,7 +2822,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 				fCopyChMap = 0;
 			}
 		}
-		if(fCopyChMap != 0) { FDKmemcpy(drcChMap, self->chMapping, (8) * sizeof(uint8_t)); }
+		if(fCopyChMap != 0) { memcpy(drcChMap, self->chMapping, (8) * sizeof(uint8_t)); }
 
 		/* deactivate legacy DRC in case uniDrc is active, i.e. uniDrc payload is
 		 * present and one of DRC or Loudness Normalization is switched on */
@@ -3070,8 +3070,8 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 		assert(sizeof(self->channelType) == sizeof(types));
 		assert(sizeof(self->channelIndices) == sizeof(idx));
 
-		FDKmemcpy(types, self->channelType, sizeof(types));
-		FDKmemcpy(idx, self->channelIndices, sizeof(idx));
+		memcpy(types, self->channelType, sizeof(types));
+		memcpy(idx, self->channelIndices, sizeof(idx));
 
 		for(c = 0; c < aacChannels; c++) {
 			mapValue = FDK_chMapDescr_getMapValue(&self->mapDescr, c, self->chMapIndex);

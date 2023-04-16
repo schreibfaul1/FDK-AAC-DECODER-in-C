@@ -620,8 +620,8 @@ void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, int32_t i_offset, const FIXP_L
     syn = syn_buf + M_LP_FILTER_ORDER;
     exc = exc_buf + PIT_MAX_MAX + L_INTERPOL;
 
-    FDKmemcpy(syn_buf, acelp_mem->old_syn_mem, M_LP_FILTER_ORDER * sizeof(int32_t));
-    FDKmemcpy(exc_buf, acelp_mem->old_exc_mem, (PIT_MAX_MAX + L_INTERPOL) * sizeof(int32_t));
+    memcpy(syn_buf, acelp_mem->old_syn_mem, M_LP_FILTER_ORDER * sizeof(int32_t));
+    memcpy(exc_buf, acelp_mem->old_exc_mem, (PIT_MAX_MAX + L_INTERPOL) * sizeof(int32_t));
 
     memset(exc_buf + (PIT_MAX_MAX + L_INTERPOL), 0, (L_DIV + 1) * sizeof(int32_t));
 
@@ -730,9 +730,9 @@ void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, int32_t i_offset, const FIXP_L
     acelp_mem->old_T0 = T0;
 
     /* save old excitation and old synthesis memory for next ACELP frame */
-    FDKmemcpy(acelp_mem->old_exc_mem, exc + l_div - (PIT_MAX_MAX + L_INTERPOL),
+    memcpy(acelp_mem->old_exc_mem, exc + l_div - (PIT_MAX_MAX + L_INTERPOL),
               sizeof(int32_t) * (PIT_MAX_MAX + L_INTERPOL));
-    FDKmemcpy(acelp_mem->old_syn_mem, syn_buf + l_div, sizeof(int32_t) * M_LP_FILTER_ORDER);
+    memcpy(acelp_mem->old_syn_mem, syn_buf + l_div, sizeof(int32_t) * M_LP_FILTER_ORDER);
 
     Deemph(syn, synth, l_div, &acelp_mem->de_emph_mem); /* ref soft: mem = synth[-1] */
 
@@ -775,8 +775,8 @@ void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, int16_t *pitch, const FIXP_LP
     int32_t  i, i_subfr, subfr_nr;
     int32_t  lDiv = coreCoderFrameLength / NB_DIV;
 
-    FDKmemcpy(syn_buf, acelp_mem->old_syn_mem, M_LP_FILTER_ORDER * sizeof(int32_t));
-    FDKmemcpy(exc_buf, acelp_mem->old_exc_mem, (PIT_MAX_MAX + L_INTERPOL) * sizeof(int32_t));
+    memcpy(syn_buf, acelp_mem->old_syn_mem, M_LP_FILTER_ORDER * sizeof(int32_t));
+    memcpy(exc_buf, acelp_mem->old_exc_mem, (PIT_MAX_MAX + L_INTERPOL) * sizeof(int32_t));
 
     /* if we lost all packets (i.e. 1 packet of TCX-20 ms, 2 packets of
        the TCX-40 ms or 4 packets of the TCX-80ms), we lost the whole
@@ -839,9 +839,9 @@ void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, int16_t *pitch, const FIXP_LP
     }
 
     /* save old excitation and old synthesis memory for next ACELP frame */
-    FDKmemcpy(acelp_mem->old_exc_mem, exc + lDiv - (PIT_MAX_MAX + L_INTERPOL),
+    memcpy(acelp_mem->old_exc_mem, exc + lDiv - (PIT_MAX_MAX + L_INTERPOL),
               sizeof(int32_t) * (PIT_MAX_MAX + L_INTERPOL));
-    FDKmemcpy(acelp_mem->old_syn_mem, syn_buf + lDiv, sizeof(int32_t) * M_LP_FILTER_ORDER);
+    memcpy(acelp_mem->old_syn_mem, syn_buf + lDiv, sizeof(int32_t) * M_LP_FILTER_ORDER);
     acelp_mem->de_emph_mem = acelp_mem->deemph_mem_wsyn;
 
     C_ALLOC_SCRATCH_END(syn_buf, int32_t, M_LP_FILTER_ORDER + L_DIV);
@@ -854,7 +854,7 @@ void Acelp_PreProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch,
     int32_t n;
 
     /* init beginning of synth_buf with old synthesis from previous frame */
-    FDKmemcpy(synth_buf, old_synth, sizeof(int32_t) * (PIT_MAX_MAX - BPF_DELAY));
+    memcpy(synth_buf, old_synth, sizeof(int32_t) * (PIT_MAX_MAX - BPF_DELAY));
 
     /* calculate pitch lag offset for ACELP decoder */
     *i_offset = (samplingRate * PIT_MIN_12k8 + (FSCALE_DENOM / 2)) / FSCALE_DENOM - PIT_MIN_12k8;
@@ -876,7 +876,7 @@ void Acelp_PostProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch
 
     /* store last part of synth_buf (which is not handled by the IMDCT overlap)
      * for next frame */
-    FDKmemcpy(old_synth, synth_buf + coreCoderFrameLength, sizeof(int32_t) * (PIT_MAX_MAX - BPF_DELAY));
+    memcpy(old_synth, synth_buf + coreCoderFrameLength, sizeof(int32_t) * (PIT_MAX_MAX - BPF_DELAY));
 
     /* for bass postfilter */
     for(n = 0; n < synSfd; n++) { old_T_pf[n] = pitch[nbSubfrSuperfr + n]; }
@@ -889,13 +889,13 @@ void CLpd_Acelp_Zir(const FIXP_LPC A[], const int32_t A_exp, CAcelpStaticMem *ac
     C_ALLOC_SCRATCH_START(tmp_buf, int32_t, L_FAC_ZIR + M_LP_FILTER_ORDER);
     assert(length <= L_FAC_ZIR);
 
-    FDKmemcpy(tmp_buf, acelp_mem->old_syn_mem, M_LP_FILTER_ORDER * sizeof(int32_t));
+    memcpy(tmp_buf, acelp_mem->old_syn_mem, M_LP_FILTER_ORDER * sizeof(int32_t));
     memset(tmp_buf + M_LP_FILTER_ORDER, 0, L_FAC_ZIR * sizeof(int32_t));
 
     Syn_filt(A, A_exp, length, &tmp_buf[M_LP_FILTER_ORDER], &tmp_buf[M_LP_FILTER_ORDER]);
     if(!doDeemph) {
         /* if last lpd mode was TD concealment, then bypass deemph */
-        FDKmemcpy(zir, tmp_buf, length * sizeof(*zir));
+        memcpy(zir, tmp_buf, length * sizeof(*zir));
     }
     else {
         Deemph(&tmp_buf[M_LP_FILTER_ORDER], &zir[0], length, &acelp_mem->de_emph_mem);
@@ -921,7 +921,7 @@ void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, u
     if(lpd_mode == 4) {
         /* Bypass Domain conversion. TCXTD Concealment does no deemphasis in the
          * end. */
-        FDKmemcpy(synth_buf, &synth[-(PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER)],
+        memcpy(synth_buf, &synth[-(PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER)],
                   (PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER) * sizeof(int32_t));
         /* Set deemphasis memory state for TD concealment */
         acelp_mem->deemph_mem_wsyn = scaleValueSaturate(synth[-1], ACELP_OUTSCALE);
@@ -938,7 +938,7 @@ void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, u
     acelp_mem->de_emph_mem = scaleValueSaturate(synth[-1], ACELP_OUTSCALE);
 
     /* update acelp synth filter memory */
-    FDKmemcpy(acelp_mem->old_syn_mem, &syn[PIT_MAX_MAX + L_INTERPOL - M_LP_FILTER_ORDER],
+    memcpy(acelp_mem->old_syn_mem, &syn[PIT_MAX_MAX + L_INTERPOL - M_LP_FILTER_ORDER],
               M_LP_FILTER_ORDER * sizeof(int32_t));
 
     if(clearOldExc) {

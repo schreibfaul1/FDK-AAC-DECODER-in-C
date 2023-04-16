@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include <stdio.h>
 #include "mdct.h"
 
@@ -334,7 +335,7 @@ int32_t imdct_drain(H_MDCT hMdct, int32_t *output, int32_t nrSamplesRoom) {
     assert(buffered_samples <= nrSamplesRoom);
 
     if (buffered_samples > 0) {
-      FDKmemcpy(output, hMdct->overlap.time,
+      memcpy(output, hMdct->overlap.time,
                 buffered_samples * sizeof(int32_t));
       hMdct->ov_offset = 0;
     }
@@ -349,7 +350,7 @@ int32_t imdct_copy_ov_and_nr(H_MDCT hMdct, int32_t *pTimeData, int32_t nrSamples
   nt = fMin(hMdct->ov_offset, nrSamples);
   nrSamples -= nt;
   nf = fMin(hMdct->prev_nr, nrSamples);
-  FDKmemcpy(pTimeData, hMdct->overlap.time, nt * sizeof(int32_t));
+  memcpy(pTimeData, hMdct->overlap.time, nt * sizeof(int32_t));
   pTimeData += nt;
 
   pOvl = hMdct->overlap.freq + hMdct->ov_size - 1;
@@ -713,7 +714,7 @@ int32_t imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
   /* Save overlap */
 
   pOvl = hMdct->overlap.freq + hMdct->ov_size - tl / 2;
-  FDKmemcpy(pOvl, &spectrum[(nSpec - 1) * tl], (tl / 2) * sizeof(int32_t));
+  memcpy(pOvl, &spectrum[(nSpec - 1) * tl], (tl / 2) * sizeof(int32_t));
 
   return nrSamples;
 }

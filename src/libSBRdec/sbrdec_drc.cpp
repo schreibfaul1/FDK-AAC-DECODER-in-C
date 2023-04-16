@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "sbrdec_drc.h"
 
 /* DRC - Offset table for QMF interpolation. Shifted by one index position.
@@ -169,14 +170,14 @@ void sbrDecoder_drcUpdateChannel(HANDLE_SBR_DRC_CHANNEL hDrcData) {
   }
 
   /* swap previous data */
-  FDKmemcpy(hDrcData->currFact_mag, hDrcData->nextFact_mag,
+  memcpy(hDrcData->currFact_mag, hDrcData->nextFact_mag,
             SBRDEC_MAX_DRC_BANDS * sizeof(int32_t));
 
   hDrcData->currFact_exp = hDrcData->nextFact_exp;
 
   hDrcData->numBandsCurr = hDrcData->numBandsNext;
 
-  FDKmemcpy(hDrcData->bandTopCurr, hDrcData->bandTopNext,
+  memcpy(hDrcData->bandTopCurr, hDrcData->bandTopNext,
             SBRDEC_MAX_DRC_BANDS * sizeof(uint16_t));
 
   hDrcData->drcInterpolationSchemeCurr = hDrcData->drcInterpolationSchemeNext;

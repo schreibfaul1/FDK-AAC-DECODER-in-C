@@ -385,7 +385,7 @@ void FDK_Feed(HANDLE_FDK_BITBUF hBitBuf, const uint8_t * inputBuffer,
                    noOfBytes);  //(bToRead < noOfBytes) ? bToRead : noOfBytes ;
 
     /* copy 'bToRead' bytes from 'ptr' to inputbuffer */
-    FDKmemcpy(&hBitBuf->Buffer[hBitBuf->ReadOffset], inputBuffer,
+    memcpy(&hBitBuf->Buffer[hBitBuf->ReadOffset], inputBuffer,
               bToRead * sizeof(uint8_t));
 
     /* add noOfBits to number of valid bits in buffer */
@@ -477,7 +477,7 @@ void FDK_Fetch(HANDLE_FDK_BITBUF hBitBuf, uint8_t *outBuf, uint32_t *writeBytes)
         bToWrite, noOfBytes);  //(bToWrite < noOfBytes) ? bToWrite : noOfBytes ;
 
     /* copy 'bToWrite' bytes from bitbuffer to outputbuffer */
-    FDKmemcpy(outputBuffer, &hBitBuf->Buffer[hBitBuf->WriteOffset],
+    memcpy(outputBuffer, &hBitBuf->Buffer[hBitBuf->WriteOffset],
               bToWrite * sizeof(uint8_t));
 
     /* sub noOfBits from number of valid bits in buffer */

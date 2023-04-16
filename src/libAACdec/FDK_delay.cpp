@@ -44,22 +44,22 @@ void FDK_Delay_Apply(FDK_SignalDelay* data, int32_t* time_buffer,
     assert(channel < data->num_channels);
     assert(time_buffer != NULL);
     if (frame_length >= data->delay) {
-      FDKmemcpy(tmp, &time_buffer[frame_length - data->delay],
+      memcpy(tmp, &time_buffer[frame_length - data->delay],
                 data->delay * sizeof(int32_t));
       memmove(&time_buffer[data->delay], &time_buffer[0], (frame_length - data->delay) * sizeof(int32_t));
 
-      FDKmemcpy(&time_buffer[0], &data->delay_line[channel * data->delay],
+      memcpy(&time_buffer[0], &data->delay_line[channel * data->delay],
                 data->delay * sizeof(int32_t));
-      FDKmemcpy(&data->delay_line[channel * data->delay], tmp,
+      memcpy(&data->delay_line[channel * data->delay], tmp,
                 data->delay * sizeof(int32_t));
     } else {
-      FDKmemcpy(tmp, &time_buffer[0], frame_length * sizeof(int32_t));
-      FDKmemcpy(&time_buffer[0], &data->delay_line[channel * data->delay],
+      memcpy(tmp, &time_buffer[0], frame_length * sizeof(int32_t));
+      memcpy(&time_buffer[0], &data->delay_line[channel * data->delay],
                 frame_length * sizeof(int32_t));
-      FDKmemcpy(&data->delay_line[channel * data->delay],
+      memcpy(&data->delay_line[channel * data->delay],
                 &data->delay_line[channel * data->delay + frame_length],
                 (data->delay - frame_length) * sizeof(int32_t));
-      FDKmemcpy(&data->delay_line[channel * data->delay +
+      memcpy(&data->delay_line[channel * data->delay +
                                   (data->delay - frame_length)],
                 tmp, frame_length * sizeof(int32_t));
     }

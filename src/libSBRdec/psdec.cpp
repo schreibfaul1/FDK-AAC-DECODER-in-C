@@ -592,9 +592,9 @@ l[n],r[n]: left/right output signals
 
 	/* bands from usb to NO_SUB_QMF_CHANNELS which should be zero for non-overlap
 	   slots but can be non-zero for overlap slots */
-	FDKmemcpy(&hybridData[0][0][usb + (NO_SUB_QMF_CHANNELS - 2 - NO_QMF_BANDS_HYBRID20)], &rIntBufferLeft[0][usb],
+	memcpy(&hybridData[0][0][usb + (NO_SUB_QMF_CHANNELS - 2 - NO_QMF_BANDS_HYBRID20)], &rIntBufferLeft[0][usb],
 			  sizeof(int32_t) * (NO_QMF_CHANNELS - usb));
-	FDKmemcpy(&hybridData[0][1][usb + (NO_SUB_QMF_CHANNELS - 2 - NO_QMF_BANDS_HYBRID20)], &iIntBufferLeft[0][usb],
+	memcpy(&hybridData[0][1][usb + (NO_SUB_QMF_CHANNELS - 2 - NO_QMF_BANDS_HYBRID20)], &iIntBufferLeft[0][usb],
 			  sizeof(int32_t) * (NO_QMF_CHANNELS - usb));
 
 	/*!

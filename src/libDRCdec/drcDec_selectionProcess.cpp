@@ -2442,7 +2442,7 @@ static DRCDEC_SELECTION_DATA* _drcdec_selection_add(
     DRCDEC_SELECTION* pSelection, DRCDEC_SELECTION_DATA* pDataIn) {
   if (pSelection->numData < (12 + 1 + 6)) {
     DRCDEC_SELECTION_DATA* pData = &(pSelection->data[pSelection->numData]);
-    FDKmemcpy(pData, pDataIn, sizeof(DRCDEC_SELECTION_DATA));
+    memcpy(pData, pDataIn, sizeof(DRCDEC_SELECTION_DATA));
     pSelection->numData++;
     return pData;
   } else {

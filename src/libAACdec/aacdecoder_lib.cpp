@@ -1321,7 +1321,7 @@ AAC_DECODER_ERROR aacDecoder_DecodeFrame(HANDLE_AACDECODER self, int16_t *pTimeD
 
 				int32_t *input;
 				input = (int32_t *)self->workBufferCore2;
-				FDKmemcpy(input, pTimeData3,
+				memcpy(input, pTimeData3,
 						  sizeof(int32_t) * (self->streamInfo.numChannels) * (self->streamInfo.frameSize));
 
 				/* apply SBR processing */

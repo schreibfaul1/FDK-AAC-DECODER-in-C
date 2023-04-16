@@ -297,7 +297,7 @@ int32_t CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac,
     pOut0 = output;
     nrSamples += hMdct->ov_offset;
     /* Purge buffered output. */
-    FDKmemcpy(pOut0, hMdct->overlap.time, hMdct->ov_offset * sizeof(pOut0[0]));
+    memcpy(pOut0, hMdct->overlap.time, hMdct->ov_offset * sizeof(pOut0[0]));
     hMdct->ov_offset = 0;
   }
 
@@ -439,7 +439,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
 
   if (noOutSamples > nrSamples) {
     /* Purge buffered output. */
-    FDKmemcpy(pOut0, hMdct->overlap.time, hMdct->ov_offset * sizeof(pOut0[0]));
+    memcpy(pOut0, hMdct->overlap.time, hMdct->ov_offset * sizeof(pOut0[0]));
     nrSamples = hMdct->ov_offset;
     hMdct->ov_offset = 0;
   }

@@ -114,19 +114,6 @@ void FDKafree_L(void *ptr) {
 }
 
 //----------------------------------------------------------------------------------------------------------------------
-// FUNCTION:    FDKmemcpy
-// DESCRIPTION: - copies memory from "src" to "dst" with length "size" bytes
-//              - compiled with FDK_DEBUG will give you warnings
-
-void FDKmemcpy(void *dst, const void *src, const uint32_t size) {
-    /* -- check for overlapping memory areas -- */
-    assert(((const unsigned char *)dst - (const unsigned char *)src) >= (ptrdiff_t)size ||
-           ((const unsigned char *)src - (const unsigned char *)dst) >= (ptrdiff_t)size);
-
-    /* do the copy */
-    memcpy(dst, src, size);
-}
-//----------------------------------------------------------------------------------------------------------------------
 
 uint32_t FDKstrlen(const char *s) { return (uint32_t)strlen(s); }
 
