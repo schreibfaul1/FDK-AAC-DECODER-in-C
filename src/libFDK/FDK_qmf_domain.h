@@ -122,12 +122,6 @@ typedef enum {
 #define QMF_MAX_WB_SECTIONS (5) /* maximum number of workbuffer sections */
 #define QMF_WB_SECTION_SIZE (1024 * 2)
 
-H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore1, int32_t)
-H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore3, int32_t)
-H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore4, int32_t)
-H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore6, int32_t)
-H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore7, int32_t)
-
 #define QMF_DOMAIN_MAX_ANALYSIS_QMF_BANDS (64)
 #define QMF_DOMAIN_MAX_SYNTHESIS_QMF_BANDS (QMF_MAX_SYNTHESIS_BANDS)
 #define QMF_DOMAIN_MAX_QMF_PROC_BANDS (64)
@@ -144,21 +138,7 @@ H_ALLOC_MEM_OVERLAY(QmfWorkBufferCore7, int32_t)
 #define QMF_DOMAIN_OV_TIMESLOTS_16 (3)
 #define QMF_DOMAIN_OV_TIMESLOTS_32 (6)
 
-H_ALLOC_MEM(AnaQmfStates, int32_t)
-H_ALLOC_MEM(SynQmfStates, FIXP_QSS)
-H_ALLOC_MEM(QmfSlotsReal, int32_t *)
-H_ALLOC_MEM(QmfSlotsImag, int32_t *)
-H_ALLOC_MEM(QmfOverlapBuffer, int32_t)
 
-H_ALLOC_MEM(AnaQmfStates16, int32_t)
-H_ALLOC_MEM(AnaQmfStates24, int32_t)
-H_ALLOC_MEM(AnaQmfStates32, int32_t)
-H_ALLOC_MEM(QmfSlotsReal16, int32_t *)
-H_ALLOC_MEM(QmfSlotsReal32, int32_t *)
-H_ALLOC_MEM(QmfSlotsImag16, int32_t *)
-H_ALLOC_MEM(QmfSlotsImag32, int32_t *)
-H_ALLOC_MEM(QmfOverlapBuffer16, int32_t)
-H_ALLOC_MEM(QmfOverlapBuffer32, int32_t)
 
 /**
  * Structure to hold the configuration data which is global whithin a QMF domain

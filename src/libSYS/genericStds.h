@@ -67,32 +67,6 @@ typedef enum
 	 */
 
 	/** See \ref SYSLIB_MEMORY_MACROS for description. */
-	#define H_ALLOC_MEM(name, type)        \
-		type    *Get##name(int32_t n = 0); \
-		void     Free##name(type **p);     \
-		uint32_t GetRequiredMem##name(void);
-
-	/** See \ref SYSLIB_MEMORY_MACROS for description. */
-	#define H_ALLOC_MEM_OVERLAY(name, type) \
-		type    *Get##name(int32_t n = 0);  \
-		void     Free##name(type **p);      \
-		uint32_t GetRequiredMem##name(void);
-
-	/** See \ref SYSLIB_MEMORY_MACROS for description. */
-	#define C_ALLOC_MEM(name, type, num)                   \
-		type *Get##name(int32_t n) {                       \
-			assert((n) == 0);                              \
-			return ((type *)FDKcalloc(num, sizeof(type))); \
-		}                                                  \
-		void Free##name(type **p) {                        \
-			if(p != NULL) {                                \
-				FDKfree(*p);                               \
-				*p = NULL;                                 \
-			}                                              \
-		}                                                  \
-		uint32_t GetRequiredMem##name(void) { return ALGN_SIZE_EXTRES((num) * sizeof(type)); }
-
-	/** See \ref SYSLIB_MEMORY_MACROS for description. */
 	#define C_ALLOC_MEM2(name, type, n1, n2)              \
 		type *Get##name(int32_t n) {                      \
 			assert((n) < (n2));                           \

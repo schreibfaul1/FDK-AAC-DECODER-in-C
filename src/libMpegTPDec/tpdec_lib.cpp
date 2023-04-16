@@ -100,7 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
-#include <memory.h> 
+#include <memory.h>
 #include "tpdec_lib.h"
 
 /* library version */
@@ -186,13 +186,15 @@ struct TRANSPORTDEC {
 /* skip packet */
 #define TPDEC_SKIP_PACKET 1
 
-C_ALLOC_MEM(Ram_TransportDecoder, struct TRANSPORTDEC, 1)
-C_ALLOC_MEM(Ram_TransportDecoderBuffer, uint8_t, (8192 * 4))
+
+
+
+
 
 HANDLE_TRANSPORTDEC transportDec_Open(const TRANSPORT_TYPE transportFmt, const uint32_t flags, const uint32_t nrOfLayers) {
   HANDLE_TRANSPORTDEC hInput;
 
-  hInput = GetRam_TransportDecoder(0);
+  hInput = (struct TRANSPORTDEC *)FDKcalloc(1, sizeof(struct TRANSPORTDEC));
   if (hInput == NULL) {
     return NULL;
   }
@@ -232,7 +234,7 @@ HANDLE_TRANSPORTDEC transportDec_Open(const TRANSPORT_TYPE transportFmt, const u
       break;
 
     default:
-      FreeRam_TransportDecoder(&hInput);
+      if(hInput) { FDKfree(hInput); hInput = NULL;}
       hInput = NULL;
       break;
   }
@@ -240,7 +242,7 @@ HANDLE_TRANSPORTDEC transportDec_Open(const TRANSPORT_TYPE transportFmt, const u
   if (hInput != NULL) {
     /* Create bitstream */
     {
-      hInput->bsBuffer = GetRam_TransportDecoderBuffer(0);
+      hInput->bsBuffer = (uint8_t *)FDKcalloc((8192 * 4), sizeof(uint8_t));
       if (hInput->bsBuffer == NULL) {
         transportDec_Close(&hInput);
         return NULL;
@@ -1749,8 +1751,8 @@ uint32_t transportDec_GetNrOfSubFrames(HANDLE_TRANSPORTDEC hTp) {
 void transportDec_Close(HANDLE_TRANSPORTDEC *phTp) {
   if (phTp != NULL) {
     if (*phTp != NULL) {
-      FreeRam_TransportDecoderBuffer(&(*phTp)->bsBuffer);
-      FreeRam_TransportDecoder(phTp);
+      FDKfree(phTp);
+      phTp = NULL;
     }
   }
 }

@@ -375,7 +375,7 @@ struct PCM_DMX_INSTANCE {
 };
 
 /* Memory allocation macro */
-C_ALLOC_MEM(PcmDmxInstance, struct PCM_DMX_INSTANCE, 1)
+
 
 static uint32_t getSpeakerDistance(PCM_DMX_SPEAKER_POSITION posA,
                                PCM_DMX_SPEAKER_POSITION posB) {
@@ -1594,7 +1594,7 @@ PCMDMX_ERROR pcmDmx_Open(HANDLE_PCM_DOWNMIX *pSelf) {
 
   *pSelf = NULL;
 
-  self = (HANDLE_PCM_DOWNMIX)GetPcmDmxInstance(0);
+  self = (HANDLE_PCM_DOWNMIX)(struct PCM_DMX_INSTANCE *)FDKcalloc(1, sizeof(struct PCM_DMX_INSTANCE));
   if (self == NULL) {
     return (PCMDMX_OUT_OF_MEMORY);
   }
@@ -2600,9 +2600,8 @@ PCMDMX_ERROR pcmDmx_Close(HANDLE_PCM_DOWNMIX *pSelf) {
   if (pSelf == NULL) {
     return (PCMDMX_INVALID_HANDLE);
   }
-
-  FreePcmDmxInstance(pSelf);
-  *pSelf = NULL;
+  FDKfree(pSelf); pSelf = NULL;
+  //*pSelf = NULL;
 
   return (PCMDMX_OK);
 }
