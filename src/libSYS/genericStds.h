@@ -106,23 +106,7 @@ typedef enum
 		}                                                 \
 		uint32_t GetRequiredMem##name(void) { return ALGN_SIZE_EXTRES((n1) * sizeof(type)) * (n2); }
 
-	/** See \ref SYSLIB_MEMORY_MACROS for description. */
-	#define C_AALLOC_MEM(name, type, num)                                                       \
-		type *Get##name(int32_t n) {                                                            \
-			type *ap;                                                                           \
-			assert((n) == 0);                                                                   \
-			ap = ((type *)FDKaalloc((num) * sizeof(type), ALIGNMENT_DEFAULT));                  \
-			return ap;                                                                          \
-		}                                                                                       \
-		void Free##name(type **p) {                                                             \
-			if(p != NULL) {                                                                     \
-				FDKafree(*p);                                                                   \
-				*p = NULL;                                                                      \
-			}                                                                                   \
-		}                                                                                       \
-		uint32_t GetRequiredMem##name(void) {                                                   \
-			return ALGN_SIZE_EXTRES((num) * sizeof(type) + ALIGNMENT_DEFAULT + sizeof(void *)); \
-		}
+
 
 	/** See \ref SYSLIB_MEMORY_MACROS for description. */
 	#define C_AALLOC_MEM2(name, type, n1, n2)                                                         \
@@ -327,7 +311,6 @@ int32_t FDKmemcmp(const void *s1, const void *s2, const uint32_t size);
 int32_t FDKstrcmp(const char *s1, const char *s2);
 int32_t FDKstrncmp(const char *s1, const char *s2, const uint32_t size);
 
-uint32_t FDKstrlen(const char *s);
 
 	#define FDKmax(a, b) ((a) > (b) ? (a) : (b))
 	#define FDKmin(a, b) ((a) < (b) ? (a) : (b))

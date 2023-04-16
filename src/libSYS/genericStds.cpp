@@ -115,7 +115,7 @@ void FDKafree_L(void *ptr) {
 
 //----------------------------------------------------------------------------------------------------------------------
 
-uint32_t FDKstrlen(const char *s) { return (uint32_t)strlen(s); }
+
 
 /* Compare function wrappers */
 int32_t FDKmemcmp(const void *s1, const void *s2, const uint32_t size) { return memcmp(s1, s2, size); }

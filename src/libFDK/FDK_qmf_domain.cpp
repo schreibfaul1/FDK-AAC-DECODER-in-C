@@ -119,59 +119,52 @@ C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore6, int32_t, QMF_WB_SECTION_SIZE, SECT_DATA_
 C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore7, int32_t, QMF_WB_SECTION_SIZE, SECT_DATA_L2, WORKBUFFER7_TAG)
 
 /*! Analysis states buffer. <br>
-	Dimension: #((8) + (1))                                                   */
-C_AALLOC_MEM2(AnaQmfStates, int32_t, 10 * QMF_DOMAIN_MAX_ANALYSIS_QMF_BANDS, ((8) + (1)))
+	Dimension: #((8) + (1))
+	                                                 */
+int32_t *GetAnaQmfStates(int32_t n) {
+	 int32_t *ap; (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 124, __extension__ __PRETTY_FUNCTION__)); ap = ((int32_t *)FDKaalloc((10 * (64)) * sizeof(int32_t), 8)); return ap; } void FreeAnaQmfStates(int32_t **p) { if(p != __null) { FDKafree(*p); *p = __null; } } uint32_t GetRequiredMemAnaQmfStates(void) { return (((10 * (64)) * sizeof(int32_t) + 8 + sizeof(void *)) + (((int32_t)(8) - ((int32_t)((10 * (64)) * sizeof(int32_t) + 8 + sizeof(void *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
 
 /*! Synthesis states buffer. <br>
 	Dimension: #((8) + (1))                                                  */
-C_AALLOC_MEM2(SynQmfStates, FIXP_QSS, 9 * QMF_DOMAIN_MAX_SYNTHESIS_QMF_BANDS, ((8) + (1)))
+int32_t *GetSynQmfStates(int32_t n) {
+	 int32_t *ap; (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 128, __extension__ __PRETTY_FUNCTION__)); ap = ((int32_t *)FDKaalloc((9 * ((64))) * sizeof(int32_t), 8)); return ap; } void FreeSynQmfStates(int32_t **p) { if(p != __null) { FDKafree(*p); *p = __null; } } uint32_t GetRequiredMemSynQmfStates(void) { return (((9 * ((64))) * sizeof(int32_t) + 8 + sizeof(void *)) + (((int32_t)(8) - ((int32_t)((9 * ((64))) * sizeof(int32_t) + 8 + sizeof(void *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
 
 /*! Pointer to real qmf data for each time slot. <br>
 	Dimension: #((8) + (1))                                                   */
-C_ALLOC_MEM2(QmfSlotsReal, int32_t *, QMF_DOMAIN_MAX_TIMESLOTS + QMF_DOMAIN_MAX_OV_TIMESLOTS, ((8) + (1)))
+int32_t * *GetQmfSlotsReal(int32_t n) {
+	 (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 132, __extension__ __PRETTY_FUNCTION__)); return ((int32_t * *)FDKcalloc((64) + (12), sizeof(int32_t *))); } void FreeQmfSlotsReal(int32_t * **p) { if(p != __null) { FDKfree(*p); *p = __null; } } uint32_t GetRequiredMemQmfSlotsReal(void) { return ((((64) + (12)) * sizeof(int32_t *)) + (((int32_t)(8) - ((int32_t)(((64) + (12)) * sizeof(int32_t *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
 
 /*! Pointer to imaginary qmf data for each time slot. <br>
 	Dimension: #((8) + (1))                                                   */
-C_ALLOC_MEM2(QmfSlotsImag, int32_t *, QMF_DOMAIN_MAX_TIMESLOTS + QMF_DOMAIN_MAX_OV_TIMESLOTS, ((8) + (1)))
+int32_t * *GetQmfSlotsImag(int32_t n) {
+	 (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 136, __extension__ __PRETTY_FUNCTION__)); return ((int32_t * *)FDKcalloc((64) + (12), sizeof(int32_t *))); } void FreeQmfSlotsImag(int32_t * **p) { if(p != __null) { FDKfree(*p); *p = __null; } } uint32_t GetRequiredMemQmfSlotsImag(void) { return ((((64) + (12)) * sizeof(int32_t *)) + (((int32_t)(8) - ((int32_t)(((64) + (12)) * sizeof(int32_t *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
 
 /*! QMF overlap buffer. <br>
 	Dimension: #((8) + (1))                                                   */
-C_AALLOC_MEM2(QmfOverlapBuffer, int32_t, 2 * QMF_DOMAIN_MAX_OV_TIMESLOTS * QMF_DOMAIN_MAX_QMF_PROC_BANDS, ((8) + (1)))
+int32_t *GetQmfOverlapBuffer(int32_t n) {
+	 int32_t *ap; (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 140, __extension__ __PRETTY_FUNCTION__)); ap = ((int32_t *)FDKaalloc((2 * (12) * (64)) * sizeof(int32_t), 8)); return ap; } void FreeQmfOverlapBuffer(int32_t **p) { if(p != __null) { FDKafree(*p); *p = __null; } } uint32_t GetRequiredMemQmfOverlapBuffer(void) { return (((2 * (12) * (64)) * sizeof(int32_t) + 8 + sizeof(void *)) + (((int32_t)(8) - ((int32_t)((2 * (12) * (64)) * sizeof(int32_t) + 8 + sizeof(void *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
 
 /*! Analysis states buffer. <br>
 	Dimension: #((8) + (1))                                                   */
-C_AALLOC_MEM2(AnaQmfStates16, int32_t, 10 * QMF_DOMAIN_ANALYSIS_QMF_BANDS_16, ((8) + (1)))
+int32_t *GetAnaQmfStates16(int32_t n) {
+	 int32_t *ap; (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 144, __extension__ __PRETTY_FUNCTION__)); ap = ((int32_t *)FDKaalloc((10 * (16)) * sizeof(int32_t), 8)); return ap; } void FreeAnaQmfStates16(int32_t **p) { if(p != __null) { FDKafree(*p); *p = __null; } } uint32_t GetRequiredMemAnaQmfStates16(void) { return (((10 * (16)) * sizeof(int32_t) + 8 + sizeof(void *)) + (((int32_t)(8) - ((int32_t)((10 * (16)) * sizeof(int32_t) + 8 + sizeof(void *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
 /*! Analysis states buffer. <br>
 	Dimension: #((8) + (1))                                                   */
-C_AALLOC_MEM2(AnaQmfStates24, int32_t, 10 * QMF_DOMAIN_ANALYSIS_QMF_BANDS_24, ((8) + (1)))
+int32_t *GetAnaQmfStates24(int32_t n) {
+	 int32_t *ap; (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 147, __extension__ __PRETTY_FUNCTION__)); ap = ((int32_t *)FDKaalloc((10 * (24)) * sizeof(int32_t), 8)); return ap; } void FreeAnaQmfStates24(int32_t **p) { if(p != __null) { FDKafree(*p); *p = __null; } } uint32_t GetRequiredMemAnaQmfStates24(void) { return (((10 * (24)) * sizeof(int32_t) + 8 + sizeof(void *)) + (((int32_t)(8) - ((int32_t)((10 * (24)) * sizeof(int32_t) + 8 + sizeof(void *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
 
 /*! Analysis states buffer. <br>
 	Dimension: #((8) + (1))                                                   */
-C_AALLOC_MEM2(AnaQmfStates32, int32_t, 10 * QMF_DOMAIN_ANALYSIS_QMF_BANDS_32, ((8) + (1)))
+int32_t *GetAnaQmfStates32(int32_t n) {
+	 int32_t *ap; (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 151, __extension__ __PRETTY_FUNCTION__)); ap = ((int32_t *)FDKaalloc((10 * (32)) * sizeof(int32_t), 8)); return ap; } void FreeAnaQmfStates32(int32_t **p) { if(p != __null) { FDKafree(*p); *p = __null; } } uint32_t GetRequiredMemAnaQmfStates32(void) { return (((10 * (32)) * sizeof(int32_t) + 8 + sizeof(void *)) + (((int32_t)(8) - ((int32_t)((10 * (32)) * sizeof(int32_t) + 8 + sizeof(void *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
 
 /*! Pointer to real qmf data for each time slot. <br>
 	Dimension: #((8) + (1))                                                   */
-C_ALLOC_MEM2(QmfSlotsReal16, int32_t *, QMF_DOMAIN_TIMESLOTS_16 + QMF_DOMAIN_OV_TIMESLOTS_16, ((8) + (1)))
+int32_t * *GetQmfSlotsReal16(int32_t n) {
+	 (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 155, __extension__ __PRETTY_FUNCTION__)); return ((int32_t * *)FDKcalloc((16) + (3), sizeof(int32_t *))); } void FreeQmfSlotsReal16(int32_t * **p) { if(p != __null) { FDKfree(*p); *p = __null; } } uint32_t GetRequiredMemQmfSlotsReal16(void) { return ((((16) + (3)) * sizeof(int32_t *)) + (((int32_t)(8) - ((int32_t)(((16) + (3)) * sizeof(int32_t *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
 
-/*! Pointer to real qmf data for each time slot. <br>
-	Dimension: #((8) + (1))                                                   */
-C_ALLOC_MEM2(QmfSlotsReal32, int32_t *, QMF_DOMAIN_TIMESLOTS_32 + QMF_DOMAIN_OV_TIMESLOTS_32, ((8) + (1)))
 
-/*! Pointer to imaginary qmf data for each time slot. <br>
-	Dimension: #((8) + (1))                                                   */
-C_ALLOC_MEM2(QmfSlotsImag16, int32_t *, QMF_DOMAIN_TIMESLOTS_16 + QMF_DOMAIN_OV_TIMESLOTS_16, ((8) + (1)))
 
-/*! Pointer to imaginary qmf data for each time slot. <br>
-	Dimension: #((8) + (1))                                                   */
-C_ALLOC_MEM2(QmfSlotsImag32, int32_t *, QMF_DOMAIN_TIMESLOTS_32 + QMF_DOMAIN_OV_TIMESLOTS_32, ((8) + (1)))
-
-/*! QMF overlap buffer. <br>
-	Dimension: #((8) + (1))                                                   */
-C_AALLOC_MEM2(QmfOverlapBuffer16, int32_t, 2 * QMF_DOMAIN_OV_TIMESLOTS_16 * QMF_DOMAIN_MAX_QMF_PROC_BANDS, ((8) + (1)))
-
-/*! QMF overlap buffer. <br>
-	Dimension: #((8) + (1))                                                   */
-C_AALLOC_MEM2(QmfOverlapBuffer32, int32_t, 2 * QMF_DOMAIN_OV_TIMESLOTS_32 * QMF_DOMAIN_MAX_QMF_PROC_BANDS, ((8) + (1)))
 
 static int32_t FDK_QmfDomain_FreePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
 	int32_t err = 0;
@@ -193,10 +186,12 @@ static int32_t FDK_QmfDomain_FreePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
 
 		if(qd->QmfDomainIn[ch].pOverlapBuffer) {
 			if(qd->globalConf.nQmfOvTimeSlots == QMF_DOMAIN_OV_TIMESLOTS_16) {
-				FreeQmfOverlapBuffer16(&qd->QmfDomainIn[ch].pOverlapBuffer);
+				FDKafree(qd->QmfDomainIn[ch].pOverlapBuffer);
+				qd->QmfDomainIn[ch].pOverlapBuffer = NULL;
 			}
 			else if(qd->globalConf.nQmfOvTimeSlots == QMF_DOMAIN_OV_TIMESLOTS_32) {
-				FreeQmfOverlapBuffer32(&qd->QmfDomainIn[ch].pOverlapBuffer);
+				FDKafree(qd->QmfDomainIn[ch].pOverlapBuffer);
+				qd->QmfDomainIn[ch].pOverlapBuffer = NULL;
 			}
 			else { FreeQmfOverlapBuffer(&qd->QmfDomainIn[ch].pOverlapBuffer); }
 		}
@@ -206,17 +201,20 @@ static int32_t FDK_QmfDomain_FreePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
 				FreeQmfSlotsReal16(&qd->QmfDomainIn[ch].hQmfSlotsReal);
 			}
 			else if(qd->globalConf.nQmfTimeSlots == QMF_DOMAIN_TIMESLOTS_32) {
-				FreeQmfSlotsReal32(&qd->QmfDomainIn[ch].hQmfSlotsReal);
+				FDKfree(qd->QmfDomainIn[ch].hQmfSlotsReal);
+				qd->QmfDomainIn[ch].hQmfSlotsReal = NULL;
 			}
 			else { FreeQmfSlotsReal(&qd->QmfDomainIn[ch].hQmfSlotsReal); }
 		}
 
 		if(qd->QmfDomainIn[ch].hQmfSlotsImag) {
 			if(qd->globalConf.nQmfTimeSlots == QMF_DOMAIN_TIMESLOTS_16) {
-				FreeQmfSlotsImag16(&qd->QmfDomainIn[ch].hQmfSlotsImag);
+				FDKfree(qd->QmfDomainIn[ch].hQmfSlotsImag);
+				qd->QmfDomainIn[ch].hQmfSlotsImag = NULL;
 			}
 			if(qd->globalConf.nQmfTimeSlots == QMF_DOMAIN_TIMESLOTS_32) {
-				FreeQmfSlotsImag32(&qd->QmfDomainIn[ch].hQmfSlotsImag);
+				FDKfree(qd->QmfDomainIn[ch].hQmfSlotsImag);
+				qd->QmfDomainIn[ch].hQmfSlotsImag = NULL;
 			}
 			else { FreeQmfSlotsImag(&qd->QmfDomainIn[ch].hQmfSlotsImag); }
 		}
@@ -270,15 +268,18 @@ static int32_t FDK_QmfDomain_AllocatePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) 
 					if(NULL == (qd->QmfDomainIn[ch].hQmfSlotsReal = GetQmfSlotsReal16(ch))) goto bail;
 				}
 				if(qd->QmfDomainIn[ch].hQmfSlotsImag == NULL) {
-					if(NULL == (qd->QmfDomainIn[ch].hQmfSlotsImag = GetQmfSlotsImag16(ch))) goto bail;
+					qd->QmfDomainIn[ch].hQmfSlotsImag = (int32_t * *)FDKcalloc((16) + (3), sizeof(int32_t *));
+					if(qd->QmfDomainIn[ch].hQmfSlotsImag == NULL) goto bail;
 				}
 			}
 			else if(gc->nQmfTimeSlots == QMF_DOMAIN_TIMESLOTS_32) {
 				if(qd->QmfDomainIn[ch].hQmfSlotsReal == NULL) {
-					if(NULL == (qd->QmfDomainIn[ch].hQmfSlotsReal = GetQmfSlotsReal32(ch))) goto bail;
+					qd->QmfDomainIn[ch].hQmfSlotsReal = (int32_t * *)FDKcalloc((32) + (6), sizeof(int32_t *));
+					if(qd->QmfDomainIn[ch].hQmfSlotsReal == NULL) goto bail;
 				}
 				if(qd->QmfDomainIn[ch].hQmfSlotsImag == NULL) {
-					if(NULL == (qd->QmfDomainIn[ch].hQmfSlotsImag = GetQmfSlotsImag32(ch))) goto bail;
+					qd->QmfDomainIn[ch].hQmfSlotsImag = (int32_t * *)FDKcalloc((32) + (6), sizeof(int32_t *));
+					if(qd->QmfDomainIn[ch].hQmfSlotsImag == NULL) goto bail;
 				}
 			}
 			else {
@@ -299,12 +300,14 @@ static int32_t FDK_QmfDomain_AllocatePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) 
 		if(size > 0) {
 			if(gc->nQmfOvTimeSlots == QMF_DOMAIN_OV_TIMESLOTS_16) {
 				if(qd->QmfDomainIn[ch].pOverlapBuffer == NULL) {
-					if(NULL == (qd->QmfDomainIn[ch].pOverlapBuffer = GetQmfOverlapBuffer16(ch))) goto bail;
+					qd->QmfDomainIn[ch].pOverlapBuffer = (int32_t *)FDKaalloc((2 * (3) * (64)) * sizeof(int32_t), 8);
+					if(qd->QmfDomainIn[ch].pOverlapBuffer == NULL) goto bail;
 				}
 			}
 			else if(gc->nQmfOvTimeSlots == QMF_DOMAIN_OV_TIMESLOTS_32) {
 				if(qd->QmfDomainIn[ch].pOverlapBuffer == NULL) {
-					if(NULL == (qd->QmfDomainIn[ch].pOverlapBuffer = GetQmfOverlapBuffer32(ch))) goto bail;
+					qd->QmfDomainIn[ch].pOverlapBuffer = (int32_t*)FDKaalloc((2 * (6) * (64)) * sizeof(int32_t), 8);
+					if(qd->QmfDomainIn[ch].pOverlapBuffer == NULL) goto bail;
 				}
 			}
 			else {
