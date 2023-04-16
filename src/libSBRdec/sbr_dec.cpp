@@ -674,11 +674,12 @@ void sbr_dec(
         HANDLE_FREQ_BAND_DATA hFreq = &hHeaderData->freqBandData;
         int32_t save_usb = hSbrDec->qmfDomainOutCh->fb.usb;
 
-#if (QMF_MAX_SYNTHESIS_BANDS <= 64)
-        C_AALLOC_SCRATCH_START(qmfTemp, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
-#else
-        C_AALLOC_STACK_START(qmfTemp, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
-#endif
+        int32_t _qmfTemp[(2 * 64) + (8 + sizeof(int32_t) - 1)];
+        int32_t *qmfTemp = (int32_t *)(_qmfTemp + (((int32_t)8 - ((size_t)(_qmfTemp) & 7)) & 7));
+
+
+
+
         if (hSbrDec->qmfDomainOutCh->fb.usb < hFreq->ov_highSubband) {
           /* we need to patch usb for this frame as overlap may contain higher
              frequency range if headerchange occured; fb. usb is always limited
@@ -756,12 +757,9 @@ void sbr_dec(
     int32_t env = 0;
 
     {
-#if (QMF_MAX_SYNTHESIS_BANDS <= 64)
-      C_AALLOC_SCRATCH_START(pWorkBuffer, int32_t,
-                             2 * QMF_MAX_SYNTHESIS_BANDS);
-#else
-      C_AALLOC_STACK_START(pWorkBuffer, int32_t, 2 * QMF_MAX_SYNTHESIS_BANDS);
-#endif
+      int32_t _pWorkBuffer[(2 * 64) + (8 + sizeof(int32_t) - 1)];
+      int32_t *pWorkBuffer = (int32_t *)(_pWorkBuffer + (((int32_t)8 - ((size_t)(_pWorkBuffer) & 7)) & 7));
+
 
       int32_t maxShift = 0;
 

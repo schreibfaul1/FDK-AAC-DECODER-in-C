@@ -67,13 +67,6 @@ typedef enum
 
 
 
-
-
-	/** See \ref SYSLIB_MEMORY_MACROS for description. */
-	#define C_AALLOC_SCRATCH_START(name, type, n)                    \
-		type  _##name[(n) + (ALIGNMENT_DEFAULT + sizeof(type) - 1)]; \
-		type *name = (type *)ALIGN_PTR(_##name);
-
 	/** See \ref SYSLIB_MEMORY_MACROS for description. */
 	#define C_ALLOC_SCRATCH_START(name, type, n) type name[n];
 
