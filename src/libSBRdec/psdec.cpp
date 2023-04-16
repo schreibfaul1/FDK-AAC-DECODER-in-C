@@ -110,7 +110,7 @@ amm-info@iis.fraunhofer.de
 #include "../libFDK/FDK_bitbuffer.h"
 #include "../libFDK/FDK_tools_rom.h"
 #include "../libFDK/FDK_trigFcts.h"
-#include "../libSYS/genericStds.h"
+
 #include "sbr_ram.h"
 #include "sbr_rom.h"
 
@@ -547,8 +547,7 @@ l[n],r[n]: left/right output signals
 	int32_t  i;
 	int32_t  qmfInputData[2][NO_QMF_BANDS_HYBRID20];
 	int32_t *hybridData[2][2];
-	C_ALLOC_SCRATCH_START(pHybridData, int32_t, 4 * NO_HYBRID_DATA_BANDS);
-
+	int32_t pHybridData[4 * NO_HYBRID_DATA_BANDS];
 	hybridData[0][0] = pHybridData + 0 * NO_HYBRID_DATA_BANDS; /* left real hybrid data */
 	hybridData[0][1] = pHybridData + 1 * NO_HYBRID_DATA_BANDS; /* left imag hybrid data */
 	hybridData[1][0] = pHybridData + 2 * NO_HYBRID_DATA_BANDS; /* right real hybrid data */
@@ -646,6 +645,4 @@ l[n],r[n]: left/right output signals
 	}
 
 	/* free temporary hybrid qmf values of one timeslot */
-	C_ALLOC_SCRATCH_END(pHybridData, int32_t, 4 * NO_HYBRID_DATA_BANDS);
-
 } /* END ApplyPsSlot */

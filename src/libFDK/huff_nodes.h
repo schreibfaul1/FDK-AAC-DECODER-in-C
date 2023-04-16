@@ -103,7 +103,7 @@ amm-info@iis.fraunhofer.de
 #ifndef HUFF_NODES_H
 #define HUFF_NODES_H
 
-#include "../libSYS/genericStds.h"
+#include <stdint.h>
 
 typedef struct {
   int16_t nodeTab[39][2];

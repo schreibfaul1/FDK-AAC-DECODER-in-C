@@ -114,7 +114,6 @@ amm-info@iis.fraunhofer.de
 #include "env_extr.h"
 #include "transcendent.h"
 
-#include "../libSYS/genericStds.h"
 
 static void decodeEnvelope(HANDLE_SBR_HEADER_DATA hHeaderData,
                            HANDLE_SBR_FRAME_DATA h_sbr_data,

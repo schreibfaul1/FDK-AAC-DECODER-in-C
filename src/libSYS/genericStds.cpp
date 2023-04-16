@@ -8,7 +8,7 @@
 
 *******************************************************************************/
 
-#include "genericStds.h"
+#include "machine_type.h"
 #include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>

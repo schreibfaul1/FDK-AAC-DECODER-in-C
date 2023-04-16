@@ -103,7 +103,7 @@ amm-info@iis.fraunhofer.de
 #include <stdint.h>
 #include "FDK_matrixCalloc.h"
 
-#include "../libSYS/genericStds.h"
+
 
 void *fdkCallocMatrix1D_aligned(uint32_t dim1, uint32_t size) {
   return FDKaalloc(dim1 * size, ALIGNMENT_DEFAULT);

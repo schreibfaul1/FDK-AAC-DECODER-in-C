@@ -113,9 +113,6 @@ amm-info@iis.fraunhofer.de
 #include "../libSYS/FDK_audio.h"
 
 #include "block.h"
-
-#include "../libSYS/genericStds.h"
-
 #include "../libFDK/FDK_qmf_domain.h"
 
 #include "../libSBRdec/sbrdecoder.h"

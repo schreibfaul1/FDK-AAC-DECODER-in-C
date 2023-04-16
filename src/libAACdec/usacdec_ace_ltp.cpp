@@ -101,8 +101,6 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 #include "usacdec_ace_ltp.h"
-
-#include "../libSYS/genericStds.h"
 #include "../libFDK/common_fix.h"
 
 #define UP_SAMP 4

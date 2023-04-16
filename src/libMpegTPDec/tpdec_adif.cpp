@@ -103,7 +103,7 @@ amm-info@iis.fraunhofer.de
 #include "tpdec_adif.h"
 
 #include "../libFDK/FDK_bitstream.h"
-#include "../libSYS/genericStds.h"
+
 
 TRANSPORTDEC_ERROR adifRead_DecodeHeader(CAdifHeader *pAdifHeader,
                                          CProgramConfig *pPce,

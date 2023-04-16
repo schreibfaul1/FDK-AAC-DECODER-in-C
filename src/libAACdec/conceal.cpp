@@ -144,13 +144,11 @@ amm-info@iis.fraunhofer.de
   indicate such packet loss by inserting an empty frame with frameOK=0.
 */
 
-#include <memory.h>
-#include <assert.h>
-#include <stdint.h>
 #include "conceal.h"
-
+#include <assert.h>
+#include <memory.h>
+#include <stdint.h>
 #include "aac_rom.h"
-#include "../libSYS/genericStds.h"
 
 /* PNS (of block) */
 #include "aacdec_pns.h"
@@ -161,104 +159,88 @@ amm-info@iis.fraunhofer.de
 #define CONCEAL_NOT_DEFINED ((uint8_t)-1)
 
 /* default settings */
-#define CONCEAL_DFLT_FADEOUT_FRAMES (6)
-#define CONCEAL_DFLT_FADEIN_FRAMES (5)
+#define CONCEAL_DFLT_FADEOUT_FRAMES      (6)
+#define CONCEAL_DFLT_FADEIN_FRAMES       (5)
 #define CONCEAL_DFLT_MUTE_RELEASE_FRAMES (0)
 
 #define CONCEAL_DFLT_FADE_FACTOR (0.707106781186548f) /* 1/sqrt(2) */
 
 /* some often used constants: */
-#define FIXP_ZERO FL2FXCONST_DBL(0.0f)
-#define FIXP_ONE FL2FXCONST_DBL(1.0f)
+#define FIXP_ZERO          FL2FXCONST_DBL(0.0f)
+#define FIXP_ONE           FL2FXCONST_DBL(1.0f)
 #define FIXP_FL_CORRECTION FL2FXCONST_DBL(0.53333333333333333f)
 
 /* For parameter conversion */
-#define CONCEAL_PARAMETER_BITS (8)
+#define CONCEAL_PARAMETER_BITS   (8)
 #define CONCEAL_MAX_QUANT_FACTOR ((1 << CONCEAL_PARAMETER_BITS) - 1)
 /*#define CONCEAL_MIN_ATTENUATION_FACTOR_025  ( FL2FXCONST_DBL(0.971627951577106174) )*/ /* -0.25 dB */
-#define CONCEAL_MIN_ATTENUATION_FACTOR_025_LD \
-  FL2FXCONST_DBL(-0.041524101186092029596853445212299)
+#define CONCEAL_MIN_ATTENUATION_FACTOR_025_LD FL2FXCONST_DBL(-0.041524101186092029596853445212299)
 /*#define CONCEAL_MIN_ATTENUATION_FACTOR_050  ( FL2FXCONST_DBL(0.944060876285923380) )*/ /* -0.50 dB */
-#define CONCEAL_MIN_ATTENUATION_FACTOR_050_LD \
-  FL2FXCONST_DBL(-0.083048202372184059253597008145293)
+#define CONCEAL_MIN_ATTENUATION_FACTOR_050_LD FL2FXCONST_DBL(-0.083048202372184059253597008145293)
 
-typedef enum {
-  CConcealment_NoExpand,
-  CConcealment_Expand,
-  CConcealment_Compress
+typedef enum
+{
+    CConcealment_NoExpand,
+    CConcealment_Expand,
+    CConcealment_Compress
 } CConcealmentExpandType;
 
 static const int16_t facMod4Table[4] = {
-      16384, /* int16_t(0x4000),  2^-(1-0,00) */
-      19484, /* int16_t(0x4c1b),  2^-(1-0,25) */
-      23170, /* int16_t(0x5a82),  2^-(1-0,50) */
-      27554  /* int16_t(0x6ba2)   2^-(1-0,75) */
+    16384, /* int16_t(0x4000),  2^-(1-0,00) */
+    19484, /* int16_t(0x4c1b),  2^-(1-0,25) */
+    23170, /* int16_t(0x5a82),  2^-(1-0,50) */
+    27554  /* int16_t(0x6ba2)   2^-(1-0,75) */
 
 };
 
-static void CConcealment_CalcBandEnergy(
-    int32_t *spectrum, const SamplingRateInfo *pSamplingRateInfo,
-    const int32_t blockType, CConcealmentExpandType ex, int32_t *sfbEnergy);
+static void CConcealment_CalcBandEnergy(int32_t *spectrum, const SamplingRateInfo *pSamplingRateInfo,
+                                        const int32_t blockType, CConcealmentExpandType ex, int32_t *sfbEnergy);
 
-static void CConcealment_InterpolateBuffer(int32_t *spectrum,
-                                           int16_t *pSpecScalePrev,
-                                           int16_t *pSpecScaleAct,
-                                           int16_t *pSpecScaleOut, int32_t *enPrv,
-                                           int32_t *enAct, int32_t sfbCnt,
+static void CConcealment_InterpolateBuffer(int32_t *spectrum, int16_t *pSpecScalePrev, int16_t *pSpecScaleAct,
+                                           int16_t *pSpecScaleOut, int32_t *enPrv, int32_t *enAct, int32_t sfbCnt,
                                            const int16_t *pSfbOffset);
 
-static int32_t CConcealment_ApplyInter(
-    CConcealmentInfo *pConcealmentInfo,
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, const int32_t samplesPerFrame,
-    const int32_t improveTonal, const int32_t frameOk, const int32_t mute_release_active);
+static int32_t CConcealment_ApplyInter(CConcealmentInfo       *pConcealmentInfo,
+                                       CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+                                       const SamplingRateInfo *pSamplingRateInfo, const int32_t samplesPerFrame,
+                                       const int32_t improveTonal, const int32_t frameOk,
+                                       const int32_t mute_release_active);
 
-static int32_t CConcealment_ApplyNoise(
-    CConcealmentInfo *pConcealmentInfo,
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, const int32_t samplesPerFrame,
-    const uint32_t flags);
+static int32_t CConcealment_ApplyNoise(CConcealmentInfo             *pConcealmentInfo,
+                                       CAacDecoderChannelInfo       *pAacDecoderChannelInfo,
+                                       CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
+                                       const SamplingRateInfo *pSamplingRateInfo, const int32_t samplesPerFrame,
+                                       const uint32_t flags);
 
-static void CConcealment_UpdateState(
-    CConcealmentInfo *pConcealmentInfo, int32_t frameOk,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    const int32_t samplesPerFrame, CAacDecoderChannelInfo *pAacDecoderChannelInfo);
+static void CConcealment_UpdateState(CConcealmentInfo *pConcealmentInfo, int32_t frameOk,
+                                     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
+                                     const int32_t samplesPerFrame, CAacDecoderChannelInfo *pAacDecoderChannelInfo);
 
-static void CConcealment_ApplyRandomSign(int32_t iRandomPhase, int32_t *spec,
-                                         int32_t samplesPerFrame);
+static void CConcealment_ApplyRandomSign(int32_t iRandomPhase, int32_t *spec, int32_t samplesPerFrame);
 
 /* TimeDomainFading */
-static void CConcealment_TDFadePcmAtt(int32_t start, int32_t len, int32_t fadeStart,
-                                      int32_t fadeStop, int32_t *pcmdata);
-static void CConcealment_TDFadeFillFadingStations(int32_t *fadingStations,
-                                                  int32_t *fadingSteps,
-                                                  int32_t fadeStop,
-                                                  int32_t fadeStart,
-                                                  TDfadingType fadingType);
+static void CConcealment_TDFadePcmAtt(int32_t start, int32_t len, int32_t fadeStart, int32_t fadeStop,
+                                      int32_t *pcmdata);
+static void CConcealment_TDFadeFillFadingStations(int32_t *fadingStations, int32_t *fadingSteps, int32_t fadeStop,
+                                                  int32_t fadeStart, TDfadingType fadingType);
 static void CConcealment_TDFading_doLinearFadingSteps(int32_t *fadingSteps);
 
 /* Streamline the state machine */
-static int32_t CConcealment_ApplyFadeOut(
-    int32_t mode, CConcealmentInfo *pConcealmentInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    const int32_t samplesPerFrame, CAacDecoderChannelInfo *pAacDecoderChannelInfo);
+static int32_t CConcealment_ApplyFadeOut(int32_t mode, CConcealmentInfo *pConcealmentInfo,
+                                         CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
+                                         const int32_t samplesPerFrame, CAacDecoderChannelInfo *pAacDecoderChannelInfo);
 
 static int32_t CConcealment_TDNoise_Random(uint32_t *seed);
-static void CConcealment_TDNoise_Apply(CConcealmentInfo *const pConcealmentInfo,
-                                       const int32_t len,
-                                       const int32_t aacOutDataHeadroom,
-                                       int32_t *const pcmdata);
+static void    CConcealment_TDNoise_Apply(CConcealmentInfo *const pConcealmentInfo, const int32_t len,
+                                          const int32_t aacOutDataHeadroom, int32_t *const pcmdata);
 
 static BLOCK_TYPE CConcealment_GetWinSeq(int32_t prevWinSeq) {
-  BLOCK_TYPE newWinSeq = BLOCK_LONG;
+    BLOCK_TYPE newWinSeq = BLOCK_LONG;
 
-  /* Try to have only int32_t blocks */
-  if (prevWinSeq == BLOCK_START || prevWinSeq == BLOCK_SHORT) {
-    newWinSeq = BLOCK_STOP;
-  }
+    /* Try to have only int32_t blocks */
+    if(prevWinSeq == BLOCK_START || prevWinSeq == BLOCK_SHORT) { newWinSeq = BLOCK_STOP; }
 
-  return (newWinSeq);
+    return (newWinSeq);
 }
 
 /*!
@@ -267,32 +249,28 @@ static BLOCK_TYPE CConcealment_GetWinSeq(int32_t prevWinSeq) {
   \param pConcealCommonData Pointer to the concealment common data structure.
 */
 void CConcealment_InitCommonData(CConcealParams *pConcealCommonData) {
-  if (pConcealCommonData != NULL) {
-    int32_t i;
+    if(pConcealCommonData != NULL) {
+        int32_t i;
 
-    /* Set default error concealment technique */
-    pConcealCommonData->method = ConcealMethodInter;
+        /* Set default error concealment technique */
+        pConcealCommonData->method = ConcealMethodInter;
 
-    pConcealCommonData->numFadeOutFrames = CONCEAL_DFLT_FADEOUT_FRAMES;
-    pConcealCommonData->numFadeInFrames = CONCEAL_DFLT_FADEIN_FRAMES;
-    pConcealCommonData->numMuteReleaseFrames = CONCEAL_DFLT_MUTE_RELEASE_FRAMES;
+        pConcealCommonData->numFadeOutFrames = CONCEAL_DFLT_FADEOUT_FRAMES;
+        pConcealCommonData->numFadeInFrames = CONCEAL_DFLT_FADEIN_FRAMES;
+        pConcealCommonData->numMuteReleaseFrames = CONCEAL_DFLT_MUTE_RELEASE_FRAMES;
 
-    pConcealCommonData->comfortNoiseLevel =
-        (int32_t)CONCEAL_DFLT_COMF_NOISE_LEVEL;
+        pConcealCommonData->comfortNoiseLevel = (int32_t)CONCEAL_DFLT_COMF_NOISE_LEVEL;
 
-    /* Init fade factors (symetric) */
-    pConcealCommonData->fadeOutFactor[0] =
-        FL2FXCONST_SGL(CONCEAL_DFLT_FADE_FACTOR);
-    pConcealCommonData->fadeInFactor[0] = pConcealCommonData->fadeOutFactor[0];
+        /* Init fade factors (symetric) */
+        pConcealCommonData->fadeOutFactor[0] = FL2FXCONST_SGL(CONCEAL_DFLT_FADE_FACTOR);
+        pConcealCommonData->fadeInFactor[0] = pConcealCommonData->fadeOutFactor[0];
 
-    for (i = 1; i < CONCEAL_MAX_NUM_FADE_FACTORS; i++) {
-      pConcealCommonData->fadeOutFactor[i] =
-          FX_DBL2FX_SGL(fMult(pConcealCommonData->fadeOutFactor[i - 1],
-                              FL2FXCONST_SGL(CONCEAL_DFLT_FADE_FACTOR)));
-      pConcealCommonData->fadeInFactor[i] =
-          pConcealCommonData->fadeOutFactor[i];
+        for(i = 1; i < CONCEAL_MAX_NUM_FADE_FACTORS; i++) {
+            pConcealCommonData->fadeOutFactor[i] = FX_DBL2FX_SGL(
+                fMult(pConcealCommonData->fadeOutFactor[i - 1], FL2FXCONST_SGL(CONCEAL_DFLT_FADE_FACTOR)));
+            pConcealCommonData->fadeInFactor[i] = pConcealCommonData->fadeOutFactor[i];
+        }
     }
-  }
 }
 
 /*!
@@ -302,13 +280,11 @@ void CConcealment_InitCommonData(CConcealParams *pConcealCommonData) {
   channels)
 */
 CConcealmentMethod CConcealment_GetMethod(CConcealParams *pConcealCommonData) {
-  CConcealmentMethod method = ConcealMethodNone;
+    CConcealmentMethod method = ConcealMethodNone;
 
-  if (pConcealCommonData != NULL) {
-    method = pConcealCommonData->method;
-  }
+    if(pConcealCommonData != NULL) { method = pConcealCommonData->method; }
 
-  return (method);
+    return (method);
 }
 
 /*!
@@ -320,47 +296,41 @@ CConcealmentMethod CConcealment_GetMethod(CConcealParams *pConcealCommonData) {
   mode to be set for the current channel. \param samplesPerFrame     The number
   of samples per frame.
 */
-void CConcealment_InitChannelData(CConcealmentInfo *pConcealChannelInfo,
-                                  CConcealParams *pConcealCommonData,
-                                  AACDEC_RENDER_MODE initRenderMode,
-                                  int32_t samplesPerFrame) {
-  int32_t i;
-  pConcealChannelInfo->TDNoiseSeed = 0;
-  memset(pConcealChannelInfo->TDNoiseStates, 0,
-              sizeof(pConcealChannelInfo->TDNoiseStates));
-  pConcealChannelInfo->TDNoiseCoef[0] =   1638;
-  pConcealChannelInfo->TDNoiseCoef[1] =   16384;
-  pConcealChannelInfo->TDNoiseCoef[2] =   14746;
+void CConcealment_InitChannelData(CConcealmentInfo *pConcealChannelInfo, CConcealParams *pConcealCommonData,
+                                  AACDEC_RENDER_MODE initRenderMode, int32_t samplesPerFrame) {
+    int32_t i;
+    pConcealChannelInfo->TDNoiseSeed = 0;
+    memset(pConcealChannelInfo->TDNoiseStates, 0, sizeof(pConcealChannelInfo->TDNoiseStates));
+    pConcealChannelInfo->TDNoiseCoef[0] = 1638;
+    pConcealChannelInfo->TDNoiseCoef[1] = 16384;
+    pConcealChannelInfo->TDNoiseCoef[2] = 14746;
 
-  pConcealChannelInfo->pConcealParams = pConcealCommonData;
+    pConcealChannelInfo->pConcealParams = pConcealCommonData;
 
-  pConcealChannelInfo->lastRenderMode = initRenderMode;
+    pConcealChannelInfo->lastRenderMode = initRenderMode;
 
-  pConcealChannelInfo->windowShape = CONCEAL_NOT_DEFINED;
-  pConcealChannelInfo->windowSequence = BLOCK_LONG; /* default type */
-  pConcealChannelInfo->lastWinGrpLen = 1;
+    pConcealChannelInfo->windowShape = CONCEAL_NOT_DEFINED;
+    pConcealChannelInfo->windowSequence = BLOCK_LONG; /* default type */
+    pConcealChannelInfo->lastWinGrpLen = 1;
 
-  pConcealChannelInfo->concealState = ConcealState_Ok;
+    pConcealChannelInfo->concealState = ConcealState_Ok;
 
-  memset(pConcealChannelInfo->spectralCoefficient, 0,
-              1024 * sizeof(FIXP_CNCL));
+    memset(pConcealChannelInfo->spectralCoefficient, 0, 1024 * sizeof(FIXP_CNCL));
 
-  for (i = 0; i < 8; i++) {
-    pConcealChannelInfo->specScale[i] = 0;
-  }
+    for(i = 0; i < 8; i++) { pConcealChannelInfo->specScale[i] = 0; }
 
-  pConcealChannelInfo->iRandomPhase = 0;
+    pConcealChannelInfo->iRandomPhase = 0;
 
-  pConcealChannelInfo->prevFrameOk[0] = 1;
-  pConcealChannelInfo->prevFrameOk[1] = 1;
+    pConcealChannelInfo->prevFrameOk[0] = 1;
+    pConcealChannelInfo->prevFrameOk[1] = 1;
 
-  pConcealChannelInfo->cntFadeFrames = 0;
-  pConcealChannelInfo->cntValidFrames = 0;
-  pConcealChannelInfo->fade_old = (int32_t)MAXVAL_DBL;
-  pConcealChannelInfo->winGrpOffset[0] = 0;
-  pConcealChannelInfo->winGrpOffset[1] = 0;
-  pConcealChannelInfo->attGrpOffset[0] = 0;
-  pConcealChannelInfo->attGrpOffset[1] = 0;
+    pConcealChannelInfo->cntFadeFrames = 0;
+    pConcealChannelInfo->cntValidFrames = 0;
+    pConcealChannelInfo->fade_old = (int32_t)MAXVAL_DBL;
+    pConcealChannelInfo->winGrpOffset[0] = 0;
+    pConcealChannelInfo->winGrpOffset[1] = 0;
+    pConcealChannelInfo->attGrpOffset[0] = 0;
+    pConcealChannelInfo->attGrpOffset[1] = 0;
 }
 
 /*!
@@ -374,86 +344,71 @@ void CConcealment_InitChannelData(CConcealmentInfo *pConcealChannelInfo,
   \param comfNoiseLevel
 */
 AAC_DECODER_ERROR
-CConcealment_SetParams(CConcealParams *concealParams, int32_t method,
-                       int32_t fadeOutSlope, int32_t fadeInSlope, int32_t muteRelease,
-                       int32_t comfNoiseLevel) {
-  /* set concealment technique */
-  if (method != AACDEC_CONCEAL_PARAM_NOT_SPECIFIED) {
-    switch ((CConcealmentMethod)method) {
-      case ConcealMethodMute:
-      case ConcealMethodNoise:
-      case ConcealMethodInter:
-        /* Be sure to enable delay adjustment of SBR decoder! */
-        if (concealParams == NULL) {
-          return AAC_DEC_INVALID_HANDLE;
-        } else {
-          /* set param */
-          concealParams->method = (CConcealmentMethod)method;
+CConcealment_SetParams(CConcealParams *concealParams, int32_t method, int32_t fadeOutSlope, int32_t fadeInSlope,
+                       int32_t muteRelease, int32_t comfNoiseLevel) {
+    /* set concealment technique */
+    if(method != AACDEC_CONCEAL_PARAM_NOT_SPECIFIED) {
+        switch((CConcealmentMethod)method) {
+            case ConcealMethodMute:
+            case ConcealMethodNoise:
+            case ConcealMethodInter:
+                /* Be sure to enable delay adjustment of SBR decoder! */
+                if(concealParams == NULL) { return AAC_DEC_INVALID_HANDLE; }
+                else {
+                    /* set param */
+                    concealParams->method = (CConcealmentMethod)method;
+                }
+                break;
+
+            default:
+                return AAC_DEC_SET_PARAM_FAIL;
         }
-        break;
-
-      default:
-        return AAC_DEC_SET_PARAM_FAIL;
     }
-  }
 
-  /* set number of frames for fade-out slope */
-  if (fadeOutSlope != AACDEC_CONCEAL_PARAM_NOT_SPECIFIED) {
-    if ((fadeOutSlope < CONCEAL_MAX_NUM_FADE_FACTORS) && (fadeOutSlope >= 0)) {
-      if (concealParams == NULL) {
-        return AAC_DEC_INVALID_HANDLE;
-      } else {
-        /* set param */
-        concealParams->numFadeOutFrames = fadeOutSlope;
-      }
-    } else {
-      return AAC_DEC_SET_PARAM_FAIL;
+    /* set number of frames for fade-out slope */
+    if(fadeOutSlope != AACDEC_CONCEAL_PARAM_NOT_SPECIFIED) {
+        if((fadeOutSlope < CONCEAL_MAX_NUM_FADE_FACTORS) && (fadeOutSlope >= 0)) {
+            if(concealParams == NULL) { return AAC_DEC_INVALID_HANDLE; }
+            else {
+                /* set param */
+                concealParams->numFadeOutFrames = fadeOutSlope;
+            }
+        }
+        else { return AAC_DEC_SET_PARAM_FAIL; }
     }
-  }
 
-  /* set number of frames for fade-in slope */
-  if (fadeInSlope != AACDEC_CONCEAL_PARAM_NOT_SPECIFIED) {
-    if ((fadeInSlope < CONCEAL_MAX_NUM_FADE_FACTORS) && (fadeInSlope >= 0)) {
-      if (concealParams == NULL) {
-        return AAC_DEC_INVALID_HANDLE;
-      } else {
-        /* set param */
-        concealParams->numFadeInFrames = fadeInSlope;
-      }
-    } else {
-      return AAC_DEC_SET_PARAM_FAIL;
+    /* set number of frames for fade-in slope */
+    if(fadeInSlope != AACDEC_CONCEAL_PARAM_NOT_SPECIFIED) {
+        if((fadeInSlope < CONCEAL_MAX_NUM_FADE_FACTORS) && (fadeInSlope >= 0)) {
+            if(concealParams == NULL) { return AAC_DEC_INVALID_HANDLE; }
+            else {
+                /* set param */
+                concealParams->numFadeInFrames = fadeInSlope;
+            }
+        }
+        else { return AAC_DEC_SET_PARAM_FAIL; }
     }
-  }
 
-  /* set number of error-free frames after which the muting will be released */
-  if (muteRelease != AACDEC_CONCEAL_PARAM_NOT_SPECIFIED) {
-    if ((muteRelease < (CONCEAL_MAX_NUM_FADE_FACTORS << 1)) &&
-        (muteRelease >= 0)) {
-      if (concealParams == NULL) {
-        return AAC_DEC_INVALID_HANDLE;
-      } else {
-        /* set param */
-        concealParams->numMuteReleaseFrames = muteRelease;
-      }
-    } else {
-      return AAC_DEC_SET_PARAM_FAIL;
+    /* set number of error-free frames after which the muting will be released */
+    if(muteRelease != AACDEC_CONCEAL_PARAM_NOT_SPECIFIED) {
+        if((muteRelease < (CONCEAL_MAX_NUM_FADE_FACTORS << 1)) && (muteRelease >= 0)) {
+            if(concealParams == NULL) { return AAC_DEC_INVALID_HANDLE; }
+            else {
+                /* set param */
+                concealParams->numMuteReleaseFrames = muteRelease;
+            }
+        }
+        else { return AAC_DEC_SET_PARAM_FAIL; }
     }
-  }
 
-  /* set confort noise level which will be inserted while in state 'muting' */
-  if (comfNoiseLevel != (int32_t)AACDEC_CONCEAL_PARAM_NOT_SPECIFIED) {
-    if ((comfNoiseLevel < (int32_t)0) ||
-        (comfNoiseLevel > (int32_t)MAXVAL_DBL)) {
-      return AAC_DEC_SET_PARAM_FAIL;
+    /* set confort noise level which will be inserted while in state 'muting' */
+    if(comfNoiseLevel != (int32_t)AACDEC_CONCEAL_PARAM_NOT_SPECIFIED) {
+        if((comfNoiseLevel < (int32_t)0) || (comfNoiseLevel > (int32_t)MAXVAL_DBL)) { return AAC_DEC_SET_PARAM_FAIL; }
+        if(concealParams == NULL) { return AAC_DEC_INVALID_HANDLE; }
+        else { concealParams->comfortNoiseLevel = (int32_t)comfNoiseLevel; }
     }
-    if (concealParams == NULL) {
-      return AAC_DEC_INVALID_HANDLE;
-    } else {
-      concealParams->comfortNoiseLevel = (int32_t)comfNoiseLevel;
-    }
-  }
 
-  return (AAC_DEC_OK);
+    return (AAC_DEC_OK);
 }
 
 /*!
@@ -466,65 +421,54 @@ CConcealment_SetParams(CConcealParams *concealParams, int32_t method,
   \return 0 if OK all other values indicate errors
 */
 AAC_DECODER_ERROR
-CConcealment_SetAttenuation(CConcealParams *concealParams,
-                            const int16_t *fadeOutAttenuationVector,
+CConcealment_SetAttenuation(CConcealParams *concealParams, const int16_t *fadeOutAttenuationVector,
                             const int16_t *fadeInAttenuationVector) {
-  if ((fadeOutAttenuationVector == NULL) && (fadeInAttenuationVector == NULL)) {
-    return AAC_DEC_SET_PARAM_FAIL;
-  }
+    if((fadeOutAttenuationVector == NULL) && (fadeInAttenuationVector == NULL)) { return AAC_DEC_SET_PARAM_FAIL; }
 
-  /* Fade-out factors */
-  if (fadeOutAttenuationVector != NULL) {
-    int32_t i;
+    /* Fade-out factors */
+    if(fadeOutAttenuationVector != NULL) {
+        int32_t i;
 
-    /* check quantized factors first */
-    for (i = 0; i < CONCEAL_MAX_NUM_FADE_FACTORS; i++) {
-      if ((fadeOutAttenuationVector[i] < 0) ||
-          (fadeOutAttenuationVector[i] > CONCEAL_MAX_QUANT_FACTOR)) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-    }
-    if (concealParams == NULL) {
-      return AAC_DEC_INVALID_HANDLE;
-    }
+        /* check quantized factors first */
+        for(i = 0; i < CONCEAL_MAX_NUM_FADE_FACTORS; i++) {
+            if((fadeOutAttenuationVector[i] < 0) || (fadeOutAttenuationVector[i] > CONCEAL_MAX_QUANT_FACTOR)) {
+                return AAC_DEC_SET_PARAM_FAIL;
+            }
+        }
+        if(concealParams == NULL) { return AAC_DEC_INVALID_HANDLE; }
 
-    /* now dequantize factors */
-    for (i = 0; i < CONCEAL_MAX_NUM_FADE_FACTORS; i++) {
-      concealParams->fadeOutFactor[i] =
-          FX_DBL2FX_SGL(fLdPow(CONCEAL_MIN_ATTENUATION_FACTOR_025_LD, 0,
-                               (int32_t)((int32_t)(FL2FXCONST_DBL(1.0 / 2.0) >>
-                                                (CONCEAL_PARAMETER_BITS - 1)) *
-                                          (int32_t)fadeOutAttenuationVector[i]),
-                               CONCEAL_PARAMETER_BITS));
-    }
-  }
-
-  /* Fade-in factors */
-  if (fadeInAttenuationVector != NULL) {
-    int32_t i;
-
-    /* check quantized factors first */
-    for (i = 0; i < CONCEAL_MAX_NUM_FADE_FACTORS; i++) {
-      if ((fadeInAttenuationVector[i] < 0) ||
-          (fadeInAttenuationVector[i] > CONCEAL_MAX_QUANT_FACTOR)) {
-        return AAC_DEC_SET_PARAM_FAIL;
-      }
-    }
-    if (concealParams == NULL) {
-      return AAC_DEC_INVALID_HANDLE;
+        /* now dequantize factors */
+        for(i = 0; i < CONCEAL_MAX_NUM_FADE_FACTORS; i++) {
+            concealParams->fadeOutFactor[i] =
+                FX_DBL2FX_SGL(fLdPow(CONCEAL_MIN_ATTENUATION_FACTOR_025_LD, 0,
+                                     (int32_t)((int32_t)(FL2FXCONST_DBL(1.0 / 2.0) >> (CONCEAL_PARAMETER_BITS - 1)) *
+                                               (int32_t)fadeOutAttenuationVector[i]),
+                                     CONCEAL_PARAMETER_BITS));
+        }
     }
 
-    /* now dequantize factors */
-    for (i = 0; i < CONCEAL_MAX_NUM_FADE_FACTORS; i++) {
-      concealParams->fadeInFactor[i] = FX_DBL2FX_SGL(
-          fLdPow(CONCEAL_MIN_ATTENUATION_FACTOR_025_LD, 0,
-                 (int32_t)((int32_t)(FIXP_ONE >> CONCEAL_PARAMETER_BITS) *
-                            (int32_t)fadeInAttenuationVector[i]),
-                 CONCEAL_PARAMETER_BITS));
-    }
-  }
+    /* Fade-in factors */
+    if(fadeInAttenuationVector != NULL) {
+        int32_t i;
 
-  return (AAC_DEC_OK);
+        /* check quantized factors first */
+        for(i = 0; i < CONCEAL_MAX_NUM_FADE_FACTORS; i++) {
+            if((fadeInAttenuationVector[i] < 0) || (fadeInAttenuationVector[i] > CONCEAL_MAX_QUANT_FACTOR)) {
+                return AAC_DEC_SET_PARAM_FAIL;
+            }
+        }
+        if(concealParams == NULL) { return AAC_DEC_INVALID_HANDLE; }
+
+        /* now dequantize factors */
+        for(i = 0; i < CONCEAL_MAX_NUM_FADE_FACTORS; i++) {
+            concealParams->fadeInFactor[i] = FX_DBL2FX_SGL(
+                fLdPow(CONCEAL_MIN_ATTENUATION_FACTOR_025_LD, 0,
+                       (int32_t)((int32_t)(FIXP_ONE >> CONCEAL_PARAMETER_BITS) * (int32_t)fadeInAttenuationVector[i]),
+                       CONCEAL_PARAMETER_BITS));
+        }
+    }
+
+    return (AAC_DEC_OK);
 }
 
 /*!
@@ -535,13 +479,11 @@ CConcealment_SetAttenuation(CConcealParams *concealParams,
   \return Concealment state.
 */
 CConcealmentState CConcealment_GetState(CConcealmentInfo *pConcealChannelInfo) {
-  CConcealmentState state = ConcealState_Ok;
+    CConcealmentState state = ConcealState_Ok;
 
-  if (pConcealChannelInfo != NULL) {
-    state = pConcealChannelInfo->concealState;
-  }
+    if(pConcealChannelInfo != NULL) { state = pConcealChannelInfo->concealState; }
 
-  return (state);
+    return (state);
 }
 
 /*!
@@ -549,97 +491,65 @@ CConcealmentState CConcealment_GetState(CConcealmentInfo *pConcealChannelInfo) {
 
   Interface function to store data for different concealment strategies
  */
-void CConcealment_Store(
-    CConcealmentInfo *hConcealmentInfo,
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo) {
-  uint8_t nbDiv = NB_DIV;
+void CConcealment_Store(CConcealmentInfo *hConcealmentInfo, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+                        CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo) {
+    uint8_t nbDiv = NB_DIV;
 
-  if (!(pAacDecoderChannelInfo->renderMode == AACDEC_RENDER_LPD &&
-        pAacDecoderChannelInfo->data.usac.mod[nbDiv - 1] == 0))
+    if(!(pAacDecoderChannelInfo->renderMode == AACDEC_RENDER_LPD &&
+         pAacDecoderChannelInfo->data.usac.mod[nbDiv - 1] == 0))
 
-  {
-    int32_t *pSpectralCoefficient =
-        SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
-    int16_t *pSpecScale = pAacDecoderChannelInfo->specScale;
-    CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
+    {
+        int32_t  *pSpectralCoefficient = SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
+        int16_t  *pSpecScale = pAacDecoderChannelInfo->specScale;
+        CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
 
-    int16_t tSpecScale[8];
-    uint8_t tWindowShape;
-    BLOCK_TYPE tWindowSequence;
+        int16_t    tSpecScale[8];
+        uint8_t    tWindowShape;
+        BLOCK_TYPE tWindowSequence;
 
-    /* store old window infos for swapping */
-    tWindowSequence = hConcealmentInfo->windowSequence;
-    tWindowShape = hConcealmentInfo->windowShape;
+        /* store old window infos for swapping */
+        tWindowSequence = hConcealmentInfo->windowSequence;
+        tWindowShape = hConcealmentInfo->windowShape;
 
-    /* store old scale factors for swapping */
-    memcpy(tSpecScale, hConcealmentInfo->specScale, 8 * sizeof(int16_t));
+        /* store old scale factors for swapping */
+        memcpy(tSpecScale, hConcealmentInfo->specScale, 8 * sizeof(int16_t));
 
-    /* store new window infos */
-    hConcealmentInfo->windowSequence = GetWindowSequence(pIcsInfo);
-    hConcealmentInfo->windowShape = GetWindowShape(pIcsInfo);
-    hConcealmentInfo->lastWinGrpLen =
-        *(GetWindowGroupLengthTable(pIcsInfo) + GetWindowGroups(pIcsInfo) - 1);
+        /* store new window infos */
+        hConcealmentInfo->windowSequence = GetWindowSequence(pIcsInfo);
+        hConcealmentInfo->windowShape = GetWindowShape(pIcsInfo);
+        hConcealmentInfo->lastWinGrpLen = *(GetWindowGroupLengthTable(pIcsInfo) + GetWindowGroups(pIcsInfo) - 1);
 
-    /* store new scale factors */
-    memcpy(hConcealmentInfo->specScale, pSpecScale, 8 * sizeof(int16_t));
+        /* store new scale factors */
+        memcpy(hConcealmentInfo->specScale, pSpecScale, 8 * sizeof(int16_t));
 
-    if (hConcealmentInfo->pConcealParams->method < ConcealMethodInter) {
-    /* store new spectral bins */
-#if (CNCL_FRACT_BITS == DFRACT_BITS)
-      memcpy(hConcealmentInfo->spectralCoefficient, pSpectralCoefficient,
-                1024 * sizeof(FIXP_CNCL));
-#else
-      FIXP_CNCL * pCncl =
-          &hConcealmentInfo->spectralCoefficient[1024 - 1];
-      int32_t * pSpec = &pSpectralCoefficient[1024 - 1];
-      int32_t i;
-      for (i = 1024; i != 0; i--) {
-        *pCncl-- = FX_DBL2FX_CNCL(*pSpec--);
-      }
-#endif
-    } else {
-    /* swap spectral data */
-#if (FIXP_CNCL == int32_t)
-      int32_t pSpecTmp[1024];
-      memcpy(pSpecTmp, pSpectralCoefficient, 1024 * sizeof(int32_t));
-      memcpy(pSpectralCoefficient, hConcealmentInfo->spectralCoefficient,
-                1024 * sizeof(int32_t));
-      memcpy(hConcealmentInfo->spectralCoefficient, pSpecTmp,
-                1024 * sizeof(int32_t));
-      C_ALLOC_SCRATCH_END(pSpecTmp, int32_t, 1024);
-#else
-      FIXP_CNCL * pCncl =
-          &hConcealmentInfo->spectralCoefficient[1024 - 1];
-      int32_t * pSpec = &pSpectralCoefficient[1024 - 1];
-      int32_t tSpec;
+        if(hConcealmentInfo->pConcealParams->method < ConcealMethodInter) {
+            /* store new spectral bins */
+            memcpy(hConcealmentInfo->spectralCoefficient, pSpectralCoefficient, 1024 * sizeof(FIXP_CNCL));
+        }
+        else {
+            /* swap spectral data */
 
-      for (int32_t i = 1024; i != 0; i--) {
-        tSpec = *pSpec;
-        *pSpec-- = FX_CNCL2FX_DBL(*pCncl);
-        *pCncl-- = FX_DBL2FX_CNCL(tSpec);
-      }
-#endif
+            int32_t pSpecTmp[1024];
+            memcpy(pSpecTmp, pSpectralCoefficient, 1024 * sizeof(int32_t));
+            memcpy(pSpectralCoefficient, hConcealmentInfo->spectralCoefficient, 1024 * sizeof(int32_t));
+            memcpy(hConcealmentInfo->spectralCoefficient, pSpecTmp, 1024 * sizeof(int32_t));
 
-      /* complete swapping of window infos */
-      pIcsInfo->WindowSequence = tWindowSequence;
-      pIcsInfo->WindowShape = tWindowShape;
+            /* complete swapping of window infos */
+            pIcsInfo->WindowSequence = tWindowSequence;
+            pIcsInfo->WindowShape = tWindowShape;
 
-      /* complete swapping of scale factors */
-      memcpy(pSpecScale, tSpecScale, 8 * sizeof(int16_t));
+            /* complete swapping of scale factors */
+            memcpy(pSpecScale, tSpecScale, 8 * sizeof(int16_t));
+        }
     }
-  }
 
-  if (pAacDecoderChannelInfo->renderMode == AACDEC_RENDER_LPD) {
-    /* Store LSF4 */
-    memcpy(hConcealmentInfo->lsf4, pAacDecoderStaticChannelInfo->lpc4_lsf,
-              sizeof(hConcealmentInfo->lsf4));
-    /* Store TCX gain */
-    hConcealmentInfo->last_tcx_gain =
-        pAacDecoderStaticChannelInfo->last_tcx_gain;
-    hConcealmentInfo->last_tcx_gain_e =
-        pAacDecoderStaticChannelInfo->last_tcx_gain_e;
-  }
+    if(pAacDecoderChannelInfo->renderMode == AACDEC_RENDER_LPD) {
+        /* Store LSF4 */
+        memcpy(hConcealmentInfo->lsf4, pAacDecoderStaticChannelInfo->lpc4_lsf, sizeof(hConcealmentInfo->lsf4));
+        /* Store TCX gain */
+        hConcealmentInfo->last_tcx_gain = pAacDecoderStaticChannelInfo->last_tcx_gain;
+        hConcealmentInfo->last_tcx_gain_e = pAacDecoderStaticChannelInfo->last_tcx_gain_e;
+    }
 }
 
 /*!
@@ -647,152 +557,136 @@ void CConcealment_Store(
 
   Interface function to different concealment strategies
  */
-int32_t CConcealment_Apply(
-    CConcealmentInfo *hConcealmentInfo,
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, const int32_t samplesPerFrame,
-    const uint8_t lastLpdMode, const int32_t frameOk, const uint32_t flags) {
-  int32_t appliedProcessing = 0;
-  const int32_t mute_release_active =
-      frameOk && (hConcealmentInfo->concealState >= ConcealState_Mute) &&
-      (hConcealmentInfo->cntValidFrames + 1 <=
-       hConcealmentInfo->pConcealParams->numMuteReleaseFrames);
+int32_t CConcealment_Apply(CConcealmentInfo *hConcealmentInfo, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+                           CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
+                           const SamplingRateInfo *pSamplingRateInfo, const int32_t samplesPerFrame,
+                           const uint8_t lastLpdMode, const int32_t frameOk, const uint32_t flags) {
+    int32_t       appliedProcessing = 0;
+    const int32_t mute_release_active =
+        frameOk && (hConcealmentInfo->concealState >= ConcealState_Mute) &&
+        (hConcealmentInfo->cntValidFrames + 1 <= hConcealmentInfo->pConcealParams->numMuteReleaseFrames);
 
-  if (hConcealmentInfo->windowShape == CONCEAL_NOT_DEFINED) {
-    /* Initialize window_shape with same value as in the current (parsed) frame.
-       Because section 4.6.11.3.2 (Windowing and block switching) of ISO/IEC
-       14496-3:2009 says: For the first raw_data_block() to be decoded the
-       window_shape of the left and right half of the window are identical. */
-    hConcealmentInfo->windowShape = pAacDecoderChannelInfo->icsInfo.WindowShape;
-  }
-
-  if (frameOk && !mute_release_active) {
-    /* Update render mode if frameOk except for ongoing mute release state. */
-    hConcealmentInfo->lastRenderMode =
-        (int8_t)pAacDecoderChannelInfo->renderMode;
-
-    /* Rescue current data for concealment in future frames */
-    CConcealment_Store(hConcealmentInfo, pAacDecoderChannelInfo,
-                       pAacDecoderStaticChannelInfo);
-    /* Reset index to random sign vector to make sign calculation frame agnostic
-       (only depends on number of subsequently concealed spectral blocks) */
-    hConcealmentInfo->iRandomPhase = 0;
-  } else {
-    if (hConcealmentInfo->lastRenderMode == AACDEC_RENDER_INVALID) {
-      hConcealmentInfo->lastRenderMode = AACDEC_RENDER_IMDCT;
-    }
-    pAacDecoderChannelInfo->renderMode =
-        (AACDEC_RENDER_MODE)hConcealmentInfo->lastRenderMode;
-  }
-
-  /* hand current frame status to the state machine */
-  CConcealment_UpdateState(hConcealmentInfo, frameOk,
-                           pAacDecoderStaticChannelInfo, samplesPerFrame,
-                           pAacDecoderChannelInfo);
-
-  {
-    if (!frameOk && pAacDecoderChannelInfo->renderMode == AACDEC_RENDER_IMDCT) {
-      /* LPC extrapolation */
-      CLpc_Conceal(pAacDecoderChannelInfo->data.usac.lsp_coeff,
-                   pAacDecoderStaticChannelInfo->lpc4_lsf,
-                   pAacDecoderStaticChannelInfo->lsf_adaptive_mean,
-                   hConcealmentInfo->lastRenderMode == AACDEC_RENDER_IMDCT);
-      memcpy(hConcealmentInfo->lsf4, pAacDecoderStaticChannelInfo->lpc4_lsf,
-                sizeof(pAacDecoderStaticChannelInfo->lpc4_lsf));
+    if(hConcealmentInfo->windowShape == CONCEAL_NOT_DEFINED) {
+        /* Initialize window_shape with same value as in the current (parsed) frame.
+           Because section 4.6.11.3.2 (Windowing and block switching) of ISO/IEC
+           14496-3:2009 says: For the first raw_data_block() to be decoded the
+           window_shape of the left and right half of the window are identical. */
+        hConcealmentInfo->windowShape = pAacDecoderChannelInfo->icsInfo.WindowShape;
     }
 
-    /* Create data for signal rendering according to the selected concealment
-     * method and decoder operating mode. */
+    if(frameOk && !mute_release_active) {
+        /* Update render mode if frameOk except for ongoing mute release state. */
+        hConcealmentInfo->lastRenderMode = (int8_t)pAacDecoderChannelInfo->renderMode;
 
-    if ((!frameOk || mute_release_active) &&
-        (pAacDecoderChannelInfo->renderMode == AACDEC_RENDER_LPD)) {
-      /* Restore old LSF4 */
-      memcpy(pAacDecoderStaticChannelInfo->lpc4_lsf, hConcealmentInfo->lsf4,
-                sizeof(pAacDecoderStaticChannelInfo->lpc4_lsf));
-      /* Restore old TCX gain */
-      pAacDecoderStaticChannelInfo->last_tcx_gain =
-          hConcealmentInfo->last_tcx_gain;
-      pAacDecoderStaticChannelInfo->last_tcx_gain_e =
-          hConcealmentInfo->last_tcx_gain_e;
+        /* Rescue current data for concealment in future frames */
+        CConcealment_Store(hConcealmentInfo, pAacDecoderChannelInfo, pAacDecoderStaticChannelInfo);
+        /* Reset index to random sign vector to make sign calculation frame agnostic
+           (only depends on number of subsequently concealed spectral blocks) */
+        hConcealmentInfo->iRandomPhase = 0;
     }
-
-    if (!(pAacDecoderChannelInfo->renderMode == AACDEC_RENDER_LPD &&
-          pAacDecoderStaticChannelInfo->last_lpd_mode == 0)) {
-      switch (hConcealmentInfo->pConcealParams->method) {
-        default:
-        case ConcealMethodMute:
-          if (!frameOk) {
-            /* Mute spectral data in case of errors */
-            memset(pAacDecoderChannelInfo->pSpectralCoefficient, 0,
-                        samplesPerFrame * sizeof(int32_t));
-            /* Set last window shape */
-            pAacDecoderChannelInfo->icsInfo.WindowShape =
-                hConcealmentInfo->windowShape;
-            appliedProcessing = 1;
-          }
-          break;
-
-        case ConcealMethodNoise:
-          /* Noise substitution error concealment technique */
-          appliedProcessing = CConcealment_ApplyNoise(
-              hConcealmentInfo, pAacDecoderChannelInfo,
-              pAacDecoderStaticChannelInfo, pSamplingRateInfo, samplesPerFrame,
-              flags);
-          break;
-
-        case ConcealMethodInter:
-          /* Energy interpolation concealment based on 3GPP */
-          appliedProcessing = CConcealment_ApplyInter(
-              hConcealmentInfo, pAacDecoderChannelInfo, pSamplingRateInfo,
-              samplesPerFrame, 0, /* don't use tonal improvement */
-              frameOk, mute_release_active);
-          break;
-      }
-    } else if (!frameOk || mute_release_active) {
-      /* simply restore the buffer */
-      int32_t *pSpectralCoefficient =
-          SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
-      int16_t *pSpecScale = pAacDecoderChannelInfo->specScale;
-      CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
-#if (CNCL_FRACT_BITS != DFRACT_BITS)
-      FIXP_CNCL * pCncl =
-          &hConcealmentInfo->spectralCoefficient[1024 - 1];
-      int32_t * pSpec = &pSpectralCoefficient[1024 - 1];
-      int32_t i;
-#endif
-
-      /* restore window infos (gri) do we need that? */
-      pIcsInfo->WindowSequence = hConcealmentInfo->windowSequence;
-      pIcsInfo->WindowShape = hConcealmentInfo->windowShape;
-
-      if (hConcealmentInfo->concealState != ConcealState_Mute) {
-        /* restore scale factors */
-        memcpy(pSpecScale, hConcealmentInfo->specScale, 8 * sizeof(int16_t));
-
-        /* restore spectral bins */
-#if (CNCL_FRACT_BITS == DFRACT_BITS)
-        memcpy(pSpectralCoefficient, hConcealmentInfo->spectralCoefficient,
-                  1024 * sizeof(int32_t));
-#else
-        for (i = 1024; i != 0; i--) {
-          *pSpec-- = FX_CNCL2FX_DBL(*pCncl--);
+    else {
+        if(hConcealmentInfo->lastRenderMode == AACDEC_RENDER_INVALID) {
+            hConcealmentInfo->lastRenderMode = AACDEC_RENDER_IMDCT;
         }
-#endif
-      } else {
-        /* clear scale factors */
-        memset(pSpecScale, 0, 8 * sizeof(int16_t));
-
-        /* clear buffer */
-        memset(pSpectralCoefficient, 0, 1024 * sizeof(FIXP_CNCL));
-      }
+        pAacDecoderChannelInfo->renderMode = (AACDEC_RENDER_MODE)hConcealmentInfo->lastRenderMode;
     }
-  }
-  /* update history */
-  hConcealmentInfo->prevFrameOk[0] = hConcealmentInfo->prevFrameOk[1];
-  hConcealmentInfo->prevFrameOk[1] = frameOk;
 
-  return mute_release_active ? -1 : appliedProcessing;
+    /* hand current frame status to the state machine */
+    CConcealment_UpdateState(hConcealmentInfo, frameOk, pAacDecoderStaticChannelInfo, samplesPerFrame,
+                             pAacDecoderChannelInfo);
+
+    {
+        if(!frameOk && pAacDecoderChannelInfo->renderMode == AACDEC_RENDER_IMDCT) {
+            /* LPC extrapolation */
+            CLpc_Conceal(pAacDecoderChannelInfo->data.usac.lsp_coeff, pAacDecoderStaticChannelInfo->lpc4_lsf,
+                         pAacDecoderStaticChannelInfo->lsf_adaptive_mean,
+                         hConcealmentInfo->lastRenderMode == AACDEC_RENDER_IMDCT);
+            memcpy(hConcealmentInfo->lsf4, pAacDecoderStaticChannelInfo->lpc4_lsf,
+                   sizeof(pAacDecoderStaticChannelInfo->lpc4_lsf));
+        }
+
+        /* Create data for signal rendering according to the selected concealment
+         * method and decoder operating mode. */
+
+        if((!frameOk || mute_release_active) && (pAacDecoderChannelInfo->renderMode == AACDEC_RENDER_LPD)) {
+            /* Restore old LSF4 */
+            memcpy(pAacDecoderStaticChannelInfo->lpc4_lsf, hConcealmentInfo->lsf4,
+                   sizeof(pAacDecoderStaticChannelInfo->lpc4_lsf));
+            /* Restore old TCX gain */
+            pAacDecoderStaticChannelInfo->last_tcx_gain = hConcealmentInfo->last_tcx_gain;
+            pAacDecoderStaticChannelInfo->last_tcx_gain_e = hConcealmentInfo->last_tcx_gain_e;
+        }
+
+        if(!(pAacDecoderChannelInfo->renderMode == AACDEC_RENDER_LPD &&
+             pAacDecoderStaticChannelInfo->last_lpd_mode == 0)) {
+            switch(hConcealmentInfo->pConcealParams->method) {
+                default:
+                case ConcealMethodMute:
+                    if(!frameOk) {
+                        /* Mute spectral data in case of errors */
+                        memset(pAacDecoderChannelInfo->pSpectralCoefficient, 0, samplesPerFrame * sizeof(int32_t));
+                        /* Set last window shape */
+                        pAacDecoderChannelInfo->icsInfo.WindowShape = hConcealmentInfo->windowShape;
+                        appliedProcessing = 1;
+                    }
+                    break;
+
+                case ConcealMethodNoise:
+                    /* Noise substitution error concealment technique */
+                    appliedProcessing =
+                        CConcealment_ApplyNoise(hConcealmentInfo, pAacDecoderChannelInfo, pAacDecoderStaticChannelInfo,
+                                                pSamplingRateInfo, samplesPerFrame, flags);
+                    break;
+
+                case ConcealMethodInter:
+                    /* Energy interpolation concealment based on 3GPP */
+                    appliedProcessing =
+                        CConcealment_ApplyInter(hConcealmentInfo, pAacDecoderChannelInfo, pSamplingRateInfo,
+                                                samplesPerFrame, 0, /* don't use tonal improvement */
+                                                frameOk, mute_release_active);
+                    break;
+            }
+        }
+        else if(!frameOk || mute_release_active) {
+            /* simply restore the buffer */
+            int32_t  *pSpectralCoefficient = SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
+            int16_t  *pSpecScale = pAacDecoderChannelInfo->specScale;
+            CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
+#if(CNCL_FRACT_BITS != DFRACT_BITS)
+            FIXP_CNCL *pCncl = &hConcealmentInfo->spectralCoefficient[1024 - 1];
+            int32_t   *pSpec = &pSpectralCoefficient[1024 - 1];
+            int32_t    i;
+#endif
+
+            /* restore window infos (gri) do we need that? */
+            pIcsInfo->WindowSequence = hConcealmentInfo->windowSequence;
+            pIcsInfo->WindowShape = hConcealmentInfo->windowShape;
+
+            if(hConcealmentInfo->concealState != ConcealState_Mute) {
+                /* restore scale factors */
+                memcpy(pSpecScale, hConcealmentInfo->specScale, 8 * sizeof(int16_t));
+
+                /* restore spectral bins */
+#if(CNCL_FRACT_BITS == DFRACT_BITS)
+                memcpy(pSpectralCoefficient, hConcealmentInfo->spectralCoefficient, 1024 * sizeof(int32_t));
+#else
+                for(i = 1024; i != 0; i--) { *pSpec-- = FX_CNCL2FX_DBL(*pCncl--); }
+#endif
+            }
+            else {
+                /* clear scale factors */
+                memset(pSpecScale, 0, 8 * sizeof(int16_t));
+
+                /* clear buffer */
+                memset(pSpectralCoefficient, 0, 1024 * sizeof(FIXP_CNCL));
+            }
+        }
+    }
+    /* update history */
+    hConcealmentInfo->prevFrameOk[0] = hConcealmentInfo->prevFrameOk[1];
+    hConcealmentInfo->prevFrameOk[1] = frameOk;
+
+    return mute_release_active ? -1 : appliedProcessing;
 }
 
 /*!
@@ -801,69 +695,62 @@ int32_t CConcealment_Apply(
   In case of frame lost this function produces a noisy frame with respect to the
   energies values of past frame.
  */
-static int32_t CConcealment_ApplyNoise(
-    CConcealmentInfo *pConcealmentInfo,
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, const int32_t samplesPerFrame,
-    const uint32_t flags) {
-  int32_t *pSpectralCoefficient =
-      SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
-  CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
+static int32_t CConcealment_ApplyNoise(CConcealmentInfo             *pConcealmentInfo,
+                                       CAacDecoderChannelInfo       *pAacDecoderChannelInfo,
+                                       CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
+                                       const SamplingRateInfo *pSamplingRateInfo, const int32_t samplesPerFrame,
+                                       const uint32_t flags) {
+    int32_t  *pSpectralCoefficient = SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
+    CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
 
-  int32_t appliedProcessing = 0;
+    int32_t appliedProcessing = 0;
 
-  assert(pConcealmentInfo != NULL);
-  assert((samplesPerFrame >= 120) && (samplesPerFrame <= 1024));
+    assert(pConcealmentInfo != NULL);
+    assert((samplesPerFrame >= 120) && (samplesPerFrame <= 1024));
 
-  switch (pConcealmentInfo->concealState) {
-    case ConcealState_Ok:
-      /* Nothing to do here! */
-      break;
+    switch(pConcealmentInfo->concealState) {
+        case ConcealState_Ok:
+            /* Nothing to do here! */
+            break;
 
-    case ConcealState_Single:
-    case ConcealState_FadeOut:
-      appliedProcessing = CConcealment_ApplyFadeOut(
-          /*mode =*/1, pConcealmentInfo, pAacDecoderStaticChannelInfo,
-          samplesPerFrame, pAacDecoderChannelInfo);
-      break;
+        case ConcealState_Single:
+        case ConcealState_FadeOut:
+            appliedProcessing = CConcealment_ApplyFadeOut(
+                /*mode =*/1, pConcealmentInfo, pAacDecoderStaticChannelInfo, samplesPerFrame, pAacDecoderChannelInfo);
+            break;
 
-    case ConcealState_Mute: {
-      /* set dummy window parameters */
-      pIcsInfo->Valid = 0; /* Trigger the generation of a consitent IcsInfo */
-      pIcsInfo->WindowShape =
-          pConcealmentInfo->windowShape; /* Prevent an invalid WindowShape
-                                            (required for F/T transform) */
-      pIcsInfo->WindowSequence =
-          CConcealment_GetWinSeq(pConcealmentInfo->windowSequence);
-      pConcealmentInfo->windowSequence =
-          pIcsInfo->WindowSequence; /* Store for next frame
-                                       (spectrum in concealment
-                                       buffer can't be used at
-                                       all) */
+        case ConcealState_Mute: {
+            /* set dummy window parameters */
+            pIcsInfo->Valid = 0;                                   /* Trigger the generation of a consitent IcsInfo */
+            pIcsInfo->WindowShape = pConcealmentInfo->windowShape; /* Prevent an invalid WindowShape
+                                                                      (required for F/T transform) */
+            pIcsInfo->WindowSequence = CConcealment_GetWinSeq(pConcealmentInfo->windowSequence);
+            pConcealmentInfo->windowSequence = pIcsInfo->WindowSequence; /* Store for next frame
+                                                                            (spectrum in concealment
+                                                                            buffer can't be used at
+                                                                            all) */
 
-      /* mute spectral data */
-      memset(pSpectralCoefficient, 0, samplesPerFrame * sizeof(int32_t));
-      memset(pConcealmentInfo->spectralCoefficient, 0,
-                  samplesPerFrame * sizeof(int32_t));
+            /* mute spectral data */
+            memset(pSpectralCoefficient, 0, samplesPerFrame * sizeof(int32_t));
+            memset(pConcealmentInfo->spectralCoefficient, 0, samplesPerFrame * sizeof(int32_t));
 
-      appliedProcessing = 1;
-    } break;
+            appliedProcessing = 1;
+        } break;
 
-    case ConcealState_FadeIn: {
-      /* TimeDomainFading:                                        */
-      /* Attenuation of signal is done in CConcealment_TDFading() */
+        case ConcealState_FadeIn: {
+            /* TimeDomainFading:                                        */
+            /* Attenuation of signal is done in CConcealment_TDFading() */
 
-      appliedProcessing = 1;
-    } break;
+            appliedProcessing = 1;
+        } break;
 
-    default:
-      /* we shouldn't come here anyway */
-      assert(0);
-      break;
-  }
+        default:
+            /* we shouldn't come here anyway */
+            assert(0);
+            break;
+    }
 
-  return appliedProcessing;
+    return appliedProcessing;
 }
 
 /*!
@@ -873,249 +760,214 @@ static int32_t CConcealment_ApplyNoise(
   error has occured, frame interpolation is performed to restore the missing
   frame. In case of multiple faulty frames, fade-in and fade-out is applied.
 */
-static int32_t CConcealment_ApplyInter(
-    CConcealmentInfo *pConcealmentInfo,
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, const int32_t samplesPerFrame,
-    const int32_t improveTonal, const int32_t frameOk, const int32_t mute_release_active) {
+static int32_t CConcealment_ApplyInter(CConcealmentInfo       *pConcealmentInfo,
+                                       CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+                                       const SamplingRateInfo *pSamplingRateInfo, const int32_t samplesPerFrame,
+                                       const int32_t improveTonal, const int32_t frameOk,
+                                       const int32_t mute_release_active) {
+    CConcealParams *pConcealCommonData = pConcealmentInfo->pConcealParams;
 
-  CConcealParams *pConcealCommonData = pConcealmentInfo->pConcealParams;
+    int32_t  *pSpectralCoefficient = SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
+    CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
+    int16_t  *pSpecScale = pAacDecoderChannelInfo->specScale;
 
+    int32_t sfbEnergyPrev[64];
+    int32_t sfbEnergyAct[64];
 
-  int32_t *pSpectralCoefficient =
-      SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
-  CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
-  int16_t *pSpecScale = pAacDecoderChannelInfo->specScale;
+    int32_t i, appliedProcessing = 0;
 
-  int32_t sfbEnergyPrev[64];
-  int32_t sfbEnergyAct[64];
+    /* clear/init */
+    memset(sfbEnergyPrev, 0, 64 * sizeof(int32_t));
+    memset(sfbEnergyAct, 0, 64 * sizeof(int32_t));
 
-  int32_t i, appliedProcessing = 0;
+    if(!frameOk || mute_release_active) {
+        /* Restore last frame from concealment buffer */
+        pIcsInfo->WindowShape = pConcealmentInfo->windowShape;
+        pIcsInfo->WindowSequence = pConcealmentInfo->windowSequence;
 
-  /* clear/init */
-  memset(sfbEnergyPrev, 0, 64 * sizeof(int32_t));
-  memset(sfbEnergyAct, 0, 64 * sizeof(int32_t));
-
-  if (!frameOk || mute_release_active) {
-    /* Restore last frame from concealment buffer */
-    pIcsInfo->WindowShape = pConcealmentInfo->windowShape;
-    pIcsInfo->WindowSequence = pConcealmentInfo->windowSequence;
-
-    /* Restore spectral data */
-    for (i = 0; i < samplesPerFrame; i++) {
-      pSpectralCoefficient[i] =
-          FX_CNCL2FX_DBL(pConcealmentInfo->spectralCoefficient[i]);
-    }
-
-    /* Restore scale factors */
-    memcpy(pSpecScale, pConcealmentInfo->specScale, 8 * sizeof(int16_t));
-  }
-
-  /* if previous frame was not ok */
-  if (!pConcealmentInfo->prevFrameOk[1] || mute_release_active) {
-    /* if current frame (f_n) is ok and the last but one frame (f_(n-2))
-       was ok, too, then interpolate both frames in order to generate
-       the current output frame (f_(n-1)). Otherwise, use the last stored
-       frame (f_(n-2) or f_(n-3) or ...). */
-    if (frameOk && pConcealmentInfo->prevFrameOk[0] && !mute_release_active) {
-      appliedProcessing = 1;
-
-      /* Interpolate both frames in order to generate the current output frame
-       * (f_(n-1)). */
-      if (pIcsInfo->WindowSequence == BLOCK_SHORT) {
-        /* f_(n-2) == BLOCK_SHORT */
-        /* int16_t--??????--int16_t, int16_t--??????--int32_t interpolation */
-        /* int16_t--int16_t---int16_t, int16_t---int32_t---int32_t interpolation */
-
-        int32_t wnd;
-
-        if (pConcealmentInfo->windowSequence ==
-            BLOCK_SHORT) { /* f_n == BLOCK_SHORT */
-          /* int16_t--int16_t---int16_t interpolation */
-
-          int32_t scaleFactorBandsTotal =
-              pSamplingRateInfo->NumberOfScaleFactorBands_Short;
-          const int16_t *pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Short;
-          pIcsInfo->WindowShape = (samplesPerFrame <= 512) ? 2 : 1;
-          pIcsInfo->WindowSequence = BLOCK_SHORT;
-
-          for (wnd = 0; wnd < 8; wnd++) {
-            CConcealment_CalcBandEnergy(
-                &pSpectralCoefficient[wnd *
-                                      (samplesPerFrame / 8)], /* spec_(n-2) */
-                pSamplingRateInfo, BLOCK_SHORT, CConcealment_NoExpand,
-                sfbEnergyPrev);
-
-            CConcealment_CalcBandEnergy(
-                &pConcealmentInfo->spectralCoefficient[wnd * (samplesPerFrame /
-                                                              8)], /* spec_n */
-                pSamplingRateInfo, BLOCK_SHORT, CConcealment_NoExpand,
-                sfbEnergyAct);
-
-            CConcealment_InterpolateBuffer(
-                &pSpectralCoefficient[wnd *
-                                      (samplesPerFrame / 8)], /* spec_(n-1) */
-                &pSpecScale[wnd], &pConcealmentInfo->specScale[wnd],
-                &pSpecScale[wnd], sfbEnergyPrev, sfbEnergyAct,
-                scaleFactorBandsTotal, pSfbOffset);
-          }
-        } else { /* f_n != BLOCK_SHORT */
-          /* int16_t---int32_t---int32_t interpolation */
-
-          int32_t scaleFactorBandsTotal =
-              pSamplingRateInfo->NumberOfScaleFactorBands_Long;
-          const int16_t *pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
-          int16_t specScaleOut;
-
-          CConcealment_CalcBandEnergy(
-              &pSpectralCoefficient[samplesPerFrame -
-                                    (samplesPerFrame /
-                                     8)], /* [wnd] spec_(n-2) */
-              pSamplingRateInfo, BLOCK_SHORT, CConcealment_Expand,
-              sfbEnergyAct);
-
-          CConcealment_CalcBandEnergy(
-              pConcealmentInfo->spectralCoefficient, /* spec_n */
-              pSamplingRateInfo, BLOCK_LONG, CConcealment_NoExpand,
-              sfbEnergyPrev);
-
-          pIcsInfo->WindowShape = 0;
-          pIcsInfo->WindowSequence = BLOCK_STOP;
-
-          for (i = 0; i < samplesPerFrame; i++) {
-            pSpectralCoefficient[i] =
-                pConcealmentInfo->spectralCoefficient[i]; /* spec_n */
-          }
-
-          for (i = 0; i < 8; i++) { /* search for max(specScale) */
-            if (pSpecScale[i] > pSpecScale[0]) {
-              pSpecScale[0] = pSpecScale[i];
-            }
-          }
-
-          CConcealment_InterpolateBuffer(
-              pSpectralCoefficient, /* spec_(n-1) */
-              &pConcealmentInfo->specScale[0], &pSpecScale[0], &specScaleOut,
-              sfbEnergyPrev, sfbEnergyAct, scaleFactorBandsTotal, pSfbOffset);
-
-          pSpecScale[0] = specScaleOut;
-        }
-      } else {
-        /* int32_t--??????--int16_t, int32_t--??????--int32_t interpolation */
-        /* int32_t---int32_t---int16_t, int32_t---int32_t---int32_t interpolation */
-
-        int32_t scaleFactorBandsTotal =
-            pSamplingRateInfo->NumberOfScaleFactorBands_Long;
-        const int16_t *pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
-        int16_t specScaleAct = pConcealmentInfo->specScale[0];
-
-        CConcealment_CalcBandEnergy(pSpectralCoefficient, /* spec_(n-2) */
-                                    pSamplingRateInfo, BLOCK_LONG,
-                                    CConcealment_NoExpand, sfbEnergyPrev);
-
-        if (pConcealmentInfo->windowSequence ==
-            BLOCK_SHORT) { /* f_n == BLOCK_SHORT */
-          /* int32_t---int32_t---int16_t interpolation */
-
-          pIcsInfo->WindowShape = (samplesPerFrame <= 512) ? 2 : 1;
-          pIcsInfo->WindowSequence = BLOCK_START;
-
-          for (i = 1; i < 8; i++) { /* search for max(specScale) */
-            if (pConcealmentInfo->specScale[i] > specScaleAct) {
-              specScaleAct = pConcealmentInfo->specScale[i];
-            }
-          }
-
-          /* Expand first int16_t spectrum */
-          CConcealment_CalcBandEnergy(
-              pConcealmentInfo->spectralCoefficient,               /* spec_n */
-              pSamplingRateInfo, BLOCK_SHORT, CConcealment_Expand, /* !!! */
-              sfbEnergyAct);
-        } else {
-          /* int32_t---int32_t---int32_t interpolation */
-
-          pIcsInfo->WindowShape = 0;
-          pIcsInfo->WindowSequence = BLOCK_LONG;
-
-          CConcealment_CalcBandEnergy(
-              pConcealmentInfo->spectralCoefficient, /* spec_n */
-              pSamplingRateInfo, BLOCK_LONG, CConcealment_NoExpand,
-              sfbEnergyAct);
+        /* Restore spectral data */
+        for(i = 0; i < samplesPerFrame; i++) {
+            pSpectralCoefficient[i] = FX_CNCL2FX_DBL(pConcealmentInfo->spectralCoefficient[i]);
         }
 
-        CConcealment_InterpolateBuffer(
-            pSpectralCoefficient, /* spec_(n-1) */
-            &pSpecScale[0], &specScaleAct, &pSpecScale[0], sfbEnergyPrev,
-            sfbEnergyAct, scaleFactorBandsTotal, pSfbOffset);
-      }
+        /* Restore scale factors */
+        memcpy(pSpecScale, pConcealmentInfo->specScale, 8 * sizeof(int16_t));
     }
 
-    /* Noise substitution of sign of the output spectral coefficients */
-    CConcealment_ApplyRandomSign(pConcealmentInfo->iRandomPhase,
-                                 pSpectralCoefficient, samplesPerFrame);
-    /* Increment random phase index to avoid repetition artifacts. */
-    pConcealmentInfo->iRandomPhase =
-        (pConcealmentInfo->iRandomPhase + 1) & (AAC_NF_NO_RANDOM_VAL - 1);
-  }
+    /* if previous frame was not ok */
+    if(!pConcealmentInfo->prevFrameOk[1] || mute_release_active) {
+        /* if current frame (f_n) is ok and the last but one frame (f_(n-2))
+           was ok, too, then interpolate both frames in order to generate
+           the current output frame (f_(n-1)). Otherwise, use the last stored
+           frame (f_(n-2) or f_(n-3) or ...). */
+        if(frameOk && pConcealmentInfo->prevFrameOk[0] && !mute_release_active) {
+            appliedProcessing = 1;
 
-  /* scale spectrum according to concealment state */
-  switch (pConcealmentInfo->concealState) {
-    case ConcealState_Single:
-      appliedProcessing = 1;
-      break;
+            /* Interpolate both frames in order to generate the current output frame
+             * (f_(n-1)). */
+            if(pIcsInfo->WindowSequence == BLOCK_SHORT) {
+                /* f_(n-2) == BLOCK_SHORT */
+                /* int16_t--??????--int16_t, int16_t--??????--int32_t interpolation */
+                /* int16_t--int16_t---int16_t, int16_t---int32_t---int32_t interpolation */
 
-    case ConcealState_FadeOut: {
-      assert(pConcealmentInfo->cntFadeFrames >= 0);
-      assert(pConcealmentInfo->cntFadeFrames <
-                 CONCEAL_MAX_NUM_FADE_FACTORS);
-      assert(pConcealmentInfo->cntFadeFrames <
-                 pConcealCommonData->numFadeOutFrames);
+                int32_t wnd;
 
-      /* TimeDomainFading:                                        */
-      /* Attenuation of signal is done in CConcealment_TDFading() */
+                if(pConcealmentInfo->windowSequence == BLOCK_SHORT) { /* f_n == BLOCK_SHORT */
+                    /* int16_t--int16_t---int16_t interpolation */
 
-      appliedProcessing = 1;
-    } break;
+                    int32_t        scaleFactorBandsTotal = pSamplingRateInfo->NumberOfScaleFactorBands_Short;
+                    const int16_t *pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Short;
+                    pIcsInfo->WindowShape = (samplesPerFrame <= 512) ? 2 : 1;
+                    pIcsInfo->WindowSequence = BLOCK_SHORT;
 
-    case ConcealState_FadeIn: {
-      assert(pConcealmentInfo->cntFadeFrames >= 0);
-      assert(pConcealmentInfo->cntFadeFrames <
-                 CONCEAL_MAX_NUM_FADE_FACTORS);
-      assert(pConcealmentInfo->cntFadeFrames <
-                 pConcealCommonData->numFadeInFrames);
+                    for(wnd = 0; wnd < 8; wnd++) {
+                        CConcealment_CalcBandEnergy(&pSpectralCoefficient[wnd * (samplesPerFrame / 8)], /* spec_(n-2) */
+                                                    pSamplingRateInfo, BLOCK_SHORT, CConcealment_NoExpand,
+                                                    sfbEnergyPrev);
 
-      /* TimeDomainFading:                                        */
-      /* Attenuation of signal is done in CConcealment_TDFading() */
+                        CConcealment_CalcBandEnergy(
+                            &pConcealmentInfo->spectralCoefficient[wnd * (samplesPerFrame / 8)], /* spec_n */
+                            pSamplingRateInfo, BLOCK_SHORT, CConcealment_NoExpand, sfbEnergyAct);
 
-      appliedProcessing = 1;
-    } break;
+                        CConcealment_InterpolateBuffer(
+                            &pSpectralCoefficient[wnd * (samplesPerFrame / 8)], /* spec_(n-1) */
+                            &pSpecScale[wnd], &pConcealmentInfo->specScale[wnd], &pSpecScale[wnd], sfbEnergyPrev,
+                            sfbEnergyAct, scaleFactorBandsTotal, pSfbOffset);
+                    }
+                }
+                else { /* f_n != BLOCK_SHORT */
+                    /* int16_t---int32_t---int32_t interpolation */
 
-    case ConcealState_Mute: {
-      /* set dummy window parameters */
-      pIcsInfo->Valid = 0; /* Trigger the generation of a consitent IcsInfo */
-      pIcsInfo->WindowShape =
-          pConcealmentInfo->windowShape; /* Prevent an invalid WindowShape
-                                            (required for F/T transform) */
-      pIcsInfo->WindowSequence =
-          CConcealment_GetWinSeq(pConcealmentInfo->windowSequence);
-      pConcealmentInfo->windowSequence =
-          pIcsInfo->WindowSequence; /* Store for next frame
-                                       (spectrum in concealment
-                                       buffer can't be used at
-                                       all) */
+                    int32_t        scaleFactorBandsTotal = pSamplingRateInfo->NumberOfScaleFactorBands_Long;
+                    const int16_t *pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
+                    int16_t        specScaleOut;
 
-      /* mute spectral data */
-      memset(pSpectralCoefficient, 0, samplesPerFrame * sizeof(int32_t));
+                    CConcealment_CalcBandEnergy(
+                        &pSpectralCoefficient[samplesPerFrame - (samplesPerFrame / 8)], /* [wnd] spec_(n-2) */
+                        pSamplingRateInfo, BLOCK_SHORT, CConcealment_Expand, sfbEnergyAct);
 
-      appliedProcessing = 1;
-    } break;
+                    CConcealment_CalcBandEnergy(pConcealmentInfo->spectralCoefficient, /* spec_n */
+                                                pSamplingRateInfo, BLOCK_LONG, CConcealment_NoExpand, sfbEnergyPrev);
 
-    default:
-      /* nothing to do here */
-      break;
-  }
+                    pIcsInfo->WindowShape = 0;
+                    pIcsInfo->WindowSequence = BLOCK_STOP;
 
-  return appliedProcessing;
+                    for(i = 0; i < samplesPerFrame; i++) {
+                        pSpectralCoefficient[i] = pConcealmentInfo->spectralCoefficient[i]; /* spec_n */
+                    }
+
+                    for(i = 0; i < 8; i++) { /* search for max(specScale) */
+                        if(pSpecScale[i] > pSpecScale[0]) { pSpecScale[0] = pSpecScale[i]; }
+                    }
+
+                    CConcealment_InterpolateBuffer(pSpectralCoefficient, /* spec_(n-1) */
+                                                   &pConcealmentInfo->specScale[0], &pSpecScale[0], &specScaleOut,
+                                                   sfbEnergyPrev, sfbEnergyAct, scaleFactorBandsTotal, pSfbOffset);
+
+                    pSpecScale[0] = specScaleOut;
+                }
+            }
+            else {
+                /* int32_t--??????--int16_t, int32_t--??????--int32_t interpolation */
+                /* int32_t---int32_t---int16_t, int32_t---int32_t---int32_t interpolation */
+
+                int32_t        scaleFactorBandsTotal = pSamplingRateInfo->NumberOfScaleFactorBands_Long;
+                const int16_t *pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
+                int16_t        specScaleAct = pConcealmentInfo->specScale[0];
+
+                CConcealment_CalcBandEnergy(pSpectralCoefficient, /* spec_(n-2) */
+                                            pSamplingRateInfo, BLOCK_LONG, CConcealment_NoExpand, sfbEnergyPrev);
+
+                if(pConcealmentInfo->windowSequence == BLOCK_SHORT) { /* f_n == BLOCK_SHORT */
+                    /* int32_t---int32_t---int16_t interpolation */
+
+                    pIcsInfo->WindowShape = (samplesPerFrame <= 512) ? 2 : 1;
+                    pIcsInfo->WindowSequence = BLOCK_START;
+
+                    for(i = 1; i < 8; i++) { /* search for max(specScale) */
+                        if(pConcealmentInfo->specScale[i] > specScaleAct) {
+                            specScaleAct = pConcealmentInfo->specScale[i];
+                        }
+                    }
+
+                    /* Expand first int16_t spectrum */
+                    CConcealment_CalcBandEnergy(pConcealmentInfo->spectralCoefficient,               /* spec_n */
+                                                pSamplingRateInfo, BLOCK_SHORT, CConcealment_Expand, /* !!! */
+                                                sfbEnergyAct);
+                }
+                else {
+                    /* int32_t---int32_t---int32_t interpolation */
+
+                    pIcsInfo->WindowShape = 0;
+                    pIcsInfo->WindowSequence = BLOCK_LONG;
+
+                    CConcealment_CalcBandEnergy(pConcealmentInfo->spectralCoefficient, /* spec_n */
+                                                pSamplingRateInfo, BLOCK_LONG, CConcealment_NoExpand, sfbEnergyAct);
+                }
+
+                CConcealment_InterpolateBuffer(pSpectralCoefficient, /* spec_(n-1) */
+                                               &pSpecScale[0], &specScaleAct, &pSpecScale[0], sfbEnergyPrev,
+                                               sfbEnergyAct, scaleFactorBandsTotal, pSfbOffset);
+            }
+        }
+
+        /* Noise substitution of sign of the output spectral coefficients */
+        CConcealment_ApplyRandomSign(pConcealmentInfo->iRandomPhase, pSpectralCoefficient, samplesPerFrame);
+        /* Increment random phase index to avoid repetition artifacts. */
+        pConcealmentInfo->iRandomPhase = (pConcealmentInfo->iRandomPhase + 1) & (AAC_NF_NO_RANDOM_VAL - 1);
+    }
+
+    /* scale spectrum according to concealment state */
+    switch(pConcealmentInfo->concealState) {
+        case ConcealState_Single:
+            appliedProcessing = 1;
+            break;
+
+        case ConcealState_FadeOut: {
+            assert(pConcealmentInfo->cntFadeFrames >= 0);
+            assert(pConcealmentInfo->cntFadeFrames < CONCEAL_MAX_NUM_FADE_FACTORS);
+            assert(pConcealmentInfo->cntFadeFrames < pConcealCommonData->numFadeOutFrames);
+
+            /* TimeDomainFading:                                        */
+            /* Attenuation of signal is done in CConcealment_TDFading() */
+
+            appliedProcessing = 1;
+        } break;
+
+        case ConcealState_FadeIn: {
+            assert(pConcealmentInfo->cntFadeFrames >= 0);
+            assert(pConcealmentInfo->cntFadeFrames < CONCEAL_MAX_NUM_FADE_FACTORS);
+            assert(pConcealmentInfo->cntFadeFrames < pConcealCommonData->numFadeInFrames);
+
+            /* TimeDomainFading:                                        */
+            /* Attenuation of signal is done in CConcealment_TDFading() */
+
+            appliedProcessing = 1;
+        } break;
+
+        case ConcealState_Mute: {
+            /* set dummy window parameters */
+            pIcsInfo->Valid = 0;                                   /* Trigger the generation of a consitent IcsInfo */
+            pIcsInfo->WindowShape = pConcealmentInfo->windowShape; /* Prevent an invalid WindowShape
+                                                                      (required for F/T transform) */
+            pIcsInfo->WindowSequence = CConcealment_GetWinSeq(pConcealmentInfo->windowSequence);
+            pConcealmentInfo->windowSequence = pIcsInfo->WindowSequence; /* Store for next frame
+                                                                            (spectrum in concealment
+                                                                            buffer can't be used at
+                                                                            all) */
+
+            /* mute spectral data */
+            memset(pSpectralCoefficient, 0, samplesPerFrame * sizeof(int32_t));
+
+            appliedProcessing = 1;
+        } break;
+
+        default:
+            /* nothing to do here */
+            break;
+    }
+
+    return appliedProcessing;
 }
 
 /*!
@@ -1124,99 +976,88 @@ static int32_t CConcealment_ApplyInter(
   The function calculates band-wise the spectral energy. This is used for
   frame interpolation.
 */
-static void CConcealment_CalcBandEnergy(
-    int32_t *spectrum, const SamplingRateInfo *pSamplingRateInfo,
-    const int32_t blockType, CConcealmentExpandType expandType, int32_t *sfbEnergy) {
-  const int16_t *pSfbOffset;
-  int32_t line, sfb, scaleFactorBandsTotal = 0;
+static void CConcealment_CalcBandEnergy(int32_t *spectrum, const SamplingRateInfo *pSamplingRateInfo,
+                                        const int32_t blockType, CConcealmentExpandType expandType,
+                                        int32_t *sfbEnergy) {
+    const int16_t *pSfbOffset;
+    int32_t        line, sfb, scaleFactorBandsTotal = 0;
 
-  /* In the following calculations, enAccu is initialized with LSB-value in
-   * order to avoid zero energy-level */
+    /* In the following calculations, enAccu is initialized with LSB-value in
+     * order to avoid zero energy-level */
 
-  line = 0;
+    line = 0;
 
-  switch (blockType) {
-    case BLOCK_LONG:
-    case BLOCK_START:
-    case BLOCK_STOP:
+    switch(blockType) {
+        case BLOCK_LONG:
+        case BLOCK_START:
+        case BLOCK_STOP:
 
-      if (expandType == CConcealment_NoExpand) {
-        /* standard int32_t calculation */
-        scaleFactorBandsTotal =
-            pSamplingRateInfo->NumberOfScaleFactorBands_Long;
-        pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
+            if(expandType == CConcealment_NoExpand) {
+                /* standard int32_t calculation */
+                scaleFactorBandsTotal = pSamplingRateInfo->NumberOfScaleFactorBands_Long;
+                pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
 
-        for (sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
-          int32_t enAccu = (int32_t)(int32_t)1;
-          int32_t sfbScale =
-              (sizeof(int32_t) << 3) -
-              CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
-          /* scaling depends on sfb width. */
-          for (; line < pSfbOffset[sfb + 1]; line++) {
-            enAccu += fPow2Div2(*(spectrum + line)) >> sfbScale;
-          }
-          *(sfbEnergy + sfb) = CntLeadingZeros(enAccu) - 1;
-        }
-      } else {
-        /* compress int32_t to int16_t */
-        scaleFactorBandsTotal =
-            pSamplingRateInfo->NumberOfScaleFactorBands_Short;
-        pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Short;
+                for(sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
+                    int32_t enAccu = (int32_t)(int32_t)1;
+                    int32_t sfbScale =
+                        (sizeof(int32_t) << 3) - CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
+                    /* scaling depends on sfb width. */
+                    for(; line < pSfbOffset[sfb + 1]; line++) { enAccu += fPow2Div2(*(spectrum + line)) >> sfbScale; }
+                    *(sfbEnergy + sfb) = CntLeadingZeros(enAccu) - 1;
+                }
+            }
+            else {
+                /* compress int32_t to int16_t */
+                scaleFactorBandsTotal = pSamplingRateInfo->NumberOfScaleFactorBands_Short;
+                pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Short;
 
-        for (sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
-          int32_t enAccu = (int32_t)(int32_t)1;
-          int32_t sfbScale =
-              (sizeof(int32_t) << 3) -
-              CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
-          /* scaling depends on sfb width. */
-          for (; line < pSfbOffset[sfb + 1] << 3; line++) {
-            enAccu +=
-                (enAccu + (fPow2Div2(*(spectrum + line)) >> sfbScale)) >> 3;
-          }
-          *(sfbEnergy + sfb) = CntLeadingZeros(enAccu) - 1;
-        }
-      }
-      break;
+                for(sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
+                    int32_t enAccu = (int32_t)(int32_t)1;
+                    int32_t sfbScale =
+                        (sizeof(int32_t) << 3) - CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
+                    /* scaling depends on sfb width. */
+                    for(; line < pSfbOffset[sfb + 1] << 3; line++) {
+                        enAccu += (enAccu + (fPow2Div2(*(spectrum + line)) >> sfbScale)) >> 3;
+                    }
+                    *(sfbEnergy + sfb) = CntLeadingZeros(enAccu) - 1;
+                }
+            }
+            break;
 
-    case BLOCK_SHORT:
+        case BLOCK_SHORT:
 
-      if (expandType == CConcealment_NoExpand) {
-        /*   standard int16_t calculation */
-        scaleFactorBandsTotal =
-            pSamplingRateInfo->NumberOfScaleFactorBands_Short;
-        pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Short;
+            if(expandType == CConcealment_NoExpand) {
+                /*   standard int16_t calculation */
+                scaleFactorBandsTotal = pSamplingRateInfo->NumberOfScaleFactorBands_Short;
+                pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Short;
 
-        for (sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
-          int32_t enAccu = (int32_t)(int32_t)1;
-          int32_t sfbScale =
-              (sizeof(int32_t) << 3) -
-              CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
-          /* scaling depends on sfb width. */
-          for (; line < pSfbOffset[sfb + 1]; line++) {
-            enAccu += fPow2Div2(*(spectrum + line)) >> sfbScale;
-          }
-          *(sfbEnergy + sfb) = CntLeadingZeros(enAccu) - 1;
-        }
-      } else {
-        /*  expand int16_t to int32_t spectrum */
-        scaleFactorBandsTotal =
-            pSamplingRateInfo->NumberOfScaleFactorBands_Long;
-        pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
+                for(sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
+                    int32_t enAccu = (int32_t)(int32_t)1;
+                    int32_t sfbScale =
+                        (sizeof(int32_t) << 3) - CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
+                    /* scaling depends on sfb width. */
+                    for(; line < pSfbOffset[sfb + 1]; line++) { enAccu += fPow2Div2(*(spectrum + line)) >> sfbScale; }
+                    *(sfbEnergy + sfb) = CntLeadingZeros(enAccu) - 1;
+                }
+            }
+            else {
+                /*  expand int16_t to int32_t spectrum */
+                scaleFactorBandsTotal = pSamplingRateInfo->NumberOfScaleFactorBands_Long;
+                pSfbOffset = pSamplingRateInfo->ScaleFactorBands_Long;
 
-        for (sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
-          int32_t enAccu = (int32_t)(int32_t)1;
-          int32_t sfbScale =
-              (sizeof(int32_t) << 3) -
-              CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
-          /* scaling depends on sfb width. */
-          for (; line < pSfbOffset[sfb + 1]; line++) {
-            enAccu += fPow2Div2(*(spectrum + (line >> 3))) >> sfbScale;
-          }
-          *(sfbEnergy + sfb) = CntLeadingZeros(enAccu) - 1;
-        }
-      }
-      break;
-  }
+                for(sfb = 0; sfb < scaleFactorBandsTotal; sfb++) {
+                    int32_t enAccu = (int32_t)(int32_t)1;
+                    int32_t sfbScale =
+                        (sizeof(int32_t) << 3) - CntLeadingZeros(pSfbOffset[sfb + 1] - pSfbOffset[sfb]) - 1;
+                    /* scaling depends on sfb width. */
+                    for(; line < pSfbOffset[sfb + 1]; line++) {
+                        enAccu += fPow2Div2(*(spectrum + (line >> 3))) >> sfbScale;
+                    }
+                    *(sfbEnergy + sfb) = CntLeadingZeros(enAccu) - 1;
+                }
+            }
+            break;
+    }
 }
 
 /*!
@@ -1225,30 +1066,26 @@ static void CConcealment_CalcBandEnergy(
   The function creates the interpolated spectral data according to the
   energy of the last good frame and the current (good) frame.
 */
-static void CConcealment_InterpolateBuffer(int32_t *spectrum,
-                                           int16_t *pSpecScalePrv,
-                                           int16_t *pSpecScaleAct,
-                                           int16_t *pSpecScaleOut, int32_t *enPrv,
-                                           int32_t *enAct, int32_t sfbCnt,
+static void CConcealment_InterpolateBuffer(int32_t *spectrum, int16_t *pSpecScalePrv, int16_t *pSpecScaleAct,
+                                           int16_t *pSpecScaleOut, int32_t *enPrv, int32_t *enAct, int32_t sfbCnt,
                                            const int16_t *pSfbOffset) {
-  int32_t sfb, line = 0;
-  int32_t fac_shift;
-  int32_t fac_mod;
+    int32_t sfb, line = 0;
+    int32_t fac_shift;
+    int32_t fac_mod;
 
-  for (sfb = 0; sfb < sfbCnt; sfb++) {
-    fac_shift =
-        enPrv[sfb] - enAct[sfb] + ((*pSpecScaleAct - *pSpecScalePrv) << 1);
-    fac_mod = fac_shift & 3;
-    fac_shift = (fac_shift >> 2) + 1;
-    fac_shift += *pSpecScalePrv - fixMax(*pSpecScalePrv, *pSpecScaleAct);
-    fac_shift = fMax(fMin(fac_shift, DFRACT_BITS - 1), -(DFRACT_BITS - 1));
+    for(sfb = 0; sfb < sfbCnt; sfb++) {
+        fac_shift = enPrv[sfb] - enAct[sfb] + ((*pSpecScaleAct - *pSpecScalePrv) << 1);
+        fac_mod = fac_shift & 3;
+        fac_shift = (fac_shift >> 2) + 1;
+        fac_shift += *pSpecScalePrv - fixMax(*pSpecScalePrv, *pSpecScaleAct);
+        fac_shift = fMax(fMin(fac_shift, DFRACT_BITS - 1), -(DFRACT_BITS - 1));
 
-    for (; line < pSfbOffset[sfb + 1]; line++) {
-      int32_t accu = fMult(*(spectrum + line), facMod4Table[fac_mod]);
-      *(spectrum + line) = scaleValue(accu, fac_shift);
+        for(; line < pSfbOffset[sfb + 1]; line++) {
+            int32_t accu = fMult(*(spectrum + line), facMod4Table[fac_mod]);
+            *(spectrum + line) = scaleValue(accu, fac_shift);
+        }
     }
-  }
-  *pSpecScaleOut = fixMax(*pSpecScalePrv, *pSpecScaleAct);
+    *pSpecScaleOut = fixMax(*pSpecScalePrv, *pSpecScaleAct);
 }
 
 /*!
@@ -1263,59 +1100,50 @@ static void CConcealment_InterpolateBuffer(int32_t *spectrum,
   direction to be changed to.
 */
 
-static int32_t findEquiFadeFrame(CConcealParams *pConcealCommonData,
-                             int32_t actFadeIndex, int32_t direction) {
-  int16_t *pFactor;
-  int16_t referenceVal;
-  int16_t minDiff = (int16_t)MAXVAL_SGL;
+static int32_t findEquiFadeFrame(CConcealParams *pConcealCommonData, int32_t actFadeIndex, int32_t direction) {
+    int16_t *pFactor;
+    int16_t  referenceVal;
+    int16_t  minDiff = (int16_t)MAXVAL_SGL;
 
-  int32_t nextFadeIndex = 0;
+    int32_t nextFadeIndex = 0;
 
-  int32_t i;
+    int32_t i;
 
-  /* init depending on direction */
-  if (direction == 0) { /* FADE-OUT => FADE-IN */
-    if (actFadeIndex < 0) {
-      referenceVal = (int16_t)MAXVAL_SGL;
-    } else {
-      referenceVal = pConcealCommonData->fadeOutFactor[actFadeIndex] >> 1;
+    /* init depending on direction */
+    if(direction == 0) { /* FADE-OUT => FADE-IN */
+        if(actFadeIndex < 0) { referenceVal = (int16_t)MAXVAL_SGL; }
+        else { referenceVal = pConcealCommonData->fadeOutFactor[actFadeIndex] >> 1; }
+        pFactor = pConcealCommonData->fadeInFactor;
     }
-    pFactor = pConcealCommonData->fadeInFactor;
-  } else { /* FADE-IN => FADE-OUT */
-    if (actFadeIndex < 0) {
-      referenceVal = (int16_t)MAXVAL_SGL;
-    } else {
-      referenceVal = pConcealCommonData->fadeInFactor[actFadeIndex] >> 1;
+    else { /* FADE-IN => FADE-OUT */
+        if(actFadeIndex < 0) { referenceVal = (int16_t)MAXVAL_SGL; }
+        else { referenceVal = pConcealCommonData->fadeInFactor[actFadeIndex] >> 1; }
+        pFactor = pConcealCommonData->fadeOutFactor;
     }
-    pFactor = pConcealCommonData->fadeOutFactor;
-  }
 
-  /* search for minimum difference */
-  for (i = 0; i < CONCEAL_MAX_NUM_FADE_FACTORS; i++) {
-    int16_t diff = fixp_abs((pFactor[i] >> 1) - referenceVal);
-    if (diff < minDiff) {
-      minDiff = diff;
-      nextFadeIndex = i;
+    /* search for minimum difference */
+    for(i = 0; i < CONCEAL_MAX_NUM_FADE_FACTORS; i++) {
+        int16_t diff = fixp_abs((pFactor[i] >> 1) - referenceVal);
+        if(diff < minDiff) {
+            minDiff = diff;
+            nextFadeIndex = i;
+        }
     }
-  }
 
-  /* check and adjust depending on direction */
-  if (direction == 0) { /* FADE-OUT => FADE-IN */
-    if (nextFadeIndex > pConcealCommonData->numFadeInFrames) {
-      nextFadeIndex = fMax(pConcealCommonData->numFadeInFrames - 1, 0);
+    /* check and adjust depending on direction */
+    if(direction == 0) { /* FADE-OUT => FADE-IN */
+        if(nextFadeIndex > pConcealCommonData->numFadeInFrames) {
+            nextFadeIndex = fMax(pConcealCommonData->numFadeInFrames - 1, 0);
+        }
+        if(((pFactor[nextFadeIndex] >> 1) <= referenceVal) && (nextFadeIndex > 0)) { nextFadeIndex -= 1; }
     }
-    if (((pFactor[nextFadeIndex] >> 1) <= referenceVal) &&
-        (nextFadeIndex > 0)) {
-      nextFadeIndex -= 1;
+    else { /* FADE-IN => FADE-OUT */
+        if(((pFactor[nextFadeIndex] >> 1) >= referenceVal) && (nextFadeIndex < CONCEAL_MAX_NUM_FADE_FACTORS - 1)) {
+            nextFadeIndex += 1;
+        }
     }
-  } else { /* FADE-IN => FADE-OUT */
-    if (((pFactor[nextFadeIndex] >> 1) >= referenceVal) &&
-        (nextFadeIndex < CONCEAL_MAX_NUM_FADE_FACTORS - 1)) {
-      nextFadeIndex += 1;
-    }
-  }
 
-  return (nextFadeIndex);
+    return (nextFadeIndex);
 }
 
 /*!
@@ -1324,275 +1152,268 @@ static int32_t findEquiFadeFrame(CConcealParams *pConcealCommonData,
   The function updates the state of the concealment state-machine. The
   states are: mute, fade-in, fade-out, interpolate and frame-ok.
 */
-static void CConcealment_UpdateState(
-    CConcealmentInfo *pConcealmentInfo, int32_t frameOk,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    const int32_t samplesPerFrame, CAacDecoderChannelInfo *pAacDecoderChannelInfo) {
-  CConcealParams *pConcealCommonData = pConcealmentInfo->pConcealParams;
+static void CConcealment_UpdateState(CConcealmentInfo *pConcealmentInfo, int32_t frameOk,
+                                     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
+                                     const int32_t samplesPerFrame, CAacDecoderChannelInfo *pAacDecoderChannelInfo) {
+    CConcealParams *pConcealCommonData = pConcealmentInfo->pConcealParams;
 
-  switch (pConcealCommonData->method) {
-    case ConcealMethodNoise: {
-      if (pConcealmentInfo->concealState != ConcealState_Ok) {
-        /* count the valid frames during concealment process */
-        if (frameOk) {
-          pConcealmentInfo->cntValidFrames += 1;
-        } else {
-          pConcealmentInfo->cntValidFrames = 0;
-        }
-      }
+    switch(pConcealCommonData->method) {
+        case ConcealMethodNoise: {
+            if(pConcealmentInfo->concealState != ConcealState_Ok) {
+                /* count the valid frames during concealment process */
+                if(frameOk) { pConcealmentInfo->cntValidFrames += 1; }
+                else { pConcealmentInfo->cntValidFrames = 0; }
+            }
 
-      /* -- STATE MACHINE for Noise Substitution -- */
-      switch (pConcealmentInfo->concealState) {
-        case ConcealState_Ok:
-          if (!frameOk) {
-            pConcealmentInfo->cntFadeFrames = 0;
-            pConcealmentInfo->cntValidFrames = 0;
-            pConcealmentInfo->attGrpOffset[0] = 0;
-            pConcealmentInfo->attGrpOffset[1] = 0;
-            pConcealmentInfo->winGrpOffset[0] = 0;
-            pConcealmentInfo->winGrpOffset[1] = 0;
-            if (pConcealCommonData->numFadeOutFrames > 0) {
-              /* change to state SINGLE-FRAME-LOSS */
-              pConcealmentInfo->concealState = ConcealState_Single;
-              /* mode 0 just updates the Fading counter */
-              CConcealment_ApplyFadeOut(
-                  /*mode =*/0, pConcealmentInfo, pAacDecoderStaticChannelInfo,
-                  samplesPerFrame, pAacDecoderChannelInfo);
+            /* -- STATE MACHINE for Noise Substitution -- */
+            switch(pConcealmentInfo->concealState) {
+                case ConcealState_Ok:
+                    if(!frameOk) {
+                        pConcealmentInfo->cntFadeFrames = 0;
+                        pConcealmentInfo->cntValidFrames = 0;
+                        pConcealmentInfo->attGrpOffset[0] = 0;
+                        pConcealmentInfo->attGrpOffset[1] = 0;
+                        pConcealmentInfo->winGrpOffset[0] = 0;
+                        pConcealmentInfo->winGrpOffset[1] = 0;
+                        if(pConcealCommonData->numFadeOutFrames > 0) {
+                            /* change to state SINGLE-FRAME-LOSS */
+                            pConcealmentInfo->concealState = ConcealState_Single;
+                            /* mode 0 just updates the Fading counter */
+                            CConcealment_ApplyFadeOut(
+                                /*mode =*/0, pConcealmentInfo, pAacDecoderStaticChannelInfo, samplesPerFrame,
+                                pAacDecoderChannelInfo);
+                        }
+                        else {
+                            /* change to state MUTE */
+                            pConcealmentInfo->concealState = ConcealState_Mute;
+                        }
+                    }
+                    break;
 
-            } else {
-              /* change to state MUTE */
-              pConcealmentInfo->concealState = ConcealState_Mute;
-            }
-          }
-          break;
+                case ConcealState_Single: /* Just a pre-stage before fade-out begins.
+                                             Stay here only one frame! */
+                    if(frameOk) {
+                        /* change to state OK */
+                        pConcealmentInfo->concealState = ConcealState_Ok;
+                    }
+                    else {
+                        if(pConcealmentInfo->cntFadeFrames >= pConcealCommonData->numFadeOutFrames) {
+                            /* change to state MUTE */
+                            pConcealmentInfo->concealState = ConcealState_Mute;
+                        }
+                        else {
+                            /* change to state FADE-OUT */
+                            pConcealmentInfo->concealState = ConcealState_FadeOut;
+                            /* mode 0 just updates the Fading counter */
+                            CConcealment_ApplyFadeOut(
+                                /*mode =*/0, pConcealmentInfo, pAacDecoderStaticChannelInfo, samplesPerFrame,
+                                pAacDecoderChannelInfo);
+                        }
+                    }
+                    break;
 
-        case ConcealState_Single: /* Just a pre-stage before fade-out begins.
-                                     Stay here only one frame! */
-          if (frameOk) {
-            /* change to state OK */
-            pConcealmentInfo->concealState = ConcealState_Ok;
-          } else {
-            if (pConcealmentInfo->cntFadeFrames >=
-                pConcealCommonData->numFadeOutFrames) {
-              /* change to state MUTE */
-              pConcealmentInfo->concealState = ConcealState_Mute;
-            } else {
-              /* change to state FADE-OUT */
-              pConcealmentInfo->concealState = ConcealState_FadeOut;
-              /* mode 0 just updates the Fading counter */
-              CConcealment_ApplyFadeOut(
-                  /*mode =*/0, pConcealmentInfo, pAacDecoderStaticChannelInfo,
-                  samplesPerFrame, pAacDecoderChannelInfo);
-            }
-          }
-          break;
+                case ConcealState_FadeOut:
+                    if(pConcealmentInfo->cntValidFrames > pConcealCommonData->numMuteReleaseFrames) {
+                        if(pConcealCommonData->numFadeInFrames > 0) {
+                            /* change to state FADE-IN */
+                            pConcealmentInfo->concealState = ConcealState_FadeIn;
+                            pConcealmentInfo->cntFadeFrames = findEquiFadeFrame(
+                                pConcealCommonData, pConcealmentInfo->cntFadeFrames, 0 /* FadeOut -> FadeIn */);
+                        }
+                        else {
+                            /* change to state OK */
+                            pConcealmentInfo->concealState = ConcealState_Ok;
+                        }
+                    }
+                    else {
+                        if(frameOk) {
+                            /* we have good frame information but stay fully in concealment -
+                             * reset winGrpOffset/attGrpOffset */
+                            pConcealmentInfo->winGrpOffset[0] = 0;
+                            pConcealmentInfo->winGrpOffset[1] = 0;
+                            pConcealmentInfo->attGrpOffset[0] = 0;
+                            pConcealmentInfo->attGrpOffset[1] = 0;
+                        }
+                        if(pConcealmentInfo->cntFadeFrames >= pConcealCommonData->numFadeOutFrames) {
+                            /* change to state MUTE */
+                            pConcealmentInfo->concealState = ConcealState_Mute;
+                        }
+                        else /* Stay in FADE-OUT */
+                        {
+                            /* mode 0 just updates the Fading counter */
+                            CConcealment_ApplyFadeOut(
+                                /*mode =*/0, pConcealmentInfo, pAacDecoderStaticChannelInfo, samplesPerFrame,
+                                pAacDecoderChannelInfo);
+                        }
+                    }
+                    break;
 
-        case ConcealState_FadeOut:
-          if (pConcealmentInfo->cntValidFrames >
-              pConcealCommonData->numMuteReleaseFrames) {
-            if (pConcealCommonData->numFadeInFrames > 0) {
-              /* change to state FADE-IN */
-              pConcealmentInfo->concealState = ConcealState_FadeIn;
-              pConcealmentInfo->cntFadeFrames = findEquiFadeFrame(
-                  pConcealCommonData, pConcealmentInfo->cntFadeFrames,
-                  0 /* FadeOut -> FadeIn */);
-            } else {
-              /* change to state OK */
-              pConcealmentInfo->concealState = ConcealState_Ok;
-            }
-          } else {
-            if (frameOk) {
-              /* we have good frame information but stay fully in concealment -
-               * reset winGrpOffset/attGrpOffset */
-              pConcealmentInfo->winGrpOffset[0] = 0;
-              pConcealmentInfo->winGrpOffset[1] = 0;
-              pConcealmentInfo->attGrpOffset[0] = 0;
-              pConcealmentInfo->attGrpOffset[1] = 0;
-            }
-            if (pConcealmentInfo->cntFadeFrames >=
-                pConcealCommonData->numFadeOutFrames) {
-              /* change to state MUTE */
-              pConcealmentInfo->concealState = ConcealState_Mute;
-            } else /* Stay in FADE-OUT */
-            {
-              /* mode 0 just updates the Fading counter */
-              CConcealment_ApplyFadeOut(
-                  /*mode =*/0, pConcealmentInfo, pAacDecoderStaticChannelInfo,
-                  samplesPerFrame, pAacDecoderChannelInfo);
-            }
-          }
-          break;
+                case ConcealState_Mute:
+                    if(pConcealmentInfo->cntValidFrames > pConcealCommonData->numMuteReleaseFrames) {
+                        if(pConcealCommonData->numFadeInFrames > 0) {
+                            /* change to state FADE-IN */
+                            pConcealmentInfo->concealState = ConcealState_FadeIn;
+                            pConcealmentInfo->cntFadeFrames = pConcealCommonData->numFadeInFrames - 1;
+                        }
+                        else {
+                            /* change to state OK */
+                            pConcealmentInfo->concealState = ConcealState_Ok;
+                        }
+                    }
+                    else {
+                        if(frameOk) {
+                            /* we have good frame information but stay fully in concealment -
+                             * reset winGrpOffset/attGrpOffset */
+                            pConcealmentInfo->winGrpOffset[0] = 0;
+                            pConcealmentInfo->winGrpOffset[1] = 0;
+                            pConcealmentInfo->attGrpOffset[0] = 0;
+                            pConcealmentInfo->attGrpOffset[1] = 0;
+                        }
+                    }
+                    break;
 
-        case ConcealState_Mute:
-          if (pConcealmentInfo->cntValidFrames >
-              pConcealCommonData->numMuteReleaseFrames) {
-            if (pConcealCommonData->numFadeInFrames > 0) {
-              /* change to state FADE-IN */
-              pConcealmentInfo->concealState = ConcealState_FadeIn;
-              pConcealmentInfo->cntFadeFrames =
-                  pConcealCommonData->numFadeInFrames - 1;
-            } else {
-              /* change to state OK */
-              pConcealmentInfo->concealState = ConcealState_Ok;
-            }
-          } else {
-            if (frameOk) {
-              /* we have good frame information but stay fully in concealment -
-               * reset winGrpOffset/attGrpOffset */
-              pConcealmentInfo->winGrpOffset[0] = 0;
-              pConcealmentInfo->winGrpOffset[1] = 0;
-              pConcealmentInfo->attGrpOffset[0] = 0;
-              pConcealmentInfo->attGrpOffset[1] = 0;
-            }
-          }
-          break;
+                case ConcealState_FadeIn:
+                    pConcealmentInfo->cntFadeFrames -= 1;
+                    if(frameOk) {
+                        if(pConcealmentInfo->cntFadeFrames < 0) {
+                            /* change to state OK */
+                            pConcealmentInfo->concealState = ConcealState_Ok;
+                        }
+                    }
+                    else {
+                        if(pConcealCommonData->numFadeOutFrames > 0) {
+                            /* change to state FADE-OUT */
+                            pConcealmentInfo->concealState = ConcealState_FadeOut;
+                            pConcealmentInfo->cntFadeFrames = findEquiFadeFrame(
+                                pConcealCommonData, pConcealmentInfo->cntFadeFrames + 1, 1 /* FadeIn -> FadeOut */);
+                            pConcealmentInfo->winGrpOffset[0] = 0;
+                            pConcealmentInfo->winGrpOffset[1] = 0;
+                            pConcealmentInfo->attGrpOffset[0] = 0;
+                            pConcealmentInfo->attGrpOffset[1] = 0;
 
-        case ConcealState_FadeIn:
-          pConcealmentInfo->cntFadeFrames -= 1;
-          if (frameOk) {
-            if (pConcealmentInfo->cntFadeFrames < 0) {
-              /* change to state OK */
-              pConcealmentInfo->concealState = ConcealState_Ok;
-            }
-          } else {
-            if (pConcealCommonData->numFadeOutFrames > 0) {
-              /* change to state FADE-OUT */
-              pConcealmentInfo->concealState = ConcealState_FadeOut;
-              pConcealmentInfo->cntFadeFrames = findEquiFadeFrame(
-                  pConcealCommonData, pConcealmentInfo->cntFadeFrames + 1,
-                  1 /* FadeIn -> FadeOut */);
-              pConcealmentInfo->winGrpOffset[0] = 0;
-              pConcealmentInfo->winGrpOffset[1] = 0;
-              pConcealmentInfo->attGrpOffset[0] = 0;
-              pConcealmentInfo->attGrpOffset[1] = 0;
+                            pConcealmentInfo->cntFadeFrames--; /* decrease because
+                                                                  CConcealment_ApplyFadeOut() will
+                                                                  increase, accordingly */
+                            /* mode 0 just updates the Fading counter */
+                            CConcealment_ApplyFadeOut(
+                                /*mode =*/0, pConcealmentInfo, pAacDecoderStaticChannelInfo, samplesPerFrame,
+                                pAacDecoderChannelInfo);
+                        }
+                        else {
+                            /* change to state MUTE */
+                            pConcealmentInfo->concealState = ConcealState_Mute;
+                        }
+                    }
+                    break;
 
-              pConcealmentInfo
-                  ->cntFadeFrames--; /* decrease because
-                                        CConcealment_ApplyFadeOut() will
-                                        increase, accordingly */
-              /* mode 0 just updates the Fading counter */
-              CConcealment_ApplyFadeOut(
-                  /*mode =*/0, pConcealmentInfo, pAacDecoderStaticChannelInfo,
-                  samplesPerFrame, pAacDecoderChannelInfo);
-            } else {
-              /* change to state MUTE */
-              pConcealmentInfo->concealState = ConcealState_Mute;
+                default:
+                    assert(0);
+                    break;
             }
-          }
-          break;
+        } break;
+
+        case ConcealMethodInter:
+        case ConcealMethodTonal: {
+            if(pConcealmentInfo->concealState != ConcealState_Ok) {
+                /* count the valid frames during concealment process */
+                if(pConcealmentInfo->prevFrameOk[1] ||
+                   (pConcealmentInfo->prevFrameOk[0] && !pConcealmentInfo->prevFrameOk[1] && frameOk)) {
+                    /* The frame is OK even if it can be estimated by the energy
+                     * interpolation algorithm */
+                    pConcealmentInfo->cntValidFrames += 1;
+                }
+                else { pConcealmentInfo->cntValidFrames = 0; }
+            }
+
+            /* -- STATE MACHINE for energy interpolation -- */
+            switch(pConcealmentInfo->concealState) {
+                case ConcealState_Ok:
+                    if(!(pConcealmentInfo->prevFrameOk[1] ||
+                         (pConcealmentInfo->prevFrameOk[0] && !pConcealmentInfo->prevFrameOk[1] && frameOk))) {
+                        if(pConcealCommonData->numFadeOutFrames > 0) {
+                            /* Fade out only if the energy interpolation algorithm can not be
+                             * applied! */
+                            pConcealmentInfo->concealState = ConcealState_FadeOut;
+                        }
+                        else {
+                            /* change to state MUTE */
+                            pConcealmentInfo->concealState = ConcealState_Mute;
+                        }
+                        pConcealmentInfo->cntFadeFrames = 0;
+                        pConcealmentInfo->cntValidFrames = 0;
+                    }
+                    break;
+
+                case ConcealState_Single:
+                    pConcealmentInfo->concealState = ConcealState_Ok;
+                    break;
+
+                case ConcealState_FadeOut:
+                    pConcealmentInfo->cntFadeFrames += 1;
+
+                    if(pConcealmentInfo->cntValidFrames > pConcealCommonData->numMuteReleaseFrames) {
+                        if(pConcealCommonData->numFadeInFrames > 0) {
+                            /* change to state FADE-IN */
+                            pConcealmentInfo->concealState = ConcealState_FadeIn;
+                            pConcealmentInfo->cntFadeFrames = findEquiFadeFrame(
+                                pConcealCommonData, pConcealmentInfo->cntFadeFrames - 1, 0 /* FadeOut -> FadeIn */);
+                        }
+                        else {
+                            /* change to state OK */
+                            pConcealmentInfo->concealState = ConcealState_Ok;
+                        }
+                    }
+                    else {
+                        if(pConcealmentInfo->cntFadeFrames >= pConcealCommonData->numFadeOutFrames) {
+                            /* change to state MUTE */
+                            pConcealmentInfo->concealState = ConcealState_Mute;
+                        }
+                    }
+                    break;
+
+                case ConcealState_Mute:
+                    if(pConcealmentInfo->cntValidFrames > pConcealCommonData->numMuteReleaseFrames) {
+                        if(pConcealCommonData->numFadeInFrames > 0) {
+                            /* change to state FADE-IN */
+                            pConcealmentInfo->concealState = ConcealState_FadeIn;
+                            pConcealmentInfo->cntFadeFrames = pConcealCommonData->numFadeInFrames - 1;
+                        }
+                        else {
+                            /* change to state OK */
+                            pConcealmentInfo->concealState = ConcealState_Ok;
+                        }
+                    }
+                    break;
+
+                case ConcealState_FadeIn:
+                    pConcealmentInfo->cntFadeFrames -= 1; /* used to address the fade-in factors */
+
+                    if(frameOk || pConcealmentInfo->prevFrameOk[1]) {
+                        if(pConcealmentInfo->cntFadeFrames < 0) {
+                            /* change to state OK */
+                            pConcealmentInfo->concealState = ConcealState_Ok;
+                        }
+                    }
+                    else {
+                        if(pConcealCommonData->numFadeOutFrames > 0) {
+                            /* change to state FADE-OUT */
+                            pConcealmentInfo->concealState = ConcealState_FadeOut;
+                            pConcealmentInfo->cntFadeFrames = findEquiFadeFrame(
+                                pConcealCommonData, pConcealmentInfo->cntFadeFrames + 1, 1 /* FadeIn -> FadeOut */);
+                        }
+                        else {
+                            /* change to state MUTE */
+                            pConcealmentInfo->concealState = ConcealState_Mute;
+                        }
+                    }
+                    break;
+            } /* End switch(pConcealmentInfo->concealState) */
+        } break;
 
         default:
-          assert(0);
-          break;
-      }
-    } break;
-
-    case ConcealMethodInter:
-    case ConcealMethodTonal: {
-      if (pConcealmentInfo->concealState != ConcealState_Ok) {
-        /* count the valid frames during concealment process */
-        if (pConcealmentInfo->prevFrameOk[1] ||
-            (pConcealmentInfo->prevFrameOk[0] &&
-             !pConcealmentInfo->prevFrameOk[1] && frameOk)) {
-          /* The frame is OK even if it can be estimated by the energy
-           * interpolation algorithm */
-          pConcealmentInfo->cntValidFrames += 1;
-        } else {
-          pConcealmentInfo->cntValidFrames = 0;
-        }
-      }
-
-      /* -- STATE MACHINE for energy interpolation -- */
-      switch (pConcealmentInfo->concealState) {
-        case ConcealState_Ok:
-          if (!(pConcealmentInfo->prevFrameOk[1] ||
-                (pConcealmentInfo->prevFrameOk[0] &&
-                 !pConcealmentInfo->prevFrameOk[1] && frameOk))) {
-            if (pConcealCommonData->numFadeOutFrames > 0) {
-              /* Fade out only if the energy interpolation algorithm can not be
-               * applied! */
-              pConcealmentInfo->concealState = ConcealState_FadeOut;
-            } else {
-              /* change to state MUTE */
-              pConcealmentInfo->concealState = ConcealState_Mute;
-            }
-            pConcealmentInfo->cntFadeFrames = 0;
-            pConcealmentInfo->cntValidFrames = 0;
-          }
-          break;
-
-        case ConcealState_Single:
-          pConcealmentInfo->concealState = ConcealState_Ok;
-          break;
-
-        case ConcealState_FadeOut:
-          pConcealmentInfo->cntFadeFrames += 1;
-
-          if (pConcealmentInfo->cntValidFrames >
-              pConcealCommonData->numMuteReleaseFrames) {
-            if (pConcealCommonData->numFadeInFrames > 0) {
-              /* change to state FADE-IN */
-              pConcealmentInfo->concealState = ConcealState_FadeIn;
-              pConcealmentInfo->cntFadeFrames = findEquiFadeFrame(
-                  pConcealCommonData, pConcealmentInfo->cntFadeFrames - 1,
-                  0 /* FadeOut -> FadeIn */);
-            } else {
-              /* change to state OK */
-              pConcealmentInfo->concealState = ConcealState_Ok;
-            }
-          } else {
-            if (pConcealmentInfo->cntFadeFrames >=
-                pConcealCommonData->numFadeOutFrames) {
-              /* change to state MUTE */
-              pConcealmentInfo->concealState = ConcealState_Mute;
-            }
-          }
-          break;
-
-        case ConcealState_Mute:
-          if (pConcealmentInfo->cntValidFrames >
-              pConcealCommonData->numMuteReleaseFrames) {
-            if (pConcealCommonData->numFadeInFrames > 0) {
-              /* change to state FADE-IN */
-              pConcealmentInfo->concealState = ConcealState_FadeIn;
-              pConcealmentInfo->cntFadeFrames =
-                  pConcealCommonData->numFadeInFrames - 1;
-            } else {
-              /* change to state OK */
-              pConcealmentInfo->concealState = ConcealState_Ok;
-            }
-          }
-          break;
-
-        case ConcealState_FadeIn:
-          pConcealmentInfo->cntFadeFrames -=
-              1; /* used to address the fade-in factors */
-
-          if (frameOk || pConcealmentInfo->prevFrameOk[1]) {
-            if (pConcealmentInfo->cntFadeFrames < 0) {
-              /* change to state OK */
-              pConcealmentInfo->concealState = ConcealState_Ok;
-            }
-          } else {
-            if (pConcealCommonData->numFadeOutFrames > 0) {
-              /* change to state FADE-OUT */
-              pConcealmentInfo->concealState = ConcealState_FadeOut;
-              pConcealmentInfo->cntFadeFrames = findEquiFadeFrame(
-                  pConcealCommonData, pConcealmentInfo->cntFadeFrames + 1,
-                  1 /* FadeIn -> FadeOut */);
-            } else {
-              /* change to state MUTE */
-              pConcealmentInfo->concealState = ConcealState_Mute;
-            }
-          }
-          break;
-      } /* End switch(pConcealmentInfo->concealState) */
-    } break;
-
-    default:
-      /* Don't need a state machine for other concealment methods. */
-      break;
-  }
+            /* Don't need a state machine for other concealment methods. */
+            break;
+    }
 }
 
 /*!
@@ -1601,30 +1422,25 @@ static void CConcealment_UpdateState(
   The function toggles the sign of the spectral data randomly. This is
   useful to ensure the quality of the concealed frames.
  */
-static void CConcealment_ApplyRandomSign(int32_t randomPhase, int32_t *spec,
-                                         int32_t samplesPerFrame) {
-  int32_t i;
-  uint16_t packedSign = 0;
+static void CConcealment_ApplyRandomSign(int32_t randomPhase, int32_t *spec, int32_t samplesPerFrame) {
+    int32_t  i;
+    uint16_t packedSign = 0;
 
-  /* random table 512x16bit has been reduced to 512 packed sign bits = 32x16 bit
-   */
+    /* random table 512x16bit has been reduced to 512 packed sign bits = 32x16 bit
+     */
 
-  /* read current packed sign word */
-  packedSign = AacDec_randomSign[randomPhase >> 4];
-  packedSign >>= (randomPhase & 0xf);
+    /* read current packed sign word */
+    packedSign = AacDec_randomSign[randomPhase >> 4];
+    packedSign >>= (randomPhase & 0xf);
 
-  for (i = 0; i < samplesPerFrame; i++) {
-    if ((randomPhase & 0xf) == 0) {
-      packedSign = AacDec_randomSign[randomPhase >> 4];
+    for(i = 0; i < samplesPerFrame; i++) {
+        if((randomPhase & 0xf) == 0) { packedSign = AacDec_randomSign[randomPhase >> 4]; }
+
+        if(packedSign & 0x1) { spec[i] = -fMax(spec[i], (int32_t)(MINVAL_DBL + 1)); }
+        packedSign >>= 1;
+
+        randomPhase = (randomPhase + 1) & (AAC_NF_NO_RANDOM_VAL - 1);
     }
-
-    if (packedSign & 0x1) {
-      spec[i] = -fMax(spec[i], (int32_t)(MINVAL_DBL + 1));
-    }
-    packedSign >>= 1;
-
-    randomPhase = (randomPhase + 1) & (AAC_NF_NO_RANDOM_VAL - 1);
-  }
 }
 
 /*!
@@ -1636,15 +1452,12 @@ static void CConcealment_ApplyRandomSign(int32_t randomPhase, int32_t *spec,
 
   \return Frame OK flag of previous frame.
  */
-int32_t CConcealment_GetLastFrameOk(CConcealmentInfo *hConcealmentInfo,
-                                const int32_t fBeforeApply) {
-  int32_t prevFrameOk = 1;
+int32_t CConcealment_GetLastFrameOk(CConcealmentInfo *hConcealmentInfo, const int32_t fBeforeApply) {
+    int32_t prevFrameOk = 1;
 
-  if (hConcealmentInfo != NULL) {
-    prevFrameOk = hConcealmentInfo->prevFrameOk[fBeforeApply & 0x1];
-  }
+    if(hConcealmentInfo != NULL) { prevFrameOk = hConcealmentInfo->prevFrameOk[fBeforeApply & 0x1]; }
 
-  return prevFrameOk;
+    return prevFrameOk;
 }
 
 /*!
@@ -1653,147 +1466,136 @@ int32_t CConcealment_GetLastFrameOk(CConcealmentInfo *hConcealmentInfo,
   \return Number of delay frames.
  */
 uint32_t CConcealment_GetDelay(CConcealParams *pConcealCommonData) {
-  uint32_t frameDelay = 0;
+    uint32_t frameDelay = 0;
 
-  if (pConcealCommonData != NULL) {
-    switch (pConcealCommonData->method) {
-      case ConcealMethodTonal:
-      case ConcealMethodInter:
-        frameDelay = 1;
-        break;
-      default:
-        break;
+    if(pConcealCommonData != NULL) {
+        switch(pConcealCommonData->method) {
+            case ConcealMethodTonal:
+            case ConcealMethodInter:
+                frameDelay = 1;
+                break;
+            default:
+                break;
+        }
     }
-  }
 
-  return frameDelay;
+    return frameDelay;
 }
 
-static int32_t CConcealment_ApplyFadeOut(
-    int32_t mode, CConcealmentInfo *pConcealmentInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    const int32_t samplesPerFrame, CAacDecoderChannelInfo *pAacDecoderChannelInfo) {
-  /* mode 1 = apply RandomSign and mute spectral coefficients if necessary,  *
-   * mode 0 = Update cntFadeFrames                                            */
+static int32_t CConcealment_ApplyFadeOut(int32_t mode, CConcealmentInfo *pConcealmentInfo,
+                                         CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
+                                         const int32_t                 samplesPerFrame,
+                                         CAacDecoderChannelInfo       *pAacDecoderChannelInfo) {
+    /* mode 1 = apply RandomSign and mute spectral coefficients if necessary,  *
+     * mode 0 = Update cntFadeFrames                                            */
 
-  /* restore frequency coefficients from buffer with a specific muting */
-  int32_t srcWin, dstWin, numWindows = 1;
-  int32_t windowLen = samplesPerFrame;
-  int32_t srcGrpStart = 0;
-  int32_t winIdxStride = 1;
-  int32_t numWinGrpPerFac, attIdx, attIdxStride;
-  int32_t i;
-  int32_t appliedProcessing = 0;
+    /* restore frequency coefficients from buffer with a specific muting */
+    int32_t srcWin, dstWin, numWindows = 1;
+    int32_t windowLen = samplesPerFrame;
+    int32_t srcGrpStart = 0;
+    int32_t winIdxStride = 1;
+    int32_t numWinGrpPerFac, attIdx, attIdxStride;
+    int32_t i;
+    int32_t appliedProcessing = 0;
 
-  CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
-  int32_t *pSpectralCoefficient =
-      SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
-  int16_t *pSpecScale = pAacDecoderChannelInfo->specScale;
+    CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
+    int32_t  *pSpectralCoefficient = SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
+    int16_t  *pSpecScale = pAacDecoderChannelInfo->specScale;
 
-  /* set old window parameters */
-  if (pConcealmentInfo->lastRenderMode == AACDEC_RENDER_LPD) {
-    switch (pAacDecoderStaticChannelInfo->last_lpd_mode) {
-      case 1:
-        numWindows = 4;
-        srcGrpStart = 3;
-        windowLen = samplesPerFrame >> 2;
-        break;
-      case 2:
-        numWindows = 2;
-        srcGrpStart = 1;
-        windowLen = samplesPerFrame >> 1;
-        winIdxStride = 2;
-        break;
-      case 3:
-        numWindows = 1;
-        srcGrpStart = 0;
-        windowLen = samplesPerFrame;
-        winIdxStride = 4;
-        break;
+    /* set old window parameters */
+    if(pConcealmentInfo->lastRenderMode == AACDEC_RENDER_LPD) {
+        switch(pAacDecoderStaticChannelInfo->last_lpd_mode) {
+            case 1:
+                numWindows = 4;
+                srcGrpStart = 3;
+                windowLen = samplesPerFrame >> 2;
+                break;
+            case 2:
+                numWindows = 2;
+                srcGrpStart = 1;
+                windowLen = samplesPerFrame >> 1;
+                winIdxStride = 2;
+                break;
+            case 3:
+                numWindows = 1;
+                srcGrpStart = 0;
+                windowLen = samplesPerFrame;
+                winIdxStride = 4;
+                break;
+        }
+        pConcealmentInfo->lastWinGrpLen = 1;
     }
-    pConcealmentInfo->lastWinGrpLen = 1;
-  } else {
-    pIcsInfo->WindowShape = pConcealmentInfo->windowShape;
-    pIcsInfo->WindowSequence = pConcealmentInfo->windowSequence;
+    else {
+        pIcsInfo->WindowShape = pConcealmentInfo->windowShape;
+        pIcsInfo->WindowSequence = pConcealmentInfo->windowSequence;
 
-    if (pConcealmentInfo->windowSequence == BLOCK_SHORT) {
-      /* int16_t block handling */
-      numWindows = 8;
-      windowLen = samplesPerFrame >> 3;
-      srcGrpStart = numWindows - pConcealmentInfo->lastWinGrpLen;
-    }
-  }
-
-  attIdxStride =
-      fMax(1, (int32_t)(numWindows / (pConcealmentInfo->lastWinGrpLen + 1)));
-
-  /* load last state */
-  attIdx = pConcealmentInfo->cntFadeFrames;
-  numWinGrpPerFac = pConcealmentInfo->attGrpOffset[mode];
-  srcWin = srcGrpStart + pConcealmentInfo->winGrpOffset[mode];
-
-  assert((srcGrpStart * windowLen + windowLen) <= samplesPerFrame);
-  assert((srcWin * windowLen + windowLen) <= 1024);
-
-  for (dstWin = 0; dstWin < numWindows; dstWin += 1) {
-    FIXP_CNCL *pCncl =
-        pConcealmentInfo->spectralCoefficient + (srcWin * windowLen);
-    int32_t *pOut = pSpectralCoefficient + (dstWin * windowLen);
-
-    if (mode == 1) {
-      /* mute if attIdx gets large enaugh */
-      if (attIdx > pConcealmentInfo->pConcealParams->numFadeOutFrames) {
-        memset(pCncl, 0, sizeof(int32_t) * windowLen);
-      }
-
-      /* restore frequency coefficients from buffer - attenuation is done later
-       */
-      for (i = 0; i < windowLen; i++) {
-        pOut[i] = pCncl[i];
-      }
-
-      /* apply random change of sign for spectral coefficients */
-      CConcealment_ApplyRandomSign(pConcealmentInfo->iRandomPhase, pOut,
-                                   windowLen);
-
-      /* Increment random phase index to avoid repetition artifacts. */
-      pConcealmentInfo->iRandomPhase =
-          (pConcealmentInfo->iRandomPhase + 1) & (AAC_NF_NO_RANDOM_VAL - 1);
-
-      /* set old scale factors */
-      pSpecScale[dstWin * winIdxStride] =
-          pConcealmentInfo->specScale[srcWin * winIdxStride];
+        if(pConcealmentInfo->windowSequence == BLOCK_SHORT) {
+            /* int16_t block handling */
+            numWindows = 8;
+            windowLen = samplesPerFrame >> 3;
+            srcGrpStart = numWindows - pConcealmentInfo->lastWinGrpLen;
+        }
     }
 
-    srcWin += 1;
+    attIdxStride = fMax(1, (int32_t)(numWindows / (pConcealmentInfo->lastWinGrpLen + 1)));
 
-    if (srcWin >= numWindows) {
-      /* end of sequence -> rewind to first window of group */
-      srcWin = srcGrpStart;
-      numWinGrpPerFac += 1;
-      if (numWinGrpPerFac >= attIdxStride) {
-        numWinGrpPerFac = 0;
-        attIdx += 1;
-      }
+    /* load last state */
+    attIdx = pConcealmentInfo->cntFadeFrames;
+    numWinGrpPerFac = pConcealmentInfo->attGrpOffset[mode];
+    srcWin = srcGrpStart + pConcealmentInfo->winGrpOffset[mode];
+
+    assert((srcGrpStart * windowLen + windowLen) <= samplesPerFrame);
+    assert((srcWin * windowLen + windowLen) <= 1024);
+
+    for(dstWin = 0; dstWin < numWindows; dstWin += 1) {
+        FIXP_CNCL *pCncl = pConcealmentInfo->spectralCoefficient + (srcWin * windowLen);
+        int32_t   *pOut = pSpectralCoefficient + (dstWin * windowLen);
+
+        if(mode == 1) {
+            /* mute if attIdx gets large enaugh */
+            if(attIdx > pConcealmentInfo->pConcealParams->numFadeOutFrames) {
+                memset(pCncl, 0, sizeof(int32_t) * windowLen);
+            }
+
+            /* restore frequency coefficients from buffer - attenuation is done later
+             */
+            for(i = 0; i < windowLen; i++) { pOut[i] = pCncl[i]; }
+
+            /* apply random change of sign for spectral coefficients */
+            CConcealment_ApplyRandomSign(pConcealmentInfo->iRandomPhase, pOut, windowLen);
+
+            /* Increment random phase index to avoid repetition artifacts. */
+            pConcealmentInfo->iRandomPhase = (pConcealmentInfo->iRandomPhase + 1) & (AAC_NF_NO_RANDOM_VAL - 1);
+
+            /* set old scale factors */
+            pSpecScale[dstWin * winIdxStride] = pConcealmentInfo->specScale[srcWin * winIdxStride];
+        }
+
+        srcWin += 1;
+
+        if(srcWin >= numWindows) {
+            /* end of sequence -> rewind to first window of group */
+            srcWin = srcGrpStart;
+            numWinGrpPerFac += 1;
+            if(numWinGrpPerFac >= attIdxStride) {
+                numWinGrpPerFac = 0;
+                attIdx += 1;
+            }
+        }
     }
-  }
 
-  /* store current state */
+    /* store current state */
 
-  pConcealmentInfo->winGrpOffset[mode] = srcWin - srcGrpStart;
-  assert((pConcealmentInfo->winGrpOffset[mode] >= 0) &&
-             (pConcealmentInfo->winGrpOffset[mode] < 8));
-  pConcealmentInfo->attGrpOffset[mode] = numWinGrpPerFac;
-  assert((pConcealmentInfo->attGrpOffset[mode] >= 0) &&
-             (pConcealmentInfo->attGrpOffset[mode] < attIdxStride));
+    pConcealmentInfo->winGrpOffset[mode] = srcWin - srcGrpStart;
+    assert((pConcealmentInfo->winGrpOffset[mode] >= 0) && (pConcealmentInfo->winGrpOffset[mode] < 8));
+    pConcealmentInfo->attGrpOffset[mode] = numWinGrpPerFac;
+    assert((pConcealmentInfo->attGrpOffset[mode] >= 0) && (pConcealmentInfo->attGrpOffset[mode] < attIdxStride));
 
-  if (mode == 0) {
-    pConcealmentInfo->cntFadeFrames = attIdx;
-  }
+    if(mode == 0) { pConcealmentInfo->cntFadeFrames = attIdx; }
 
-  appliedProcessing = 1;
+    appliedProcessing = 1;
 
-  return appliedProcessing;
+    return appliedProcessing;
 }
 
 /*!
@@ -1848,153 +1650,135 @@ Target fading level is determined by fading index cntFadeFrames.
 
 */
 
-int32_t CConcealment_TDFading(
-    int32_t len, CAacDecoderStaticChannelInfo **ppAacDecoderStaticChannelInfo,
-    const int32_t aacOutDataHeadroom, int32_t *pcmdata, int32_t *pcmdata_1) {
-  /*
-  Do the fading in Time domain based on concealment states and core mode
-  */
-  int32_t fadeStop, attMute = (int32_t)0;
-  int32_t idx = 0, ii;
-  CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo =
-      *ppAacDecoderStaticChannelInfo;
-  CConcealmentInfo *pConcealmentInfo =
-      &pAacDecoderStaticChannelInfo->concealmentInfo;
-  CConcealParams *pConcealParams = pConcealmentInfo->pConcealParams;
-  const CConcealmentState concealState = pConcealmentInfo->concealState;
-  TDfadingType fadingType;
-  int32_t fadingStations[9] = {0};
-  int32_t fadingSteps[8] = {0};
-  const int32_t fadeStart =
-      pConcealmentInfo
-          ->fade_old; /* start fading at last end-of-frame attenuation */
-  int16_t *fadeFactor = pConcealParams->fadeOutFactor;
-  const int32_t cntFadeFrames = pConcealmentInfo->cntFadeFrames;
-  int32_t TDFadeOutStopBeforeMute = 1;
-  int32_t TDFadeInStopBeforeFullLevel = 1;
+int32_t CConcealment_TDFading(int32_t len, CAacDecoderStaticChannelInfo **ppAacDecoderStaticChannelInfo,
+                              const int32_t aacOutDataHeadroom, int32_t *pcmdata, int32_t *pcmdata_1) {
+    /*
+    Do the fading in Time domain based on concealment states and core mode
+    */
+    int32_t                       fadeStop, attMute = (int32_t)0;
+    int32_t                       idx = 0, ii;
+    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo = *ppAacDecoderStaticChannelInfo;
+    CConcealmentInfo             *pConcealmentInfo = &pAacDecoderStaticChannelInfo->concealmentInfo;
+    CConcealParams               *pConcealParams = pConcealmentInfo->pConcealParams;
+    const CConcealmentState       concealState = pConcealmentInfo->concealState;
+    TDfadingType                  fadingType;
+    int32_t                       fadingStations[9] = {0};
+    int32_t                       fadingSteps[8] = {0};
+    const int32_t fadeStart = pConcealmentInfo->fade_old; /* start fading at last end-of-frame attenuation */
+    int16_t      *fadeFactor = pConcealParams->fadeOutFactor;
+    const int32_t cntFadeFrames = pConcealmentInfo->cntFadeFrames;
+    int32_t       TDFadeOutStopBeforeMute = 1;
+    int32_t       TDFadeInStopBeforeFullLevel = 1;
 
-  /*
-  determine Fading behaviour (end-of-frame attenuation and fading type) (1.)
-  */
+    /*
+    determine Fading behaviour (end-of-frame attenuation and fading type) (1.)
+    */
 
-  switch (concealState) {
-    case ConcealState_Single:
-    case ConcealState_Mute:
-    case ConcealState_FadeOut:
-      idx = (pConcealParams->method == ConcealMethodNoise) ? cntFadeFrames - 1
-                                                           : cntFadeFrames;
-      fadingType = FADE_TIMEDOMAIN;
+    switch(concealState) {
+        case ConcealState_Single:
+        case ConcealState_Mute:
+        case ConcealState_FadeOut:
+            idx = (pConcealParams->method == ConcealMethodNoise) ? cntFadeFrames - 1 : cntFadeFrames;
+            fadingType = FADE_TIMEDOMAIN;
 
-      if (concealState == ConcealState_Mute ||
-          (cntFadeFrames + TDFadeOutStopBeforeMute) >
-              pConcealmentInfo->pConcealParams->numFadeOutFrames) {
-        fadingType = FADE_TIMEDOMAIN_TOSPECTRALMUTE;
-      }
+            if(concealState == ConcealState_Mute ||
+               (cntFadeFrames + TDFadeOutStopBeforeMute) > pConcealmentInfo->pConcealParams->numFadeOutFrames) {
+                fadingType = FADE_TIMEDOMAIN_TOSPECTRALMUTE;
+            }
 
-      break;
-    case ConcealState_FadeIn:
-      idx = cntFadeFrames;
-      idx -= TDFadeInStopBeforeFullLevel;
-      /* fall through */;
-    case ConcealState_Ok:
-      fadeFactor = pConcealParams->fadeInFactor;
-      idx = (concealState == ConcealState_Ok) ? -1 : idx;
-      fadingType = (pConcealmentInfo->concealState_old == ConcealState_Mute)
-                       ? FADE_TIMEDOMAIN_FROMSPECTRALMUTE
-                       : FADE_TIMEDOMAIN;
-      break;
-    default:
-      assert(0);
-      fadingType = FADE_TIMEDOMAIN_TOSPECTRALMUTE;
-      break;
-  }
-
-  /* determine Target end-of-frame fading level and fading slope */
-  switch (fadingType) {
-    case FADE_TIMEDOMAIN_FROMSPECTRALMUTE:
-      fadeStop =
-          (idx < 0) ? (int32_t)MAXVAL_DBL : FX_SGL2FX_DBL(fadeFactor[idx]);
-      if (pConcealmentInfo->pConcealParams->numFadeInFrames == 0) {
-        /* do step as fast as possible */
-        fadingSteps[0] = 1;
-        break;
-      }
-      CConcealment_TDFading_doLinearFadingSteps(&fadingSteps[0]);
-      break;
-    case FADE_TIMEDOMAIN:
-      fadeStop =
-          (idx < 0) ? (int32_t)MAXVAL_DBL : FX_SGL2FX_DBL(fadeFactor[idx]);
-      CConcealment_TDFading_doLinearFadingSteps(&fadingSteps[0]);
-      break;
-    case FADE_TIMEDOMAIN_TOSPECTRALMUTE:
-      fadeStop = attMute;
-      if (pConcealmentInfo->pConcealParams->numFadeOutFrames == 0) {
-        /* do step as fast as possible */
-        fadingSteps[0] = 1;
-        break;
-      }
-      CConcealment_TDFading_doLinearFadingSteps(&fadingSteps[0]);
-      break;
-  }
-
-  /*
-  Render fading levels within current frame and do the final fading (2.)
-  */
-
-  len >>= 3;
-  CConcealment_TDFadeFillFadingStations(fadingStations, fadingSteps, fadeStop,
-                                        fadeStart, fadingType);
-
-  if ((fadingStations[8] != (int32_t)MAXVAL_DBL) ||
-      (fadingStations[7] != (int32_t)MAXVAL_DBL) ||
-      (fadingStations[6] != (int32_t)MAXVAL_DBL) ||
-      (fadingStations[5] != (int32_t)MAXVAL_DBL) ||
-      (fadingStations[4] != (int32_t)MAXVAL_DBL) ||
-      (fadingStations[3] != (int32_t)MAXVAL_DBL) ||
-      (fadingStations[2] != (int32_t)MAXVAL_DBL) ||
-      (fadingStations[1] != (int32_t)MAXVAL_DBL) ||
-      (fadingStations[0] !=
-       (int32_t)MAXVAL_DBL)) /* if there's something to fade */
-  {
-    int32_t start = 0;
-    for (ii = 0; ii < 8; ii++) {
-      CConcealment_TDFadePcmAtt(start, len, fadingStations[ii],
-                                fadingStations[ii + 1], pcmdata);
-      start += len;
+            break;
+        case ConcealState_FadeIn:
+            idx = cntFadeFrames;
+            idx -= TDFadeInStopBeforeFullLevel;
+            /* fall through */;
+        case ConcealState_Ok:
+            fadeFactor = pConcealParams->fadeInFactor;
+            idx = (concealState == ConcealState_Ok) ? -1 : idx;
+            fadingType = (pConcealmentInfo->concealState_old == ConcealState_Mute) ? FADE_TIMEDOMAIN_FROMSPECTRALMUTE
+                                                                                   : FADE_TIMEDOMAIN;
+            break;
+        default:
+            assert(0);
+            fadingType = FADE_TIMEDOMAIN_TOSPECTRALMUTE;
+            break;
     }
-  }
-  CConcealment_TDNoise_Apply(pConcealmentInfo, len, aacOutDataHeadroom,
-                             pcmdata);
 
-  /* Save end-of-frame attenuation and fading type */
-  pConcealmentInfo->lastFadingType = fadingType;
-  pConcealmentInfo->fade_old = fadeStop;
-  pConcealmentInfo->concealState_old = concealState;
+    /* determine Target end-of-frame fading level and fading slope */
+    switch(fadingType) {
+        case FADE_TIMEDOMAIN_FROMSPECTRALMUTE:
+            fadeStop = (idx < 0) ? (int32_t)MAXVAL_DBL : FX_SGL2FX_DBL(fadeFactor[idx]);
+            if(pConcealmentInfo->pConcealParams->numFadeInFrames == 0) {
+                /* do step as fast as possible */
+                fadingSteps[0] = 1;
+                break;
+            }
+            CConcealment_TDFading_doLinearFadingSteps(&fadingSteps[0]);
+            break;
+        case FADE_TIMEDOMAIN:
+            fadeStop = (idx < 0) ? (int32_t)MAXVAL_DBL : FX_SGL2FX_DBL(fadeFactor[idx]);
+            CConcealment_TDFading_doLinearFadingSteps(&fadingSteps[0]);
+            break;
+        case FADE_TIMEDOMAIN_TOSPECTRALMUTE:
+            fadeStop = attMute;
+            if(pConcealmentInfo->pConcealParams->numFadeOutFrames == 0) {
+                /* do step as fast as possible */
+                fadingSteps[0] = 1;
+                break;
+            }
+            CConcealment_TDFading_doLinearFadingSteps(&fadingSteps[0]);
+            break;
+    }
 
-  return 1;
+    /*
+    Render fading levels within current frame and do the final fading (2.)
+    */
+
+    len >>= 3;
+    CConcealment_TDFadeFillFadingStations(fadingStations, fadingSteps, fadeStop, fadeStart, fadingType);
+
+    if((fadingStations[8] != (int32_t)MAXVAL_DBL) || (fadingStations[7] != (int32_t)MAXVAL_DBL) ||
+       (fadingStations[6] != (int32_t)MAXVAL_DBL) || (fadingStations[5] != (int32_t)MAXVAL_DBL) ||
+       (fadingStations[4] != (int32_t)MAXVAL_DBL) || (fadingStations[3] != (int32_t)MAXVAL_DBL) ||
+       (fadingStations[2] != (int32_t)MAXVAL_DBL) || (fadingStations[1] != (int32_t)MAXVAL_DBL) ||
+       (fadingStations[0] != (int32_t)MAXVAL_DBL)) /* if there's something to fade */
+    {
+        int32_t start = 0;
+        for(ii = 0; ii < 8; ii++) {
+            CConcealment_TDFadePcmAtt(start, len, fadingStations[ii], fadingStations[ii + 1], pcmdata);
+            start += len;
+        }
+    }
+    CConcealment_TDNoise_Apply(pConcealmentInfo, len, aacOutDataHeadroom, pcmdata);
+
+    /* Save end-of-frame attenuation and fading type */
+    pConcealmentInfo->lastFadingType = fadingType;
+    pConcealmentInfo->fade_old = fadeStop;
+    pConcealmentInfo->concealState_old = concealState;
+
+    return 1;
 }
 
 /* attenuate pcmdata in Time Domain Fading process */
-static void CConcealment_TDFadePcmAtt(int32_t start, int32_t len, int32_t fadeStart,
-                                      int32_t fadeStop, int32_t *pcmdata) {
-  int32_t i;
-  int32_t dStep;
-  int32_t dGain;
-  int32_t dGain_apply;
+static void CConcealment_TDFadePcmAtt(int32_t start, int32_t len, int32_t fadeStart, int32_t fadeStop,
+                                      int32_t *pcmdata) {
+    int32_t i;
+    int32_t dStep;
+    int32_t dGain;
+    int32_t dGain_apply;
 
-  /* set start energy */
-  dGain = fadeStart;
-  /* determine energy steps from sample to sample */
-  dStep = (int32_t)((int32_t)((fadeStart >> 1) - (fadeStop >> 1)) / len) << 1;
+    /* set start energy */
+    dGain = fadeStart;
+    /* determine energy steps from sample to sample */
+    dStep = (int32_t)((int32_t)((fadeStart >> 1) - (fadeStop >> 1)) / len) << 1;
 
-  for (i = start; i < (start + len); i++) {
-    dGain -= dStep;
-    /* prevent gain from getting negative due to possible fixpoint inaccuracies
-     */
-    dGain_apply = fMax((int32_t)0, dGain);
-    /* finally, attenuate samples */
-    pcmdata[i] = FIXP_DBL2PCM_DEC(fMult(pcmdata[i], dGain_apply));
-  }
+    for(i = start; i < (start + len); i++) {
+        dGain -= dStep;
+        /* prevent gain from getting negative due to possible fixpoint inaccuracies
+         */
+        dGain_apply = fMax((int32_t)0, dGain);
+        /* finally, attenuate samples */
+        pcmdata[i] = FIXP_DBL2PCM_DEC(fMult(pcmdata[i], dGain_apply));
+    }
 }
 
 /*
@@ -2021,80 +1805,66 @@ Fadingstations:  [0][1][2][3][4][5][6][7][8]
 to be edited)
 
 */
-static void CConcealment_TDFadeFillFadingStations(int32_t *fadingStations,
-                                                  int32_t *fadingSteps,
-                                                  int32_t fadeStop,
-                                                  int32_t fadeStart,
-                                                  TDfadingType fadingType) {
-  int32_t i;
-  int32_t fadingSteps_sum = 0;
-  int32_t fadeDiff;
+static void CConcealment_TDFadeFillFadingStations(int32_t *fadingStations, int32_t *fadingSteps, int32_t fadeStop,
+                                                  int32_t fadeStart, TDfadingType fadingType) {
+    int32_t i;
+    int32_t fadingSteps_sum = 0;
+    int32_t fadeDiff;
 
-  fadingSteps_sum = fadingSteps[0] + fadingSteps[1] + fadingSteps[2] +
-                    fadingSteps[3] + fadingSteps[4] + fadingSteps[5] +
-                    fadingSteps[6] + fadingSteps[7];
-  fadeDiff = ((int32_t)(fadeStop - fadeStart) / fMax(fadingSteps_sum, (int32_t)1));
-  fadingStations[0] = fadeStart;
-  for (i = 1; i < 8; i++) {
-    fadingStations[i] =
-        fadingStations[i - 1] + (int32_t)(fadeDiff * fadingSteps[i - 1]);
-  }
-  fadingStations[8] = fadeStop;
+    fadingSteps_sum = fadingSteps[0] + fadingSteps[1] + fadingSteps[2] + fadingSteps[3] + fadingSteps[4] +
+                      fadingSteps[5] + fadingSteps[6] + fadingSteps[7];
+    fadeDiff = ((int32_t)(fadeStop - fadeStart) / fMax(fadingSteps_sum, (int32_t)1));
+    fadingStations[0] = fadeStart;
+    for(i = 1; i < 8; i++) { fadingStations[i] = fadingStations[i - 1] + (int32_t)(fadeDiff * fadingSteps[i - 1]); }
+    fadingStations[8] = fadeStop;
 }
 
 static void CConcealment_TDFading_doLinearFadingSteps(int32_t *fadingSteps) {
-  fadingSteps[0] = fadingSteps[1] = fadingSteps[2] = fadingSteps[3] =
-      fadingSteps[4] = fadingSteps[5] = fadingSteps[6] = fadingSteps[7] = 1;
+    fadingSteps[0] = fadingSteps[1] = fadingSteps[2] = fadingSteps[3] = fadingSteps[4] = fadingSteps[5] =
+        fadingSteps[6] = fadingSteps[7] = 1;
 }
 
 /* end of TimeDomainFading functions */
 
 /* derived from int32_t UsacRandomSign() */
 static int32_t CConcealment_TDNoise_Random(uint32_t *seed) {
-  *seed = (uint32_t)(((uint64_t)(*seed) * 69069) + 5);
-  return (int32_t)(*seed);
+    *seed = (uint32_t)(((uint64_t)(*seed) * 69069) + 5);
+    return (int32_t)(*seed);
 }
 
-static void CConcealment_TDNoise_Apply(CConcealmentInfo *const pConcealmentInfo,
-                                       const int32_t len,
-                                       const int32_t aacOutDataHeadroom,
-                                       int32_t *const pcmdata) {
-  int32_t *states = pConcealmentInfo->TDNoiseStates;
-  int32_t noiseVal;
-  int32_t noiseValLong;
-  int16_t *coef = pConcealmentInfo->TDNoiseCoef;
-  int32_t TDNoiseAtt;
-  uint32_t seed = pConcealmentInfo->TDNoiseSeed =
-      (uint32_t)CConcealment_TDNoise_Random(&pConcealmentInfo->TDNoiseSeed) + 1;
+static void CConcealment_TDNoise_Apply(CConcealmentInfo *const pConcealmentInfo, const int32_t len,
+                                       const int32_t aacOutDataHeadroom, int32_t *const pcmdata) {
+    int32_t *states = pConcealmentInfo->TDNoiseStates;
+    int32_t  noiseVal;
+    int32_t  noiseValLong;
+    int16_t *coef = pConcealmentInfo->TDNoiseCoef;
+    int32_t  TDNoiseAtt;
+    uint32_t seed = pConcealmentInfo->TDNoiseSeed =
+        (uint32_t)CConcealment_TDNoise_Random(&pConcealmentInfo->TDNoiseSeed) + 1;
 
-  TDNoiseAtt = pConcealmentInfo->pConcealParams->comfortNoiseLevel;
+    TDNoiseAtt = pConcealmentInfo->pConcealParams->comfortNoiseLevel;
 
-  int32_t ii;
+    int32_t ii;
 
-  if ((pConcealmentInfo->concealState != ConcealState_Ok ||
-       pConcealmentInfo->concealState_old != ConcealState_Ok) &&
-      TDNoiseAtt != (int32_t)0) {
-    for (ii = 0; ii < (len << 3); ii++) {
-      /* create filtered noise */
-      states[2] = states[1];
-      states[1] = states[0];
-      states[0] =
-          FIXP_DBL2PCM_DEC((int32_t)CConcealment_TDNoise_Random(&seed));
-      noiseValLong = fMult(states[0], coef[0]) + fMult(states[1], coef[1]) +
-                     fMult(states[2], coef[2]);
-      noiseVal = FIXP_DBL2PCM_DEC(fMult(noiseValLong, TDNoiseAtt) >>
-                                  aacOutDataHeadroom);
+    if((pConcealmentInfo->concealState != ConcealState_Ok || pConcealmentInfo->concealState_old != ConcealState_Ok) &&
+       TDNoiseAtt != (int32_t)0) {
+        for(ii = 0; ii < (len << 3); ii++) {
+            /* create filtered noise */
+            states[2] = states[1];
+            states[1] = states[0];
+            states[0] = FIXP_DBL2PCM_DEC((int32_t)CConcealment_TDNoise_Random(&seed));
+            noiseValLong = fMult(states[0], coef[0]) + fMult(states[1], coef[1]) + fMult(states[2], coef[2]);
+            noiseVal = FIXP_DBL2PCM_DEC(fMult(noiseValLong, TDNoiseAtt) >> aacOutDataHeadroom);
 
-      /* add filtered noise - check for clipping, before */
-      if (noiseVal > (int32_t)0 &&
-          pcmdata[ii] > (int32_t)MAXVAL_DBL - noiseVal) {
-        noiseVal = noiseVal * (int32_t)-1;
-      } else if (noiseVal < (int32_t)0 &&
-                 pcmdata[ii] < (int32_t)MINVAL_DBL - noiseVal) {
-        noiseVal = noiseVal * (int32_t)-1;
-      }
+            /* add filtered noise - check for clipping, before */
+            if(noiseVal > (int32_t)0 && pcmdata[ii] > (int32_t)MAXVAL_DBL - noiseVal) {
+                noiseVal = noiseVal * (int32_t)-1;
+            }
+            else if(noiseVal < (int32_t)0 && pcmdata[ii] < (int32_t)MINVAL_DBL - noiseVal) {
+                noiseVal = noiseVal * (int32_t)-1;
+            }
 
-      pcmdata[ii] += noiseVal;
+            pcmdata[ii] += noiseVal;
+        }
     }
-  }
 }

@@ -110,8 +110,6 @@ amm-info@iis.fraunhofer.de
 #include "sbr_rom.h"
 #include "env_extr.h"
 
-#include "../libSYS/genericStds.h"
-
 #define MAX_OCTAVE 29
 #define MAX_SECOND_REGION 50
 

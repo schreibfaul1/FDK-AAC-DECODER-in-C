@@ -108,7 +108,6 @@ amm-info@iis.fraunhofer.de
 #include "../libAACdec/newAACDecoder.h"
 #include "../libSYS/machine_type.h"
 
-#include "../libSYS/genericStds.h"
 
 #define CACHE_BITS 32
 

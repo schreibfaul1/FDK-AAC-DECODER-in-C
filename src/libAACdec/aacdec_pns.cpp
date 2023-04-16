@@ -108,8 +108,6 @@ amm-info@iis.fraunhofer.de
 #include "block.h"
 #include "../libFDK/FDK_bitstream.h"
 
-#include "../libSYS/genericStds.h"
-
 #define NOISE_OFFSET 90 /* cf. ISO 14496-3 p. 175 */
 
 /*!

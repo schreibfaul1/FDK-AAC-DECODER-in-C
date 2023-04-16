@@ -10,7 +10,6 @@
 
 #include "usacdec_acelp.h"
 #include <memory.h>
-#include "../libSYS/genericStds.h"
 #include "usacdec_ace_d4t64.h"
 #include "usacdec_ace_ltp.h"
 #include "usacdec_lpc.h"
@@ -740,10 +739,6 @@ void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, int32_t i_offset, const FIXP_L
 
     scaleValues(synth, l_div, -ACELP_OUTSCALE);
     acelp_mem->deemph_mem_wsyn = acelp_mem->de_emph_mem;
-
-    C_ALLOC_SCRATCH_END(tmp_buf, int32_t, L_SUBFR);
-    C_ALLOC_SCRATCH_END(syn_buf, int32_t, M_LP_FILTER_ORDER + L_DIV);
-    C_ALLOC_SCRATCH_END(exc_buf, int32_t, PIT_MAX_MAX + L_INTERPOL + L_DIV + 1);
     return;
 }
 
@@ -765,9 +760,8 @@ void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, int16_t *pitch, const FIXP_LP
                        const FIXP_LPC lsp_new[M_LP_FILTER_ORDER], const int16_t stab_fac, int32_t nLostSf,
                        int32_t synth[], int32_t coreCoderFrameLength, uint8_t last_tcx_noise_factor) {
     /* repeat past excitation with pitch from previous decoded TCX frame */
-    C_ALLOC_SCRATCH_START(exc_buf, int32_t, PIT_MAX_MAX + L_INTERPOL + L_DIV); /* 411 +  17 + 256 + 1 =  */
-    C_ALLOC_SCRATCH_START(syn_buf, int32_t, M_LP_FILTER_ORDER + L_DIV);        /* 256 +  16           =  */
-                                                                               /*                    +=  */
+    int32_t exc_buf[PIT_MAX_MAX + L_INTERPOL + L_DIV_1024]; /* 411 +  17 + 256 + 1 =  */
+    int32_t syn_buf[M_LP_FILTER_ORDER + L_DIV_1024];        /* 256 +  16           =  */
     int32_t  ns_buf[L_DIV + 1];
     int32_t *syn = syn_buf + M_LP_FILTER_ORDER;
     int32_t *exc = exc_buf + PIT_MAX_MAX + L_INTERPOL;
@@ -845,9 +839,6 @@ void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, int16_t *pitch, const FIXP_LP
               sizeof(int32_t) * (PIT_MAX_MAX + L_INTERPOL));
     memcpy(acelp_mem->old_syn_mem, syn_buf + lDiv, sizeof(int32_t) * M_LP_FILTER_ORDER);
     acelp_mem->de_emph_mem = acelp_mem->deemph_mem_wsyn;
-
-    C_ALLOC_SCRATCH_END(syn_buf, int32_t, M_LP_FILTER_ORDER + L_DIV);
-    C_ALLOC_SCRATCH_END(exc_buf, int32_t, PIT_MAX_MAX + L_INTERPOL + L_DIV);
 }
 
 void Acelp_PreProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch, int32_t *old_T_pf, int32_t *pit_gain,
@@ -888,7 +879,8 @@ void Acelp_PostProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch
 
 void CLpd_Acelp_Zir(const FIXP_LPC A[], const int32_t A_exp, CAcelpStaticMem *acelp_mem, const int32_t length,
                     int32_t zir[], int32_t doDeemph) {
-    C_ALLOC_SCRATCH_START(tmp_buf, int32_t, L_FAC_ZIR + M_LP_FILTER_ORDER);
+
+    int32_t tmp_buf[LFAC + M_LP_FILTER_ORDER];
     assert(length <= L_FAC_ZIR);
 
     memcpy(tmp_buf, acelp_mem->old_syn_mem, M_LP_FILTER_ORDER * sizeof(int32_t));
@@ -903,7 +895,6 @@ void CLpd_Acelp_Zir(const FIXP_LPC A[], const int32_t A_exp, CAcelpStaticMem *ac
         Deemph(&tmp_buf[M_LP_FILTER_ORDER], &zir[0], length, &acelp_mem->de_emph_mem);
         scaleValues(zir, length, -ACELP_OUTSCALE);
     }
-    C_ALLOC_SCRATCH_END(tmp_buf, int32_t, L_FAC_ZIR + M_LP_FILTER_ORDER);
 }
 
 void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, uint8_t last_last_lpd_mode,
@@ -914,7 +905,7 @@ void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, u
     int32_t  l_div_partial;
     int32_t *syn, *old_exc_mem;
 
-    C_ALLOC_SCRATCH_START(synth_buf, int32_t, PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER);
+    int32_t synth_buf[PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER];
     syn = &synth_buf[M_LP_FILTER_ORDER];
 
     l_div_partial = PIT_MAX_MAX + L_INTERPOL - l_div;
@@ -945,7 +936,6 @@ void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, u
 
     if(clearOldExc) {
         memset(old_exc_mem, 0, (PIT_MAX_MAX + L_INTERPOL) * sizeof(int32_t));
-        C_ALLOC_SCRATCH_END(synth_buf, int32_t, PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER);
         return;
     }
 
@@ -968,8 +958,6 @@ void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, u
         E_UTIL_residu(A_old, A_old_exp, syn, old_exc_mem, exc_A_old_length);
         E_UTIL_residu(A_new, A_new_exp, &syn[exc_A_old_length], &old_exc_mem[exc_A_old_length], exc_A_new_length);
     }
-    C_ALLOC_SCRATCH_END(synth_buf, int32_t, PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER);
-
     return;
 }
 

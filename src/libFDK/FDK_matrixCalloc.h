@@ -105,7 +105,7 @@ amm-info@iis.fraunhofer.de
 
 #include "../libAACdec/newAACDecoder.h"
 #include "../libSYS/machine_type.h"
-#include "../libSYS/genericStds.h"
+
 
 /* It is recommended to use FDK_ALLOCATE_MEMORY_1D instead of fdkCallocMatrix1D
  */

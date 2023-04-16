@@ -499,9 +499,6 @@ static int32_t CProgramConfigElement_Read(HANDLE_FDK_BITSTREAM bs, HANDLE_TRANSP
 			}
 		}
 	}
-
-	C_ALLOC_SCRATCH_END(tmpPce, CProgramConfig, 1);
-
 	return pceStatus;
 }
 
@@ -1447,7 +1444,6 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, uint8
 		   || (pceCmpResult > 1)) { /*            ... or have a different layout. */
 			CProgramConfig_Init(&self->pce);
 		} /* Otherwise keep the PCE (and its metadata). */
-		C_ALLOC_SCRATCH_END(tmpPce, CProgramConfig, 1);
 	}
 	else { CProgramConfig_Init(&self->pce); }
 

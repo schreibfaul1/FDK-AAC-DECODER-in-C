@@ -127,7 +127,6 @@ amm-info@iis.fraunhofer.de
 #include "sbr_ram.h"
 #include "sbr_rom.h"
 
-#include "../libSYS/genericStds.h"
 #include "../libFDK/autocorr2nd.h"
 
 #include "HFgen_preFlat.h"

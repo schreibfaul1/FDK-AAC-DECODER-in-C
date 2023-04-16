@@ -1027,8 +1027,7 @@ static int32_t DuckerApply(DUCKER_INSTANCE *const self, int32_t const directNrg[
     int32_t hybBands;
     int32_t hybridBands = self->hybridBands;
 
-    C_ALLOC_SCRATCH_START(reverbNrg, int32_t, (28));
-
+    int32_t reverbNrg[28];
     int32_t       *smoothDirRevNrg = &self->SmoothDirRevNrg[0];
     FIXP_DUCK_GAIN duckGain = 0;
 
@@ -1152,8 +1151,6 @@ static int32_t DuckerApply(DUCKER_INSTANCE *const self, int32_t const directNrg[
     } /* pb */
 
     self->headroomSmoothDirRevNrg = (int8_t)fixMax(0, CntLeadingZeros(maxDirRevNrg) - 1);
-
-    C_ALLOC_SCRATCH_END(reverbNrg, int32_t, (28));
 
     return err;
 }

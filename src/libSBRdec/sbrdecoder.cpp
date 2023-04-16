@@ -1480,7 +1480,8 @@ static SBR_ERROR sbrDecoder_DecodeElement(HANDLE_SBRDECODER self, int32_t *input
 
 	{
 		self->flags &= ~SBRDEC_PS_DECODED;
-		C_ALLOC_SCRATCH_START(pPsScratch, struct PS_DEC_COEFFICIENTS, 1)
+
+		struct PS_DEC_COEFFICIENTS pPsScratch[1];
 
 		/* decode PS data if available */
 		if(h_ps_d != NULL && psPossible && (hSbrHeader->syncState == SBR_ACTIVE)) {
@@ -1521,8 +1522,6 @@ static SBR_ERROR sbrDecoder_DecodeElement(HANDLE_SBRDECODER self, int32_t *input
 					hSbrHeader, hFrameDataRight, &pSbrChannel[1]->prevFrameData, (hSbrHeader->syncState == SBR_ACTIVE),
 					NULL, self->flags, codecFrameSize, self->sbrInDataHeadroom);
 		}
-
-		C_ALLOC_SCRATCH_END(pPsScratch, struct PS_DEC_COEFFICIENTS, 1)
 	}
 
 	if(h_ps_d != NULL) {

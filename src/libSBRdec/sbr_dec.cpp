@@ -126,7 +126,6 @@ amm-info@iis.fraunhofer.de
 #include "../libFDK/FDK_matrixCalloc.h"
 #include "hbe.h"
 
-#include "../libSYS/genericStds.h"
 
 #include "sbrdec_drc.h"
 

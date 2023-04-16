@@ -105,7 +105,6 @@ amm-info@iis.fraunhofer.de
 #include <assert.h>
 #include "pcmdmx_lib.h"
 
-#include "../libSYS/genericStds.h"
 #include "../libFDK/fixpoint_math.h"
 #include "../libFDK/FDK_core.h"
 

@@ -104,7 +104,6 @@ amm-info@iis.fraunhofer.de
 #include <stdint.h>
 #include "FDK_bitbuffer.h"
 
-#include "../libSYS/genericStds.h"
 #include "common_fix.h"
 #include "fixminmax.h"
 
