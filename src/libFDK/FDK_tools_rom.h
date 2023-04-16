@@ -109,77 +109,77 @@ amm-info@iis.fraunhofer.de
 /* sinetables */
 
 /* None radix2 rotation vectors */
-extern RAM_ALIGN const FIXP_STB RotVectorReal60[60];
-extern RAM_ALIGN const FIXP_STB RotVectorImag60[60];
-extern RAM_ALIGN const FIXP_STB RotVectorReal192[192];
-extern RAM_ALIGN const FIXP_STB RotVectorImag192[192];
-extern RAM_ALIGN const FIXP_STB RotVectorReal240[210];
-extern RAM_ALIGN const FIXP_STB RotVectorImag240[210];
-extern RAM_ALIGN const FIXP_STB RotVectorReal480[480];
-extern RAM_ALIGN const FIXP_STB RotVectorImag480[480];
-extern RAM_ALIGN const FIXP_STB RotVectorReal6[6];
-extern RAM_ALIGN const FIXP_STB RotVectorImag6[6];
-extern RAM_ALIGN const FIXP_STB RotVectorReal12[12];
-extern RAM_ALIGN const FIXP_STB RotVectorImag12[12];
-extern RAM_ALIGN const FIXP_STB RotVectorReal24[24];
-extern RAM_ALIGN const FIXP_STB RotVectorImag24[24];
-extern RAM_ALIGN const FIXP_STB RotVectorReal48[48];
-extern RAM_ALIGN const FIXP_STB RotVectorImag48[48];
-extern RAM_ALIGN const FIXP_STB RotVectorReal80[80];
-extern RAM_ALIGN const FIXP_STB RotVectorImag80[80];
-extern RAM_ALIGN const FIXP_STB RotVectorReal96[96];
-extern RAM_ALIGN const FIXP_STB RotVectorImag96[96];
-extern RAM_ALIGN const FIXP_STB RotVectorReal384[384];
-extern RAM_ALIGN const FIXP_STB RotVectorImag384[384];
-extern RAM_ALIGN const FIXP_STB RotVectorReal20[20];
-extern RAM_ALIGN const FIXP_STB RotVectorImag20[20];
-extern RAM_ALIGN const FIXP_STB RotVectorReal120[120];
-extern RAM_ALIGN const FIXP_STB RotVectorImag120[120];
+extern const FIXP_STB RotVectorReal60[60];
+extern const FIXP_STB RotVectorImag60[60];
+extern const FIXP_STB RotVectorReal192[192];
+extern const FIXP_STB RotVectorImag192[192];
+extern const FIXP_STB RotVectorReal240[210];
+extern const FIXP_STB RotVectorImag240[210];
+extern const FIXP_STB RotVectorReal480[480];
+extern const FIXP_STB RotVectorImag480[480];
+extern const FIXP_STB RotVectorReal6[6];
+extern const FIXP_STB RotVectorImag6[6];
+extern const FIXP_STB RotVectorReal12[12];
+extern const FIXP_STB RotVectorImag12[12];
+extern const FIXP_STB RotVectorReal24[24];
+extern const FIXP_STB RotVectorImag24[24];
+extern const FIXP_STB RotVectorReal48[48];
+extern const FIXP_STB RotVectorImag48[48];
+extern const FIXP_STB RotVectorReal80[80];
+extern const FIXP_STB RotVectorImag80[80];
+extern const FIXP_STB RotVectorReal96[96];
+extern const FIXP_STB RotVectorImag96[96];
+extern const FIXP_STB RotVectorReal384[384];
+extern const FIXP_STB RotVectorImag384[384];
+extern const FIXP_STB RotVectorReal20[20];
+extern const FIXP_STB RotVectorImag20[20];
+extern const FIXP_STB RotVectorReal120[120];
+extern const FIXP_STB RotVectorImag120[120];
 
 /* Regular sine tables */
-extern RAM_ALIGN const FIXP_STP SineTable1024[];
-extern RAM_ALIGN const FIXP_STP SineTable512[];
-extern RAM_ALIGN const FIXP_STP SineTable480[];
-extern RAM_ALIGN const FIXP_STP SineTable384[];
-extern RAM_ALIGN const FIXP_STP SineTable80[];
+extern  const FIXP_STP SineTable1024[];
+extern  const FIXP_STP SineTable512[];
+extern  const FIXP_STP SineTable480[];
+extern  const FIXP_STP SineTable384[];
+extern  const FIXP_STP SineTable80[];
 #ifdef INCLUDE_SineTable10
-extern RAM_ALIGN const FIXP_STP SineTable10[];
+extern  const FIXP_STP SineTable10[];
 #endif
 
 /* AAC-LC windows */
-extern RAM_ALIGN const FIXP_WTP SineWindow1024[];
-extern RAM_ALIGN const FIXP_WTP KBDWindow1024[];
-extern RAM_ALIGN const FIXP_WTP SineWindow128[];
-extern RAM_ALIGN const FIXP_WTP KBDWindow128[];
+extern  const FIXP_WTP SineWindow1024[];
+extern  const FIXP_WTP KBDWindow1024[];
+extern  const FIXP_WTP SineWindow128[];
+extern  const FIXP_WTP KBDWindow128[];
 
-extern RAM_ALIGN const FIXP_WTP SineWindow960[];
-extern RAM_ALIGN const FIXP_WTP KBDWindow960[];
-extern RAM_ALIGN const FIXP_WTP SineWindow120[];
-extern RAM_ALIGN const FIXP_WTP KBDWindow120[];
+extern  const FIXP_WTP SineWindow960[];
+extern  const FIXP_WTP KBDWindow960[];
+extern  const FIXP_WTP SineWindow120[];
+extern  const FIXP_WTP KBDWindow120[];
 
 /* AAC-LD windows */
-extern RAM_ALIGN const FIXP_WTP SineWindow512[];
+extern  const FIXP_WTP SineWindow512[];
 #define LowOverlapWindow512 SineWindow128
-extern RAM_ALIGN const FIXP_WTP SineWindow480[];
+extern  const FIXP_WTP SineWindow480[];
 #define LowOverlapWindow480 SineWindow120
 
 /* USAC TCX Window */
-extern RAM_ALIGN const FIXP_WTP SineWindow256[256];
-extern RAM_ALIGN const FIXP_WTP SineWindow192[];
+extern  const FIXP_WTP SineWindow256[256];
+extern  const FIXP_WTP SineWindow192[];
 
 /* USAC 8/3 windows */
-extern RAM_ALIGN const FIXP_WTP SineWindow768[];
-extern RAM_ALIGN const FIXP_WTP KBDWindow768[];
-extern RAM_ALIGN const FIXP_WTP SineWindow96[];
-extern RAM_ALIGN const FIXP_WTP KBDWindow96[];
+extern  const FIXP_WTP SineWindow768[];
+extern  const FIXP_WTP KBDWindow768[];
+extern  const FIXP_WTP SineWindow96[];
+extern  const FIXP_WTP KBDWindow96[];
 
 /* DCT and others */
-extern RAM_ALIGN const FIXP_WTP SineWindow64[];
-extern RAM_ALIGN const FIXP_WTP SineWindow48[];
-extern RAM_ALIGN const FIXP_WTP SineWindow32[];
-extern RAM_ALIGN const FIXP_WTP SineWindow24[];
-extern RAM_ALIGN const FIXP_WTP SineWindow16[];
-extern RAM_ALIGN const FIXP_WTP SineWindow8[];
+extern  const FIXP_WTP SineWindow64[];
+extern  const FIXP_WTP SineWindow48[];
+extern  const FIXP_WTP SineWindow32[];
+extern  const FIXP_WTP SineWindow24[];
+extern  const FIXP_WTP SineWindow16[];
+extern  const FIXP_WTP SineWindow8[];
 
 /**
  * \brief Helper table for window slope mapping. You should prefer the usage of
@@ -229,29 +229,29 @@ extern const FIXP_WTP sin_twiddle_L64[];
 /* Resampling twiddles for QMF */
 
 /* Not resampling twiddles */
-extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_cos32[32];
-extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_sin32[32];
+extern  const FIXP_QTW qmf_phaseshift_cos32[32];
+extern  const FIXP_QTW qmf_phaseshift_sin32[32];
 /* Adapted analysis post-twiddles for down-sampled HQ SBR */
-extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_cos_downsamp32[32];
-extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_sin_downsamp32[32];
-extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_cos64[64];
-extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_sin64[64];
-extern RAM_ALIGN const FIXP_PFT
+extern  const FIXP_QTW qmf_phaseshift_cos_downsamp32[32];
+extern  const FIXP_QTW qmf_phaseshift_sin_downsamp32[32];
+extern  const FIXP_QTW qmf_phaseshift_cos64[64];
+extern  const FIXP_QTW qmf_phaseshift_sin64[64];
+extern  const FIXP_PFT
     qmf_pfilt640[QMF640_PFT_TABLE_SIZE + QMF_NO_POLY];
-extern RAM_ALIGN const FIXP_PFT qmf_pfilt640_vector[640];
+extern  const FIXP_PFT qmf_pfilt640_vector[640];
 
-extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_cos40[40];
-extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_sin40[40];
-extern RAM_ALIGN const FIXP_PFT qmf_pfilt400[];
-extern RAM_ALIGN const FIXP_PFT qmf_pfilt200[];
-extern RAM_ALIGN const FIXP_PFT qmf_pfilt120[];
+extern  const FIXP_QTW qmf_phaseshift_cos40[40];
+extern  const FIXP_QTW qmf_phaseshift_sin40[40];
+extern  const FIXP_PFT qmf_pfilt400[];
+extern  const FIXP_PFT qmf_pfilt200[];
+extern  const FIXP_PFT qmf_pfilt120[];
 
-extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_cos24[24];
-extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_sin24[24];
-extern RAM_ALIGN const FIXP_PFT qmf_pfilt240[];
+extern  const FIXP_QTW qmf_phaseshift_cos24[24];
+extern  const FIXP_QTW qmf_phaseshift_sin24[24];
+extern  const FIXP_PFT qmf_pfilt240[];
 
-extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_cos16[16];
-extern RAM_ALIGN const FIXP_QTW qmf_phaseshift_sin16[16];
+extern  const FIXP_QTW qmf_phaseshift_cos16[16];
+extern  const FIXP_QTW qmf_phaseshift_sin16[16];
 
 #define QMF640_CLDFB_PFT_TABLE_SIZE (640)
 #define QMF320_CLDFB_PFT_TABLE_SIZE (320)
@@ -272,19 +272,19 @@ extern const FIXP_QTW qmf_phaseshift_sin8_cldfb[8];
 extern const FIXP_QTW qmf_phaseshift_cos64_cldfb[64];
 extern const FIXP_QTW qmf_phaseshift_sin64_cldfb[64];
 
-extern RAM_ALIGN const FIXP_PFT qmf_cldfb_640[QMF640_CLDFB_PFT_TABLE_SIZE];
-extern RAM_ALIGN const FIXP_PFT qmf_cldfb_320[QMF320_CLDFB_PFT_TABLE_SIZE];
+extern  const FIXP_PFT qmf_cldfb_640[QMF640_CLDFB_PFT_TABLE_SIZE];
+extern  const FIXP_PFT qmf_cldfb_320[QMF320_CLDFB_PFT_TABLE_SIZE];
 #define QMF160_CLDFB_PFT_TABLE_SIZE (160)
-extern RAM_ALIGN const FIXP_PFT qmf_cldfb_160[QMF160_CLDFB_PFT_TABLE_SIZE];
+extern  const FIXP_PFT qmf_cldfb_160[QMF160_CLDFB_PFT_TABLE_SIZE];
 #define QMF80_CLDFB_PFT_TABLE_SIZE (80)
-extern RAM_ALIGN const FIXP_PFT qmf_cldfb_80[QMF80_CLDFB_PFT_TABLE_SIZE];
+extern  const FIXP_PFT qmf_cldfb_80[QMF80_CLDFB_PFT_TABLE_SIZE];
 
 #define QMF320_MPSLDFB_PFT_TABLE_SIZE (320)
 #define QMF640_MPSLDFB_PFT_TABLE_SIZE (640)
 #define QMF_MPSLDFB_PFT_SCALE 1
 
 extern const FIXP_PFT qmf_mpsldfb_320[QMF320_MPSLDFB_PFT_TABLE_SIZE];
-extern RAM_ALIGN const FIXP_PFT qmf_mpsldfb_640[QMF640_MPSLDFB_PFT_TABLE_SIZE];
+extern  const FIXP_PFT qmf_mpsldfb_640[QMF640_MPSLDFB_PFT_TABLE_SIZE];
 
 /**
  * Audio bitstream element specific syntax flags:

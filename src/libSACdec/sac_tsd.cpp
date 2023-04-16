@@ -107,13 +107,13 @@ amm-info@iis.fraunhofer.de
 #define SIZE_C (5)
 
 /*** Tables ***/
-RAM_ALIGN
+
 
 static const uint8_t nBitsTsdCW_32slots[32] = {
     5,  9,  13, 16, 18, 20, 22, 24, 25, 26, 27, 28, 29, 29, 30, 30,
     30, 29, 29, 28, 27, 26, 25, 24, 22, 20, 18, 16, 13, 9,  5,  0};
 
-RAM_ALIGN
+
 
 static const uint8_t nBitsTsdCW_64slots[64] = {
     6,  11, 16, 20, 23, 27, 30, 33, 35, 38, 40, 42, 44, 46, 48, 49,
@@ -121,7 +121,7 @@ static const uint8_t nBitsTsdCW_64slots[64] = {
     61, 61, 61, 60, 60, 60, 59, 58, 58, 57, 56, 55, 53, 52, 51, 49,
     48, 46, 44, 42, 40, 38, 35, 33, 30, 27, 23, 20, 16, 11, 6,  0};
 
-RAM_ALIGN
+
 
 static const FIXP_DPK phiTsd[8] = {
     {{(int32_t)0x7fffffff, (int32_t)0x00000000}},

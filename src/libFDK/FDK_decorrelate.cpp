@@ -229,7 +229,7 @@ static inline int32_t SpatialDecGetQmfBand(int32_t paramBand, const uint8_t *tab
 #define DUCK_GAMMA_FDK                FL2FXCONST_DUCK(DUCK_GAMMA / 2)
 #define PS_DUCK_PEAK_DECAY_FACTOR_FDK FL2FXCONST_DUCK(PS_DUCK_PEAK_DECAY_FACTOR)
 #define PS_DUCK_FILTER_COEFF_FDK      FL2FXCONST_DUCK(PS_DUCK_FILTER_COEFF)
-RAM_ALIGN
+
 const FIXP_STP DecorrPsCoeffsCplx[][4] = {{23913, 22403, -21043, 3587, -17708, 5372, -15893, 2179},
                                           {23913, -22403, -21043, -3587, -17708, -5372, -15893, -2179},
                                           {-20798, 25322, -18665, 10357, -11739, 14304, -14719, 6377},
@@ -277,7 +277,7 @@ const FIXP_DECORR DecorrNumeratorReal3_USAC[MAX_DECORR_SEED_USAC][DECORR_FILTER_
 /* const FIXP_DECORR DecorrNumeratorReal0_LD[MAX_DECORR_SEED_LD][] does not
  * exist */
 
-RAM_ALIGN
+
 const FIXP_DECORR DecorrNumeratorReal1_LD[MAX_DECORR_SEED_LD][DECORR_FILTER_ORDER_BAND_1_LD + 1] = {
     {
         -3311,
@@ -353,7 +353,7 @@ const FIXP_DECORR DecorrNumeratorReal1_LD[MAX_DECORR_SEED_LD][DECORR_FILTER_ORDE
     },
 };
 
-RAM_ALIGN
+
 const FIXP_DECORR DecorrNumeratorReal2_LD[MAX_DECORR_SEED_LD][DECORR_FILTER_ORDER_BAND_2_LD + 1 + DECORR_ZERO_PADDING] =
     {
         {
@@ -394,7 +394,7 @@ const FIXP_DECORR DecorrNumeratorReal2_LD[MAX_DECORR_SEED_LD][DECORR_FILTER_ORDE
         },
 };
 
-RAM_ALIGN
+
 const FIXP_DECORR DecorrNumeratorReal3_LD[MAX_DECORR_SEED_LD][DECORR_FILTER_ORDER_BAND_3_LD + 1] = {
     {
         585,

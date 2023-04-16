@@ -23,7 +23,7 @@
 #define SAMPLE_MIN (~SAMPLE_MAX)
 
 #define ALIGNMENT_DEFAULT 8
-#define RAM_ALIGN __attribute__((aligned(ALIGNMENT_DEFAULT)))
+// #define  __attribute__((aligned(ALIGNMENT_DEFAULT)))
 
 
 /*-----------------------------------------------------------------------------------

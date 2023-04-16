@@ -136,7 +136,7 @@ void LdDataVector(int32_t *srcVector, int32_t *destVector, int32_t n) {
   To evaluate the taylor series around x = 0, the coefficients are: 1/!i *
   ln(2)^i
  */
-RAM_ALIGN
+
 
 static const int16_t pow2Coeff[MAX_POW2_PRECISION] = {
     22713, 7872, 1819, 315, 44, 5, 0, 0,
