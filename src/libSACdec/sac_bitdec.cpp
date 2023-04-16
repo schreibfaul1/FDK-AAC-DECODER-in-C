@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "sac_bitdec.h"
 
 #include "sac_dec_errorcodes.h"
@@ -325,7 +326,7 @@ SACDEC_ERROR SpatialDecParseMps212Config(
     int32_t coreSbrFrameLengthIndex) {
   int32_t i;
 
-  FDKmemclear(pSpatialSpecificConfig, sizeof(SPATIAL_SPECIFIC_CONFIG));
+  memset(pSpatialSpecificConfig, 0, sizeof(SPATIAL_SPECIFIC_CONFIG));
 
   pSpatialSpecificConfig->stereoConfigIndex = stereoConfigIndex;
   pSpatialSpecificConfig->coreSbrFrameLengthIndex = coreSbrFrameLengthIndex;
@@ -450,7 +451,7 @@ SACDEC_ERROR SpatialDecParseSpecificConfig(
   int32_t cfgStartPos, bitsAvailable;
   int32_t treeConfig;
 
-  FDKmemclear(pSpatialSpecificConfig, sizeof(SPATIAL_SPECIFIC_CONFIG));
+  memset(pSpatialSpecificConfig, 0, sizeof(SPATIAL_SPECIFIC_CONFIG));
 
   cfgStartPos = FDKgetValidBits(bitstream);
   /* It might be that we do not know the SSC length beforehand. */
@@ -1753,7 +1754,7 @@ static SACDEC_ERROR decodeAndMapFrameSmg(HANDLE_SPATIAL_DEC self,
     switch (frame->bsSmoothMode[ps]) {
       case 0:
         self->smgTime[ps] = 256;
-        FDKmemclear(self->smgData[ps],
+        memset(self->smgData[ps], 0,
                     self->bitstreamParameterBands * sizeof(uint8_t));
         break;
 
@@ -1979,7 +1980,7 @@ SACDEC_ERROR SpatialDecDecodeHeader(
   }
 
   /* create param to hyb band table */
-  FDKmemclear(self->param2hyb, (MAX_PARAMETER_BANDS + 1) * sizeof(int32_t));
+  memset(self->param2hyb, 0, (MAX_PARAMETER_BANDS + 1) * sizeof(int32_t));
   for (i = 0; i < self->hybridBands; i++) {
     self->param2hyb[self->kernels[i] + 1] = i + 1;
   }

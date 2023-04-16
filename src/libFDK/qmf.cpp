@@ -131,8 +131,7 @@ amm-info@iis.fraunhofer.de
   computational complexity - very much depending on the bitrate. Since it is a
   rather small function, effective assembler optimization might be possible.
 
-*/
-
+*/#include <memory.h>
 #include "qmf.h"
 
 #include "FDK_trigFcts.h"
@@ -325,7 +324,7 @@ inline static void qmfInverseModulationLP_even(
   scaleValuesSaturate(&tReal[0], &qmfReal[0], synQmf->lsb, scaleFactorLowBand);
   scaleValuesSaturate(&tReal[0 + synQmf->lsb], &qmfReal[0 + synQmf->lsb],
                       synQmf->usb - synQmf->lsb, scaleFactorHighBand);
-  FDKmemclear(&tReal[0 + synQmf->usb], (L - synQmf->usb) * sizeof(int32_t));
+  memset(&tReal[0 + synQmf->usb], 0, (L - synQmf->usb) * sizeof(int32_t));
 
   /* Dct type-2 transform */
   dct_II(tReal, tImag, L, &scale);
@@ -378,7 +377,7 @@ inline static void qmfInverseModulationLP_odd(
   scaleValuesSaturate(pTimeOut + M, qmfReal, synQmf->lsb, scaleFactorLowBand);
   scaleValuesSaturate(pTimeOut + M + synQmf->lsb, qmfReal + synQmf->lsb,
                       synQmf->usb - synQmf->lsb, scaleFactorHighBand);
-  FDKmemclear(pTimeOut + M + synQmf->usb, (L - synQmf->usb) * sizeof(int32_t));
+  memset(pTimeOut + M + synQmf->usb, 0, (L - synQmf->usb) * sizeof(int32_t));
 
   dct_IV(pTimeOut + M, L, &shift);
   for (i = 0; i < M; i++) {
@@ -434,9 +433,9 @@ inline static void qmfInverseModulationHQ(
                         synQmf->usb - synQmf->lsb, scaleFactorHighBand);
   }
 
-  FDKmemclear(&tReal[synQmf->usb],
+  memset(&tReal[synQmf->usb], 0,
               (synQmf->no_channels - synQmf->usb) * sizeof(int32_t));
-  FDKmemclear(&tImag[synQmf->usb],
+  memset(&tImag[synQmf->usb], 0,
               (synQmf->no_channels - synQmf->usb) * sizeof(int32_t));
 
   dct_IV(tReal, L, &shift);
@@ -492,7 +491,7 @@ static int32_t qmfInitFilterBank(
     uint32_t flags,                   /*!< flags */
     int32_t synflag)                  /*!< 1: synthesis; 0: analysis */
 {
-  FDKmemclear(h_Qmf, sizeof(QMF_FILTER_BANK));
+  memset(h_Qmf, 0, sizeof(QMF_FILTER_BANK));
 
   if (flags & QMF_FLAG_MPSLDFB) {
     flags |= QMF_FLAG_NONSYMMETRIC;
@@ -732,8 +731,8 @@ int32_t qmfInitSynthesisFilterBank(
                               no_channels, flags, 1);
   if (h_Qmf->FilterStates != NULL) {
     if (!(flags & QMF_FLAG_KEEP_STATES)) {
-      FDKmemclear(
-          h_Qmf->FilterStates,
+      memset(
+          h_Qmf->FilterStates, 0,
           (2 * QMF_NO_POLY - 1) * h_Qmf->no_channels * sizeof(FIXP_QSS));
     } else {
       qmfAdaptFilterStates(h_Qmf, oldOutScale - h_Qmf->outScalefactor);

@@ -572,10 +572,10 @@ ARITH_CODING_ERROR CArco_DecodeArithData(CArcoData *pArcoData, HANDLE_FDK_BITSTR
 	/* Check lg and lg_max consistency. */
 	if(lg_max < lg) { return ARITH_CODER_ERROR; }
 
-	FDKmemclear(mdctSpectrum, lg_max * sizeof(int32_t));
+	memset(mdctSpectrum, 0, lg_max * sizeof(int32_t));
 
 	/* arith_map_context */
-	if(arith_reset_flag) { FDKmemclear(pArcoData->c_prev, sizeof(pArcoData->c_prev[0]) * ((lg_max / 2) + 4)); }
+	if(arith_reset_flag) { memset(pArcoData->c_prev, 0, sizeof(pArcoData->c_prev[0]) * ((lg_max / 2) + 4)); }
 	else {
 		if(lg_max != pArcoData->m_numberLinesPrev) {
 			if(pArcoData->m_numberLinesPrev == 0) {

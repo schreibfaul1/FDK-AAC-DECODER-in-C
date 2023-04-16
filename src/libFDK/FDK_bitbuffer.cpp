@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include <stdint.h>
 #include "FDK_bitbuffer.h"
 
@@ -119,7 +120,7 @@ void FDK_CreateBitBuffer(HANDLE_FDK_BITBUF *hBitBuf, uint8_t *pBuffer,
                          uint32_t bufSize) {
   FDK_InitBitBuffer(*hBitBuf, pBuffer, bufSize, 0);
 
-  FDKmemclear((*hBitBuf)->Buffer, bufSize * sizeof(uint8_t));
+  memset((*hBitBuf)->Buffer, 0, bufSize * sizeof(uint8_t));
 }
 
 void FDK_DeleteBitBuffer(HANDLE_FDK_BITBUF hBitBuf) { ; }

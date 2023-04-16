@@ -153,6 +153,7 @@ amm-info@iis.fraunhofer.de
   \sa \ref documentationOverview
 */
 
+#include <memory.h>
 #include "env_extr.h"
 #include "sbr_ram.h"
 #include "sbr_rom.h"
@@ -364,7 +365,7 @@ void initSbrPrevFrameData(
   h_prev_data->coupling = COUPLING_OFF;
   h_prev_data->ampRes = 0;
 
-  FDKmemclear(&h_prev_data->prevFrameInfo, sizeof(h_prev_data->prevFrameInfo));
+  memset(&h_prev_data->prevFrameInfo, 0, sizeof(h_prev_data->prevFrameInfo));
 }
 
 /*!
@@ -1287,7 +1288,7 @@ int32_t extractPvcFrameInfo(
   if (bs_noise_position) {
     pFrameInfo->nEnvelopes = 2;
     pFrameInfo->nNoiseEnvelopes = 2;
-    FDKmemclear(pFrameInfo->freqRes, sizeof(pFrameInfo->freqRes));
+    memset(pFrameInfo->freqRes, 0, sizeof(pFrameInfo->freqRes));
   }
 
   /* frame border calculation */

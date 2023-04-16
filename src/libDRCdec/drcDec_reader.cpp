@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "../libFDK/fixpoint_math.h"
 #include "drcDec_reader.h"
 #include "drcDec_tools.h"
@@ -187,14 +188,14 @@ drcDec_readUniDrc(HANDLE_FDK_BITSTREAM hBs, HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
       err = drcDec_readUniDrcConfig(hBs, hUniDrcConfig);
       if (err) {
         /* clear config, if parsing error occured */
-        FDKmemclear(hUniDrcConfig, sizeof(UNI_DRC_CONFIG));
+        memset(hUniDrcConfig, 0, sizeof(UNI_DRC_CONFIG));
         hUniDrcConfig->diff = 1;
       }
     }
     err = drcDec_readLoudnessInfoSet(hBs, hLoudnessInfoSet);
     if (err) {
       /* clear config, if parsing error occured */
-      FDKmemclear(hLoudnessInfoSet, sizeof(LOUDNESS_INFO_SET));
+      memset(hLoudnessInfoSet, 0, sizeof(LOUDNESS_INFO_SET));
       hLoudnessInfoSet->diff = 1;
     }
   }
@@ -1125,7 +1126,7 @@ static DRC_ERROR _readDrcCoefficientsUniDrc(HANDLE_FDK_BITSTREAM hBs,
     pCoef->gainSetCount = fMin(gainSetCount, 12);
     for (i = 0; i < gainSetCount; i++) {
       GAIN_SET tmpGset;
-      FDKmemclear(&tmpGset, sizeof(GAIN_SET));
+      memset(&tmpGset, 0, sizeof(GAIN_SET));
       err = _readGainSet(hBs, version, &gainSequenceIndex, &tmpGset, 0);
       if (err) return err;
       gainSequenceCount += tmpGset.bandCount;
@@ -1186,7 +1187,7 @@ static DRC_ERROR _readDrcCoefficientsUniDrc(HANDLE_FDK_BITSTREAM hBs,
     pCoef->gainSetCount = fMin(gainSetCount, 12);
     for (i = 0; i < gainSetCount; i++) {
       GAIN_SET tmpGset;
-      FDKmemclear(&tmpGset, sizeof(GAIN_SET));
+      memset(&tmpGset, 0, sizeof(GAIN_SET));
       err = _readGainSet(hBs, version, &gainSequenceIndex, &tmpGset, 0);
       if (err) return err;
 
@@ -1548,7 +1549,7 @@ static DRC_ERROR _readDrcExtensionV1(HANDLE_FDK_BITSTREAM hBs,
         (uint8_t)(offset + hUniDrcConfig->downmixInstructionsCountV1), (uint8_t)6);
     for (i = 0; i < hUniDrcConfig->downmixInstructionsCountV1; i++) {
       DOWNMIX_INSTRUCTIONS tmpDown;
-      FDKmemclear(&tmpDown, sizeof(DOWNMIX_INSTRUCTIONS));
+      memset(&tmpDown, 0, sizeof(DOWNMIX_INSTRUCTIONS));
       err = _readDownmixInstructions(hBs, 1, &hUniDrcConfig->channelLayout,
                                      &tmpDown);
       if (err) return err;
@@ -1573,7 +1574,7 @@ static DRC_ERROR _readDrcExtensionV1(HANDLE_FDK_BITSTREAM hBs,
              (uint8_t)2);
     for (i = 0; i < hUniDrcConfig->drcCoefficientsUniDrcCountV1; i++) {
       DRC_COEFFICIENTS_UNI_DRC tmpCoef;
-      FDKmemclear(&tmpCoef, sizeof(DRC_COEFFICIENTS_UNI_DRC));
+      memset(&tmpCoef, 0, sizeof(DRC_COEFFICIENTS_UNI_DRC));
       err = _readDrcCoefficientsUniDrc(hBs, 1, &tmpCoef);
       if (err) return err;
       if ((offset + i) >= 2) continue;
@@ -1592,7 +1593,7 @@ static DRC_ERROR _readDrcExtensionV1(HANDLE_FDK_BITSTREAM hBs,
              (uint8_t)12);
     for (i = 0; i < hUniDrcConfig->drcInstructionsUniDrcCount; i++) {
       DRC_INSTRUCTIONS_UNI_DRC tmpInst;
-      FDKmemclear(&tmpInst, sizeof(DRC_INSTRUCTIONS_UNI_DRC));
+      memset(&tmpInst, 0, sizeof(DRC_INSTRUCTIONS_UNI_DRC));
       err = _readDrcInstructionsUniDrc(hBs, 1, hUniDrcConfig, &tmpInst);
       if (err) return err;
       if ((offset + i) >= 12) continue;
@@ -1676,7 +1677,7 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
   int32_t drcDescriptionBasicPresent, drcCoefficientsBasicCount,
       drcInstructionsBasicCount;
   CHANNEL_LAYOUT tmpChan;
-  FDKmemclear(&tmpChan, sizeof(CHANNEL_LAYOUT));
+  memset(&tmpChan, 0, sizeof(CHANNEL_LAYOUT));
   if (hUniDrcConfig == NULL) return DE_NOT_OK;
 
   diff |= _compAssign(&hUniDrcConfig->sampleRatePresent, FDKreadBits(hBs, 1));
@@ -1715,7 +1716,7 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
       fMin(hUniDrcConfig->downmixInstructionsCountV0, (uint8_t)6);
   for (i = 0; i < hUniDrcConfig->downmixInstructionsCountV0; i++) {
     DOWNMIX_INSTRUCTIONS tmpDown;
-    FDKmemclear(&tmpDown, sizeof(DOWNMIX_INSTRUCTIONS));
+    memset(&tmpDown, 0, sizeof(DOWNMIX_INSTRUCTIONS));
     err = _readDownmixInstructions(hBs, 0, &hUniDrcConfig->channelLayout,
                                    &tmpDown);
     if (err) return err;
@@ -1737,7 +1738,7 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
       fMin(hUniDrcConfig->drcCoefficientsUniDrcCountV0, (uint8_t)2);
   for (i = 0; i < hUniDrcConfig->drcCoefficientsUniDrcCountV0; i++) {
     DRC_COEFFICIENTS_UNI_DRC tmpCoef;
-    FDKmemclear(&tmpCoef, sizeof(DRC_COEFFICIENTS_UNI_DRC));
+    memset(&tmpCoef, 0, sizeof(DRC_COEFFICIENTS_UNI_DRC));
     err = _readDrcCoefficientsUniDrc(hBs, 0, &tmpCoef);
     if (err) return err;
     if (i >= 2) continue;
@@ -1751,7 +1752,7 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
       fMin(hUniDrcConfig->drcInstructionsUniDrcCountV0, (uint8_t)12);
   for (i = 0; i < hUniDrcConfig->drcInstructionsUniDrcCountV0; i++) {
     DRC_INSTRUCTIONS_UNI_DRC tmpInst;
-    FDKmemclear(&tmpInst, sizeof(DRC_INSTRUCTIONS_UNI_DRC));
+    memset(&tmpInst, 0, sizeof(DRC_INSTRUCTIONS_UNI_DRC));
     err = _readDrcInstructionsUniDrc(hBs, 0, hUniDrcConfig, &tmpInst);
     if (err) return err;
     if (i >= 12) continue;
@@ -1892,7 +1893,7 @@ static DRC_ERROR _readLoudnessInfo(HANDLE_FDK_BITSTREAM hBs, const int32_t versi
   loudnessInfo->measurementCount = fMin(measurementCount, 8);
   for (i = 0; i < measurementCount; i++) {
     LOUDNESS_MEASUREMENT tmpMeas;
-    FDKmemclear(&tmpMeas, sizeof(LOUDNESS_MEASUREMENT));
+    memset(&tmpMeas, 0, sizeof(LOUDNESS_MEASUREMENT));
     err = _readLoudnessMeasurement(hBs, &tmpMeas);
     if (err) return err;
     if (i >= 8) continue;
@@ -1918,7 +1919,7 @@ static DRC_ERROR _readLoudnessInfoSetExtEq(
       (uint8_t)(offset + hLoudnessInfoSet->loudnessInfoAlbumCountV1), (uint8_t)12);
   for (i = 0; i < hLoudnessInfoSet->loudnessInfoAlbumCountV1; i++) {
     LOUDNESS_INFO tmpLoud;
-    FDKmemclear(&tmpLoud, sizeof(LOUDNESS_INFO));
+    memset(&tmpLoud, 0, sizeof(LOUDNESS_INFO));
     err = _readLoudnessInfo(hBs, 1, &tmpLoud);
     if (err) return err;
     if ((offset + i) >= 12) continue;
@@ -1934,7 +1935,7 @@ static DRC_ERROR _readLoudnessInfoSetExtEq(
       fMin((uint8_t)(offset + hLoudnessInfoSet->loudnessInfoCountV1), (uint8_t)12);
   for (i = 0; i < hLoudnessInfoSet->loudnessInfoCountV1; i++) {
     LOUDNESS_INFO tmpLoud;
-    FDKmemclear(&tmpLoud, sizeof(LOUDNESS_INFO));
+    memset(&tmpLoud, 0, sizeof(LOUDNESS_INFO));
     err = _readLoudnessInfo(hBs, 1, &tmpLoud);
     if (err) return err;
     if ((offset + i) >= 12) continue;
@@ -2003,7 +2004,7 @@ drcDec_readLoudnessInfoSet(HANDLE_FDK_BITSTREAM hBs,
       fMin(hLoudnessInfoSet->loudnessInfoAlbumCountV0, (uint8_t)12);
   for (i = 0; i < hLoudnessInfoSet->loudnessInfoAlbumCountV0; i++) {
     LOUDNESS_INFO tmpLoud;
-    FDKmemclear(&tmpLoud, sizeof(LOUDNESS_INFO));
+    memset(&tmpLoud, 0, sizeof(LOUDNESS_INFO));
     err = _readLoudnessInfo(hBs, 0, &tmpLoud);
     if (err) return err;
     if (i >= 12) continue;
@@ -2017,7 +2018,7 @@ drcDec_readLoudnessInfoSet(HANDLE_FDK_BITSTREAM hBs,
       fMin(hLoudnessInfoSet->loudnessInfoCountV0, (uint8_t)12);
   for (i = 0; i < hLoudnessInfoSet->loudnessInfoCountV0; i++) {
     LOUDNESS_INFO tmpLoud;
-    FDKmemclear(&tmpLoud, sizeof(LOUDNESS_INFO));
+    memset(&tmpLoud, 0, sizeof(LOUDNESS_INFO));
     err = _readLoudnessInfo(hBs, 0, &tmpLoud);
     if (err) return err;
     if (i >= 12) continue;

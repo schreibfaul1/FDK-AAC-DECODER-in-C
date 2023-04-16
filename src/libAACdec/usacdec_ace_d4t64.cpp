@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "usacdec_ace_d4t64.h"
 
 #define L_SUBFR 64 /* Subframe size              */
@@ -357,7 +358,7 @@ void D_ACELP_decode_4t64(int16_t index[], int32_t nbits, FIXP_COD code[]) {
   int32_t L_index;
   int16_t k, pos[6];
 
-  FDKmemclear(code, L_SUBFR * sizeof(FIXP_COD));
+  memset(code, 0, L_SUBFR * sizeof(FIXP_COD));
 
   /* decode the positions and signs of pulses and build the codeword */
   switch (nbits) {

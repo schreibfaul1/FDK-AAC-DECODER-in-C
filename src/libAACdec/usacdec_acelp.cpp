@@ -623,7 +623,7 @@ void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, int32_t i_offset, const FIXP_L
     FDKmemcpy(syn_buf, acelp_mem->old_syn_mem, M_LP_FILTER_ORDER * sizeof(int32_t));
     FDKmemcpy(exc_buf, acelp_mem->old_exc_mem, (PIT_MAX_MAX + L_INTERPOL) * sizeof(int32_t));
 
-    FDKmemclear(exc_buf + (PIT_MAX_MAX + L_INTERPOL), (L_DIV + 1) * sizeof(int32_t));
+    memset(exc_buf + (PIT_MAX_MAX + L_INTERPOL), 0, (L_DIV + 1) * sizeof(int32_t));
 
     l_div = coreCoderFrameLength / NB_DIV;
 
@@ -942,7 +942,7 @@ void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, u
               M_LP_FILTER_ORDER * sizeof(int32_t));
 
     if(clearOldExc) {
-        FDKmemclear(old_exc_mem, (PIT_MAX_MAX + L_INTERPOL) * sizeof(int32_t));
+        memset(old_exc_mem, 0, (PIT_MAX_MAX + L_INTERPOL) * sizeof(int32_t));
         C_ALLOC_SCRATCH_END(synth_buf, int32_t, PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER);
         return;
     }

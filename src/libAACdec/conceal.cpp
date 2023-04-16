@@ -143,6 +143,8 @@ amm-info@iis.fraunhofer.de
   IP based systems packet loss can occur. The transport protocol used should
   indicate such packet loss by inserting an empty frame with frameOK=0.
 */
+
+#include <memory.h>
 #include <assert.h>
 #include <stdint.h>
 #include "conceal.h"
@@ -324,7 +326,7 @@ void CConcealment_InitChannelData(CConcealmentInfo *pConcealChannelInfo,
                                   int32_t samplesPerFrame) {
   int32_t i;
   pConcealChannelInfo->TDNoiseSeed = 0;
-  FDKmemclear(pConcealChannelInfo->TDNoiseStates,
+  memset(pConcealChannelInfo->TDNoiseStates, 0,
               sizeof(pConcealChannelInfo->TDNoiseStates));
   pConcealChannelInfo->TDNoiseCoef[0] =   1638;
   pConcealChannelInfo->TDNoiseCoef[1] =   16384;
@@ -340,7 +342,7 @@ void CConcealment_InitChannelData(CConcealmentInfo *pConcealChannelInfo,
 
   pConcealChannelInfo->concealState = ConcealState_Ok;
 
-  FDKmemclear(pConcealChannelInfo->spectralCoefficient,
+  memset(pConcealChannelInfo->spectralCoefficient, 0,
               1024 * sizeof(FIXP_CNCL));
 
   for (i = 0; i < 8; i++) {
@@ -722,7 +724,7 @@ int32_t CConcealment_Apply(
         case ConcealMethodMute:
           if (!frameOk) {
             /* Mute spectral data in case of errors */
-            FDKmemclear(pAacDecoderChannelInfo->pSpectralCoefficient,
+            memset(pAacDecoderChannelInfo->pSpectralCoefficient, 0,
                         samplesPerFrame * sizeof(int32_t));
             /* Set last window shape */
             pAacDecoderChannelInfo->icsInfo.WindowShape =
@@ -779,10 +781,10 @@ int32_t CConcealment_Apply(
 #endif
       } else {
         /* clear scale factors */
-        FDKmemclear(pSpecScale, 8 * sizeof(int16_t));
+        memset(pSpecScale, 0, 8 * sizeof(int16_t));
 
         /* clear buffer */
-        FDKmemclear(pSpectralCoefficient, 1024 * sizeof(FIXP_CNCL));
+        memset(pSpectralCoefficient, 0, 1024 * sizeof(FIXP_CNCL));
       }
     }
   }
@@ -841,8 +843,8 @@ static int32_t CConcealment_ApplyNoise(
                                        all) */
 
       /* mute spectral data */
-      FDKmemclear(pSpectralCoefficient, samplesPerFrame * sizeof(int32_t));
-      FDKmemclear(pConcealmentInfo->spectralCoefficient,
+      memset(pSpectralCoefficient, 0, samplesPerFrame * sizeof(int32_t));
+      memset(pConcealmentInfo->spectralCoefficient, 0,
                   samplesPerFrame * sizeof(int32_t));
 
       appliedProcessing = 1;
@@ -891,8 +893,8 @@ static int32_t CConcealment_ApplyInter(
   int32_t i, appliedProcessing = 0;
 
   /* clear/init */
-  FDKmemclear(sfbEnergyPrev, 64 * sizeof(int32_t));
-  FDKmemclear(sfbEnergyAct, 64 * sizeof(int32_t));
+  memset(sfbEnergyPrev, 0, 64 * sizeof(int32_t));
+  memset(sfbEnergyAct, 0, 64 * sizeof(int32_t));
 
   if (!frameOk || mute_release_active) {
     /* Restore last frame from concealment buffer */
@@ -1103,7 +1105,7 @@ static int32_t CConcealment_ApplyInter(
                                        all) */
 
       /* mute spectral data */
-      FDKmemclear(pSpectralCoefficient, samplesPerFrame * sizeof(int32_t));
+      memset(pSpectralCoefficient, 0, samplesPerFrame * sizeof(int32_t));
 
       appliedProcessing = 1;
     } break;
@@ -1741,7 +1743,7 @@ static int32_t CConcealment_ApplyFadeOut(
     if (mode == 1) {
       /* mute if attIdx gets large enaugh */
       if (attIdx > pConcealmentInfo->pConcealParams->numFadeOutFrames) {
-        FDKmemclear(pCncl, sizeof(int32_t) * windowLen);
+        memset(pCncl, 0, sizeof(int32_t) * windowLen);
       }
 
       /* restore frequency coefficients from buffer - attenuation is done later

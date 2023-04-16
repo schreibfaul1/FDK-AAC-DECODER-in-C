@@ -105,6 +105,7 @@ amm-info@iis.fraunhofer.de
   \brief  parametric stereo decoder
 */
 
+#include <memory.h>
 #include "psdec.h"
 #include "../libFDK/FDK_bitbuffer.h"
 #include "../libFDK/FDK_tools_rom.h"
@@ -179,7 +180,7 @@ int32_t CreatePsDec(HANDLE_PS_DEC *h_PS_DEC, /*!< pointer to the module state */
 		if(error) goto bail;
 	}
 
-	for(i = 0; i < (1) + 1; i++) { FDKmemclear(&h_ps_d->bsData[i].mpeg, sizeof(MPEG_PS_BS_DATA)); }
+	for(i = 0; i < (1) + 1; i++) { memset(&h_ps_d->bsData[i].mpeg, 0, sizeof(MPEG_PS_BS_DATA)); }
 
 	errorInfo = ResetPsDec(h_ps_d);
 
@@ -260,8 +261,8 @@ SBR_ERROR ResetPsDec(HANDLE_PS_DEC h_ps_d) /*!< pointer to the module state */
 		h_ps_d->specificTo.mpeg.h12rPrev[i] = FL2FXCONST_DBL(0.5f);
 	}
 
-	FDKmemclear(h_ps_d->specificTo.mpeg.h21rPrev, sizeof(h_ps_d->specificTo.mpeg.h21rPrev));
-	FDKmemclear(h_ps_d->specificTo.mpeg.h22rPrev, sizeof(h_ps_d->specificTo.mpeg.h22rPrev));
+	memset(h_ps_d->specificTo.mpeg.h21rPrev, 0, sizeof(h_ps_d->specificTo.mpeg.h21rPrev));
+	memset(h_ps_d->specificTo.mpeg.h22rPrev, 0, sizeof(h_ps_d->specificTo.mpeg.h22rPrev));
 
 	return errorInfo;
 }

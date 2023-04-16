@@ -152,6 +152,7 @@ amm-info@iis.fraunhofer.de
 
 */
 
+#include <memory.h>
 #include "aacdecoder.h"
 #include "../libArithCoding/ac_arith_coder.h"
 #include "../libFDK/FDK_crc.h"
@@ -1547,7 +1548,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, uint8
 
 	/* Set syntax flags */
 	self->flags[streamIndex] = 0;
-	{ FDKmemclear(self->elFlags, sizeof(self->elFlags)); }
+	{ memset(self->elFlags, 0, sizeof(self->elFlags)); }
 
 	if((asc->m_channelConfiguration > 0) || IS_USAC(asc->m_aot)) {
 		if(IS_USAC(asc->m_aot)) {
@@ -2240,7 +2241,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 											 &self->concealCommonData, self->pAacDecoderChannelInfo[0]->renderMode,
 											 self->streamInfo.aacSamplesPerFrame);
 				/* Clear overlap-add buffers to avoid clicks. */
-				FDKmemclear(self->pAacDecoderStaticChannelInfo[ch]->pOverlapBuffer,
+				memset(self->pAacDecoderStaticChannelInfo[ch]->pOverlapBuffer, 0,
 							OverlapBufferSize * sizeof(int32_t));
 			}
 			if(self->streamInfo.channelConfig > 0) {
@@ -2418,7 +2419,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 					/* create dummy channel for CCE parsing on stack */
 					CAacDecoderChannelInfo tmpAacDecoderChannelInfo, *pTmpAacDecoderChannelInfo;
 
-					FDKmemclear(mdctSpec, 1024 * sizeof(int32_t));
+					memset(mdctSpec, 0, 1024 * sizeof(int32_t));
 
 					tmpAacDecoderChannelInfo.pDynData = commonData.pAacDecoderDynamicData;
 					tmpAacDecoderChannelInfo.pComData = &commonData;
@@ -2897,7 +2898,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 				if(flags & AACDEC_FLUSH) {
 					/* Clear pAacDecoderChannelInfo->pSpectralCoefficient because with
 					 * AACDEC_FLUSH set it contains undefined data. */
-					FDKmemclear(pAacDecoderChannelInfo->pSpectralCoefficient,
+					memset(pAacDecoderChannelInfo->pSpectralCoefficient, 0,
 								sizeof(int32_t) * self->streamInfo.aacSamplesPerFrame);
 				}
 
@@ -2960,7 +2961,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 					break;
 				}
 				if(self->flushStatus && (self->flushCnt > 0) && !(flags & AACDEC_CONCEAL)) {
-					FDKmemclear(pTimeData + offset, sizeof(int32_t) * self->streamInfo.aacSamplesPerFrame);
+					memset(pTimeData + offset, 0, sizeof(int32_t) * self->streamInfo.aacSamplesPerFrame);
 				}
 				else
 					switch(pAacDecoderChannelInfo->renderMode) {

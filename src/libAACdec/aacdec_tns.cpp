@@ -98,8 +98,9 @@ amm-info@iis.fraunhofer.de
 
    Description: temporal noise shaping tool
 
-*******************************************************************************/
+*/
 
+#include <memory.h>
 #include "aacdec_tns.h"
 #include "aac_rom.h"
 #include "../libFDK/FDK_bitstream.h"
@@ -117,10 +118,9 @@ amm-info@iis.fraunhofer.de
   \return  none
 */
 void CTns_Reset(CTnsData *pTnsData) {
-  /* Note: the following FDKmemclear should not be required. */
-  FDKmemclear(pTnsData->Filter,
-              TNS_MAX_WINDOWS * TNS_MAXIMUM_FILTERS * sizeof(CFilter));
-  FDKmemclear(pTnsData->NumberOfFilters, TNS_MAX_WINDOWS * sizeof(uint8_t));
+  /* Note: the following memset should not be required. */
+  memset(pTnsData->Filter, 0, TNS_MAX_WINDOWS * TNS_MAXIMUM_FILTERS * sizeof(CFilter));
+  memset(pTnsData->NumberOfFilters, 0,  TNS_MAX_WINDOWS * sizeof(uint8_t));
   pTnsData->DataPresent = 0;
   pTnsData->Active = 0;
 }
@@ -346,7 +346,7 @@ void CTns_Apply(CTnsData * pTnsData, /*!< pointer to aac decoder info */
           if (size) {
             C_ALLOC_SCRATCH_START(state, int32_t, TNS_MAXIMUM_ORDER)
 
-            FDKmemclear(state, TNS_MAXIMUM_ORDER * sizeof(int32_t));
+            memset(state, 0, TNS_MAXIMUM_ORDER * sizeof(int32_t));
             CLpc_SynthesisLattice(pSpectrum + start, size, 0, 0,
                                   filter->Direction, coeff, filter->Order,
                                   state);

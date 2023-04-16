@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "tpdec_lib.h"
 #include "tp_data.h"
 
@@ -184,7 +185,7 @@ static const SC_CHANNEL_CONFIG sc_chan_config_tab[SC_CHANNEL_CONFIG_TAB_SIZE] =
 void CProgramConfig_Reset(CProgramConfig *pPce) { pPce->elCounter = 0; }
 
 void CProgramConfig_Init(CProgramConfig *pPce) {
-  FDKmemclear(pPce, sizeof(CProgramConfig));
+  memset(pPce, 0, sizeof(CProgramConfig));
   pPce->SamplingFrequencyIndex = 0xf;
 }
 
@@ -248,11 +249,11 @@ static int32_t CProgramConfig_ReadHeightExt(CProgramConfig *pPce,
       /* Reset whole height information in case an error occured during parsing.
          The return value ensures that pPce->isValid is set to 0 and implicit
          channel mapping is used. */
-      FDKmemclear(pPce->FrontElementHeightInfo,
+      memset(pPce->FrontElementHeightInfo, 0,
                   sizeof(pPce->FrontElementHeightInfo));
-      FDKmemclear(pPce->SideElementHeightInfo,
+      memset(pPce->SideElementHeightInfo, 0,
                   sizeof(pPce->SideElementHeightInfo));
-      FDKmemclear(pPce->BackElementHeightInfo,
+      memset(pPce->BackElementHeightInfo, 0,
                   sizeof(pPce->BackElementHeightInfo));
     }
   } else {
@@ -1036,8 +1037,8 @@ int32_t CProgramConfig_GetPceChMap(const CProgramConfig *pPce, uint8_t pceChMap[
   assert(pceChMap != NULL);
 
   /* Init counter: */
-  FDKmemclear(totCh, 3 * sizeof(unsigned));
-  FDKmemclear(numCh, 3 * 4 * sizeof(unsigned));
+  memset(totCh, 0, 3 * sizeof(unsigned));
+  memset(numCh, 0, 3 * 4 * sizeof(unsigned));
 
   /* Analyse PCE: */
   elHeight[0] = pPce->FrontElementHeightInfo;
@@ -1331,7 +1332,7 @@ static TRANSPORTDEC_ERROR EldSpecificConfig_Parse(CSAudioSpecificConfig *asc,
 
   unsigned char downscale_fill_nibble;
 
-  FDKmemclear(esc, sizeof(CSEldSpecificConfig));
+  memset(esc, 0, sizeof(CSEldSpecificConfig));
 
   esc->m_frameLengthFlag = FDKreadBits(hBs, 1);
   if (esc->m_frameLengthFlag) {
@@ -1507,7 +1508,7 @@ static uint32_t StoreConfigAsBitstream(
   if (nBits > 8 * (uint32_t)configTargetBufferSize_bytes) {
     return 1;
   }
-  FDKmemclear(configTargetBuffer, configTargetBufferSize_bytes);
+  memset(configTargetBuffer, 0, configTargetBufferSize_bytes);
 
   FDKinitBitStream(&usacConf, configTargetBuffer, configTargetBufferSize_bytes,
                    nBits, BS_WRITER);
@@ -2106,7 +2107,7 @@ static TRANSPORTDEC_ERROR AudioSpecificConfig_ExtensionParse(
  */
 
 void AudioSpecificConfig_Init(CSAudioSpecificConfig *asc) {
-  FDKmemclear(asc, sizeof(CSAudioSpecificConfig));
+  memset(asc, 0, sizeof(CSAudioSpecificConfig));
 
   /* Init all values that should not be zero. */
   asc->m_aot = AOT_NONE;

@@ -99,6 +99,8 @@ amm-info@iis.fraunhofer.de
    Description: USAC FAC
 
 *******************************************************************************/
+
+#include <memory.h>
 #include <stdio.h>
 #include "usacdec_fac.h"
 
@@ -261,7 +263,7 @@ static void CFac_CalcFacSignal(int32_t *pOut, int32_t *pFac,
   /* We need the output of the IIR filter to be longer than "fac_length".
   For this reason we run it with zero input appended to the end of the input
   sequence, i.e. we generate its ZIR and extend the output signal.*/
-  FDKmemclear(pOut + fac_length, fac_length * sizeof(int32_t));
+  memset(pOut + fac_length, 0, fac_length * sizeof(int32_t));
   wlength = 2 * fac_length;
 
   /* 5) Apply weighted synthesis filter to FAC data, including optional Zir (5.
@@ -331,7 +333,7 @@ int32_t CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac,
                          isFdFac);
     } else {
       /* Clear buffer because of the overlap and ADD! */
-      FDKmemclear(pOut0, fac_length * sizeof(int32_t));
+      memset(pOut0, 0, fac_length * sizeof(int32_t));
     }
   }
 
@@ -467,7 +469,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
            Use ZIR with a modified ZIR window to preserve some more energy.
            Dont use FAC, which contains wrong information for concealed frame
            Dont use last ACELP samples, but double ZIR, instead (afterwards) */
-        FDKmemclear(pFAC_and_FAC_ZIR, 2 * fac_length * sizeof(int32_t));
+        memset(pFAC_and_FAC_ZIR, 0, 2 * fac_length * sizeof(int32_t));
         FacWindowSynth = (FIXP_WTB *)pFAC_and_FAC_ZIR;
         FacWindowZir = FacWindowZir_conceal;
       } else {

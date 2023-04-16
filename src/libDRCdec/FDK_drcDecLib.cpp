@@ -595,7 +595,7 @@ FDK_drcDec_ReadUniDrcConfig(HANDLE_DRC_DECODER hDrcDec,
 
   if (dErr) {
     /* clear config, if parsing error occured */
-    FDKmemclear(&hDrcDec->uniDrcConfig, sizeof(hDrcDec->uniDrcConfig));
+    memset(&hDrcDec->uniDrcConfig, 0, sizeof(hDrcDec->uniDrcConfig));
     hDrcDec->uniDrcConfig.diff = 1;
   }
 
@@ -615,7 +615,7 @@ FDK_drcDec_ReadDownmixInstructions_Box(HANDLE_DRC_DECODER hDrcDec,
 
   if (dErr) {
     /* clear config, if parsing error occurred */
-    FDKmemclear(&hDrcDec->uniDrcConfig.downmixInstructions,
+    memset(&hDrcDec->uniDrcConfig.downmixInstructions, 0,
                 sizeof(hDrcDec->uniDrcConfig.downmixInstructions));
     hDrcDec->uniDrcConfig.downmixInstructionsCount = 0;
     hDrcDec->uniDrcConfig.downmixInstructionsCountV0 = 0;
@@ -639,7 +639,7 @@ FDK_drcDec_ReadUniDrcInstructions_Box(HANDLE_DRC_DECODER hDrcDec,
 
   if (dErr) {
     /* clear config, if parsing error occurred */
-    FDKmemclear(&hDrcDec->uniDrcConfig.drcInstructionsUniDrc,
+    memset(&hDrcDec->uniDrcConfig.drcInstructionsUniDrc, 0,
                 sizeof(hDrcDec->uniDrcConfig.drcInstructionsUniDrc));
     hDrcDec->uniDrcConfig.drcInstructionsUniDrcCount = 0;
     hDrcDec->uniDrcConfig.drcInstructionsUniDrcCountV0 = 0;
@@ -663,7 +663,7 @@ FDK_drcDec_ReadUniDrcCoefficients_Box(HANDLE_DRC_DECODER hDrcDec,
 
   if (dErr) {
     /* clear config, if parsing error occurred */
-    FDKmemclear(&hDrcDec->uniDrcConfig.drcCoefficientsUniDrc,
+    memset(&hDrcDec->uniDrcConfig.drcCoefficientsUniDrc, 0,
                 sizeof(hDrcDec->uniDrcConfig.drcCoefficientsUniDrc));
     hDrcDec->uniDrcConfig.drcCoefficientsUniDrcCount = 0;
     hDrcDec->uniDrcConfig.drcCoefficientsUniDrcCountV0 = 0;
@@ -690,7 +690,7 @@ FDK_drcDec_ReadLoudnessInfoSet(HANDLE_DRC_DECODER hDrcDec,
 
   if (dErr) {
     /* clear config, if parsing error occurred */
-    FDKmemclear(&hDrcDec->loudnessInfoSet, sizeof(hDrcDec->loudnessInfoSet));
+    memset(&hDrcDec->loudnessInfoSet, 0, sizeof(hDrcDec->loudnessInfoSet));
     hDrcDec->loudnessInfoSet.diff = 1;
   }
 
@@ -710,7 +710,7 @@ FDK_drcDec_ReadLoudnessBox(HANDLE_DRC_DECODER hDrcDec,
 
   if (dErr) {
     /* clear config, if parsing error occurred */
-    FDKmemclear(&hDrcDec->loudnessInfoSet, sizeof(hDrcDec->loudnessInfoSet));
+    memset(&hDrcDec->loudnessInfoSet, 0, sizeof(hDrcDec->loudnessInfoSet));
     hDrcDec->loudnessInfoSet.diff = 1;
   }
 

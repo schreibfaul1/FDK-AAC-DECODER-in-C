@@ -302,13 +302,10 @@ void CChannelElement_Decode(
     } /* CommonWindow */
     else {
       if (elFlags & AC_EL_USAC_CP_POSSIBLE) {
-        FDKmemclear(
-            pAacDecoderStaticChannelInfo[L]
-                ->pCpeStaticData->jointStereoPersistentData.alpha_q_re_prev,
+        memset(pAacDecoderStaticChannelInfo[L]->pCpeStaticData->jointStereoPersistentData.alpha_q_re_prev, 0,
             JointStereoMaximumGroups * JointStereoMaximumBands * sizeof(int16_t));
-        FDKmemclear(
-            pAacDecoderStaticChannelInfo[L]
-                ->pCpeStaticData->jointStereoPersistentData.alpha_q_im_prev,
+        memset(
+            pAacDecoderStaticChannelInfo[L]->pCpeStaticData->jointStereoPersistentData.alpha_q_im_prev, 0,
             JointStereoMaximumGroups * JointStereoMaximumBands * sizeof(int16_t));
       }
     }
@@ -725,8 +722,7 @@ AAC_DECODER_ERROR CChannelElement_Read(
             /* ACELP to FD transitons without FAC are possible. That is why we
             zero it out (i.e FAC will not be considered in the subsequent
             calculations */
-            FDKmemclear(pAacDecoderChannelInfo[ch]->data.usac.fac_data0,
-                        LFAC * sizeof(int32_t));
+            memset(pAacDecoderChannelInfo[ch]->data.usac.fac_data0, 0, LFAC * sizeof(int32_t));
           }
         }
       } break;

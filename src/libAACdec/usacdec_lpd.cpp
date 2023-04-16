@@ -606,12 +606,8 @@ void lpc2mdctAndNoiseShaping(int32_t *r, int16_t *pScale, const int32_t lg,
     tmp1[1] = tmp2[1] = (int32_t)0;
 
     /* Clear the resto of the array */
-    FDKmemclear(
-        tmp1 + 2 * (M_LP_FILTER_ORDER + 1),
-        2 * (fdns_npts * 2 - (M_LP_FILTER_ORDER + 1)) * sizeof(int32_t));
-    FDKmemclear(
-        tmp2 + 2 * (M_LP_FILTER_ORDER + 1),
-        2 * (fdns_npts * 2 - (M_LP_FILTER_ORDER + 1)) * sizeof(int32_t));
+    memset(tmp1 + 2 * (M_LP_FILTER_ORDER + 1), 0, 2 * (fdns_npts * 2 - (M_LP_FILTER_ORDER + 1)) * sizeof(int32_t));
+    memset(tmp2 + 2 * (M_LP_FILTER_ORDER + 1), 0, 2 * (fdns_npts * 2 - (M_LP_FILTER_ORDER + 1)) * sizeof(int32_t));
 
     /* Guarantee 2 bits of headroom for FFT */
     scaleValues(&tmp1[2], (2 * M_LP_FILTER_ORDER), (A1_exp - A1_exp_fix));
@@ -1170,8 +1166,8 @@ static void CLpd_Reset(
 
   /* Reset TCX / ACELP common memory */
   if (!keep_past_signal) {
-    FDKmemclear(pAacDecoderStaticChannelInfo->old_synth,
-                sizeof(pAacDecoderStaticChannelInfo->old_synth));
+
+    memset(pAacDecoderStaticChannelInfo->old_synth, 0, sizeof(pAacDecoderStaticChannelInfo->old_synth));
   }
 
   /* Initialize the LSFs */
@@ -1180,8 +1176,7 @@ static void CLpd_Reset(
   }
 
   /* Reset memory needed by bass post-filter */
-  FDKmemclear(pAacDecoderStaticChannelInfo->mem_bpf,
-              sizeof(pAacDecoderStaticChannelInfo->mem_bpf));
+  memset(pAacDecoderStaticChannelInfo->mem_bpf, 0, sizeof(pAacDecoderStaticChannelInfo->mem_bpf));
 
   pAacDecoderStaticChannelInfo->old_bpf_control_info = 0;
   for (i = 0; i < SYN_SFD; i++) {
@@ -1592,7 +1587,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
 
   uint32_t samplingRate = pSamplingRateInfo->samplingRate;
 
-  FDKmemclear(pitch, (NB_SUBFR_SUPERFR + SYN_SFD) * sizeof(int32_t));
+  memset(pitch, 0, (NB_SUBFR_SUPERFR + SYN_SFD) * sizeof(int32_t));
 
   if (flags & AACDEC_FLUSH) {
     CLpd_Reset(pAacDecoderChannelInfo, pAacDecoderStaticChannelInfo,
@@ -1874,7 +1869,7 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
          * data available. */
         if (last_frame_lost == 1 ||
             pAacDecoderChannelInfo->data.usac.fac_data[k] == NULL) {
-          FDKmemclear(fac_buf, 1024 / 8 * sizeof(int32_t));
+          memset(fac_buf, 9, 1024 / 8 * sizeof(int32_t));
           pAacDecoderChannelInfo->data.usac.fac_data[k] = fac_buf;
           pAacDecoderChannelInfo->data.usac.fac_data_e[k] = 0;
         }

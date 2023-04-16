@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include <stdint.h>
 #include "aacdec_drc.h"
 
@@ -704,7 +705,7 @@ static int32_t aacDecoder_drcExtractAndMap(
     /* Init payload data chunk. The memclear is very important because it
        initializes the most values. Without it the module wouldn't work properly
        or crash. */
-    FDKmemclear(&threadBs[self->numThreads], sizeof(CDrcPayload));
+    memset(&threadBs[self->numThreads], 0, sizeof(CDrcPayload));
     threadBs[self->numThreads].channelData.bandTop[0] =
         DRC_BLOCK_LEN_DIV_BAND_MULT - 1;
 
@@ -721,7 +722,7 @@ static int32_t aacDecoder_drcExtractAndMap(
     /* Init payload data chunk. The memclear is very important because it
        initializes the most values. Without it the module wouldn't work properly
        or crash. */
-    FDKmemclear(&threadBs[self->numThreads], sizeof(CDrcPayload));
+    memset(&threadBs[self->numThreads] , 0, sizeof(CDrcPayload));
     threadBs[self->numThreads].channelData.bandTop[0] =
         DRC_BLOCK_LEN_DIV_BAND_MULT - 1;
 

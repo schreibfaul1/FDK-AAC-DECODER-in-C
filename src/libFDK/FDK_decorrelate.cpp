@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "FDK_decorrelate.h"
 
 #define PC_NUM_BANDS     (8)
@@ -941,7 +942,7 @@ static int32_t DuckerCalcEnergy(DUCKER_INSTANCE *const self, int32_t const input
 
     maxHybBand = maxHybridBand;
 
-    FDKmemclear(energy, (28) * sizeof(int32_t));
+    memset(energy, 0, (28) * sizeof(int32_t));
 
     if(mode == 1) {
         int32_t pb;
@@ -1374,9 +1375,9 @@ int32_t FDKdecorrelateInit(HANDLE_DECORR_DEC hDecorrDec, const int32_t nrHybBand
     if(errorCode) { return errorCode; }
 
     if(initStatesFlag) {
-        FDKmemclear(hDecorrDec->stateBufferCplx, hDecorrDec->L_stateBufferCplx * sizeof(*hDecorrDec->stateBufferCplx));
-        FDKmemclear(hDecorrDec->delayBufferCplx, hDecorrDec->L_delayBufferCplx * sizeof(*hDecorrDec->delayBufferCplx));
-        FDKmemclear(hDecorrDec->reverbBandDelayBufferIndex, sizeof(hDecorrDec->reverbBandDelayBufferIndex));
+        memset(hDecorrDec->stateBufferCplx, 0, hDecorrDec->L_stateBufferCplx * sizeof(*hDecorrDec->stateBufferCplx));
+        memset(hDecorrDec->delayBufferCplx, 0, hDecorrDec->L_delayBufferCplx * sizeof(*hDecorrDec->delayBufferCplx));
+        memset(hDecorrDec->reverbBandDelayBufferIndex, 0, sizeof(hDecorrDec->reverbBandDelayBufferIndex));
     }
 
     REV_bandOffset = hDecorrDec->REV_bandOffset;

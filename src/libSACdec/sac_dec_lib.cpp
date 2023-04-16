@@ -1391,7 +1391,7 @@ int32_t mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder, PC
         for(int32_t i = *nChannels - 1; i >= 0; i--) {
             memmove(pTimeData + (i + 1) * timeDataFrameSizeOut - timeDataFrameSize, pTimeData + timeDataFrameSize * i,
                     sizeof(PCM_MPS) * timeDataFrameSize);
-            FDKmemclear(pTimeData + i * timeDataFrameSizeOut,
+            memset(pTimeData + i * timeDataFrameSizeOut, 0,
                         sizeof(PCM_MPS) * (timeDataFrameSizeOut - timeDataFrameSize));
         }
     }

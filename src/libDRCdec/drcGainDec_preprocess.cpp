@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "drcDec_types.h"
 #include "drcDec_gainDecoder.h"
 #include "drcGainDec_preprocess.h"
@@ -645,7 +646,7 @@ prepareDrcGain(HANDLE_DRC_GAIN_DECODER hGainDec,
   int32_t b, g, gainElementIndex;
   DRC_GAIN_BUFFERS* drcGainBuffers = &(hGainDec->drcGainBuffers);
   NODE_MODIFICATION nodeMod;
-  FDKmemclear(&nodeMod, sizeof(NODE_MODIFICATION));
+  memset(&nodeMod, 0, sizeof(NODE_MODIFICATION));
   ACTIVE_DRC* pActiveDrc = &(hGainDec->activeDrc[activeDrcIndex]);
   DRC_INSTRUCTIONS_UNI_DRC* pInst = pActiveDrc->pInst;
   if (pInst == NULL) return DE_NOT_OK;

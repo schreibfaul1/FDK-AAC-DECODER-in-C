@@ -331,16 +331,6 @@ void FDKafree_L(void *ptr);
  */
 void FDKmemcpy(void *dst, const void *src, const uint32_t size);
 
-/**
- * Clear memory.
- * Either use implementation from a Standard Library, or, if no Standard Library
- * is available, a generic implementation.
- * The define ::USE_BUILTIN_MEM_FUNCTIONS in genericStds.cpp controls what to
- * use. The function arguments correspond to the standard memclear(). Please see
- * MSDN documentation for details on how to use it.
- */
-void FDKmemclear(void *memPtr, const uint32_t size);
-
 
 /* Compare function wrappers */
 int32_t FDKmemcmp(const void *s1, const void *s2, const uint32_t size);

@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "tpdec_latm.h"
 
 #include "../libFDK/FDK_bitstream.h"
@@ -359,7 +360,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
               ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
               goto bail;
             }
-            FDKmemclear(usacConfigPrev, TP_USAC_MAX_CONFIG_LEN);
+            memset(usacConfigPrev, 0, TP_USAC_MAX_CONFIG_LEN);
             FDKmemcpy(
                 usacConfigPrev,
                 &pAsc[TPDEC_TRACKINDEX(prog, lay)].m_sc.m_usacConfig.UsacConfig,
@@ -432,8 +433,8 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
                 goto bail;
               }
               if (usacConfigLength != usacConfigLengthPrev) {
-                FDKmemclear(&pAsc[TPDEC_TRACKINDEX(prog, lay)]
-                                 .m_sc.m_usacConfig.UsacConfig,
+                memset(&pAsc[TPDEC_TRACKINDEX(prog, lay)]
+                                 .m_sc.m_usacConfig.UsacConfig, 0,
                             TP_USAC_MAX_CONFIG_LEN);
                 FDKmemcpy(&pAsc[TPDEC_TRACKINDEX(prog, lay)]
                                .m_sc.m_usacConfig.UsacConfig,
@@ -447,8 +448,8 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
                 if (FDKmemcmp(usacConfigPrev,
                               pAscDummy->m_sc.m_usacConfig.UsacConfig,
                               usacConfigLengthPrev)) {
-                  FDKmemclear(&pAsc[TPDEC_TRACKINDEX(prog, lay)]
-                                   .m_sc.m_usacConfig.UsacConfig,
+                  memset(&pAsc[TPDEC_TRACKINDEX(prog, lay)]
+                                   .m_sc.m_usacConfig.UsacConfig, 0,
                               TP_USAC_MAX_CONFIG_LEN);
                   FDKmemcpy(&pAsc[TPDEC_TRACKINDEX(prog, lay)]
                                  .m_sc.m_usacConfig.UsacConfig,
@@ -581,7 +582,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
 bail:
   if (ErrorStatus != TRANSPORTDEC_OK) {
     uint8_t applyAsc = pLatmDemux->applyAsc;
-    FDKmemclear(pLatmDemux, sizeof(CLatmDemux)); /* reset structure */
+    memset(pLatmDemux, 0, sizeof(CLatmDemux)); /* reset structure */
     pLatmDemux->applyAsc = applyAsc;
   } else {
     /* no error and config parsing is finished */

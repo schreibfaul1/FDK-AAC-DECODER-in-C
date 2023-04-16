@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "usacdec_lpc.h"
 
 #include "usacdec_rom.h"
@@ -731,7 +732,7 @@ int32_t CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *pOutput, int32_t nk_mo
 
     for (l = 0; l < no_qn; l++) {
       if (qn[l] == 0) {
-        FDKmemclear(&pOutput[i + l * 8], 8 * sizeof(int32_t));
+        memset(&pOutput[i + l * 8], 0, 8 * sizeof(int32_t));
       }
 
       /* Voronoi extension order ( nk ) */

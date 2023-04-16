@@ -349,7 +349,7 @@ static SBR_ERROR sbrDecoder_ResetElement(HANDLE_SBRDECODER self, int32_t sampleR
 		}
 	}
 
-	// FDKmemclear(sbr_OverlapBuffer, sizeof(sbr_OverlapBuffer));
+	// memset(sbr_OverlapBuffer, sizeof(sbr_OverlapBuffer));
 
 	if(self->numSbrElements == 1) {
 		switch(self->coreCodec) {
@@ -625,7 +625,7 @@ SBR_ERROR sbrDecoder_InitElement(HANDLE_SBRDECODER self, const int32_t sampleRat
 	sbrDecoder_AssignQmfChannels2SbrChannels(self);
 
 	/* clear error flags for all delay slots */
-	FDKmemclear(self->pSbrElement[elementIndex]->frameErrorFlag, ((1) + 1) * sizeof(uint8_t));
+	memset(self->pSbrElement[elementIndex]->frameErrorFlag, 0, ((1) + 1) * sizeof(uint8_t));
 
 	{
 		int32_t overlap;

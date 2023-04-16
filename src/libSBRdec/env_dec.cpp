@@ -109,6 +109,7 @@ amm-info@iis.fraunhofer.de
   \sa decodeSbrData(),\ref documentationOverview
 */
 
+#include <memory.h>
 #include "env_dec.h"
 #include "env_extr.h"
 #include "transcendent.h"
@@ -434,12 +435,10 @@ static void leanSbrConcealment(
   /* Noisefloor levels are always cleared ... */
 
   h_sbr_data->domain_vec_noise[0] = 1;
-  FDKmemclear(h_sbr_data->sbrNoiseFloorLevel,
-              sizeof(h_sbr_data->sbrNoiseFloorLevel));
+  memset(h_sbr_data->sbrNoiseFloorLevel, 0, sizeof(h_sbr_data->sbrNoiseFloorLevel));
 
   /* ... and so are the sines */
-  FDKmemclear(h_sbr_data->addHarmonics,
-              sizeof(uint32_t) * ADD_HARMONICS_FLAGS_SIZE);
+  memset(h_sbr_data->addHarmonics, 0, sizeof(uint32_t) * ADD_HARMONICS_FLAGS_SIZE);
 }
 
 /*!

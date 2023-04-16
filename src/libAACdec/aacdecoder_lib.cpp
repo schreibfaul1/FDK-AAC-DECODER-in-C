@@ -99,6 +99,8 @@ amm-info@iis.fraunhofer.de
    Description:
 
 *******************************************************************************/
+
+#include <memory.h>
 #include <stdint.h>
 #include "aacdecoder_lib.h"
 #include "newAACDecoder.h"
@@ -882,7 +884,7 @@ HANDLE_AACDECODER aacDecoder_Open(TRANSPORT_TYPE transportFmt, uint32_t nrOfLaye
 	/* Register config switch control callback. */
 	transportDec_RegisterCtrlCFGChangeCallback(pIn, aacDecoder_CtrlCFGChangeCallback, (void *)aacDec);
 
-	FDKmemclear(&aacDec->qmfDomain, sizeof(FDK_QMF_DOMAIN));
+	memset(&aacDec->qmfDomain, 0, sizeof(FDK_QMF_DOMAIN));
 	/* open SBR decoder */
 	if(SBRDEC_OK != sbrDecoder_Open(&aacDec->hSbrDecoder, &aacDec->qmfDomain)) {
 		err = -1;
@@ -1416,7 +1418,7 @@ AAC_DECODER_ERROR aacDecoder_DecodeFrame(HANDLE_AACDECODER self, int16_t *pTimeD
 					self->streamInfo.frameSize = self->mpsFrameSizeLast;
 					/* ... and clear output buffer so that potentially corrupted data does
 					 * not reach the framework. */
-					FDKmemclear(pTimeData3, self->mpsOutChannelsLast * self->mpsFrameSizeLast * sizeof(int32_t));
+					memset(pTimeData3, 0, self->mpsOutChannelsLast * self->mpsFrameSizeLast * sizeof(int32_t));
 					/* Additionally proclaim that this frame had errors during decoding.
 					 */
 					ErrorStatus = AAC_DEC_DECODE_FRAME_ERROR;
@@ -1481,7 +1483,7 @@ AAC_DECODER_ERROR aacDecoder_DecodeFrame(HANDLE_AACDECODER self, int16_t *pTimeD
 					int32_t       reverseOutChannelMap[(8)];
 					int32_t       numDrcOutChannels =
 						FDK_drcDec_GetParam(self->hUniDrcDecoder, DRC_DEC_TARGET_CHANNEL_COUNT_SELECTED);
-					FDKmemclear(channelGain, sizeof(channelGain));
+					memset(channelGain, 0, sizeof(channelGain));
 					for(ch = 0; ch < (8); ch++) {
 						reverseInChannelMap[ch] = ch;
 						reverseOutChannelMap[ch] = ch;
@@ -1790,7 +1792,7 @@ bail:
 		ErrorStatus = AAC_DEC_UNKNOWN;
 	}
 
-	if(!IS_OUTPUT_VALID(ErrorStatus)) { FDKmemclear(pTimeData, timeDataSize * sizeof(*pTimeData)); }
+	if(!IS_OUTPUT_VALID(ErrorStatus)) { memset(pTimeData, 0, timeDataSize * sizeof(*pTimeData)); }
 
 	return ErrorStatus;
 }

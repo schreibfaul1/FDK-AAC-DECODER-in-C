@@ -531,10 +531,10 @@ static PCMDMX_ERROR getChannelMode(
   assert(chMode != NULL);
 
   /* For details see ISO/IEC 13818-7:2005(E), 8.5.3 Channel configuration */
-  FDKmemclear(idxSum, (3) * (4) * sizeof(uint32_t));
-  FDKmemclear(numCh, (3) * (4) * sizeof(uint8_t));
-  FDKmemclear(mapped, (8) * sizeof(uint8_t));
-  FDKmemclear(spkrPos, (8) * sizeof(PCM_DMX_SPEAKER_POSITION));
+  memset(idxSum, 0, (3) * (4) * sizeof(uint32_t));
+  memset(numCh, 0, (3) * (4) * sizeof(uint8_t));
+  memset(mapped, 0, (8) * sizeof(uint8_t));
+  memset(spkrPos, 0, (8) * sizeof(PCM_DMX_SPEAKER_POSITION));
   /* Init output */
   memset(offsetTable, 255, (8) * sizeof(uint8_t));
   *chMode = CH_MODE_UNDEFINED;
@@ -702,8 +702,8 @@ static void getChannelDescription(
   assert(offsetTable != NULL);
 
   /* Init output arrays */
-  FDKmemclear(channelType, (8) * sizeof(AUDIO_CHANNEL_TYPE));
-  FDKmemclear(channelIndices, (8) * sizeof(uint8_t));
+  memset(channelType, 0, (8) * sizeof(AUDIO_CHANNEL_TYPE));
+  memset(channelIndices, 0, (8) * sizeof(uint8_t));
   memset(offsetTable, 255, (8) * sizeof(uint8_t));
 
   /* Summerize to get the total number of channels */
@@ -864,8 +864,8 @@ static void dmxInitChannel(int16_t mixFactors[(8)][(8)],
 static void dmxClearChannel(int16_t mixFactors[(8)][(8)],
                             int32_t mixScales[(8)][(8)], const uint32_t outCh) {
   assert((outCh >= 0) && (outCh < (8)));
-  FDKmemclear(&mixFactors[outCh], (8) * sizeof(int16_t));
-  FDKmemclear(&mixScales[outCh], (8) * sizeof(int32_t));
+  memset(&mixFactors[outCh], 0, (8) * sizeof(int16_t));
+  memset(&mixScales[outCh], 0,  (8) * sizeof(int32_t));
 }
 
 /** Private helper function for downmix matrix manipulation that applies a
@@ -1451,7 +1451,7 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
     } /* switch (inChMode) */
 
     /* Mark the output channels */
-    FDKmemclear(valid, (8) * sizeof(uint32_t));
+    memset(valid, 0, (8) * sizeof(uint32_t));
     valid[LEFT_FRONT_CHANNEL] = 1;
     valid[RIGHT_FRONT_CHANNEL] = 1;
   }
@@ -1493,7 +1493,7 @@ static PCMDMX_ERROR getMixFactors(const uint8_t inModeIsCfg,
     }
 
     /* Mark the output channel */
-    FDKmemclear(valid, (8) * sizeof(uint32_t));
+    memset(valid, 0, (8) * sizeof(uint32_t));
     valid[CENTER_FRONT_CHANNEL] = 1;
   }
 
@@ -2362,10 +2362,10 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
          Just reorder and add channels. So first save the input signalling. */
       FDKmemcpy(inChTypes, channelType,
                 numInChannels * sizeof(AUDIO_CHANNEL_TYPE));
-      FDKmemclear(inChTypes + numInChannels,
+      memset(inChTypes + numInChannels, 0,
                   ((8) - numInChannels) * sizeof(AUDIO_CHANNEL_TYPE));
       FDKmemcpy(inChIndices, channelIndices, numInChannels * sizeof(uint8_t));
-      FDKmemclear(inChIndices + numInChannels,
+      memset(inChIndices + numInChannels, 0,
                   ((8) - numInChannels) * sizeof(uint8_t));
 
       /* Set this stages output stride and channel mode: */

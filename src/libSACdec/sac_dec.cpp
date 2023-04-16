@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "sac_dec_errorcodes.h"
 #include "sac_dec.h"
 #include "sac_process.h"
@@ -849,11 +850,11 @@ SACDEC_ERROR FDK_SpatialDecInit(spatialDec *self, SPATIAL_BS_FRAME *frame,
     /* robustness: init with one of the values of smgTimeTable[] = {64, 128,
        256, 512} to avoid division by zero in calcFilterCoeff__FDK() */
     self->smoothState->prevSmgTime = smgTimeTable[2]; /* == 256 */
-    FDKmemclear(self->smoothState->prevSmgData,
+    memset(self->smoothState->prevSmgData, 0,
                 MAX_PARAMETER_BANDS * sizeof(uint8_t));
-    FDKmemclear(self->smoothState->opdLeftState__FDK,
+    memset(self->smoothState->opdLeftState__FDK, 0,
                 MAX_PARAMETER_BANDS * sizeof(int32_t));
-    FDKmemclear(self->smoothState->opdRightState__FDK,
+    memset(self->smoothState->opdRightState__FDK, 0,
                 MAX_PARAMETER_BANDS * sizeof(int32_t));
   }
 
@@ -1091,8 +1092,8 @@ static void SpatialDecApplyBypass(spatialDec *self, int32_t **hybInputReal,
       if (ch == lf || ch == rf || ch == cf) {
         continue; /* Skip bypassed channels */
       }
-      FDKmemclear(hybOutputReal[ch], self->hybridBands * sizeof(int32_t));
-      FDKmemclear(hybOutputImag[ch], complexHybBands * sizeof(int32_t));
+      memset(hybOutputReal[ch], 0, self->hybridBands * sizeof(int32_t));
+      memset(hybOutputImag[ch], 0, complexHybBands * sizeof(int32_t));
     }
   }
 }

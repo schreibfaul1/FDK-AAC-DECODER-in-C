@@ -101,6 +101,8 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 
 /* data structures and interfaces for spatial audio reference software */
+
+#include <memory.h>
 #include "sac_process.h"
 #include "sac_bitdec.h"
 #include "sac_calcM1andM2.h"
@@ -621,18 +623,18 @@ SACDEC_ERROR SpatialDecApplyM2(spatialDec *self, int32_t ps, const int16_t alpha
       complexParBands = self->numParameterBands;
     }
 
-    FDKmemclear(hybOutputImagDry[0],
+    memset(hybOutputImagDry[0], 0,
                 self->createParams.maxNumOutputChannels *
                     self->createParams.maxNumCmplxHybBands * sizeof(int32_t));
-    FDKmemclear(hybOutputRealDry[0], self->createParams.maxNumOutputChannels *
+    memset(hybOutputRealDry[0], 0, self->createParams.maxNumOutputChannels *
                                          self->createParams.maxNumHybridBands *
                                          sizeof(int32_t));
 
     if (!toolsDisabled) {
-      FDKmemclear(hybOutputRealWet[0],
+      memset(hybOutputRealWet[0], 0,
                   self->createParams.maxNumOutputChannels *
                       self->createParams.maxNumHybridBands * sizeof(int32_t));
-      FDKmemclear(hybOutputImagWet[0],
+      memset(hybOutputImagWet[0], 0,
                   self->createParams.maxNumOutputChannels *
                       self->createParams.maxNumCmplxHybBands *
                       sizeof(int32_t));

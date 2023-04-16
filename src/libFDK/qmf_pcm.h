@@ -290,7 +290,7 @@ int32_t qmfInitAnalysisFilterBank(HANDLE_QMF_FILTER_BANK h_Qmf,         /*!< Ret
 {
     int32_t err = qmfInitFilterBank(h_Qmf, pFilterStates, noCols, lsb, usb, no_channels, flags, 0);
     if(!(flags & QMF_FLAG_KEEP_STATES) && (h_Qmf->FilterStates != NULL)) {
-        FDKmemclear(h_Qmf->FilterStates, (2 * QMF_NO_POLY - 1) * h_Qmf->no_channels * sizeof(FIXP_QAS));
+        memset(h_Qmf->FilterStates, 0, (2 * QMF_NO_POLY - 1) * h_Qmf->no_channels * sizeof(FIXP_QAS));
     }
 
     assert(h_Qmf->no_channels >= h_Qmf->lsb);

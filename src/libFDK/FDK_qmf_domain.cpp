@@ -101,6 +101,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include <stdint.h>
 #include "FDK_qmf_domain.h"
 #include "common_fix.h"
@@ -341,7 +342,7 @@ QMF_DOMAIN_ERROR FDK_QmfDomain_ClearPersistentMemory(HANDLE_FDK_QMF_DOMAIN hqd) 
 		size = gc->nQmfOvTimeSlots * gc->nQmfProcBands * CMPLX_MOD;
 		for(ch = 0; ch < gc->nInputChannels; ch++) {
 			if(hqd->QmfDomainIn[ch].pOverlapBuffer) {
-				FDKmemclear(hqd->QmfDomainIn[ch].pOverlapBuffer, size * sizeof(int32_t));
+				memset(hqd->QmfDomainIn[ch].pOverlapBuffer, 0, size * sizeof(int32_t));
 			}
 		}
 		if(FDK_QmfDomain_InitFilterBank(hqd, 0)) { err = QMF_DOMAIN_INIT_ERROR; }
@@ -705,9 +706,9 @@ static void FDK_QmfDomain_ClearConfigured(HANDLE_FDK_QMF_DOMAIN_GC hgc) {
 static void FDK_QmfDomain_ClearFilterBank(HANDLE_FDK_QMF_DOMAIN hqd) {
 	int32_t ch;
 
-	for(ch = 0; ch < ((8) + (1)); ch++) { FDKmemclear(&hqd->QmfDomainIn[ch].fb, sizeof(hqd->QmfDomainIn[ch].fb)); }
+	for(ch = 0; ch < ((8) + (1)); ch++) { memset(&hqd->QmfDomainIn[ch].fb, 0, sizeof(hqd->QmfDomainIn[ch].fb)); }
 
-	for(ch = 0; ch < ((8) + (1)); ch++) { FDKmemclear(&hqd->QmfDomainOut[ch].fb, sizeof(hqd->QmfDomainIn[ch].fb)); }
+	for(ch = 0; ch < ((8) + (1)); ch++) { memset(&hqd->QmfDomainOut[ch].fb, 0, sizeof(hqd->QmfDomainIn[ch].fb)); }
 }
 
 QMF_DOMAIN_ERROR FDK_QmfDomain_Configure(HANDLE_FDK_QMF_DOMAIN hqd) {

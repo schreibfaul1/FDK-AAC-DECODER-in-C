@@ -99,6 +99,9 @@ amm-info@iis.fraunhofer.de
    Description: int32_t/int16_t-block decoding
 
 *******************************************************************************/
+
+#include <memory.h>
+
 #include <assert.h>
 #include "block.h"
 
@@ -227,7 +230,7 @@ void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
   SPECTRAL_PTR  pSpectralCoefficient =
       pAacDecoderChannelInfo->pSpectralCoefficient;
 
-  FDKmemclear(pSpecScale, 8 * sizeof(int16_t));
+  memset(pSpecScale, 0, 8 * sizeof(int16_t));
 
   for (window = 0, group = 0;
        group < GetWindowGroups(&pAacDecoderChannelInfo->icsInfo); group++) {
@@ -341,7 +344,7 @@ AAC_DECODER_ERROR CBlock_ReadSectionData(
   pAacDecoderChannelInfo->pDynData->specificTo.aac.numberSection = 0;
   AAC_DECODER_ERROR ErrorStatus = AAC_DEC_OK;
 
-  FDKmemclear(pCodeBook, sizeof(uint8_t) * (8 * 16));
+  memset(pCodeBook, 0, sizeof(uint8_t) * (8 * 16));
 
   const int32_t nbits =
       (IsLongBlock(&pAacDecoderChannelInfo->icsInfo) == 1) ? 5 : 3;
@@ -496,7 +499,7 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
   const int16_t total_bands =
       GetScaleFactorBandsTotal(&pAacDecoderChannelInfo->icsInfo);
 
-  FDKmemclear(pAacDecoderChannelInfo->pDynData->aSfbScale,
+  memset(pAacDecoderChannelInfo->pDynData->aSfbScale, 0,
               (8 * 16) * sizeof(int16_t));
 
   for (window = 0, group = 0;
@@ -603,7 +606,7 @@ AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
           SPEC(pAacDecoderChannelInfo->pSpectralCoefficient, window,
                pAacDecoderChannelInfo->granuleLength) +
           start_clear;
-      FDKmemclear(pSpectralCoefficient, diff_clear * sizeof(int32_t));
+      memset(pSpectralCoefficient, 0, diff_clear * sizeof(int32_t));
 
     } /* for (groupwin=0; groupwin <
          GetWindowGroupLength(&pAacDecoderChannelInfo->icsInfo,group);
@@ -626,7 +629,7 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
 
   assert(BandOffsets != NULL);
 
-  FDKmemclear(pSpectralCoefficient, sizeof(SPECTRUM));
+  memset(pSpectralCoefficient, 0, sizeof(SPECTRUM));
 
   if ((flags & AC_ER_HCR) == 0) {
     int32_t group;
@@ -1083,11 +1086,11 @@ void CBlock_FrequencyToTime(
       int32_t LpdSfd = (nbDiv * nbSubfr) >> 1;
       int32_t SynSfd = LpdSfd - BPF_SFD;
 
-      FDKmemclear(
-          pitch,
+      memset(
+          pitch, 0,
           sizeof(
               pitch));  // added to prevent ferret errors in bass_pf_1sf_delay
-      FDKmemclear(pit_gain, sizeof(pit_gain));
+      memset(pit_gain, 0, sizeof(pit_gain));
 
       /* FAC case */
       if (pAacDecoderStaticChannelInfo->last_lpd_mode == 0 ||
@@ -1097,7 +1100,7 @@ void CBlock_FrequencyToTime(
 
         if (!frameOk || last_frame_lost ||
             (pAacDecoderChannelInfo->data.usac.fac_data[0] == NULL)) {
-          FDKmemclear(fac_buf,
+          memset(fac_buf, 0,
                       pAacDecoderChannelInfo->granuleLength * sizeof(int32_t));
           pAacDecoderChannelInfo->data.usac.fac_data[0] = fac_buf;
           pAacDecoderChannelInfo->data.usac.fac_data_e[0] = 0;

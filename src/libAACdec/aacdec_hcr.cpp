@@ -101,6 +101,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include <stdint.h>
 #include "aacdec_hcr.h"
 
@@ -531,8 +532,7 @@ static void HcrReorderQuantizedSpectralCoefficients(
   uint16_t *pReorderOffset = pHcr->sectionInfo.pReorderOffset;
   int32_t pTempValues[1024];
   int32_t *pBak = pTempValues;
-
-  FDKmemclear(pTempValues, 1024 * sizeof(int32_t));
+  memset(pTempValues , 0, 1024 * sizeof(int32_t));
 
   /* int32_t and int16_t: check if decoded huffman-values (quantized spectral
    * coefficients) are within range */
@@ -1029,8 +1029,8 @@ static void DecodePCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO pHcr) {
   const uint8_t *pCbSign = aSignCb;
 
   /* clear result array */
-  FDKmemclear(pQuantizedSpectralCoefficients + quantizedSpectralCoefficientsIdx,
-              1024 * sizeof(int32_t));
+  memset(pQuantizedSpectralCoefficients + quantizedSpectralCoefficientsIdx ,0, 1024 * sizeof(int32_t));
+
 
   /* decode all PCWs in the extended sorted section(s) belonging to set 0 */
   for (extSortSec =

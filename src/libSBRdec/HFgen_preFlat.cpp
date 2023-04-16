@@ -103,6 +103,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "HFgen_preFlat.h"
 
 #define POLY_ORDER   3
@@ -697,7 +698,7 @@ static void polyfit(const int32_t numBands, const int32_t *const y, const int32_
 	assert((numBands >= BSD_IDX_OFFSET) && (numBands <= MAXLOWBANDS));
 
 	/* construct vector b[] temporarily stored in array p[] */
-	FDKmemclear(p, (POLY_ORDER + 1) * sizeof(int32_t));
+	memset(p, 0, (POLY_ORDER + 1) * sizeof(int32_t));
 
 	/* p[] are the sums over n values and each p[i] has its own sf */
 	for(i = 0; i <= POLY_ORDER; ++i) p_sf[i] = 1 - DFRACT_BITS;

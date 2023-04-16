@@ -116,6 +116,7 @@ amm-info@iis.fraunhofer.de
   \sa sbr_dec(), \ref documentationOverview
 */
 
+#include <memory.h>
 #include "sbr_dec.h"
 
 #include "sbr_ram.h"
@@ -355,15 +356,12 @@ void sbr_dec(
 
     if (!(flags & SBRDEC_LOW_POWER)) {
       for (slot = ov_len; slot < noCols + ov_len; slot++) {
-        FDKmemclear(&pLowBandReal[slot][nAnalysisBands],
-                    ((64) - nAnalysisBands) * sizeof(int32_t));
-        FDKmemclear(&pLowBandImag[slot][nAnalysisBands],
-                    ((64) - nAnalysisBands) * sizeof(int32_t));
+        memset(&pLowBandReal[slot][nAnalysisBands], 0, ((64) - nAnalysisBands) * sizeof(int32_t));
+        memset(&pLowBandImag[slot][nAnalysisBands], 0, ((64) - nAnalysisBands) * sizeof(int32_t));
       }
     } else {
       for (slot = ov_len; slot < noCols + ov_len; slot++) {
-        FDKmemclear(&pLowBandReal[slot][nAnalysisBands],
-                    ((64) - nAnalysisBands) * sizeof(int32_t));
+        memset(&pLowBandReal[slot][nAnalysisBands], 0, ((64) - nAnalysisBands) * sizeof(int32_t));
       }
     }
   }
@@ -426,10 +424,9 @@ void sbr_dec(
        The array needs to be cleared at least from lowSubband to highSubband
        before. */
     if (flags & SBRDEC_LOW_POWER)
-      FDKmemclear(&degreeAlias[hHeaderData->freqBandData.lowSubband],
+      memset(&degreeAlias[hHeaderData->freqBandData.lowSubband], 0,
                   (hHeaderData->freqBandData.highSubband -
-                   hHeaderData->freqBandData.lowSubband) *
-                      sizeof(int32_t));
+                   hHeaderData->freqBandData.lowSubband) *sizeof(int32_t));
 
     /*
       Inverse filtering of lowband and transposition into the SBR-frequency
@@ -1090,12 +1087,12 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
     /* keep already adjusted data in the x-over-area */
     if (!useLP) {
       for (l = startSlot; l < hSbrDec->LppTrans.pSettings->overlap; l++) {
-        FDKmemclear(&OverlapBufferReal[l][startBand], size * sizeof(int32_t));
-        FDKmemclear(&OverlapBufferImag[l][startBand], size * sizeof(int32_t));
+        memset(&OverlapBufferReal[l][startBand], 0, size * sizeof(int32_t));
+        memset(&OverlapBufferImag[l][startBand], 0, size * sizeof(int32_t));
       }
     } else {
       for (l = startSlot; l < hSbrDec->LppTrans.pSettings->overlap; l++) {
-        FDKmemclear(&OverlapBufferReal[l][startBand], size * sizeof(int32_t));
+        memset(&OverlapBufferReal[l][startBand], 0, size * sizeof(int32_t));
       }
     }
 
@@ -1106,14 +1103,14 @@ resetSbrDec(HANDLE_SBR_DEC hSbrDec, HANDLE_SBR_HEADER_DATA hHeaderData,
     stopBand = fixMax(old_lsb, new_lsb);
     size = fixMax(0, stopBand - startBand);
 
-    FDKmemclear(&hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[0][startBand],
+    memset(&hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[0][startBand], 0,
                 size * sizeof(int32_t));
-    FDKmemclear(&hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[1][startBand],
+    memset(&hSbrDec->LppTrans.lpcFilterStatesRealLegSBR[1][startBand], 0,
                 size * sizeof(int32_t));
     if (!useLP) {
-      FDKmemclear(&hSbrDec->LppTrans.lpcFilterStatesImagLegSBR[0][startBand],
+      memset(&hSbrDec->LppTrans.lpcFilterStatesImagLegSBR[0][startBand], 0,
                   size * sizeof(int32_t));
-      FDKmemclear(&hSbrDec->LppTrans.lpcFilterStatesImagLegSBR[1][startBand],
+      memset(&hSbrDec->LppTrans.lpcFilterStatesImagLegSBR[1][startBand], 0,
                   size * sizeof(int32_t));
     }
   }

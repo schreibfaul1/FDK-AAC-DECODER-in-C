@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include <stdint.h>
 #include "stereo.h"
 
@@ -125,7 +126,7 @@ int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
 
   pJointStereoData->MsMaskPresent = (uint8_t)FDKreadBits(bs, 2);
 
-  FDKmemclear(pJointStereoData->MsUsed,
+  memset(pJointStereoData->MsUsed, 0,
               scaleFactorBandsTransmitted * sizeof(uint8_t));
 
   pJointStereoData->cplx_pred_flag = 0;
@@ -206,18 +207,18 @@ int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
              (pJointStereoPersistentData->winSeqPrev != BLOCK_SHORT)) ||
             ((pJointStereoPersistentData->winSeqPrev == BLOCK_SHORT) &&
              (windowSequence != BLOCK_SHORT))) {
-          FDKmemclear(pJointStereoPersistentData->alpha_q_re_prev,
+          memset(pJointStereoPersistentData->alpha_q_re_prev, 0,
                       JointStereoMaximumGroups * JointStereoMaximumBands *
                           sizeof(int16_t));
-          FDKmemclear(pJointStereoPersistentData->alpha_q_im_prev,
+          memset(pJointStereoPersistentData->alpha_q_im_prev, 0,
                       JointStereoMaximumGroups * JointStereoMaximumBands *
                           sizeof(int16_t));
         }
         {
-          FDKmemclear(cplxPredictionData->alpha_q_re,
+          memset(cplxPredictionData->alpha_q_re, 0,
                       JointStereoMaximumGroups * JointStereoMaximumBands *
                           sizeof(int16_t));
-          FDKmemclear(cplxPredictionData->alpha_q_im,
+          memset(cplxPredictionData->alpha_q_im, 0,
                       JointStereoMaximumGroups * JointStereoMaximumBands *
                           sizeof(int16_t));
         }
@@ -756,7 +757,7 @@ void CJointStereo_ApplyMS(
       for (groupwin = 0; groupwin < pWindowGroupLength[group];
            groupwin++, window++) {
         /* initialize the MDST with zeros */
-        FDKmemclear(&dmx_im[windowLen * window], windowLen * sizeof(int32_t));
+        memset(&dmx_im[windowLen * window], 0, windowLen * sizeof(int32_t));
 
         /* 1. calculate the previous downmix MDCT. We do this once just for the
          * Main band. */
@@ -801,7 +802,7 @@ void CJointStereo_ApplyMS(
               if (pAacDecoderStaticChannelInfo[L]
                       ->pCpeStaticData->jointStereoPersistentData
                       .clearSpectralCoeffs == 1) {
-                FDKmemclear(dmx_re_prev, windowLen * sizeof(int32_t));
+                memset(dmx_re_prev, 0, windowLen * sizeof(int32_t));
                 dmx_re_prev_e = 0;
               } else {
                 if (cplxPredictionData->pred_dir == 0) {
@@ -1155,7 +1156,7 @@ void CJointStereo_ApplyMS(
        for intensity coding. PNS correlation signalling was mapped before
        calling CJointStereo_ApplyMS(). */
     if (pJointStereoData->MsMaskPresent == 2) {
-      FDKmemclear(pJointStereoData->MsUsed,
+      memset(pJointStereoData->MsUsed, 0,
                   JointStereoMaximumBands * sizeof(uint8_t));
     }
   }

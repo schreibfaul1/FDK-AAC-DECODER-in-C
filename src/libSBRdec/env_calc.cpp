@@ -277,9 +277,8 @@ static void mapSineFlags(
   */
 
   /* Reset the output vector first */
-  memset(sineMapped, 32,
-            MAX_FREQ_COEFFS * sizeof(int8_t)); /* 32 means 'no sine' */
-  FDKmemclear(harmFlagsPrevActive, ADD_HARMONICS_FLAGS_SIZE * sizeof(uint32_t));
+  memset(sineMapped, 32, MAX_FREQ_COEFFS * sizeof(int8_t)); /* 32 means 'no sine' */
+  memset(harmFlagsPrevActive, 0, ADD_HARMONICS_FLAGS_SIZE * sizeof(uint32_t));
   for (i = 0; i < nSfb; i++) {
     uint32_t maskSfb =
         1 << bitcount; /* mask to extract addHarmonics flag of current Sfb */
@@ -1093,7 +1092,7 @@ void calculateSbrEnvelope(
        limiter bands exceeds the number of subbands. The latter can be caused by
        undetected bit errors and is tested by some streams from the
        certification set. */
-    FDKmemclear(pNrgs, sizeof(ENV_CALC_NRGS));
+    memset(pNrgs, 0, sizeof(ENV_CALC_NRGS));
 
     if (pvc_mode > 0) {
       /* get predicted energy values from PVC module */
@@ -1755,9 +1754,9 @@ createSbrEnvelopeCalc(
   }
   hs->harmIndex = 0;
 
-  FDKmemclear(hs->prevSbrNoiseFloorLevel, sizeof(hs->prevSbrNoiseFloorLevel));
+  memset(hs->prevSbrNoiseFloorLevel, 0, sizeof(hs->prevSbrNoiseFloorLevel));
   hs->prevNNfb = 0;
-  FDKmemclear(hs->prevFreqBandTableNoise, sizeof(hs->prevFreqBandTableNoise));
+  memset(hs->prevFreqBandTableNoise, 0, sizeof(hs->prevFreqBandTableNoise));
   hs->sinusoidal_positionPrev = 0;
 
   /*

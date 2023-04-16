@@ -128,9 +128,6 @@ void FDKmemcpy(void *dst, const void *src, const uint32_t size) {
 }
 //----------------------------------------------------------------------------------------------------------------------
 
-
-void FDKmemclear(void *memPtr, const uint32_t size) { memset(memPtr, 0, size); }
-
 uint32_t FDKstrlen(const char *s) { return (uint32_t)strlen(s); }
 
 /* Compare function wrappers */

@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include <stdint.h>
 #include "aacdec_pns.h"
 #include "aac_rom.h"
@@ -125,8 +126,8 @@ void CPns_ResetData(CPnsData *pPnsData,
   pPnsData->PnsActive = 0;
   pPnsData->CurrentEnergy = 0;
 
-  FDKmemclear(pPnsData->pnsUsed, (8 * 16) * sizeof(uint8_t));
-  FDKmemclear(pPnsInterChannelData->correlated, (8 * 16) * sizeof(uint8_t));
+  memset(pPnsData->pnsUsed ,0, (8 * 16) * sizeof(uint8_t) );
+  memset(pPnsInterChannelData->correlated , 0, (8 * 16) * sizeof(uint8_t) );
 }
 
 /*!

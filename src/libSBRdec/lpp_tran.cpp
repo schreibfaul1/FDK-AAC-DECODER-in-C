@@ -122,6 +122,7 @@ amm-info@iis.fraunhofer.de
 #include "log/log.h"
 #endif
 
+#include <memory.h>
 #include "lpp_tran.h"
 #include "sbr_ram.h"
 #include "sbr_rom.h"
@@ -326,12 +327,12 @@ void lppTransposer(
 
     if (!useLP) {
       for (i = startSample; i < stopSampleClear; i++) {
-        FDKmemclear(&qmfBufferReal[i][targetStopBand], memSize);
-        FDKmemclear(&qmfBufferImag[i][targetStopBand], memSize);
+        memset(&qmfBufferReal[i][targetStopBand], 0, memSize);
+        memset(&qmfBufferImag[i][targetStopBand], 0, memSize);
       }
     } else {
       for (i = startSample; i < stopSampleClear; i++) {
-        FDKmemclear(&qmfBufferReal[i][targetStopBand], memSize);
+        memset(&qmfBufferReal[i][targetStopBand], 0, memSize);
       }
     }
   }
@@ -343,7 +344,7 @@ void lppTransposer(
 #endif
 
   /* init bwIndex for each patch */
-  FDKmemclear(bwIndex, sizeof(bwIndex));
+  memset(bwIndex, 0, sizeof(bwIndex));
 
   /*
     Calc common low band scale factor
@@ -929,8 +930,8 @@ void lppTransposerHBE(
     int32_t memSize = ((64) - targetStopBand) * sizeof(int32_t);
 
     for (i = startSample; i < stopSampleClear; i++) {
-      FDKmemclear(&qmfBufferReal[i][targetStopBand], memSize);
-      FDKmemclear(&qmfBufferImag[i][targetStopBand], memSize);
+      memset(&qmfBufferReal[i][targetStopBand], 0, memSize);
+      memset(&qmfBufferImag[i][targetStopBand], 0, memSize);
     }
   }
 #ifdef __ANDROID__

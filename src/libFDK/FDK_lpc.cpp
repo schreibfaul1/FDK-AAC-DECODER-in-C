@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "FDK_lpc.h"
 
 /* Internal scaling of LPC synthesis to avoid overflow of filte states.
@@ -437,7 +438,7 @@ void CLpc_AutoToParcor(int32_t acorr[], const int32_t acorr_e,
   int32_t *workBuffer = parcorWorkBuffer;
   int32_t autoCorr_0 = acorr[0];
 
-  FDKmemclear(reflCoeff, numOfCoeff * sizeof(FIXP_LPC));
+  memset(reflCoeff, 0, numOfCoeff * sizeof(FIXP_LPC));
 
   if (autoCorr_0 == FL2FXCONST_DBL(0.0)) {
     if (pPredictionGain_m != NULL) {

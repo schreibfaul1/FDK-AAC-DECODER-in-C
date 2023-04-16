@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include <stdio.h>
 #include "FDK_hybrid.h"
 
@@ -277,9 +278,9 @@ int32_t FDKhybridAnalysisInit(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
   if (initStatesFlag) {
     /* Clear LF buffer */
     for (k = 0; k < setup->nrQmfBands; k++) {
-      FDKmemclear(hAnalysisHybFilter->bufferLFReal[k],
+      memset(hAnalysisHybFilter->bufferLFReal[k], 0,
                   setup->protoLen * sizeof(int32_t));
-      FDKmemclear(hAnalysisHybFilter->bufferLFImag[k],
+      memset(hAnalysisHybFilter->bufferLFImag[k], 0,
                   setup->protoLen * sizeof(int32_t));
     }
 
@@ -287,9 +288,9 @@ int32_t FDKhybridAnalysisInit(HANDLE_FDK_ANA_HYB_FILTER hAnalysisHybFilter,
       if (qmfBands > setup->nrQmfBands) {
         /* Clear HF buffer */
         for (k = 0; k < setup->filterDelay; k++) {
-          FDKmemclear(hAnalysisHybFilter->bufferHFReal[k],
+          memset(hAnalysisHybFilter->bufferHFReal[k], 0,
                       (qmfBands - setup->nrQmfBands) * sizeof(int32_t));
-          FDKmemclear(hAnalysisHybFilter->bufferHFImag[k],
+          memset(hAnalysisHybFilter->bufferHFImag[k], 0,
                       (cplxBands - setup->nrQmfBands) * sizeof(int32_t));
         }
       }

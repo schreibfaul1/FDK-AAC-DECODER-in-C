@@ -109,7 +109,7 @@ amm-info@iis.fraunhofer.de
 
 void mdct_init(H_MDCT hMdct, int32_t *overlap, int32_t overlapBufferSize) {
   hMdct->overlap.freq = overlap;
-  // FDKmemclear(overlap, overlapBufferSize*sizeof(int32_t));
+  // memset(overlap, overlapBufferSize*sizeof(int32_t));
   hMdct->prev_fr = 0;
   hMdct->prev_nr = 0;
   hMdct->prev_tl = 0;
