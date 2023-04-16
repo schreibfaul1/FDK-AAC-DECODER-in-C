@@ -109,7 +109,8 @@ amm-info@iis.fraunhofer.de
 
 #include "machine_type.h"
 #include "genericStds.h"
-#include "syslib_channelMapDescr.h"
+#include  "../libAACdec/newAACDecoder.h"
+#include "machine_type.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -101,6 +101,7 @@ amm-info@iis.fraunhofer.de
 *******************************************************************************/
 #include <stdint.h>
 #include "aacdecoder_lib.h"
+#include "newAACDecoder.h"
 #include <stdio.h>
 #include "../libFDK/FDK_core.h"
 #include "../libMpegTPDec/tpdec_lib.h"

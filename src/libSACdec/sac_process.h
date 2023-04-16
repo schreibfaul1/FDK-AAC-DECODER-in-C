@@ -288,7 +288,7 @@ SACDEC_ERROR SpatialDecSynthesis(spatialDec *self, const int32_t ts,
                                  int32_t **hybOutputReal,
                                  int32_t **hybOutputImag, PCM_MPS *timeOut,
                                  const int32_t numInputChannels,
-                                 const FDK_channelMapDescr *const mapDescr);
+                                 const FDK_channelMapDescr_t *const mapDescr);
 
 void SpatialDecBufferMatrices(spatialDec *self);
 

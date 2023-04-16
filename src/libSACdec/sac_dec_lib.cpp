@@ -1513,7 +1513,7 @@ int32_t mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder,
                               AUDIO_OBJECT_TYPE coreCodec,
                               AUDIO_CHANNEL_TYPE channelType[],
                               uint8_t channelIndices[],
-                              const FDK_channelMapDescr *const mapDescr,
+                              const FDK_channelMapDescr_t *const mapDescr,
                               const int32_t inDataHeadroom, int32_t *outDataHeadroom) {
   SACDEC_ERROR err = MPS_OK;
   PCM_MPS *pTimeOut = pTimeData;

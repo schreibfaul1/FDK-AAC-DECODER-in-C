@@ -312,7 +312,7 @@ SACDEC_ERROR SpatialDecApplyFrame(
     int32_t **qmfInDataImag, /* interleaved l/r */
     PCM_MPS *pcmOutBuf, /* MAX_OUTPUT_CHANNELS*MAX_TIME_SLOTS*NUM_QMF_BANDS] */
     uint32_t nSamples, uint32_t *pControlFlags, int32_t numInputChannels,
-    const FDK_channelMapDescr *const mapDescr);
+    const FDK_channelMapDescr_t *const mapDescr);
 
 /**
  * \brief Fill given arrays with audio channel types and indices.
@@ -325,7 +325,7 @@ SACDEC_ERROR SpatialDecApplyFrame(
 void SpatialDecChannelProperties(spatialDec *self,
                                  AUDIO_CHANNEL_TYPE channelType[],
                                  uint8_t channelIndices[],
-                                 const FDK_channelMapDescr *const mapDescr);
+                                 const FDK_channelMapDescr_t *const mapDescr);
 
 void FDK_SpatialDecClose(spatialDec *self);
 

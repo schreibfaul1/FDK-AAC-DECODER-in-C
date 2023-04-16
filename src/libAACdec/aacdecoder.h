@@ -223,7 +223,7 @@ struct AAC_DECODER_INSTANCE {
   /* See ISO/IEC 13818-7:2005(E), 8.5.3.2 Explicit channel mapping using a
    * program_config_element() */
 
-  FDK_channelMapDescr mapDescr; /*!< Describes the output channel mapping. */
+  FDK_channelMapDescr_t mapDescr; /*!< Describes the output channel mapping. */
   uint8_t chMapIndex; /*!< Index to access one line of the channelOutputMapping
                        table. This is required because not all 8 channel
                        configurations have the same output mapping. */

@@ -371,7 +371,7 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
 SBR_ERROR sbrDecoder_Apply(HANDLE_SBRDECODER self, int32_t *input, int32_t *timeData,
                            const int32_t timeDataSize, int32_t *numChannels,
                            int32_t *sampleRate,
-                           const FDK_channelMapDescr *const mapDescr,
+                           const FDK_channelMapDescr_t *const mapDescr,
                            const int32_t mapIdx, const int32_t coreDecodedOk,
                            uint8_t *psDecoded, const int32_t inDataHeadroom,
                            int32_t *outDataHeadroom);

@@ -686,7 +686,7 @@ static PCMDMX_ERROR getChannelMode(
  **/
 static void getChannelDescription(
     const PCM_DMX_CHANNEL_MODE chMode,         /* in */
-    const FDK_channelMapDescr *const mapDescr, /* in */
+    const FDK_channelMapDescr_t *const mapDescr, /* in */
     AUDIO_CHANNEL_TYPE channelType[],          /* out */
     uint8_t channelIndices[],                    /* out */
     uint8_t offsetTable[(8)]                     /* out */
@@ -2026,7 +2026,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
                                int32_t *nChannels, int32_t fInterleaved,
                                AUDIO_CHANNEL_TYPE channelType[],
                                uint8_t channelIndices[],
-                               const FDK_channelMapDescr *const mapDescr,
+                               const FDK_channelMapDescr_t *const mapDescr,
                                int32_t *pDmxOutScale) {
   PCM_DMX_USER_PARAMS *pParam = NULL;
   PCMDMX_ERROR errorStatus = PCMDMX_OK;

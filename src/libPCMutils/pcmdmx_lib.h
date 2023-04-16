@@ -437,7 +437,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
                                int32_t *nChannels, int32_t fInterleaved,
                                AUDIO_CHANNEL_TYPE channelType[],
                                uint8_t channelIndices[],
-                               const FDK_channelMapDescr *const mapDescr,
+                               const FDK_channelMapDescr_t *const mapDescr,
                                int32_t *pDmxOutScale);
 
 /** Close an instance of the PCM downmix module.

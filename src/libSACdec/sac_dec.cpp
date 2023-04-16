@@ -872,7 +872,7 @@ bail:
 void SpatialDecChannelProperties(spatialDec *self,
                                  AUDIO_CHANNEL_TYPE channelType[],
                                  uint8_t channelIndices[],
-                                 const FDK_channelMapDescr *const mapDescr) {
+                                 const FDK_channelMapDescr_t *const mapDescr) {
   if ((self == NULL) || (channelType == NULL) || (channelIndices == NULL) ||
       (mapDescr == NULL)) {
     return; /* no extern buffer to be filled */
@@ -1114,7 +1114,7 @@ static SACDEC_ERROR SpatialDecApplyParameterSets(
     int32_t **qmfInDataReal, /* QMF domain data l/r */
     int32_t **qmfInDataImag, /* QMF domain data l/r */
     uint32_t nSamples, uint32_t controlFlags, int32_t numInputChannels,
-    const FDK_channelMapDescr *const mapDescr) {
+    const FDK_channelMapDescr_t *const mapDescr) {
   SACDEC_ERROR err = MPS_OK;
 
   int16_t alpha;
@@ -1412,7 +1412,7 @@ SACDEC_ERROR SpatialDecApplyFrame(
     int32_t **qmfInDataImag,                         /* QMF domain data l/r */
     PCM_MPS *pcmOutBuf, /* MAX_OUTPUT_CHANNELS*MAX_TIME_SLOTS*NUM_QMF_BANDS] */
     uint32_t nSamples, uint32_t *pControlFlags, int32_t numInputChannels,
-    const FDK_channelMapDescr *const mapDescr) {
+    const FDK_channelMapDescr_t *const mapDescr) {
   SACDEC_ERROR err = MPS_OK;
 
   int32_t fDecAndMapFrameData;
