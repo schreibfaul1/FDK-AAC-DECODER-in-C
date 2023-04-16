@@ -176,9 +176,9 @@ void FDKafree_L(void *ptr);
 
 
 /* Compare function wrappers */
-int32_t FDKmemcmp(const void *s1, const void *s2, const uint32_t size);
-int32_t FDKstrcmp(const char *s1, const char *s2);
-int32_t FDKstrncmp(const char *s1, const char *s2, const uint32_t size);
+// int32_t memcmo(const void *s1, const void *s2, const uint32_t size);
+// int32_t strcmp(const char *s1, const char *s2);
+// int32_t strncmp(const char *s1, const char *s2, const uint32_t size);
 
 
 	#define FDKmax(a, b) ((a) > (b) ? (a) : (b))
@@ -188,21 +188,6 @@ int32_t FDKstrncmp(const char *s1, const char *s2, const uint32_t size);
 	#define FDK_INT_MIN ((int32_t)0x80000000)
 
 /* FILE I/O */
-
-/*!
- *  Check platform for endianess.
- *
- * \return  1 if platform is little endian, non-1 if platform is big endian.
- */
-int32_t IS_LITTLE_ENDIAN(void);
-
-/*!
- *  Convert input value to little endian format.
- *
- * \param val  Value to be converted. It may be in both big or little endian.
- * \return     Value in little endian format.
- */
-uint32_t TO_LITTLE_ENDIAN(uint32_t val);
 
 /*!
  * \fn     FDKFILE *FDKfopen(const char *filename, const char *mode);
@@ -225,42 +210,14 @@ extern const int32_t FDKSEEK_SET, FDKSEEK_CUR, FDKSEEK_END;
 
 FDKFILE *FDKfopen(const char *filename, const char *mode);
 int32_t  FDKfclose(FDKFILE *FP);
-int32_t  FDKfseek(FDKFILE *FP, int32_t OFFSET, int32_t WHENCE);
-int32_t  FDKftell(FDKFILE *FP);
-int32_t  FDKfflush(FDKFILE *fp);
-uint32_t FDKfwrite(const void *ptrf, int32_t size, uint32_t nmemb, FDKFILE *fp);
-uint32_t FDKfread(void *dst, int32_t size, uint32_t nmemb, FDKFILE *fp);
-char    *FDKfgets(void *dst, int32_t size, FDKFILE *fp);
-void     FDKrewind(FDKFILE *fp);
-int32_t  FDKfeof(FDKFILE *fp);
-
-/**
- * \brief        Write each member in little endian order. Convert automatically
- * to host endianess.
- * \param ptrf   Pointer to memory where to read data from.
- * \param size   Size of each item to be written.
- * \param nmemb  Number of items to be written.
- * \param fp     File pointer of type FDKFILE.
- * \return       Number of items read on success and fread() error on failure.
- */
-uint32_t FDKfwrite_EL(const void *ptrf, int32_t size, uint32_t nmemb, FDKFILE *fp);
-
-/**
- * \brief        Read variable of size "size" as little endian. Convert
- * automatically to host endianess. 4-byte alignment is enforced for 24 bit
- * data, at 32 bit full scale.
- * \param dst    Pointer to memory where to store data into.
- * \param size   Size of each item to be read.
- * \param nmemb  Number of items to be read.
- * \param fp     File pointer of type FDKFILE.
- * \return       Number of items read on success and fread() error on failure.
- */
-uint32_t FDKfread_EL(void *dst, int32_t size, uint32_t nmemb, FDKFILE *fp);
-
-/**
- * \brief  Print FDK software disclaimer.
- */
-void FDKprintDisclaimer(void);
+// int32_t  FDKfseek(FDKFILE *FP, int32_t OFFSET, int32_t WHENCE);
+// int32_t  FDKftell(FDKFILE *FP);
+// int32_t  FDKfflush(FDKFILE *fp);
+// uint32_t FDKfwrite(const void *ptrf, int32_t size, uint32_t nmemb, FDKFILE *fp);
+// uint32_t FDKfread(void *dst, int32_t size, uint32_t nmemb, FDKFILE *fp);
+// char    *FDKfgets(void *dst, int32_t size, FDKFILE *fp);
+// void     FDKrewind(FDKFILE *fp);
+// int32_t  FDKfeof(FDKFILE *fp);
 
 	#ifdef __cplusplus
 }

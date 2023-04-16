@@ -445,7 +445,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
                     pAscDummy->m_sc.m_usacConfig.UsacConfigBits;
                 pLatmDemux->usacExplicitCfgChanged = 1;
               } else {
-                if (FDKmemcmp(usacConfigPrev,
+                if (memcmp(usacConfigPrev,
                               pAscDummy->m_sc.m_usacConfig.UsacConfig,
                               usacConfigLengthPrev)) {
                   memset(&pAsc[TPDEC_TRACKINDEX(prog, lay)]

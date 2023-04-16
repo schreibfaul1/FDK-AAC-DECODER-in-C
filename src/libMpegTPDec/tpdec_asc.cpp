@@ -364,7 +364,7 @@ int32_t CProgramConfig_Compare(const CProgramConfig *const pPce1,
                            const CProgramConfig *const pPce2) {
   int32_t result = 0; /* Innocent until proven false. */
 
-  if (FDKmemcmp(pPce1, pPce2, sizeof(CProgramConfig)) !=
+  if (memcmp(pPce1, pPce2, sizeof(CProgramConfig)) !=
       0) { /* Configurations are not completely equal.
               So look into details and analyse the channel configurations: */
     result = -1;

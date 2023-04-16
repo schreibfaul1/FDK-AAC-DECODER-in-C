@@ -1555,7 +1555,7 @@ static DRC_ERROR _readDrcExtensionV1(HANDLE_FDK_BITSTREAM hBs,
       if (err) return err;
       if ((offset + i) >= 6) continue;
       if (!diff)
-        diff |= (FDKmemcmp(&tmpDown,
+        diff |= (memcmp(&tmpDown,
                            &(hUniDrcConfig->downmixInstructions[offset + i]),
                            sizeof(DOWNMIX_INSTRUCTIONS)) != 0);
       hUniDrcConfig->downmixInstructions[offset + i] = tmpDown;
@@ -1579,7 +1579,7 @@ static DRC_ERROR _readDrcExtensionV1(HANDLE_FDK_BITSTREAM hBs,
       if (err) return err;
       if ((offset + i) >= 2) continue;
       if (!diff)
-        diff |= (FDKmemcmp(&tmpCoef,
+        diff |= (memcmp(&tmpCoef,
                            &(hUniDrcConfig->drcCoefficientsUniDrc[offset + i]),
                            sizeof(DRC_COEFFICIENTS_UNI_DRC)) != 0);
       hUniDrcConfig->drcCoefficientsUniDrc[offset + i] = tmpCoef;
@@ -1598,7 +1598,7 @@ static DRC_ERROR _readDrcExtensionV1(HANDLE_FDK_BITSTREAM hBs,
       if (err) return err;
       if ((offset + i) >= 12) continue;
       if (!diff)
-        diff |= (FDKmemcmp(&tmpInst,
+        diff |= (memcmp(&tmpInst,
                            &(hUniDrcConfig->drcInstructionsUniDrc[offset + i]),
                            sizeof(DRC_INSTRUCTIONS_UNI_DRC)) != 0);
       hUniDrcConfig->drcInstructionsUniDrc[offset + i] = tmpInst;
@@ -1708,7 +1708,7 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
   if (err) return err;
 
   if (!diff)
-    diff |= (FDKmemcmp(&tmpChan, &hUniDrcConfig->channelLayout,
+    diff |= (memcmp(&tmpChan, &hUniDrcConfig->channelLayout,
                        sizeof(CHANNEL_LAYOUT)) != 0);
   hUniDrcConfig->channelLayout = tmpChan;
 
@@ -1722,7 +1722,7 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
     if (err) return err;
     if (i >= 6) continue;
     if (!diff)
-      diff |= (FDKmemcmp(&tmpDown, &(hUniDrcConfig->downmixInstructions[i]),
+      diff |= (memcmp(&tmpDown, &(hUniDrcConfig->downmixInstructions[i]),
                          sizeof(DOWNMIX_INSTRUCTIONS)) != 0);
     hUniDrcConfig->downmixInstructions[i] = tmpDown;
   }
@@ -1743,7 +1743,7 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
     if (err) return err;
     if (i >= 2) continue;
     if (!diff)
-      diff |= (FDKmemcmp(&tmpCoef, &(hUniDrcConfig->drcCoefficientsUniDrc[i]),
+      diff |= (memcmp(&tmpCoef, &(hUniDrcConfig->drcCoefficientsUniDrc[i]),
                          sizeof(DRC_COEFFICIENTS_UNI_DRC)) != 0);
     hUniDrcConfig->drcCoefficientsUniDrc[i] = tmpCoef;
   }
@@ -1757,7 +1757,7 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
     if (err) return err;
     if (i >= 12) continue;
     if (!diff)
-      diff |= (FDKmemcmp(&tmpInst, &(hUniDrcConfig->drcInstructionsUniDrc[i]),
+      diff |= (memcmp(&tmpInst, &(hUniDrcConfig->drcInstructionsUniDrc[i]),
                          sizeof(DRC_INSTRUCTIONS_UNI_DRC)) != 0);
     hUniDrcConfig->drcInstructionsUniDrc[i] = tmpInst;
   }
@@ -1924,7 +1924,7 @@ static DRC_ERROR _readLoudnessInfoSetExtEq(
     if (err) return err;
     if ((offset + i) >= 12) continue;
     if (!diff)
-      diff |= (FDKmemcmp(&tmpLoud,
+      diff |= (memcmp(&tmpLoud,
                          &(hLoudnessInfoSet->loudnessInfoAlbum[offset + i]),
                          sizeof(LOUDNESS_INFO)) != 0);
     hLoudnessInfoSet->loudnessInfoAlbum[offset + i] = tmpLoud;
@@ -1941,7 +1941,7 @@ static DRC_ERROR _readLoudnessInfoSetExtEq(
     if ((offset + i) >= 12) continue;
     if (!diff)
       diff |=
-          (FDKmemcmp(&tmpLoud, &(hLoudnessInfoSet->loudnessInfo[offset + i]),
+          (memcmp(&tmpLoud, &(hLoudnessInfoSet->loudnessInfo[offset + i]),
                      sizeof(LOUDNESS_INFO)) != 0);
     hLoudnessInfoSet->loudnessInfo[offset + i] = tmpLoud;
   }
@@ -2009,7 +2009,7 @@ drcDec_readLoudnessInfoSet(HANDLE_FDK_BITSTREAM hBs,
     if (err) return err;
     if (i >= 12) continue;
     if (!diff)
-      diff |= (FDKmemcmp(&tmpLoud, &(hLoudnessInfoSet->loudnessInfoAlbum[i]),
+      diff |= (memcmp(&tmpLoud, &(hLoudnessInfoSet->loudnessInfoAlbum[i]),
                          sizeof(LOUDNESS_INFO)) != 0);
     hLoudnessInfoSet->loudnessInfoAlbum[i] = tmpLoud;
   }
@@ -2023,7 +2023,7 @@ drcDec_readLoudnessInfoSet(HANDLE_FDK_BITSTREAM hBs,
     if (err) return err;
     if (i >= 12) continue;
     if (!diff)
-      diff |= (FDKmemcmp(&tmpLoud, &(hLoudnessInfoSet->loudnessInfo[i]),
+      diff |= (memcmp(&tmpLoud, &(hLoudnessInfoSet->loudnessInfo[i]),
                          sizeof(LOUDNESS_INFO)) != 0);
     hLoudnessInfoSet->loudnessInfo[i] = tmpLoud;
   }

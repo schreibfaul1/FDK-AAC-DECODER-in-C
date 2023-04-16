@@ -159,7 +159,7 @@ int32_t FDK_SpatialDecCompareSpatialSpecificConfigHeader(
   int32_t result = MPS_OK;
 
   /* we assume: every bit must be equal */
-  if (FDKmemcmp(pSsc1, pSsc2, sizeof(SPATIAL_SPECIFIC_CONFIG)) != 0) {
+  if (memcmp(pSsc1, pSsc2, sizeof(SPATIAL_SPECIFIC_CONFIG)) != 0) {
     result = MPS_UNEQUAL_SSC;
   }
   return result;

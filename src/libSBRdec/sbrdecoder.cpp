@@ -227,19 +227,19 @@ static int32_t compareSbrHeader(const HANDLE_SBR_HEADER_DATA hHdr1, const HANDLE
 	result |= (hHdr1->sbrProcSmplRate != hHdr2->sbrProcSmplRate) ? 1 : 0;
 
 	/* compare bitstream data */
-	result |= FDKmemcmp(&hHdr1->bs_data, &hHdr2->bs_data, sizeof(SBR_HEADER_DATA_BS));
-	result |= FDKmemcmp(&hHdr1->bs_dflt, &hHdr2->bs_dflt, sizeof(SBR_HEADER_DATA_BS));
-	result |= FDKmemcmp(&hHdr1->bs_info, &hHdr2->bs_info, sizeof(SBR_HEADER_DATA_BS_INFO));
+	result |= memcmp(&hHdr1->bs_data, &hHdr2->bs_data, sizeof(SBR_HEADER_DATA_BS));
+	result |= memcmp(&hHdr1->bs_dflt, &hHdr2->bs_dflt, sizeof(SBR_HEADER_DATA_BS));
+	result |= memcmp(&hHdr1->bs_info, &hHdr2->bs_info, sizeof(SBR_HEADER_DATA_BS_INFO));
 
 	/* compare frequency band data */
-	result |= FDKmemcmp(&hHdr1->freqBandData, &hHdr2->freqBandData, (8 + MAX_NUM_LIMITERS + 1) * sizeof(uint8_t));
-	result |= FDKmemcmp(hHdr1->freqBandData.freqBandTableLo, hHdr2->freqBandData.freqBandTableLo,
+	result |= memcmp(&hHdr1->freqBandData, &hHdr2->freqBandData, (8 + MAX_NUM_LIMITERS + 1) * sizeof(uint8_t));
+	result |= memcmp(hHdr1->freqBandData.freqBandTableLo, hHdr2->freqBandData.freqBandTableLo,
 						(MAX_FREQ_COEFFS / 2 + 1) * sizeof(uint8_t));
-	result |= FDKmemcmp(hHdr1->freqBandData.freqBandTableHi, hHdr2->freqBandData.freqBandTableHi,
+	result |= memcmp(hHdr1->freqBandData.freqBandTableHi, hHdr2->freqBandData.freqBandTableHi,
 						(MAX_FREQ_COEFFS + 1) * sizeof(uint8_t));
-	result |= FDKmemcmp(hHdr1->freqBandData.freqBandTableNoise, hHdr2->freqBandData.freqBandTableNoise,
+	result |= memcmp(hHdr1->freqBandData.freqBandTableNoise, hHdr2->freqBandData.freqBandTableNoise,
 						(MAX_NOISE_COEFFS + 1) * sizeof(uint8_t));
-	result |= FDKmemcmp(hHdr1->freqBandData.v_k_master, hHdr2->freqBandData.v_k_master,
+	result |= memcmp(hHdr1->freqBandData.v_k_master, hHdr2->freqBandData.v_k_master,
 						(MAX_FREQ_COEFFS + 1) * sizeof(uint8_t));
 
 	return result;
@@ -1182,7 +1182,7 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs, uin
 				}
 				else { newSbrInfo.pvc_mode = 0; }
 				if(headerStatus != HEADER_ERROR) {
-					if(FDKmemcmp(&hSbrHeader->bs_info, &newSbrInfo, sizeof(SBR_HEADER_DATA_BS_INFO))) {
+					if(memcmp(&hSbrHeader->bs_info, &newSbrInfo, sizeof(SBR_HEADER_DATA_BS_INFO))) {
 						/* in case of ampResolution and preprocessing change no full reset
 						 * required    */
 						/* HEADER reset would trigger HBE transposer reset which breaks
@@ -1212,7 +1212,7 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs, uin
 
 				if(useDfltHeader) {
 					sbrHeaderPresent = 0;
-					if(FDKmemcmp(&hSbrHeader->bs_data, &hSbrHeader->bs_dflt, sizeof(SBR_HEADER_DATA_BS)) ||
+					if(memcmp(&hSbrHeader->bs_data, &hSbrHeader->bs_dflt, sizeof(SBR_HEADER_DATA_BS)) ||
 					   hSbrHeader->syncState != SBR_ACTIVE) {
 						hSbrHeader->bs_data = hSbrHeader->bs_dflt;
 						headerStatus = HEADER_RESET;

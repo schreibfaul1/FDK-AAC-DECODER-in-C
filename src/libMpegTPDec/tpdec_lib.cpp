@@ -388,7 +388,7 @@ TRANSPORTDEC_ERROR transportDec_InBandConfig(HANDLE_TRANSPORTDEC hTp,
     if (hTp->asc->m_aot == AOT_USAC) {
       if ((uint32_t)(hTp->asc->m_sc.m_usacConfig.UsacConfigBits + 7) >> 3 ==
           newConfigLength) {
-        if (0 == FDKmemcmp(newConfig, hTp->asc->m_sc.m_usacConfig.UsacConfig,
+        if (0 == memcmp(newConfig, hTp->asc->m_sc.m_usacConfig.UsacConfig,
                            newConfigLength)) {
           if (hTp->parser.latm.usacExplicitCfgChanged) { /* configChange from
                                                             LOAS/LATM parser */
