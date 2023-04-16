@@ -1,96 +1,4 @@
-/* -----------------------------------------------------------------------------
-Software License for The Fraunhofer FDK AAC Codec Library for Android
 
-© Copyright  1995 - 2019 Fraunhofer-Gesellschaft zur Förderung der angewandten
-Forschung e.V. All rights reserved.
-
- 1.    INTRODUCTION
-The Fraunhofer FDK AAC Codec Library for Android ("FDK AAC Codec") is software
-that implements the MPEG Advanced Audio Coding ("AAC") encoding and decoding
-scheme for digital audio. This FDK AAC Codec software is intended to be used on
-a wide variety of Android devices.
-
-AAC's HE-AAC and HE-AAC v2 versions are regarded as today's most efficient
-general perceptual audio codecs. AAC-ELD is considered the best-performing
-full-bandwidth communications codec by independent studies and is widely
-deployed. AAC has been standardized by ISO and IEC as part of the MPEG
-specifications.
-
-Patent licenses for necessary patent claims for the FDK AAC Codec (including
-those of Fraunhofer) may be obtained through Via Licensing
-(www.vialicensing.com) or through the respective patent owners individually for
-the purpose of encoding or decoding bit streams in products that are compliant
-with the ISO/IEC MPEG audio standards. Please note that most manufacturers of
-Android devices already license these patent claims through Via Licensing or
-directly from the patent owners, and therefore FDK AAC Codec software may
-already be covered under those patent licenses when it is used for those
-licensed purposes only.
-
-Commercially-licensed AAC software libraries, including floating-point versions
-with enhanced sound quality, are also available from Fraunhofer. Users are
-encouraged to check the Fraunhofer website for additional applications
-information and documentation.
-
-2.    COPYRIGHT LICENSE
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted without payment of copyright license fees provided that you
-satisfy the following conditions:
-
-You must retain the complete text of this software license in redistributions of
-the FDK AAC Codec or your modifications thereto in source code form.
-
-You must retain the complete text of this software license in the documentation
-and/or other materials provided with redistributions of the FDK AAC Codec or
-your modifications thereto in binary form. You must make available free of
-charge copies of the complete source code of the FDK AAC Codec and your
-modifications thereto to recipients of copies in binary form.
-
-The name of Fraunhofer may not be used to endorse or promote products derived
-from this library without prior written permission.
-
-You may not charge copyright license fees for anyone to use, copy or distribute
-the FDK AAC Codec software or your modifications thereto.
-
-Your modified versions of the FDK AAC Codec must carry prominent notices stating
-that you changed the software and the date of any change. For modified versions
-of the FDK AAC Codec, the term "Fraunhofer FDK AAC Codec Library for Android"
-must be replaced by the term "Third-Party Modified Version of the Fraunhofer FDK
-AAC Codec Library for Android."
-
-3.    NO PATENT LICENSE
-
-NO EXPRESS OR IMPLIED LICENSES TO ANY PATENT CLAIMS, including without
-limitation the patents of Fraunhofer, ARE GRANTED BY THIS SOFTWARE LICENSE.
-Fraunhofer provides no warranty of patent non-infringement with respect to this
-software.
-
-You may use this FDK AAC Codec software or modifications thereto only for
-purposes that are authorized by appropriate patent licenses.
-
-4.    DISCLAIMER
-
-This FDK AAC Codec software is provided by Fraunhofer on behalf of the copyright
-holders and contributors "AS IS" and WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES,
-including but not limited to the implied warranties of merchantability and
-fitness for a particular purpose. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-CONTRIBUTORS BE LIABLE for any direct, indirect, incidental, special, exemplary,
-or consequential damages, including but not limited to procurement of substitute
-goods or services; loss of use, data, or profits, or business interruption,
-however caused and on any theory of liability, whether in contract, strict
-liability, or tort (including negligence), arising in any way out of the use of
-this software, even if advised of the possibility of such damage.
-
-5.    CONTACT INFORMATION
-
-Fraunhofer Institute for Integrated Circuits IIS
-Attention: Audio and Multimedia Departments - FDK AAC LL
-Am Wolfsmantel 33
-91058 Erlangen, Germany
-
-www.iis.fraunhofer.de/amm
-amm-info@iis.fraunhofer.de
------------------------------------------------------------------------------ */
 
 /******************* Library for basic calculation routines ********************
 
@@ -118,51 +26,6 @@ C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore4, int32_t, QMF_WB_SECTION_SIZE, SECT_DATA_
 C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore6, int32_t, QMF_WB_SECTION_SIZE, SECT_DATA_L2, WORKBUFFER6_TAG)
 C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore7, int32_t, QMF_WB_SECTION_SIZE, SECT_DATA_L2, WORKBUFFER7_TAG)
 
-/*! Analysis states buffer. <br>
-	Dimension: #((8) + (1))
-	                                                 */
-int32_t *GetAnaQmfStates(int32_t n) {
-	 int32_t *ap; (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 124, __extension__ __PRETTY_FUNCTION__)); ap = ((int32_t *)FDKaalloc((10 * (64)) * sizeof(int32_t), 8)); return ap; } void FreeAnaQmfStates(int32_t **p) { if(p != __null) { FDKafree(*p); *p = __null; } } uint32_t GetRequiredMemAnaQmfStates(void) { return (((10 * (64)) * sizeof(int32_t) + 8 + sizeof(void *)) + (((int32_t)(8) - ((int32_t)((10 * (64)) * sizeof(int32_t) + 8 + sizeof(void *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
-
-/*! Synthesis states buffer. <br>
-	Dimension: #((8) + (1))                                                  */
-int32_t *GetSynQmfStates(int32_t n) {
-	 int32_t *ap; (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 128, __extension__ __PRETTY_FUNCTION__)); ap = ((int32_t *)FDKaalloc((9 * ((64))) * sizeof(int32_t), 8)); return ap; } void FreeSynQmfStates(int32_t **p) { if(p != __null) { FDKafree(*p); *p = __null; } } uint32_t GetRequiredMemSynQmfStates(void) { return (((9 * ((64))) * sizeof(int32_t) + 8 + sizeof(void *)) + (((int32_t)(8) - ((int32_t)((9 * ((64))) * sizeof(int32_t) + 8 + sizeof(void *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
-
-/*! Pointer to real qmf data for each time slot. <br>
-	Dimension: #((8) + (1))                                                   */
-int32_t * *GetQmfSlotsReal(int32_t n) {
-	 (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 132, __extension__ __PRETTY_FUNCTION__)); return ((int32_t * *)FDKcalloc((64) + (12), sizeof(int32_t *))); } void FreeQmfSlotsReal(int32_t * **p) { if(p != __null) { FDKfree(*p); *p = __null; } } uint32_t GetRequiredMemQmfSlotsReal(void) { return ((((64) + (12)) * sizeof(int32_t *)) + (((int32_t)(8) - ((int32_t)(((64) + (12)) * sizeof(int32_t *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
-
-/*! Pointer to imaginary qmf data for each time slot. <br>
-	Dimension: #((8) + (1))                                                   */
-int32_t * *GetQmfSlotsImag(int32_t n) {
-	 (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 136, __extension__ __PRETTY_FUNCTION__)); return ((int32_t * *)FDKcalloc((64) + (12), sizeof(int32_t *))); } void FreeQmfSlotsImag(int32_t * **p) { if(p != __null) { FDKfree(*p); *p = __null; } } uint32_t GetRequiredMemQmfSlotsImag(void) { return ((((64) + (12)) * sizeof(int32_t *)) + (((int32_t)(8) - ((int32_t)(((64) + (12)) * sizeof(int32_t *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
-
-/*! QMF overlap buffer. <br>
-	Dimension: #((8) + (1))                                                   */
-int32_t *GetQmfOverlapBuffer(int32_t n) {
-	 int32_t *ap; (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 140, __extension__ __PRETTY_FUNCTION__)); ap = ((int32_t *)FDKaalloc((2 * (12) * (64)) * sizeof(int32_t), 8)); return ap; } void FreeQmfOverlapBuffer(int32_t **p) { if(p != __null) { FDKafree(*p); *p = __null; } } uint32_t GetRequiredMemQmfOverlapBuffer(void) { return (((2 * (12) * (64)) * sizeof(int32_t) + 8 + sizeof(void *)) + (((int32_t)(8) - ((int32_t)((2 * (12) * (64)) * sizeof(int32_t) + 8 + sizeof(void *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
-
-/*! Analysis states buffer. <br>
-	Dimension: #((8) + (1))                                                   */
-int32_t *GetAnaQmfStates16(int32_t n) {
-	 int32_t *ap; (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 144, __extension__ __PRETTY_FUNCTION__)); ap = ((int32_t *)FDKaalloc((10 * (16)) * sizeof(int32_t), 8)); return ap; } void FreeAnaQmfStates16(int32_t **p) { if(p != __null) { FDKafree(*p); *p = __null; } } uint32_t GetRequiredMemAnaQmfStates16(void) { return (((10 * (16)) * sizeof(int32_t) + 8 + sizeof(void *)) + (((int32_t)(8) - ((int32_t)((10 * (16)) * sizeof(int32_t) + 8 + sizeof(void *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
-/*! Analysis states buffer. <br>
-	Dimension: #((8) + (1))                                                   */
-int32_t *GetAnaQmfStates24(int32_t n) {
-	 int32_t *ap; (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 147, __extension__ __PRETTY_FUNCTION__)); ap = ((int32_t *)FDKaalloc((10 * (24)) * sizeof(int32_t), 8)); return ap; } void FreeAnaQmfStates24(int32_t **p) { if(p != __null) { FDKafree(*p); *p = __null; } } uint32_t GetRequiredMemAnaQmfStates24(void) { return (((10 * (24)) * sizeof(int32_t) + 8 + sizeof(void *)) + (((int32_t)(8) - ((int32_t)((10 * (24)) * sizeof(int32_t) + 8 + sizeof(void *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
-
-/*! Analysis states buffer. <br>
-	Dimension: #((8) + (1))                                                   */
-int32_t *GetAnaQmfStates32(int32_t n) {
-	 int32_t *ap; (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 151, __extension__ __PRETTY_FUNCTION__)); ap = ((int32_t *)FDKaalloc((10 * (32)) * sizeof(int32_t), 8)); return ap; } void FreeAnaQmfStates32(int32_t **p) { if(p != __null) { FDKafree(*p); *p = __null; } } uint32_t GetRequiredMemAnaQmfStates32(void) { return (((10 * (32)) * sizeof(int32_t) + 8 + sizeof(void *)) + (((int32_t)(8) - ((int32_t)((10 * (32)) * sizeof(int32_t) + 8 + sizeof(void *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
-
-/*! Pointer to real qmf data for each time slot. <br>
-	Dimension: #((8) + (1))                                                   */
-int32_t * *GetQmfSlotsReal16(int32_t n) {
-	 (static_cast <bool> ((n) < (((8) + (1)))) ? void (0) : __assert_fail ("(n) < (((8) + (1)))", "/media/wolle/DRIVE-N-GO/platformio-workspace/FDK-AAC-DECODER-in-C/src/libFDK/FDK_qmf_domain.cpp", 155, __extension__ __PRETTY_FUNCTION__)); return ((int32_t * *)FDKcalloc((16) + (3), sizeof(int32_t *))); } void FreeQmfSlotsReal16(int32_t * **p) { if(p != __null) { FDKfree(*p); *p = __null; } } uint32_t GetRequiredMemQmfSlotsReal16(void) { return ((((16) + (3)) * sizeof(int32_t *)) + (((int32_t)(8) - ((int32_t)(((16) + (3)) * sizeof(int32_t *)) & ((8) - 1))) & ((8) - 1))) * (((8) + (1))); }
-
 
 
 
@@ -173,15 +36,21 @@ static int32_t FDK_QmfDomain_FreePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
 	for(ch = 0; ch < ((8) + (1)); ch++) {
 		if(qd->QmfDomainIn[ch].pAnaQmfStates) {
 			if(qd->globalConf.nBandsAnalysis == QMF_DOMAIN_ANALYSIS_QMF_BANDS_16) {
-				FreeAnaQmfStates16(&qd->QmfDomainIn[ch].pAnaQmfStates);
+				FDKafree(qd->QmfDomainIn[ch].pAnaQmfStates);
+				qd->QmfDomainIn[ch].pAnaQmfStates = NULL;
 			}
 			else if(qd->globalConf.nBandsAnalysis == QMF_DOMAIN_ANALYSIS_QMF_BANDS_24) {
-				FreeAnaQmfStates24(&qd->QmfDomainIn[ch].pAnaQmfStates);
+				FDKafree(qd->QmfDomainIn[ch].pAnaQmfStates);
+				qd->QmfDomainIn[ch].pAnaQmfStates = NULL;
 			}
 			else if(qd->globalConf.nBandsAnalysis == QMF_DOMAIN_ANALYSIS_QMF_BANDS_32) {
-				FreeAnaQmfStates32(&qd->QmfDomainIn[ch].pAnaQmfStates);
+				FDKafree(qd->QmfDomainIn[ch].pAnaQmfStates);
+				qd->QmfDomainIn[ch].pAnaQmfStates = NULL;
 			}
-			else { FreeAnaQmfStates(&qd->QmfDomainIn[ch].pAnaQmfStates); }
+			else {
+				FDKafree(qd->QmfDomainIn[ch].pAnaQmfStates);
+				qd->QmfDomainIn[ch].pAnaQmfStates = NULL;
+			}
 		}
 
 		if(qd->QmfDomainIn[ch].pOverlapBuffer) {
@@ -193,18 +62,25 @@ static int32_t FDK_QmfDomain_FreePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
 				FDKafree(qd->QmfDomainIn[ch].pOverlapBuffer);
 				qd->QmfDomainIn[ch].pOverlapBuffer = NULL;
 			}
-			else { FreeQmfOverlapBuffer(&qd->QmfDomainIn[ch].pOverlapBuffer); }
+			else {
+				FDKafree(qd->QmfDomainIn[ch].pOverlapBuffer);
+				qd->QmfDomainIn[ch].pOverlapBuffer = NULL;
+			}
 		}
 
 		if(qd->QmfDomainIn[ch].hQmfSlotsReal) {
 			if(qd->globalConf.nQmfTimeSlots == QMF_DOMAIN_TIMESLOTS_16) {
-				FreeQmfSlotsReal16(&qd->QmfDomainIn[ch].hQmfSlotsReal);
+				FDKfree(qd->QmfDomainIn[ch].hQmfSlotsReal);
+				qd->QmfDomainIn[ch].hQmfSlotsReal = NULL;
 			}
 			else if(qd->globalConf.nQmfTimeSlots == QMF_DOMAIN_TIMESLOTS_32) {
 				FDKfree(qd->QmfDomainIn[ch].hQmfSlotsReal);
 				qd->QmfDomainIn[ch].hQmfSlotsReal = NULL;
 			}
-			else { FreeQmfSlotsReal(&qd->QmfDomainIn[ch].hQmfSlotsReal); }
+			else {
+				FDKfree(qd->QmfDomainIn[ch].hQmfSlotsReal);
+				qd->QmfDomainIn[ch].hQmfSlotsReal = NULL;
+            }
 		}
 
 		if(qd->QmfDomainIn[ch].hQmfSlotsImag) {
@@ -216,12 +92,18 @@ static int32_t FDK_QmfDomain_FreePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
 				FDKfree(qd->QmfDomainIn[ch].hQmfSlotsImag);
 				qd->QmfDomainIn[ch].hQmfSlotsImag = NULL;
 			}
-			else { FreeQmfSlotsImag(&qd->QmfDomainIn[ch].hQmfSlotsImag); }
+			else {
+				FDKfree(qd->QmfDomainIn[ch].hQmfSlotsImag);
+				qd->QmfDomainIn[ch].hQmfSlotsImag = NULL;
+			}
 		}
 	}
 
 	for(ch = 0; ch < ((8) + (1)); ch++) {
-		if(qd->QmfDomainOut[ch].pSynQmfStates) { FreeSynQmfStates(&qd->QmfDomainOut[ch].pSynQmfStates); }
+		if(qd->QmfDomainOut[ch].pSynQmfStates) {
+			FDKafree(qd->QmfDomainOut[ch].pSynQmfStates);
+			qd->QmfDomainOut[ch].pSynQmfStates = NULL;
+		}
 	}
 
 	return err;
@@ -240,22 +122,26 @@ static int32_t FDK_QmfDomain_AllocatePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) 
 		if(size > 0) {
 			if(gc->nBandsAnalysis == QMF_DOMAIN_ANALYSIS_QMF_BANDS_16) {
 				if(qd->QmfDomainIn[ch].pAnaQmfStates == NULL) {
-					if(NULL == (qd->QmfDomainIn[ch].pAnaQmfStates = GetAnaQmfStates16(ch))) goto bail;
+					qd->QmfDomainIn[ch].pAnaQmfStates = (int32_t *)FDKaalloc((10 * (16)) * sizeof(int32_t), 8);
+					if(qd->QmfDomainIn[ch].pAnaQmfStates == NULL) goto bail;
 				}
 			}
 			else if(gc->nBandsAnalysis == QMF_DOMAIN_ANALYSIS_QMF_BANDS_24) {
 				if(qd->QmfDomainIn[ch].pAnaQmfStates == NULL) {
-					if(NULL == (qd->QmfDomainIn[ch].pAnaQmfStates = GetAnaQmfStates24(ch))) goto bail;
+					qd->QmfDomainIn[ch].pAnaQmfStates = (int32_t *)FDKaalloc((10 * (24)) * sizeof(int32_t), 8);
+					if(qd->QmfDomainIn[ch].pAnaQmfStates == NULL) goto bail;
 				}
 			}
 			else if(gc->nBandsAnalysis == QMF_DOMAIN_ANALYSIS_QMF_BANDS_32) {
 				if(qd->QmfDomainIn[ch].pAnaQmfStates == NULL) {
-					if(NULL == (qd->QmfDomainIn[ch].pAnaQmfStates = GetAnaQmfStates32(ch))) goto bail;
+					qd->QmfDomainIn[ch].pAnaQmfStates = (int32_t *)FDKaalloc((10 * (32)) * sizeof(int32_t), 8);
+					if(qd->QmfDomainIn[ch].pAnaQmfStates == NULL) goto bail;
 				}
 			}
 			else {
 				if(qd->QmfDomainIn[ch].pAnaQmfStates == NULL) {
-					if(NULL == (qd->QmfDomainIn[ch].pAnaQmfStates = GetAnaQmfStates(ch))) goto bail;
+					qd->QmfDomainIn[ch].pAnaQmfStates = (int32_t *)FDKaalloc((10 * (64)) * sizeof(int32_t), 8);
+					if(qd->QmfDomainIn[ch].pAnaQmfStates == NULL) goto bail;
 				}
 			}
 		}
@@ -265,7 +151,8 @@ static int32_t FDK_QmfDomain_AllocatePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) 
 		if(size > 0) {
 			if(gc->nQmfTimeSlots == QMF_DOMAIN_TIMESLOTS_16) {
 				if(qd->QmfDomainIn[ch].hQmfSlotsReal == NULL) {
-					if(NULL == (qd->QmfDomainIn[ch].hQmfSlotsReal = GetQmfSlotsReal16(ch))) goto bail;
+					qd->QmfDomainIn[ch].hQmfSlotsReal = (int32_t * *)FDKcalloc((16) + (3), sizeof(int32_t *));
+					if(qd->QmfDomainIn[ch].hQmfSlotsReal == NULL) goto bail;
 				}
 				if(qd->QmfDomainIn[ch].hQmfSlotsImag == NULL) {
 					qd->QmfDomainIn[ch].hQmfSlotsImag = (int32_t * *)FDKcalloc((16) + (3), sizeof(int32_t *));
@@ -284,10 +171,12 @@ static int32_t FDK_QmfDomain_AllocatePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) 
 			}
 			else {
 				if(qd->QmfDomainIn[ch].hQmfSlotsReal == NULL) {
-					if(NULL == (qd->QmfDomainIn[ch].hQmfSlotsReal = GetQmfSlotsReal(ch))) goto bail;
+					qd->QmfDomainIn[ch].hQmfSlotsReal = (int32_t * *)FDKcalloc((64) + (12), sizeof(int32_t *));
+					if(qd->QmfDomainIn[ch].hQmfSlotsReal == NULL)goto bail;
 				}
 				if(qd->QmfDomainIn[ch].hQmfSlotsImag == NULL) {
-					if(NULL == (qd->QmfDomainIn[ch].hQmfSlotsImag = GetQmfSlotsImag(ch))) goto bail;
+					qd->QmfDomainIn[ch].hQmfSlotsImag = (int32_t * *)FDKcalloc((64) + (12), sizeof(int32_t *));
+					if(qd->QmfDomainIn[ch].hQmfSlotsImag == NULL) goto bail;
 				}
 			}
 		}
@@ -312,7 +201,8 @@ static int32_t FDK_QmfDomain_AllocatePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) 
 			}
 			else {
 				if(qd->QmfDomainIn[ch].pOverlapBuffer == NULL) {
-					if(NULL == (qd->QmfDomainIn[ch].pOverlapBuffer = GetQmfOverlapBuffer(ch))) goto bail;
+					qd->QmfDomainIn[ch].pOverlapBuffer = (int32_t *)FDKaalloc((2 * (12) * (64)) * sizeof(int32_t), 8);
+					if(qd->QmfDomainIn[ch].pOverlapBuffer == NULL) goto bail;
 				}
 			}
 		}
@@ -323,7 +213,8 @@ static int32_t FDK_QmfDomain_AllocatePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) 
 		int32_t size = gc->nBandsSynthesis * 9;
 		if(size > 0) {
 			if(qd->QmfDomainOut[ch].pSynQmfStates == NULL) {
-				if(NULL == (qd->QmfDomainOut[ch].pSynQmfStates = GetSynQmfStates(ch))) goto bail;
+				qd->QmfDomainOut[ch].pSynQmfStates = (int32_t *)FDKaalloc((9 * ((64))) * sizeof(int32_t), 8);
+				if(qd->QmfDomainOut[ch].pSynQmfStates == NULL) goto bail;
 			}
 		}
 		else { qd->QmfDomainOut[ch].pSynQmfStates = NULL; }
