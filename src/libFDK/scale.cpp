@@ -1,96 +1,4 @@
-/* -----------------------------------------------------------------------------
-Software License for The Fraunhofer FDK AAC Codec Library for Android
 
-© Copyright  1995 - 2019 Fraunhofer-Gesellschaft zur Förderung der angewandten
-Forschung e.V. All rights reserved.
-
- 1.    INTRODUCTION
-The Fraunhofer FDK AAC Codec Library for Android ("FDK AAC Codec") is software
-that implements the MPEG Advanced Audio Coding ("AAC") encoding and decoding
-scheme for digital audio. This FDK AAC Codec software is intended to be used on
-a wide variety of Android devices.
-
-AAC's HE-AAC and HE-AAC v2 versions are regarded as today's most efficient
-general perceptual audio codecs. AAC-ELD is considered the best-performing
-full-bandwidth communications codec by independent studies and is widely
-deployed. AAC has been standardized by ISO and IEC as part of the MPEG
-specifications.
-
-Patent licenses for necessary patent claims for the FDK AAC Codec (including
-those of Fraunhofer) may be obtained through Via Licensing
-(www.vialicensing.com) or through the respective patent owners individually for
-the purpose of encoding or decoding bit streams in products that are compliant
-with the ISO/IEC MPEG audio standards. Please note that most manufacturers of
-Android devices already license these patent claims through Via Licensing or
-directly from the patent owners, and therefore FDK AAC Codec software may
-already be covered under those patent licenses when it is used for those
-licensed purposes only.
-
-Commercially-licensed AAC software libraries, including floating-point versions
-with enhanced sound quality, are also available from Fraunhofer. Users are
-encouraged to check the Fraunhofer website for additional applications
-information and documentation.
-
-2.    COPYRIGHT LICENSE
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted without payment of copyright license fees provided that you
-satisfy the following conditions:
-
-You must retain the complete text of this software license in redistributions of
-the FDK AAC Codec or your modifications thereto in source code form.
-
-You must retain the complete text of this software license in the documentation
-and/or other materials provided with redistributions of the FDK AAC Codec or
-your modifications thereto in binary form. You must make available free of
-charge copies of the complete source code of the FDK AAC Codec and your
-modifications thereto to recipients of copies in binary form.
-
-The name of Fraunhofer may not be used to endorse or promote products derived
-from this library without prior written permission.
-
-You may not charge copyright license fees for anyone to use, copy or distribute
-the FDK AAC Codec software or your modifications thereto.
-
-Your modified versions of the FDK AAC Codec must carry prominent notices stating
-that you changed the software and the date of any change. For modified versions
-of the FDK AAC Codec, the term "Fraunhofer FDK AAC Codec Library for Android"
-must be replaced by the term "Third-Party Modified Version of the Fraunhofer FDK
-AAC Codec Library for Android."
-
-3.    NO PATENT LICENSE
-
-NO EXPRESS OR IMPLIED LICENSES TO ANY PATENT CLAIMS, including without
-limitation the patents of Fraunhofer, ARE GRANTED BY THIS SOFTWARE LICENSE.
-Fraunhofer provides no warranty of patent non-infringement with respect to this
-software.
-
-You may use this FDK AAC Codec software or modifications thereto only for
-purposes that are authorized by appropriate patent licenses.
-
-4.    DISCLAIMER
-
-This FDK AAC Codec software is provided by Fraunhofer on behalf of the copyright
-holders and contributors "AS IS" and WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES,
-including but not limited to the implied warranties of merchantability and
-fitness for a particular purpose. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-CONTRIBUTORS BE LIABLE for any direct, indirect, incidental, special, exemplary,
-or consequential damages, including but not limited to procurement of substitute
-goods or services; loss of use, data, or profits, or business interruption,
-however caused and on any theory of liability, whether in contract, strict
-liability, or tort (including negligence), arising in any way out of the use of
-this software, even if advised of the possibility of such damage.
-
-5.    CONTACT INFORMATION
-
-Fraunhofer Institute for Integrated Circuits IIS
-Attention: Audio and Multimedia Departments - FDK AAC LL
-Am Wolfsmantel 33
-91058 Erlangen, Germany
-
-www.iis.fraunhofer.de/amm
-amm-info@iis.fraunhofer.de
------------------------------------------------------------------------------ */
 
 /******************* Library for basic calculation routines ********************
 
@@ -99,10 +7,9 @@ amm-info@iis.fraunhofer.de
    Description: Scaling operations
 
 *******************************************************************************/
-
-#include "common_fix.h"
-
+#include <memory.h>
 #include "../libSYS/genericStds.h"
+#include "common_fix.h"
 
 /**************************************************
  * Inline definitions
@@ -121,602 +28,573 @@ amm-info@iis.fraunhofer.de
 // #endif
 
 #ifndef FUNCTION_scaleValues_SGL
-/*!
- *
- *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
- *  \param len    must be larger than 4
- *  \return void
- *
- */
-#define FUNCTION_scaleValues_SGL
-void scaleValues(int16_t *vector, /*!< Vector */
-                 int32_t len,          /*!< Length */
-                 int32_t scalefactor   /*!< Scalefactor */
+    /*!
+     *
+     *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
+     *  \param len    must be larger than 4
+     *  \return void
+     *
+     */
+    #define FUNCTION_scaleValues_SGL
+void scaleValues(int16_t *vector,     /*!< Vector */
+                 int32_t  len,        /*!< Length */
+                 int32_t  scalefactor /*!< Scalefactor */
 ) {
-  int32_t i;
+    int32_t i;
 
-  /* Return if scalefactor is Zero */
-  if (scalefactor == 0) return;
+    /* Return if scalefactor is Zero */
+    if(scalefactor == 0) return;
 
-  if (scalefactor > 0) {
-    scalefactor = fixmin_I(scalefactor, (int32_t)(FRACT_BITS - 1));
-    for (i = len & 3; i--;) {
-      *(vector++) <<= scalefactor;
+    if(scalefactor > 0) {
+        scalefactor = fixmin_I(scalefactor, (int32_t)(FRACT_BITS - 1));
+        for(i = len & 3; i--;) { *(vector++) <<= scalefactor; }
+        for(i = len >> 2; i--;) {
+            *(vector++) <<= scalefactor;
+            *(vector++) <<= scalefactor;
+            *(vector++) <<= scalefactor;
+            *(vector++) <<= scalefactor;
+        }
     }
-    for (i = len >> 2; i--;) {
-      *(vector++) <<= scalefactor;
-      *(vector++) <<= scalefactor;
-      *(vector++) <<= scalefactor;
-      *(vector++) <<= scalefactor;
+    else {
+        int32_t negScalefactor = fixmin_I(-scalefactor, (int32_t)FRACT_BITS - 1);
+        for(i = len & 3; i--;) { *(vector++) >>= negScalefactor; }
+        for(i = len >> 2; i--;) {
+            *(vector++) >>= negScalefactor;
+            *(vector++) >>= negScalefactor;
+            *(vector++) >>= negScalefactor;
+            *(vector++) >>= negScalefactor;
+        }
     }
-  } else {
-    int32_t negScalefactor = fixmin_I(-scalefactor, (int32_t)FRACT_BITS - 1);
-    for (i = len & 3; i--;) {
-      *(vector++) >>= negScalefactor;
-    }
-    for (i = len >> 2; i--;) {
-      *(vector++) >>= negScalefactor;
-      *(vector++) >>= negScalefactor;
-      *(vector++) >>= negScalefactor;
-      *(vector++) >>= negScalefactor;
-    }
-  }
 }
 #endif
 
 #ifndef FUNCTION_scaleValues_DBL
-/*!
- *
- *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
- *  \param len must be larger than 4
- *  \return void
- *
- */
-#define FUNCTION_scaleValues_DBL
+    /*!
+     *
+     *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
+     *  \param len must be larger than 4
+     *  \return void
+     *
+     */
+    #define FUNCTION_scaleValues_DBL
 SCALE_INLINE
-void scaleValues(int32_t *vector, /*!< Vector */
-                 int32_t len,          /*!< Length */
-                 int32_t scalefactor   /*!< Scalefactor */
+void scaleValues(int32_t *vector,     /*!< Vector */
+                 int32_t  len,        /*!< Length */
+                 int32_t  scalefactor /*!< Scalefactor */
 ) {
-  int32_t i;
+    int32_t i;
 
-  /* Return if scalefactor is Zero */
-  if (scalefactor == 0) return;
+    /* Return if scalefactor is Zero */
+    if(scalefactor == 0) return;
 
-  if (scalefactor > 0) {
-    scalefactor = fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1);
-    for (i = len & 3; i--;) {
-      *(vector++) <<= scalefactor;
+    if(scalefactor > 0) {
+        scalefactor = fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1);
+        for(i = len & 3; i--;) { *(vector++) <<= scalefactor; }
+        for(i = len >> 2; i--;) {
+            *(vector++) <<= scalefactor;
+            *(vector++) <<= scalefactor;
+            *(vector++) <<= scalefactor;
+            *(vector++) <<= scalefactor;
+        }
     }
-    for (i = len >> 2; i--;) {
-      *(vector++) <<= scalefactor;
-      *(vector++) <<= scalefactor;
-      *(vector++) <<= scalefactor;
-      *(vector++) <<= scalefactor;
+    else {
+        int32_t negScalefactor = fixmin_I(-scalefactor, (int32_t)DFRACT_BITS - 1);
+        for(i = len & 3; i--;) { *(vector++) >>= negScalefactor; }
+        for(i = len >> 2; i--;) {
+            *(vector++) >>= negScalefactor;
+            *(vector++) >>= negScalefactor;
+            *(vector++) >>= negScalefactor;
+            *(vector++) >>= negScalefactor;
+        }
     }
-  } else {
-    int32_t negScalefactor = fixmin_I(-scalefactor, (int32_t)DFRACT_BITS - 1);
-    for (i = len & 3; i--;) {
-      *(vector++) >>= negScalefactor;
-    }
-    for (i = len >> 2; i--;) {
-      *(vector++) >>= negScalefactor;
-      *(vector++) >>= negScalefactor;
-      *(vector++) >>= negScalefactor;
-      *(vector++) >>= negScalefactor;
-    }
-  }
 }
 #endif
 
 #ifndef FUNCTION_scaleValuesSaturate_DBL
-/*!
- *
- *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
- *  \param vector      source/destination buffer
- *  \param len         length of vector
- *  \param scalefactor amount of shifts to be applied
- *  \return void
- *
- */
-#define FUNCTION_scaleValuesSaturate_DBL
+    /*!
+     *
+     *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
+     *  \param vector      source/destination buffer
+     *  \param len         length of vector
+     *  \param scalefactor amount of shifts to be applied
+     *  \return void
+     *
+     */
+    #define FUNCTION_scaleValuesSaturate_DBL
 SCALE_INLINE
-void scaleValuesSaturate(int32_t *vector, /*!< Vector */
-                         int32_t len,          /*!< Length */
-                         int32_t scalefactor   /*!< Scalefactor */
+void scaleValuesSaturate(int32_t *vector,     /*!< Vector */
+                         int32_t  len,        /*!< Length */
+                         int32_t  scalefactor /*!< Scalefactor */
 ) {
-  int32_t i;
+    int32_t i;
 
-  /* Return if scalefactor is Zero */
-  if (scalefactor == 0) return;
+    /* Return if scalefactor is Zero */
+    if(scalefactor == 0) return;
 
-  scalefactor = fixmax_I(fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1),
-                         (int32_t) - (DFRACT_BITS - 1));
+    scalefactor = fixmax_I(fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1), (int32_t) - (DFRACT_BITS - 1));
 
-  for (i = 0; i < len; i++) {
-    vector[i] = scaleValueSaturate(vector[i], scalefactor);
-  }
+    for(i = 0; i < len; i++) { vector[i] = scaleValueSaturate(vector[i], scalefactor); }
 }
 #endif /* FUNCTION_scaleValuesSaturate_DBL */
 
 #ifndef FUNCTION_scaleValuesSaturate_DBL_DBL
-/*!
- *
- *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
- *  \param dst         destination buffer
- *  \param src         source buffer
- *  \param len         length of vector
- *  \param scalefactor amount of shifts to be applied
- *  \return void
- *
- */
-#define FUNCTION_scaleValuesSaturate_DBL_DBL
+    /*!
+     *
+     *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
+     *  \param dst         destination buffer
+     *  \param src         source buffer
+     *  \param len         length of vector
+     *  \param scalefactor amount of shifts to be applied
+     *  \return void
+     *
+     */
+    #define FUNCTION_scaleValuesSaturate_DBL_DBL
 SCALE_INLINE
-void scaleValuesSaturate(int32_t *dst,       /*!< Output */
-                         const int32_t *src, /*!< Input   */
-                         int32_t len,             /*!< Length */
-                         int32_t scalefactor      /*!< Scalefactor */
+void scaleValuesSaturate(int32_t       *dst,        /*!< Output */
+                         const int32_t *src,        /*!< Input   */
+                         int32_t        len,        /*!< Length */
+                         int32_t        scalefactor /*!< Scalefactor */
 ) {
-  int32_t i;
+    int32_t i;
 
-  /* Return if scalefactor is Zero */
-  if (scalefactor == 0) {
-    FDKmemmove(dst, src, len * sizeof(int32_t));
-    return;
-  }
+    /* Return if scalefactor is Zero */
+    if(scalefactor == 0) {
+        memmove(dst, src, len * sizeof(int32_t));
+        return;
+    }
 
-  scalefactor = fixmax_I(fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1),
-                         (int32_t) - (DFRACT_BITS - 1));
+    scalefactor = fixmax_I(fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1), (int32_t) - (DFRACT_BITS - 1));
 
-  for (i = 0; i < len; i++) {
-    dst[i] = scaleValueSaturate(src[i], scalefactor);
-  }
+    for(i = 0; i < len; i++) { dst[i] = scaleValueSaturate(src[i], scalefactor); }
 }
 #endif /* FUNCTION_scaleValuesSaturate_DBL_DBL */
 
 #ifndef FUNCTION_scaleValuesSaturate_SGL_DBL
-/*!
- *
- *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
- *  \param dst         destination buffer (int16_t)
- *  \param src         source buffer (int32_t)
- *  \param len         length of vector
- *  \param scalefactor amount of shifts to be applied
- *  \return void
- *
- */
-#define FUNCTION_scaleValuesSaturate_SGL_DBL
+    /*!
+     *
+     *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
+     *  \param dst         destination buffer (int16_t)
+     *  \param src         source buffer (int32_t)
+     *  \param len         length of vector
+     *  \param scalefactor amount of shifts to be applied
+     *  \return void
+     *
+     */
+    #define FUNCTION_scaleValuesSaturate_SGL_DBL
 SCALE_INLINE
-void scaleValuesSaturate(int16_t *dst,       /*!< Output */
-                         const int32_t *src, /*!< Input   */
-                         int32_t len,             /*!< Length */
-                         int32_t scalefactor)     /*!< Scalefactor */
+void scaleValuesSaturate(int16_t       *dst,  /*!< Output */
+                         const int32_t *src,  /*!< Input   */
+                         int32_t        len,  /*!< Length */
+                         int32_t        scalefactor) /*!< Scalefactor */
 {
-  int32_t i;
-  scalefactor = fixmax_I(fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1),
-                         (int32_t) - (DFRACT_BITS - 1));
+    int32_t i;
+    scalefactor = fixmax_I(fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1), (int32_t) - (DFRACT_BITS - 1));
 
-  for (i = 0; i < len; i++) {
-    dst[i] = FX_DBL2FX_SGL(fAddSaturate(scaleValueSaturate(src[i], scalefactor),
-                                        (int32_t)0x8000));
-  }
+    for(i = 0; i < len; i++) {
+        dst[i] = FX_DBL2FX_SGL(fAddSaturate(scaleValueSaturate(src[i], scalefactor), (int32_t)0x8000));
+    }
 }
 #endif /* FUNCTION_scaleValuesSaturate_SGL_DBL */
 
 #ifndef FUNCTION_scaleValuesSaturate_SGL
-/*!
- *
- *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
- *  \param vector      source/destination buffer
- *  \param len         length of vector
- *  \param scalefactor amount of shifts to be applied
- *  \return void
- *
- */
-#define FUNCTION_scaleValuesSaturate_SGL
+    /*!
+     *
+     *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
+     *  \param vector      source/destination buffer
+     *  \param len         length of vector
+     *  \param scalefactor amount of shifts to be applied
+     *  \return void
+     *
+     */
+    #define FUNCTION_scaleValuesSaturate_SGL
 SCALE_INLINE
-void scaleValuesSaturate(int16_t *vector, /*!< Vector */
-                         int32_t len,          /*!< Length */
-                         int32_t scalefactor   /*!< Scalefactor */
+void scaleValuesSaturate(int16_t *vector,     /*!< Vector */
+                         int32_t  len,        /*!< Length */
+                         int32_t  scalefactor /*!< Scalefactor */
 ) {
-  int32_t i;
+    int32_t i;
 
-  /* Return if scalefactor is Zero */
-  if (scalefactor == 0) return;
+    /* Return if scalefactor is Zero */
+    if(scalefactor == 0) return;
 
-  scalefactor = fixmax_I(fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1),
-                         (int32_t) - (DFRACT_BITS - 1));
+    scalefactor = fixmax_I(fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1), (int32_t) - (DFRACT_BITS - 1));
 
-  for (i = 0; i < len; i++) {
-    vector[i] = FX_DBL2FX_SGL(
-        scaleValueSaturate(FX_SGL2FX_DBL(vector[i]), scalefactor));
-  }
+    for(i = 0; i < len; i++) { vector[i] = FX_DBL2FX_SGL(scaleValueSaturate(FX_SGL2FX_DBL(vector[i]), scalefactor)); }
 }
 #endif /* FUNCTION_scaleValuesSaturate_SGL */
 
 #ifndef FUNCTION_scaleValuesSaturate_SGL_SGL
-/*!
- *
- *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
- *  \param dst         destination buffer
- *  \param src         source buffer
- *  \param len         length of vector
- *  \param scalefactor amount of shifts to be applied
- *  \return void
- *
- */
-#define FUNCTION_scaleValuesSaturate_SGL_SGL
+    /*!
+     *
+     *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
+     *  \param dst         destination buffer
+     *  \param src         source buffer
+     *  \param len         length of vector
+     *  \param scalefactor amount of shifts to be applied
+     *  \return void
+     *
+     */
+    #define FUNCTION_scaleValuesSaturate_SGL_SGL
 SCALE_INLINE
-void scaleValuesSaturate(int16_t *dst,       /*!< Output */
-                         const int16_t *src, /*!< Input */
-                         int32_t len,             /*!< Length */
-                         int32_t scalefactor      /*!< Scalefactor */
+void scaleValuesSaturate(int16_t       *dst,        /*!< Output */
+                         const int16_t *src,        /*!< Input */
+                         int32_t        len,        /*!< Length */
+                         int32_t        scalefactor /*!< Scalefactor */
 ) {
-  int32_t i;
+    int32_t i;
 
-  /* Return if scalefactor is Zero */
-  if (scalefactor == 0) {
-    FDKmemmove(dst, src, len * sizeof(int16_t));
-    return;
-  }
+    /* Return if scalefactor is Zero */
+    if(scalefactor == 0) {
+        memmove(dst, src, len * sizeof(int16_t));
+        return;
+    }
 
-  scalefactor = fixmax_I(fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1),
-                         (int32_t) - (DFRACT_BITS - 1));
+    scalefactor = fixmax_I(fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1), (int32_t) - (DFRACT_BITS - 1));
 
-  for (i = 0; i < len; i++) {
-    dst[i] =
-        FX_DBL2FX_SGL(scaleValueSaturate(FX_SGL2FX_DBL(src[i]), scalefactor));
-  }
+    for(i = 0; i < len; i++) { dst[i] = FX_DBL2FX_SGL(scaleValueSaturate(FX_SGL2FX_DBL(src[i]), scalefactor)); }
 }
 #endif /* FUNCTION_scaleValuesSaturate_SGL_SGL */
 
 #ifndef FUNCTION_scaleValues_DBLDBL
-/*!
- *
- *  \brief  Multiply input vector src by \f$ 2^{scalefactor} \f$
- *          and place result into dst
- *  \param dst detination buffer
- *  \param src source buffer
- *  \param len must be larger than 4
- *  \param scalefactor amount of left shifts to be applied
- *  \return void
- *
- */
-#define FUNCTION_scaleValues_DBLDBL
+    /*!
+     *
+     *  \brief  Multiply input vector src by \f$ 2^{scalefactor} \f$
+     *          and place result into dst
+     *  \param dst detination buffer
+     *  \param src source buffer
+     *  \param len must be larger than 4
+     *  \param scalefactor amount of left shifts to be applied
+     *  \return void
+     *
+     */
+    #define FUNCTION_scaleValues_DBLDBL
 SCALE_INLINE
-void scaleValues(int32_t *dst,       /*!< dst Vector */
-                 const int32_t *src, /*!< src Vector */
-                 int32_t len,             /*!< Length */
-                 int32_t scalefactor      /*!< Scalefactor */
+void scaleValues(int32_t       *dst,        /*!< dst Vector */
+                 const int32_t *src,        /*!< src Vector */
+                 int32_t        len,        /*!< Length */
+                 int32_t        scalefactor /*!< Scalefactor */
 ) {
-  int32_t i;
+    int32_t i;
 
-  /* Return if scalefactor is Zero */
-  if (scalefactor == 0) {
-    if (dst != src) FDKmemmove(dst, src, len * sizeof(int32_t));
-  } else {
-    if (scalefactor > 0) {
-      scalefactor = fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1);
-      for (i = len & 3; i--;) {
-        *(dst++) = *(src++) << scalefactor;
-      }
-      for (i = len >> 2; i--;) {
-        *(dst++) = *(src++) << scalefactor;
-        *(dst++) = *(src++) << scalefactor;
-        *(dst++) = *(src++) << scalefactor;
-        *(dst++) = *(src++) << scalefactor;
-      }
-    } else {
-      int32_t negScalefactor = fixmin_I(-scalefactor, (int32_t)DFRACT_BITS - 1);
-      for (i = len & 3; i--;) {
-        *(dst++) = *(src++) >> negScalefactor;
-      }
-      for (i = len >> 2; i--;) {
-        *(dst++) = *(src++) >> negScalefactor;
-        *(dst++) = *(src++) >> negScalefactor;
-        *(dst++) = *(src++) >> negScalefactor;
-        *(dst++) = *(src++) >> negScalefactor;
-      }
+    /* Return if scalefactor is Zero */
+    if(scalefactor == 0) {
+        if(dst != src) memmove(dst, src, len * sizeof(int32_t));
     }
-  }
+    else {
+        if(scalefactor > 0) {
+            scalefactor = fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1);
+            for(i = len & 3; i--;) { *(dst++) = *(src++) << scalefactor; }
+            for(i = len >> 2; i--;) {
+                *(dst++) = *(src++) << scalefactor;
+                *(dst++) = *(src++) << scalefactor;
+                *(dst++) = *(src++) << scalefactor;
+                *(dst++) = *(src++) << scalefactor;
+            }
+        }
+        else {
+            int32_t negScalefactor = fixmin_I(-scalefactor, (int32_t)DFRACT_BITS - 1);
+            for(i = len & 3; i--;) { *(dst++) = *(src++) >> negScalefactor; }
+            for(i = len >> 2; i--;) {
+                *(dst++) = *(src++) >> negScalefactor;
+                *(dst++) = *(src++) >> negScalefactor;
+                *(dst++) = *(src++) >> negScalefactor;
+                *(dst++) = *(src++) >> negScalefactor;
+            }
+        }
+    }
 }
 #endif
 
-#if (SAMPLE_BITS == 16)
-#ifndef FUNCTION_scaleValues_PCMDBL
-/*!
- *
- *  \brief  Multiply input vector src by \f$ 2^{scalefactor} \f$
- *          and place result into dst
- *  \param dst detination buffer
- *  \param src source buffer
- *  \param len must be larger than 4
- *  \param scalefactor amount of left shifts to be applied
- *  \return void
- *
- */
-#define FUNCTION_scaleValues_PCMDBL
+#if(SAMPLE_BITS == 16)
+    #ifndef FUNCTION_scaleValues_PCMDBL
+        /*!
+         *
+         *  \brief  Multiply input vector src by \f$ 2^{scalefactor} \f$
+         *          and place result into dst
+         *  \param dst detination buffer
+         *  \param src source buffer
+         *  \param len must be larger than 4
+         *  \param scalefactor amount of left shifts to be applied
+         *  \return void
+         *
+         */
+        #define FUNCTION_scaleValues_PCMDBL
 SCALE_INLINE
-void scaleValues(FIXP_PCM *dst,       /*!< dst Vector */
-                 const int32_t *src, /*!< src Vector */
-                 int32_t len,             /*!< Length */
-                 int32_t scalefactor      /*!< Scalefactor */
+void scaleValues(FIXP_PCM      *dst,        /*!< dst Vector */
+                 const int32_t *src,        /*!< src Vector */
+                 int32_t        len,        /*!< Length */
+                 int32_t        scalefactor /*!< Scalefactor */
 ) {
-  int32_t i;
+    int32_t i;
 
-  scalefactor -= DFRACT_BITS - SAMPLE_BITS;
+    scalefactor -= DFRACT_BITS - SAMPLE_BITS;
 
-  /* Return if scalefactor is Zero */
-  {
-    if (scalefactor > 0) {
-      scalefactor = fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1);
-      for (i = len & 3; i--;) {
-        *(dst++) = (FIXP_PCM)(*(src++) << scalefactor);
-      }
-      for (i = len >> 2; i--;) {
-        *(dst++) = (FIXP_PCM)(*(src++) << scalefactor);
-        *(dst++) = (FIXP_PCM)(*(src++) << scalefactor);
-        *(dst++) = (FIXP_PCM)(*(src++) << scalefactor);
-        *(dst++) = (FIXP_PCM)(*(src++) << scalefactor);
-      }
-    } else {
-      int32_t negScalefactor = fixmin_I(-scalefactor, (int32_t)DFRACT_BITS - 1);
-      for (i = len & 3; i--;) {
-        *(dst++) = (FIXP_PCM)(*(src++) >> negScalefactor);
-      }
-      for (i = len >> 2; i--;) {
-        *(dst++) = (FIXP_PCM)(*(src++) >> negScalefactor);
-        *(dst++) = (FIXP_PCM)(*(src++) >> negScalefactor);
-        *(dst++) = (FIXP_PCM)(*(src++) >> negScalefactor);
-        *(dst++) = (FIXP_PCM)(*(src++) >> negScalefactor);
-      }
+    /* Return if scalefactor is Zero */
+    {
+        if(scalefactor > 0) {
+            scalefactor = fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1);
+            for(i = len & 3; i--;) { *(dst++) = (FIXP_PCM)(*(src++) << scalefactor); }
+            for(i = len >> 2; i--;) {
+                *(dst++) = (FIXP_PCM)(*(src++) << scalefactor);
+                *(dst++) = (FIXP_PCM)(*(src++) << scalefactor);
+                *(dst++) = (FIXP_PCM)(*(src++) << scalefactor);
+                *(dst++) = (FIXP_PCM)(*(src++) << scalefactor);
+            }
+        }
+        else {
+            int32_t negScalefactor = fixmin_I(-scalefactor, (int32_t)DFRACT_BITS - 1);
+            for(i = len & 3; i--;) { *(dst++) = (FIXP_PCM)(*(src++) >> negScalefactor); }
+            for(i = len >> 2; i--;) {
+                *(dst++) = (FIXP_PCM)(*(src++) >> negScalefactor);
+                *(dst++) = (FIXP_PCM)(*(src++) >> negScalefactor);
+                *(dst++) = (FIXP_PCM)(*(src++) >> negScalefactor);
+                *(dst++) = (FIXP_PCM)(*(src++) >> negScalefactor);
+            }
+        }
     }
-  }
 }
-#endif
+    #endif
 #endif /* (SAMPLE_BITS == 16) */
 
 #ifndef FUNCTION_scaleValues_SGLSGL
-/*!
- *
- *  \brief  Multiply input vector src by \f$ 2^{scalefactor} \f$
- *          and place result into dst
- *  \param dst detination buffer
- *  \param src source buffer
- *  \param len must be larger than 4
- *  \param scalefactor amount of left shifts to be applied
- *  \return void
- *
- */
-#define FUNCTION_scaleValues_SGLSGL
+    /*!
+     *
+     *  \brief  Multiply input vector src by \f$ 2^{scalefactor} \f$
+     *          and place result into dst
+     *  \param dst detination buffer
+     *  \param src source buffer
+     *  \param len must be larger than 4
+     *  \param scalefactor amount of left shifts to be applied
+     *  \return void
+     *
+     */
+    #define FUNCTION_scaleValues_SGLSGL
 SCALE_INLINE
-void scaleValues(int16_t *dst,       /*!< dst Vector */
-                 const int16_t *src, /*!< src Vector */
-                 int32_t len,             /*!< Length */
-                 int32_t scalefactor      /*!< Scalefactor */
+void scaleValues(int16_t       *dst,        /*!< dst Vector */
+                 const int16_t *src,        /*!< src Vector */
+                 int32_t        len,        /*!< Length */
+                 int32_t        scalefactor /*!< Scalefactor */
 ) {
-  int32_t i;
+    int32_t i;
 
-  /* Return if scalefactor is Zero */
-  if (scalefactor == 0) {
-    if (dst != src) FDKmemmove(dst, src, len * sizeof(int32_t));
-  } else {
-    if (scalefactor > 0) {
-      scalefactor = fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1);
-      for (i = len & 3; i--;) {
-        *(dst++) = *(src++) << scalefactor;
-      }
-      for (i = len >> 2; i--;) {
-        *(dst++) = *(src++) << scalefactor;
-        *(dst++) = *(src++) << scalefactor;
-        *(dst++) = *(src++) << scalefactor;
-        *(dst++) = *(src++) << scalefactor;
-      }
-    } else {
-      int32_t negScalefactor = fixmin_I(-scalefactor, (int32_t)DFRACT_BITS - 1);
-      for (i = len & 3; i--;) {
-        *(dst++) = *(src++) >> negScalefactor;
-      }
-      for (i = len >> 2; i--;) {
-        *(dst++) = *(src++) >> negScalefactor;
-        *(dst++) = *(src++) >> negScalefactor;
-        *(dst++) = *(src++) >> negScalefactor;
-        *(dst++) = *(src++) >> negScalefactor;
-      }
+    /* Return if scalefactor is Zero */
+    if(scalefactor == 0) {
+        if(dst != src) memmove(dst, src, len * sizeof(int32_t));
     }
-  }
+    else {
+        if(scalefactor > 0) {
+            scalefactor = fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1);
+            for(i = len & 3; i--;) { *(dst++) = *(src++) << scalefactor; }
+            for(i = len >> 2; i--;) {
+                *(dst++) = *(src++) << scalefactor;
+                *(dst++) = *(src++) << scalefactor;
+                *(dst++) = *(src++) << scalefactor;
+                *(dst++) = *(src++) << scalefactor;
+            }
+        }
+        else {
+            int32_t negScalefactor = fixmin_I(-scalefactor, (int32_t)DFRACT_BITS - 1);
+            for(i = len & 3; i--;) { *(dst++) = *(src++) >> negScalefactor; }
+            for(i = len >> 2; i--;) {
+                *(dst++) = *(src++) >> negScalefactor;
+                *(dst++) = *(src++) >> negScalefactor;
+                *(dst++) = *(src++) >> negScalefactor;
+                *(dst++) = *(src++) >> negScalefactor;
+            }
+        }
+    }
 }
 #endif
 
 #ifndef FUNCTION_scaleValuesWithFactor_DBL
-/*!
- *
- *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
- *  \param len must be larger than 4
- *  \return void
- *
- */
-#define FUNCTION_scaleValuesWithFactor_DBL
+    /*!
+     *
+     *  \brief  Multiply input vector by \f$ 2^{scalefactor} \f$
+     *  \param len must be larger than 4
+     *  \return void
+     *
+     */
+    #define FUNCTION_scaleValuesWithFactor_DBL
 SCALE_INLINE
-void scaleValuesWithFactor(int32_t *vector, int32_t factor, int32_t len,
-                           int32_t scalefactor) {
-  int32_t i;
+void scaleValuesWithFactor(int32_t *vector, int32_t factor, int32_t len, int32_t scalefactor) {
+    int32_t i;
 
-  /* Compensate fMultDiv2 */
-  scalefactor++;
+    /* Compensate fMultDiv2 */
+    scalefactor++;
 
-  if (scalefactor > 0) {
-    scalefactor = fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1);
-    for (i = len & 3; i--;) {
-      *vector = fMultDiv2(*vector, factor) << scalefactor;
-      vector++;
+    if(scalefactor > 0) {
+        scalefactor = fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1);
+        for(i = len & 3; i--;) {
+            *vector = fMultDiv2(*vector, factor) << scalefactor;
+            vector++;
+        }
+        for(i = len >> 2; i--;) {
+            *vector = fMultDiv2(*vector, factor) << scalefactor;
+            vector++;
+            *vector = fMultDiv2(*vector, factor) << scalefactor;
+            vector++;
+            *vector = fMultDiv2(*vector, factor) << scalefactor;
+            vector++;
+            *vector = fMultDiv2(*vector, factor) << scalefactor;
+            vector++;
+        }
     }
-    for (i = len >> 2; i--;) {
-      *vector = fMultDiv2(*vector, factor) << scalefactor;
-      vector++;
-      *vector = fMultDiv2(*vector, factor) << scalefactor;
-      vector++;
-      *vector = fMultDiv2(*vector, factor) << scalefactor;
-      vector++;
-      *vector = fMultDiv2(*vector, factor) << scalefactor;
-      vector++;
+    else {
+        int32_t negScalefactor = fixmin_I(-scalefactor, (int32_t)DFRACT_BITS - 1);
+        for(i = len & 3; i--;) {
+            *vector = fMultDiv2(*vector, factor) >> negScalefactor;
+            vector++;
+        }
+        for(i = len >> 2; i--;) {
+            *vector = fMultDiv2(*vector, factor) >> negScalefactor;
+            vector++;
+            *vector = fMultDiv2(*vector, factor) >> negScalefactor;
+            vector++;
+            *vector = fMultDiv2(*vector, factor) >> negScalefactor;
+            vector++;
+            *vector = fMultDiv2(*vector, factor) >> negScalefactor;
+            vector++;
+        }
     }
-  } else {
-    int32_t negScalefactor = fixmin_I(-scalefactor, (int32_t)DFRACT_BITS - 1);
-    for (i = len & 3; i--;) {
-      *vector = fMultDiv2(*vector, factor) >> negScalefactor;
-      vector++;
-    }
-    for (i = len >> 2; i--;) {
-      *vector = fMultDiv2(*vector, factor) >> negScalefactor;
-      vector++;
-      *vector = fMultDiv2(*vector, factor) >> negScalefactor;
-      vector++;
-      *vector = fMultDiv2(*vector, factor) >> negScalefactor;
-      vector++;
-      *vector = fMultDiv2(*vector, factor) >> negScalefactor;
-      vector++;
-    }
-  }
 }
 #endif /* FUNCTION_scaleValuesWithFactor_DBL */
 
-  /*******************************************
+/*******************************************
 
-  IMPORTANT NOTE for usage of getScalefactor()
+IMPORTANT NOTE for usage of getScalefactor()
 
-  If the input array contains negative values too, then these functions may
-  sometimes return the actual maximum value minus 1, due to the nature of the
-  applied algorithm. So be careful with possible fractional -1 values that may
-  lead to overflows when being fPow2()'ed.
+If the input array contains negative values too, then these functions may
+sometimes return the actual maximum value minus 1, due to the nature of the
+applied algorithm. So be careful with possible fractional -1 values that may
+lead to overflows when being fPow2()'ed.
 
-  ********************************************/
+********************************************/
 
 #ifndef FUNCTION_getScalefactorShort
-/*!
- *
- *  \brief Calculate max possible scale factor for input vector of shorts
- *
- *  \return Maximum scale factor / possible left shift
- *
- */
-#define FUNCTION_getScalefactorShort
+    /*!
+     *
+     *  \brief Calculate max possible scale factor for input vector of shorts
+     *
+     *  \return Maximum scale factor / possible left shift
+     *
+     */
+    #define FUNCTION_getScalefactorShort
 SCALE_INLINE
 int32_t getScalefactorShort(const int16_t *vector, /*!< Pointer to input vector */
-                        int32_t len              /*!< Length of input vector */
+                            int32_t        len     /*!< Length of input vector */
 ) {
-  int32_t i;
-  int16_t temp, maxVal = 0;
+    int32_t i;
+    int16_t temp, maxVal = 0;
 
-  for (i = len; i != 0; i--) {
-    temp = (int16_t)(*vector++);
-    maxVal |= (temp ^ (temp >> (SHORT_BITS - 1)));
-  }
+    for(i = len; i != 0; i--) {
+        temp = (int16_t)(*vector++);
+        maxVal |= (temp ^ (temp >> (SHORT_BITS - 1)));
+    }
 
-  return fixmax_I((int32_t)0, (int32_t)(fixnormz_D((int32_t)maxVal) - (int32_t)1 -
-                                (int32_t)(DFRACT_BITS - SHORT_BITS)));
+    return fixmax_I((int32_t)0,
+                    (int32_t)(fixnormz_D((int32_t)maxVal) - (int32_t)1 - (int32_t)(DFRACT_BITS - SHORT_BITS)));
 }
 #endif
 
 #ifndef FUNCTION_getScalefactorPCM
-/*!
- *
- *  \brief Calculate max possible scale factor for input vector of shorts
- *
- *  \return Maximum scale factor
- *
- */
-#define FUNCTION_getScalefactorPCM
+    /*!
+     *
+     *  \brief Calculate max possible scale factor for input vector of shorts
+     *
+     *  \return Maximum scale factor
+     *
+     */
+    #define FUNCTION_getScalefactorPCM
 SCALE_INLINE
 int32_t getScalefactorPCM(const int16_t *vector, /*!< Pointer to input vector */
-                      int32_t len,               /*!< Length of input vector */
-                      int32_t stride) {
-  int32_t i;
-  int16_t temp, maxVal = 0;
+                          int32_t        len,    /*!< Length of input vector */
+                          int32_t        stride) {
+    int32_t i;
+    int16_t temp, maxVal = 0;
 
-  for (i = len; i != 0; i--) {
-    temp = (int16_t)(*vector);
-    vector += stride;
-    maxVal |= (temp ^ (temp >> ((sizeof(int16_t) * 8) - 1)));
-  }
-  return fixmax_I((int32_t)0, (int32_t)(fixnormz_D((int32_t)maxVal) - (int32_t)1 -
-                                (int32_t)(DFRACT_BITS - SAMPLE_BITS)));
+    for(i = len; i != 0; i--) {
+        temp = (int16_t)(*vector);
+        vector += stride;
+        maxVal |= (temp ^ (temp >> ((sizeof(int16_t) * 8) - 1)));
+    }
+    return fixmax_I((int32_t)0,
+                    (int32_t)(fixnormz_D((int32_t)maxVal) - (int32_t)1 - (int32_t)(DFRACT_BITS - SAMPLE_BITS)));
 }
 #endif
 
 #ifndef FUNCTION_getScalefactorShort
-/*!
- *
- *  \brief Calculate max possible scale factor for input vector of shorts
- *  \param stride, item increment between vector members.
- *  \return Maximum scale factor
- *
- */
-#define FUNCTION_getScalefactorShort
+    /*!
+     *
+     *  \brief Calculate max possible scale factor for input vector of shorts
+     *  \param stride, item increment between vector members.
+     *  \return Maximum scale factor
+     *
+     */
+    #define FUNCTION_getScalefactorShort
 SCALE_INLINE
 int32_t getScalefactorShort(const int16_t *vector, /*!< Pointer to input vector */
-                        int32_t len,             /*!< Length of input vector */
-                        int32_t stride) {
-  int32_t i;
-  int16_t temp, maxVal = 0;
+                            int32_t        len,    /*!< Length of input vector */
+                            int32_t        stride) {
+    int32_t i;
+    int16_t temp, maxVal = 0;
 
-  for (i = len; i != 0; i--) {
-    temp = (int16_t)(*vector);
-    vector += stride;
-    maxVal |= (temp ^ (temp >> (SHORT_BITS - 1)));
-  }
+    for(i = len; i != 0; i--) {
+        temp = (int16_t)(*vector);
+        vector += stride;
+        maxVal |= (temp ^ (temp >> (SHORT_BITS - 1)));
+    }
 
-  return fixmax_I((int32_t)0, (int32_t)(fixnormz_D((int32_t)maxVal) - (int32_t)1 -
-                                (int32_t)(DFRACT_BITS - SHORT_BITS)));
+    return fixmax_I((int32_t)0,
+                    (int32_t)(fixnormz_D((int32_t)maxVal) - (int32_t)1 - (int32_t)(DFRACT_BITS - SHORT_BITS)));
 }
 #endif
 
 #ifndef FUNCTION_getScalefactor_DBL
-/*!
- *
- *  \brief Calculate max possible scale factor for input vector
- *
- *  \return Maximum scale factor
- *
- *  This function can constitute a significant amount of computational
- * complexity - very much depending on the bitrate. Since it is a rather small
- * function, effective assembler optimization might be possible.
- *
- *  If all data is 0xFFFF.FFFF or 0x0000.0000 function returns 31
- *  Note: You can skip data normalization only if return value is 0
- *
- */
-#define FUNCTION_getScalefactor_DBL
+    /*!
+     *
+     *  \brief Calculate max possible scale factor for input vector
+     *
+     *  \return Maximum scale factor
+     *
+     *  This function can constitute a significant amount of computational
+     * complexity - very much depending on the bitrate. Since it is a rather small
+     * function, effective assembler optimization might be possible.
+     *
+     *  If all data is 0xFFFF.FFFF or 0x0000.0000 function returns 31
+     *  Note: You can skip data normalization only if return value is 0
+     *
+     */
+    #define FUNCTION_getScalefactor_DBL
 SCALE_INLINE
 int32_t getScalefactor(const int32_t *vector, /*!< Pointer to input vector */
-                   int32_t len)                /*!< Length of input vector */
+                       int32_t        len)           /*!< Length of input vector */
 {
-  int32_t i;
-  int32_t temp, maxVal = (int32_t)0;
+    int32_t i;
+    int32_t temp, maxVal = (int32_t)0;
 
-  for (i = len; i != 0; i--) {
-    temp = (int32_t)(*vector++);
-    maxVal |= (int32_t)((int32_t)temp ^ (int32_t)(temp >> (DFRACT_BITS - 1)));
-  }
+    for(i = len; i != 0; i--) {
+        temp = (int32_t)(*vector++);
+        maxVal |= (int32_t)((int32_t)temp ^ (int32_t)(temp >> (DFRACT_BITS - 1)));
+    }
 
-  return fixmax_I((int32_t)0, (int32_t)(fixnormz_D(maxVal) - 1));
+    return fixmax_I((int32_t)0, (int32_t)(fixnormz_D(maxVal) - 1));
 }
 #endif
 
 #ifndef FUNCTION_getScalefactor_SGL
-#define FUNCTION_getScalefactor_SGL
+    #define FUNCTION_getScalefactor_SGL
 SCALE_INLINE
 int32_t getScalefactor(const int16_t *vector, /*!< Pointer to input vector */
-                   int32_t len)                /*!< Length of input vector */
+                       int32_t        len)           /*!< Length of input vector */
 {
-  int32_t i;
-  int16_t temp, maxVal = (int16_t)0;
+    int32_t i;
+    int16_t temp, maxVal = (int16_t)0;
 
-  for (i = len; i != 0; i--) {
-    temp = (int16_t)(*vector++);
-    maxVal |= (temp ^ (temp >> (FRACT_BITS - 1)));
-  }
+    for(i = len; i != 0; i--) {
+        temp = (int16_t)(*vector++);
+        maxVal |= (temp ^ (temp >> (FRACT_BITS - 1)));
+    }
 
-  return fixmax_I((int32_t)0, (int32_t)(fixnormz_S((int16_t)maxVal)) - 1);
+    return fixmax_I((int32_t)0, (int32_t)(fixnormz_S((int16_t)maxVal)) - 1);
 }
 #endif

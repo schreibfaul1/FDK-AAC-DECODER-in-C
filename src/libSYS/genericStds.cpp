@@ -8,10 +8,6 @@
 
 *******************************************************************************/
 
-#ifndef _CRT_SECURE_NO_WARNINGS
-    #define _CRT_SECURE_NO_WARNINGS
-#endif
-
 #include "genericStds.h"
 #include <assert.h>
 #include <stdarg.h>
@@ -63,6 +59,7 @@ void *FDKcalloc(const uint32_t n, const uint32_t size) {
 }
 
 #endif
+//----------------------------------------------------------------------------------------------------------------------
 
 void *FDKmalloc(const uint32_t size) {
     void *ptr;
@@ -73,9 +70,9 @@ void *FDKmalloc(const uint32_t size) {
 
     return ptr;
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void FDKfree(void *ptr) { free((int32_t *)ptr); }
-
+//----------------------------------------------------------------------------------------------------------------------
 void *FDKaalloc(const uint32_t size, const uint32_t alignment) {
     void *addr, *result = NULL;
     addr = FDKcalloc(1, size + alignment + (uint32_t)sizeof(void *)); /* Malloc and clear memory. */
@@ -86,24 +83,17 @@ void *FDKaalloc(const uint32_t size, const uint32_t alignment) {
 
     return result; /* Return aligned address.          */
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void FDKafree(void *ptr) {
     void *addr;
     addr = *(((void **)ptr) - 1); /* Get pointer to malloc'ed memory. */
     FDKfree(addr);                /* Free malloc'ed memory area.      */
 }
-
-/*--------------------------------------------------------------------------*
- * DATA MEMORY L1/L2 (fallback)
- *--------------------------------------------------------------------------*/
-
-/*--------------------------------------------------------------------------*
- * FDKcalloc_L
- *--------------------------------------------------------------------------*/
+//----------------------------------------------------------------------------------------------------------------------
 void *FDKcalloc_L(const uint32_t dim, const uint32_t size, MEMORY_SECTION s) { return FDKcalloc(dim, size); }
-
+//----------------------------------------------------------------------------------------------------------------------
 void FDKfree_L(void *p) { FDKfree(p); }
-
+//----------------------------------------------------------------------------------------------------------------------
 void *FDKaalloc_L(const uint32_t size, const uint32_t alignment, MEMORY_SECTION s) {
     void *addr, *result = NULL;
     addr = FDKcalloc_L(1, size + alignment + (uint32_t)sizeof(void *), s); /* Malloc and clear memory.         */
@@ -115,7 +105,7 @@ void *FDKaalloc_L(const uint32_t size, const uint32_t alignment, MEMORY_SECTION 
 
     return result; /* Return aligned address.          */
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 void FDKafree_L(void *ptr) {
     void *addr;
 
@@ -123,11 +113,11 @@ void FDKafree_L(void *ptr) {
     FDKfree_L(addr);              /* Free malloc'ed memory area.      */
 }
 
-/*---------------------------------------------------------------------------------------
- * FUNCTION:    FDKmemcpy
- * DESCRIPTION: - copies memory from "src" to "dst" with length "size" bytes
- *              - compiled with FDK_DEBUG will give you warnings
- *---------------------------------------------------------------------------------------*/
+//----------------------------------------------------------------------------------------------------------------------
+// FUNCTION:    FDKmemcpy
+// DESCRIPTION: - copies memory from "src" to "dst" with length "size" bytes
+//              - compiled with FDK_DEBUG will give you warnings
+
 void FDKmemcpy(void *dst, const void *src, const uint32_t size) {
     /* -- check for overlapping memory areas -- */
     assert(((const unsigned char *)dst - (const unsigned char *)src) >= (ptrdiff_t)size ||
@@ -136,8 +126,8 @@ void FDKmemcpy(void *dst, const void *src, const uint32_t size) {
     /* do the copy */
     memcpy(dst, src, size);
 }
-
-void FDKmemmove(void *dst, const void *src, const uint32_t size) { memmove(dst, src, size); }
+//----------------------------------------------------------------------------------------------------------------------
+void memmove(void *dst, const void *src, const uint32_t size) { memmove(dst, src, size); }
 
 void FDKmemset(void *memPtr, const int32_t value, const uint32_t size) { memset(memPtr, value, size); }
 
@@ -196,7 +186,7 @@ uint32_t FDKfwrite_EL(const void *ptrf, int32_t size, uint32_t nmemb, FDKFILE *f
     }
     return nmemb;
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 uint32_t FDKfread_EL(void *dst, int32_t size, uint32_t nmemb, FDKFILE *fp) {
     uint32_t n, s0, s1, err;
     uint8_t  tmp, *ptr;
@@ -233,6 +223,6 @@ uint32_t FDKfread_EL(void *dst, int32_t size, uint32_t nmemb, FDKFILE *fp) {
     }
     return err;
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 int32_t FDKfeof(FDKFILE *fp) { return feof((FILE *)fp); }
 
