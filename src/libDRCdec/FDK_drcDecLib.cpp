@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "drcDec_reader.h"
 #include "drcDec_gainDecoder.h"
 #include "FDK_drcDecLib.h"
@@ -890,7 +891,7 @@ FDK_drcDec_ApplyDownmix(HANDLE_DRC_DECODER hDrcDec, int32_t* reverseInChannelMap
   }
 
   for (oc = targetChCnt; oc < baseChCnt; oc++) {
-    FDKmemset(audioChannels[oc], 0, frameSize * sizeof(int32_t));
+    memset(audioChannels[oc], 0, frameSize * sizeof(int32_t));
   }
 
   *pNChannels = targetChCnt;

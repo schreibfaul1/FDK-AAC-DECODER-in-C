@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include <stdint.h>
 #include "channel.h"
 #include "aacdecoder.h"
@@ -892,7 +893,7 @@ AAC_DECODER_ERROR CChannelElement_Read(
       /* Shows which bands are empty. */
       uint8_t *band_is_noise =
           pAacDecoderChannelInfo[ch]->pDynData->band_is_noise;
-      FDKmemset(band_is_noise, (uint8_t)1, sizeof(uint8_t) * (8 * 16));
+      memset(band_is_noise, (uint8_t)1, sizeof(uint8_t) * (8 * 16));
 
       error = CBlock_InverseQuantizeSpectralData(
           pAacDecoderChannelInfo[ch], pSamplingRateInfo, band_is_noise, 1);

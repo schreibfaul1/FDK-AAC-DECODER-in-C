@@ -127,11 +127,9 @@ void FDKmemcpy(void *dst, const void *src, const uint32_t size) {
     memcpy(dst, src, size);
 }
 //----------------------------------------------------------------------------------------------------------------------
-void memmove(void *dst, const void *src, const uint32_t size) { memmove(dst, src, size); }
 
-void FDKmemset(void *memPtr, const int32_t value, const uint32_t size) { memset(memPtr, value, size); }
 
-void FDKmemclear(void *memPtr, const uint32_t size) { FDKmemset(memPtr, 0, size); }
+void FDKmemclear(void *memPtr, const uint32_t size) { memset(memPtr, 0, size); }
 
 uint32_t FDKstrlen(const char *s) { return (uint32_t)strlen(s); }
 

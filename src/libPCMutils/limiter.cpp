@@ -100,7 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
-
+#include <memory.h>
 #include <stdint.h>
 #include "limiter.h"
 #include "../libFDK/FDK_core.h"
@@ -374,8 +374,8 @@ TDLIMITER_ERROR pcmLimiter_Reset(TDLimiterPtr limiter) {
     limiter->minGain = FL2FXCONST_DBL(1.0f / (1 << 1));
     limiter->scaling = 0;
 
-    FDKmemset(limiter->maxBuf, 0, (limiter->attack + 1) * sizeof(int32_t));
-    FDKmemset(limiter->delayBuf, 0,
+    memset(limiter->maxBuf, 0, (limiter->attack + 1) * sizeof(int32_t));
+    memset(limiter->delayBuf, 0,
               limiter->attack * limiter->channels * sizeof(int32_t));
   } else {
     return TDLIMIT_INVALID_HANDLE;
@@ -533,7 +533,7 @@ TDLIMITER_ERROR pcmLimiter_GetLibInfo(LIB_INFO* info) {
     return TDLIMIT_UNKNOWN;
   }
 
- 
+
   /* Set flags */
   info[i].flags = CAPF_LIMITER;
 

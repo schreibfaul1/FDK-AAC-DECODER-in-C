@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "sac_stp.h"
 #include "sac_calcM1andM2.h"
 #include "sac_bitdec.h"
@@ -359,10 +360,10 @@ SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
   }
 
   /* clear skipping flag for all output channels */
-  FDKmemset(skipChannels, 0, self->numOutputChannels * sizeof(int32_t));
+  memset(skipChannels, 0, self->numOutputChannels * sizeof(int32_t));
 
   /* set scale values to zero */
-  FDKmemset(scale, 0, self->numOutputChannels * sizeof(int32_t));
+  memset(scale, 0, self->numOutputChannels * sizeof(int32_t));
 
   /* update normalisation energy with latest smoothed energy */
   if (hStpDec->update_old_ener == STP_UPDATE_ENERGY_RATE) {

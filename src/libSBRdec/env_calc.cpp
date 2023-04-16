@@ -141,6 +141,7 @@ amm-info@iis.fraunhofer.de
   documentationOverview
 */
 
+#include <memory.h>
 #include "env_calc.h"
 #include "sbrdec_freq_sca.h"
 #include "env_extr.h"
@@ -276,7 +277,7 @@ static void mapSineFlags(
   */
 
   /* Reset the output vector first */
-  FDKmemset(sineMapped, 32,
+  memset(sineMapped, 32,
             MAX_FREQ_COEFFS * sizeof(int8_t)); /* 32 means 'no sine' */
   FDKmemclear(harmFlagsPrevActive, ADD_HARMONICS_FLAGS_SIZE * sizeof(uint32_t));
   for (i = 0; i < nSfb; i++) {
@@ -341,7 +342,7 @@ static void mapSineFlags(
                                    trailing the PVC framing */
 {
   /* Reset the output vector first */
-  FDKmemset(sineMapped, 32, MAX_FREQ_COEFFS); /* 32 means 'no sine' */
+  memset(sineMapped, 32, MAX_FREQ_COEFFS); /* 32 means 'no sine' */
 
   if (trailingSbrFrame) {
     /* restore sineMapped[] of previous frame */
@@ -1570,7 +1571,7 @@ void calculateSbrEnvelope(
         } else {
           assert(!iTES_enable); /* not supported */
           if (flags & SBRDEC_ELD_GRID) {
-            /* FDKmemset(analysBufferReal[j], 0, 64 * sizeof(int32_t)); */
+            /* memset(analysBufferReal[j], 0, 64 * sizeof(int32_t)); */
             adjustTimeSlot_EldGrid(
                 &analysBufferReal[j][lowSubband], pNrgs,
                 &h_sbr_cal_env->harmIndex, lowSubband, noSubbands,

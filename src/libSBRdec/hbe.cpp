@@ -106,6 +106,7 @@ amm-info@iis.fraunhofer.de
   \author Fabian Haussel
 */
 
+#include <memory.h>
 #include "hbe.h"
 #include "../libFDK/qmf.h"
 #include "env_extr.h"
@@ -1130,7 +1131,7 @@ SBR_ERROR QmfTransposerReInit(HANDLE_HBE_TRANSPOSER hQmfTransposer,
     hQmfTransposer->HBEAnalysiscQMF.t_cos = tmp_t_cos;
     hQmfTransposer->HBEAnalysiscQMF.t_sin = tmp_t_sin;
 
-    FDKmemset(hQmfTransposer->xOverQmf, 0,
+    memset(hQmfTransposer->xOverQmf, 0,
               MAX_NUM_PATCHES * sizeof(int32_t)); /* global */
     sfb = 0;
     if (hQmfTransposer->bSbr41) {
@@ -2129,12 +2130,12 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
 
     /* finally set last two slot to zero */
     for (i = 0; i < 2; i++) {
-      FDKmemset(&hQmfTransposer->qmfHBEBufReal_F[HBE_MAX_OUT_SLOTS - 1 - i]
+      memset(&hQmfTransposer->qmfHBEBufReal_F[HBE_MAX_OUT_SLOTS - 1 - i]
                                                 [hQmfTransposer->xOverQmf[0]],
                 0,
                 (QMF_SYNTH_CHANNELS - hQmfTransposer->xOverQmf[0]) *
                     sizeof(int32_t));
-      FDKmemset(&hQmfTransposer->qmfHBEBufImag_F[HBE_MAX_OUT_SLOTS - 1 - i]
+      memset(&hQmfTransposer->qmfHBEBufImag_F[HBE_MAX_OUT_SLOTS - 1 - i]
                                                 [hQmfTransposer->xOverQmf[0]],
                 0,
                 (QMF_SYNTH_CHANNELS - hQmfTransposer->xOverQmf[0]) *

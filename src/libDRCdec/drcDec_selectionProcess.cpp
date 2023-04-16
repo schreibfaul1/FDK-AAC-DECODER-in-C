@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "drcDec_selectionProcess.h"
 #include "drcDec_tools.h"
 
@@ -2008,7 +2009,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _generateVirtualDrcSets(
     return DRCDEC_SELECTION_PROCESS_NOT_OK;
   }
 
-  FDKmemset(pDrcInstruction, 0, sizeof(DRC_INSTRUCTIONS_UNI_DRC));
+  memset(pDrcInstruction, 0, sizeof(DRC_INSTRUCTIONS_UNI_DRC));
 
   pDrcInstruction->drcSetId = indexVirtual;
   index++;
@@ -2024,7 +2025,7 @@ static DRCDEC_SELECTION_PROCESS_RETURN _generateVirtualDrcSets(
 
   for (i = 1; i < nMixes; i++) {
     pDrcInstruction = &(hUniDrcConfig->drcInstructionsUniDrc[index]);
-    FDKmemset(pDrcInstruction, 0, sizeof(DRC_INSTRUCTIONS_UNI_DRC));
+    memset(pDrcInstruction, 0, sizeof(DRC_INSTRUCTIONS_UNI_DRC));
     pDrcInstruction->drcSetId = indexVirtual;
     pDrcInstruction->downmixId[0] =
         hUniDrcConfig->downmixInstructions[i - 1].downmixId;
@@ -2428,7 +2429,7 @@ static DRCDEC_SELECTION_DATA* _drcdec_selection_addNew(
     DRCDEC_SELECTION* pSelection) {
   if (pSelection->numData < (12 + 1 + 6)) {
     DRCDEC_SELECTION_DATA* pData = &(pSelection->data[pSelection->numData]);
-    FDKmemset(pData, 0, sizeof(DRCDEC_SELECTION_DATA));
+    memset(pData, 0, sizeof(DRCDEC_SELECTION_DATA));
     pSelection->numData++;
 
     return pData;

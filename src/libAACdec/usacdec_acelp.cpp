@@ -890,7 +890,7 @@ void CLpd_Acelp_Zir(const FIXP_LPC A[], const int32_t A_exp, CAcelpStaticMem *ac
     assert(length <= L_FAC_ZIR);
 
     FDKmemcpy(tmp_buf, acelp_mem->old_syn_mem, M_LP_FILTER_ORDER * sizeof(int32_t));
-    FDKmemset(tmp_buf + M_LP_FILTER_ORDER, 0, L_FAC_ZIR * sizeof(int32_t));
+    memset(tmp_buf + M_LP_FILTER_ORDER, 0, L_FAC_ZIR * sizeof(int32_t));
 
     Syn_filt(A, A_exp, length, &tmp_buf[M_LP_FILTER_ORDER], &tmp_buf[M_LP_FILTER_ORDER]);
     if(!doDeemph) {

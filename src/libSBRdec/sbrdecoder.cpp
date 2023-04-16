@@ -135,6 +135,7 @@ amm-info@iis.fraunhofer.de
 
 */
 
+#include <memory.h>
 #include "sbrdecoder.h"
 #include "../libFDK/FDK_bitstream.h"
 #include "../libFDK/FDK_crc.h"
@@ -166,7 +167,7 @@ static void setFrameErrorFlag(SBR_DECODER_ELEMENT *pSbrElement, uint8_t value) {
 	if(pSbrElement != NULL) {
 		switch(value) {
 			case FRAME_ERROR_ALLSLOTS:
-				FDKmemset(pSbrElement->frameErrorFlag, FRAME_ERROR, sizeof(pSbrElement->frameErrorFlag));
+				memset(pSbrElement->frameErrorFlag, FRAME_ERROR, sizeof(pSbrElement->frameErrorFlag));
 				break;
 			default:
 				pSbrElement->frameErrorFlag[pSbrElement->useFrameSlot] = value;

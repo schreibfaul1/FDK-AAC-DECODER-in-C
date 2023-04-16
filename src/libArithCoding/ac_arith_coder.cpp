@@ -101,6 +101,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include <stdint.h>
 #include "ac_arith_coder.h"
 
@@ -550,7 +551,7 @@ static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf, uint8_t * c_prev,
 		}
 	}
 
-	FDKmemset(&c_prev[i], 1, sizeof(c_prev[0]) * (nt - i));
+	memset(&c_prev[i], 1, sizeof(c_prev[0]) * (nt - i));
 
 	return ErrorStatus;
 }
@@ -592,7 +593,7 @@ ARITH_CODING_ERROR CArco_DecodeArithData(CArcoData *pArcoData, HANDLE_FDK_BITSTR
 	pArcoData->m_numberLinesPrev = lg_max;
 
 	if(lg > 0) { ErrorStatus = decode2(hBs, pArcoData->c_prev + 2, mdctSpectrum, lg >> 1, lg_max >> 1); }
-	else { FDKmemset(&pArcoData->c_prev[2], 1, sizeof(pArcoData->c_prev[2]) * (lg_max >> 1)); }
+	else { memset(&pArcoData->c_prev[2], 1, sizeof(pArcoData->c_prev[2]) * (lg_max >> 1)); }
 
 	if((int32_t)FDKgetValidBits(hBs) < 0) { return ARITH_CODER_ERROR; }
 

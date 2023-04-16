@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <memory.h>
 #include "usacdec_lpd.h"
 
 #include "usacdec_rom.h"
@@ -360,7 +361,7 @@ void bass_pf_1sf_delay(
         }
       }
     } else {
-      FDKmemset(noise_in, (int32_t)0, L_SUBFR * sizeof(int32_t));
+      memset(noise_in, (int32_t)0, L_SUBFR * sizeof(int32_t));
     }
 
     {

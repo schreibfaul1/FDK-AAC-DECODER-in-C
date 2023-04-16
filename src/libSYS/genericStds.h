@@ -341,12 +341,6 @@ void FDKmemcpy(void *dst, const void *src, const uint32_t size);
  */
 void FDKmemclear(void *memPtr, const uint32_t size);
 
-/**
- * Fill memory with values.
- * The function arguments correspond to the standard memset(). Please see MSDN
- * documentation for details on how to use it.
- */
-void FDKmemset(void *memPtr, const int32_t value, const uint32_t size);
 
 /* Compare function wrappers */
 int32_t FDKmemcmp(const void *s1, const void *s2, const uint32_t size);

@@ -100,6 +100,8 @@ amm-info@iis.fraunhofer.de
                 expansion in the PCM time domain.
 
 *******************************************************************************/
+
+#include <memory.h>
 #include <assert.h>
 #include "pcmdmx_lib.h"
 
@@ -534,7 +536,7 @@ static PCMDMX_ERROR getChannelMode(
   FDKmemclear(mapped, (8) * sizeof(uint8_t));
   FDKmemclear(spkrPos, (8) * sizeof(PCM_DMX_SPEAKER_POSITION));
   /* Init output */
-  FDKmemset(offsetTable, 255, (8) * sizeof(uint8_t));
+  memset(offsetTable, 255, (8) * sizeof(uint8_t));
   *chMode = CH_MODE_UNDEFINED;
 
   /* Determine how many channels are assigned to each channels each group: */
@@ -702,7 +704,7 @@ static void getChannelDescription(
   /* Init output arrays */
   FDKmemclear(channelType, (8) * sizeof(AUDIO_CHANNEL_TYPE));
   FDKmemclear(channelIndices, (8) * sizeof(uint8_t));
-  FDKmemset(offsetTable, 255, (8) * sizeof(uint8_t));
+  memset(offsetTable, 255, (8) * sizeof(uint8_t));
 
   /* Summerize to get the total number of channels */
   for (grpIdx = 0; grpIdx < (4); grpIdx += 1) {
