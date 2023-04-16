@@ -267,7 +267,7 @@ extern "C" {
 
 
 void *FDKcalloc(const uint32_t n, const uint32_t size);
-void *FDKcallocExt(const uint32_t n, const uint32_t size, const uint8_t alignment);
+
 
 void *FDKmalloc(const uint32_t size);
 void  FDKfree(void *ptr);

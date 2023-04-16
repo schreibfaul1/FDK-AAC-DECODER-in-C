@@ -52,8 +52,6 @@ void *FDKcallocExt(const uint32_t n, const uint32_t size, const uint8_t alignmen
 
 #else
 
-void *FDKcallocExt(const uint32_t n, const uint32_t size, const uint8_t) { return FDKcalloc(n, size); }
-
 void *FDKcalloc(const uint32_t n, const uint32_t size) {
     void *ptr;
 
@@ -80,7 +78,7 @@ void FDKfree(void *ptr) { free((int32_t *)ptr); }
 
 void *FDKaalloc(const uint32_t size, const uint32_t alignment) {
     void *addr, *result = NULL;
-    addr = FDKcallocExt(1, size + alignment + (uint32_t)sizeof(void *), alignment); /* Malloc and clear memory. */
+    addr = FDKcalloc(1, size + alignment + (uint32_t)sizeof(void *)); /* Malloc and clear memory. */
     if(addr != NULL) {
         result = ALIGN_PTR((unsigned char *)addr + sizeof(void *)); /* Get aligned memory base address. */
         *(((void **)result) - 1) = addr;                            /* Save malloc'ed memory pointer.   */
