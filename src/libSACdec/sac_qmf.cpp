@@ -118,12 +118,10 @@ SACDEC_ERROR CalculateSpaceSynthesisQmf(
     err = MPS_INVALID_HANDLE;
   } else {
     HANDLE_SPACE_SYNTHESIS_QMF hSpaceSynthesisQmf = &hQmfDomainOutCh->fb;
-#if (QMF_MAX_SYNTHESIS_BANDS <= 64)
-    C_AALLOC_SCRATCH_START(pWorkBuffer, int32_t,
-                           (QMF_MAX_SYNTHESIS_BANDS << 1));
-#else
-    C_AALLOC_STACK_START(pWorkBuffer, int32_t, (QMF_MAX_SYNTHESIS_BANDS << 1));
-#endif
+
+    int32_t _pWorkBuffer[(64 << 1) + (8 + sizeof(int32_t) - 1)];
+    int32_t *pWorkBuffer = (int32_t *)(_pWorkBuffer + (((int32_t)8 - ((size_t)(_pWorkBuffer) & 7)) & 7));
+
 
     qmfSynthesisFilteringSlot(hSpaceSynthesisQmf, Sr, Si, 0, 0, timeSig, stride,
                               pWorkBuffer);
@@ -141,7 +139,10 @@ SACDEC_ERROR CalculateSpaceAnalysisQmf(
   if (hSpaceAnalysisQmf == NULL) {
     err = MPS_INVALID_HANDLE;
   } else {
-    C_AALLOC_SCRATCH_START(pWorkBuffer, int32_t, (64 << 1));
+    int32_t _pWorkBuffer[(64 << 1) + (8 + sizeof(int32_t) - 1)];
+    int32_t *pWorkBuffer = (int32_t *)(_pWorkBuffer + (((int32_t)8 - ((size_t)(_pWorkBuffer) & 7)) & 7));
+
+
 
     qmfAnalysisFilteringSlot(hSpaceAnalysisQmf, Sr, Si, timeSig, 1,
                              pWorkBuffer);

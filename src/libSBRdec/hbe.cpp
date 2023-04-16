@@ -1478,7 +1478,12 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
                       qmfBufferCodecImag[2 * j + z][ki]);
       }
 
-      C_AALLOC_SCRATCH_START(pWorkBuffer, int32_t, (HBE_MAX_QMF_BANDS << 1));
+      int32_t _pWorkBuffer[(40 << 1) + (8 + sizeof(int32_t) - 1)];
+      int32_t *pWorkBuffer = (int32_t *)(_pWorkBuffer + (((int32_t)8 - ((size_t)(_pWorkBuffer) & 7)) & 7));
+
+
+
+
 
       qmfSynthesisFilteringSlot(
           &hQmfTransposer->HBESynthesisQMF,
@@ -1488,8 +1493,9 @@ void QmfTransposerApply(HANDLE_HBE_TRANSPOSER hQmfTransposer,
           pWorkBuffer);
 
     }
+    int32_t _pWorkBuffer[(40 << 1) + (8 + sizeof(int32_t) - 1)];
+    int32_t *pWorkBuffer = (int32_t *)(_pWorkBuffer + (((int32_t)8 - ((size_t)(_pWorkBuffer) & 7)) & 7));
 
-    C_AALLOC_SCRATCH_START(pWorkBuffer, int32_t, (HBE_MAX_QMF_BANDS << 1));
 
     qmfAnalysisFilteringSlot(&hQmfTransposer->HBEAnalysiscQMF,
                              hQmfTransposer->qmfInBufReal_F[QMF_WIN_LEN - 1],

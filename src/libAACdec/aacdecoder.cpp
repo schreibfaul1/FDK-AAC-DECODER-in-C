@@ -2414,7 +2414,11 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 					CWorkBufferCore1            workBufferCore1;
 					commonStaticData.pWorkBufferCore1 = &workBufferCore1;
 					/* memory for spectral lines temporal on scratch */
-					C_AALLOC_SCRATCH_START(mdctSpec, int32_t, 1024);
+					int32_t _mdctSpec[1024 + 8 + sizeof(int32_t) - 1];
+					int32_t *mdctSpec = (int32_t *)(_mdctSpec + (((int32_t)8 - ((size_t)(_mdctSpec) & 7)) & 7));
+
+
+
 
 					/* create dummy channel for CCE parsing on stack */
 					CAacDecoderChannelInfo tmpAacDecoderChannelInfo, *pTmpAacDecoderChannelInfo;

@@ -341,7 +341,11 @@ void sbr_dec(
     if (!(flags & SBRDEC_USAC_HARMONICSBR)) /* stereoCfgIndex3 w/o HBE */
       FDK_QmfDomain_WorkBuffer2ProcChannel(hSbrDec->qmfDomainInCh);
   } else {
-    C_AALLOC_SCRATCH_START(qmfTemp, int32_t, 2 * (64));
+    int32_t _qmfTemp[(2 * 64) + (8 + sizeof(int32_t) - 1)];
+    int32_t *qmfTemp = (int32_t *)(_qmfTemp + (((int32_t)8 - ((size_t)(_qmfTemp) & 7)) & 7));
+
+
+
     qmfAnalysisFiltering(&hSbrDec->qmfDomainInCh->fb, pReal, pImag,
                          &hSbrDec->qmfDomainInCh->scaling, pTimeInQmf,
                          0 + sbrInDataHeadroom, 1, qmfTemp);

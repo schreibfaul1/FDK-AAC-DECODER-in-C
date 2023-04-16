@@ -545,7 +545,8 @@ void lpc2mdctAndNoiseShaping(int32_t *r, int16_t *pScale, const int32_t lg,
   int32_t rr_minus_one;
   int32_t i, k, s, step;
 
-  C_AALLOC_SCRATCH_START(tmp1, int32_t, FDNS_NPTS * 8)
+  int32_t _tmp1[64 * 8 + 8 + sizeof(int32_t) - 1];
+  int32_t *tmp1 = (int32_t *)(_tmp1 + (((int32_t)8 - ((size_t)(_tmp1) & 7)) & 7));
 
   {
     tmp2 = tmp1 + fdns_npts * 4;
@@ -1863,7 +1864,9 @@ AAC_DECODER_ERROR CLpd_RenderTimeSignal(
       /* FAC management */
       if ((last_lpd_mode == 0) || (last_lpd_mode == 4)) /* TCX TD concealment */
       {
-        C_AALLOC_SCRATCH_START(fac_buf, int32_t, 1024 / 8);
+        int32_t _fac_buf[(1024 / 8) + (8 + sizeof(int32_t) - 1)];
+        int32_t *fac_buf = (int32_t *)(_fac_buf + (((int32_t)8 - ((size_t)(_fac_buf) & 7)) & 7));
+
 
         /* pAacDecoderChannelInfo->data.usac.fac_data[k] == NULL means no FAC
          * data available. */

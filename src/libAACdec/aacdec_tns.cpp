@@ -279,7 +279,11 @@ void CTns_Apply(CTnsData * pTnsData, /*!< pointer to aac decoder info */
   int32_t window, index, start, stop, size, start_window, wins_per_frame;
 
   if (pTnsData->Active) {
-    C_AALLOC_SCRATCH_START(coeff, FIXP_TCC, TNS_MAXIMUM_ORDER)
+
+    int32_t _coeff[20 + 8 + sizeof(int32_t) - 1];
+    int32_t *coeff = (int32_t *)(_coeff + (((int32_t)8 - ((size_t)(_coeff) & 7)) & 7));
+
+
 
     {
       start_window = 0;

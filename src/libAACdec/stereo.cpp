@@ -607,7 +607,8 @@ void CJointStereo_ApplyMS(
     /* 0. preparations */
 
     /* 0.0. get scratch buffer for downmix MDST */
-    C_AALLOC_SCRATCH_START(dmx_im, int32_t, 1024);
+    int32_t _dmx_im[1024 + 8 + sizeof(int32_t) - 1];
+    int32_t *dmx_im = (int32_t *)(_dmx_im + (((int32_t)8 - ((size_t)(_dmx_im) & 7)) & 7));
 
     /* 0.1. window lengths */
 
