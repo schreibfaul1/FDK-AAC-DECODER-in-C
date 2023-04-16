@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdlib.h>
 #include "drcDec_types.h"
 #include "drcDec_gainDecoder.h"
 #include "drcGainDec_preprocess.h"
@@ -242,7 +243,7 @@ drcDec_GainDecoder_Config(HANDLE_DRC_GAIN_DECODER hGainDec,
 DRC_ERROR
 drcDec_GainDecoder_Close(HANDLE_DRC_GAIN_DECODER* phGainDec) {
   if (*phGainDec != NULL) {
-    FDKfree(*phGainDec);
+    free(*phGainDec);
     *phGainDec = NULL;
   }
 

@@ -9,6 +9,7 @@
 
 *******************************************************************************/
 
+#include <stdlib.h>
 #include <memory.h>
 #include <stdint.h>
 #include "FDK_qmf_domain.h"
@@ -56,30 +57,30 @@ static int32_t FDK_QmfDomain_FreePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
 
 		if(qd->QmfDomainIn[ch].hQmfSlotsReal) {
 			if(qd->globalConf.nQmfTimeSlots == QMF_DOMAIN_TIMESLOTS_16) {
-				FDKfree(qd->QmfDomainIn[ch].hQmfSlotsReal);
+				free(qd->QmfDomainIn[ch].hQmfSlotsReal);
 				qd->QmfDomainIn[ch].hQmfSlotsReal = NULL;
 			}
 			else if(qd->globalConf.nQmfTimeSlots == QMF_DOMAIN_TIMESLOTS_32) {
-				FDKfree(qd->QmfDomainIn[ch].hQmfSlotsReal);
+				free(qd->QmfDomainIn[ch].hQmfSlotsReal);
 				qd->QmfDomainIn[ch].hQmfSlotsReal = NULL;
 			}
 			else {
-				FDKfree(qd->QmfDomainIn[ch].hQmfSlotsReal);
+				free(qd->QmfDomainIn[ch].hQmfSlotsReal);
 				qd->QmfDomainIn[ch].hQmfSlotsReal = NULL;
             }
 		}
 
 		if(qd->QmfDomainIn[ch].hQmfSlotsImag) {
 			if(qd->globalConf.nQmfTimeSlots == QMF_DOMAIN_TIMESLOTS_16) {
-				FDKfree(qd->QmfDomainIn[ch].hQmfSlotsImag);
+				free(qd->QmfDomainIn[ch].hQmfSlotsImag);
 				qd->QmfDomainIn[ch].hQmfSlotsImag = NULL;
 			}
 			if(qd->globalConf.nQmfTimeSlots == QMF_DOMAIN_TIMESLOTS_32) {
-				FDKfree(qd->QmfDomainIn[ch].hQmfSlotsImag);
+				free(qd->QmfDomainIn[ch].hQmfSlotsImag);
 				qd->QmfDomainIn[ch].hQmfSlotsImag = NULL;
 			}
 			else {
-				FDKfree(qd->QmfDomainIn[ch].hQmfSlotsImag);
+				free(qd->QmfDomainIn[ch].hQmfSlotsImag);
 				qd->QmfDomainIn[ch].hQmfSlotsImag = NULL;
 			}
 		}

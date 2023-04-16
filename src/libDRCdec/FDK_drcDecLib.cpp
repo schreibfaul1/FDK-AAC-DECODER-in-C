@@ -378,7 +378,7 @@ FDK_drcDec_Close(HANDLE_DRC_DECODER* phDrcDec) {
     drcDec_SelectionProcess_Delete(&(hDrcDec->hSelectionProc));
   }
 
-  FDKfree(*phDrcDec);
+  free(*phDrcDec);
   *phDrcDec = NULL;
 
   return DRC_DEC_OK;

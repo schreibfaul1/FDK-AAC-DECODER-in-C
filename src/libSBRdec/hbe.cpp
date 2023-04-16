@@ -1178,39 +1178,39 @@ void QmfTransposerClose(HANDLE_HBE_TRANSPOSER hQmfTransposer) {
   int32_t i;
 
   if (hQmfTransposer != NULL) {
-    if (hQmfTransposer->inBuf_F) FDKfree(hQmfTransposer->inBuf_F);
+    if (hQmfTransposer->inBuf_F) free(hQmfTransposer->inBuf_F);
 
     if (hQmfTransposer->qmfInBufReal_F) {
       for (i = 0; i < hQmfTransposer->qmfInBufSize; i++) {
         FDKafree(hQmfTransposer->qmfInBufReal_F[i]);
       }
-      FDKfree(hQmfTransposer->qmfInBufReal_F);
+      free(hQmfTransposer->qmfInBufReal_F);
     }
 
     if (hQmfTransposer->qmfInBufImag_F) {
       for (i = 0; i < hQmfTransposer->qmfInBufSize; i++) {
         FDKafree(hQmfTransposer->qmfInBufImag_F[i]);
       }
-      FDKfree(hQmfTransposer->qmfInBufImag_F);
+      free(hQmfTransposer->qmfInBufImag_F);
     }
 
     if (hQmfTransposer->qmfHBEBufReal_F) {
       for (i = 0; i < HBE_MAX_OUT_SLOTS; i++) {
-        FDKfree(hQmfTransposer->qmfHBEBufReal_F[i]);
+        free(hQmfTransposer->qmfHBEBufReal_F[i]);
       }
-      FDKfree(hQmfTransposer->qmfHBEBufReal_F);
+      free(hQmfTransposer->qmfHBEBufReal_F);
     }
 
     if (hQmfTransposer->qmfHBEBufImag_F) {
       for (i = 0; i < HBE_MAX_OUT_SLOTS; i++) {
-        FDKfree(hQmfTransposer->qmfHBEBufImag_F[i]);
+        free(hQmfTransposer->qmfHBEBufImag_F[i]);
       }
-      FDKfree(hQmfTransposer->qmfHBEBufImag_F);
+      free(hQmfTransposer->qmfHBEBufImag_F);
     }
 
-    FDKfree(hQmfTransposer->qmfBufferCodecTempSlot_F);
+    free(hQmfTransposer->qmfBufferCodecTempSlot_F);
 
-    FDKfree(hQmfTransposer);
+    free(hQmfTransposer);
   }
 }
 

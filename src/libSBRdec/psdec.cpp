@@ -212,7 +212,7 @@ int32_t DeletePsDec(HANDLE_PS_DEC *h_PS_DEC) /*!< pointer to the module state */
 		FDKdecorrelateClose(&(h_ps_d->specificTo.mpeg.apDecor));
 	}
 
-	FDKfree(h_PS_DEC);
+	free(h_PS_DEC);
 	h_PS_DEC = NULL;
 
 	return 0;

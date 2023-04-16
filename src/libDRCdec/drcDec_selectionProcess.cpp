@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdlib.h>
 #include <memory.h>
 #include "drcDec_selectionProcess.h"
 #include "drcDec_tools.h"
@@ -649,7 +650,7 @@ drcDec_SelectionProcess_Delete(HANDLE_DRC_SELECTION_PROCESS* phInstance) {
   if (phInstance == NULL || *phInstance == NULL)
     return DRCDEC_SELECTION_PROCESS_INVALID_HANDLE;
 
-  FDKfree(*phInstance);
+  free(*phInstance);
   *phInstance = NULL;
   return DRCDEC_SELECTION_PROCESS_NO_ERROR;
 }

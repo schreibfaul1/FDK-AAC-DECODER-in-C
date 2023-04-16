@@ -123,11 +123,11 @@ void *FDKcalloc(const uint32_t n, const uint32_t size);
 
 
 void *FDKmalloc(const uint32_t size);
-void  FDKfree(void *ptr);
+//void  free(void *ptr);
 
 /**
  *  Allocate and clear an aligned memory area. Use FDKafree() instead of
- * FDKfree() for these memory areas.
+ * free() for these memory areas.
  *
  * \param size       Size of requested memory in bytes.
  * \param alignment  Alignment of requested memory in bytes.

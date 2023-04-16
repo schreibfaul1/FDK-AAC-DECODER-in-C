@@ -102,6 +102,7 @@ amm-info@iis.fraunhofer.de
 
 #ifndef FDK_BITSTREAM_H
 #define FDK_BITSTREAM_H
+#include <stdlib.h>
 #include <assert.h>
 #include "FDK_bitbuffer.h"
 #include "../libSYS/machine_type.h"
@@ -193,7 +194,7 @@ static inline void FDKresetBitbuffer(HANDLE_FDK_BITSTREAM hBitStream,
 */
 static inline void FDKdeleteBitStream(HANDLE_FDK_BITSTREAM hBitStream) {
   FDK_DeleteBitBuffer(&hBitStream->hBitBuf);
-  FDKfree(hBitStream);
+  free(hBitStream);
 }
 
 /**

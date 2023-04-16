@@ -71,7 +71,7 @@ void FDK_Delay_Apply(FDK_SignalDelay* data, int32_t* time_buffer,
 
 void FDK_Delay_Destroy(FDK_SignalDelay* data) {
   if (data->delay_line != NULL) {
-    FDKfree(data->delay_line);
+    free(data->delay_line);
   }
   data->delay_line = NULL;
   data->delay = 0;

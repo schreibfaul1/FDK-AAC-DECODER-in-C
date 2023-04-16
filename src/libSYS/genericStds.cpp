@@ -71,7 +71,7 @@ void *FDKmalloc(const uint32_t size) {
     return ptr;
 }
 //----------------------------------------------------------------------------------------------------------------------
-void FDKfree(void *ptr) { free((int32_t *)ptr); }
+void free(void *ptr) { free((int32_t *)ptr); }
 //----------------------------------------------------------------------------------------------------------------------
 void *FDKaalloc(const uint32_t size, const uint32_t alignment) {
     void *addr, *result = NULL;
@@ -87,12 +87,12 @@ void *FDKaalloc(const uint32_t size, const uint32_t alignment) {
 void FDKafree(void *ptr) {
     void *addr;
     addr = *(((void **)ptr) - 1); /* Get pointer to malloc'ed memory. */
-    FDKfree(addr);                /* Free malloc'ed memory area.      */
+    free(addr);                /* Free malloc'ed memory area.      */
 }
 //----------------------------------------------------------------------------------------------------------------------
 void *FDKcalloc_L(const uint32_t dim, const uint32_t size, MEMORY_SECTION s) { return FDKcalloc(dim, size); }
 //----------------------------------------------------------------------------------------------------------------------
-void FDKfree_L(void *p) { FDKfree(p); }
+void FDKfree_L(void *p) { free(p); }
 //----------------------------------------------------------------------------------------------------------------------
 void *FDKaalloc_L(const uint32_t size, const uint32_t alignment, MEMORY_SECTION s) {
     void *addr, *result = NULL;

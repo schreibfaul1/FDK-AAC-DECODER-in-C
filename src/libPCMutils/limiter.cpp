@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdlib.h>
 #include <memory.h>
 #include <stdint.h>
 #include "limiter.h"
@@ -387,10 +388,10 @@ TDLIMITER_ERROR pcmLimiter_Reset(TDLimiterPtr limiter) {
 /* destroy limiter */
 TDLIMITER_ERROR pcmLimiter_Destroy(TDLimiterPtr limiter) {
   if (limiter != NULL) {
-    FDKfree(limiter->maxBuf);
-    FDKfree(limiter->delayBuf);
+    free(limiter->maxBuf);
+    free(limiter->delayBuf);
 
-    FDKfree(limiter);
+    free(limiter);
   } else {
     return TDLIMIT_INVALID_HANDLE;
   }

@@ -234,7 +234,7 @@ HANDLE_TRANSPORTDEC transportDec_Open(const TRANSPORT_TYPE transportFmt, const u
       break;
 
     default:
-      if(hInput) { FDKfree(hInput); hInput = NULL;}
+      if(hInput) { free(hInput); hInput = NULL;}
       hInput = NULL;
       break;
   }
@@ -1751,7 +1751,7 @@ uint32_t transportDec_GetNrOfSubFrames(HANDLE_TRANSPORTDEC hTp) {
 void transportDec_Close(HANDLE_TRANSPORTDEC *phTp) {
   if (phTp != NULL) {
     if (*phTp != NULL) {
-      FDKfree(phTp);
+      free(phTp);
       phTp = NULL;
     }
   }

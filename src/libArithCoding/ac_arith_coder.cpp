@@ -560,7 +560,7 @@ CArcoData *CArco_Create(void) { return (CArcoData *)FDKcalloc(1, sizeof(CArcoDat
 
 void CArco_Destroy(CArcoData *pArcoData) {
 	if(pArcoData) {
-		FDKfree(pArcoData);
+		free(pArcoData);
 		pArcoData = NULL;
 	}
 }

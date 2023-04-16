@@ -466,13 +466,13 @@ static void sbrDecoder_DestroyElement(HANDLE_SBRDECODER self, const int32_t elem
 				deleteSbrDec(self->pSbrElement[elementIndex]->pSbrChannel[ch]);
 
                 if(self->pSbrElement[elementIndex]->pSbrChannel[ch]){
-                    FDKfree(self->pSbrElement[elementIndex]->pSbrChannel[ch]);
+                    free(self->pSbrElement[elementIndex]->pSbrChannel[ch]);
                     self->pSbrElement[elementIndex]->pSbrChannel[ch] = NULL;
                 }
 				self->numSbrChannels -= 1;
 			}
 		}
-		FDKfree(self->pSbrElement[elementIndex]);
+		free(self->pSbrElement[elementIndex]);
 		self->pSbrElement[elementIndex] = NULL;
 		self->numSbrElements -= 1;
 	}
@@ -1671,7 +1671,7 @@ SBR_ERROR sbrDecoder_Close(HANDLE_SBRDECODER *pSelf) {
 
 		for(i = 0; i < (8); i++) { sbrDecoder_DestroyElement(self, i); }
 
-        FDKfree(pSelf);
+        free(pSelf);
         pSelf = NULL;
 	}
 

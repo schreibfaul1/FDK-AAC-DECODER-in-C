@@ -2600,7 +2600,7 @@ PCMDMX_ERROR pcmDmx_Close(HANDLE_PCM_DOWNMIX *pSelf) {
   if (pSelf == NULL) {
     return (PCMDMX_INVALID_HANDLE);
   }
-  FDKfree(pSelf); pSelf = NULL;
+  free(pSelf); pSelf = NULL;
   //*pSelf = NULL;
 
   return (PCMDMX_OK);

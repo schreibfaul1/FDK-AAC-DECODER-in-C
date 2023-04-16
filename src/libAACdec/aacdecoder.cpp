@@ -151,7 +151,7 @@ amm-info@iis.fraunhofer.de
   from the FDK Tools
 
 */
-
+#include <stdlib.h>
 #include <memory.h>
 #include "aacdecoder.h"
 #include "../libArithCoding/ac_arith_coder.h"
@@ -1228,7 +1228,7 @@ static void CAacDecoder_DeInit(HANDLE_AACDECODER self, const int32_t subStreamIn
 					}
 				}
 				if(self->pAacDecoderChannelInfo[ch]->pComStaticData->cplxPredictionData != NULL) {
-                    FDKfree(self->pAacDecoderChannelInfo[ch]->pComStaticData->cplxPredictionData);
+                    free(self->pAacDecoderChannelInfo[ch]->pComStaticData->cplxPredictionData);
                     self->pAacDecoderChannelInfo[ch]->pComStaticData->cplxPredictionData = NULL;
 				}
 				/* Avoid double free of linked pComStaticData in case of CPE by settings
@@ -1240,7 +1240,7 @@ static void CAacDecoder_DeInit(HANDLE_AACDECODER self, const int32_t subStreamIn
 						self->pAacDecoderChannelInfo[ch + 1]->pComStaticData = NULL;
 					}
 				}
-				FDKfree(self->pAacDecoderChannelInfo[ch]->pComStaticData);
+				free(self->pAacDecoderChannelInfo[ch]->pComStaticData);
 				self->pAacDecoderChannelInfo[ch]->pComStaticData = NULL;
 			}
 			if(self->pAacDecoderChannelInfo[ch]->pComData != NULL) {
@@ -1272,7 +1272,7 @@ static void CAacDecoder_DeInit(HANDLE_AACDECODER self, const int32_t subStreamIn
 				CArco_Destroy(self->pAacDecoderStaticChannelInfo[ch]->hArCo);
 			}
 			if(&self->pAacDecoderStaticChannelInfo[ch]) {
-				FDKfree(self->pAacDecoderStaticChannelInfo[ch]);
+				free(self->pAacDecoderStaticChannelInfo[ch]);
 				self->pAacDecoderStaticChannelInfo[ch] = NULL;
 			}
 		}
@@ -1286,7 +1286,7 @@ static void CAacDecoder_DeInit(HANDLE_AACDECODER self, const int32_t subStreamIn
 		int32_t el;
 		for(el = elementOffset; el < elementOffset + numElements; el++) {
 			if(self->cpeStaticData[el] != NULL) {
-                FDKfree(self->cpeStaticData[el]);
+                free(self->cpeStaticData[el]);
                 self->cpeStaticData[el] = NULL;
             }
 		}
@@ -1350,14 +1350,14 @@ void CAacDecoder_Close(HANDLE_AACDECODER self) {
 		int32_t ch;
 		for(ch = 0; ch < (8); ch++) {
 			if(self->pTimeDataFlush[ch] != NULL) {
-                FDKfree(self->pTimeDataFlush[ch]);
+                free(self->pTimeDataFlush[ch]);
                 self->pTimeDataFlush[ch] = NULL;
             }
 		}
 	}
 
 	if(self->hDrcInfo) {
-		FDKfree(self->hDrcInfo);
+		free(self->hDrcInfo);
 		self->hDrcInfo = NULL;
 	}
 
@@ -1378,7 +1378,7 @@ void CAacDecoder_Close(HANDLE_AACDECODER self) {
 
 	FDK_QmfDomain_Close(&self->qmfDomain);
 
-    FDKfree(self);
+    free(self);
 }
 //----------------------------------------------------------------------------------------------------------------------
 /*!
