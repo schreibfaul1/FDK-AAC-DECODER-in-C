@@ -1689,12 +1689,6 @@ int32_t sbrDecoder_GetLibInfo(LIB_INFO *info) {
 	if(i == FDK_MODULE_LAST) return -1;
 	info += i;
 
-	info->module_id = FDK_SBRDEC;
-	info->version = LIB_VERSION(SBRDECODER_LIB_VL0, SBRDECODER_LIB_VL1, SBRDECODER_LIB_VL2);
-	LIB_VERSION_STRING(info);
-	info->build_date = SBRDECODER_LIB_BUILD_DATE;
-	info->build_time = SBRDECODER_LIB_BUILD_TIME;
-	info->title = SBRDECODER_LIB_TITLE;
 
 	/* Set flags */
 	info->flags = 0 | CAPF_SBR_HQ | CAPF_SBR_LP | CAPF_SBR_PS_MPEG | CAPF_SBR_DRM_BS | CAPF_SBR_CONCEALMENT |

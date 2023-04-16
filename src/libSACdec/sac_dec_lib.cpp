@@ -1803,19 +1803,6 @@ int32_t mpegSurroundDecoder_GetLibInfo(LIB_INFO *info) {
 
   info += i;
 
-  info->module_id = FDK_MPSDEC;
-#ifdef SUPPRESS_BUILD_DATE_INFO
-  info->build_date = "";
-  info->build_time = "";
-#else
-  info->build_date = __DATE__;
-  info->build_time = __TIME__;
-#endif
-  info->title = "MPEG Surround Decoder";
-  info->version = LIB_VERSION(SACDEC_VL0, SACDEC_VL1, SACDEC_VL2);
-  LIB_VERSION_STRING(info);
-  info->flags = 0 | CAPF_MPS_LD | CAPF_MPS_USAC | CAPF_MPS_HQ |
-                CAPF_MPS_1CH_IN | CAPF_MPS_2CH_OUT; /* end flags */
 
   return 0;
 }

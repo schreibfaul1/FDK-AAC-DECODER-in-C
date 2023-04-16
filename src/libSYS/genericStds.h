@@ -265,22 +265,6 @@ typedef enum
 extern "C" {
 	#endif
 
-void FDKprintf(const char *szFmt, ...);
-
-void FDKprintfErr(const char *szFmt, ...);
-
-/** Wrapper for <stdio.h>'s getchar(). */
-int32_t FDKgetchar(void);
-
-int32_t FDKfprintf(void *stream, const char *format, ...);
-int32_t FDKsprintf(char *str, const char *format, ...);
-
-char       *FDKstrchr(char *s, int32_t c);
-const char *FDKstrstr(const char *haystack, const char *needle);
-char       *FDKstrcpy(char *dest, const char *src);
-char       *FDKstrncpy(char *dest, const char *src, const uint32_t n);
-
-	#define FDK_MAX_OVERLAYS 8 /**< Maximum number of memory overlays. */
 
 void *FDKcalloc(const uint32_t n, const uint32_t size);
 void *FDKcallocExt(const uint32_t n, const uint32_t size, const uint8_t alignment);

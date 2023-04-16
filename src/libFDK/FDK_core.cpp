@@ -129,17 +129,6 @@ int32_t FDK_toolsGetLibInfo(LIB_INFO *info) {
 
   info += i;
 
-  v = LIB_VERSION(FDK_TOOLS_LIB_VL0, FDK_TOOLS_LIB_VL1, FDK_TOOLS_LIB_VL2);
-
-  FDKsprintf(info->versionStr, "%d.%d.%d", ((v >> 24) & 0xff),
-             ((v >> 16) & 0xff), ((v >> 8) & 0xff));
-
-  info->module_id = FDK_TOOLS;
-  info->version = v;
-  info->build_date = FDK_TOOLS_LIB_BUILD_DATE;
-  info->build_time = FDK_TOOLS_LIB_BUILD_TIME;
-  info->title = FDK_TOOLS_LIB_TITLE;
-  info->flags = 1;
 
   return 0;
 }

@@ -1838,12 +1838,7 @@ int32_t aacDecoder_GetLibInfo(LIB_INFO *info) {
 	info += i;
 
 	info->module_id = FDK_AACDEC;
-	/* build own library info */
-	info->version = LIB_VERSION(AACDECODER_LIB_VL0, AACDECODER_LIB_VL1, AACDECODER_LIB_VL2);
-	LIB_VERSION_STRING(info);
-	info->build_date = AACDECODER_LIB_BUILD_DATE;
-	info->build_time = AACDECODER_LIB_BUILD_TIME;
-	info->title = AACDECODER_LIB_TITLE;
+
 
 	/* Set flags */
 	info->flags = 0 | CAPF_AAC_LC | CAPF_ER_AAC_LC | CAPF_ER_AAC_SCAL | CAPF_AAC_VCB11 | CAPF_AAC_HCR | CAPF_AAC_RVLC |

@@ -1769,18 +1769,7 @@ TRANSPORTDEC_ERROR transportDec_GetLibInfo(LIB_INFO *info) {
   info += i;
 
   info->module_id = FDK_TPDEC;
-#ifdef SUPPRESS_BUILD_DATE_INFO
-  info->build_date = "";
-  info->build_time = "";
-#else
-  info->build_date = __DATE__;
-  info->build_time = __TIME__;
-#endif
-  info->title = TP_LIB_TITLE;
-  info->version = LIB_VERSION(TP_LIB_VL0, TP_LIB_VL1, TP_LIB_VL2);
-  LIB_VERSION_STRING(info);
-  info->flags = 0 | CAPF_ADIF | CAPF_ADTS | CAPF_LATM | CAPF_LOAS |
-                CAPF_RAWPACKETS | CAPF_DRM;
+
 
   return TRANSPORTDEC_OK; /* FDKERR_NOERROR; */
 }
