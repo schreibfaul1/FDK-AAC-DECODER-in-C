@@ -14,21 +14,7 @@
 #include "FDK_qmf_domain.h"
 #include "common_fix.h"
 
-#define WORKBUFFER1_TAG 0
-#define WORKBUFFER3_TAG 4
-#define WORKBUFFER4_TAG 5
-#define WORKBUFFER6_TAG 7
-#define WORKBUFFER7_TAG 8
-
-C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore1, int32_t, QMF_WB_SECTION_SIZE, SECT_DATA_L1, WORKBUFFER1_TAG)
-C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore3, int32_t, QMF_WB_SECTION_SIZE, SECT_DATA_L2, WORKBUFFER3_TAG)
-C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore4, int32_t, QMF_WB_SECTION_SIZE, SECT_DATA_L2, WORKBUFFER4_TAG)
-C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore6, int32_t, QMF_WB_SECTION_SIZE, SECT_DATA_L2, WORKBUFFER6_TAG)
-C_ALLOC_MEM_OVERLAY(QmfWorkBufferCore7, int32_t, QMF_WB_SECTION_SIZE, SECT_DATA_L2, WORKBUFFER7_TAG)
-
-
-
-
+//----------------------------------------------------------------------------------------------------------------------
 static int32_t FDK_QmfDomain_FreePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
 	int32_t err = 0;
 	int32_t ch;
@@ -108,7 +94,7 @@ static int32_t FDK_QmfDomain_FreePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
 
 	return err;
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 static int32_t FDK_QmfDomain_AllocatePersistentMemory(HANDLE_FDK_QMF_DOMAIN qd) {
 	int32_t                      err = 0;
 	int32_t                      ch;
@@ -226,7 +212,7 @@ bail:
 	FDK_QmfDomain_FreePersistentMemory(qd);
 	return -1;
 }
-
+//----------------------------------------------------------------------------------------------------------------------
 QMF_DOMAIN_ERROR FDK_QmfDomain_ClearPersistentMemory(HANDLE_FDK_QMF_DOMAIN hqd) {
 	QMF_DOMAIN_ERROR err = QMF_DOMAIN_OK;
 	int32_t              ch, size;
@@ -244,30 +230,21 @@ QMF_DOMAIN_ERROR FDK_QmfDomain_ClearPersistentMemory(HANDLE_FDK_QMF_DOMAIN hqd) 
 	else { err = QMF_DOMAIN_INIT_ERROR; }
 	return err;
 }
+//----------------------------------------------------------------------------------------------------------------------
+//   FDK_getWorkBuffer
+//
+//   pWorkBuffer               i: array of pointers which point to different workbuffer
+//   sections workBufferOffset i: offset in the workbuffer to the requested
+//   memory memSize            i: size of requested memory
+//
+//   The functions returns the address to the requested memory in the workbuffer.
+//
+//   The overall workbuffer is divided into several sections. There are QMF_MAX_WB_SECTIONS sections of size
+//   QMF_WB_SECTION_SIZE. The function selects the workbuffer section with the help of the workBufferOffset and than
+//   it verifies whether the requested amount of memory fits into the selected workbuffer section.
+//
+//	Returns: address to workbuffer
 
-/*
-   FDK_getWorkBuffer
-
-	Parameters:
-
-	pWorkBuffer        i: array of pointers which point to different workbuffer
-   sections workBufferOffset   i: offset in the workbuffer to the requested
-   memory memSize            i: size of requested memory
-
-	Function:
-
-	The functions returns the address to the requested memory in the workbuffer.
-
-	The overall workbuffer is divided into several sections. There are
-   QMF_MAX_WB_SECTIONS sections of size QMF_WB_SECTION_SIZE. The function
-   selects the workbuffer section with the help of the workBufferOffset and than
-   it verifies whether the requested amount of memory fits into the selected
-   workbuffer section.
-
-	Returns:
-
-	address to workbuffer
-*/
 static int32_t *FDK_getWorkBuffer(int32_t **pWorkBuffer, uint16_t workBufferOffset, uint16_t workBufferSectSize,
 								   uint16_t memSize) {
 	int32_t       idx1;
@@ -296,6 +273,7 @@ static int32_t *FDK_getWorkBuffer(int32_t **pWorkBuffer, uint16_t workBufferOffs
 
 	return pwb;
 }
+//----------------------------------------------------------------------------------------------------------------------
 
 static int32_t FDK_QmfDomain_FeedWorkBuffer(HANDLE_FDK_QMF_DOMAIN qd, int32_t ch, int32_t **pWorkBuffer,
 										uint16_t workBufferOffset, uint16_t workBufferSectSize, int32_t size) {
@@ -310,11 +288,13 @@ static int32_t FDK_QmfDomain_FeedWorkBuffer(HANDLE_FDK_QMF_DOMAIN qd, int32_t ch
 
 	return err;
 }
+//----------------------------------------------------------------------------------------------------------------------
 
 int32_t FDK_QmfDomain_IsInitialized(const HANDLE_FDK_QMF_DOMAIN qd) {
 	assert(qd != NULL);
 	return ((qd->QmfDomainIn[0].pAnaQmfStates == NULL) && (qd->QmfDomainOut[0].pSynQmfStates == NULL)) ? 0 : 1;
 }
+//----------------------------------------------------------------------------------------------------------------------
 
 int32_t FDK_QmfDomain_InitFilterBank(HANDLE_FDK_QMF_DOMAIN qd, uint32_t extra_flags) {
 	assert(qd != NULL);
@@ -386,6 +366,7 @@ int32_t FDK_QmfDomain_InitFilterBank(HANDLE_FDK_QMF_DOMAIN qd, uint32_t extra_fl
 
 	return err;
 }
+//----------------------------------------------------------------------------------------------------------------------
 
 void FDK_QmfDomain_SaveOverlap(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int32_t offset) {
 	assert(qd_ch != NULL);
@@ -410,6 +391,7 @@ void FDK_QmfDomain_SaveOverlap(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int32_t offset) {
 	}
 	pScaling->ov_lb_scale = pScaling->lb_scale;
 }
+//----------------------------------------------------------------------------------------------------------------------
 
 /* Convert headroom bits to exponent */
 #define SCALE2EXP(s) (15 - (s))
@@ -468,6 +450,7 @@ void FDK_QmfDomain_GetSlot(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int32_t t
 		}
 	}
 }
+//----------------------------------------------------------------------------------------------------------------------
 
 void FDK_QmfDomain_GetWorkBuffer(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int32_t ts, int32_t **ppQmfReal,
 								 int32_t **ppQmfImag) {
@@ -487,6 +470,7 @@ void FDK_QmfDomain_GetWorkBuffer(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch, const int
 	*ppQmfImag =
 		FDK_getWorkBuffer(pWorkBuf, workBufferOffset + (ts * CMPLX_MOD + 1) * bands, workBufferSectSize, bands);
 }
+//----------------------------------------------------------------------------------------------------------------------
 
 void FDK_QmfDomain_WorkBuffer2ProcChannel(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch) {
 	assert(qd_ch != NULL);
@@ -517,6 +501,7 @@ void FDK_QmfDomain_WorkBuffer2ProcChannel(const HANDLE_FDK_QMF_DOMAIN_IN qd_ch) 
 		}
 	}
 }
+//----------------------------------------------------------------------------------------------------------------------
 
 void FDK_QmfDomain_QmfData2HBE(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int32_t **ppQmfReal, int32_t **ppQmfImag) {
 	assert(qd_ch != NULL);
@@ -569,6 +554,7 @@ void FDK_QmfDomain_QmfData2HBE(HANDLE_FDK_QMF_DOMAIN_IN qd_ch, int32_t **ppQmfRe
 		}
 	}
 }
+//----------------------------------------------------------------------------------------------------------------------
 
 void FDK_QmfDomain_ClearRequested(HANDLE_FDK_QMF_DOMAIN_GC hgc) {
 	hgc->qmfDomainExplicitConfig = 0;
@@ -583,6 +569,7 @@ void FDK_QmfDomain_ClearRequested(HANDLE_FDK_QMF_DOMAIN_GC hgc) {
 	hgc->nQmfProcBands_requested = 0;
 	hgc->nQmfProcChannels_requested = 0;
 }
+//----------------------------------------------------------------------------------------------------------------------
 
 static void FDK_QmfDomain_ClearConfigured(HANDLE_FDK_QMF_DOMAIN_GC hgc) {
 	hgc->flags = 0;
@@ -596,6 +583,7 @@ static void FDK_QmfDomain_ClearConfigured(HANDLE_FDK_QMF_DOMAIN_GC hgc) {
 	hgc->nQmfProcBands = 0;
 	hgc->nQmfProcChannels = 0;
 }
+//----------------------------------------------------------------------------------------------------------------------
 
 static void FDK_QmfDomain_ClearFilterBank(HANDLE_FDK_QMF_DOMAIN hqd) {
 	int32_t ch;
@@ -604,6 +592,7 @@ static void FDK_QmfDomain_ClearFilterBank(HANDLE_FDK_QMF_DOMAIN hqd) {
 
 	for(ch = 0; ch < ((8) + (1)); ch++) { memset(&hqd->QmfDomainOut[ch].fb, 0, sizeof(hqd->QmfDomainIn[ch].fb)); }
 }
+//----------------------------------------------------------------------------------------------------------------------
 
 QMF_DOMAIN_ERROR FDK_QmfDomain_Configure(HANDLE_FDK_QMF_DOMAIN hqd) {
 	assert(hqd != NULL);
@@ -705,27 +694,27 @@ QMF_DOMAIN_ERROR FDK_QmfDomain_Configure(HANDLE_FDK_QMF_DOMAIN hqd) {
 		/* 7. allocate additional workbuffer if necessary */
 		if((size > 0 /* *QMF_WB_SECTION_SIZE */) && (pWorkBuffer[0] == NULL)) {
 			/* get work buffer of size QMF_WB_SECTION_SIZE */
-			pWorkBuffer[0] = GetQmfWorkBufferCore6();
+			pWorkBuffer[0] = (int32_t *)FDKaalloc_L(((1024 * 2)) * sizeof(int32_t), 8, SECT_DATA_L2);
 		}
 
 		if((size > 1 * QMF_WB_SECTION_SIZE) && (pWorkBuffer[1] == NULL)) {
 			/* get work buffer of size QMF_WB_SECTION_SIZE */
-			pWorkBuffer[1] = GetQmfWorkBufferCore1();
+			pWorkBuffer[1] = (int32_t *)FDKaalloc_L(((1024 * 2)) * sizeof(int32_t), 8, SECT_DATA_L1);
 		}
 
 		if((size > 2 * QMF_WB_SECTION_SIZE) && (pWorkBuffer[2] == NULL)) {
 			/* get work buffer of size QMF_WB_SECTION_SIZE */
-			pWorkBuffer[2] = GetQmfWorkBufferCore3();
+			pWorkBuffer[2] = (int32_t *)FDKaalloc_L(((1024 * 2)) * sizeof(int32_t), 8, SECT_DATA_L2);
 		}
 
 		if((size > 3 * QMF_WB_SECTION_SIZE) && (pWorkBuffer[3] == NULL)) {
 			/* get work buffer of size QMF_WB_SECTION_SIZE */
-			pWorkBuffer[3] = GetQmfWorkBufferCore4();
+			pWorkBuffer[3] = (int32_t *)FDKaalloc_L(((1024 * 2)) * sizeof(int32_t), 8, SECT_DATA_L2);
 		}
 
 		if((size > 4 * QMF_WB_SECTION_SIZE) && (pWorkBuffer[4] == NULL)) {
 			/* get work buffer of size QMF_WB_SECTION_SIZE */
-			pWorkBuffer[4] = GetQmfWorkBufferCore7();
+			pWorkBuffer[4] = (int32_t *)FDKaalloc_L(((1024 * 2)) * sizeof(int32_t), 8, SECT_DATA_L2);
 		}
 
 		/* 8. distribute workbuffer over processing channels */
@@ -755,31 +744,30 @@ bail:
 	if(err) { FDK_QmfDomain_FreeMem(hqd); }
 	return err;
 }
+//----------------------------------------------------------------------------------------------------------------------
 
 static void FDK_QmfDomain_FreeWorkBuffer(HANDLE_FDK_QMF_DOMAIN hqd) {
 	int32_t **pWorkBuffer = hqd->globalConf.pWorkBuffer;
 
-	if(pWorkBuffer[0]) FreeQmfWorkBufferCore6(&pWorkBuffer[0]);
-	if(pWorkBuffer[1]) FreeQmfWorkBufferCore1(&pWorkBuffer[1]);
-	if(pWorkBuffer[2]) FreeQmfWorkBufferCore3(&pWorkBuffer[2]);
-	if(pWorkBuffer[3]) FreeQmfWorkBufferCore4(&pWorkBuffer[3]);
-	if(pWorkBuffer[4]) FreeQmfWorkBufferCore7(&pWorkBuffer[4]);
+	if(pWorkBuffer[0]) {FDKafree_L(pWorkBuffer[0]); pWorkBuffer[0] = NULL;}
+	if(pWorkBuffer[1]) {FDKafree_L(pWorkBuffer[1]); pWorkBuffer[1] = NULL;}
+	if(pWorkBuffer[2]) {FDKafree_L(pWorkBuffer[2]); pWorkBuffer[2] = NULL;}
+	if(pWorkBuffer[3]) {FDKafree_L(pWorkBuffer[3]); pWorkBuffer[3] = NULL;}
+	if(pWorkBuffer[4]) {FDKafree_L(pWorkBuffer[4]); pWorkBuffer[4] = NULL;}
 }
+//----------------------------------------------------------------------------------------------------------------------
 
 void FDK_QmfDomain_FreeMem(HANDLE_FDK_QMF_DOMAIN hqd) {
 	FDK_QmfDomain_FreeWorkBuffer(hqd);
-
 	FDK_QmfDomain_FreePersistentMemory(hqd);
-
 	FDK_QmfDomain_ClearFilterBank(hqd);
-
 	FDK_QmfDomain_ClearConfigured(&hqd->globalConf);
-
 	FDK_QmfDomain_ClearRequested(&hqd->globalConf);
 }
+//----------------------------------------------------------------------------------------------------------------------
 
 void FDK_QmfDomain_Close(HANDLE_FDK_QMF_DOMAIN hqd) {
 	FDK_QmfDomain_FreeWorkBuffer(hqd);
-
 	FDK_QmfDomain_FreePersistentMemory(hqd);
 }
+//----------------------------------------------------------------------------------------------------------------------
