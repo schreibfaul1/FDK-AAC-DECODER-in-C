@@ -69,7 +69,7 @@ typedef enum {
   TCRT_TARGET_CHANNEL_COUNT = 2
 } TARGET_CONFIG_REQUEST_TYPE;
 
-typedef shouldBeUnion {
+typedef union {
   struct {
     uint8_t numRequests;
     uint8_t numRequestsDesired;

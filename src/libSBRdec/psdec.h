@@ -176,7 +176,7 @@ struct PS_DEC {
            */
   } bsData[(1) + 1];
 
-  shouldBeUnion { /* Static data */
+  union { /* Static data */
     struct {
       int8_t aIidPrevFrameIndex[NO_HI_RES_IID_BINS]; /*!< The IID index for
                                                        previous frame */

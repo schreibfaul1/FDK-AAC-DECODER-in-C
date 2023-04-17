@@ -185,7 +185,7 @@ typedef struct {
   CTnsData TnsData;
   CRawDataInfo RawDataInfo;
 
-  shouldBeUnion {
+  union {
     struct {
       CPulseData PulseData;
       int16_t aNumLineInSec4Hcr[MAX_SFB_HCR]; /* needed once for all channels
@@ -211,7 +211,7 @@ typedef struct {
 
 } CAacDecoderDynamicData;
 
-typedef shouldBeUnion {
+typedef union {
   uint8_t DrmBsBuffer[DRM_BS_BUFFER_SIZE];
 
   /* Common signal data, can be used once the bit stream data from above is not
@@ -233,7 +233,7 @@ typedef struct {
 
   CJointStereoData jointStereoData; /* One for one element */
 
-  shouldBeUnion {
+  union {
     struct {
       CErHcrInfo erHcrInfo;
       CErRvlcInfo erRvlcInfo;
@@ -264,7 +264,7 @@ typedef struct {
  * CChannelElement_Decode() call..
  */
 typedef struct {
-  shouldBeUnion {
+  union {
     struct {
       int32_t fac_data0[LFAC];
       int8_t fac_data_e[4];

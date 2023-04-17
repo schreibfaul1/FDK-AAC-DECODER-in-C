@@ -25,10 +25,7 @@
 
 #include "block.h"
 
-#define SF_PITCH_TRACK 6
-#define SF_GAIN 3
-#define MIN_VAL FL2FXCONST_DBL(0.0f)
-#define MAX_VAL (int32_t) MAXVAL_DBL
+
 
 #include "../libArithCoding/ac_arith_coder.h"
 

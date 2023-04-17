@@ -38,13 +38,13 @@
 #define CAPF_ER_AAC_ELDV2      0x00800000  // Support flag for AAC Enhanced Low Delay with MPS 212.
 #define CAPF_AAC_UNIDRC        0x01000000  // Support flag for MPEG-D Dynamic Range Control (uniDrc).
 /* Transport capability flags */
-#define CAPF_ADTS              0x00000001  // Support flag for ADTS transport format.
-#define CAPF_ADIF              0x00000002  // Support flag for ADIF transport format.
-#define CAPF_LATM              0x00000004  // Support flag for LATM transport format.
-#define CAPF_LOAS              0x00000008  // Support flag for LOAS transport format.
-#define CAPF_RAWPACKETS        0x00000010  // Support flag for RAW PACKETS transport format.
-#define CAPF_DRM               0x00000020  // Support flag for DRM/DRM+ transport format.
-#define CAPF_RSVD50            0x00000040  // Support flag for RSVD50 transport format
+#define CAPF_ADTS       0x00000001  // Support flag for ADTS transport format.
+#define CAPF_ADIF       0x00000002  // Support flag for ADIF transport format.
+#define CAPF_LATM       0x00000004  // Support flag for LATM transport format.
+#define CAPF_LOAS       0x00000008  // Support flag for LOAS transport format.
+#define CAPF_RAWPACKETS 0x00000010  // Support flag for RAW PACKETS transport format.
+#define CAPF_DRM        0x00000020  // Support flag for DRM/DRM+ transport format.
+#define CAPF_RSVD50     0x00000040  // Support flag for RSVD50 transport format
 /* SBR capability flags */
 #define CAPF_SBR_LP            0x00000001  // Support flag for SBR Low Power mode.
 #define CAPF_SBR_HQ            0x00000002  // Support flag for SBR High Quality mode.
@@ -56,83 +56,83 @@
 #define CAPF_SBR_ELD_DOWNSCALE 0x00000080  // Support flag for ELD reduced delay mode
 #define CAPF_SBR_HBEHQ         0x00000100  // Support flag for HQ HBE
 /* PCM utils capability flags */
-#define CAPF_DMX_BLIND         0x00000001  // Support flag for blind downmixing.
-#define CAPF_DMX_PCE           0x00000002  // Support flag for guided downmix with data from MPEG-2/4 PCE
-#define CAPF_DMX_ARIB          0x00000004  // PCE guided downmix with slightly different equations to fulfill ARIB standard.
-#define CAPF_DMX_DVB           0x00000008  // Support flag for guided downmix with data from DVB ancillary  data fields.
-#define CAPF_DMX_CH_EXP        0x00000010  // flag for simple upmixing by dublicating channels or  adding zero channels.
-#define CAPF_DMX_6_CH          0x00000020
-#define CAPF_DMX_8_CH          0x00000040
-#define CAPF_DMX_24_CH         0x00000080
-#define CAPF_LIMITER           0x00002000
+#define CAPF_DMX_BLIND  0x00000001  // Support flag for blind downmixing.
+#define CAPF_DMX_PCE    0x00000002  // Support flag for guided downmix with data from MPEG-2/4 PCE
+#define CAPF_DMX_ARIB   0x00000004  // PCE guided downmix with slightly different equations to fulfill ARIB standard.
+#define CAPF_DMX_DVB    0x00000008  // Support flag for guided downmix with data from DVB ancillary  data fields.
+#define CAPF_DMX_CH_EXP 0x00000010  // flag for simple upmixing by dublicating channels or  adding zero channels.
+#define CAPF_DMX_6_CH   0x00000020
+#define CAPF_DMX_8_CH   0x00000040
+#define CAPF_DMX_24_CH  0x00000080
+#define CAPF_LIMITER    0x00002000
 /* MPEG Surround capability flags */
-#define CAPF_MPS_STD           0x00000001
-#define CAPF_MPS_LD            0x00000002
-#define CAPF_MPS_USAC          0x00000004
-#define CAPF_MPS_HQ            0x00000010
-#define CAPF_MPS_LP            0x00000020
-#define CAPF_MPS_1CH_IN        0x00001000
-#define CAPF_MPS_2CH_IN        0x00002000
-#define CAPF_MPS_6CH_IN        0x00004000
+#define CAPF_MPS_STD    0x00000001
+#define CAPF_MPS_LD     0x00000002
+#define CAPF_MPS_USAC   0x00000004
+#define CAPF_MPS_HQ     0x00000010
+#define CAPF_MPS_LP     0x00000020
+#define CAPF_MPS_1CH_IN 0x00001000
+#define CAPF_MPS_2CH_IN 0x00002000
+#define CAPF_MPS_6CH_IN 0x00004000
 
 // Audio Codec flags.
-#define AC_ER_VCB11      0x000001 // aacSectionDataResilienceFlag  flag (from ASC): 1 means use  virtual codebooks
-#define AC_ER_RVLC       0x000002 // aacSpectralDataResilienceFlag (from ASC): 1 means use huffman codeword reordering
-#define AC_ER_HCR        0x000004 // aacSectionDataResilienceFlag flag (from ASC): 1 means use  virtual codebooks
-#define AC_SCALABLE      0x000008 // AAC Scalable
-#define AC_ELD           0x000010 // AAC-ELD
-#define AC_LD            0x000020 // AAC-LD
-#define AC_ER            0x000040 // ER syntax
-#define AC_BSAC          0x000080 // BSAC
-#define AC_USAC          0x000100 // USAC
-#define AC_RSV603DA      0x000200 // RSVD60 3D audio
-#define AC_HDAAC         0x000400 // HD-AAC
-#define AC_RSVD50        0x004000 // Rsvd50
-#define AC_SBR_PRESENT   0x008000 // SBR present flag (from ASC)
-#define AC_SBRCRC        0x010000 // SBR CRC present flag. Only relevant for AAC-ELD for now.
-#define AC_PS_PRESENT    0x020000 // PS present flag (from ASC or implicit)
-#define AC_MPS_PRESENT   0x040000 // MPS present flag (from ASC or implicit)
-#define AC_DRM           0x080000  // DRM bit stream syntax
-#define AC_INDEP         0x100000  // Independency flag
-#define AC_MPEGD_RES     0x200000  // MPEG-D residual individual channel data.
-#define AC_SAOC_PRESENT  0x400000  // SAOC Present Flag
-#define AC_DAB           0x800000  // DAB bit stream syntax
-#define AC_ELD_DOWNSCALE 0x1000000 // ELD Downscaled playout
-#define AC_LD_MPS        0x2000000 // Low Delay MPS.
-#define AC_DRC_PRESENT   0x4000000 // Dynamic Range Control (DRC) data found.
-#define AC_USAC_SCFGI3   0x8000000 // USAC flag: If stereoConfigIndex is 3 the flag is set.
-//Audio Codec flags (reconfiguration).
-#define AC_CM_DET_CFG_CHANGE    0x000001 // Config mode signalizes the callback to work in config change  detection mode
-#define AC_CM_ALLOC_MEM         0x000002// Config mode signalizes the callback to work in memory allocation mode
+#define AC_ER_VCB11      0x000001   // aacSectionDataResilienceFlag  flag (from ASC): 1 means use  virtual codebooks
+#define AC_ER_RVLC       0x000002   // aacSpectralDataResilienceFlag (from ASC): 1 means use huffman codeword reordering
+#define AC_ER_HCR        0x000004   // aacSectionDataResilienceFlag flag (from ASC): 1 means use  virtual codebooks
+#define AC_SCALABLE      0x000008   // AAC Scalable
+#define AC_ELD           0x000010   // AAC-ELD
+#define AC_LD            0x000020   // AAC-LD
+#define AC_ER            0x000040   // ER syntax
+#define AC_BSAC          0x000080   // BSAC
+#define AC_USAC          0x000100   // USAC
+#define AC_RSV603DA      0x000200   // RSVD60 3D audio
+#define AC_HDAAC         0x000400   // HD-AAC
+#define AC_RSVD50        0x004000   // Rsvd50
+#define AC_SBR_PRESENT   0x008000   // SBR present flag (from ASC)
+#define AC_SBRCRC        0x010000   // SBR CRC present flag. Only relevant for AAC-ELD for now.
+#define AC_PS_PRESENT    0x020000   // PS present flag (from ASC or implicit)
+#define AC_MPS_PRESENT   0x040000   // MPS present flag (from ASC or implicit)
+#define AC_DRM           0x080000   // DRM bit stream syntax
+#define AC_INDEP         0x100000   // Independency flag
+#define AC_MPEGD_RES     0x200000   // MPEG-D residual individual channel data.
+#define AC_SAOC_PRESENT  0x400000   // SAOC Present Flag
+#define AC_DAB           0x800000   // DAB bit stream syntax
+#define AC_ELD_DOWNSCALE 0x1000000  // ELD Downscaled playout
+#define AC_LD_MPS        0x2000000  // Low Delay MPS.
+#define AC_DRC_PRESENT   0x4000000  // Dynamic Range Control (DRC) data found.
+#define AC_USAC_SCFGI3   0x8000000  // USAC flag: If stereoConfigIndex is 3 the flag is set.
+// Audio Codec flags (reconfiguration).
+#define AC_CM_DET_CFG_CHANGE 0x000001  // Config mode signalizes the callback to work in config change  detection mode
+#define AC_CM_ALLOC_MEM      0x000002  // Config mode signalizes the callback to work in memory allocation mode
 // Audio Codec flags (element specific).
-#define AC_EL_USAC_TW           0x000001 // USAC time warped filter bank is active
-#define AC_EL_USAC_NOISE        0x000002 // USAC noise filling is active
-#define AC_EL_USAC_ITES         0x000004 // USAC SBR inter-TES tool is active
-#define AC_EL_USAC_PVC          0x000008 // USAC SBR predictive vector coding tool is active
-#define AC_EL_USAC_MPS212       0x000010 // USAC MPS212 tool is active
-#define AC_EL_USAC_LFE          0x000020 // USAC element is LFE
-#define AC_EL_USAC_CP_POSSIBLE  0x000040 // USAC may use Complex Stereo Prediction in this channel element
-#define AC_EL_ENHANCED_NOISE    0x000080 // Enhanced noise filling
-#define AC_EL_IGF_AFTER_TNS     0x000100 // IGF after TNS
-#define AC_EL_IGF_INDEP_TILING  0x000200 // IGF independent tiling
-#define AC_EL_IGF_USE_ENF       0x000400 // IGF use enhanced noise filling
-#define AC_EL_FULLBANDLPD       0x000800 // enable fullband LPD tools
-#define AC_EL_LPDSTEREOIDX      0x001000 // LPD-stereo-tool stereo index
-#define AC_EL_LFE               0x002000 // The element is of type LFE.
+#define AC_EL_USAC_TW          0x000001  // USAC time warped filter bank is active
+#define AC_EL_USAC_NOISE       0x000002  // USAC noise filling is active
+#define AC_EL_USAC_ITES        0x000004  // USAC SBR inter-TES tool is active
+#define AC_EL_USAC_PVC         0x000008  // USAC SBR predictive vector coding tool is active
+#define AC_EL_USAC_MPS212      0x000010  // USAC MPS212 tool is active
+#define AC_EL_USAC_LFE         0x000020  // USAC element is LFE
+#define AC_EL_USAC_CP_POSSIBLE 0x000040  // USAC may use Complex Stereo Prediction in this channel element
+#define AC_EL_ENHANCED_NOISE   0x000080  // Enhanced noise filling
+#define AC_EL_IGF_AFTER_TNS    0x000100  // IGF after TNS
+#define AC_EL_IGF_INDEP_TILING 0x000200  // IGF independent tiling
+#define AC_EL_IGF_USE_ENF      0x000400  // IGF use enhanced noise filling
+#define AC_EL_FULLBANDLPD      0x000800  // enable fullband LPD tools
+#define AC_EL_LPDSTEREOIDX     0x001000  // LPD-stereo-tool stereo index
+#define AC_EL_LFE              0x002000  // The element is of type LFE.
 // CODER_CONFIG_t::flags
-#define CC_MPEG_ID              0x00100000
-#define CC_IS_BASELAYER         0x00200000
-#define CC_PROTECTION           0x00400000
-#define CC_SBR                  0x00800000
-#define CC_SBRCRC               0x00010000
-#define CC_SAC                  0x00020000
-#define CC_RVLC                 0x01000000
-#define CC_VCB11                0x02000000
-#define CC_HCR                  0x04000000
-#define CC_PSEUDO_SURROUND      0x08000000
-#define CC_USAC_NOISE           0x10000000
-#define CC_USAC_TW              0x20000000
-#define CC_USAC_HBE             0x40000000
+#define CC_MPEG_ID         0x00100000
+#define CC_IS_BASELAYER    0x00200000
+#define CC_PROTECTION      0x00400000
+#define CC_SBR             0x00800000
+#define CC_SBRCRC          0x00010000
+#define CC_SAC             0x00020000
+#define CC_RVLC            0x01000000
+#define CC_VCB11           0x02000000
+#define CC_HCR             0x04000000
+#define CC_PSEUDO_SURROUND 0x08000000
+#define CC_USAC_NOISE      0x10000000
+#define CC_USAC_TW         0x20000000
+#define CC_USAC_HBE        0x40000000
 
 #define FX_CFG2FX_DBL
 #define FX_CFG2FX_SGL    FX_DBL2FX_SGL
@@ -142,20 +142,43 @@
 #define CLIP_PROTECT_GAIN_0(x) FL2FXCONST_CFG(((x) / (float)(1 << 0)))
 #define CLIP_PROTECT_GAIN_1(x) FL2FXCONST_CFG(((x) / (float)(1 << 1)))
 #define CLIP_PROTECT_GAIN_2(x) FL2FXCONST_CFG(((x) / (float)(1 << 2)))
+#define MAXVAL_SGL             ((signed)0x00007FFF) /* this has to be synchronized to FRACT_BITS */
+#define MINVAL_SGL             ((signed)0xFFFF8000) /* this has to be synchronized to FRACT_BITS */
+#define MAXVAL_DBL             ((signed)0x7FFFFFFF) /* this has to be synchronized to DFRACT_BITS */
+#define MINVAL_DBL             ((signed)0x80000000) /* this has to be synchronized to DFRACT_BITS */
 
 #define SF_CLD_C1C2 (9)
 
-#define IS_USAC(aot)            ((aot) == AOT_USAC)
-#define IS_LOWDELAY(aot)        ((aot) == AOT_ER_AAC_LD || (aot) == AOT_ER_AAC_ELD)
-#define IS_CHANNEL_ELEMENT(elementId) ((elementId) == ID_SCE || (elementId) == ID_CPE || (elementId) == ID_LFE || \
-                                (elementId) == ID_USAC_SCE || (elementId) == ID_USAC_CPE || (elementId) == ID_USAC_LFE)
+#define IS_USAC(aot)     ((aot) == AOT_USAC)
+#define IS_LOWDELAY(aot) ((aot) == AOT_ER_AAC_LD || (aot) == AOT_ER_AAC_ELD)
+#define IS_CHANNEL_ELEMENT(elementId)                                                                         \
+    ((elementId) == ID_SCE || (elementId) == ID_CPE || (elementId) == ID_LFE || (elementId) == ID_USAC_SCE || \
+     (elementId) == ID_USAC_CPE || (elementId) == ID_USAC_LFE)
 #define IS_MP4_CHANNEL_ELEMENT(elementId) ((elementId) == ID_SCE || (elementId) == ID_CPE || (elementId) == ID_LFE)
-#define EXT_ID_BITS             4   /**< Size in bits of extension payload type tags. */
-#define IS_USAC_CHANNEL_ELEMENT(elementId) ((elementId) == ID_USAC_SCE || (elementId) == ID_USAC_CPE || \
-                                (elementId) == ID_USAC_LFE)
-#define MAX_DRC_THREADS   ((8) + 1) /* Heavy compression value is handled just like MPEG DRC data */
-#define MAX_DRC_BANDS     (16) /* 2^LEN_DRC_BAND_INCR (LEN_DRC_BAND_INCR = 4) */
-
+#define EXT_ID_BITS                       4 /**< Size in bits of extension payload type tags. */
+#define IS_USAC_CHANNEL_ELEMENT(elementId) \
+    ((elementId) == ID_USAC_SCE || (elementId) == ID_USAC_CPE || (elementId) == ID_USAC_LFE)
+#define MAX_DRC_THREADS           ((8) + 1) /* Heavy compression value is handled just like MPEG DRC data */
+#define MAX_DRC_BANDS             (16)      /* 2^LEN_DRC_BAND_INCR (LEN_DRC_BAND_INCR = 4) */
+#define MAX_NOISE_ENVELOPES       2
+#define MAX_NOISE_COEFFS          5
+#define MAX_NUM_NOISE_VALUES      (MAX_NOISE_ENVELOPES * MAX_NOISE_COEFFS)
+#define MAX_NUM_LIMITERS          12
+#define MAX_ENVELOPES_LEGACY      5
+#define MAX_ENVELOPES_USAC        8
+#define MAX_ENVELOPES             MAX_ENVELOPES_USAC
+#define MAX_FREQ_COEFFS_DUAL_RATE 48
+#define MAX_FREQ_COEFFS_QUAD_RATE 56
+#define MAX_FREQ_COEFFS           MAX_FREQ_COEFFS_QUAD_RATE
+#define SF_PITCH_TRACK            6
+#define SF_GAIN                   3
+#define MIN_VAL                   FL2FXCONST_DBL(0.0f)
+#define MAX_VAL                   (int32_t) MAXVAL_DBL
+#define MAX_FREQ_COEFFS_FS44100   35
+#define MAX_FREQ_COEFFS_FS48000   32
+#define MAX_NUM_ENVELOPE_VALUES   (MAX_ENVELOPES * MAX_FREQ_COEFFS)
+#define MAX_SFB_NRG_HEADROOM      (1)
+#define MAX_VAL_NRG_HEADROOM      ((((int32_t)MAXVAL_DBL) >> MAX_SFB_NRG_HEADROOM))
 
 typedef struct {                // Contains information needed for a single channel map.
     const uint8_t* pChannelMap; // Actual channel mapping for one single configuration.
@@ -495,6 +518,20 @@ typedef struct {
     int32_t  additionalGainFilterState1; /* Filter state for the gain smoothing */
 } CDrcInfo_t;
 
+typedef struct{
+    int32_t nrgRef[MAX_FREQ_COEFFS];
+    int32_t nrgEst[MAX_FREQ_COEFFS];
+    int32_t nrgGain[MAX_FREQ_COEFFS];
+    int32_t noiseLevel[MAX_FREQ_COEFFS];
+    int32_t nrgSine[MAX_FREQ_COEFFS];
+    int8_t nrgRef_e[MAX_FREQ_COEFFS];
+    int8_t nrgEst_e[MAX_FREQ_COEFFS];
+    int8_t nrgGain_e[MAX_FREQ_COEFFS];
+    int8_t noiseLevel_e[MAX_FREQ_COEFFS];
+    int8_t nrgSine_e[MAX_FREQ_COEFFS];
+    /* yet another exponent [0]: for ts < no_cols; [1]: for ts >= no_cols */
+    int8_t exponent[2];
+} ENV_CALC_NRGS_t;
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -513,8 +550,22 @@ void *FDKcalloc_L(const uint32_t n, const uint32_t size, MEMORY_SECTION_t s);
 void *FDKaalloc_L(const uint32_t size, const uint32_t alignment, MEMORY_SECTION_t s);
 void FDKfree_L(void *ptr);
 void FDKafree_L(void *ptr);
-
-
+static void equalizeFiltBufferExp(int32_t *filtBuffer, int8_t *filtBuffer_e, int32_t *NrgGain, int8_t *NrgGain_e,
+                                  int32_t subbands);
+static void calcNrgPerSubband(int32_t **analysBufferReal, int32_t **analysBufferImag, int32_t lowSubband,
+                              int32_t highSubband, int32_t start_pos, int32_t next_pos, int8_t frameExp,
+                              int32_t *nrgEst, int8_t *nrgEst_e);
+static void calcNrgPerSfb(int32_t **analysBufferReal, int32_t **analysBufferImag, int32_t nSfb, uint8_t *freqBandTable,
+                          int32_t start_pos, int32_t next_pos, int8_t input_e, int32_t *nrg_est, int8_t *nrg_est_e);
+static void calcSubbandGain(int32_t nrgRef, int8_t nrgRef_e, ENV_CALC_NRGS_t *nrgs, int32_t c, int32_t tmpNoise,
+                            int8_t tmpNoise_e, uint8_t sinePresentFlag, uint8_t sineMapped, int32_t noNoiseFlag);
+static void calcAvgGain(ENV_CALC_NRGS_t *nrgs, int32_t lowSubband, int32_t highSubband, int32_t *sumRef_m,
+                        int8_t *sumRef_e, int32_t *ptrAvgGain_m, int8_t *ptrAvgGain_e);
+static void adjustTimeSlot_EldGrid(int32_t *ptrReal, ENV_CALC_NRGS_t *nrgs, uint8_t *ptrHarmIndex, int32_t lowSubbands,
+                                   int32_t noSubbands, int32_t scale_change, int32_t noNoiseFlag,
+                                   int32_t *ptrPhaseIndex, int32_t scale_diff_low);
+static void adjustTimeSlotLC(int32_t *ptrReal, ENV_CALC_NRGS_t *nrgs, uint8_t *ptrHarmIndex, int32_t lowSubbands,
+                             int32_t noSubbands, int32_t scale_change, int32_t noNoiseFlag, int32_t *ptrPhaseIndex);
 
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S

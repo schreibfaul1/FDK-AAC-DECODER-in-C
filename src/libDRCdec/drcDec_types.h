@@ -150,7 +150,7 @@ typedef struct {
   int16_t nodeGain[4 + 1];  /* e = 7 */
 } CUSTOM_DRC_CHAR_NODES;
 
-typedef shouldBeUnion {
+typedef union {
   CUSTOM_DRC_CHAR_SIGMOID sigmoid;
   CUSTOM_DRC_CHAR_NODES nodes;
 }
@@ -195,7 +195,7 @@ typedef struct {
     uint8_t noIndependentUse;
   };
   uint8_t requiresEq;
-  shouldBeUnion {
+  union {
     GAIN_MODIFICATION gainModificationForChannelGroup[8][4];
     DUCKING_MODIFICATION duckingModificationForChannel[8];
   };

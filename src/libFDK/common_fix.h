@@ -61,12 +61,9 @@
 
 /* Max and Min values for saturation purposes. DO NOT USE THESE VALUES AS SCALE
  * VALUES !! */
-#define MAXVAL_SGL ((signed)0x00007FFF) /* this has to be synchronized to FRACT_BITS */
-#define MINVAL_SGL ((signed)0xFFFF8000) /* this has to be synchronized to FRACT_BITS */
-#define MAXVAL_DBL ((signed)0x7FFFFFFF) /* this has to be synchronized to DFRACT_BITS */
-#define MINVAL_DBL ((signed)0x80000000) /* this has to be synchronized to DFRACT_BITS */
 
-#define shouldBeUnion union /* unions are possible */
+
+
 
 
 
