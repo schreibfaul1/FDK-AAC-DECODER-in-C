@@ -7,9 +7,11 @@
    Description:
 
 *******************************************************************************/
-
-#include "FDK_delay.h"
 #include <memory.h>
+
+#include "newAACDecoder.h"
+#include "FDK_delay.h"
+
 
 #define MAX_FRAME_LENGTH (1024)
 

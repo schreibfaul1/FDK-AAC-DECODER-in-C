@@ -8,8 +8,10 @@
 
 *******************************************************************************/
 
-#include "usacdec_acelp.h"
+
 #include <memory.h>
+#include "newAACDecoder.h"
+#include "usacdec_acelp.h"
 #include "usacdec_ace_d4t64.h"
 #include "usacdec_ace_ltp.h"
 #include "usacdec_lpc.h"

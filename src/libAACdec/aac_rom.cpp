@@ -5,9 +5,10 @@
    Description: Definition of constant tables
 
 *******************************************************************************/
-#include "aac_rom.h"
-#include <stdint.h>
 
+#include <stdint.h>
+#include "newAACDecoder.h"
+#include "aac_rom.h"
 /* Prescale InverseQuantTable by 4 to save
    redundant shifts in invers quantization
  */

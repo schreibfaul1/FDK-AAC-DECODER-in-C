@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stddef.h>
-
+#include "newAACDecoder.h"
 
 #define WAV_BITS          	   16
 #define SAMPLE_BITS       	   16
