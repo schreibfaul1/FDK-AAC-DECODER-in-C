@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <memory.h>
 #include <stdint.h>
+#include "../libAACdec/newAACDecoder.h"
 #include "FDK_qmf_domain.h"
 #include "common_fix.h"
 

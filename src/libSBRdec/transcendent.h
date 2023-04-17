@@ -107,7 +107,7 @@ amm-info@iis.fraunhofer.de
 
 #ifndef TRANSCENDENT_H
 #define TRANSCENDENT_H
-
+#include "../libAACdec/newAACDecoder.h"
 #include <stdint.h>
 #include "sbrdecoder.h"
 #include "sbr_rom.h"

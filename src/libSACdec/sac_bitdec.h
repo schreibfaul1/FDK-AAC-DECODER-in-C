@@ -15,7 +15,7 @@
 
 #ifndef SAC_BITDEC_H
 #define SAC_BITDEC_H
-
+#include "../libAACdec/newAACDecoder.h"
 #include "sac_dec.h"
 
 typedef struct {

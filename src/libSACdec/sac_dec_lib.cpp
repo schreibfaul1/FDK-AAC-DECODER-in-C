@@ -8,6 +8,7 @@
 
 *******************************************************************************/
 #include <memory.h>
+#include "../libAACdec/newAACDecoder.h"
 #include "sac_dec_lib.h"
 #include "../libFDK/FDK_matrixCalloc.h"
 #include "sac_bitdec.h"

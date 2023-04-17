@@ -123,6 +123,7 @@ amm-info@iis.fraunhofer.de
 #endif
 
 #include <memory.h>
+#include "../libAACdec/newAACDecoder.h"
 #include "lpp_tran.h"
 #include "sbr_ram.h"
 #include "sbr_rom.h"

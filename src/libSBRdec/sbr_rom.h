@@ -106,7 +106,7 @@ amm-info@iis.fraunhofer.de
 */
 #ifndef SBR_ROM_H
 #define SBR_ROM_H
-
+#include "../libAACdec/newAACDecoder.h"
 #include "sbrdecoder.h"
 #include "env_extr.h"
 #include "../libFDK/qmf.h"

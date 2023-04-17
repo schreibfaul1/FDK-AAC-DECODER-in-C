@@ -104,8 +104,9 @@ amm-info@iis.fraunhofer.de
 #define FDK_BITSTREAM_H
 #include <stdlib.h>
 #include <assert.h>
-#include "FDK_bitbuffer.h"
 #include "../libAACdec/newAACDecoder.h"
+#include "FDK_bitbuffer.h"
+
 
 
 

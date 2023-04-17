@@ -11,6 +11,7 @@
     #define QMF_PCM_H
     #include <memory.h>
     #include <stdint.h>
+    #include "../libAACdec/newAACDecoder.h"
     #include "qmf.h"
 /*
    All Synthesis functions dependent on datatype INT_PCM_QMFOUT
