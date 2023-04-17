@@ -104,7 +104,7 @@ amm-info@iis.fraunhofer.de
 #include "sac_calcM1andM2.h"
 
 #define SCALE_CPC(a) (FL2FXCONST_CFG(a / (float)(1 << SCALE_PARAM_M1)))
-const FIXP_CFG dequantCPC__FDK[] = {
+const int32_t dequantCPC__FDK[] = {
     SCALE_CPC(-2.0f), SCALE_CPC(-1.9f), SCALE_CPC(-1.8f), SCALE_CPC(-1.7f),
     SCALE_CPC(-1.6f), SCALE_CPC(-1.5f), SCALE_CPC(-1.4f), SCALE_CPC(-1.3f),
     SCALE_CPC(-1.2f), SCALE_CPC(-1.1f), SCALE_CPC(-1.0f), SCALE_CPC(-0.9f),
@@ -120,7 +120,7 @@ const FIXP_CFG dequantCPC__FDK[] = {
     SCALE_CPC(2.8f),  SCALE_CPC(2.9f),  SCALE_CPC(3.0f)};
 
 #define SCALE_ICC(a) (FL2FXCONST_CFG(a))
-const FIXP_CFG dequantICC__FDK[8] = {
+const int32_t dequantICC__FDK[8] = {
     /*SCALE_ICC(1.00000f)*/ FX_DBL2FX_CFG(MAXVAL_DBL),
     SCALE_ICC(0.9370f),
     SCALE_ICC(0.84118f),
@@ -131,7 +131,7 @@ const FIXP_CFG dequantICC__FDK[8] = {
     SCALE_ICC(-0.9900f)};
 
 #define SCALE_CLD2(a) (FL2FXCONST_CFG(a / (float)(1 << 8)))
-const FIXP_CFG dequantCLD__FDK[31] = {
+const int32_t dequantCLD__FDK[31] = {
     SCALE_CLD2(-150.0f), SCALE_CLD2(-45.0f), SCALE_CLD2(-40.0f),
     SCALE_CLD2(-35.0f),  SCALE_CLD2(-30.0f), SCALE_CLD2(-25.0f),
     SCALE_CLD2(-22.0f),  SCALE_CLD2(-19.0f), SCALE_CLD2(-16.0f),
@@ -145,7 +145,7 @@ const FIXP_CFG dequantCLD__FDK[31] = {
     SCALE_CLD2(150.0f)};
 
 #define SCALE_IPD(a) (FL2FXCONST_CFG(a / (float)(1 << IPD_SCALE)))
-const FIXP_CFG dequantIPD__FDK[16] = {
+const int32_t dequantIPD__FDK[16] = {
     /* SCALE_IPD(0.000000000f), SCALE_IPD(0.392699082f),
        SCALE_IPD(0.785398163f), SCALE_IPD(1.178097245f),
        SCALE_IPD(1.570796327f), SCALE_IPD(1.963495408f),
@@ -3955,7 +3955,7 @@ const int32_t dequantIPD_CLD_ICC_splitAngle__FDK[15][31][8] = {
 
 #define SCALE_CLD(a) (FL2FXCONST_CFG(a))
 
-const FIXP_CFG dequantCLD_c_l[31] = {
+const int32_t dequantCLD_c_l[31] = {
     SCALE_CLD(0.0000000316f),
     SCALE_CLD(0.0056233243f),
     SCALE_CLD(0.0099994997f),
@@ -3989,7 +3989,7 @@ const FIXP_CFG dequantCLD_c_l[31] = {
     /*SCALE_CLD(1.0000000000f)*/ FX_DBL2FX_CFG(MAXVAL_DBL)};
 
 #define SC_H(a) (FL2FXCONST_CFG(a))
-#define DATA_TYPE_H FIXP_CFG
+#define DATA_TYPE_H int32_t
 
 /* not correlated  tables */
 const DATA_TYPE_H H11_nc[31][8] = {
@@ -4227,12 +4227,12 @@ const int32_t dequantCLD_c1[31] = {SCALE_CLD_C1C2(-1.5000000000000000e+002f),
 
 /* sac_stp */
 /* none scaled */
-const FIXP_CFG BP__FDK[] = {FL2FXCONST_CFG(0.73919999599457),
+const int32_t BP__FDK[] = {FL2FXCONST_CFG(0.73919999599457),
                             FL2FXCONST_CFG(0.97909998893738),
                             FL2FXCONST_CFG(0.99930000305176)};
 
 /* scaled with 26 bits */
-const FIXP_CFG BP_GF__FDK[] = {
+const int32_t BP_GF__FDK[] = {
     FL2FXCONST_CFG(0.00000000643330), FL2FXCONST_CFG(0.00004396850232),
     FL2FXCONST_CFG(0.00087456948552), FL2FXCONST_CFG(0.00474648220243),
     FL2FXCONST_CFG(0.01717987244800), FL2FXCONST_CFG(0.04906742491073),
@@ -4256,7 +4256,7 @@ const uint8_t freqResTable_LD[] = {0, 23, 15, 12, 9, 7, 5, 4};
 const uint8_t tempShapeChanTable[][8] = {{5, 5, 4, 6, 6, 4, 4, 2},
                                        {5, 5, 5, 7, 7, 4, 4, 2}};
 
-const TREEPROPERTIES treePropertyTable[] = {
+const TREEPROPERTIES_t treePropertyTable[] = {
     {1, 6, 5, 0, {0, 0, 0, 0, 1}}, {1, 6, 5, 0, {0, 0, 1, 0, 0}},
     {2, 6, 3, 1, {1, 0, 0, 0, 0}}, {2, 8, 5, 1, {1, 0, 0, 0, 0}},
     {2, 8, 5, 1, {1, 0, 0, 0, 0}}, {6, 8, 2, 0, {0, 0, 0, 0, 0}},
@@ -4402,7 +4402,7 @@ const uint8_t mapping_5_to_23[MAX_PARAMETER_BANDS_LD] = {
 const uint8_t mapping_4_to_23[MAX_PARAMETER_BANDS_LD] = {
     0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3};
 
-const FIXP_CFG clipGainTable__FDK[] = {
+const int32_t clipGainTable__FDK[] = {
     /*CLIP_PROTECT_GAIN_0(1.000000f)*/ FX_DBL2FX_CFG(MAXVAL_DBL),
     CLIP_PROTECT_GAIN_1(1.189207f),
     CLIP_PROTECT_GAIN_1(1.414213f),
@@ -4419,7 +4419,7 @@ const uint8_t pbStrideTable[] = {1, 2, 5, 28};
 const int32_t smgTimeTable[] = {64, 128, 256, 512};
 
 /* table is scaled by factor 0.5 */
-const FIXP_CFG envShapeDataTable__FDK[5][2] = {
+const int32_t envShapeDataTable__FDK[5][2] = {
     {FL2FXCONST_CFG(0.25000000000000f), FL2FXCONST_CFG(0.25000000000000f)},
     {FL2FXCONST_CFG(0.35355339059327f), FL2FXCONST_CFG(0.31498026247372f)},
     {FL2FXCONST_CFG(0.50000000000000f), FL2FXCONST_CFG(0.39685026299205f)},

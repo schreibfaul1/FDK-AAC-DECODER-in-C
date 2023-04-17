@@ -119,12 +119,12 @@ amm-info@iis.fraunhofer.de
   3 /* SF_DRY == 2 would produce good conformance test results as well */
 #define SF_DRY_NRG                                                           \
   (4 - 1) /* 8.495f = sum(BP_GF__FDK[i])                                     \
-             i=0,..,(sizeof(BP_GF__FDK)/sizeof(FIXP_CFG)-1) => energy        \
+             i=0,..,(sizeof(BP_GF__FDK)/sizeof(int32_t)-1) => energy        \
              calculation needs 4 bits headroom, headroom can be reduced by 1 \
              bit due to fPow2Div2() usage */
 #define SF_WET_NRG                                                           \
   (4 - 1) /* 8.495f = sum(BP_GF__FDK[i])                                     \
-             i=0,..,(sizeof(BP_GF__FDK)/sizeof(FIXP_CFG)-1) => energy        \
+             i=0,..,(sizeof(BP_GF__FDK)/sizeof(int32_t)-1) => energy        \
              calculation needs 4 bits headroom, headroom can be reduced by 1 \
              bit due to fPow2Div2() usage */
 #define SF_PRODUCT_BP_GF 13
@@ -202,8 +202,8 @@ struct STP_DEC {
   int32_t oldDryEnerLD64[MAX_INPUT_CHANNELS];
   int32_t oldWetEnerLD64[MAX_OUTPUT_CHANNELS];
   int32_t prev_tp_scale[MAX_OUTPUT_CHANNELS];
-  const FIXP_CFG *BP;
-  const FIXP_CFG *BP_GF;
+  const int32_t *BP;
+  const int32_t *BP_GF;
   int32_t update_old_ener;
 };
 
@@ -225,7 +225,7 @@ inline void combineSignalCplxScale1(int32_t *hybOutputRealDry,
                                     int32_t *hybOutputImagDry,
                                     int32_t *hybOutputRealWet,
                                     int32_t *hybOutputImagWet,
-                                    const FIXP_CFG *pBP, int32_t scaleX,
+                                    const int32_t *pBP, int32_t scaleX,
                                     int32_t bands) {
   int32_t n;
   int32_t scaleY;
@@ -331,7 +331,7 @@ SACDEC_ERROR subbandTPApply(spatialDec *self, const SPATIAL_BS_FRAME *frame) {
   int32_t dry_scale_dmx, wet_scale_dmx;
   int32_t i_LF, i_RF;
   HANDLE_STP_DEC hStpDec;
-  const FIXP_CFG *pBP;
+  const int32_t *pBP;
 
   int32_t nrgScale = (2 * self->clipProtectGainSF__FDK);
 

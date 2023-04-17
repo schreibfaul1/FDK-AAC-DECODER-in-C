@@ -597,7 +597,7 @@ static inline void param2UMX_Prediction_Core__FDK(
     int32_t iidLin21_m =
         fAddNorm(iidLin2_m, iidLin2_e, one_m, one_e, &iidLin21_e);
     /* iidIcc2 = iidLin * icc * 2.0f; */
-    FIXP_CFG icc = dequantICC__FDK[iccIdx];
+    int32_t icc = dequantICC__FDK[iccIdx];
     int32_t iidIcc2_e = iidLin_e + 1;
     int32_t iidIcc2_m = fMult(iidLin_m, icc);
     int32_t temp_m, sqrt_temp_m, inv_temp_m, weight_m;

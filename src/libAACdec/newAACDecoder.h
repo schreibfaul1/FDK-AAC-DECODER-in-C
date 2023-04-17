@@ -134,6 +134,17 @@
 #define CC_USAC_TW              0x20000000
 #define CC_USAC_HBE             0x40000000
 
+#define FX_CFG2FX_DBL
+#define FX_CFG2FX_SGL    FX_DBL2FX_SGL
+#define FL2FXCONST_CFG   FL2FXCONST_DBL
+#define FX_DBL2FX_CFG(x) ((int32_t)(x))
+
+#define CLIP_PROTECT_GAIN_0(x) FL2FXCONST_CFG(((x) / (float)(1 << 0)))
+#define CLIP_PROTECT_GAIN_1(x) FL2FXCONST_CFG(((x) / (float)(1 << 1)))
+#define CLIP_PROTECT_GAIN_2(x) FL2FXCONST_CFG(((x) / (float)(1 << 2)))
+
+#define SF_CLD_C1C2 (9)
+
 #define IS_USAC(aot)            ((aot) == AOT_USAC)
 #define IS_LOWDELAY(aot)        ((aot) == AOT_ER_AAC_LD || (aot) == AOT_ER_AAC_ELD)
 #define IS_CHANNEL_ELEMENT(elementId) ((elementId) == ID_SCE || (elementId) == ID_CPE || (elementId) == ID_LFE || \
