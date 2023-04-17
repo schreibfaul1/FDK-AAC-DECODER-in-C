@@ -180,18 +180,6 @@
 #define MAX_SFB_NRG_HEADROOM      (1)
 #define MAX_VAL_NRG_HEADROOM      ((((int32_t)MAXVAL_DBL) >> MAX_SFB_NRG_HEADROOM))
 
-typedef struct {                // Contains information needed for a single channel map.
-    const uint8_t* pChannelMap; // Actual channel mapping for one single configuration.
-    uint8_t        numChannels; //The number of channels for the channel map which is the maximum used channel index+1.
-} CHANNEL_MAP_INFO_t;
-
-typedef struct {                             // This is the main data struct for all channel configurations
-    const CHANNEL_MAP_INFO_t* pMapInfoTab;   // Table of channel maps.
-    uint32_t                  mapInfoTabLen; // Length of the channel map table array.
-    uint32_t                  fPassThrough;  /*!< Flag that defines whether the specified mapping shall be applied
-                                             (value: 0) or the input just gets passed through (MPEG mapping). */
-} FDK_channelMapDescr_t;
-
 // Audio Object Type definitions.
 typedef enum{
     AOT_NONE = -1,
@@ -417,6 +405,36 @@ typedef enum {
     DRC_PRESENTATION_MODE_2 = 2       /*!< DRC Presentation mode 2*/
 } AACDEC_DRC_PARAMETER_HANDLING_t;
 
+typedef enum {
+    EB_NIGHT = 0x0001,
+    EB_NOISY = 0x0002,
+    EB_LIMITED = 0x0004,
+    EB_LOWLEVEL = 0x0008,
+    EB_DIALOG = 0x0010,
+    EB_GENERAL_COMPR = 0x0020,
+    EB_EXPAND = 0x0040,
+    EB_ARTISTIC = 0x0080,
+    EB_CLIPPING = 0x0100,
+    EB_FADE = 0x0200,
+    EB_DUCK_OTHER = 0x0400,
+    EB_DUCK_SELF = 0x0800
+} EFFECT_BIT_t;
+
+typedef enum { GCP_REGULAR = 0, GCP_FADING = 1, GCP_CLIPPING_DUCKING = 2, GCP_CONSTANT = 3 } GAIN_CODING_PROFILE_t;
+typedef enum { GIT_SPLINE = 0, GIT_LINEAR = 1 } GAIN_INTERPOLATION_TYPE_t;
+typedef enum { CS_LEFT = 0, CS_RIGHT = 1 } CHARACTERISTIC_SIDE_t;
+typedef enum { CF_SIGMOID = 0, CF_NODES = 1 } CHARACTERISTIC_FORMAT_t;
+
+typedef enum {
+    GF_QMF32 = 0x1,
+    GF_QMFHYBRID39 = 0x2,
+    GF_QMF64 = 0x3,
+    GF_QMFHYBRID71 = 0x4,
+    GF_QMF128 = 0x5,
+    GF_QMFHYBRID135 = 0x6,
+    GF_UNIFORM = 0x7
+} EQ_SUBBAND_GAIN_FORMAT_t;
+
 //----------------------------------------------------------------------------------------------------------------------
 /** Generic audio coder configuration structure. */
 typedef struct{
@@ -532,6 +550,18 @@ typedef struct{
     /* yet another exponent [0]: for ts < no_cols; [1]: for ts >= no_cols */
     int8_t exponent[2];
 } ENV_CALC_NRGS_t;
+
+typedef struct {                // Contains information needed for a single channel map.
+    const uint8_t* pChannelMap; // Actual channel mapping for one single configuration.
+    uint8_t        numChannels; //The number of channels for the channel map which is the maximum used channel index+1.
+} CHANNEL_MAP_INFO_t;
+
+typedef struct {                             // This is the main data struct for all channel configurations
+    const CHANNEL_MAP_INFO_t* pMapInfoTab;   // Table of channel maps.
+    uint32_t                  mapInfoTabLen; // Length of the channel map table array.
+    uint32_t                  fPassThrough;  /*!< Flag that defines whether the specified mapping shall be applied
+                                             (value: 0) or the input just gets passed through (MPEG mapping). */
+} FDK_channelMapDescr_t;
 
 //----------------------------------------------------------------------------------------------------------------------
 

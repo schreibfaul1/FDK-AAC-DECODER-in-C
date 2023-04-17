@@ -53,7 +53,7 @@ typedef struct {
 } NODE_LIN;
 
 typedef struct {
-  GAIN_INTERPOLATION_TYPE gainInterpolationType;
+  GAIN_INTERPOLATION_TYPE_t gainInterpolationType;
   int32_t nNodes[NUM_LNB_FRAMES]; /* number of nodes, saturated to 16 */
   NODE_LIN linearNode[NUM_LNB_FRAMES][16];
 } LINEAR_NODE_BUFFER;
@@ -67,10 +67,10 @@ typedef struct {
 
 typedef struct {
   int32_t activeDrcOffset;
-  DRC_INSTRUCTIONS_UNI_DRC* pInst;
-  DRC_COEFFICIENTS_UNI_DRC* pCoef;
+  DRC_INSTRUCTIONS_UNI_DRC_t* pInst;
+  DRC_COEFFICIENTS_UNI_DRC_t* pCoef;
 
-  DUCKING_MODIFICATION duckingModificationForChannelGroup[8];
+  DUCKING_MODIFICATION_t duckingModificationForChannelGroup[8];
   int8_t channelGroupForChannel[8];
 
   uint8_t bandCountForChannelGroup[8];

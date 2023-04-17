@@ -49,7 +49,7 @@ struct s_drc_decoder {
   /* data structs */
   UNI_DRC_CONFIG uniDrcConfig;
   LOUDNESS_INFO_SET loudnessInfoSet;
-  UNI_DRC_GAIN uniDrcGain;
+  UNI_DRC_GAIN_t uniDrcGain;
 
   SEL_PROC_OUTPUT selProcOutput;
 } DRC_DECODER;

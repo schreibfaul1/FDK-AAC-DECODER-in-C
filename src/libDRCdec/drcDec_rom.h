@@ -20,9 +20,9 @@ extern const int8_t slopeSteepness_huffman[14][2];
 extern const int32_t downmixCoeff[];
 extern const int32_t downmixCoeffV1[];
 
-extern const CUSTOM_DRC_CHAR_SIGMOID cicpDrcCharSigmoidLeft[];
-extern const CUSTOM_DRC_CHAR_SIGMOID cicpDrcCharSigmoidRight[];
-extern const CUSTOM_DRC_CHAR_NODES cicpDrcCharNodesLeft[];
-extern const CUSTOM_DRC_CHAR_NODES cicpDrcCharNodesRight[];
+extern const CUSTOM_DRC_CHAR_SIGMOID_t cicpDrcCharSigmoidLeft[];
+extern const CUSTOM_DRC_CHAR_SIGMOID_t cicpDrcCharSigmoidRight[];
+extern const CUSTOM_DRC_CHAR_NODES_t cicpDrcCharNodesLeft[];
+extern const CUSTOM_DRC_CHAR_NODES_t cicpDrcCharNodesRight[];
 
 #endif

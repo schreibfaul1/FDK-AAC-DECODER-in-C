@@ -20,7 +20,7 @@ static DRC_ERROR _prepareLnbIndex(ACTIVE_DRC* pActiveDrc,
                                   const int32_t numChannelsProcessed,
                                   const int32_t lnbPointer) {
   int32_t g, c;
-  DRC_INSTRUCTIONS_UNI_DRC* pInst = pActiveDrc->pInst;
+  DRC_INSTRUCTIONS_UNI_DRC_t* pInst = pActiveDrc->pInst;
 
   /* channelOffset: start index of physical channels
      numChannelsProcessed: number of processed channels, physical channels and
@@ -56,7 +56,7 @@ static DRC_ERROR _prepareLnbIndex(ACTIVE_DRC* pActiveDrc,
 }
 
 static DRC_ERROR _interpolateDrcGain(
-    const GAIN_INTERPOLATION_TYPE gainInterpolationType,
+    const GAIN_INTERPOLATION_TYPE_t gainInterpolationType,
     const int16_t timePrev,  /* time0 */
     const int16_t tGainStep, /* time1 - time0 */
     const int16_t start, const int16_t stop, const int16_t stepsize,
@@ -107,7 +107,7 @@ static DRC_ERROR _interpolateDrcGain(
 }
 
 static DRC_ERROR _processNodeSegments(
-    const int32_t frameSize, const GAIN_INTERPOLATION_TYPE gainInterpolationType,
+    const int32_t frameSize, const GAIN_INTERPOLATION_TYPE_t gainInterpolationType,
     const int32_t nNodes, const NODE_LIN* pNodeLin, const int32_t offset,
     const int16_t stepsize,
     const NODE_LIN nodePrevious, /* the last node of the previous frame */
@@ -268,7 +268,7 @@ processDrcSubband(HANDLE_DRC_GAIN_DECODER hGainDec, const int32_t activeDrcIndex
   DRC_ERROR err = DE_OK;
   int32_t b, c, g, m, m_start, m_stop, s, i;
   int32_t gainSb;
-  DRC_INSTRUCTIONS_UNI_DRC* pInst = hGainDec->activeDrc[activeDrcIndex].pInst;
+  DRC_INSTRUCTIONS_UNI_DRC_t* pInst = hGainDec->activeDrc[activeDrcIndex].pInst;
   DRC_GAIN_BUFFERS* pDrcGainBuffers = &(hGainDec->drcGainBuffers);
   ACTIVE_DRC* pActiveDrc = &(hGainDec->activeDrc[activeDrcIndex]);
   int32_t activeDrcOffset = pActiveDrc->activeDrcOffset;

@@ -25,72 +25,34 @@
 typedef struct {
   int16_t gainDb; /* e = 7 */
   int16_t time;
-} GAIN_NODE;
+} GAIN_NODE_t;
 
 /* uniDrcGainExtension() (Table 56) */
 typedef struct {
   uint8_t uniDrcGainExtType[8];
   uint32_t extBitSize[8 - 1];
-} UNI_DRC_GAIN_EXTENSION;
+} UNI_DRC_GAIN_EXTENSION_t;
 
 /* uniDrcGain() (Table 55) */
 typedef struct {
   uint8_t nNodes[12]; /* unsaturated value, i.e. as provided in bitstream */
-  GAIN_NODE gainNode[12][16];
-
+  GAIN_NODE_t gainNode[12][16];
   uint8_t uniDrcGainExtPresent;
-  UNI_DRC_GAIN_EXTENSION uniDrcGainExtension;
-
+  UNI_DRC_GAIN_EXTENSION_t uniDrcGainExtension;
   /* derived data */
   uint8_t status;
-} UNI_DRC_GAIN, *HANDLE_UNI_DRC_GAIN;
+} UNI_DRC_GAIN_t, *HANDLE_UNI_DRC_GAIN;
 
 /****************/
 /* uniDrcConfig */
 /****************/
 
-typedef enum {
-  EB_NIGHT = 0x0001,
-  EB_NOISY = 0x0002,
-  EB_LIMITED = 0x0004,
-  EB_LOWLEVEL = 0x0008,
-  EB_DIALOG = 0x0010,
-  EB_GENERAL_COMPR = 0x0020,
-  EB_EXPAND = 0x0040,
-  EB_ARTISTIC = 0x0080,
-  EB_CLIPPING = 0x0100,
-  EB_FADE = 0x0200,
-  EB_DUCK_OTHER = 0x0400,
-  EB_DUCK_SELF = 0x0800
-} EFFECT_BIT;
 
-typedef enum {
-  GCP_REGULAR = 0,
-  GCP_FADING = 1,
-  GCP_CLIPPING_DUCKING = 2,
-  GCP_CONSTANT = 3
-} GAIN_CODING_PROFILE;
-
-typedef enum { GIT_SPLINE = 0, GIT_LINEAR = 1 } GAIN_INTERPOLATION_TYPE;
-
-typedef enum { CS_LEFT = 0, CS_RIGHT = 1 } CHARACTERISTIC_SIDE;
-
-typedef enum { CF_SIGMOID = 0, CF_NODES = 1 } CHARACTERISTIC_FORMAT;
-
-typedef enum {
-  GF_QMF32 = 0x1,
-  GF_QMFHYBRID39 = 0x2,
-  GF_QMF64 = 0x3,
-  GF_QMFHYBRID71 = 0x4,
-  GF_QMF128 = 0x5,
-  GF_QMFHYBRID135 = 0x6,
-  GF_UNIFORM = 0x7
-} EQ_SUBBAND_GAIN_FORMAT;
 
 typedef struct {
   uint8_t duckingScalingPresent;
   int16_t duckingScaling; /* e = 2 */
-} DUCKING_MODIFICATION;
+} DUCKING_MODIFICATION_t;
 
 typedef struct {
   uint8_t targetCharacteristicLeftPresent;
@@ -102,26 +64,26 @@ typedef struct {
   int16_t amplificationScaling; /* e = 2 */
   uint8_t gainOffsetPresent;
   int16_t gainOffset; /* e = 4 */
-} GAIN_MODIFICATION;
+} GAIN_MODIFICATION_t;
 
 typedef union {
   uint8_t crossoverFreqIndex;
   uint16_t startSubBandIndex;
-} BAND_BORDER;
+} BAND_BORDER_t;
 
 typedef struct {
   uint8_t left;
   uint8_t right;
-} CUSTOM_INDEX;
+} CUSTOM_INDEX_t;
 
 typedef struct {
   uint8_t present;
   uint8_t isCICP;
   union {
     uint8_t cicpIndex;
-    CUSTOM_INDEX custom;
+    CUSTOM_INDEX_t custom;
   };
-} DRC_CHARACTERISTIC;
+} DRC_CHARACTERISTIC_t;
 
 typedef struct {
   uint8_t gainCodingProfile;
@@ -133,79 +95,77 @@ typedef struct {
   uint8_t bandCount;
   uint8_t drcBandType;
   uint8_t gainSequenceIndex[4];
-  DRC_CHARACTERISTIC drcCharacteristic[4];
-  BAND_BORDER bandBorder[4];
-} GAIN_SET;
+  DRC_CHARACTERISTIC_t drcCharacteristic[4];
+  BAND_BORDER_t bandBorder[4];
+} GAIN_SET_t;
 
 typedef struct {
   int16_t gain;    /* e = 6 */
   int16_t ioRatio; /* e = 2 */
   int16_t exp;     /* e = 5 */
   uint8_t flipSign;
-} CUSTOM_DRC_CHAR_SIGMOID;
+} CUSTOM_DRC_CHAR_SIGMOID_t;
 
 typedef struct {
   uint8_t characteristicNodeCount;
   int16_t nodeLevel[4 + 1]; /* e = 7 */
   int16_t nodeGain[4 + 1];  /* e = 7 */
-} CUSTOM_DRC_CHAR_NODES;
+} CUSTOM_DRC_CHAR_NODES_t;
 
 typedef union {
-  CUSTOM_DRC_CHAR_SIGMOID sigmoid;
-  CUSTOM_DRC_CHAR_NODES nodes;
+  CUSTOM_DRC_CHAR_SIGMOID_t sigmoid;
+  CUSTOM_DRC_CHAR_NODES_t nodes;
 }
-CUSTOM_DRC_CHAR;
+CUSTOM_DRC_CHAR_t;
 
-/* drcCoefficientsUniDrc() (Table 67) */
-typedef struct {
-  uint8_t drcLocation;
-  uint8_t drcFrameSizePresent;
-  uint16_t drcFrameSize;
-  uint8_t characteristicLeftCount;
-  uint8_t characteristicLeftFormat[16];
-  CUSTOM_DRC_CHAR customCharacteristicLeft[16];
-  uint8_t characteristicRightCount;
-  uint8_t characteristicRightFormat[16];
-  CUSTOM_DRC_CHAR customCharacteristicRight[16];
-  uint8_t
-  gainSequenceCount;  /* unsaturated value, i.e. as provided in bitstream */
-  uint8_t gainSetCount; /* saturated to 12 */
-  GAIN_SET gainSet[12];
+
+typedef struct { /* drcCoefficientsUniDrc() (Table 67) */
+  uint8_t         drcLocation;
+  uint8_t         drcFrameSizePresent;
+  uint16_t        drcFrameSize;
+  uint8_t         characteristicLeftCount;
+  uint8_t         characteristicLeftFormat[16];
+  CUSTOM_DRC_CHAR_t customCharacteristicLeft[16];
+  uint8_t         characteristicRightCount;
+  uint8_t         characteristicRightFormat[16];
+  CUSTOM_DRC_CHAR_t customCharacteristicRight[16];
+  uint8_t         gainSequenceCount; /* unsaturated value, i.e. as provided in bitstream */
+  uint8_t         gainSetCount;      /* saturated to 12 */
+  GAIN_SET_t        gainSet[12];
   /* derived data */
   uint8_t gainSetIndexForGainSequence[12];
-} DRC_COEFFICIENTS_UNI_DRC;
+} DRC_COEFFICIENTS_UNI_DRC_t;
 
-/* drcInstructionsUniDrc() (Table 72) */
-typedef struct {
-  int8_t drcSetId;
-  uint8_t drcSetComplexityLevel;
-  uint8_t drcLocation;
-  uint8_t drcApplyToDownmix;
-  uint8_t downmixIdCount;
-  uint8_t downmixId[8];
+
+typedef struct {  /* drcInstructionsUniDrc() (Table 72) */
+  int8_t   drcSetId;
+  uint8_t  drcSetComplexityLevel;
+  uint8_t  drcLocation;
+  uint8_t  drcApplyToDownmix;
+  uint8_t  downmixIdCount;
+  uint8_t  downmixId[8];
   uint16_t drcSetEffect;
-  uint8_t limiterPeakTargetPresent;
-  int16_t limiterPeakTarget; /* e = 5 */
-  uint8_t drcSetTargetLoudnessPresent;
-  int8_t drcSetTargetLoudnessValueUpper;
-  int8_t drcSetTargetLoudnessValueLower;
-  uint8_t dependsOnDrcSetPresent;
-  union {
-    int8_t dependsOnDrcSet;
+  uint8_t  limiterPeakTargetPresent;
+  int16_t  limiterPeakTarget; /* e = 5 */
+  uint8_t  drcSetTargetLoudnessPresent;
+  int8_t   drcSetTargetLoudnessValueUpper;
+  int8_t   drcSetTargetLoudnessValueLower;
+  uint8_t  dependsOnDrcSetPresent;
+  union  {
+    int8_t  dependsOnDrcSet;
     uint8_t noIndependentUse;
   };
   uint8_t requiresEq;
-  union {
-    GAIN_MODIFICATION gainModificationForChannelGroup[8][4];
-    DUCKING_MODIFICATION duckingModificationForChannel[8];
+  union  {
+    GAIN_MODIFICATION_t    gainModificationForChannelGroup[8][4];
+    DUCKING_MODIFICATION_t duckingModificationForChannel[8];
   };
   int8_t gainSetIndex[8];
-
   /* derived data */
   uint8_t drcChannelCount;
   uint8_t nDrcChannelGroups;
-  int8_t gainSetIndexForChannelGroup[8];
-} DRC_INSTRUCTIONS_UNI_DRC;
+  int8_t  gainSetIndexForChannelGroup[8];
+} DRC_INSTRUCTIONS_UNI_DRC_t;
 
 /* channelLayout() (Table 62) */
 typedef struct {
@@ -245,8 +205,8 @@ typedef struct {
   uint8_t drcInstructionsUniDrcCount; /* saturated to (12 + 1 + 6) */
   CHANNEL_LAYOUT channelLayout;
   DOWNMIX_INSTRUCTIONS downmixInstructions[6];
-  DRC_COEFFICIENTS_UNI_DRC drcCoefficientsUniDrc[2];
-  DRC_INSTRUCTIONS_UNI_DRC drcInstructionsUniDrc[(12 + 1 + 6)];
+  DRC_COEFFICIENTS_UNI_DRC_t drcCoefficientsUniDrc[2];
+  DRC_INSTRUCTIONS_UNI_DRC_t drcInstructionsUniDrc[(12 + 1 + 6)];
   uint8_t uniDrcConfigExtPresent;
   UNI_DRC_CONFIG_EXTENSION uniDrcConfigExt;
 

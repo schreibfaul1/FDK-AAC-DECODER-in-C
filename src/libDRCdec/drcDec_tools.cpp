@@ -28,7 +28,7 @@ int32_t getDeltaTmin(const int32_t sampleRate) {
   return deltaTmin;
 }
 
-DRC_COEFFICIENTS_UNI_DRC* selectDrcCoefficients(
+DRC_COEFFICIENTS_UNI_DRC_t* selectDrcCoefficients(
     HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int32_t location) {
   int32_t n;
   int32_t c = -1;
@@ -43,7 +43,7 @@ DRC_COEFFICIENTS_UNI_DRC* selectDrcCoefficients(
   return NULL; /* possible during bitstream parsing */
 }
 
-DRC_INSTRUCTIONS_UNI_DRC* selectDrcInstructions(
+DRC_INSTRUCTIONS_UNI_DRC_t* selectDrcInstructions(
     HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int32_t drcSetId) {
   int32_t i;
   for (i = 0; i < hUniDrcConfig->drcInstructionsCountInclVirtual; i++) {
@@ -70,11 +70,11 @@ deriveDrcChannelGroups(
     const int32_t drcSetEffect,                                    /* in */
     const int32_t channelCount,                                    /* in */
     const int8_t* gainSetIndex,                                 /* in */
-    const DUCKING_MODIFICATION* duckingModificationForChannel, /* in */
+    const DUCKING_MODIFICATION_t* duckingModificationForChannel, /* in */
     uint8_t* nDrcChannelGroups,                                  /* out */
     int8_t* uniqueIndex,     /* out (gainSetIndexForChannelGroup) */
     int8_t* groupForChannel, /* out */
-    DUCKING_MODIFICATION* duckingModificationForChannelGroup) /* out */
+    DUCKING_MODIFICATION_t* duckingModificationForChannelGroup) /* out */
 {
   int32_t duckingSequence = -1;
   int32_t c, n, g, match, idx;
@@ -235,8 +235,8 @@ approxDb2lin(const int32_t dB_m, const int32_t dB_e, int32_t* pLin_e) {
 int32_t bitstreamContainsMultibandDrc(HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
                                   const int32_t downmixId) {
   int32_t i, g, d, seq;
-  DRC_INSTRUCTIONS_UNI_DRC* pInst;
-  DRC_COEFFICIENTS_UNI_DRC* pCoef = NULL;
+  DRC_INSTRUCTIONS_UNI_DRC_t* pInst;
+  DRC_COEFFICIENTS_UNI_DRC_t* pCoef = NULL;
   int32_t isMultiband = 0;
 
   pCoef = selectDrcCoefficients(hUniDrcConfig, LOCATION_SELECTED);

@@ -17,7 +17,7 @@
 
 static DRC_ERROR _generateDrcInstructionsDerivedData(
     HANDLE_DRC_GAIN_DECODER hGainDec, HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
-    DRC_INSTRUCTIONS_UNI_DRC* pInst, DRC_COEFFICIENTS_UNI_DRC* pCoef,
+    DRC_INSTRUCTIONS_UNI_DRC_t* pInst, DRC_COEFFICIENTS_UNI_DRC_t* pCoef,
     ACTIVE_DRC* pActiveDrc) {
   DRC_ERROR err = DE_OK;
   int32_t g;
@@ -168,8 +168,8 @@ initActiveDrc(HANDLE_DRC_GAIN_DECODER hGainDec,
               const int32_t downmixIdSelected) {
   int32_t g, isMultiband = 0;
   DRC_ERROR err = DE_OK;
-  DRC_INSTRUCTIONS_UNI_DRC* pInst = NULL;
-  DRC_COEFFICIENTS_UNI_DRC* pCoef = NULL;
+  DRC_INSTRUCTIONS_UNI_DRC_t* pInst = NULL;
+  DRC_COEFFICIENTS_UNI_DRC_t* pCoef = NULL;
 
   pInst = selectDrcInstructions(hUniDrcConfig, drcSetIdSelected);
   if (pInst == NULL) {

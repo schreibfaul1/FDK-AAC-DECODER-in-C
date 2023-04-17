@@ -37,7 +37,7 @@ static int32_t _getZ(const int32_t nNodesMax) {
   return Z;
 }
 
-static int32_t _getTimeDeltaMin(const GAIN_SET* pGset, const int32_t deltaTminDefault) {
+static int32_t _getTimeDeltaMin(const GAIN_SET_t* pGset, const int32_t deltaTminDefault) {
   if (pGset->timeDeltaMinPresent) {
     return pGset->timeDeltaMin;
   } else {
@@ -120,7 +120,7 @@ drcDec_readUniDrc(HANDLE_FDK_BITSTREAM hBs, HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
 /**************/
 
 static int16_t _decodeGainInitial(
-    HANDLE_FDK_BITSTREAM hBs, const GAIN_CODING_PROFILE gainCodingProfile) {
+    HANDLE_FDK_BITSTREAM hBs, const GAIN_CODING_PROFILE_t gainCodingProfile) {
   int32_t sign, magn;
   int16_t gainInitial = (int16_t)0;
   switch (gainCodingProfile) {
@@ -171,8 +171,8 @@ static int32_t _decodeNNodes(HANDLE_FDK_BITSTREAM hBs) {
 }
 
 static void _decodeGains(HANDLE_FDK_BITSTREAM hBs,
-                         const GAIN_CODING_PROFILE gainCodingProfile,
-                         const int32_t nNodes, GAIN_NODE* pNodes) {
+                         const GAIN_CODING_PROFILE_t gainCodingProfile,
+                         const int32_t nNodes, GAIN_NODE_t* pNodes) {
   int32_t k, deltaGain;
   Huffman deltaGainCodebook;
 
@@ -196,8 +196,8 @@ static void _decodeGains(HANDLE_FDK_BITSTREAM hBs,
 }
 
 static void _decodeSlopes(HANDLE_FDK_BITSTREAM hBs,
-                          const GAIN_INTERPOLATION_TYPE gainInterpolationType,
-                          const int32_t nNodes, GAIN_NODE* pNodes) {
+                          const GAIN_INTERPOLATION_TYPE_t gainInterpolationType,
+                          const int32_t nNodes, GAIN_NODE_t* pNodes) {
   int32_t k = 0;
 
   if (gainInterpolationType == GIT_SPLINE) {
@@ -232,7 +232,7 @@ static int32_t _decodeTimeDelta(HANDLE_FDK_BITSTREAM hBs, const int32_t Z) {
 static void _decodeTimes(HANDLE_FDK_BITSTREAM hBs, const int32_t deltaTmin,
                          const int32_t frameSize, const int32_t fullFrame,
                          const int32_t timeOffset, const int32_t Z, const int32_t nNodes,
-                         GAIN_NODE* pNodes) {
+                         GAIN_NODE_t* pNodes) {
   int32_t timeDelta, k;
   int32_t timeOffs = timeOffset;
   int32_t frameEndFlag, nodeTimeTmp, nodeResFlag;
@@ -280,9 +280,9 @@ static void _decodeTimes(HANDLE_FDK_BITSTREAM hBs, const int32_t deltaTmin,
   }
 }
 
-static void _readNodes(HANDLE_FDK_BITSTREAM hBs, GAIN_SET* gainSet,
+static void _readNodes(HANDLE_FDK_BITSTREAM hBs, GAIN_SET_t* gainSet,
                        const int32_t frameSize, const int32_t timeDeltaMin,
-                       uint8_t* pNNodes, GAIN_NODE* pNodes) {
+                       uint8_t* pNNodes, GAIN_NODE_t* pNodes) {
   int32_t timeOffset, drcGainCodingMode, nNodes;
   int32_t Z = _getZ(frameSize / timeDeltaMin);
   if (gainSet->timeAlignment == 0) {
@@ -298,26 +298,26 @@ static void _readNodes(HANDLE_FDK_BITSTREAM hBs, GAIN_SET* gainSet,
     /* "simple" mode: only one node at the end of the frame with slope = 0 */
     nNodes = 1;
     pNodes[0].gainDb = _decodeGainInitial(
-        hBs, (GAIN_CODING_PROFILE)gainSet->gainCodingProfile);
+        hBs, (GAIN_CODING_PROFILE_t)gainSet->gainCodingProfile);
     pNodes[0].time = frameSize + timeOffset;
   } else {
     nNodes = _decodeNNodes(hBs);
 
-    _decodeSlopes(hBs, (GAIN_INTERPOLATION_TYPE)gainSet->gainInterpolationType,
+    _decodeSlopes(hBs, (GAIN_INTERPOLATION_TYPE_t)gainSet->gainInterpolationType,
                   nNodes, pNodes);
 
     _decodeTimes(hBs, timeDeltaMin, frameSize, gainSet->fullFrame, timeOffset,
                  Z, nNodes, pNodes);
 
-    _decodeGains(hBs, (GAIN_CODING_PROFILE)gainSet->gainCodingProfile, nNodes,
+    _decodeGains(hBs, (GAIN_CODING_PROFILE_t)gainSet->gainCodingProfile, nNodes,
                  pNodes);
   }
   *pNNodes = (uint8_t)nNodes;
 }
 
-static void _readDrcGainSequence(HANDLE_FDK_BITSTREAM hBs, GAIN_SET* gainSet,
+static void _readDrcGainSequence(HANDLE_FDK_BITSTREAM hBs, GAIN_SET_t* gainSet,
                                  const int32_t frameSize, const int32_t timeDeltaMin,
-                                 uint8_t* pNNodes, GAIN_NODE pNodes[16]) {
+                                 uint8_t* pNNodes, GAIN_NODE_t pNodes[16]) {
   int16_t timeBufPrevFrame[16], timeBufCurFrame[16];
   int32_t nNodesNodeRes, nNodesCur, k, m;
 
@@ -358,7 +358,7 @@ static void _readDrcGainSequence(HANDLE_FDK_BITSTREAM hBs, GAIN_SET* gainSet,
 }
 
 static DRC_ERROR _readUniDrcGainExtension(HANDLE_FDK_BITSTREAM hBs,
-                                          UNI_DRC_GAIN_EXTENSION* pExt) {
+                                          UNI_DRC_GAIN_EXTENSION_t* pExt) {
   DRC_ERROR err = DE_OK;
   int32_t k, bitSizeLen, extSizeBits, bitSize;
 
@@ -392,7 +392,7 @@ drcDec_readUniDrcGain(HANDLE_FDK_BITSTREAM hBs,
                       HANDLE_UNI_DRC_GAIN hUniDrcGain) {
   DRC_ERROR err = DE_OK;
   int32_t seq, gainSequenceCount;
-  DRC_COEFFICIENTS_UNI_DRC* pCoef =
+  DRC_COEFFICIENTS_UNI_DRC_t* pCoef =
       selectDrcCoefficients(hUniDrcConfig, LOCATION_SELECTED);
   if (hUniDrcGain == NULL) return DE_NOT_OK;
   hUniDrcGain->status = 0;
@@ -404,10 +404,10 @@ drcDec_readUniDrcGain(HANDLE_FDK_BITSTREAM hBs,
 
   for (seq = 0; seq < gainSequenceCount; seq++) {
     uint8_t index = pCoef->gainSetIndexForGainSequence[seq];
-    GAIN_SET* gainSet;
+    GAIN_SET_t* gainSet;
     int32_t timeDeltaMin;
     uint8_t tmpNNodes = 0;
-    GAIN_NODE tmpNodes[16];
+    GAIN_NODE_t tmpNodes[16];
 
     if ((index >= pCoef->gainSetCount) || (index >= 12)) return DE_NOT_OK;
     gainSet = &(pCoef->gainSet[index]);
@@ -419,7 +419,7 @@ drcDec_readUniDrcGain(HANDLE_FDK_BITSTREAM hBs,
 
     hUniDrcGain->nNodes[seq] = tmpNNodes;
     memcpy(hUniDrcGain->gainNode[seq], tmpNodes,
-              fMin(tmpNNodes, (uint8_t)16) * sizeof(GAIN_NODE));
+              fMin(tmpNNodes, (uint8_t)16) * sizeof(GAIN_NODE_t));
   }
 
   hUniDrcGain->uniDrcGainExtPresent = FDKreadBits(hBs, 1);
@@ -439,7 +439,7 @@ drcDec_readUniDrcGain(HANDLE_FDK_BITSTREAM hBs,
 /****************/
 
 static void _decodeDuckingModification(HANDLE_FDK_BITSTREAM hBs,
-                                       DUCKING_MODIFICATION* pDMod, int32_t isBox) {
+                                       DUCKING_MODIFICATION_t* pDMod, int32_t isBox) {
   int32_t bsDuckingScaling, sigma, mu;
 
   if (isBox) FDKpushFor(hBs, 7); /* reserved */
@@ -464,7 +464,7 @@ static void _decodeDuckingModification(HANDLE_FDK_BITSTREAM hBs,
 }
 
 static void _decodeGainModification(HANDLE_FDK_BITSTREAM hBs, const int32_t version,
-                                    int32_t bandCount, GAIN_MODIFICATION* pGMod,
+                                    int32_t bandCount, GAIN_MODIFICATION_t* pGMod,
                                     int32_t isBox) {
   int32_t sign, bsGainOffset, bsAttenuationScaling, bsAmplificationScaling;
 
@@ -573,7 +573,7 @@ static void _decodeGainModification(HANDLE_FDK_BITSTREAM hBs, const int32_t vers
 }
 
 static void _readDrcCharacteristic(HANDLE_FDK_BITSTREAM hBs, const int32_t version,
-                                   DRC_CHARACTERISTIC* pDChar, int32_t isBox) {
+                                   DRC_CHARACTERISTIC_t* pDChar, int32_t isBox) {
   if (version == 0) {
     if (isBox) FDKpushFor(hBs, 1); /* reserved */
     pDChar->cicpIndex = FDKreadBits(hBs, 7);
@@ -599,7 +599,7 @@ static void _readDrcCharacteristic(HANDLE_FDK_BITSTREAM hBs, const int32_t versi
   }
 }
 
-static void _readBandBorder(HANDLE_FDK_BITSTREAM hBs, BAND_BORDER* pBBord,
+static void _readBandBorder(HANDLE_FDK_BITSTREAM hBs, BAND_BORDER_t* pBBord,
                             int32_t drcBandType, int32_t isBox) {
   if (drcBandType) {
     if (isBox) FDKpushFor(hBs, 4); /* reserved */
@@ -611,7 +611,7 @@ static void _readBandBorder(HANDLE_FDK_BITSTREAM hBs, BAND_BORDER* pBBord,
 }
 
 static DRC_ERROR _readGainSet(HANDLE_FDK_BITSTREAM hBs, const int32_t version,
-                              int32_t* gainSequenceIndex, GAIN_SET* pGSet,
+                              int32_t* gainSequenceIndex, GAIN_SET_t* pGSet,
                               int32_t isBox) {
   if (isBox) FDKpushFor(hBs, 2); /* reserved */
   pGSet->gainCodingProfile = FDKreadBits(hBs, 2);
@@ -668,9 +668,9 @@ static DRC_ERROR _readGainSet(HANDLE_FDK_BITSTREAM hBs, const int32_t version,
 }
 
 static DRC_ERROR _readCustomDrcCharacteristic(HANDLE_FDK_BITSTREAM hBs,
-                                              const CHARACTERISTIC_SIDE side,
+                                              const CHARACTERISTIC_SIDE_t side,
                                               uint8_t* pCharacteristicFormat,
-                                              CUSTOM_DRC_CHAR* pCChar,
+                                              CUSTOM_DRC_CHAR_t* pCChar,
                                               int32_t isBox) {
   if (isBox) FDKpushFor(hBs, 7); /* reserved */
   *pCharacteristicFormat = FDKreadBits(hBs, 1);
@@ -1015,7 +1015,7 @@ static void _skipDrcCoefficientsBasic(HANDLE_FDK_BITSTREAM hBs) {
 
 static DRC_ERROR _readDrcCoefficientsUniDrc(HANDLE_FDK_BITSTREAM hBs,
                                             const int32_t version,
-                                            DRC_COEFFICIENTS_UNI_DRC* pCoef) {
+                                            DRC_COEFFICIENTS_UNI_DRC_t* pCoef) {
   DRC_ERROR err = DE_OK;
   int32_t i, bsDrcFrameSize;
   int32_t gainSequenceIndex = -1;
@@ -1034,8 +1034,8 @@ static DRC_ERROR _readDrcCoefficientsUniDrc(HANDLE_FDK_BITSTREAM hBs,
     gainSetCount = FDKreadBits(hBs, 6);
     pCoef->gainSetCount = fMin(gainSetCount, 12);
     for (i = 0; i < gainSetCount; i++) {
-      GAIN_SET tmpGset;
-      memset(&tmpGset, 0, sizeof(GAIN_SET));
+      GAIN_SET_t tmpGset;
+      memset(&tmpGset, 0, sizeof(GAIN_SET_t));
       err = _readGainSet(hBs, version, &gainSequenceIndex, &tmpGset, 0);
       if (err) return err;
       gainSequenceCount += tmpGset.bandCount;
@@ -1095,8 +1095,8 @@ static DRC_ERROR _readDrcCoefficientsUniDrc(HANDLE_FDK_BITSTREAM hBs,
     gainSetCount = FDKreadBits(hBs, 6);
     pCoef->gainSetCount = fMin(gainSetCount, 12);
     for (i = 0; i < gainSetCount; i++) {
-      GAIN_SET tmpGset;
-      memset(&tmpGset, 0, sizeof(GAIN_SET));
+      GAIN_SET_t tmpGset;
+      memset(&tmpGset, 0, sizeof(GAIN_SET_t));
       err = _readGainSet(hBs, version, &gainSequenceIndex, &tmpGset, 0);
       if (err) return err;
 
@@ -1155,17 +1155,17 @@ static void _skipDrcInstructionsBasic(HANDLE_FDK_BITSTREAM hBs) {
 static DRC_ERROR _readDrcInstructionsUniDrc(HANDLE_FDK_BITSTREAM hBs,
                                             const int32_t version,
                                             HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
-                                            DRC_INSTRUCTIONS_UNI_DRC* pInst) {
+                                            DRC_INSTRUCTIONS_UNI_DRC_t* pInst) {
   DRC_ERROR err = DE_OK;
   int32_t i, g, c;
   int32_t downmixIdPresent, additionalDownmixIdPresent, additionalDownmixIdCount;
   int32_t bsLimiterPeakTarget, channelCount;
-  DRC_COEFFICIENTS_UNI_DRC* pCoef = NULL;
+  DRC_COEFFICIENTS_UNI_DRC_t* pCoef = NULL;
   int32_t repeatParameters, bsRepeatParametersCount;
   int32_t repeatSequenceIndex, bsRepeatSequenceCount;
   int8_t* gainSetIndex = pInst->gainSetIndex;
   int8_t channelGroupForChannel[8];
-  DUCKING_MODIFICATION duckingModificationForChannelGroup[8];
+  DUCKING_MODIFICATION_t duckingModificationForChannelGroup[8];
 
   pInst->drcSetId = FDKreadBits(hBs, 6);
   if (version == 0) {
@@ -1260,7 +1260,7 @@ static DRC_ERROR _readDrcInstructionsUniDrc(HANDLE_FDK_BITSTREAM hBs,
       hUniDrcConfig->channelLayout.baseChannelCount;
 
   if (pInst->drcSetEffect & (EB_DUCK_OTHER | EB_DUCK_SELF)) {
-    DUCKING_MODIFICATION* pDModForChannel =
+    DUCKING_MODIFICATION_t* pDModForChannel =
         pInst->duckingModificationForChannel;
     c = 0;
     while (c < channelCount) {
@@ -1482,15 +1482,15 @@ static DRC_ERROR _readDrcExtensionV1(HANDLE_FDK_BITSTREAM hBs,
         fMin((uint8_t)(offset + hUniDrcConfig->drcCoefficientsUniDrcCountV1),
              (uint8_t)2);
     for (i = 0; i < hUniDrcConfig->drcCoefficientsUniDrcCountV1; i++) {
-      DRC_COEFFICIENTS_UNI_DRC tmpCoef;
-      memset(&tmpCoef, 0, sizeof(DRC_COEFFICIENTS_UNI_DRC));
+      DRC_COEFFICIENTS_UNI_DRC_t tmpCoef;
+      memset(&tmpCoef, 0, sizeof(DRC_COEFFICIENTS_UNI_DRC_t));
       err = _readDrcCoefficientsUniDrc(hBs, 1, &tmpCoef);
       if (err) return err;
       if ((offset + i) >= 2) continue;
       if (!diff)
         diff |= (memcmp(&tmpCoef,
                            &(hUniDrcConfig->drcCoefficientsUniDrc[offset + i]),
-                           sizeof(DRC_COEFFICIENTS_UNI_DRC)) != 0);
+                           sizeof(DRC_COEFFICIENTS_UNI_DRC_t)) != 0);
       hUniDrcConfig->drcCoefficientsUniDrc[offset + i] = tmpCoef;
     }
 
@@ -1501,15 +1501,15 @@ static DRC_ERROR _readDrcExtensionV1(HANDLE_FDK_BITSTREAM hBs,
         fMin((uint8_t)(offset + hUniDrcConfig->drcInstructionsUniDrcCountV1),
              (uint8_t)12);
     for (i = 0; i < hUniDrcConfig->drcInstructionsUniDrcCount; i++) {
-      DRC_INSTRUCTIONS_UNI_DRC tmpInst;
-      memset(&tmpInst, 0, sizeof(DRC_INSTRUCTIONS_UNI_DRC));
+      DRC_INSTRUCTIONS_UNI_DRC_t tmpInst;
+      memset(&tmpInst, 0, sizeof(DRC_INSTRUCTIONS_UNI_DRC_t));
       err = _readDrcInstructionsUniDrc(hBs, 1, hUniDrcConfig, &tmpInst);
       if (err) return err;
       if ((offset + i) >= 12) continue;
       if (!diff)
         diff |= (memcmp(&tmpInst,
                            &(hUniDrcConfig->drcInstructionsUniDrc[offset + i]),
-                           sizeof(DRC_INSTRUCTIONS_UNI_DRC)) != 0);
+                           sizeof(DRC_INSTRUCTIONS_UNI_DRC_t)) != 0);
       hUniDrcConfig->drcInstructionsUniDrc[offset + i] = tmpInst;
     }
   } else {
@@ -1646,28 +1646,28 @@ drcDec_readUniDrcConfig(HANDLE_FDK_BITSTREAM hBs,
   hUniDrcConfig->drcCoefficientsUniDrcCount =
       fMin(hUniDrcConfig->drcCoefficientsUniDrcCountV0, (uint8_t)2);
   for (i = 0; i < hUniDrcConfig->drcCoefficientsUniDrcCountV0; i++) {
-    DRC_COEFFICIENTS_UNI_DRC tmpCoef;
-    memset(&tmpCoef, 0, sizeof(DRC_COEFFICIENTS_UNI_DRC));
+    DRC_COEFFICIENTS_UNI_DRC_t tmpCoef;
+    memset(&tmpCoef, 0, sizeof(DRC_COEFFICIENTS_UNI_DRC_t));
     err = _readDrcCoefficientsUniDrc(hBs, 0, &tmpCoef);
     if (err) return err;
     if (i >= 2) continue;
     if (!diff)
       diff |= (memcmp(&tmpCoef, &(hUniDrcConfig->drcCoefficientsUniDrc[i]),
-                         sizeof(DRC_COEFFICIENTS_UNI_DRC)) != 0);
+                         sizeof(DRC_COEFFICIENTS_UNI_DRC_t)) != 0);
     hUniDrcConfig->drcCoefficientsUniDrc[i] = tmpCoef;
   }
 
   hUniDrcConfig->drcInstructionsUniDrcCount =
       fMin(hUniDrcConfig->drcInstructionsUniDrcCountV0, (uint8_t)12);
   for (i = 0; i < hUniDrcConfig->drcInstructionsUniDrcCountV0; i++) {
-    DRC_INSTRUCTIONS_UNI_DRC tmpInst;
-    memset(&tmpInst, 0, sizeof(DRC_INSTRUCTIONS_UNI_DRC));
+    DRC_INSTRUCTIONS_UNI_DRC_t tmpInst;
+    memset(&tmpInst, 0, sizeof(DRC_INSTRUCTIONS_UNI_DRC_t));
     err = _readDrcInstructionsUniDrc(hBs, 0, hUniDrcConfig, &tmpInst);
     if (err) return err;
     if (i >= 12) continue;
     if (!diff)
       diff |= (memcmp(&tmpInst, &(hUniDrcConfig->drcInstructionsUniDrc[i]),
-                         sizeof(DRC_INSTRUCTIONS_UNI_DRC)) != 0);
+                         sizeof(DRC_INSTRUCTIONS_UNI_DRC_t)) != 0);
     hUniDrcConfig->drcInstructionsUniDrc[i] = tmpInst;
   }
 

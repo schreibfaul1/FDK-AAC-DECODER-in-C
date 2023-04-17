@@ -89,7 +89,7 @@ const int32_t downmixCoeffV1[] = {
     FL2FXCONST_DBL(0.0100000000 / (float)(1 << 2)),
     FL2FXCONST_DBL(0.0000000000 / (float)(1 << 2))};
 
-const CUSTOM_DRC_CHAR_SIGMOID cicpDrcCharSigmoidLeft[] = {
+const CUSTOM_DRC_CHAR_SIGMOID_t cicpDrcCharSigmoidLeft[] = {
     {16384, 0,    9216, 0},    /* 1 */
     {16384, 1638, 9216, 0}, /* 2 */
     {16384, 3277, 9216, 0}, /* 3 */
@@ -98,7 +98,7 @@ const CUSTOM_DRC_CHAR_SIGMOID cicpDrcCharSigmoidLeft[] = {
     {16384, 8192, 5120, 0}, /* 6 */
 };
 
-const CUSTOM_DRC_CHAR_SIGMOID cicpDrcCharSigmoidRight[] = {
+const CUSTOM_DRC_CHAR_SIGMOID_t cicpDrcCharSigmoidRight[] = {
     {-16384, 0,    12288, 0},    /* 1 */
     {-16384, 1638, 12288, 0}, /* 2 */
     {-16384, 3277, 12288, 0}, /* 3 */
@@ -107,7 +107,7 @@ const CUSTOM_DRC_CHAR_SIGMOID cicpDrcCharSigmoidRight[] = {
     {-16384, 8192, 6144,  0},  /* 6 */
 };
 
-const CUSTOM_DRC_CHAR_NODES cicpDrcCharNodesLeft[] = {
+const CUSTOM_DRC_CHAR_NODES_t cicpDrcCharNodesLeft[] = {
     {2,
      {
          -7936,
@@ -159,7 +159,7 @@ const CUSTOM_DRC_CHAR_NODES cicpDrcCharNodesLeft[] = {
      }} /* 11 */
 };
 
-const CUSTOM_DRC_CHAR_NODES cicpDrcCharNodesRight[] = {
+const CUSTOM_DRC_CHAR_NODES_t cicpDrcCharNodesRight[] = {
     {4,
      {-7936, -5376, -2816, 2304, 4864},
      {

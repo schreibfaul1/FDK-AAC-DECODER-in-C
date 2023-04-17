@@ -22,13 +22,13 @@
 
 typedef struct {
   int32_t drcSetEffect;
-  DUCKING_MODIFICATION* pDMod;
-  GAIN_MODIFICATION* pGMod;
+  DUCKING_MODIFICATION_t* pDMod;
+  GAIN_MODIFICATION_t* pGMod;
   int32_t drcCharacteristicPresent;
-  CHARACTERISTIC_FORMAT characteristicFormatSource[2];
-  const CUSTOM_DRC_CHAR* pCCharSource[2];
-  CHARACTERISTIC_FORMAT characteristicFormatTarget[2];
-  const CUSTOM_DRC_CHAR* pCCharTarget[2];
+  CHARACTERISTIC_FORMAT_t characteristicFormatSource[2];
+  const CUSTOM_DRC_CHAR_t* pCCharSource[2];
+  CHARACTERISTIC_FORMAT_t characteristicFormatTarget[2];
+  const CUSTOM_DRC_CHAR_t* pCCharTarget[2];
   int32_t slopeIsNegative;
   int32_t limiterPeakTargetPresent;
   int16_t limiterPeakTarget;
@@ -39,8 +39,8 @@ typedef struct {
 
 static DRC_ERROR _getCicpCharacteristic(
     const int32_t cicpCharacteristic,
-    CHARACTERISTIC_FORMAT pCharacteristicFormat[2],
-    const CUSTOM_DRC_CHAR* pCCharSource[2]) {
+    CHARACTERISTIC_FORMAT_t pCharacteristicFormat[2],
+    const CUSTOM_DRC_CHAR_t* pCCharSource[2]) {
   if ((cicpCharacteristic < 1) || (cicpCharacteristic > 11)) {
     return DE_NOT_OK;
   }
@@ -48,19 +48,19 @@ static DRC_ERROR _getCicpCharacteristic(
   if (cicpCharacteristic < 7) { /* sigmoid characteristic */
     pCharacteristicFormat[CS_LEFT] = CF_SIGMOID;
     pCCharSource[CS_LEFT] =
-        (const CUSTOM_DRC_CHAR*)(&cicpDrcCharSigmoidLeft[cicpCharacteristic -
+        (const CUSTOM_DRC_CHAR_t*)(&cicpDrcCharSigmoidLeft[cicpCharacteristic -
                                                          1]);
     pCharacteristicFormat[CS_RIGHT] = CF_SIGMOID;
     pCCharSource[CS_RIGHT] =
-        (const CUSTOM_DRC_CHAR*)(&cicpDrcCharSigmoidRight[cicpCharacteristic -
+        (const CUSTOM_DRC_CHAR_t*)(&cicpDrcCharSigmoidRight[cicpCharacteristic -
                                                           1]);
   } else { /* nodes characteristic */
     pCharacteristicFormat[CS_LEFT] = CF_NODES;
     pCCharSource[CS_LEFT] =
-        (const CUSTOM_DRC_CHAR*)(&cicpDrcCharNodesLeft[cicpCharacteristic - 7]);
+        (const CUSTOM_DRC_CHAR_t*)(&cicpDrcCharNodesLeft[cicpCharacteristic - 7]);
     pCharacteristicFormat[CS_RIGHT] = CF_NODES;
     pCCharSource[CS_RIGHT] =
-        (const CUSTOM_DRC_CHAR*)(&cicpDrcCharNodesRight[cicpCharacteristic -
+        (const CUSTOM_DRC_CHAR_t*)(&cicpDrcCharNodesRight[cicpCharacteristic -
                                                         7]);
   }
   return DE_OK;
@@ -72,8 +72,8 @@ static int32_t _getSign(int16_t in) {
   return 0;
 }
 
-static DRC_ERROR _getSlopeSign(const CHARACTERISTIC_FORMAT drcCharFormat,
-                               const CUSTOM_DRC_CHAR* pCChar, int32_t* pSlopeSign) {
+static DRC_ERROR _getSlopeSign(const CHARACTERISTIC_FORMAT_t drcCharFormat,
+                               const CUSTOM_DRC_CHAR_t* pCChar, int32_t* pSlopeSign) {
   if (drcCharFormat == CF_SIGMOID) {
     *pSlopeSign = (pCChar->sigmoid.flipSign ? 1 : -1);
   } else {
@@ -96,8 +96,8 @@ static DRC_ERROR _getSlopeSign(const CHARACTERISTIC_FORMAT drcCharFormat,
   return DE_OK;
 }
 
-static DRC_ERROR _isSlopeNegative(const CHARACTERISTIC_FORMAT drcCharFormat[2],
-                                  const CUSTOM_DRC_CHAR* pCChar[2],
+static DRC_ERROR _isSlopeNegative(const CHARACTERISTIC_FORMAT_t drcCharFormat[2],
+                                  const CUSTOM_DRC_CHAR_t* pCChar[2],
                                   int32_t* pSlopeIsNegative) {
   DRC_ERROR err = DE_OK;
   int32_t slopeSign[2] = {0, 0};
@@ -118,8 +118,8 @@ static DRC_ERROR _isSlopeNegative(const CHARACTERISTIC_FORMAT drcCharFormat[2],
   return DE_OK;
 }
 
-static DRC_ERROR _prepareDrcCharacteristic(const DRC_CHARACTERISTIC* pDChar,
-                                           DRC_COEFFICIENTS_UNI_DRC* pCoef,
+static DRC_ERROR _prepareDrcCharacteristic(const DRC_CHARACTERISTIC_t* pDChar,
+                                           DRC_COEFFICIENTS_UNI_DRC_t* pCoef,
                                            const int32_t b,
                                            NODE_MODIFICATION* pNodeMod) {
   DRC_ERROR err = DE_OK;
@@ -132,12 +132,12 @@ static DRC_ERROR _prepareDrcCharacteristic(const DRC_CHARACTERISTIC* pDChar,
       if (err) return err;
     } else {
       pNodeMod->characteristicFormatSource[CS_LEFT] =
-          (CHARACTERISTIC_FORMAT)
+          (CHARACTERISTIC_FORMAT_t)
               pCoef->characteristicLeftFormat[pDChar->custom.left];
       pNodeMod->pCCharSource[CS_LEFT] =
           &(pCoef->customCharacteristicLeft[pDChar->custom.left]);
       pNodeMod->characteristicFormatSource[CS_RIGHT] =
-          (CHARACTERISTIC_FORMAT)
+          (CHARACTERISTIC_FORMAT_t)
               pCoef->characteristicRightFormat[pDChar->custom.right];
       pNodeMod->pCCharSource[CS_RIGHT] =
           &(pCoef->customCharacteristicRight[pDChar->custom.right]);
@@ -149,7 +149,7 @@ static DRC_ERROR _prepareDrcCharacteristic(const DRC_CHARACTERISTIC* pDChar,
     if (pNodeMod->pGMod != NULL) {
       if (pNodeMod->pGMod[b].targetCharacteristicLeftPresent) {
         pNodeMod->characteristicFormatTarget[CS_LEFT] =
-            (CHARACTERISTIC_FORMAT)pCoef->characteristicLeftFormat
+            (CHARACTERISTIC_FORMAT_t)pCoef->characteristicLeftFormat
                 [pNodeMod->pGMod[b].targetCharacteristicLeftIndex];
         pNodeMod->pCCharTarget[CS_LEFT] =
             &(pCoef->customCharacteristicLeft
@@ -157,7 +157,7 @@ static DRC_ERROR _prepareDrcCharacteristic(const DRC_CHARACTERISTIC* pDChar,
       }
       if (pNodeMod->pGMod[b].targetCharacteristicRightPresent) {
         pNodeMod->characteristicFormatTarget[CS_RIGHT] =
-            (CHARACTERISTIC_FORMAT)pCoef->characteristicRightFormat
+            (CHARACTERISTIC_FORMAT_t)pCoef->characteristicRightFormat
                 [pNodeMod->pGMod[b].targetCharacteristicRightIndex];
         pNodeMod->pCCharTarget[CS_RIGHT] =
             &(pCoef->customCharacteristicRight
@@ -205,7 +205,7 @@ static DRC_ERROR _compressorIO_sigmoid_common(
   return DE_OK;
 }
 
-static DRC_ERROR _compressorIO_sigmoid(const CUSTOM_DRC_CHAR_SIGMOID* pCChar,
+static DRC_ERROR _compressorIO_sigmoid(const CUSTOM_DRC_CHAR_SIGMOID_t* pCChar,
                                        const int32_t inLevelDb, /* e = 7 */
                                        int32_t* outGainDb)      /* e = 7 */
 {
@@ -233,7 +233,7 @@ static DRC_ERROR _compressorIO_sigmoid(const CUSTOM_DRC_CHAR_SIGMOID* pCChar,
 }
 
 static DRC_ERROR _compressorIO_sigmoid_inverse(
-    const CUSTOM_DRC_CHAR_SIGMOID* pCChar, const int16_t gainDb,
+    const CUSTOM_DRC_CHAR_SIGMOID_t* pCChar, const int16_t gainDb,
     int32_t* inLev) {
   DRC_ERROR err = DE_OK;
   int16_t ioRatio = pCChar->ioRatio;
@@ -262,7 +262,7 @@ static DRC_ERROR _compressorIO_sigmoid_inverse(
   return err;
 }
 
-static DRC_ERROR _compressorIO_nodes(const CUSTOM_DRC_CHAR_NODES* pCChar,
+static DRC_ERROR _compressorIO_nodes(const CUSTOM_DRC_CHAR_NODES_t* pCChar,
                                      const int32_t inLevelDb, /* e = 7 */
                                      int32_t* outGainDb)      /* e = 7 */
 {
@@ -301,7 +301,7 @@ static DRC_ERROR _compressorIO_nodes(const CUSTOM_DRC_CHAR_NODES* pCChar,
 }
 
 static DRC_ERROR _compressorIO_nodes_inverse(
-    const CUSTOM_DRC_CHAR_NODES* pCChar, const int16_t gainDb, /* e = 7 */
+    const CUSTOM_DRC_CHAR_NODES_t* pCChar, const int16_t gainDb, /* e = 7 */
     int32_t* inLev)                                            /* e = 7 */
 {
   int32_t n;
@@ -368,10 +368,10 @@ static DRC_ERROR _compressorIO_nodes_inverse(
   return DE_OK;
 }
 
-static DRC_ERROR _mapGain(const CHARACTERISTIC_FORMAT pCCharFormatSource,
-                          const CUSTOM_DRC_CHAR* pCCharSource,
-                          const CHARACTERISTIC_FORMAT pCCharFormatTarget,
-                          const CUSTOM_DRC_CHAR* pCCharTarget,
+static DRC_ERROR _mapGain(const CHARACTERISTIC_FORMAT_t pCCharFormatSource,
+                          const CUSTOM_DRC_CHAR_t* pCCharSource,
+                          const CHARACTERISTIC_FORMAT_t pCCharFormatTarget,
+                          const CUSTOM_DRC_CHAR_t* pCCharTarget,
                           const int16_t gainInDb, /* e = 7 */
                           int32_t* gainOutDb)     /* e = 7 */
 {
@@ -381,12 +381,12 @@ static DRC_ERROR _mapGain(const CHARACTERISTIC_FORMAT pCCharFormatSource,
   switch (pCCharFormatSource) {
     case CF_SIGMOID:
       err = _compressorIO_sigmoid_inverse(
-          (const CUSTOM_DRC_CHAR_SIGMOID*)pCCharSource, gainInDb, &inLevel);
+          (const CUSTOM_DRC_CHAR_SIGMOID_t*)pCCharSource, gainInDb, &inLevel);
       if (err) return err;
       break;
     case CF_NODES:
       err = _compressorIO_nodes_inverse(
-          (const CUSTOM_DRC_CHAR_NODES*)pCCharSource, gainInDb, &inLevel);
+          (const CUSTOM_DRC_CHAR_NODES_t*)pCCharSource, gainInDb, &inLevel);
       if (err) return err;
       break;
     default:
@@ -394,12 +394,12 @@ static DRC_ERROR _mapGain(const CHARACTERISTIC_FORMAT pCCharFormatSource,
   }
   switch (pCCharFormatTarget) {
     case CF_SIGMOID:
-      err = _compressorIO_sigmoid((const CUSTOM_DRC_CHAR_SIGMOID*)pCCharTarget,
+      err = _compressorIO_sigmoid((const CUSTOM_DRC_CHAR_SIGMOID_t*)pCCharTarget,
                                   inLevel, gainOutDb);
       if (err) return err;
       break;
     case CF_NODES:
-      err = _compressorIO_nodes((const CUSTOM_DRC_CHAR_NODES*)pCCharTarget,
+      err = _compressorIO_nodes((const CUSTOM_DRC_CHAR_NODES_t*)pCCharTarget,
                                 inLevel, gainOutDb);
       if (err) return err;
       break;
@@ -417,8 +417,8 @@ static DRC_ERROR _toLinear(
     int32_t* slopeLin)     /* out: linear slope value, e = 7 */
 {
   int32_t gainRatio_m = FL2FXCONST_DBL(1.0f / (float)(1 << 1));
-  GAIN_MODIFICATION* pGMod = NULL;
-  DUCKING_MODIFICATION* pDMod = nodeMod->pDMod;
+  GAIN_MODIFICATION_t* pGMod = NULL;
+  DUCKING_MODIFICATION_t* pDMod = nodeMod->pDMod;
   int32_t tmp_dbl, gainDb_modified, gainDb_offset, gainDb_out, gainLin_m,
       slopeLin_m;
   int32_t gainLin_e, gainRatio_e = 1, gainDb_out_e;
@@ -557,7 +557,7 @@ prepareDrcGain(HANDLE_DRC_GAIN_DECODER hGainDec,
   NODE_MODIFICATION nodeMod;
   memset(&nodeMod, 0, sizeof(NODE_MODIFICATION));
   ACTIVE_DRC* pActiveDrc = &(hGainDec->activeDrc[activeDrcIndex]);
-  DRC_INSTRUCTIONS_UNI_DRC* pInst = pActiveDrc->pInst;
+  DRC_INSTRUCTIONS_UNI_DRC_t* pInst = pActiveDrc->pInst;
   if (pInst == NULL) return DE_NOT_OK;
 
   nodeMod.drcSetEffect = pInst->drcSetEffect;
@@ -572,7 +572,7 @@ prepareDrcGain(HANDLE_DRC_GAIN_DECODER hGainDec,
   for (g = 0; g < pInst->nDrcChannelGroups; g++) {
     int32_t gainSetIndex = 0;
     int32_t nDrcBands = 0;
-    DRC_COEFFICIENTS_UNI_DRC* pCoef = pActiveDrc->pCoef;
+    DRC_COEFFICIENTS_UNI_DRC_t* pCoef = pActiveDrc->pCoef;
     if (pCoef == NULL) return DE_NOT_OK;
 
     if (!pActiveDrc->channelGroupIsParametricDrc[g]) {
@@ -589,9 +589,9 @@ prepareDrcGain(HANDLE_DRC_GAIN_DECODER hGainDec,
       nDrcBands = pActiveDrc->bandCountForChannelGroup[g];
       for (b = 0; b < nDrcBands; b++) {
         DRC_ERROR err = DE_OK;
-        GAIN_SET* pGainSet = &(pCoef->gainSet[gainSetIndex]);
+        GAIN_SET_t* pGainSet = &(pCoef->gainSet[gainSetIndex]);
         int32_t seq = pGainSet->gainSequenceIndex[b];
-        DRC_CHARACTERISTIC* pDChar = &(pGainSet->drcCharacteristic[b]);
+        DRC_CHARACTERISTIC_t* pDChar = &(pGainSet->drcCharacteristic[b]);
 
         /* linearNodeBuffer contains a copy of the gain sequences (consisting of
            nodes) that are relevant for decoding. It also contains gain
@@ -602,7 +602,7 @@ prepareDrcGain(HANDLE_DRC_GAIN_DECODER hGainDec,
         int32_t i, lnbp;
         lnbp = drcGainBuffers->lnbPointer;
         pLnb->gainInterpolationType =
-            (GAIN_INTERPOLATION_TYPE)pGainSet->gainInterpolationType;
+            (GAIN_INTERPOLATION_TYPE_t)pGainSet->gainInterpolationType;
 
         err = _prepareDrcCharacteristic(pDChar, pCoef, b, &nodeMod);
         if (err) return err;

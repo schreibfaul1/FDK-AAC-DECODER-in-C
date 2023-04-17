@@ -20,7 +20,7 @@
 /* static functions                        */
 /*******************************************/
 
-static int32_t _fitsLocation(DRC_INSTRUCTIONS_UNI_DRC* pInst,
+static int32_t _fitsLocation(DRC_INSTRUCTIONS_UNI_DRC_t* pInst,
                          const GAIN_DEC_LOCATION drcLocation) {
   int32_t downmixId = pInst->drcApplyToDownmix ? pInst->downmixId[0] : 0;
   switch (drcLocation) {
@@ -204,7 +204,7 @@ drcDec_GainDecoder_Conceal(HANDLE_DRC_GAIN_DECODER hGainDec,
                            HANDLE_UNI_DRC_CONFIG hUniDrcConfig,
                            HANDLE_UNI_DRC_GAIN hUniDrcGain) {
   int32_t seq, gainSequenceCount;
-  DRC_COEFFICIENTS_UNI_DRC* pCoef =
+  DRC_COEFFICIENTS_UNI_DRC_t* pCoef =
       selectDrcCoefficients(hUniDrcConfig, LOCATION_SELECTED);
   if (pCoef && pCoef->gainSequenceCount) {
     gainSequenceCount = fMin(pCoef->gainSequenceCount, (uint8_t)12);

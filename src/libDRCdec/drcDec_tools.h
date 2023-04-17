@@ -18,10 +18,10 @@
 
 int32_t getDeltaTmin(const int32_t sampleRate);
 
-DRC_COEFFICIENTS_UNI_DRC* selectDrcCoefficients(
+DRC_COEFFICIENTS_UNI_DRC_t* selectDrcCoefficients(
     HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int32_t location);
 
-DRC_INSTRUCTIONS_UNI_DRC* selectDrcInstructions(
+DRC_INSTRUCTIONS_UNI_DRC_t* selectDrcInstructions(
     HANDLE_UNI_DRC_CONFIG hUniDrcConfig, const int32_t drcSetId);
 
 DOWNMIX_INSTRUCTIONS* selectDownmixInstructions(
@@ -32,11 +32,11 @@ deriveDrcChannelGroups(
     const int32_t drcSetEffect,                                    /* in */
     const int32_t channelCount,                                    /* in */
     const int8_t* gainSetIndex,                                 /* in */
-    const DUCKING_MODIFICATION* duckingModificationForChannel, /* in */
+    const DUCKING_MODIFICATION_t* duckingModificationForChannel, /* in */
     uint8_t* nDrcChannelGroups,                                  /* out */
     int8_t* uniqueIndex,     /* out (gainSetIndexForChannelGroup) */
     int8_t* groupForChannel, /* out */
-    DUCKING_MODIFICATION* duckingModificationForChannelGroup); /* out */
+    DUCKING_MODIFICATION_t* duckingModificationForChannelGroup); /* out */
 
 int32_t
 dB2lin(const int32_t dB_m, const int32_t dB_e, int32_t* pLin_e);
