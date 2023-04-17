@@ -104,7 +104,7 @@ amm-info@iis.fraunhofer.de
 #define STEREO_H
 
 #include <stdint.h>
-#include "../libSYS/machine_type.h"
+#include "../libAACdec/newAACDecoder.h"
 #include "../libFDK/FDK_bitstream.h"
 #include "../libFDK/common_fix.h"
 

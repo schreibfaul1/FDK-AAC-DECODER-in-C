@@ -104,7 +104,7 @@ amm-info@iis.fraunhofer.de
 #define COMMON_FIX_H
 
 #include <stdint.h>
-#include "../libSYS/machine_type.h"
+#include "../libAACdec/newAACDecoder.h"
 #include "FDK_archdef.h"
 
 

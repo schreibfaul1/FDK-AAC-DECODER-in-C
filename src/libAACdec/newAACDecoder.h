@@ -1,8 +1,16 @@
 #pragma once
 
+#include <stdlib.h>
 #include <stdint.h>
+#include <stddef.h> 
 
-#define M_PI 3.14159265358979323846 /*!< Pi. Only used in example projects. */
+
+#define WAV_BITS          16
+#define SAMPLE_BITS       16
+#define SAMPLE_MAX        ((int16_t)(((uint32_t)1 << (SAMPLE_BITS - 1)) - 1))
+#define SAMPLE_MIN        (~SAMPLE_MAX)
+#define ALIGNMENT_DEFAULT 8
+#define M_PI              3.14159265358979323846 /*!< Pi. Only used in example projects. */
 
 
 typedef struct {                // Contains information needed for a single channel map.

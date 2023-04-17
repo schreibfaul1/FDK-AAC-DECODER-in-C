@@ -139,7 +139,7 @@ amm-info@iis.fraunhofer.de
 #ifndef PCMDMX_LIB_H
 #define PCMDMX_LIB_H
 
-#include "../libSYS/machine_type.h"
+#include "../libAACdec/newAACDecoder.h"
 #include "../libFDK/common_fix.h"
 #include "../libSYS/FDK_audio.h"
 #include "../libFDK/FDK_bitstream.h"

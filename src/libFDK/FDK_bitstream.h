@@ -106,7 +106,7 @@ amm-info@iis.fraunhofer.de
 #include <assert.h>
 #include "FDK_bitbuffer.h"
 #include "../libAACdec/newAACDecoder.h"
-#include "../libSYS/machine_type.h"
+
 
 
 #define CACHE_BITS 32

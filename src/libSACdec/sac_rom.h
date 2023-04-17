@@ -108,7 +108,7 @@ amm-info@iis.fraunhofer.de
 
 #include "../libFDK/huff_nodes.h"
 #include "sac_bitdec.h"
-#include "../libSYS/machine_type.h"
+#include "../libAACdec/newAACDecoder.h"
 
 /* Global ROM table data type: */
 #define FIXP_CFG int32_t

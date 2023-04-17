@@ -104,7 +104,7 @@ amm-info@iis.fraunhofer.de
 #define FIXMUL_H
 
 #include "FDK_archdef.h"
-#include "../libSYS/machine_type.h"
+#include "../libAACdec/newAACDecoder.h"
 
 // #if defined(__arm__)
 // #include "arm/fixmul_arm.h"

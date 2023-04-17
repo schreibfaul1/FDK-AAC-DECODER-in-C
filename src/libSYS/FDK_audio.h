@@ -108,7 +108,6 @@ amm-info@iis.fraunhofer.de
 #define FDK_AUDIO_H
 
 #include "../libAACdec/newAACDecoder.h"
-#include "machine_type.h"
 
 #ifdef __cplusplus
 extern "C" {

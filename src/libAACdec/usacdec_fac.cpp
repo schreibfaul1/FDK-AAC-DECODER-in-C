@@ -526,10 +526,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
     dct_IV(pSpec, tl, &scale);
   } else {
     int32_t _tmp[1024 + ALIGNMENT_DEFAULT / sizeof(int32_t)];
-
-    int32_t *tmp = (int32_t *)ALIGN_PTR(_tmp);
-
-
+    int32_t *tmp = (int32_t *) _tmp + (int32_t)8 - (((size_t)(_tmp) & 7) & 7);
     dst_III(pSpec, tmp, tl, &scale);
   }
 

@@ -105,7 +105,7 @@ amm-info@iis.fraunhofer.de
 
 #include <stdint.h>
 #include "FDK_archdef.h"
-#include "../libSYS/machine_type.h"
+#include "../libAACdec/newAACDecoder.h"
 
 /* leave 3 bits headroom so MAX_BUFSIZE can be represented in bits as well. */
 #define MAX_BUFSIZE_BYTES (0x10000000)

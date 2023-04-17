@@ -104,7 +104,7 @@ amm-info@iis.fraunhofer.de
 #define FIXMINMAX_H
 
 #include "FDK_archdef.h"
-#include "../libSYS/machine_type.h"
+#include "../libAACdec/newAACDecoder.h"
 
 /* Inline Function to determine the smaller/bigger value of two values with same
  * type. */

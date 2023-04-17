@@ -100,6 +100,7 @@ amm-info@iis.fraunhofer.de
 
 *******************************************************************************/
 
+#include <stdlib.h>
 #include "drcDec_types.h"
 #include "drcDec_tools.h"
 #include "drcDec_gainDecoder.h"

@@ -8,7 +8,6 @@
 
 *******************************************************************************/
 
-#include "machine_type.h"
 #include <assert.h>
 #include <stdarg.h>
 #include <stdint.h>
@@ -78,7 +77,8 @@ void *FDKaalloc(const uint32_t size, const uint32_t alignment) {
     void *addr, *result = NULL;
     addr = FDKcalloc(1, size + alignment + (uint32_t)sizeof(void *)); /* Malloc and clear memory. */
     if(addr != NULL) {
-        result = ALIGN_PTR((unsigned char *)addr + sizeof(void *)); /* Get aligned memory base address. */
+        uint8_t* align = (uint8_t*)addr + sizeof(void*); /* Get aligned memory base address. */
+        result = (void *)((uint8_t *)(align) + ((((int32_t)8 - ((size_t)(align) & 7)) & 7)));
         *(((void **)result) - 1) = addr;                            /* Save malloc'ed memory pointer.   */
     }
 
@@ -100,8 +100,9 @@ void *FDKaalloc_L(const uint32_t size, const uint32_t alignment, MEMORY_SECTION_
     addr = FDKcalloc_L(1, size + alignment + (uint32_t)sizeof(void *), s); /* Malloc and clear memory.         */
 
     if(addr != NULL) {
-        result = ALIGN_PTR((unsigned char *)addr + sizeof(void *)); /* Get aligned memory base address. */
-        *(((void **)result) - 1) = addr;                            /* Save malloc'ed memory pointer.   */
+        uint8_t* align = (uint8_t*)addr + sizeof(void*); /* Get aligned memory base address. */
+        result = (void *)((uint8_t *)(align) + ((((int32_t)8 - ((size_t)(align) & 7)) & 7)));
+        *(((void **)result) - 1) = addr;   /* Save malloc'ed memory pointer.   */
     }
 
     return result; /* Return aligned address.          */

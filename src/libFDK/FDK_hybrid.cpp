@@ -688,7 +688,7 @@ static void eightChannelFiltering(const int32_t *const pQmfReal,
 
   int32_t mfft[16 + ALIGNMENT_DEFAULT];
 
-  int32_t *pfft = (int32_t *)ALIGN_PTR(mfft);
+  int32_t *pfft = (int32_t *)(mfft + (((int32_t)8 - ((size_t)(mfft) & 7)) & 7));
 
   int32_t accu1, accu2, accu3, accu4;
 

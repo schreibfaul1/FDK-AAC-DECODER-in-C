@@ -429,7 +429,7 @@ Where N equals to CStreamInfo::frameSize .
 */
 
 
-#include "../libSYS/machine_type.h"
+#include "../libAACdec/newAACDecoder.h"
 #include "../libSYS/FDK_audio.h"
 #define AACDECODER_LIB_VL0 3
 #define AACDECODER_LIB_VL1 2

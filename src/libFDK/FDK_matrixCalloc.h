@@ -104,7 +104,6 @@ amm-info@iis.fraunhofer.de
 #define FDK_MATRIXCALLOC_H
 
 #include "../libAACdec/newAACDecoder.h"
-#include "../libSYS/machine_type.h"
 
 
 /* It is recommended to use FDK_ALLOCATE_MEMORY_1D instead of fdkCallocMatrix1D

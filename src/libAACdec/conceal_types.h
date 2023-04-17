@@ -103,7 +103,7 @@ amm-info@iis.fraunhofer.de
 #ifndef CONCEAL_TYPES_H
 #define CONCEAL_TYPES_H
 
-#include "../libSYS/machine_type.h"
+#include "../libAACdec/newAACDecoder.h"
 #include "../libFDK/common_fix.h"
 
 #include "rvlc_info.h"

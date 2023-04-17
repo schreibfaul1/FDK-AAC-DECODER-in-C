@@ -119,6 +119,7 @@ amm-info@iis.fraunhofer.de
   complex FFT kernel.
 */
 
+#include <stdlib.h>
 #include "dct.h"
 
 #include "FDK_tools_rom.h"

@@ -10,7 +10,7 @@
  *  \brief  Implementation of routines that handle the channel map descriptor.
  */
 #include  "../libAACdec/newAACDecoder.h"
-#include "machine_type.h"
+
 #include <assert.h>
 #include <stdint.h>
 
