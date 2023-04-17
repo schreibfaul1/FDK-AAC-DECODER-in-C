@@ -17,16 +17,13 @@
 
 typedef enum { ARITH_CODER_OK = 0, ARITH_CODER_ERROR = 5 } ARITH_CODING_ERROR;
 
-typedef struct {
-  int16_t m_numberLinesPrev;
-  uint8_t c_prev[(1024 / 2) + 4]; /* 2-tuple context of previous frame, 4 bit */
-} CArcoData;
+
 
 /* prototypes */
 
-CArcoData *CArco_Create(void);
+CArcoData_t *CArco_Create(void);
 
-void CArco_Destroy(CArcoData *pArcoData);
+void CArco_Destroy(CArcoData_t *pArcoData);
 
 /**
  * \brief decode a spectral data element by using an adaptive context dependent
@@ -40,7 +37,7 @@ void CArco_Destroy(CArcoData *pArcoData);
  * context must be reset
  * \return void
  */
-ARITH_CODING_ERROR CArco_DecodeArithData(CArcoData *pArcoData,
+ARITH_CODING_ERROR CArco_DecodeArithData(CArcoData_t *pArcoData,
                                          HANDLE_FDK_BITSTREAM hBs,
                                          int32_t * spectrum, int32_t lg,
                                          int32_t lg_max, int32_t arith_reset_flag);

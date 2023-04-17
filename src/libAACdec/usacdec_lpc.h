@@ -49,9 +49,9 @@ int32_t CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *lsfq, int32_t nk_mode,
  * \param[in]  last_frame_ok indicate that the last frame was ok.
  * \return 0 on success, -1 on error.
  */
-int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
-              FIXP_LPC lpc4_lsf[M_LP_FILTER_ORDER],
-              FIXP_LPC lsf_adaptive_mean_cand[M_LP_FILTER_ORDER],
+int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, int16_t lsp[][M_LP_FILTER_ORDER],
+              int16_t lpc4_lsf[M_LP_FILTER_ORDER],
+              int16_t lsf_adaptive_mean_cand[M_LP_FILTER_ORDER],
               int16_t pStability[], uint8_t *mod, int32_t first_lpd_flag,
               int32_t last_lpc_lost, int32_t last_frame_ok);
 
@@ -65,9 +65,9 @@ int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
  * \param first_lpd_flag indicates the previous LSF4 coefficients lpc4_lsf[] are
  * not valid.
  */
-void CLpc_Conceal(FIXP_LPC lsp[][M_LP_FILTER_ORDER],
-                  FIXP_LPC lpc4_lsf[M_LP_FILTER_ORDER],
-                  FIXP_LPC isf_adaptive_mean[M_LP_FILTER_ORDER],
+void CLpc_Conceal(int16_t lsp[][M_LP_FILTER_ORDER],
+                  int16_t lpc4_lsf[M_LP_FILTER_ORDER],
+                  int16_t isf_adaptive_mean[M_LP_FILTER_ORDER],
                   const int32_t first_lpd_flag);
 
 /**
@@ -78,7 +78,7 @@ void CLpc_Conceal(FIXP_LPC lsp[][M_LP_FILTER_ORDER],
  * \param m length of vector A
  */
 /* static */
-void E_LPC_a_weight(FIXP_LPC *wA, const FIXP_LPC *A, const int32_t m);
+void E_LPC_a_weight(int16_t *wA, const int16_t *A, const int32_t m);
 
 /**
  * \brief decode TCX/FAC gain. In case of TCX the lg/sqrt(rms) part
@@ -93,6 +93,6 @@ void CLpd_DecodeGain(int32_t *gain, int32_t *gain_e, int32_t gain_code);
 /**
  * \brief convert LSP coefficients into LP domain.
  */
-void E_LPC_f_lsp_a_conversion(FIXP_LPC *lsp, FIXP_LPC *a, int32_t *a_exp);
+void E_LPC_f_lsp_a_conversion(int16_t *lsp, int16_t *a, int32_t *a_exp);
 
 #endif /* USACDEC_LPC_H */

@@ -39,11 +39,11 @@
 #define RVLC_ERROR_FORBIDDEN_CW_DETECTED_BWD \
   0x04000000 /*  RVL-Dec  forbidden codeword detected bwd (int32_t+shrt) */
 
-void CRvlc_Read(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+void CRvlc_Read(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                 HANDLE_FDK_BITSTREAM bs);
 
-void CRvlc_Decode(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                  CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
+void CRvlc_Decode(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+                  CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
                   HANDLE_FDK_BITSTREAM bs);
 
 /**
@@ -54,8 +54,8 @@ void CRvlc_Decode(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
  * \param elChannels amount of channels of the channel element.
  */
 void CRvlc_ElementCheck(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
+    CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[],
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
     const uint32_t flags, const int32_t elChannels);
 
 #endif /* RVLC_H */

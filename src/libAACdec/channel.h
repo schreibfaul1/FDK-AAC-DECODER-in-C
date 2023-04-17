@@ -25,7 +25,7 @@
  * \param pAacDecoderChannelInfo channel info structure containing a valid
  * icsInfo struct.
  */
-void CChannel_CodebookTableInit(CAacDecoderChannelInfo *pAacDecoderChannelInfo);
+void CChannel_CodebookTableInit(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo);
 
 /**
  * \brief decode a channel element. To be called after CChannelElement_Read()
@@ -36,9 +36,9 @@ void CChannel_CodebookTableInit(CAacDecoderChannelInfo *pAacDecoderChannelInfo);
  * \param output pointer to time domain output buffer (ACELP)
  */
 void CChannelElement_Decode(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[2],
-    SamplingRateInfo *pSamplingRateInfo, uint32_t flags, uint32_t elFlags,
+    CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[2],
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[2],
+    SamplingRateInfo_t *pSamplingRateInfo, uint32_t flags, uint32_t elFlags,
     int32_t el_channels);
 
 /**
@@ -57,10 +57,10 @@ void CChannelElement_Decode(
  * ...
  * \return an AAC_DECODER_ERROR error code.
  */
-AAC_DECODER_ERROR CChannelElement_Read(
-    HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
-    const AUDIO_OBJECT_TYPE_t aot, SamplingRateInfo *pSamplingRateInfo,
+AAC_DECODER_ERROR_t CChannelElement_Read(
+    HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[],
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
+    const AUDIO_OBJECT_TYPE_t aot, SamplingRateInfo_t *pSamplingRateInfo,
     const uint32_t flags, const uint32_t elFlags, const uint32_t frame_length,
     const uint8_t numberOfChannels, const int8_t epConfig,
     HANDLE_TRANSPORTDEC pTpDec);

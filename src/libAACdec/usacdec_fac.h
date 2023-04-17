@@ -17,13 +17,13 @@
 /**
  * \brief Get the address of a memory area of the spectral data memory were the
  * FAC data can be stored into.
- * \param spec SPECTRAL_PTR pointing to the current spectral data.
+ * \param spec int32_t* pointing to the current spectral data.
  * \param mod the current LPD mod array.
  * \param pState pointer to a private state variable which must be 0 for the
  * first call and not changed externally.
  * \param isFullbandLPD is 1 if fullband LPD mode is on, otherwise it is 0.
  */
-int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                              uint8_t mod[NB_SUBFR], int32_t *pState);
 
 /**
@@ -59,7 +59,7 @@ void CFac_ApplyGains(int32_t fac_data[LFAC], const int32_t fac_length,
  * \brief Do FAC transition from frequency domain to ACELP domain.
  */
 int32_t CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac_data,
-                        const int32_t fac_data_e, FIXP_LPC *A, int32_t A_exp,
+                        const int32_t fac_data_e, int16_t *A, int32_t A_exp,
                         int32_t nrOutSamples, const int32_t fac_length,
                         const int32_t isFdFac, uint8_t prevWindowShape);
 
@@ -90,7 +90,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *pSpec,
                         const int16_t spec_scale[], const int32_t nSpec,
                         int32_t *pFac_data, const int32_t fac_data_e,
                         const int32_t fac_length, int32_t nrSamples, const int32_t tl,
-                        const FIXP_SPK_t *wrs, const int32_t fr, FIXP_LPC A[16],
+                        const FIXP_SPK_t *wrs, const int32_t fr, int16_t A[16],
                         int32_t A_exp, CAcelpStaticMem *acelp_mem,
                         const int32_t gain, const int32_t last_frame_lost,
                         const int32_t isFdFac, const uint8_t last_lpd, const int32_t k,

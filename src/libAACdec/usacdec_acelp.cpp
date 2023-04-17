@@ -397,13 +397,13 @@ void BuildAdaptiveExcitation(FIXP_COD code[],             /* (i) : algebraic cod
  * SF_A_COEFFS.
  */
 /* static */
-void int_lpc_acelp(const FIXP_LPC lsp_old[], /* input : LSPs from past frame              */
-                   const FIXP_LPC lsp_new[], /* input : LSPs from present frame           */
+void int_lpc_acelp(const int16_t lsp_old[], /* input : LSPs from past frame              */
+                   const int16_t lsp_new[], /* input : LSPs from present frame           */
                    int32_t subfr_nr, int32_t nb_subfr,
-                   FIXP_LPC A[], /* output: interpolated LP coefficients for current subframe */
+                   int16_t A[], /* output: interpolated LP coefficients for current subframe */
                    int32_t *A_exp) {
     int32_t  i;
-    FIXP_LPC lsp_interpol[M_LP_FILTER_ORDER];
+    int16_t lsp_interpol[M_LP_FILTER_ORDER];
     int16_t  fac_old, fac_new;
 
     assert((nb_subfr == 3) || (nb_subfr == 4));
@@ -430,7 +430,7 @@ void int_lpc_acelp(const FIXP_LPC lsp_old[], /* input : LSPs from past frame    
  */
 
 /* static */
-void Syn_filt(const FIXP_LPC a[],                  /* (i) : a[m] prediction coefficients Q12 */
+void Syn_filt(const int16_t a[],                  /* (i) : a[m] prediction coefficients Q12 */
               const int32_t a_exp, int32_t length, /* (i) : length of input/output signal (64|128)   */
               int32_t x[],                         /* (i) : input signal Qx  */
               int32_t y[]                          /* (i/o) : filter states / output signal  Qx-s*/
@@ -482,7 +482,7 @@ void Deemph(int32_t *x, int32_t *y, int32_t L, int32_t *mem) {
  * \param[in] l length of filtering
  */
 /* static */
-void E_UTIL_residu(const FIXP_LPC *a, const int32_t a_exp, int32_t *x, int32_t *y, int32_t l) {
+void E_UTIL_residu(const int16_t *a, const int32_t a_exp, int32_t *x, int32_t *y, int32_t l) {
     int32_t s;
     int32_t i, j;
 
@@ -580,8 +580,8 @@ static uint8_t tab_coremode2nbits[8] = {20, 28, 36, 44, 52, 64, 12, 16};
 
 static int32_t MapCoreMode2NBits(int32_t core_mode) { return (int32_t)tab_coremode2nbits[core_mode]; }
 
-void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, int32_t i_offset, const FIXP_LPC lsp_old[M_LP_FILTER_ORDER],
-                      const FIXP_LPC lsp_new[M_LP_FILTER_ORDER], int16_t stab_fac, CAcelpChannelData *pAcelpData,
+void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, int32_t i_offset, const int16_t lsp_old[M_LP_FILTER_ORDER],
+                      const int16_t lsp_new[M_LP_FILTER_ORDER], int16_t stab_fac, CAcelpChannelData *pAcelpData,
                       int32_t numLostSubframes, int32_t lastLpcLost, int32_t frameCnt, int32_t synth[], int32_t pT[],
                       int32_t *pit_gain, int32_t coreCoderFrameLength) {
     int32_t i_subfr, subfr_nr, l_div, T;
@@ -595,7 +595,7 @@ void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, int32_t i_offset, const FIXP_L
     int32_t  *exc2;
     int32_t  *syn;
     int32_t  *exc;
-    FIXP_LPC  A[M_LP_FILTER_ORDER];
+    int16_t  A[M_LP_FILTER_ORDER];
     int32_t   A_exp;
 
     int32_t period_fac;
@@ -758,8 +758,8 @@ void CLpd_AcelpReset(CAcelpStaticMem *acelp) {
 
 /* TCX time domain concealment */
 /*   Compare to figure 13a on page 54 in 3GPP TS 26.290 */
-void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, int16_t *pitch, const FIXP_LPC lsp_old[M_LP_FILTER_ORDER],
-                       const FIXP_LPC lsp_new[M_LP_FILTER_ORDER], const int16_t stab_fac, int32_t nLostSf,
+void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, int16_t *pitch, const int16_t lsp_old[M_LP_FILTER_ORDER],
+                       const int16_t lsp_new[M_LP_FILTER_ORDER], const int16_t stab_fac, int32_t nLostSf,
                        int32_t synth[], int32_t coreCoderFrameLength, uint8_t last_tcx_noise_factor) {
     /* repeat past excitation with pitch from previous decoded TCX frame */
     int32_t exc_buf[PIT_MAX_MAX + L_INTERPOL + L_DIV_1024]; /* 411 +  17 + 256 + 1 =  */
@@ -800,7 +800,7 @@ void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, int16_t *pitch, const FIXP_LP
 
     for(i_subfr = 0, subfr_nr = 0; i_subfr < lDiv; i_subfr += L_SUBFR, subfr_nr++) {
         int32_t  tRes[L_SUBFR];
-        FIXP_LPC A[M_LP_FILTER_ORDER];
+        int16_t A[M_LP_FILTER_ORDER];
         int32_t  A_exp;
 
         /* interpolate LPC coefficients */
@@ -879,7 +879,7 @@ void Acelp_PostProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch
 
 #define L_FAC_ZIR (LFAC)
 
-void CLpd_Acelp_Zir(const FIXP_LPC A[], const int32_t A_exp, CAcelpStaticMem *acelp_mem, const int32_t length,
+void CLpd_Acelp_Zir(const int16_t A[], const int32_t A_exp, CAcelpStaticMem *acelp_mem, const int32_t length,
                     int32_t zir[], int32_t doDeemph) {
 
     int32_t tmp_buf[LFAC + M_LP_FILTER_ORDER];
@@ -900,7 +900,7 @@ void CLpd_Acelp_Zir(const FIXP_LPC A[], const int32_t A_exp, CAcelpStaticMem *ac
 }
 
 void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, uint8_t last_last_lpd_mode,
-                                  const FIXP_LPC *A_new, const int32_t A_new_exp, const FIXP_LPC *A_old,
+                                  const int16_t *A_new, const int32_t A_new_exp, const int16_t *A_old,
                                   const int32_t A_old_exp, CAcelpStaticMem *acelp_mem, int32_t coreCoderFrameLength,
                                   int32_t clearOldExc, uint8_t lpd_mode) {
     int32_t  l_div = coreCoderFrameLength / NB_DIV; /* length of one ACELP/TCX20 frame */

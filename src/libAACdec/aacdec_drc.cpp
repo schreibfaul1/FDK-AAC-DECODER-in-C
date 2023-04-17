@@ -146,9 +146,9 @@ void aacDecoder_drcInitChannelData(CDrcChannelData_t *pDrcChData) {
 
   \return an error code.
 */
-AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
+AAC_DECODER_ERROR_t aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
                                          AACDEC_DRC_PARAM param, int32_t value) {
-  AAC_DECODER_ERROR ErrorStatus = AAC_DEC_OK;
+  AAC_DECODER_ERROR_t ErrorStatus = AAC_DEC_OK;
 
   switch (param) {
     case DRC_CUT_SCALE:
@@ -587,7 +587,7 @@ static int32_t aacDecoder_drcReadCompression(HANDLE_FDK_BITSTREAM bs,
  */
 static int32_t aacDecoder_drcExtractAndMap(
     HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
     uint8_t pceInstanceTag,
     uint8_t channelMapping[], /* Channel mapping translating drcChannel index to
                                canonical channel index */
@@ -745,7 +745,7 @@ static int32_t aacDecoder_drcExtractAndMap(
 }
 
 void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
-                         CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+                         CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                          CDrcChannelData_t *pDrcChData, int32_t *extGain,
                          int32_t ch, /* needed only for SBR */
                          int32_t aacFrameSize, int32_t bSbrPresent) {
@@ -766,7 +766,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
 
   int32_t *pSpectralCoefficient =
       SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
-  CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
+  CIcsInfo_t *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
   int16_t *pSpecScale = pAacDecoderChannelInfo->specScale;
 
   int32_t winSeq = pIcsInfo->WindowSequence;
@@ -1170,7 +1170,7 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
  */
 int32_t aacDecoder_drcProlog(
     HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
     uint8_t pceInstanceTag,
     uint8_t channelMapping[], /* Channel mapping translating drcChannel index to
                                canonical channel index */
@@ -1212,7 +1212,7 @@ int32_t aacDecoder_drcProlog(
  */
 int32_t aacDecoder_drcEpilog(
     HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
     uint8_t pceInstanceTag,
     uint8_t channelMapping[], /* Channel mapping translating drcChannel index to
                                canonical channel index */

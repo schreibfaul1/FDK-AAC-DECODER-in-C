@@ -22,7 +22,7 @@
 
 #define SPEC_FAC(ptr, i, gl) ((ptr) + ((i) * (gl)))
 
-int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                              uint8_t mod[NB_DIV], int32_t *pState) {
   int32_t *ptr;
   int32_t i;
@@ -92,7 +92,7 @@ int32_t CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, int32_t *pFac, int8_t *pFacScale
  * \param length length of the input/output data vector x.
  * \param x input/output vector, where the synthesis filter is applied in place.
  */
-static void Syn_filt_zero(const FIXP_LPC a[], const int32_t a_exp, int32_t length,
+static void Syn_filt_zero(const int16_t a[], const int32_t a_exp, int32_t length,
                           int32_t x[]) {
   int32_t i, j;
   int32_t L_tmp;
@@ -141,10 +141,10 @@ void CFac_ApplyGains(int32_t fac_data[LFAC], const int32_t fac_length,
 
 static void CFac_CalcFacSignal(int32_t *pOut, int32_t *pFac,
                                const int32_t fac_scale, const int32_t fac_length,
-                               const FIXP_LPC A[M_LP_FILTER_ORDER],
+                               const int16_t A[M_LP_FILTER_ORDER],
                                const int32_t A_exp, const int32_t fAddZir,
                                const int32_t isFdFac) {
-  FIXP_LPC wA[M_LP_FILTER_ORDER];
+  int16_t wA[M_LP_FILTER_ORDER];
   int32_t tf_gain = (int32_t)0;
   int32_t wlength;
   int32_t scale = fac_scale;
@@ -180,7 +180,7 @@ static void CFac_CalcFacSignal(int32_t *pOut, int32_t *pFac,
 }
 
 int32_t CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac,
-                        const int32_t fac_scale, FIXP_LPC *A, int32_t A_exp,
+                        const int32_t fac_scale, int16_t *A, int32_t A_exp,
                         int32_t nrOutSamples, const int32_t fac_length,
                         const int32_t isFdFac, uint8_t prevWindowShape) {
   int32_t *pOvl;
@@ -289,7 +289,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
                         const int16_t spec_scale[], const int32_t nSpec,
                         int32_t *pFac, const int32_t fac_scale,
                         const int32_t fac_length, int32_t noOutSamples, const int32_t tl,
-                        const FIXP_SPK_t *wrs, const int32_t fr, FIXP_LPC A[16],
+                        const FIXP_SPK_t *wrs, const int32_t fr, int16_t A[16],
                         int32_t A_exp, CAcelpStaticMem *acelp_mem,
                         const int32_t gain, const int32_t last_frame_lost,
                         const int32_t isFdFac, const uint8_t last_lpd_mode,

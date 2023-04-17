@@ -38,7 +38,7 @@ previously and set up pointers
 */
 
 static void rvlcInit(CErRvlcInfo *pRvlc,
-                     CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+                     CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                      HANDLE_FDK_BITSTREAM bs) {
   /* RVLC common initialization part 2 of 2 */
   int16_t *pScfEsc = pAacDecoderChannelInfo->pComData->overlay.aac.aRvlcScfEsc;
@@ -120,7 +120,7 @@ static void rvlcInit(CErRvlcInfo *pRvlc,
 */
 
 static void rvlcCheckIntensityCb(
-    CErRvlcInfo *pRvlc, CAacDecoderChannelInfo *pAacDecoderChannelInfo) {
+    CErRvlcInfo *pRvlc, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo) {
   int32_t group, band, bnds;
 
   pRvlc->intensity_used = 0;
@@ -342,7 +342,7 @@ int8_t decodeRVLCodeword(HANDLE_FDK_BITSTREAM bs, CErRvlcInfo *pRvlc) {
 */
 
 static void rvlcDecodeForward(CErRvlcInfo *pRvlc,
-                              CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+                              CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                               HANDLE_FDK_BITSTREAM bs) {
   int32_t band = 0;
   int32_t group = 0;
@@ -524,7 +524,7 @@ static void rvlcDecodeForward(CErRvlcInfo *pRvlc,
 */
 
 static void rvlcDecodeBackward(CErRvlcInfo *pRvlc,
-                               CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+                               CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                                HANDLE_FDK_BITSTREAM bs) {
   int16_t band, group, dpcm, offset;
   int16_t bnds = pRvlc->maxSfbTransmitted - 1;
@@ -709,8 +709,8 @@ process
 */
 
 static void rvlcFinalErrorDetection(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo) {
+    CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo) {
   CErRvlcInfo *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
   uint8_t ErrorStatusComplete = 0;
@@ -965,7 +965,7 @@ static void rvlcFinalErrorDetection(
 --------------------------------------------------------------------------------------------
 */
 
-void CRvlc_Read(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+void CRvlc_Read(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                 HANDLE_FDK_BITSTREAM bs) {
   CErRvlcInfo *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
@@ -1040,8 +1040,8 @@ the decoder channel info is set to 0 otherwise it is set to 1.
 --------------------------------------------------------------------------------------------
 */
 
-void CRvlc_Decode(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                  CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
+void CRvlc_Decode(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+                  CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
                   HANDLE_FDK_BITSTREAM bs) {
   CErRvlcInfo *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
@@ -1073,8 +1073,8 @@ void CRvlc_Decode(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
 }
 
 void CRvlc_ElementCheck(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
+    CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[],
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
     const uint32_t flags, const int32_t elChannels) {
   int32_t ch;
 

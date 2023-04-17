@@ -11,12 +11,7 @@
 #include "usacdec_ace_ltp.h"
 #include "../libFDK/common_fix.h"
 
-#define UP_SAMP 4
-#define L_INTERPOL2 16
-#define L_SUBFR 64
 
-#define A2 FL2FX_SGL(2 * 0.18f)
-#define B FL2FX_SGL(0.64f)
 
 static const int32_t Pred_lt4_inter4_2[UP_SAMP][L_INTERPOL2] = {
     {(int32_t)0x0000FFFC, (int32_t)0x0008FFFC, (int32_t)0xFFEB004C, (int32_t)0xFF50014A,

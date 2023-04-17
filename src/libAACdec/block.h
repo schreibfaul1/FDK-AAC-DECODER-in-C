@@ -22,14 +22,14 @@ void CPns_Read(CPnsData *pPnsData, HANDLE_FDK_BITSTREAM bs,
                const CodeBookDescription *hcb, int16_t *pScaleFactor,
                uint8_t global_gain, int32_t band, int32_t group);
 
-void CPns_Apply(const CPnsData *pPnsData, const CIcsInfo *pIcsInfo,
-                SPECTRAL_PTR pSpectrum, const int16_t *pSpecScale,
+void CPns_Apply(const CPnsData *pPnsData, const CIcsInfo_t *pIcsInfo,
+                int32_t* pSpectrum, const int16_t *pSpecScale,
                 const int16_t *pScaleFactor,
-                const SamplingRateInfo *pSamplingRateInfo,
+                const SamplingRateInfo_t *pSamplingRateInfo,
                 const int32_t granuleLength, const int32_t channel);
 
-void CBlock_ApplyNoise(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                       SamplingRateInfo *pSamplingRateInfo, uint32_t *nfRandomSeed,
+void CBlock_ApplyNoise(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+                       SamplingRateInfo_t *pSamplingRateInfo, uint32_t *nfRandomSeed,
                        uint8_t *band_is_noise);
 
 /* TNS (of block) */
@@ -45,15 +45,15 @@ void CTns_ReadDataPresentFlag(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData);
 
 void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData *pTnsData0,
                               CTnsData *pTnsData1, uint8_t *ptns_on_lr,
-                              const CIcsInfo *pIcsInfo, const uint32_t flags,
+                              const CIcsInfo_t *pIcsInfo, const uint32_t flags,
                               const uint32_t elFlags, const int32_t fCommonWindow);
 
-AAC_DECODER_ERROR CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData,
-                            const CIcsInfo *pIcsInfo, const uint32_t flags);
+AAC_DECODER_ERROR_t CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData,
+                            const CIcsInfo_t *pIcsInfo, const uint32_t flags);
 
 void CTns_Apply(CTnsData * pTnsData, /*!< pointer to aac decoder info */
-                const CIcsInfo *pIcsInfo, SPECTRAL_PTR pSpectralCoefficient,
-                const SamplingRateInfo *pSamplingRateInfo,
+                const CIcsInfo_t *pIcsInfo, int32_t* pSpectralCoefficient,
+                const SamplingRateInfo_t *pSamplingRateInfo,
                 const int32_t granuleLength, const uint8_t nbands,
                 const uint8_t igf_active, const uint32_t flags);
 
@@ -70,8 +70,8 @@ int32_t CBlock_GetEscape(HANDLE_FDK_BITSTREAM bs, const int32_t q);
  * stored into.
  * \param flags the decoder flags.
  */
-AAC_DECODER_ERROR CBlock_ReadScaleFactorData(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo, HANDLE_FDK_BITSTREAM bs,
+AAC_DECODER_ERROR_t CBlock_ReadScaleFactorData(
+    CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, HANDLE_FDK_BITSTREAM bs,
     const uint32_t flags);
 
 /**
@@ -80,9 +80,9 @@ AAC_DECODER_ERROR CBlock_ReadScaleFactorData(
  * \param pSamplingRateInfo sampling rate info (sfb offsets).
  * \param flags syntax flags.
  */
-AAC_DECODER_ERROR CBlock_ReadSpectralData(
-    HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, const uint32_t flags);
+AAC_DECODER_ERROR_t CBlock_ReadSpectralData(
+    HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+    const SamplingRateInfo_t *pSamplingRateInfo, const uint32_t flags);
 
 /**
  * \brief Read Arithmetic encoded spectral data.
@@ -93,41 +93,41 @@ AAC_DECODER_ERROR CBlock_ReadSpectralData(
  * \param flags syntax flags.
  * \return error code.
  */
-AAC_DECODER_ERROR CBlock_ReadAcSpectralData(
-    HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, const uint32_t frame_length,
+AAC_DECODER_ERROR_t CBlock_ReadAcSpectralData(
+    HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
+    const SamplingRateInfo_t *pSamplingRateInfo, const uint32_t frame_length,
     const uint32_t flags);
 
-AAC_DECODER_ERROR CBlock_ReadSectionData(
-    HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, const uint32_t flags);
+AAC_DECODER_ERROR_t CBlock_ReadSectionData(
+    HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+    const SamplingRateInfo_t *pSamplingRateInfo, const uint32_t flags);
 
 /**
  * \brief find a common exponent (shift factor) for all sfb in each Spectral
- * window, and store them into CAacDecoderChannelInfo::specScale.
+ * window, and store them into CAacDecoderChannelInfo_t::specScale.
  * \param pAacDecoderChannelInfo channel context info.
  * \param uint8_t maxSfbs maximum number of SFBs to be processed (might differ
  * from pAacDecoderChannelInfo->icsInfo.MaxSfBands)
  * \param pSamplingRateInfo sampling rate info (sfb offsets).
  */
-void CBlock_ScaleSpectralData(CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+void CBlock_ScaleSpectralData(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                               uint8_t maxSfbs,
-                              SamplingRateInfo *pSamplingRateInfo);
+                              SamplingRateInfo_t *pSamplingRateInfo);
 
 /**
  * \brief Apply TNS and PNS tools.
  */
-void ApplyTools(CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
-                const SamplingRateInfo *pSamplingRateInfo, const uint32_t flags,
+void ApplyTools(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[],
+                const SamplingRateInfo_t *pSamplingRateInfo, const uint32_t flags,
                 const uint32_t elFlags, const int32_t channel, const int32_t maybe_jstereo);
 
 /**
  * \brief Transform MDCT spectral data into time domain
  */
 void CBlock_FrequencyToTime(
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t outSamples[],
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
+    CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, int32_t outSamples[],
     const int16_t frameLen, const int32_t frameOk, int32_t *pWorkBuffer1,
     const int32_t aacOutDataHeadroom, uint32_t elFlags, int32_t elCh);
 
@@ -135,13 +135,13 @@ void CBlock_FrequencyToTime(
  * \brief Transform double lapped MDCT (AAC-ELD) spectral data into time domain.
  */
 void CBlock_FrequencyToTimeLowDelay(
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t outSamples[],
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
+    CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, int32_t outSamples[],
     const int16_t frameLen);
 
-AAC_DECODER_ERROR CBlock_InverseQuantizeSpectralData(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    SamplingRateInfo *pSamplingRateInfo, uint8_t *band_is_noise,
+AAC_DECODER_ERROR_t CBlock_InverseQuantizeSpectralData(
+    CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+    SamplingRateInfo_t *pSamplingRateInfo, uint8_t *band_is_noise,
     uint8_t active_band_search);
 
 /**

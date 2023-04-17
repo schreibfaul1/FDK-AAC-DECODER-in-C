@@ -1,7 +1,7 @@
 ﻿---
 BasedOnStyle: Google
 AccessModifierOffset: '-2'
-ColumnLimit: '120'
+ColumnLimit: '150'
 IndentWidth: '4'
 ReflowComments: 'true'
 PointerAlignment: Right
@@ -34,7 +34,7 @@ BraceWrapping:
   AfterNamespace:  true
   AfterObjCDeclaration: true
   AfterStruct:     false
-  AfterUnion:      true
+  AfterUnion:      false
   BeforeCatch:     true
   BeforeElse:      true
   IndentBraces:    false

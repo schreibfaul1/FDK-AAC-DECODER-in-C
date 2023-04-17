@@ -9,13 +9,13 @@ int32_t CPulseData_Read(HANDLE_FDK_BITSTREAM bs, CPulseData *const PulseData,
                     const int16_t frame_length) {
   int32_t i, k = 0;
   const uint32_t MaxSfBands =
-      GetScaleFactorBandsTransmitted((const CIcsInfo *)pIcsInfo);
+      GetScaleFactorBandsTransmitted((const CIcsInfo_t *)pIcsInfo);
 
   /* reset pulse data flag */
   PulseData->PulseDataPresent = 0;
 
   if ((PulseData->PulseDataPresent = (uint8_t)FDKreadBit(bs)) != 0) {
-    if (!IsLongBlock((const CIcsInfo *)pIcsInfo)) {
+    if (!IsLongBlock((const CIcsInfo_t *)pIcsInfo)) {
       return AAC_DEC_DECODE_FRAME_ERROR;
     }
 

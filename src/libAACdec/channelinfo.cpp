@@ -12,9 +12,9 @@
 #include "aac_rom.h"
 #include "../libFDK/FDK_bitstream.h"
 
-AAC_DECODER_ERROR IcsReadMaxSfb(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
-                                const SamplingRateInfo *pSamplingRateInfo) {
-  AAC_DECODER_ERROR ErrorStatus = AAC_DEC_OK;
+AAC_DECODER_ERROR_t IcsReadMaxSfb(HANDLE_FDK_BITSTREAM bs, CIcsInfo_t *pIcsInfo,
+                                const SamplingRateInfo_t *pSamplingRateInfo) {
+  AAC_DECODER_ERROR_t ErrorStatus = AAC_DEC_OK;
   int32_t nbits;
 
   if (IsLongBlock(pIcsInfo)) {
@@ -33,10 +33,10 @@ AAC_DECODER_ERROR IcsReadMaxSfb(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
   return ErrorStatus;
 }
 
-AAC_DECODER_ERROR IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
-                          const SamplingRateInfo *pSamplingRateInfo,
+AAC_DECODER_ERROR_t IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo_t *pIcsInfo,
+                          const SamplingRateInfo_t *pSamplingRateInfo,
                           const uint32_t flags) {
-  AAC_DECODER_ERROR ErrorStatus = AAC_DEC_OK;
+  AAC_DECODER_ERROR_t ErrorStatus = AAC_DEC_OK;
 
   pIcsInfo->Valid = 0;
 
@@ -47,7 +47,7 @@ AAC_DECODER_ERROR IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo *pIcsInfo,
     if (!(flags & (AC_USAC | AC_RSVD50 | AC_RSV603DA))) {
       FDKreadBits(bs, 1);
     }
-    pIcsInfo->WindowSequence = (BLOCK_TYPE)FDKreadBits(bs, 2);
+    pIcsInfo->WindowSequence = (BLOCK_TYPE_t)FDKreadBits(bs, 2);
     pIcsInfo->WindowShape = (uint8_t)FDKreadBits(bs, 1);
     if (flags & AC_LD) {
       if (pIcsInfo->WindowShape) {
@@ -129,7 +129,7 @@ bail:
   Table entries are sorted as following:
   | num_swb_long_window | sfbands_long | num_swb_short_window | sfbands_short |
 */
-AAC_DECODER_ERROR getSamplingRateInfo(SamplingRateInfo *t, uint32_t samplesPerFrame,
+AAC_DECODER_ERROR_t getSamplingRateInfo(SamplingRateInfo_t *t, uint32_t samplesPerFrame,
                                       uint32_t samplingRateIndex,
                                       uint32_t samplingRate) {
   int32_t index = 0;

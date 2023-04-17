@@ -24,57 +24,13 @@
 /* ------------------------------------------------ */
 /* ----------- basic HCR configuration ------------ */
 
-#define MAX_SFB_HCR                                                          \
-  (((1024 / 8) / LINES_PER_UNIT) * 8) /* (8 * 16) is not enough because sfbs \
-                                         are split in units for blocktype    \
-                                         int16_t */
-#define NUMBER_OF_UNIT_GROUPS (LINES_PER_UNIT * 8)
-#define LINES_PER_UNIT_GROUP (1024 / NUMBER_OF_UNIT_GROUPS) /* 15 16 30 32 */
+
 
 /* ------------------------------------------------ */
 /* ------------------------------------------------ */
 /* ------------------------------------------------ */
 
-#define FROM_LEFT_TO_RIGHT 0
-#define FROM_RIGHT_TO_LEFT 1
 
-#define MAX_CB_PAIRS 23
-#define MAX_HCR_SETS 14
-
-#define ESCAPE_VALUE 16
-#define POSITION_OF_FLAG_A 21
-#define POSITION_OF_FLAG_B 20
-
-#define MAX_CB 32 /* last used CB is cb #31 when VCB11 is used */
-
-#define MAX_CB_CHECK                                                         \
-  32 /* support for VCB11 available -- is more general, could therefore used \
-        in both cases */
-
-#define NUMBER_OF_BIT_IN_WORD 32
-
-/* log */
-#define THIRTYTWO_LOG_DIV_TWO_LOG 5
-#define EIGHT_LOG_DIV_TWO_LOG 3
-#define FOUR_LOG_DIV_TWO_LOG 2
-
-/* borders */
-#define CPE_TOP_LENGTH 12288
-#define SCE_TOP_LENGTH 6144
-#define LEN_OF_LONGEST_CW_TOP_LENGTH 49
-
-/* qsc's of high level */
-#define Q_VALUE_INVALID \
-  8192 /* mark a invalid line with this value (to be concealed later on) */
-#define HCR_DIRAC 500 /* a line of high level */
-
-/* masks */
-#define MASK_LEFT 0xFFF000
-#define MASK_RIGHT 0xFFF
-#define CLR_BIT_10 0x3FF
-#define TEST_BIT_10 0x400
-
-#define LEFT_OFFSET 12
 
 /* when set HCR is replaced by a dummy-module which just fills the outputbuffer
  * with a dirac sequence */
@@ -251,90 +207,5 @@
 typedef enum { PCW_BODY, PCW_BODY_SIGN, PCW_BODY_SIGN_ESC } PCW_TYPE;
 
 /* interface Decoder <---> HCR */
-typedef struct {
-  uint32_t errorLog;
-  SPECTRAL_PTR pQuantizedSpectralCoefficientsBase;
-  int32_t quantizedSpectralCoefficientsIdx;
-  int16_t lengthOfReorderedSpectralData;
-  int16_t numSection;
-  int16_t *pNumLineInSect;
-  int32_t bitstreamAnchor;
-  int8_t lengthOfLongestCodeword;
-  uint8_t *pCodebook;
-} HCR_INPUT_OUTPUT;
-
-typedef struct {
-  const uint8_t *pMinOfCbPair;
-  const uint8_t *pMaxOfCbPair;
-} HCR_CB_PAIRS;
-
-typedef struct {
-  const uint16_t *pLargestAbsVal;
-  const uint8_t *pMaxCwLength;
-  const uint8_t *pCbDimension;
-  const uint8_t *pCbDimShift;
-  const uint8_t *pCbSign;
-  const uint8_t *pCbPriority;
-} HCR_TABLE_INFO;
-
-typedef struct {
-  uint32_t numSegment;
-  uint32_t pSegmentBitfield[((1024 >> 1) / NUMBER_OF_BIT_IN_WORD + 1)];
-  uint32_t pCodewordBitfield[((1024 >> 1) / NUMBER_OF_BIT_IN_WORD + 1)];
-  uint32_t segmentOffset;
-  int32_t pLeftStartOfSegment[1024 >> 1];
-  int32_t pRightStartOfSegment[1024 >> 1];
-  int8_t pRemainingBitsInSegment[1024 >> 1];
-  uint8_t readDirection;
-  uint8_t numWordForBitfield;
-  uint16_t pNumBitValidInLastWord;
-} HCR_SEGMENT_INFO;
-
-typedef struct {
-  uint32_t numCodeword;
-  uint32_t numSortedSection;
-  uint16_t pNumCodewordInSection[MAX_SFB_HCR];
-  uint16_t pNumSortedCodewordInSection[MAX_SFB_HCR];
-  uint16_t pNumExtendedSortedCodewordInSection[MAX_SFB_HCR + MAX_HCR_SETS];
-  int32_t numExtendedSortedCodewordInSectionIdx;
-  uint16_t pNumExtendedSortedSectionsInSets[MAX_HCR_SETS];
-  int32_t numExtendedSortedSectionsInSetsIdx;
-  uint16_t pReorderOffset[MAX_SFB_HCR];
-  uint8_t pSortedCodebook[MAX_SFB_HCR];
-
-  uint8_t pExtendedSortedCodebook[MAX_SFB_HCR + MAX_HCR_SETS];
-  int32_t extendedSortedCodebookIdx;
-  uint8_t pMaxLenOfCbInExtSrtSec[MAX_SFB_HCR + MAX_HCR_SETS];
-  int32_t maxLenOfCbInExtSrtSecIdx;
-  uint8_t pCodebookSwitch[MAX_SFB_HCR];
-} HCR_SECTION_INFO;
-
-typedef uint32_t (*STATEFUNC)(HANDLE_FDK_BITSTREAM, void *);
-
-typedef struct {
-  /* worst-case and 1024/4 non-PCWs exist in worst-case */
-  int32_t
-  *pResultBase; /* Base address for spectral data output target buffer */
-  uint32_t iNode[1024 >> 2]; /* Helper indices for code books */
-  uint16_t
-  iResultPointer[1024 >> 2]; /* Helper indices for accessing pResultBase */
-  uint32_t pEscapeSequenceInfo[1024 >> 2];
-  uint32_t codewordOffset;
-  STATEFUNC pState;
-  uint8_t pCodebook[1024 >> 2];
-  uint8_t pCntSign[1024 >> 2];
-  /* this array holds the states coded as integer values within the range
-   * [0,1,..,7] */
-  int8_t pSta[1024 >> 2];
-} HCR_NON_PCW_SIDEINFO;
-
-typedef struct {
-  HCR_INPUT_OUTPUT decInOut;
-  HCR_SEGMENT_INFO segmentInfo;
-  HCR_SECTION_INFO sectionInfo;
-  HCR_NON_PCW_SIDEINFO nonPcwSideinfo;
-} CErHcrInfo;
-
-typedef CErHcrInfo *H_HCR_INFO;
 
 #endif /* AACDEC_HCR_TYPES_H */

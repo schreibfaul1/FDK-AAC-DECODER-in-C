@@ -217,10 +217,10 @@ static void ScaleBand(int32_t * spec, int32_t size, int32_t scaleFactor,
   flagged as noisy bands
 
 */
-void CPns_Apply(const CPnsData *pPnsData, const CIcsInfo *pIcsInfo,
-                SPECTRAL_PTR pSpectrum, const int16_t *pSpecScale,
+void CPns_Apply(const CPnsData *pPnsData, const CIcsInfo_t *pIcsInfo,
+                int32_t* pSpectrum, const int16_t *pSpecScale,
                 const int16_t *pScaleFactor,
-                const SamplingRateInfo *pSamplingRateInfo,
+                const SamplingRateInfo_t *pSamplingRateInfo,
                 const int32_t granuleLength, const int32_t channel) {
   if (pPnsData->PnsActive) {
     const int16_t *BandOffsets =

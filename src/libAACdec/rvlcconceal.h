@@ -19,16 +19,16 @@
 #include "rvlc.h"
 
 void BidirectionalEstimation_UseLowerScfOfCurrentFrame(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo);
+    CAacDecoderChannelInfo_t *pAacDecoderChannelInfo);
 
 void BidirectionalEstimation_UseScfOfPrevFrameAsReference(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo);
+    CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo);
 
-void StatisticalEstimation(CAacDecoderChannelInfo *pAacDecoderChannelInfo);
+void StatisticalEstimation(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo);
 
 void PredictiveInterpolation(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo);
+    CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo);
 
 #endif /* RVLCCONCEAL_H */

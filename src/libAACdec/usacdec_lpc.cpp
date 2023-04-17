@@ -208,7 +208,7 @@ static int32_t table_lookup(const uint16_t *table, uint32_t index, int32_t range
   --------------------------------------------------------------------------
  */
 static void re8_decode_rank_of_permutation(int32_t rank, int32_t *xs, int16_t x[8]) {
-  int32_t a[8], w[8], B, fac, fac_B, target;
+  int32_t a[8], w[8], B1, fac, fac_B, target;
   int32_t i, j;
 
   /* --- pre-processing based on the signed leader xs ---
@@ -227,7 +227,7 @@ static void re8_decode_rank_of_permutation(int32_t rank, int32_t *xs, int16_t x[
   j = 0;
   w[j] = 1;
   a[j] = xs[0];
-  B = 1;
+  B1 = 1;
   for (i = 1; i < 8; i++) {
     if (xs[i] != xs[i - 1]) {
       j++;
@@ -235,7 +235,7 @@ static void re8_decode_rank_of_permutation(int32_t rank, int32_t *xs, int16_t x[
       a[j] = xs[i];
     } else {
       w[j]++;
-      B *= w[j];
+      B1 *= w[j];
     }
   }
 
@@ -443,8 +443,8 @@ static int32_t RE8_dec(int32_t n, int32_t I, int32_t *k, int32_t *y) {
  * \param xq weighted residual LSF vector
  * \param nk_mode code book number coding mode.
  */
-static void lsf_weight_2st(FIXP_LPC *lsfq, int32_t *xq, int32_t nk_mode) {
-  FIXP_LPC d[M_LP_FILTER_ORDER + 1];
+static void lsf_weight_2st(int16_t *lsfq, int32_t *xq, int32_t nk_mode) {
+  int16_t d[M_LP_FILTER_ORDER + 1];
   int16_t factor;
   int32_t w; /* inverse weight factor */
   int32_t i;
@@ -548,8 +548,8 @@ static void decode_qn(HANDLE_FDK_BITSTREAM hBs, int32_t nk_mode, int32_t nqn,
  * \param min_dist min distance scaled by LSF_SCALE
  * \param n number of LSF/LSP coefficients.
  */
-static void reorder_lsf(FIXP_LPC *lsf, FIXP_LPC min_dist, int32_t n) {
-  FIXP_LPC lsf_min;
+static void reorder_lsf(int16_t *lsf, int16_t min_dist, int32_t n) {
+  int16_t lsf_min;
   int32_t i;
 
   lsf_min = min_dist;
@@ -579,9 +579,9 @@ static void reorder_lsf(FIXP_LPC *lsf, FIXP_LPC min_dist, int32_t n) {
  */
 static void vlpc_1st_dec(
     HANDLE_FDK_BITSTREAM hBs, /* input:  codebook index                  */
-    FIXP_LPC *lsfq            /* i/o:    i:prediction   o:quantized lsf  */
+    int16_t *lsfq            /* i/o:    i:prediction   o:quantized lsf  */
 ) {
-  const FIXP_LPC *p_dico;
+  const int16_t *p_dico;
   int32_t i, index;
 
   index = FDKreadBits(hBs, 8);
@@ -602,7 +602,7 @@ static void vlpc_1st_dec(
  */
 static int32_t vlpc_2st_dec(
     HANDLE_FDK_BITSTREAM hBs,
-    FIXP_LPC *lsfq, /* i/o:    i:1st stage   o:1st+2nd stage   */
+    int16_t *lsfq, /* i/o:    i:1st stage   o:1st+2nd stage   */
     int32_t nk_mode     /* input:  0=abs, >0=rel                   */
 ) {
   int32_t err;
@@ -670,9 +670,9 @@ int32_t CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *pOutput, int32_t nk_mo
   return 0;
 }
 
-int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
-              FIXP_LPC lpc4_lsf[M_LP_FILTER_ORDER],
-              FIXP_LPC lsf_adaptive_mean_cand[M_LP_FILTER_ORDER],
+int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, int16_t lsp[][M_LP_FILTER_ORDER],
+              int16_t lpc4_lsf[M_LP_FILTER_ORDER],
+              int16_t lsf_adaptive_mean_cand[M_LP_FILTER_ORDER],
               int16_t pStability[], uint8_t *mod, int32_t first_lpd_flag,
               int32_t last_lpc_lost, int32_t last_frame_ok) {
   int32_t i, k, err;
@@ -875,7 +875,7 @@ int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
   /* calculate stability factor Theta. Needed for ACELP decoder and concealment
    */
   {
-    FIXP_LPC *lsf_prev, *lsf_curr;
+    int16_t *lsf_prev, *lsf_curr;
     k = 0;
 
     assert(lpc_present[0] == 1 && lpc_present[4 >> s] == 1);
@@ -927,9 +927,9 @@ int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, FIXP_LPC lsp[][M_LP_FILTER_ORDER],
   return 0;
 }
 
-void CLpc_Conceal(FIXP_LPC lsp[][M_LP_FILTER_ORDER],
-                  FIXP_LPC lpc4_lsf[M_LP_FILTER_ORDER],
-                  FIXP_LPC lsf_adaptive_mean[M_LP_FILTER_ORDER],
+void CLpc_Conceal(int16_t lsp[][M_LP_FILTER_ORDER],
+                  int16_t lpc4_lsf[M_LP_FILTER_ORDER],
+                  int16_t lsf_adaptive_mean[M_LP_FILTER_ORDER],
                   const int32_t first_lpd_flag) {
   int32_t i, j;
 
@@ -954,7 +954,7 @@ void CLpc_Conceal(FIXP_LPC lsp[][M_LP_FILTER_ORDER],
 
   /* LPC1 */
   for (i = 0; i < M_LP_FILTER_ORDER; i++) {
-    FIXP_LPC lsf_mean = FX_DBL2FX_LPC(fMult(BETA, fdk_dec_lsf_init[i]) +
+    int16_t lsf_mean = FX_DBL2FX_LPC(fMult(BETA, fdk_dec_lsf_init[i]) +
                                       fMult(ONE_BETA, lsf_adaptive_mean[i]));
 
     lsp[1][i] = FX_DBL2FX_LPC(fMult(BFI_FAC, lpc4_lsf[i]) +
@@ -964,12 +964,12 @@ void CLpc_Conceal(FIXP_LPC lsp[][M_LP_FILTER_ORDER],
   /* LPC2 - LPC4 */
   for (j = 2; j <= 4; j++) {
     for (i = 0; i < M_LP_FILTER_ORDER; i++) {
-      /* lsf_mean[i] =  FX_DBL2FX_LPC(fMult((FIXP_LPC)(BETA + j *
+      /* lsf_mean[i] =  FX_DBL2FX_LPC(fMult((int16_t)(BETA + j *
          FL2FXCONST_LPC(0.1f)), fdk_dec_lsf_init[i])
-                                    + fMult((FIXP_LPC)(ONE_BETA - j *
+                                    + fMult((int16_t)(ONE_BETA - j *
          FL2FXCONST_LPC(0.1f)), lsf_adaptive_mean[i])); */
 
-      FIXP_LPC lsf_mean = FX_DBL2FX_LPC(
+      int16_t lsf_mean = FX_DBL2FX_LPC(
           fMult((int16_t)(BETA + (int16_t)(j * (int32_t)  3277)),
                 (int16_t)fdk_dec_lsf_init[i]) +
           fMult(
@@ -996,7 +996,7 @@ void CLpc_Conceal(FIXP_LPC lsp[][M_LP_FILTER_ORDER],
   }
 }
 
-void E_LPC_a_weight(FIXP_LPC *wA, const FIXP_LPC *A, int32_t m) {
+void E_LPC_a_weight(int16_t *wA, const int16_t *A, int32_t m) {
   int32_t f;
   int32_t i;
 
@@ -1036,9 +1036,9 @@ void CLpd_DecodeGain(int32_t *gain, int32_t *gain_e, int32_t gain_code) {
 
 #define SF_F 8
 
-static void get_lsppol(FIXP_LPC lsp[], int32_t f[], int32_t n, int32_t flag) {
+static void get_lsppol(int16_t lsp[], int32_t f[], int32_t n, int32_t flag) {
   int32_t b;
-  FIXP_LPC *plsp;
+  int16_t *plsp;
   int32_t i, j;
 
   plsp = lsp + flag - 1;
@@ -1066,7 +1066,7 @@ static void get_lsppol(FIXP_LPC lsp[], int32_t f[], int32_t n, int32_t flag) {
  * \brief lsp input LSP vector
  * \brief a output LP filter coefficient vector scaled by SF_A_COEFFS.
  */
-void E_LPC_f_lsp_a_conversion(FIXP_LPC *lsp, FIXP_LPC *a, int32_t *a_exp) {
+void E_LPC_f_lsp_a_conversion(int16_t *lsp, int16_t *a, int32_t *a_exp) {
   int32_t f1[NC + 1], f2[NC + 1];
   int32_t i, k;
 

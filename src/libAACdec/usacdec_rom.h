@@ -35,8 +35,8 @@ extern const uint8_t fdk_dec_Da[][8];
 extern const uint16_t fdk_dec_I3[], fdk_dec_I4[];
 
 /* temp float tables for LPC decoding */
-extern const FIXP_LPC fdk_dec_lsf_init[16];
-extern const FIXP_LPC fdk_dec_dico_lsf_abs_8b[16 * 256];
+extern const int16_t fdk_dec_lsf_init[16];
+extern const int16_t fdk_dec_dico_lsf_abs_8b[16 * 256];
 
 /* ACELP tables */
 #define SF_QUA_GAIN7B 4

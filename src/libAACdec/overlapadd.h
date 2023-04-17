@@ -8,7 +8,7 @@
 #define OverlapBufferSize (768)
 
 typedef int32_t SPECTRUM[1024];
-typedef int32_t* SPECTRAL_PTR;
+
 
 #define SPEC_LONG(ptr) (ptr)
 #define SPEC(ptr, w, gl) ((ptr) + ((w) * (gl)))

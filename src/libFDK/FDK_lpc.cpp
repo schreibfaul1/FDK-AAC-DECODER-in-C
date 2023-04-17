@@ -164,16 +164,16 @@ void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t si
 }
 /* default version */
 void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t signal_e,
-                    const int32_t inc, const FIXP_LPC *lpcCoeff_m,
+                    const int32_t inc, const int16_t *lpcCoeff_m,
                     const int32_t lpcCoeff_e, const int32_t order, int32_t *state,
                     int32_t *pStateIndex) {
   int32_t i, j;
   int32_t *pSignal;
   int32_t stateIndex = *pStateIndex;
 
-  FIXP_LPC coeff[2 * LPC_MAX_ORDER];
-  memcpy(&coeff[0], lpcCoeff_m, order * sizeof(FIXP_LPC));
-  memcpy(&coeff[order], lpcCoeff_m, order * sizeof(FIXP_LPC));
+  int16_t coeff[2 * LPC_MAX_ORDER];
+  memcpy(&coeff[0], lpcCoeff_m, order * sizeof(int16_t));
+  memcpy(&coeff[order], lpcCoeff_m, order * sizeof(int16_t));
 
   assert(order <= LPC_MAX_ORDER);
   assert(stateIndex < order);
@@ -187,7 +187,7 @@ void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t si
 
   for (i = 0; i < signal_size; i++) {
     int32_t x;
-    const FIXP_LPC *pCoeff = coeff + order - stateIndex;
+    const int16_t *pCoeff = coeff + order - stateIndex;
 
     x = scaleValue(*pSignal, -(lpcCoeff_e + 1));
     for (j = 0; j < order; j++) {
@@ -208,7 +208,7 @@ void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t si
 
 /* FIR */
 void CLpc_Analysis(int32_t * signal, const int32_t signal_size,
-                   const FIXP_LPC lpcCoeff_m[], const int32_t lpcCoeff_e,
+                   const int16_t lpcCoeff_m[], const int32_t lpcCoeff_e,
                    const int32_t order, int32_t * filtState,
                    int32_t *filtStateIndex) {
   int32_t stateIndex;
@@ -226,10 +226,10 @@ void CLpc_Analysis(int32_t * signal, const int32_t signal_size,
 
   /* keep filter coefficients twice and save memory copy operation in
      modulo state buffer */
-  FIXP_LPC coeff[2 * LPC_MAX_ORDER];
-  FIXP_LPC *pCoeff;
-  memcpy(&coeff[0], lpcCoeff_m, order * sizeof(FIXP_LPC));
-  memcpy(&coeff[order], lpcCoeff_m, order * sizeof(FIXP_LPC));
+  int16_t coeff[2 * LPC_MAX_ORDER];
+  int16_t *pCoeff;
+  memcpy(&coeff[0], lpcCoeff_m, order * sizeof(int16_t));
+  memcpy(&coeff[order], lpcCoeff_m, order * sizeof(int16_t));
 
   /*
       # Analysis filter, obtain residual.
@@ -299,7 +299,7 @@ int32_t CLpc_ParcorToLpc(const FIXP_LPC_TNS reflCoeff[], FIXP_LPC_TNS LpcCoeff[]
   return (par2LpcShiftVal - shiftval);
 }
 /* Default version */
-int32_t CLpc_ParcorToLpc(const FIXP_LPC reflCoeff[], FIXP_LPC LpcCoeff[],
+int32_t CLpc_ParcorToLpc(const int16_t reflCoeff[], int16_t LpcCoeff[],
                      int32_t numOfCoeff, int32_t workBuffer[]) {
   int32_t i, j;
   int32_t shiftval,
@@ -338,7 +338,7 @@ int32_t CLpc_ParcorToLpc(const FIXP_LPC reflCoeff[], FIXP_LPC LpcCoeff[],
 }
 
 void CLpc_AutoToParcor(int32_t acorr[], const int32_t acorr_e,
-                       FIXP_LPC reflCoeff[], const int32_t numOfCoeff,
+                       int16_t reflCoeff[], const int32_t numOfCoeff,
                        int32_t *pPredictionGain_m, int32_t *pPredictionGain_e) {
   int32_t i, j, scale = 0;
   int32_t parcorWorkBuffer[LPC_MAX_ORDER];
@@ -346,7 +346,7 @@ void CLpc_AutoToParcor(int32_t acorr[], const int32_t acorr_e,
   int32_t *workBuffer = parcorWorkBuffer;
   int32_t autoCorr_0 = acorr[0];
 
-  memset(reflCoeff, 0, numOfCoeff * sizeof(FIXP_LPC));
+  memset(reflCoeff, 0, numOfCoeff * sizeof(int16_t));
 
   if (autoCorr_0 == FL2FXCONST_DBL(0.0)) {
     if (pPredictionGain_m != NULL) {

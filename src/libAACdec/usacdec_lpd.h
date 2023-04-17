@@ -13,49 +13,8 @@
 #include "newAACDecoder.h"
 #include "channelinfo.h"
 
-#define OPTIMIZE_AVG_PERFORMANCE
 
-/**
- * \brief read a lpd_channel_stream.
- * \param hBs a bit stream handle, where the lpd_channel_stream is located.
- * \param pAacDecoderChannelInfo the channel context structure for storing read
- * data.
- * \param flags bit stream syntax flags.
- * \return AAC_DECODER_ERROR error code.
- */
-AAC_DECODER_ERROR CLpdChannelStream_Read(
-    HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo, uint32_t flags);
 
-/**
- * \brief decode one lpd_channel_stream and render the audio output.
- * \param pAacDecoderChannelInfo struct holding the channel information to be
- * rendered.
- * \param pAacDecoderStaticChannelInfo struct holding the persistent channel
- * information to be rendered.
- * \param pSamplingRateInfo holds the sampling rate information
- * \param elFlags holds the internal decoder flags
- */
-void CLpdChannelStream_Decode(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo, uint32_t flags);
-
-/**
- * \brief generate time domain output signal for LPD channel streams
- * \param pAacDecoderStaticChannelInfo
- * \param pAacDecoderChannelInfo
- * \param pTimeData pointer to output buffer
- * \param samplesPerFrame amount of output samples
- * \param pSamplingRateInfo holds the sampling rate information
- * \param aacOutDataHeadroom headroom of the output time signal to prevent
- * clipping
- */
-AAC_DECODER_ERROR CLpd_RenderTimeSignal(
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo,
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo, int32_t *pTimeData,
-    int32_t samplesPerFrame, SamplingRateInfo *pSamplingRateInfo, uint32_t frameOk,
-    const int32_t aacOutDataHeadroom, uint32_t flags, uint32_t strmFlags);
 
 static inline int32_t CLpd_FAC_getLength(int32_t fNotShortBlock, int32_t fac_length_long) {
   if (fNotShortBlock) {
@@ -104,6 +63,6 @@ int32_t UsacRandomSign(uint32_t *seed) {
   return (int32_t)((*seed) & 0x10000);
 }
 
-void CFdp_Reset(CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo);
+void CFdp_Reset(CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo);
 
 #endif /* USACDEC_LPD_H */

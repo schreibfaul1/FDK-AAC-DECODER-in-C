@@ -33,7 +33,7 @@ typedef int32_t FIXP_LPC_TNS;
 #define FL2FXCONST_LPC_TNS(val) FL2FXCONST_DBL(val)
 #define MAXVAL_LPC_TNS MAXVAL_DBL
 
-typedef int16_t FIXP_LPC;
+
 #define FX_DBL2FX_LPC(x) FX_DBL2FX_SGL((int32_t)(x))
 #define FX_LPC2FX_DBL(x) FX_SGL2FX_DBL(x)
 #define FL2FXCONST_LPC(val) FL2FXCONST_SGL(val)
@@ -51,7 +51,7 @@ typedef int16_t FIXP_LPC;
  * \param filtStateIndex pointer to state index storage
  */
 void CLpc_Analysis(int32_t signal[], const int32_t signal_size,
-                   const FIXP_LPC lpcCoeff_m[], const int32_t lpcCoeff_e,
+                   const int16_t lpcCoeff_m[], const int32_t lpcCoeff_e,
                    const int32_t order, int32_t *filtState, int32_t *filtStateIndex);
 
 /**
@@ -72,7 +72,7 @@ void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t si
                     const int32_t lpcCoeff_e, const int32_t order, int32_t *state,
                     int32_t *pStateIndex);
 void CLpc_Synthesis(int32_t *signal, const int32_t signal_size, const int32_t signal_e,
-                    const int32_t inc, const FIXP_LPC coeff[], const int32_t coeff_e,
+                    const int32_t inc, const int16_t coeff[], const int32_t coeff_e,
                     const int32_t order, int32_t *filtState, int32_t *pStateIndex);
 
 /**
@@ -104,7 +104,7 @@ void CLpc_SynthesisLattice(int32_t * signal, const int32_t signal_size,
  */
 int32_t CLpc_ParcorToLpc(const FIXP_LPC_TNS reflCoeff[], FIXP_LPC_TNS LpcCoeff[],
                      int32_t numOfCoeff, int32_t workBuffer[]);
-int32_t CLpc_ParcorToLpc(const FIXP_LPC reflCoeff[], FIXP_LPC LpcCoeff[],
+int32_t CLpc_ParcorToLpc(const int16_t reflCoeff[], int16_t LpcCoeff[],
                      const int32_t numOfCoeff, int32_t workBuffer[]);
 
 /**
@@ -119,7 +119,7 @@ int32_t CLpc_ParcorToLpc(const FIXP_LPC reflCoeff[], FIXP_LPC LpcCoeff[],
  * \param pPredictionGain_e prediction gain exponent
  */
 void CLpc_AutoToParcor(int32_t acorr[], const int32_t acorr_e,
-                       FIXP_LPC reflCoeff[], const int32_t order,
+                       int16_t reflCoeff[], const int32_t order,
                        int32_t *pPredictionGain_m, int32_t *pPredictionGain_e);
 
 #endif /* FDK_LPC_H */

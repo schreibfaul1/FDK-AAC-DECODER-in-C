@@ -116,14 +116,7 @@ amm-info@iis.fraunhofer.de
 
 typedef enum { BS_READER, BS_WRITER } FDK_BS_CFG;
 
-typedef struct {
-  uint32_t CacheWord;
-  uint32_t BitsInCache;
-  FDK_BITBUF hBitBuf;
-  uint32_t ConfigCache;
-} FDK_BITSTREAM;
 
-typedef FDK_BITSTREAM *HANDLE_FDK_BITSTREAM;
 
 /**
  * \brief CreateBitStream Function.

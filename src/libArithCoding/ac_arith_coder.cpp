@@ -466,16 +466,16 @@ static ARITH_CODING_ERROR decode2(HANDLE_FDK_BITSTREAM bbuf, uint8_t * c_prev,
 	return ErrorStatus;
 }
 
-CArcoData *CArco_Create(void) { return (CArcoData *)FDKcalloc(1, sizeof(CArcoData)); }
+CArcoData_t *CArco_Create(void) { return (CArcoData_t *)FDKcalloc(1, sizeof(CArcoData_t)); }
 
-void CArco_Destroy(CArcoData *pArcoData) {
+void CArco_Destroy(CArcoData_t *pArcoData) {
 	if(pArcoData) {
 		free(pArcoData);
 		pArcoData = NULL;
 	}
 }
 
-ARITH_CODING_ERROR CArco_DecodeArithData(CArcoData *pArcoData, HANDLE_FDK_BITSTREAM hBs,
+ARITH_CODING_ERROR CArco_DecodeArithData(CArcoData_t *pArcoData, HANDLE_FDK_BITSTREAM hBs,
 										 int32_t * mdctSpectrum, int32_t lg, int32_t lg_max, int32_t arith_reset_flag) {
 	ARITH_CODING_ERROR ErrorStatus = ARITH_CODER_OK;
 

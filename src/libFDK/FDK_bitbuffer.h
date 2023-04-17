@@ -19,18 +19,7 @@
 /* leave 3 bits headroom so MAX_BUFSIZE can be represented in bits as well. */
 #define MAX_BUFSIZE_BYTES (0x10000000)
 
-typedef struct {
-  uint32_t ValidBits;
-  uint32_t ReadOffset;
-  uint32_t WriteOffset;
-  uint32_t BitNdx;
 
-  uint8_t *Buffer;
-  uint32_t bufSize;
-  uint32_t bufBits;
-} FDK_BITBUF;
-
-typedef FDK_BITBUF *HANDLE_FDK_BITBUF;
 
 #ifdef __cplusplus
 extern "C" {

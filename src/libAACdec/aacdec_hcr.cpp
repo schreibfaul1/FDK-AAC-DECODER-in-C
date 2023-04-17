@@ -66,8 +66,8 @@ static const int8_t *DecodePCW_Body(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnc
 static void DecodePCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO pHcr);
 
 static void HcrReorderQuantizedSpectralCoefficients(
-    H_HCR_INFO pHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo);
+    H_HCR_INFO pHcr, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+    const SamplingRateInfo_t *pSamplingRateInfo);
 
 static uint8_t errDetectPcwSegmentation(int8_t remainingBitsInSegment,
                                       H_HCR_INFO pHcr, PCW_TYPE kind,
@@ -110,7 +110,7 @@ components: 'reordered_spectral_data_length' and 'longest_codeword_length'
 */
 
 void CHcr_Read(HANDLE_FDK_BITSTREAM bs,
-               CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+               CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                const MP4_ELEMENT_ID_t globalHcrType) {
   int16_t lengOfReorderedSpectralData;
   int8_t lengOfLongestCodeword;
@@ -173,10 +173,10 @@ the order that HCR could assemble the qsc's as if it is a int32_t block.
 --------------------------------------------------------------------------------------------
 */
 
-uint32_t HcrInit(H_HCR_INFO pHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-             const SamplingRateInfo *pSamplingRateInfo,
+uint32_t HcrInit(H_HCR_INFO pHcr, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+             const SamplingRateInfo_t *pSamplingRateInfo,
              HANDLE_FDK_BITSTREAM bs) {
-  CIcsInfo *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
+  CIcsInfo_t *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
   int16_t *pNumLinesInSec;
   uint8_t *pCodeBk;
   int16_t numSection;
@@ -341,8 +341,8 @@ quantized spectral coefficients in correct order in the output buffer.
 --------------------------------------------------------------------------------------------
 */
 
-uint32_t HcrDecoder(H_HCR_INFO pHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                const SamplingRateInfo *pSamplingRateInfo,
+uint32_t HcrDecoder(H_HCR_INFO pHcr, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+                const SamplingRateInfo_t *pSamplingRateInfo,
                 HANDLE_FDK_BITSTREAM bs) {
   int32_t pTmp1, pTmp2, pTmp3, pTmp4;
   int32_t pTmp5;
@@ -419,8 +419,8 @@ huffman decoder).
 */
 
 static void HcrReorderQuantizedSpectralCoefficients(
-    H_HCR_INFO pHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-    const SamplingRateInfo *pSamplingRateInfo) {
+    H_HCR_INFO pHcr, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+    const SamplingRateInfo_t *pSamplingRateInfo) {
   int32_t qsc;
   uint32_t abs_qsc;
   uint32_t i, j;
@@ -429,7 +429,7 @@ static void HcrReorderQuantizedSpectralCoefficients(
   uint16_t lavErrorCnt = 0;
 
   uint32_t numSection = pHcr->decInOut.numSection;
-  SPECTRAL_PTR pQuantizedSpectralCoefficientsBase =
+  int32_t* pQuantizedSpectralCoefficientsBase =
       pHcr->decInOut.pQuantizedSpectralCoefficientsBase;
   int32_t *pQuantizedSpectralCoefficients =
       SPEC_LONG(pHcr->decInOut.pQuantizedSpectralCoefficientsBase);

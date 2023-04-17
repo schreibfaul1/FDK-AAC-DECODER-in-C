@@ -338,117 +338,8 @@ Where N equals to CStreamInfo::frameSize .
 
 
 #include "../libAACdec/newAACDecoder.h"
-#define AACDECODER_LIB_VL0 3
-#define AACDECODER_LIB_VL1 2
-#define AACDECODER_LIB_VL2 0
 
-#define PIT_MAX_MAX 512
 
-/**
- * \brief  AAC decoder error codes.
- */
-typedef enum {
-  AAC_DEC_OK =
-      0x0000, /*!< No error occurred. Output buffer is valid and error free. */
-  AAC_DEC_OUT_OF_MEMORY =
-      0x0002, /*!< Heap returned NULL pointer. Output buffer is invalid. */
-  AAC_DEC_UNKNOWN =
-      0x0005, /*!< Error condition is of unknown reason, or from a another
-                 module. Output buffer is invalid. */
-
-  /* Synchronization errors. Output buffer is invalid. */
-  aac_dec_sync_error_start = 0x1000,
-  AAC_DEC_TRANSPORT_SYNC_ERROR = 0x1001, /*!< The transport decoder had
-                                            synchronization problems. Do not
-                                            exit decoding. Just feed new
-                                              bitstream data. */
-  AAC_DEC_NOT_ENOUGH_BITS = 0x1002, /*!< The input buffer ran out of bits. */
-  aac_dec_sync_error_end = 0x1FFF,
-
-  /* Initialization errors. Output buffer is invalid. */
-  aac_dec_init_error_start = 0x2000,
-  AAC_DEC_INVALID_HANDLE =
-      0x2001, /*!< The handle passed to the function call was invalid (NULL). */
-  AAC_DEC_UNSUPPORTED_AOT =
-      0x2002, /*!< The AOT found in the configuration is not supported. */
-  AAC_DEC_UNSUPPORTED_FORMAT =
-      0x2003, /*!< The bitstream format is not supported.  */
-  AAC_DEC_UNSUPPORTED_ER_FORMAT =
-      0x2004, /*!< The error resilience tool format is not supported. */
-  AAC_DEC_UNSUPPORTED_EPCONFIG =
-      0x2005, /*!< The error protection format is not supported. */
-  AAC_DEC_UNSUPPORTED_MULTILAYER =
-      0x2006, /*!< More than one layer for AAC scalable is not supported. */
-  AAC_DEC_UNSUPPORTED_CHANNELCONFIG =
-      0x2007, /*!< The channel configuration (either number or arrangement) is
-                 not supported. */
-  AAC_DEC_UNSUPPORTED_SAMPLINGRATE = 0x2008, /*!< The sample rate specified in
-                                                the configuration is not
-                                                supported. */
-  AAC_DEC_INVALID_SBR_CONFIG =
-      0x2009, /*!< The SBR configuration is not supported. */
-  AAC_DEC_SET_PARAM_FAIL = 0x200A,  /*!< The parameter could not be set. Either
-                                       the value was out of range or the
-                                       parameter does  not exist. */
-  AAC_DEC_NEED_TO_RESTART = 0x200B, /*!< The decoder needs to be restarted,
-                                       since the required configuration change
-                                       cannot be performed. */
-  AAC_DEC_OUTPUT_BUFFER_TOO_SMALL =
-      0x200C, /*!< The provided output buffer is too small. */
-  aac_dec_init_error_end = 0x2FFF,
-
-  /* Decode errors. Output buffer is valid but concealed. */
-  aac_dec_decode_error_start = 0x4000,
-  AAC_DEC_TRANSPORT_ERROR =
-      0x4001, /*!< The transport decoder encountered an unexpected error. */
-  AAC_DEC_PARSE_ERROR = 0x4002, /*!< Error while parsing the bitstream. Most
-                                   probably it is corrupted, or the system
-                                   crashed. */
-  AAC_DEC_UNSUPPORTED_EXTENSION_PAYLOAD =
-      0x4003, /*!< Error while parsing the extension payload of the bitstream.
-                 The extension payload type found is not supported. */
-  AAC_DEC_DECODE_FRAME_ERROR = 0x4004, /*!< The parsed bitstream value is out of
-                                          range. Most probably the bitstream is
-                                          corrupt, or the system crashed. */
-  AAC_DEC_CRC_ERROR = 0x4005,          /*!< The embedded CRC did not match. */
-  AAC_DEC_INVALID_CODE_BOOK = 0x4006,  /*!< An invalid codebook was signaled.
-                                          Most probably the bitstream is corrupt,
-                                          or the system  crashed. */
-  AAC_DEC_UNSUPPORTED_PREDICTION =
-      0x4007, /*!< Predictor found, but not supported in the AAC Low Complexity
-                 profile. Most probably the bitstream is corrupt, or has a wrong
-                 format. */
-  AAC_DEC_UNSUPPORTED_CCE = 0x4008, /*!< A CCE element was found which is not
-                                       supported. Most probably the bitstream is
-                                       corrupt, or has a wrong format. */
-  AAC_DEC_UNSUPPORTED_LFE = 0x4009, /*!< A LFE element was found which is not
-                                       supported. Most probably the bitstream is
-                                       corrupt, or has a wrong format. */
-  AAC_DEC_UNSUPPORTED_GAIN_CONTROL_DATA =
-      0x400A, /*!< Gain control data found but not supported. Most probably the
-                 bitstream is corrupt, or has a wrong format. */
-  AAC_DEC_UNSUPPORTED_SBA =
-      0x400B, /*!< SBA found, but currently not supported in the BSAC profile.
-               */
-  AAC_DEC_TNS_READ_ERROR = 0x400C, /*!< Error while reading TNS data. Most
-                                      probably the bitstream is corrupt or the
-                                      system crashed. */
-  AAC_DEC_RVLC_ERROR =
-      0x400D, /*!< Error while decoding error resilient data. */
-  aac_dec_decode_error_end = 0x4FFF,
-  /* Ancillary data errors. Output buffer is valid. */
-  aac_dec_anc_data_error_start = 0x8000,
-  AAC_DEC_ANC_DATA_ERROR =
-      0x8001, /*!< Non severe error concerning the ancillary data handling. */
-  AAC_DEC_TOO_SMALL_ANC_BUFFER = 0x8002,  /*!< The registered ancillary data
-                                             buffer is too small to receive the
-                                             parsed data. */
-  AAC_DEC_TOO_MANY_ANC_ELEMENTS = 0x8003, /*!< More than the allowed number of
-                                             ancillary data elements should be
-                                             written to buffer. */
-  aac_dec_anc_data_error_end = 0x8FFF
-
-} AAC_DECODER_ERROR;
 
 /** Macro to identify initialization errors. Output buffer is invalid. */
 #define IS_INIT_ERROR(err)                                                    \
@@ -810,7 +701,7 @@ extern "C" {
  * \param size    Size of the buffer pointed to by buffer.
  * \return        Error code.
  */
-AAC_DECODER_ERROR aacDecoder_AncDataInit(HANDLE_AACDECODER self,
+AAC_DECODER_ERROR_t aacDecoder_AncDataInit(HANDLE_AACDECODER self,
                                                     uint8_t *buffer, int32_t size);
 
 /**
@@ -824,7 +715,7 @@ AAC_DECODER_ERROR aacDecoder_AncDataInit(HANDLE_AACDECODER self,
  * ancillary data element.
  * \return       Error code.
  */
-AAC_DECODER_ERROR aacDecoder_AncDataGet(HANDLE_AACDECODER self,
+AAC_DECODER_ERROR_t aacDecoder_AncDataGet(HANDLE_AACDECODER self,
                                                    int32_t index, uint8_t **ptr,
                                                    int32_t *size);
 
@@ -836,7 +727,7 @@ AAC_DECODER_ERROR aacDecoder_AncDataGet(HANDLE_AACDECODER self,
  * \param value  Parameter value.
  * \return       Error code.
  */
-AAC_DECODER_ERROR aacDecoder_SetParam(const HANDLE_AACDECODER self,
+AAC_DECODER_ERROR_t aacDecoder_SetParam(const HANDLE_AACDECODER self,
                                                  const AACDEC_PARAM param,
                                                  const int32_t value);
 
@@ -847,7 +738,7 @@ AAC_DECODER_ERROR aacDecoder_SetParam(const HANDLE_AACDECODER self,
  * decoder internal buffer.
  * \return             Error code.
  */
-AAC_DECODER_ERROR
+AAC_DECODER_ERROR_t
 aacDecoder_GetFreeBytes(const HANDLE_AACDECODER self, uint32_t *pFreeBytes);
 
 /**
@@ -872,7 +763,7 @@ int32_t myfunction();
  * \param length  Length of the configuration buffer in bytes.
  * \return        Error code.
  */
-AAC_DECODER_ERROR aacDecoder_ConfigRaw(HANDLE_AACDECODER self,
+AAC_DECODER_ERROR_t aacDecoder_ConfigRaw(HANDLE_AACDECODER self,
                                                   uint8_t *conf[],
                                                   const uint32_t length[]);
 
@@ -886,7 +777,7 @@ AAC_DECODER_ERROR aacDecoder_ConfigRaw(HANDLE_AACDECODER self,
  * \param length  Length of the data in bytes.
  * \return        Error code.
  */
-AAC_DECODER_ERROR aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self,
+AAC_DECODER_ERROR_t aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self,
                                                        uint8_t *buffer,
                                                        uint32_t length);
 
@@ -913,7 +804,7 @@ AAC_DECODER_ERROR aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self,
  * the amount of newly copied bytes.
  * \return            Error code.
  */
-AAC_DECODER_ERROR aacDecoder_Fill(HANDLE_AACDECODER self,
+AAC_DECODER_ERROR_t aacDecoder_Fill(HANDLE_AACDECODER self,
                                              uint8_t *pBuffer,
                                              const uint32_t bufferSize,
                                              uint32_t *bytesValid);
@@ -953,7 +844,7 @@ AAC_DECODER_ERROR aacDecoder_Fill(HANDLE_AACDECODER self,
  * history buffers.
  * \return              Error code.
  */
-AAC_DECODER_ERROR aacDecoder_DecodeFrame(HANDLE_AACDECODER self,
+AAC_DECODER_ERROR_t aacDecoder_DecodeFrame(HANDLE_AACDECODER self,
                                                     int16_t *pTimeData,
                                                     const int32_t timeDataSize,
                                                     const uint32_t flags);

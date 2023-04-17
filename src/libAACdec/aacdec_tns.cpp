@@ -47,7 +47,7 @@ void CTns_ReadDataPresentFlag(HANDLE_FDK_BITSTREAM bs, /*!< pointer to bitstream
 
   \return  none
 */
-AAC_DECODER_ERROR CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData, const CIcsInfo *pIcsInfo,
+AAC_DECODER_ERROR_t CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData, const CIcsInfo_t *pIcsInfo,
                             const uint32_t flags) {
     uint8_t           n_filt, order;
     uint8_t           length, coef_res, coef_compress;
@@ -55,7 +55,7 @@ AAC_DECODER_ERROR CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData, const C
     uint8_t           wins_per_frame;
     uint8_t           isLongFlag;
     uint8_t           start_window;
-    AAC_DECODER_ERROR ErrorStatus = AAC_DEC_OK;
+    AAC_DECODER_ERROR_t ErrorStatus = AAC_DEC_OK;
 
     if(!pTnsData->DataPresent) { return ErrorStatus; }
 
@@ -136,7 +136,7 @@ AAC_DECODER_ERROR CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData, const C
 }
 
 void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData *pTnsData0, CTnsData *pTnsData1, uint8_t *ptns_on_lr,
-                              const CIcsInfo *pIcsInfo, const uint32_t flags, const uint32_t elFlags,
+                              const CIcsInfo_t *pIcsInfo, const uint32_t flags, const uint32_t elFlags,
                               const int32_t fCommonWindow) {
     int32_t common_tns = 0;
 
@@ -173,7 +173,7 @@ void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData *pTnsData0, CTn
   \return  none
 */
 void CTns_Apply(CTnsData       *pTnsData, /*!< pointer to aac decoder info */
-                const CIcsInfo *pIcsInfo, SPECTRAL_PTR pSpectralCoefficient, const SamplingRateInfo *pSamplingRateInfo,
+                const CIcsInfo_t *pIcsInfo, int32_t* pSpectralCoefficient, const SamplingRateInfo_t *pSamplingRateInfo,
                 const int32_t granuleLength, const uint8_t nbands, const uint8_t igf_active, const uint32_t flags) {
     int32_t window, index, start, stop, size, start_window, wins_per_frame;
 

@@ -99,8 +99,8 @@ struct AAC_DECODER_INSTANCE {
 
   HANDLE_TRANSPORTDEC hInput; /*!< Transport layer handle. */
 
-  SamplingRateInfo
-      samplingRateInfo[(1 * 1)]; /*!< Sampling Rate information table */
+  SamplingRateInfo_t
+      SamplingRateInfo[(1 * 1)]; /*!< Sampling Rate information table */
 
   uint8_t
   frameOK; /*!< Will be unset if a consistency check, e.g. CRC etc. fails */
@@ -136,9 +136,9 @@ struct AAC_DECODER_INSTANCE {
   CProgramConfig pce;
   CStreamInfo
       streamInfo; /*!< Pointer to StreamInfo data (read from the bitstream) */
-  CAacDecoderChannelInfo
+  CAacDecoderChannelInfo_t
       *pAacDecoderChannelInfo[(8)]; /*!< Temporal channel memory */
-  CAacDecoderStaticChannelInfo
+  CAacDecoderStaticChannelInfo_t
       *pAacDecoderStaticChannelInfo[(8)]; /*!< Persistent channel memory */
 
   int32_t *workBufferCore1;
@@ -146,7 +146,7 @@ struct AAC_DECODER_INSTANCE {
   int32_t *pTimeData2;
   int32_t timeData2Size;
 
-  CpePersistentData *cpeStaticData[(
+  CpePersistentData_t *cpeStaticData[(
       3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) +
       1)]; /*!< Pointer to persistent data shared by both channels of a CPE.
 This structure is allocated once for each CPE. */
@@ -294,7 +294,7 @@ void CAacDecoder_SignalInterruption(HANDLE_AACDECODER self);
 
   \return  Error code
 */
-AAC_DECODER_ERROR CAacDecoder_AncDataInit(CAncData *ancData,
+AAC_DECODER_ERROR_t CAacDecoder_AncDataInit(CAncData *ancData,
                                           unsigned char *buffer, int32_t size);
 
 /*!
@@ -308,14 +308,14 @@ AAC_DECODER_ERROR CAacDecoder_AncDataInit(CAncData *ancData,
 
   \return  Error code
 */
-AAC_DECODER_ERROR CAacDecoder_AncDataGet(CAncData *ancData, int32_t index,
+AAC_DECODER_ERROR_t CAacDecoder_AncDataGet(CAncData *ancData, int32_t index,
                                          unsigned char **ptr, int32_t *size);
 
 /* initialization of aac decoder */
 HANDLE_AACDECODER CAacDecoder_Open(TRANSPORT_TYPE_t bsFormat);
 
 /* Initialization of channel elements */
-AAC_DECODER_ERROR CAacDecoder_Init(HANDLE_AACDECODER self,
+AAC_DECODER_ERROR_t CAacDecoder_Init(HANDLE_AACDECODER self,
                                               const CSAudioSpecificConfig *asc,
                                               uint8_t configMode,
                                               uint8_t *configChanged);
@@ -332,33 +332,33 @@ AAC_DECODER_ERROR CAacDecoder_Init(HANDLE_AACDECODER self,
 
   \return  error status
 */
-AAC_DECODER_ERROR CAacDecoder_DecodeFrame(
+AAC_DECODER_ERROR_t CAacDecoder_DecodeFrame(
     HANDLE_AACDECODER self, const uint32_t flags, int32_t *pTimeData,
     const int32_t timeDataSize, const int32_t timeDataChannelOffset);
 
 /* Free config dependent AAC memory */
-AAC_DECODER_ERROR CAacDecoder_FreeMem(HANDLE_AACDECODER self,
+AAC_DECODER_ERROR_t CAacDecoder_FreeMem(HANDLE_AACDECODER self,
                                                  const int32_t subStreamIndex);
 
 /* Prepare crossfade for USAC DASH IPF config change */
-AAC_DECODER_ERROR CAacDecoder_PrepareCrossFade(
+AAC_DECODER_ERROR_t CAacDecoder_PrepareCrossFade(
     const int16_t *pTimeData, int16_t **pTimeDataFlush, const int32_t numChannels,
     const int32_t frameSize, const int32_t interleaved);
 
 /* Apply crossfade for USAC DASH IPF config change */
-AAC_DECODER_ERROR CAacDecoder_ApplyCrossFade(
+AAC_DECODER_ERROR_t CAacDecoder_ApplyCrossFade(
     int16_t *pTimeData, int16_t **pTimeDataFlush, const int32_t numChannels,
     const int32_t frameSize, const int32_t interleaved);
 
 /* Set flush and build up mode */
-AAC_DECODER_ERROR CAacDecoder_CtrlCFGChange(HANDLE_AACDECODER self,
+AAC_DECODER_ERROR_t CAacDecoder_CtrlCFGChange(HANDLE_AACDECODER self,
                                                        uint8_t flushStatus,
                                                        int8_t flushCnt,
                                                        uint8_t buildUpStatus,
                                                        int8_t buildUpCnt);
 
 /* Parse preRoll Extension Payload */
-AAC_DECODER_ERROR CAacDecoder_PreRollExtensionPayloadParse(
+AAC_DECODER_ERROR_t CAacDecoder_PreRollExtensionPayloadParse(
     HANDLE_AACDECODER self, uint32_t *numPrerollAU, uint32_t *prerollAUOffset,
     uint32_t *prerollAULength);
 

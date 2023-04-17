@@ -14,15 +14,8 @@
 #include "../libFDK/common_fix.h"
 #include "../libFDK/FDK_bitstream.h"
 
-#define N_MAX_LINES 4
 
-typedef struct {
-  uint8_t PulseDataPresent;
-  uint8_t NumberPulse;
-  uint8_t PulseStartBand;
-  uint8_t PulseOffset[N_MAX_LINES];
-  uint8_t PulseAmp[N_MAX_LINES];
-} CPulseData;
+
 
 /**
  * \brief Read pulse data from bitstream

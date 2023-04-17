@@ -16,17 +16,17 @@
 #include "channelinfo.h"
 #include "../libFDK/FDK_bitstream.h"
 
-uint32_t HcrInit(H_HCR_INFO pHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-             const SamplingRateInfo *pSamplingRateInfo,
+uint32_t HcrInit(H_HCR_INFO pHcr, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+             const SamplingRateInfo_t *pSamplingRateInfo,
              HANDLE_FDK_BITSTREAM bs);
-uint32_t HcrDecoder(H_HCR_INFO hHcr, CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                const SamplingRateInfo *pSamplingRateInfo,
+uint32_t HcrDecoder(H_HCR_INFO hHcr, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+                const SamplingRateInfo_t *pSamplingRateInfo,
                 HANDLE_FDK_BITSTREAM bs);
 void CarryBitToBranchValue(uint8_t carryBit, uint32_t treeNode, uint32_t *branchValue,
                            uint32_t *branchNode);
 
 void CHcr_Read(HANDLE_FDK_BITSTREAM bs,
-               CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+               CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                const MP4_ELEMENT_ID_t globalHcrType);
 void HcrMuteErroneousLines(H_HCR_INFO hHcr);
 

@@ -280,27 +280,7 @@ inline uint8_t fMin(uint8_t a, uint8_t b) {
 }
 
 /* Complex data types */
-typedef union {
-  /* vector representation for arithmetic */
-  struct {
-    int16_t re;
-    int16_t im;
-  } v;
-  /* word representation for memory move */
-  int32_t w;
-}
-FIXP_SPK_t;
 
-typedef union {
-  /* vector representation for arithmetic */
-  struct {
-    int32_t re;
-    int32_t im;
-  } v;
-  /* word representation for memory move */
-  int64_t w;
-}
-FIXP_DPK_t;
 
 #include "fixmul.h"
 #include "fixmadd.h"

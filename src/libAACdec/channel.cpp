@@ -27,7 +27,7 @@
 #include "usacdec_fac.h"
 
 static void MapMidSideMaskToPnsCorrelation(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo[2]) {
+    CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[2]) {
   int32_t group;
 
   for (group = 0; group < pAacDecoderChannelInfo[L]->icsInfo.WindowGroups;
@@ -53,7 +53,7 @@ static void MapMidSideMaskToPnsCorrelation(
 }
 
 static void Clean_Complex_Prediction_coefficients(
-    CJointStereoPersistentData *pJointStereoPersistentData, int32_t windowGroups,
+    CJointStereoPersistentData_t *pJointStereoPersistentData, int32_t windowGroups,
     const int32_t low_limit, const int32_t high_limit) {
   for (int32_t group = 0; group < windowGroups; group++) {
     for (int32_t sfb = low_limit; sfb < high_limit; sfb++) {
@@ -71,10 +71,10 @@ static void Clean_Complex_Prediction_coefficients(
   \return  none
 */
 void CChannelElement_Decode(
-    CAacDecoderChannelInfo
+    CAacDecoderChannelInfo_t
         *pAacDecoderChannelInfo[2], /*!< pointer to aac decoder channel info */
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[2],
-    SamplingRateInfo *pSamplingRateInfo, uint32_t flags, uint32_t elFlags,
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[2],
+    SamplingRateInfo_t *pSamplingRateInfo, uint32_t flags, uint32_t elFlags,
     int32_t el_channels) {
   int32_t ch = 0;
 
@@ -290,7 +290,7 @@ void CChannelElement_Decode(
 }
 
 void CChannel_CodebookTableInit(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo) {
+    CAacDecoderChannelInfo_t *pAacDecoderChannelInfo) {
   int32_t b, w, maxBands, maxWindows;
   int32_t maxSfb = GetScaleFactorBandsTransmitted(&pAacDecoderChannelInfo->icsInfo);
   uint8_t *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
@@ -317,14 +317,14 @@ void CChannel_CodebookTableInit(
 /*
  * Arbitrary order bitstream parser
  */
-AAC_DECODER_ERROR CChannelElement_Read(
-    HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
-    const AUDIO_OBJECT_TYPE_t aot, SamplingRateInfo *pSamplingRateInfo,
+AAC_DECODER_ERROR_t CChannelElement_Read(
+    HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[],
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
+    const AUDIO_OBJECT_TYPE_t aot, SamplingRateInfo_t *pSamplingRateInfo,
     const uint32_t flags, const uint32_t elFlags, const uint32_t frame_length,
     const uint8_t numberOfChannels, const int8_t epConfig,
     HANDLE_TRANSPORTDEC pTpDec) {
-  AAC_DECODER_ERROR error = AAC_DEC_OK;
+  AAC_DECODER_ERROR_t error = AAC_DEC_OK;
   const element_list_t *list;
   int32_t i, ch, decision_bit;
   int32_t crcReg1 = -1, crcReg2 = -1;

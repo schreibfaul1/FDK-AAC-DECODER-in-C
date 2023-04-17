@@ -13,8 +13,8 @@ using namespace std;
 HANDLE_AACDECODER handle;
 uint8_t inBuff[1024];
 int16_t pcmout[4096];
-AAC_DECODER_ERROR err;
-AAC_DECODER_ERROR decoderErr = AAC_DEC_NOT_ENOUGH_BITS;
+AAC_DECODER_ERROR_t err;
+AAC_DECODER_ERROR_t decoderErr = AAC_DEC_NOT_ENOUGH_BITS;
 int32_t samplesRead = 0;
 
 

@@ -36,7 +36,7 @@
 	#define AACDECODER_LIB_BUILD_TIME __TIME__
 #endif
 
-static AAC_DECODER_ERROR setConcealMethod(const HANDLE_AACDECODER self, const int32_t method);
+static AAC_DECODER_ERROR_t setConcealMethod(const HANDLE_AACDECODER self, const int32_t method);
 
 static void aacDecoder_setMetadataExpiry(const HANDLE_AACDECODER self, const int32_t value) {
 	/* check decoder handle */
@@ -57,7 +57,7 @@ static void aacDecoder_setMetadataExpiry(const HANDLE_AACDECODER self, const int
 	}
 }
 
-AAC_DECODER_ERROR
+AAC_DECODER_ERROR_t
 aacDecoder_GetFreeBytes(const HANDLE_AACDECODER self, uint32_t *pFreeBytes) {
 	/* reset free bytes */
 	*pFreeBytes = 0;
@@ -76,9 +76,9 @@ aacDecoder_GetFreeBytes(const HANDLE_AACDECODER self, uint32_t *pFreeBytes) {
 /**
  * Config Decoder using a CSAudioSpecificConfig struct.
  */
-static AAC_DECODER_ERROR aacDecoder_Config(HANDLE_AACDECODER self, const CSAudioSpecificConfig *pAscStruct,
+static AAC_DECODER_ERROR_t aacDecoder_Config(HANDLE_AACDECODER self, const CSAudioSpecificConfig *pAscStruct,
 										   uint8_t configMode, uint8_t *configChanged) {
-	AAC_DECODER_ERROR err;
+	AAC_DECODER_ERROR_t err;
 
 	/* Initialize AAC core decoder, and update self->streaminfo */
 	err = CAacDecoder_Init(self, pAscStruct, configMode, configChanged);
@@ -88,8 +88,8 @@ static AAC_DECODER_ERROR aacDecoder_Config(HANDLE_AACDECODER self, const CSAudio
 	return err;
 }
 
-AAC_DECODER_ERROR aacDecoder_ConfigRaw(HANDLE_AACDECODER self, uint8_t *conf[], const uint32_t length[]) {
-	AAC_DECODER_ERROR  err = AAC_DEC_OK;
+AAC_DECODER_ERROR_t aacDecoder_ConfigRaw(HANDLE_AACDECODER self, uint8_t *conf[], const uint32_t length[]) {
+	AAC_DECODER_ERROR_t  err = AAC_DEC_OK;
 	TRANSPORTDEC_ERROR errTp;
 	uint32_t               layer, nrOfLayers = self->nrOfLayers;
 
@@ -121,10 +121,10 @@ AAC_DECODER_ERROR aacDecoder_ConfigRaw(HANDLE_AACDECODER self, uint8_t *conf[], 
 	return err;
 }
 
-AAC_DECODER_ERROR aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self, uint8_t *buffer, uint32_t length) {
+AAC_DECODER_ERROR_t aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self, uint8_t *buffer, uint32_t length) {
 	FDK_BITSTREAM        bs;
 	HANDLE_FDK_BITSTREAM hBs = &bs;
-	AAC_DECODER_ERROR    err = AAC_DEC_OK;
+	AAC_DECODER_ERROR_t    err = AAC_DEC_OK;
 
 	if(length < 8) return AAC_DEC_UNKNOWN;
 
@@ -162,7 +162,7 @@ AAC_DECODER_ERROR aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self, uint8_t *buf
 static int32_t aacDecoder_ConfigCallback(void *handle, const CSAudioSpecificConfig *pAscStruct, uint8_t configMode,
 									 uint8_t *configChanged) {
 	HANDLE_AACDECODER  self = (HANDLE_AACDECODER)handle;
-	AAC_DECODER_ERROR  err = AAC_DEC_OK;
+	AAC_DECODER_ERROR_t  err = AAC_DEC_OK;
 	TRANSPORTDEC_ERROR errTp;
 
 	assert(self != NULL);
@@ -329,13 +329,13 @@ static int32_t aacDecoder_UniDrcCallback(void *handle, HANDLE_FDK_BITSTREAM hBs,
 	return (int32_t)errTp;
 }
 
-AAC_DECODER_ERROR aacDecoder_AncDataInit(HANDLE_AACDECODER self, uint8_t *buffer, int32_t size) {
+AAC_DECODER_ERROR_t aacDecoder_AncDataInit(HANDLE_AACDECODER self, uint8_t *buffer, int32_t size) {
 	CAncData *ancData = &self->ancData;
 
 	return CAacDecoder_AncDataInit(ancData, buffer, size);
 }
 
-AAC_DECODER_ERROR aacDecoder_AncDataGet(HANDLE_AACDECODER self, int32_t index, uint8_t **ptr, int32_t *size) {
+AAC_DECODER_ERROR_t aacDecoder_AncDataGet(HANDLE_AACDECODER self, int32_t index, uint8_t **ptr, int32_t *size) {
 	CAncData *ancData = &self->ancData;
 
 	return CAacDecoder_AncDataGet(ancData, index, ptr, size);
@@ -402,9 +402,9 @@ static int32_t isSupportedMpsConfig(AUDIO_OBJECT_TYPE_t aot, uint32_t numInChann
 	return (isSupportedCfg);
 }
 
-static AAC_DECODER_ERROR setConcealMethod(const HANDLE_AACDECODER self, /*!< Handle of the decoder instance */
+static AAC_DECODER_ERROR_t setConcealMethod(const HANDLE_AACDECODER self, /*!< Handle of the decoder instance */
 										  const int32_t               method) {
-	AAC_DECODER_ERROR  errorStatus = AAC_DEC_OK;
+	AAC_DECODER_ERROR_t  errorStatus = AAC_DEC_OK;
 	CConcealParams    *pConcealData = NULL;
 	int32_t                method_revert = 0;
 	HANDLE_SBRDECODER  hSbrDec = NULL;
@@ -505,11 +505,11 @@ bail:
 	return errorStatus;
 }
 
-AAC_DECODER_ERROR aacDecoder_SetParam(const HANDLE_AACDECODER self,  /*!< Handle of the decoder instance */
+AAC_DECODER_ERROR_t aacDecoder_SetParam(const HANDLE_AACDECODER self,  /*!< Handle of the decoder instance */
 									  const AACDEC_PARAM      param, /*!< Parameter to set               */
 									  const int32_t               value)               /*!< Parameter valued               */
 {
-	AAC_DECODER_ERROR   errorStatus = AAC_DEC_OK;
+	AAC_DECODER_ERROR_t   errorStatus = AAC_DEC_OK;
 	HANDLE_TRANSPORTDEC hTpDec = NULL;
 	TRANSPORTDEC_ERROR  errTp = TRANSPORTDEC_OK;
 	HANDLE_AAC_DRC      hDrcInfo = NULL;
@@ -854,7 +854,7 @@ bail:
 	return aacDec;
 }
 
-AAC_DECODER_ERROR aacDecoder_Fill(HANDLE_AACDECODER self, uint8_t *pBuffer, const uint32_t bufferSize, uint32_t *pBytesValid) {
+AAC_DECODER_ERROR_t aacDecoder_Fill(HANDLE_AACDECODER self, uint8_t *pBuffer, const uint32_t bufferSize, uint32_t *pBytesValid) {
 	TRANSPORTDEC_ERROR tpErr;
 	/* loop counter for layers; if not TT_MP4_RAWPACKETS used as index for only
 	   available layer */
@@ -883,7 +883,7 @@ static void aacDecoder_SignalInterruption(HANDLE_AACDECODER self) {
 }
 
 static void aacDecoder_UpdateBitStreamCounters(CStreamInfo *pSi, HANDLE_FDK_BITSTREAM hBs, int32_t nBits,
-											   AAC_DECODER_ERROR ErrorStatus) {
+											   AAC_DECODER_ERROR_t ErrorStatus) {
 	/* calculate bit difference (amount of bits moved forward) */
 	nBits = nBits - (int32_t)FDKgetValidBits(hBs);
 
@@ -924,9 +924,9 @@ static int32_t aacDecoder_EstimateNumberOfLostFrames(HANDLE_AACDECODER self) {
 	return n;
 }
 
-AAC_DECODER_ERROR aacDecoder_DecodeFrame(HANDLE_AACDECODER self, int16_t *pTimeData, const int32_t timeDataSize,
+AAC_DECODER_ERROR_t aacDecoder_DecodeFrame(HANDLE_AACDECODER self, int16_t *pTimeData, const int32_t timeDataSize,
 										 const uint32_t flags) {
-	AAC_DECODER_ERROR    ErrorStatus;
+	AAC_DECODER_ERROR_t    ErrorStatus;
 	int32_t                  layer;
 	int32_t                  nBits;
 	int32_t                  timeData2Size;

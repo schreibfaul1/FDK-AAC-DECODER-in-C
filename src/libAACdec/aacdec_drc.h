@@ -54,7 +54,7 @@ void aacDecoder_drcInit(HANDLE_AAC_DRC self);
 
 void aacDecoder_drcInitChannelData(CDrcChannelData_t *pDrcChannel);
 
-AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
+AAC_DECODER_ERROR_t aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
                                          AACDEC_DRC_PARAM param, int32_t value);
 
 int32_t aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
@@ -62,7 +62,7 @@ int32_t aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
 
 int32_t aacDecoder_drcProlog(
     HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
     uint8_t pceInstanceTag, uint8_t channelMapping[], int32_t validChannels);
 
 /**
@@ -82,13 +82,13 @@ int32_t aacDecoder_drcProlog(
  * handed over to the SBR instance pSbrDec
  */
 void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
-                         CAacDecoderChannelInfo *pAacDecoderChannelInfo,
+                         CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                          CDrcChannelData_t *pDrcDat, int32_t *extGain, int32_t ch,
                          int32_t aacFrameSize, int32_t bSbrPresent);
 
 int32_t aacDecoder_drcEpilog(
     HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs,
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
     uint8_t pceInstanceTag, uint8_t channelMapping[], int32_t validChannels);
 
 /**

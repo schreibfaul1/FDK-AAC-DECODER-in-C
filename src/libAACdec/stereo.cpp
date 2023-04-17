@@ -23,12 +23,12 @@ enum { L = 0, R = 1 };
 #include "../libAACdec/block.h"
 
 int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
-                      CJointStereoData *pJointStereoData,
+                      CJointStereoData_t *pJointStereoData,
                       const int32_t windowGroups,
                       const int32_t scaleFactorBandsTransmitted,
                       const int32_t max_sfb_ste_clear,
-                      CJointStereoPersistentData *pJointStereoPersistentData,
-                      CCplxPredictionData *cplxPredictionData,
+                      CJointStereoPersistentData_t *pJointStereoPersistentData,
+                      CCplxPredictionData_t *cplxPredictionData,
                       int32_t cplxPredictionActiv, int32_t scaleFactorBandsTotal,
                       int32_t windowSequence, const uint32_t flags) {
   int32_t group, band;
@@ -452,8 +452,8 @@ static inline void CJointStereo_GenerateMSOutput(int32_t *pSpecLCurrBand,
 }
 
 void CJointStereo_ApplyMS(
-    CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
-    CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[2],
+    CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[2],
+    CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[2],
     int32_t *spectrumL, int32_t *spectrumR, int16_t *SFBleftScale,
     int16_t *SFBrightScale, int16_t *specScaleL, int16_t *specScaleR,
     const int16_t *pScaleFactorBandOffsets, const uint8_t *pWindowGroupLength,
@@ -463,9 +463,9 @@ void CJointStereo_ApplyMS(
     int16_t *store_dmx_re_prev_e, const int32_t mainband_flag) {
   int32_t window, group, band;
   uint8_t groupMask;
-  CJointStereoData *pJointStereoData =
+  CJointStereoData_t *pJointStereoData =
       &pAacDecoderChannelInfo[L]->pComData->jointStereoData;
-  CCplxPredictionData *cplxPredictionData =
+  CCplxPredictionData_t *cplxPredictionData =
       pAacDecoderChannelInfo[L]->pComStaticData->cplxPredictionData;
 
   int32_t max_sfb_ste =
@@ -476,7 +476,7 @@ void CJointStereo_ApplyMS(
 
   if (pJointStereoData->cplx_pred_flag) {
     int32_t windowLen, groupwin, frameMaxScale;
-    CJointStereoPersistentData *pJointStereoPersistentData =
+    CJointStereoPersistentData_t *pJointStereoPersistentData =
         &pAacDecoderStaticChannelInfo[L]
              ->pCpeStaticData->jointStereoPersistentData;
     int32_t *const staticSpectralCoeffsL =
@@ -1072,12 +1072,12 @@ void CJointStereo_ApplyMS(
   }
 }
 
-void CJointStereo_ApplyIS(CAacDecoderChannelInfo *pAacDecoderChannelInfo[2],
+void CJointStereo_ApplyIS(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[2],
                           const int16_t *pScaleFactorBandOffsets,
                           const uint8_t *pWindowGroupLength,
                           const int32_t windowGroups,
                           const int32_t scaleFactorBandsTransmitted) {
-  CJointStereoData *pJointStereoData =
+  CJointStereoData_t *pJointStereoData =
       &pAacDecoderChannelInfo[L]->pComData->jointStereoData;
 
   for (int32_t window = 0, group = 0; group < windowGroups; group++) {

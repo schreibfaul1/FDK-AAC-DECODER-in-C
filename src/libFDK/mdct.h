@@ -29,40 +29,14 @@
 
 #define MLT_FLAG_CURR_ALIAS_SYMMETRY 1
 
-typedef enum {
-  BLOCK_LONG = 0, /* normal int32_t block */
-  BLOCK_START,    /* int32_t start block */
-  BLOCK_SHORT,    /* 8 int16_t blocks sequence */
-  BLOCK_STOP      /* int32_t stop block*/
-} BLOCK_TYPE;
+
 
 typedef enum { SHAPE_SINE = 0, SHAPE_KBD, SHAPE_LOL } WINDOW_SHAPE;
 
 /**
  * \brief MDCT persistent data
  */
-typedef struct {
-  union {
-    int32_t *freq;
-    int32_t *time;
-  } overlap; /**< Pointer to overlap memory */
 
-  const FIXP_SPK_t *prev_wrs; /**< pointer to previous right window slope  */
-  int32_t prev_tl;              /**< previous transform length */
-  int32_t prev_nr;              /**< previous right window offset */
-  int32_t prev_fr;              /**< previous right window slope length */
-  int32_t ov_offset;            /**< overlap time data fill level */
-  int32_t ov_size;              /**< Overlap buffer size in words */
-
-  int32_t prevAliasSymmetry;
-  int32_t prevPrevAliasSymmetry;
-
-  int32_t *pFacZir;
-  int32_t *pAsymOvlp; /**< pointer to asymmetric overlap (used for stereo LPD
-                          transition) */
-} mdct_t;
-
-typedef mdct_t *H_MDCT;
 
 /**
  * \brief Initialize as valid MDCT handle
