@@ -220,7 +220,7 @@ TDLIMITER_ERROR pcmLimiter_SetRelease(TDLimiterPtr limiter,
  * info:       pointer to an allocated and initialized LIB_INFO structure      *
  * returns:    error code                                                      *
  ******************************************************************************/
-TDLIMITER_ERROR pcmLimiter_GetLibInfo(LIB_INFO* info);
+TDLIMITER_ERROR pcmLimiter_GetLibInfo(LIB_INFO_t* info);
 
 #ifdef __cplusplus
 }

@@ -406,7 +406,7 @@ AAC_DECODER_ERROR CAacDecoder_AncDataGet(CAncData *ancData, int32_t index,
                                          unsigned char **ptr, int32_t *size);
 
 /* initialization of aac decoder */
-HANDLE_AACDECODER CAacDecoder_Open(TRANSPORT_TYPE bsFormat);
+HANDLE_AACDECODER CAacDecoder_Open(TRANSPORT_TYPE_t bsFormat);
 
 /* Initialization of channel elements */
 AAC_DECODER_ERROR CAacDecoder_Init(HANDLE_AACDECODER self,

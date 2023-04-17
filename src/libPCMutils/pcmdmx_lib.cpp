@@ -2609,7 +2609,7 @@ PCMDMX_ERROR pcmDmx_Close(HANDLE_PCM_DOWNMIX *pSelf) {
  * @param [out] Pointer to an allocated LIB_INFO structure.
  * @returns Returns an error code.
  */
-PCMDMX_ERROR pcmDmx_GetLibInfo(LIB_INFO *info) {
+PCMDMX_ERROR pcmDmx_GetLibInfo(LIB_INFO_t *info) {
   int32_t i;
 
   if (info == NULL) {

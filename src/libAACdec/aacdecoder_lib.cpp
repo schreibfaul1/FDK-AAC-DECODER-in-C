@@ -332,7 +332,7 @@ static int32_t aacDecoder_CtrlCFGChangeCallback(void *handle, const CCtrlCFGChan
 }
 
 static int32_t aacDecoder_SbrCallback(void *handle, HANDLE_FDK_BITSTREAM hBs, const int32_t sampleRateIn,
-								  const int32_t sampleRateOut, const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE coreCodec,
+								  const int32_t sampleRateOut, const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE_t coreCodec,
 								  const MP4_ELEMENT_ID elementID, const int32_t elementIndex, const uint8_t harmonicSBR,
 								  const uint8_t stereoConfigIndex, const uint8_t configMode, uint8_t *configChanged,
 								  const int32_t downscaleFactor) {
@@ -345,7 +345,7 @@ static int32_t aacDecoder_SbrCallback(void *handle, HANDLE_FDK_BITSTREAM hBs, co
 	return errTp;
 }
 
-static int32_t aacDecoder_SscCallback(void *handle, HANDLE_FDK_BITSTREAM hBs, const AUDIO_OBJECT_TYPE coreCodec,
+static int32_t aacDecoder_SscCallback(void *handle, HANDLE_FDK_BITSTREAM hBs, const AUDIO_OBJECT_TYPE_t coreCodec,
 								  const int32_t samplingRate, const int32_t frameSize, const int32_t stereoConfigIndex,
 								  const int32_t coreSbrFrameLengthIndex, const int32_t configBytes, const uint8_t configMode,
 								  uint8_t *configChanged) {
@@ -389,7 +389,7 @@ static int32_t aacDecoder_SscCallback(void *handle, HANDLE_FDK_BITSTREAM hBs, co
 
 static int32_t aacDecoder_UniDrcCallback(void *handle, HANDLE_FDK_BITSTREAM hBs, const int32_t fullPayloadLength,
 									 const int32_t payloadType, const int32_t subStreamIndex, const int32_t payloadStart,
-									 const AUDIO_OBJECT_TYPE aot) {
+									 const AUDIO_OBJECT_TYPE_t aot) {
 	DRC_DEC_ERROR      err = DRC_DEC_OK;
 	TRANSPORTDEC_ERROR errTp;
 	HANDLE_AACDECODER  hAacDecoder = (HANDLE_AACDECODER)handle;
@@ -434,8 +434,8 @@ AAC_DECODER_ERROR aacDecoder_AncDataGet(HANDLE_AACDECODER self, int32_t index, u
 
 /* If MPS is present in stream, but not supported by this instance, we'll
    have to switch off MPS and use QMF synthesis in the SBR module if required */
-static int32_t isSupportedMpsConfig(AUDIO_OBJECT_TYPE aot, uint32_t numInChannels, uint32_t fMpsPresent) {
-	LIB_INFO libInfo[FDK_MODULE_LAST];
+static int32_t isSupportedMpsConfig(AUDIO_OBJECT_TYPE_t aot, uint32_t numInChannels, uint32_t fMpsPresent) {
+	LIB_INFO_t libInfo[FDK_MODULE_LAST];
 	uint32_t     mpsCaps;
 	int32_t      isSupportedCfg = 1;
 
@@ -847,7 +847,7 @@ bail:
 
 int32_t myfunction() { return 3; }
 
-HANDLE_AACDECODER aacDecoder_Open(TRANSPORT_TYPE transportFmt, uint32_t nrOfLayers) {
+HANDLE_AACDECODER aacDecoder_Open(TRANSPORT_TYPE_t transportFmt, uint32_t nrOfLayers) {
 	AAC_DECODER_INSTANCE *aacDec = NULL;
 	HANDLE_TRANSPORTDEC   pIn;
 	int32_t                   err = 0;
@@ -1819,7 +1819,7 @@ void aacDecoder_Close(HANDLE_AACDECODER self) {
 
 CStreamInfo *aacDecoder_GetStreamInfo(HANDLE_AACDECODER self) { return CAacDecoder_GetStreamInfo(self); }
 
-int32_t aacDecoder_GetLibInfo(LIB_INFO *info) {
+int32_t aacDecoder_GetLibInfo(LIB_INFO_t *info) {
 	int32_t i;
 
 	if(info == NULL) { return -1; }

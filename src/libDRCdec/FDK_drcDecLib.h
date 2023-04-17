@@ -313,7 +313,7 @@ FDK_drcDec_ApplyDownmix(HANDLE_DRC_DECODER hDrcDec, int32_t* reverseInChannelMap
 
 /* Get library info for this module. */
 DRC_DEC_ERROR
-FDK_drcDec_GetLibInfo(LIB_INFO* info);
+FDK_drcDec_GetLibInfo(LIB_INFO_t* info);
 
 #ifdef __cplusplus
 }

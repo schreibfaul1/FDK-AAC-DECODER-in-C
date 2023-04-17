@@ -228,7 +228,7 @@ SBR_ERROR sbrDecoder_Open(HANDLE_SBRDECODER *pSelf,
  */
 SBR_ERROR sbrDecoder_InitElement(
     HANDLE_SBRDECODER self, const int32_t sampleRateIn, const int32_t sampleRateOut,
-    const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE coreCodec,
+    const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE_t coreCodec,
     const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
     const uint8_t harmonicSBR, const uint8_t stereoConfigIndex,
     const uint8_t configMode, uint8_t *configChanged, const int32_t downscaleFactor);
@@ -258,7 +258,7 @@ SBR_ERROR sbrDecoder_FreeMem(HANDLE_SBRDECODER *self);
 int32_t sbrDecoder_Header(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
                       const int32_t sampleRateIn, const int32_t sampleRateOut,
                       const int32_t samplesPerFrame,
-                      const AUDIO_OBJECT_TYPE coreCodec,
+                      const AUDIO_OBJECT_TYPE_t coreCodec,
                       const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
                       const uint8_t harmonicSBR, const uint8_t stereoConfigIndex,
                       const uint8_t configMode, uint8_t *configChanged,
@@ -390,7 +390,7 @@ SBR_ERROR sbrDecoder_Close(HANDLE_SBRDECODER *self);
  * \return      0 on success, -1 if invalid handle or if no free element is
  * available to write information to.
  */
-int32_t sbrDecoder_GetLibInfo(LIB_INFO *info);
+int32_t sbrDecoder_GetLibInfo(LIB_INFO_t *info);
 
 /**
  * \brief       Determine the modules output signal delay in samples.

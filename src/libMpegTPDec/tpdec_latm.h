@@ -154,7 +154,7 @@ typedef struct {
 int32_t CLatmDemux_ReadAuChunkLengthInfo(HANDLE_FDK_BITSTREAM bs);
 
 TRANSPORTDEC_ERROR CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
-                                   CLatmDemux *pLatmDemux, TRANSPORT_TYPE tt,
+                                   CLatmDemux *pLatmDemux, TRANSPORT_TYPE_t tt,
                                    CSTpCallBacks *pTpDecCallbacks,
                                    CSAudioSpecificConfig *pAsc,
                                    int32_t *pfConfigFound,

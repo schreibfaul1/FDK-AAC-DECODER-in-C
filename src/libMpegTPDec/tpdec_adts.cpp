@@ -306,7 +306,7 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
 
   /* Get info from ADTS header */
   AudioSpecificConfig_Init(pAsc);
-  pAsc->m_aot = (AUDIO_OBJECT_TYPE)(bs.profile + 1);
+  pAsc->m_aot = (AUDIO_OBJECT_TYPE_t)(bs.profile + 1);
   pAsc->m_samplingFrequencyIndex = bs.sample_freq_index;
   pAsc->m_samplingFrequency = SamplingRateTable[bs.sample_freq_index];
   pAsc->m_channelConfiguration = bs.channel_config;

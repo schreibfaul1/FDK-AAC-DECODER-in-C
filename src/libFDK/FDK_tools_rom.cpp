@@ -2590,7 +2590,7 @@ static const struct element_list node_usac_cpe_epc0 = {el_usac_coremode, {&node_
 
 static const struct element_list node_usac_lfe_epc0 = {el_usac_lfe_epc0, {NULL, NULL}};
 
-const element_list_t *getBitstreamElementList(AUDIO_OBJECT_TYPE aot, int8_t epConfig, uint8_t nChannels, uint8_t layer,
+const element_list_t *getBitstreamElementList(AUDIO_OBJECT_TYPE_t aot, int8_t epConfig, uint8_t nChannels, uint8_t layer,
                                               uint32_t elFlags) {
     switch(aot) {
         case AOT_AAC_LC:

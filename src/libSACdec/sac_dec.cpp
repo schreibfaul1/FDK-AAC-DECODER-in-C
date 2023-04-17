@@ -140,7 +140,7 @@ enum {
 /******************************************************************************************/
 int32_t FDK_SpatialDecInitDefaultSpatialSpecificConfig(
     SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
-    AUDIO_OBJECT_TYPE coreCodec, int32_t coreChannels, int32_t samplingFreq,
+    AUDIO_OBJECT_TYPE_t coreCodec, int32_t coreChannels, int32_t samplingFreq,
     int32_t nTimeSlots, int32_t decoderLevel, int32_t isBlind) {
   return SpatialDecDefaultSpecificConfig(pSpatialSpecificConfig, coreCodec,
                                          samplingFreq, nTimeSlots, decoderLevel,
@@ -525,7 +525,7 @@ bail:
 static int32_t isValidConfig(spatialDec const *const self,
                          const SPATIAL_DEC_UPMIX_TYPE upmixType,
                          SPATIALDEC_PARAM const *const pUserParams,
-                         const AUDIO_OBJECT_TYPE coreAot) {
+                         const AUDIO_OBJECT_TYPE_t coreAot) {
   UPMIXTYPE nUpmixType;
 
   assert(self != NULL);

@@ -360,7 +360,7 @@ typedef struct element_list element_list_t;
  * \param elFlags element specific flags.
  * \return element_list_t parser guidance structure.
  */
-const element_list_t *getBitstreamElementList(AUDIO_OBJECT_TYPE aot,
+const element_list_t *getBitstreamElementList(AUDIO_OBJECT_TYPE_t aot,
                                               int8_t epConfig, uint8_t nChannels,
                                               uint8_t layer, uint32_t elFlags);
 

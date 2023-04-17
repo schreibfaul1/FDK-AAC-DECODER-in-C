@@ -313,7 +313,7 @@ void AudioSpecificConfig_Init(CSAudioSpecificConfig *pAsc);
 TRANSPORTDEC_ERROR AudioSpecificConfig_Parse(
     CSAudioSpecificConfig *pAsc, HANDLE_FDK_BITSTREAM hBs,
     int32_t fExplicitBackwardCompatible, CSTpCallBacks *cb, uint8_t configMode,
-    uint8_t configChanged, AUDIO_OBJECT_TYPE m_aot);
+    uint8_t configChanged, AUDIO_OBJECT_TYPE_t m_aot);
 
 /* CELP stuff */
 enum { MPE = 0, RPE = 1, fs8KHz = 0, fs16KHz = 1 };
@@ -381,7 +381,7 @@ TRANSPORTDEC_ERROR transportDec_InBandConfig(
  * \return   A pointer to a valid and allocated HANDLE_TRANSPORTDEC or a null
  * pointer on failure.
  */
-HANDLE_TRANSPORTDEC transportDec_Open(TRANSPORT_TYPE transportDecFmt,
+HANDLE_TRANSPORTDEC transportDec_Open(TRANSPORT_TYPE_t transportDecFmt,
                                       const uint32_t flags, const uint32_t nrOfLayer);
 
 /**
@@ -514,7 +514,7 @@ HANDLE_FDK_BITSTREAM transportDec_GetBitstream(const HANDLE_TRANSPORTDEC hTp,
  * \param hTp  Pointer to a transport decoder handle.
  * \return     The transport format.
  */
-TRANSPORT_TYPE transportDec_GetFormat(const HANDLE_TRANSPORTDEC hTp);
+TRANSPORT_TYPE_t transportDec_GetFormat(const HANDLE_TRANSPORTDEC hTp);
 
 /**
  * \brief Get the current buffer fullness value.
@@ -615,10 +615,10 @@ uint32_t transportDec_GetNrOfSubFrames(HANDLE_TRANSPORTDEC hTp);
 
 /**
  * \brief       Get info structure of transport decoder library.
- * \param info  A pointer to an allocated LIB_INFO struct.
+ * \param info  A pointer to an allocated LIB_INFO_t struct.
  * \return      Error code.
  */
-TRANSPORTDEC_ERROR transportDec_GetLibInfo(LIB_INFO *info);
+TRANSPORTDEC_ERROR transportDec_GetLibInfo(LIB_INFO_t *info);
 
 /* ADTS CRC support */
 

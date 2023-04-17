@@ -201,7 +201,7 @@ void CAacDecoder_SyncQmfMode(HANDLE_AACDECODER self) {
 				break;
 			case MPS_INVALID_PARAMETER: { /* Only one mode supported. Find out which
 											 one: */
-				LIB_INFO libInfo[FDK_MODULE_LAST];
+				LIB_INFO_t libInfo[FDK_MODULE_LAST];
 				uint32_t     mpsCaps;
 
 				FDKinitLibInfo(libInfo);
@@ -1140,7 +1140,7 @@ static void CStreamInfoInit(CStreamInfo *pStreamInfo) {
 
   \return  AACDECODER instance
 */
-HANDLE_AACDECODER CAacDecoder_Open(TRANSPORT_TYPE bsFormat) /*!< bitstream format (adif,adts,loas,...). */
+HANDLE_AACDECODER CAacDecoder_Open(TRANSPORT_TYPE_t bsFormat) /*!< bitstream format (adif,adts,loas,...). */
 {
 	HANDLE_AACDECODER self;
     CWorkBufferCore1* WBC1;

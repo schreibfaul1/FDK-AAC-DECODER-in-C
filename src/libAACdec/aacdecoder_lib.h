@@ -815,7 +815,7 @@ typedef struct {
                         info) divided by a (ELD) downscale factor if present. */
   int32_t profile; /*!< MPEG-2 profile (from file header) (-1: not applicable (e. g.
                   MPEG-4)).               */
-  AUDIO_OBJECT_TYPE
+  AUDIO_OBJECT_TYPE_t
   aot; /*!< Audio Object Type (from ASC): is set to the appropriate value
           for MPEG-2 bitstreams (e. g. 2 for AAC-LC). */
   int32_t channelConfig; /*!< Channel configuration (0: PCE defined, 1: mono, 2:
@@ -829,7 +829,7 @@ typedef struct {
   int32_t aacNumChannels;       /*!< The number of audio channels after AAC core
                                processing (before PS or MPS processing).       CAUTION: This
                                are not the final number of output channels! */
-  AUDIO_OBJECT_TYPE extAot; /*!< Extension Audio Object Type (from ASC)   */
+  AUDIO_OBJECT_TYPE_t extAot; /*!< Extension Audio Object Type (from ASC)   */
   int32_t extSamplingRate; /*!< Extension sampling rate in Hz (from ASC) divided by
                           a (ELD) downscale factor if present. */
 
@@ -949,7 +949,7 @@ aacDecoder_GetFreeBytes(const HANDLE_AACDECODER self, uint32_t *pFreeBytes);
  * \param nrOfLayers    Number of transport layers.
  * \return              AAC decoder handle.
  */
-HANDLE_AACDECODER aacDecoder_Open(TRANSPORT_TYPE transportFmt, uint32_t nrOfLayers);
+HANDLE_AACDECODER aacDecoder_Open(TRANSPORT_TYPE_t transportFmt, uint32_t nrOfLayers);
 int32_t myfunction();
 /**
  * \brief Explicitly configure the decoder by passing a raw AudioSpecificConfig
@@ -1070,10 +1070,10 @@ CStreamInfo *aacDecoder_GetStreamInfo(HANDLE_AACDECODER self);
 /**
  * \brief       Get decoder library info.
  *
- * \param info  Pointer to an allocated LIB_INFO structure.
+ * \param info  Pointer to an allocated LIB_INFO_t structure.
  * \return      0 on success.
  */
-int32_t aacDecoder_GetLibInfo(LIB_INFO *info);
+int32_t aacDecoder_GetLibInfo(LIB_INFO_t *info);
 
 #ifdef __cplusplus
 }

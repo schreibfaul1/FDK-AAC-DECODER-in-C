@@ -519,7 +519,7 @@ TDLIMITER_ERROR pcmLimiter_SetRelease(TDLimiterPtr limiter,
 }
 
 /* Get library info for this module. */
-TDLIMITER_ERROR pcmLimiter_GetLibInfo(LIB_INFO* info) {
+TDLIMITER_ERROR pcmLimiter_GetLibInfo(LIB_INFO_t* info) {
   int32_t i;
 
   if (info == NULL) {

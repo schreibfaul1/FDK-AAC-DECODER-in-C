@@ -1117,7 +1117,7 @@ int32_t CProgramConfig_GetElementTable(const CProgramConfig *pPce, MP4_ELEMENT_I
     return el;
 }
 
-static AUDIO_OBJECT_TYPE getAOT(HANDLE_FDK_BITSTREAM bs) {
+static AUDIO_OBJECT_TYPE_t getAOT(HANDLE_FDK_BITSTREAM bs) {
     int32_t tmp = 0;
 
     tmp = FDKreadBits(bs, 5);
@@ -1126,7 +1126,7 @@ static AUDIO_OBJECT_TYPE getAOT(HANDLE_FDK_BITSTREAM bs) {
         tmp = 32 + tmp2;
     }
 
-    return (AUDIO_OBJECT_TYPE)tmp;
+    return (AUDIO_OBJECT_TYPE_t)tmp;
 }
 
 static int32_t getSampleRate(HANDLE_FDK_BITSTREAM bs, uint8_t *index, int32_t nBits) {
@@ -1419,7 +1419,7 @@ static const uint8_t sbrRatioIndex[8] = {0, 0, 2, 3, 1, 0, 0, 0};
 static TRANSPORTDEC_ERROR extElementConfig(CSUsacExtElementConfig *extElement, HANDLE_FDK_BITSTREAM hBs,
                                            const CSTpCallBacks *cb, const uint8_t numSignalsInGroup,
                                            const uint32_t coreFrameLength, const int32_t subStreamIndex,
-                                           const AUDIO_OBJECT_TYPE aot) {
+                                           const AUDIO_OBJECT_TYPE_t aot) {
     TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
 
     int32_t usacExtElementType = escapedValue(hBs, 4, 8, 16);
@@ -1925,7 +1925,7 @@ void AudioSpecificConfig_Init(CSAudioSpecificConfig *asc) {
 
 TRANSPORTDEC_ERROR AudioSpecificConfig_Parse(CSAudioSpecificConfig *self, HANDLE_FDK_BITSTREAM bs,
                                              int32_t fExplicitBackwardCompatible, CSTpCallBacks *cb, uint8_t configMode,
-                                             uint8_t configChanged, AUDIO_OBJECT_TYPE m_aot) {
+                                             uint8_t configChanged, AUDIO_OBJECT_TYPE_t m_aot) {
     TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
     uint32_t           ascStartAnchor = FDKgetValidBits(bs);
     int32_t            frameLengthFlag = -1;

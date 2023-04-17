@@ -262,7 +262,7 @@ int32_t FDK_SpatialDecCompareSpatialSpecificConfigHeader(
 
 int32_t FDK_SpatialDecInitDefaultSpatialSpecificConfig(
     SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
-    AUDIO_OBJECT_TYPE coreCodec, int32_t coreChannels, int32_t samplingFreq,
+    AUDIO_OBJECT_TYPE_t coreCodec, int32_t coreChannels, int32_t samplingFreq,
     int32_t nTimeSlots, int32_t decoderLevel, int32_t isBlind);
 
 spatialDec *FDK_SpatialDecOpen(const SPATIAL_DEC_CONFIG *config,

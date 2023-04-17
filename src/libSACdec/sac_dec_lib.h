@@ -315,7 +315,7 @@ SACDEC_ERROR mpegSurroundDecoder_Init(
  */
 SACDEC_ERROR mpegSurroundDecoder_Config(
     CMpegSurroundDecoder *pMpegSurroundDecoder, HANDLE_FDK_BITSTREAM hBs,
-    AUDIO_OBJECT_TYPE coreCodec, int32_t samplingRate, int32_t frameSize,
+    AUDIO_OBJECT_TYPE_t coreCodec, int32_t samplingRate, int32_t frameSize,
     int32_t stereoConfigIndex, int32_t coreSbrFrameLengthIndex, int32_t configBytes,
     const uint8_t configMode, uint8_t *configChanged);
 
@@ -323,7 +323,7 @@ SACDEC_ERROR
 mpegSurroundDecoder_ConfigureQmfDomain(
     CMpegSurroundDecoder *pMpegSurroundDecoder,
     SAC_INPUT_CONFIG sac_dec_interface, uint32_t coreSamplingRate,
-    AUDIO_OBJECT_TYPE coreCodec);
+    AUDIO_OBJECT_TYPE_t coreCodec);
 
 /**
  * \brief Parse MPEG Surround data without header
@@ -361,7 +361,7 @@ int32_t mpegSurroundDecoder_ParseNoHeader(
  */
 int32_t mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder,
                               HANDLE_FDK_BITSTREAM hBs, int32_t *pMpsDataBits,
-                              AUDIO_OBJECT_TYPE coreCodec, int32_t sampleRate,
+                              AUDIO_OBJECT_TYPE_t coreCodec, int32_t sampleRate,
                               int32_t frameSize, int32_t fGlobalIndependencyFlag);
 /* #endif */
 
@@ -412,7 +412,7 @@ int32_t mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder,
                               PCM_MPS *input, PCM_MPS *pTimeData,
                               const int32_t timeDataSize, int32_t timeDataFrameSize,
                               int32_t *nChannels, int32_t *frameSize, int32_t sampleRate,
-                              AUDIO_OBJECT_TYPE coreCodec,
+                              AUDIO_OBJECT_TYPE_t coreCodec,
                               AUDIO_CHANNEL_TYPE channelType[],
                               uint8_t channelIndices[],
                               const FDK_channelMapDescr_t *const mapDescr,
@@ -452,7 +452,7 @@ SACDEC_ERROR mpegSurroundDecoder_SetParam(
  * \param libInfo  Pointer to library info list to be filled.
  * \return         0 on sucess, and non-zero on failure.
  **/
-int32_t mpegSurroundDecoder_GetLibInfo(LIB_INFO *libInfo);
+int32_t mpegSurroundDecoder_GetLibInfo(LIB_INFO_t *libInfo);
 
 /**
  * \brief  Set one single MPEG Surround decoder parameter.

@@ -451,7 +451,7 @@ PCMDMX_ERROR pcmDmx_Close(HANDLE_PCM_DOWNMIX *pSelf);
  * @param[out] info  Pointer to an allocated LIB_INFO structure.
  * @returns          Returns an error code of type ::PCMDMX_ERROR.
  */
-PCMDMX_ERROR pcmDmx_GetLibInfo(LIB_INFO *info);
+PCMDMX_ERROR pcmDmx_GetLibInfo(LIB_INFO_t *info);
 
 #ifdef __cplusplus
 }

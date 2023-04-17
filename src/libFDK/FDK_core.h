@@ -113,7 +113,7 @@ extern "C" {
  *  @return     Return 0 on success and a negative errorcode on failure (see
  * errorcodes.h).
  */
-int32_t FDK_toolsGetLibInfo(LIB_INFO *info);
+int32_t FDK_toolsGetLibInfo(LIB_INFO_t *info);
 
 #ifdef __cplusplus
 }

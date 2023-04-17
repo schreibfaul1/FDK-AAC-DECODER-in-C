@@ -262,7 +262,7 @@ typedef struct T_SPATIAL_SPECIFIC_CONFIG {
   int32_t sacExtType[MAX_NUM_EXT_TYPES];
   int32_t envQuantMode;
 
-  AUDIO_OBJECT_TYPE coreCodec;
+  AUDIO_OBJECT_TYPE_t coreCodec;
 
   uint8_t stereoConfigIndex;
   uint8_t coreSbrFrameLengthIndex; /* Table 70 in ISO/IEC FDIS 23003-3:2011 */

@@ -534,7 +534,7 @@ bail:
  * \brief Config MPEG Surround decoder.
  **/
 SACDEC_ERROR mpegSurroundDecoder_Config(CMpegSurroundDecoder *pMpegSurroundDecoder, HANDLE_FDK_BITSTREAM hBs,
-                                        AUDIO_OBJECT_TYPE coreCodec, int32_t samplingRate, int32_t frameSize,
+                                        AUDIO_OBJECT_TYPE_t coreCodec, int32_t samplingRate, int32_t frameSize,
                                         int32_t stereoConfigIndex, int32_t coreSbrFrameLengthIndex, int32_t configBytes,
                                         const uint8_t configMode, uint8_t *configChanged) {
     SACDEC_ERROR             err = MPS_OK;
@@ -838,7 +838,7 @@ static SACDEC_ERROR sscCheckInBand(SPATIAL_SPECIFIC_CONFIG *pSsc, int32_t frameL
 
 SACDEC_ERROR
 mpegSurroundDecoder_ConfigureQmfDomain(CMpegSurroundDecoder *pMpegSurroundDecoder, SAC_INPUT_CONFIG sac_dec_interface,
-                                       uint32_t coreSamplingRate, AUDIO_OBJECT_TYPE coreCodec) {
+                                       uint32_t coreSamplingRate, AUDIO_OBJECT_TYPE_t coreCodec) {
     SACDEC_ERROR       err = MPS_OK;
     FDK_QMF_DOMAIN_GC *pGC = NULL;
 
@@ -1045,7 +1045,7 @@ static int32_t isValidAncStartStop(CMpegSurroundDecoder *pMpegSurroundDecoder, i
 }
 
 int32_t mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder, HANDLE_FDK_BITSTREAM hBs,
-                                  int32_t *pMpsDataBits, AUDIO_OBJECT_TYPE coreCodec, int32_t sampleRate,
+                                  int32_t *pMpsDataBits, AUDIO_OBJECT_TYPE_t coreCodec, int32_t sampleRate,
                                   int32_t frameSize, int32_t fGlobalIndependencyFlag) {
     SACDEC_ERROR             err = MPS_OK;
     SPATIAL_SPECIFIC_CONFIG *sscParse;
@@ -1240,7 +1240,7 @@ bail:
 
 int32_t mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder, PCM_MPS *input, PCM_MPS *pTimeData,
                                   const int32_t timeDataSize, int32_t timeDataFrameSize, int32_t *nChannels,
-                                  int32_t *frameSize, int32_t sampleRate, AUDIO_OBJECT_TYPE coreCodec,
+                                  int32_t *frameSize, int32_t sampleRate, AUDIO_OBJECT_TYPE_t coreCodec,
                                   AUDIO_CHANNEL_TYPE channelType[], uint8_t channelIndices[],
                                   const FDK_channelMapDescr_t *const mapDescr, const int32_t inDataHeadroom,
                                   int32_t *outDataHeadroom) {
@@ -1473,7 +1473,7 @@ void mpegSurroundDecoder_Close(CMpegSurroundDecoder *pMpegSurroundDecoder) {
 #define SACDEC_VL1 1
 #define SACDEC_VL2 0
 
-int32_t mpegSurroundDecoder_GetLibInfo(LIB_INFO *info) {
+int32_t mpegSurroundDecoder_GetLibInfo(LIB_INFO_t *info) {
     int32_t i;
 
     if(info == NULL) { return -1; }
@@ -1625,7 +1625,7 @@ uint32_t mpegSurroundDecoder_GetDelay(const CMpegSurroundDecoder *self) {
 
     if(self != NULL) {
         const SPATIAL_SPECIFIC_CONFIG *sscDecode = &self->spatialSpecificConfig[self->bsFrameDecode];
-        AUDIO_OBJECT_TYPE              coreCodec = sscDecode->coreCodec;
+        AUDIO_OBJECT_TYPE_t              coreCodec = sscDecode->coreCodec;
 
         /* See chapter 4.5 (delay and synchronization) of ISO/IEC FDIS 23003-1 and
            chapter 5.4.3 of ISO/IEC FDIS 23003-2 for details on the following

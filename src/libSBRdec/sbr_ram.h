@@ -151,7 +151,7 @@ struct SBR_DECODER_INSTANCE {
   HANDLE_PS_DEC hParametricStereoDec;
 
   /* Global parameters */
-  AUDIO_OBJECT_TYPE coreCodec; /* AOT of core codec */
+  AUDIO_OBJECT_TYPE_t coreCodec; /* AOT of core codec */
   int32_t numSbrElements;
   int32_t numSbrChannels;
   int32_t sampleRateIn;  /* SBR decoder input sampling rate; might be different than

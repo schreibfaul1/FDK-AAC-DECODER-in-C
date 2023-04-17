@@ -125,22 +125,22 @@ enum { QUANT_FINE = 0, QUANT_EBQ1 = 1, QUANT_EBQ2 = 2 };
 SACDEC_ERROR SpatialDecParseSpecificConfigHeader(
     HANDLE_FDK_BITSTREAM bitstream,
     SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
-    AUDIO_OBJECT_TYPE coreCodec, SPATIAL_DEC_UPMIX_TYPE upmixType);
+    AUDIO_OBJECT_TYPE_t coreCodec, SPATIAL_DEC_UPMIX_TYPE upmixType);
 
 SACDEC_ERROR SpatialDecParseMps212Config(
     HANDLE_FDK_BITSTREAM bitstream,
     SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig, int32_t samplingRate,
-    AUDIO_OBJECT_TYPE coreCodec, int32_t stereoConfigIndex,
+    AUDIO_OBJECT_TYPE_t coreCodec, int32_t stereoConfigIndex,
     int32_t coreSbrFrameLengthIndex);
 
 SACDEC_ERROR SpatialDecParseSpecificConfig(
     HANDLE_FDK_BITSTREAM bitstream,
     SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig, int32_t sacHeaderLen,
-    AUDIO_OBJECT_TYPE coreCodec);
+    AUDIO_OBJECT_TYPE_t coreCodec);
 
 int32_t SpatialDecDefaultSpecificConfig(
     SPATIAL_SPECIFIC_CONFIG *pSpatialSpecificConfig,
-    AUDIO_OBJECT_TYPE coreCodec, int32_t samplingFreq, int32_t nTimeSlots,
+    AUDIO_OBJECT_TYPE_t coreCodec, int32_t samplingFreq, int32_t nTimeSlots,
     int32_t sacDecoderLevel, int32_t isBlind, int32_t coreChannels);
 
 SACDEC_ERROR SpatialDecCreateBsFrame(SPATIAL_BS_FRAME *bsFrame,

@@ -441,7 +441,7 @@ bail:
  * \param coreCodec core codec audio object type.
  * \return 1 if SBR can be processed, 0 if SBR cannot be processed/applied.
  */
-static int32_t sbrDecoder_isCoreCodecValid(AUDIO_OBJECT_TYPE coreCodec) {
+static int32_t sbrDecoder_isCoreCodecValid(AUDIO_OBJECT_TYPE_t coreCodec) {
 	switch(coreCodec) {
 		case AOT_AAC_LC:
 		case AOT_SBR:
@@ -479,7 +479,7 @@ static void sbrDecoder_DestroyElement(HANDLE_SBRDECODER self, const int32_t elem
 }
 
 SBR_ERROR sbrDecoder_InitElement(HANDLE_SBRDECODER self, const int32_t sampleRateIn, const int32_t sampleRateOut,
-								 const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE coreCodec,
+								 const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE_t coreCodec,
 								 const MP4_ELEMENT_ID elementID, const int32_t elementIndex, const uint8_t harmonicSBR,
 								 const uint8_t stereoConfigIndex, const uint8_t configMode, uint8_t *configChanged,
 								 const int32_t downscaleFactor) {
@@ -715,7 +715,7 @@ static SBR_ERROR sbrDecoder_HeaderUpdate(HANDLE_SBRDECODER self, HANDLE_SBR_HEAD
 }
 
 int32_t sbrDecoder_Header(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs, const int32_t sampleRateIn,
-						  const int32_t sampleRateOut, const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE coreCodec,
+						  const int32_t sampleRateOut, const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE_t coreCodec,
 						  const MP4_ELEMENT_ID elementID, const int32_t elementIndex, const uint8_t harmonicSBR,
 						  const uint8_t stereoConfigIndex, const uint8_t configMode, uint8_t *configChanged,
 						  const int32_t downscaleFactor) {
@@ -1677,7 +1677,7 @@ SBR_ERROR sbrDecoder_Close(HANDLE_SBRDECODER *pSelf) {
 	return SBRDEC_OK;
 }
 
-int32_t sbrDecoder_GetLibInfo(LIB_INFO *info) {
+int32_t sbrDecoder_GetLibInfo(LIB_INFO_t *info) {
 	int32_t i;
 
 	if(info == NULL) { return -1; }

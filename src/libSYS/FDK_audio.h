@@ -1,96 +1,4 @@
-/* -----------------------------------------------------------------------------
-Software License for The Fraunhofer FDK AAC Codec Library for Android
 
-© Copyright  1995 - 2018 Fraunhofer-Gesellschaft zur Förderung der angewandten
-Forschung e.V. All rights reserved.
-
- 1.    INTRODUCTION
-The Fraunhofer FDK AAC Codec Library for Android ("FDK AAC Codec") is software
-that implements the MPEG Advanced Audio Coding ("AAC") encoding and decoding
-scheme for digital audio. This FDK AAC Codec software is intended to be used on
-a wide variety of Android devices.
-
-AAC's HE-AAC and HE-AAC v2 versions are regarded as today's most efficient
-general perceptual audio codecs. AAC-ELD is considered the best-performing
-full-bandwidth communications codec by independent studies and is widely
-deployed. AAC has been standardized by ISO and IEC as part of the MPEG
-specifications.
-
-Patent licenses for necessary patent claims for the FDK AAC Codec (including
-those of Fraunhofer) may be obtained through Via Licensing
-(www.vialicensing.com) or through the respective patent owners individually for
-the purpose of encoding or decoding bit streams in products that are compliant
-with the ISO/IEC MPEG audio standards. Please note that most manufacturers of
-Android devices already license these patent claims through Via Licensing or
-directly from the patent owners, and therefore FDK AAC Codec software may
-already be covered under those patent licenses when it is used for those
-licensed purposes only.
-
-Commercially-licensed AAC software libraries, including floating-point versions
-with enhanced sound quality, are also available from Fraunhofer. Users are
-encouraged to check the Fraunhofer website for additional applications
-information and documentation.
-
-2.    COPYRIGHT LICENSE
-
-Redistribution and use in source and binary forms, with or without modification,
-are permitted without payment of copyright license fees provided that you
-satisfy the following conditions:
-
-You must retain the complete text of this software license in redistributions of
-the FDK AAC Codec or your modifications thereto in source code form.
-
-You must retain the complete text of this software license in the documentation
-and/or other materials provided with redistributions of the FDK AAC Codec or
-your modifications thereto in binary form. You must make available free of
-charge copies of the complete source code of the FDK AAC Codec and your
-modifications thereto to recipients of copies in binary form.
-
-The name of Fraunhofer may not be used to endorse or promote products derived
-from this library without prior written permission.
-
-You may not charge copyright license fees for anyone to use, copy or distribute
-the FDK AAC Codec software or your modifications thereto.
-
-Your modified versions of the FDK AAC Codec must carry prominent notices stating
-that you changed the software and the date of any change. For modified versions
-of the FDK AAC Codec, the term "Fraunhofer FDK AAC Codec Library for Android"
-must be replaced by the term "Third-Party Modified Version of the Fraunhofer FDK
-AAC Codec Library for Android."
-
-3.    NO PATENT LICENSE
-
-NO EXPRESS OR IMPLIED LICENSES TO ANY PATENT CLAIMS, including without
-limitation the patents of Fraunhofer, ARE GRANTED BY THIS SOFTWARE LICENSE.
-Fraunhofer provides no warranty of patent non-infringement with respect to this
-software.
-
-You may use this FDK AAC Codec software or modifications thereto only for
-purposes that are authorized by appropriate patent licenses.
-
-4.    DISCLAIMER
-
-This FDK AAC Codec software is provided by Fraunhofer on behalf of the copyright
-holders and contributors "AS IS" and WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES,
-including but not limited to the implied warranties of merchantability and
-fitness for a particular purpose. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-CONTRIBUTORS BE LIABLE for any direct, indirect, incidental, special, exemplary,
-or consequential damages, including but not limited to procurement of substitute
-goods or services; loss of use, data, or profits, or business interruption,
-however caused and on any theory of liability, whether in contract, strict
-liability, or tort (including negligence), arising in any way out of the use of
-this software, even if advised of the possibility of such damage.
-
-5.    CONTACT INFORMATION
-
-Fraunhofer Institute for Integrated Circuits IIS
-Attention: Audio and Multimedia Departments - FDK AAC LL
-Am Wolfsmantel 33
-91058 Erlangen, Germany
-
-www.iis.fraunhofer.de/amm
-amm-info@iis.fraunhofer.de
------------------------------------------------------------------------------ */
 
 /************************* System integration library **************************
 
@@ -113,109 +21,12 @@ amm-info@iis.fraunhofer.de
 extern "C" {
 #endif
 
-/**
- * File format identifiers.
- */
-typedef enum
-{
-    FF_UNKNOWN = -1, /**< Unknown format.        */
-    FF_RAW = 0,      /**< No container, bit stream data conveyed "as is". */
 
-    FF_MP4_3GPP = 3, /**< 3GPP file format.      */
-    FF_MP4_MP4F = 4, /**< MPEG-4 File format.     */
-
-    FF_RAWPACKETS = 5 /**< Proprietary raw packet file. */
-
-} FILE_FORMAT;
-
-/**
- * Transport type identifiers.
- */
-typedef enum
-{
-    TT_UNKNOWN = -1, /**< Unknown format.            */
-    TT_MP4_RAW = 0,  /**< "as is" access units (packet based since there is
-                        obviously no sync layer) */
-    TT_MP4_ADIF = 1, /**< ADIF bitstream format.     */
-    TT_MP4_ADTS = 2, /**< ADTS bitstream format.     */
-
-    TT_MP4_LATM_MCP1 = 6, /**< Audio Mux Elements with muxConfigPresent = 1 */
-    TT_MP4_LATM_MCP0 = 7, /**< Audio Mux Elements with muxConfigPresent = 0, out
-                             of band StreamMuxConfig */
-
-    TT_MP4_LOAS = 10, /**< Audio Sync Stream.         */
-
-    TT_DRM = 12 /**< Digital Radio Mondial (DRM30/DRM+) bitstream format. */
-
-} TRANSPORT_TYPE;
 
 #define TT_IS_PACKET(x) \
     (((x) == TT_MP4_RAW) || ((x) == TT_DRM) || ((x) == TT_MP4_LATM_MCP0) || ((x) == TT_MP4_LATM_MCP1))
 
-/**
- * Audio Object Type definitions.
- */
-typedef enum
-{
-    AOT_NONE = -1,
-    AOT_NULL_OBJECT = 0,
-    AOT_AAC_MAIN = 1, /**< Main profile                              */
-    AOT_AAC_LC = 2,   /**< Low Complexity object                     */
-    AOT_AAC_SSR = 3,
-    AOT_AAC_LTP = 4,
-    AOT_SBR = 5,
-    AOT_AAC_SCAL = 6,
-    AOT_TWIN_VQ = 7,
-    AOT_CELP = 8,
-    AOT_HVXC = 9,
-    AOT_RSVD_10 = 10,          /**< (reserved)                                */
-    AOT_RSVD_11 = 11,          /**< (reserved)                                */
-    AOT_TTSI = 12,             /**< TTSI Object                               */
-    AOT_MAIN_SYNTH = 13,       /**< Main Synthetic object                     */
-    AOT_WAV_TAB_SYNTH = 14,    /**< Wavetable Synthesis object                */
-    AOT_GEN_MIDI = 15,         /**< General MIDI object                       */
-    AOT_ALG_SYNTH_AUD_FX = 16, /**< Algorithmic Synthesis and Audio FX object */
-    AOT_ER_AAC_LC = 17,        /**< Error Resilient(ER) AAC Low Complexity    */
-    AOT_RSVD_18 = 18,          /**< (reserved)                                */
-    AOT_ER_AAC_LTP = 19,       /**< Error Resilient(ER) AAC LTP object        */
-    AOT_ER_AAC_SCAL = 20,      /**< Error Resilient(ER) AAC Scalable object   */
-    AOT_ER_TWIN_VQ = 21,       /**< Error Resilient(ER) TwinVQ object         */
-    AOT_ER_BSAC = 22,          /**< Error Resilient(ER) BSAC object           */
-    AOT_ER_AAC_LD = 23,        /**< Error Resilient(ER) AAC LowDelay object   */
-    AOT_ER_CELP = 24,          /**< Error Resilient(ER) CELP object           */
-    AOT_ER_HVXC = 25,          /**< Error Resilient(ER) HVXC object           */
-    AOT_ER_HILN = 26,          /**< Error Resilient(ER) HILN object           */
-    AOT_ER_PARA = 27,          /**< Error Resilient(ER) Parametric object     */
-    AOT_RSVD_28 = 28,          /**< might become SSC                          */
-    AOT_PS = 29,               /**< PS, Parametric Stereo (includes SBR)      */
-    AOT_MPEGS = 30,            /**< MPEG Surround                             */
 
-    AOT_ESCAPE = 31, /**< Signal AOT uses more than 5 bits          */
-
-    AOT_MP3ONMP4_L1 = 32, /**< MPEG-Layer1 in mp4                        */
-    AOT_MP3ONMP4_L2 = 33, /**< MPEG-Layer2 in mp4                        */
-    AOT_MP3ONMP4_L3 = 34, /**< MPEG-Layer3 in mp4                        */
-    AOT_RSVD_35 = 35,     /**< might become DST                          */
-    AOT_RSVD_36 = 36,     /**< might become ALS                          */
-    AOT_AAC_SLS = 37,     /**< AAC + SLS                                 */
-    AOT_SLS = 38,         /**< SLS                                       */
-    AOT_ER_AAC_ELD = 39,  /**< AAC Enhanced Low Delay                    */
-
-    AOT_USAC = 42,     /**< USAC                                      */
-    AOT_SAOC = 43,     /**< SAOC                                      */
-    AOT_LD_MPEGS = 44, /**< Low Delay MPEG Surround                   */
-
-    /* Pseudo AOTs */
-    AOT_MP2_AAC_LC = 129, /**< Virtual AOT MP2 Low Complexity profile */
-    AOT_MP2_SBR = 132,    /**< Virtual AOT MP2 Low Complexity Profile with SBR    */
-
-    AOT_DRM_AAC = 143,      /**< Virtual AOT for DRM (ER-AAC-SCAL without SBR) */
-    AOT_DRM_SBR = 144,      /**< Virtual AOT for DRM (ER-AAC-SCAL with SBR) */
-    AOT_DRM_MPEG_PS = 145,  /**< Virtual AOT for DRM (ER-AAC-SCAL with SBR and MPEG-PS) */
-    AOT_DRM_SURROUND = 146, /**< Virtual AOT for DRM Surround (ER-AAC-SCAL (+SBR) +MPS) */
-    AOT_DRM_USAC = 147      /**< Virtual AOT for DRM with USAC */
-
-} AUDIO_OBJECT_TYPE;
 
 #define CAN_DO_PS(aot) \
     ((aot) == AOT_AAC_LC || (aot) == AOT_SBR || (aot) == AOT_PS || (aot) == AOT_ER_BSAC || (aot) == AOT_DRM_AAC)
@@ -371,8 +182,8 @@ typedef enum
 /** Generic audio coder configuration structure. */
 typedef struct
 {
-    AUDIO_OBJECT_TYPE aot;               /**< Audio Object Type (AOT).           */
-    AUDIO_OBJECT_TYPE extAOT;            /**< Extension Audio Object Type (SBR). */
+    AUDIO_OBJECT_TYPE_t aot;               /**< Audio Object Type (AOT).           */
+    AUDIO_OBJECT_TYPE_t extAOT;            /**< Extension Audio Object Type (SBR). */
     CHANNEL_MODE      channelMode;       /**< Channel mode.                      */
     uint8_t           channelConfigZero; /**< Use channel config zero + pce although a
                                           standard channel config could be signaled. */
@@ -543,125 +354,9 @@ typedef enum
 
 } FDK_MODULE_ID;
 
-/* AAC capability flags */
-#define CAPF_AAC_LC 0x00000001 /**< Support flag for AAC Low Complexity. */
-#define CAPF_ER_AAC_LD                                                                               \
-    0x00000002                      /**< Support flag for AAC Low Delay with Error Resilience tools. \
-                                     */
-#define CAPF_ER_AAC_SCAL 0x00000004 /**< Support flag for AAC Scalable. */
-#define CAPF_ER_AAC_LC                                                                                  \
-    0x00000008                           /**< Support flag for AAC Low Complexity with Error Resilience \
-                                            tools. */
-#define CAPF_AAC_480          0x00000010 /**< Support flag for AAC with 480 framelength.  */
-#define CAPF_AAC_512          0x00000020 /**< Support flag for AAC with 512 framelength.  */
-#define CAPF_AAC_960          0x00000040 /**< Support flag for AAC with 960 framelength.  */
-#define CAPF_AAC_1024         0x00000080 /**< Support flag for AAC with 1024 framelength. */
-#define CAPF_AAC_HCR          0x00000100 /**< Support flag for AAC with Huffman Codeword Reordering.    */
-#define CAPF_AAC_VCB11        0x00000200 /**< Support flag for AAC Virtual Codebook 11.    */
-#define CAPF_AAC_RVLC         0x00000400 /**< Support flag for AAC Reversible Variable Length Coding.   */
-#define CAPF_AAC_MPEG4        0x00000800 /**< Support flag for MPEG file format. */
-#define CAPF_AAC_DRC          0x00001000 /**< Support flag for AAC Dynamic Range Control. */
-#define CAPF_AAC_CONCEALMENT  0x00002000 /**< Support flag for AAC concealment.           */
-#define CAPF_AAC_DRM_BSFORMAT 0x00004000 /**< Support flag for AAC DRM bistream format. */
-#define CAPF_ER_AAC_ELD                                                                           \
-    0x00008000                            /**< Support flag for AAC Enhanced Low Delay with Error \
-                                             Resilience tools.  */
-#define CAPF_ER_AAC_BSAC       0x00010000 /**< Support flag for AAC BSAC.                           */
-#define CAPF_AAC_ELD_DOWNSCALE 0x00040000 /**< Support flag for AAC-ELD Downscaling           */
-#define CAPF_AAC_USAC_LP       0x00100000 /**< Support flag for USAC low power mode. */
-#define CAPF_AAC_USAC          0x00200000 /**< Support flag for Unified Speech and Audio Coding (USAC). */
-#define CAPF_ER_AAC_ELDV2      0x00800000 /**< Support flag for AAC Enhanced Low Delay with MPS 212.  */
-#define CAPF_AAC_UNIDRC        0x01000000 /**< Support flag for MPEG-D Dynamic Range Control (uniDrc). */
 
-/* Transport capability flags */
-#define CAPF_ADTS       0x00000001 /**< Support flag for ADTS transport format.        */
-#define CAPF_ADIF       0x00000002 /**< Support flag for ADIF transport format.        */
-#define CAPF_LATM       0x00000004 /**< Support flag for LATM transport format.        */
-#define CAPF_LOAS       0x00000008 /**< Support flag for LOAS transport format.        */
-#define CAPF_RAWPACKETS 0x00000010 /**< Support flag for RAW PACKETS transport format. */
-#define CAPF_DRM        0x00000020 /**< Support flag for DRM/DRM+ transport format.    */
-#define CAPF_RSVD50     0x00000040 /**< Support flag for RSVD50 transport format       */
 
-/* SBR capability flags */
-#define CAPF_SBR_LP            0x00000001 /**< Support flag for SBR Low Power mode.           */
-#define CAPF_SBR_HQ            0x00000002 /**< Support flag for SBR High Quality mode.        */
-#define CAPF_SBR_DRM_BS        0x00000004 /**< Support flag for                               */
-#define CAPF_SBR_CONCEALMENT   0x00000008 /**< Support flag for SBR concealment.              */
-#define CAPF_SBR_DRC           0x00000010 /**< Support flag for SBR Dynamic Range Control.    */
-#define CAPF_SBR_PS_MPEG       0x00000020 /**< Support flag for MPEG Parametric Stereo.       */
-#define CAPF_SBR_PS_DRM        0x00000040 /**< Support flag for DRM Parametric Stereo.        */
-#define CAPF_SBR_ELD_DOWNSCALE 0x00000080 /**< Support flag for ELD reduced delay mode        */
-#define CAPF_SBR_HBEHQ         0x00000100 /**< Support flag for HQ HBE                        */
-
-/* PCM utils capability flags */
-#define CAPF_DMX_BLIND 0x00000001 /**< Support flag for blind downmixing.             */
-#define CAPF_DMX_PCE                                                        \
-    0x00000002 /**< Support flag for guided downmix with data from MPEG-2/4 \
-                  Program Config Elements (PCE). */
-#define CAPF_DMX_ARIB                                                           \
-    0x00000004 /**< Support flag for PCE guided downmix with slightly different \
-                  equations and levels to fulfill ARIB standard. */
-#define CAPF_DMX_DVB                                                             \
-    0x00000008 /**< Support flag for guided downmix with data from DVB ancillary \
-                  data fields. */
-#define CAPF_DMX_CH_EXP                                                         \
-    0x00000010 /**< Support flag for simple upmixing by dublicating channels or \
-                  adding zero channels. */
-#define CAPF_DMX_6_CH                                                     \
-    0x00000020 /**< Support flag for 5.1 channel configuration (input and \
-                  output). */
-#define CAPF_DMX_8_CH                                                            \
-    0x00000040 /**< Support flag for 6 and 7.1 channel configurations (input and \
-                  output). */
-#define CAPF_DMX_24_CH                                                     \
-    0x00000080 /**< Support flag for 22.2 channel configuration (input and \
-                  output). */
-#define CAPF_LIMITER                                        \
-    0x00002000 /**< Support flag for signal level limiting. \
-                */
-
-/* MPEG Surround capability flags */
-#define CAPF_MPS_STD 0x00000001 /**< Support flag for MPEG Surround.           */
-#define CAPF_MPS_LD                                                             \
-    0x00000002                   /**< Support flag for Low Delay MPEG Surround. \
-                                  */
-#define CAPF_MPS_USAC 0x00000004 /**< Support flag for USAC MPEG Surround.      */
-#define CAPF_MPS_HQ                                                       \
-    0x00000010 /**< Support flag indicating if high quality processing is \
-                  supported */
-#define CAPF_MPS_LP                                                                                \
-    0x00000020                       /**< Support flag indicating if partially complex (low power) \
-                                        processing is supported */
-#define CAPF_MPS_BLIND    0x00000040 /**< Support flag indicating if blind processing is supported */
-#define CAPF_MPS_BINAURAL 0x00000080 /**< Support flag indicating if binaural output is possible */
-#define CAPF_MPS_2CH_OUT  0x00000100 /**< Support flag indicating if 2ch output is possible      */
-#define CAPF_MPS_6CH_OUT  0x00000200 /**< Support flag indicating if 6ch output is possible      */
-#define CAPF_MPS_8CH_OUT  0x00000400 /**< Support flag indicating if 8ch output is possible      */
-#define CAPF_MPS_1CH_IN   0x00001000 /**< Support flag indicating if 1ch dmx input is possible   */
-#define CAPF_MPS_2CH_IN   0x00002000 /**< Support flag indicating if 2ch dmx input is possible   */
-#define CAPF_MPS_6CH_IN   0x00004000 /**< Support flag indicating if 5ch dmx input is possible   */
-
-/* \endcond */
-
-/*
- * ##############################################################################################
- * Library versioning
- * ##############################################################################################
- */
-
-/**
- * Convert each member of version numbers to one single numeric version
- * representation.
- * \param lev0  1st level of version number.
- * \param lev1  2nd level of version number.
- * \param lev2  3rd level of version number.
- */
-#define LIB_VERSION(lev0, lev1, lev2) ((lev0 << 24 & 0xff000000) | (lev1 << 16 & 0x00ff0000) | (lev2 << 8 & 0x0000ff00))
-
-/**
- *  Library information.
- */
-typedef struct LIB_INFO
+typedef struct LIB_INFO_t
 {
     const char*   title;
     const char*   build_date;
@@ -670,25 +365,17 @@ typedef struct LIB_INFO
     int32_t       version;
     uint32_t      flags;
     char          versionStr[32];
-} LIB_INFO;
-
-#ifdef __cplusplus
-    #define FDK_AUDIO_INLINE inline
-#else
-    #define FDK_AUDIO_INLINE
-#endif
-
+} LIB_INFO_t;
+//----------------------------------------------------------------------------------------------------------------------
 /** Initialize library info. */
-static FDK_AUDIO_INLINE void FDKinitLibInfo(LIB_INFO* info) {
+static inline void FDKinitLibInfo(LIB_INFO_t* info) {
     int32_t i;
-
     for(i = 0; i < FDK_MODULE_LAST; i++) { info[i].module_id = FDK_NONE; }
 }
 
 /** Aquire supported features of library. */
-static FDK_AUDIO_INLINE uint32_t FDKlibInfo_getCapabilities(const LIB_INFO* info, FDK_MODULE_ID module_id) {
+static inline uint32_t FDKlibInfo_getCapabilities(const LIB_INFO_t* info, FDK_MODULE_ID module_id) {
     int32_t i;
-
     for(i = 0; i < FDK_MODULE_LAST; i++) {
         if(info[i].module_id == module_id) { return info[i].flags; }
     }
@@ -696,56 +383,18 @@ static FDK_AUDIO_INLINE uint32_t FDKlibInfo_getCapabilities(const LIB_INFO* info
 }
 
 /** Search for next free tab. */
-static FDK_AUDIO_INLINE int32_t FDKlibInfo_lookup(const LIB_INFO* info, FDK_MODULE_ID module_id) {
+static inline int32_t FDKlibInfo_lookup(const LIB_INFO_t* info, FDK_MODULE_ID module_id) {
     int32_t i = -1;
-
     for(i = 0; i < FDK_MODULE_LAST; i++) {
         if(info[i].module_id == module_id) return -1;
         if(info[i].module_id == FDK_NONE) break;
     }
     if(i == FDK_MODULE_LAST) return -1;
-
     return i;
 }
+//----------------------------------------------------------------------------------------------------------------------
 
-/*
- * ##############################################################################################
- * Buffer description
- * ##############################################################################################
- */
 
-/**
- *  I/O buffer descriptor.
- */
-typedef struct FDK_bufDescr
-{
-    void** ppBase;      /*!< Pointer to an array containing buffer base addresses.
-                             Set to NULL for buffer requirement info. */
-    uint32_t* pBufSize; /*!< Pointer to an array containing the number of elements
-                       that can be placed in the specific buffer. */
-    uint32_t* pEleSize; /*!< Pointer to an array containing the element size for each
-                       buffer in bytes. That is mostly the number returned by the
-                       sizeof() operator for the data type used for the specific
-                       buffer. */
-    uint32_t* pBufType; /*!< Pointer to an array of bit fields containing a description
-                             for each buffer. See XXX below for more details.  */
-    uint32_t numBufs;   /*!< Total number of buffers. */
-
-} FDK_bufDescr;
-
-/**
- * Buffer type description field.
- */
-#define FDK_BUF_TYPE_MASK_IO    ((uint32_t)0x03 << 30)
-#define FDK_BUF_TYPE_MASK_DESCR ((uint32_t)0x3F << 16)
-#define FDK_BUF_TYPE_MASK_ID    ((uint32_t)0xFF)
-
-#define FDK_BUF_TYPE_INPUT  ((uint32_t)0x1 << 30)
-#define FDK_BUF_TYPE_OUTPUT ((uint32_t)0x2 << 30)
-
-#define FDK_BUF_TYPE_PCM_DATA ((uint32_t)0x1 << 16)
-#define FDK_BUF_TYPE_ANC_DATA ((uint32_t)0x2 << 16)
-#define FDK_BUF_TYPE_BS_DATA  ((uint32_t)0x4 << 16)
 
 #ifdef __cplusplus
 }

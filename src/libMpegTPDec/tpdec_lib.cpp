@@ -131,7 +131,7 @@ typedef union
 
 struct TRANSPORTDEC
 {
-    TRANSPORT_TYPE transportFmt; /*!< MPEG4 transportDec type. */
+    TRANSPORT_TYPE_t transportFmt; /*!< MPEG4 transportDec type. */
 
     CSTpCallBacks callbacks; /*!< Struct holding callback and its data */
 
@@ -182,7 +182,7 @@ struct TRANSPORTDEC
 /* skip packet */
 #define TPDEC_SKIP_PACKET 1
 
-HANDLE_TRANSPORTDEC transportDec_Open(const TRANSPORT_TYPE transportFmt, const uint32_t flags,
+HANDLE_TRANSPORTDEC transportDec_Open(const TRANSPORT_TYPE_t transportFmt, const uint32_t flags,
                                       const uint32_t nrOfLayers) {
     HANDLE_TRANSPORTDEC hInput;
 
@@ -593,7 +593,7 @@ HANDLE_FDK_BITSTREAM transportDec_GetBitstream(const HANDLE_TRANSPORTDEC hTp, co
     return &hTp->bitStream[layer];
 }
 
-TRANSPORT_TYPE transportDec_GetFormat(const HANDLE_TRANSPORTDEC hTp) { return hTp->transportFmt; }
+TRANSPORT_TYPE_t transportDec_GetFormat(const HANDLE_TRANSPORTDEC hTp) { return hTp->transportFmt; }
 
 int32_t transportDec_GetBufferFullness(const HANDLE_TRANSPORTDEC hTp) {
     int32_t bufferFullness = -1;
@@ -1289,7 +1289,7 @@ TRANSPORTDEC_ERROR transportDec_ReadAccessUnit(const HANDLE_TRANSPORTDEC hTp, co
                     if(err) goto bail;
 
                     /* Map adif header to ASC */
-                    hTp->asc[0].m_aot = (AUDIO_OBJECT_TYPE)(pce->Profile + 1);
+                    hTp->asc[0].m_aot = (AUDIO_OBJECT_TYPE_t)(pce->Profile + 1);
                     hTp->asc[0].m_samplingFrequencyIndex = pce->SamplingFrequencyIndex;
                     hTp->asc[0].m_samplingFrequency = SamplingRateTable[pce->SamplingFrequencyIndex];
                     hTp->asc[0].m_channelConfiguration = 0;
@@ -1512,7 +1512,7 @@ void transportDec_Close(HANDLE_TRANSPORTDEC *phTp) {
     }
 }
 
-TRANSPORTDEC_ERROR transportDec_GetLibInfo(LIB_INFO *info) {
+TRANSPORTDEC_ERROR transportDec_GetLibInfo(LIB_INFO_t *info) {
     int32_t i;
 
     if(info == NULL) { return TRANSPORTDEC_UNKOWN_ERROR; }

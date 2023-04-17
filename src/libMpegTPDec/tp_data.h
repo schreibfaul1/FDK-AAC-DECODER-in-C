@@ -304,12 +304,12 @@ typedef struct {
   /* Common ASC parameters */
   CProgramConfig m_progrConfigElement; /**< Program configuration. */
 
-  AUDIO_OBJECT_TYPE m_aot;  /**< Audio Object Type.  */
+  AUDIO_OBJECT_TYPE_t m_aot;  /**< Audio Object Type.  */
   uint32_t m_samplingFrequency; /**< Samplerate. */
   uint32_t m_samplesPerFrame;   /**< Amount of samples per frame.   */
   uint32_t m_directMapping; /**< Document this please !!                         */
 
-  AUDIO_OBJECT_TYPE m_extensionAudioObjectType; /**< Audio object type */
+  AUDIO_OBJECT_TYPE_t m_extensionAudioObjectType; /**< Audio object type */
   uint32_t m_extensionSamplingFrequency;            /**< Samplerate            */
 
   int8_t m_channelConfiguration; /**< Channel configuration index */
@@ -366,7 +366,7 @@ typedef int32_t (*cbUpdateConfig_t)(void *, const CSAudioSpecificConfig *,
 typedef int32_t (*cbFreeMem_t)(void *, const CSAudioSpecificConfig *);
 typedef int32_t (*cbCtrlCFGChange_t)(void *, const CCtrlCFGChange *);
 typedef int32_t (*cbSsc_t)(void *, HANDLE_FDK_BITSTREAM,
-                       const AUDIO_OBJECT_TYPE coreCodec,
+                       const AUDIO_OBJECT_TYPE_t coreCodec,
                        const int32_t samplingRate, const int32_t frameSize,
                        const int32_t stereoConfigIndex,
                        const int32_t coreSbrFrameLengthIndex, const int32_t configBytes,
@@ -375,7 +375,7 @@ typedef int32_t (*cbSsc_t)(void *, HANDLE_FDK_BITSTREAM,
 typedef int32_t (*cbSbr_t)(void *self, HANDLE_FDK_BITSTREAM hBs,
                        const int32_t sampleRateIn, const int32_t sampleRateOut,
                        const int32_t samplesPerFrame,
-                       const AUDIO_OBJECT_TYPE coreCodec,
+                       const AUDIO_OBJECT_TYPE_t coreCodec,
                        const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
                        const uint8_t harmonicSbr, const uint8_t stereoConfigIndex,
                        const uint8_t configMode, uint8_t *configChanged,
@@ -386,7 +386,7 @@ typedef int32_t (*cbUsac_t)(void *self, HANDLE_FDK_BITSTREAM hBs);
 typedef int32_t (*cbUniDrc_t)(void *self, HANDLE_FDK_BITSTREAM hBs,
                           const int32_t fullPayloadLength, const int32_t payloadType,
                           const int32_t subStreamIndex, const int32_t payloadStart,
-                          const AUDIO_OBJECT_TYPE);
+                          const AUDIO_OBJECT_TYPE_t);
 
 typedef struct {
   cbUpdateConfig_t cbUpdateConfig; /*!< Function pointer for Config change

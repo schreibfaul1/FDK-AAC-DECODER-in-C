@@ -152,7 +152,7 @@ void CChannelElement_Decode(
 AAC_DECODER_ERROR CChannelElement_Read(
     HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo *pAacDecoderChannelInfo[],
     CAacDecoderStaticChannelInfo *pAacDecoderStaticChannelInfo[],
-    const AUDIO_OBJECT_TYPE aot, SamplingRateInfo *pSamplingRateInfo,
+    const AUDIO_OBJECT_TYPE_t aot, SamplingRateInfo *pSamplingRateInfo,
     const uint32_t flags, const uint32_t elFlags, const uint32_t frame_length,
     const uint8_t numberOfChannels, const int8_t epConfig,
     HANDLE_TRANSPORTDEC pTpDec);

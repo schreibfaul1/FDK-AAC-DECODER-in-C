@@ -235,7 +235,7 @@ bail:
 }
 
 TRANSPORTDEC_ERROR CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
-                                   CLatmDemux *pLatmDemux, TRANSPORT_TYPE tt,
+                                   CLatmDemux *pLatmDemux, TRANSPORT_TYPE_t tt,
                                    CSTpCallBacks *pTpDecCallbacks,
                                    CSAudioSpecificConfig *pAsc,
                                    int32_t *pfConfigFound,
