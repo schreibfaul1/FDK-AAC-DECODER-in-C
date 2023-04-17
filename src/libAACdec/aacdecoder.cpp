@@ -257,7 +257,7 @@ void CAacDecoder_SignalInterruption(HANDLE_AACDECODER self) {
 
   \return  element channels
 */
-static int32_t CAacDecoder_GetELChannels(MP4_ELEMENT_ID type, uint8_t usacStereoConfigIndex) {
+static int32_t CAacDecoder_GetELChannels(MP4_ELEMENT_ID_t type, uint8_t usacStereoConfigIndex) {
 	int32_t el_channels = 0;
 
 	switch(type) {
@@ -739,16 +739,16 @@ bail:
   \return  Error code
 */
 static AAC_DECODER_ERROR CAacDecoder_ExtPayloadParse(HANDLE_AACDECODER self, HANDLE_FDK_BITSTREAM hBs, int32_t *count,
-													 MP4_ELEMENT_ID previous_element, int32_t elIndex, int32_t fIsFillElement) {
+													 MP4_ELEMENT_ID_t previous_element, int32_t elIndex, int32_t fIsFillElement) {
 	AAC_DECODER_ERROR error = AAC_DEC_OK;
-	EXT_PAYLOAD_TYPE  extension_type;
+	EXT_PAYLOAD_TYPE_t  extension_type;
 	int32_t               bytes = (*count) >> 3;
 	int32_t               crcFlag = 0;
 
 	if(*count < 4) { return AAC_DEC_PARSE_ERROR; }
 	else if((int32_t)FDKgetValidBits(hBs) < *count) { return AAC_DEC_DECODE_FRAME_ERROR; }
 
-	extension_type = (EXT_PAYLOAD_TYPE)FDKreadBits(hBs, 4); /* bs_extension_type */
+	extension_type = (EXT_PAYLOAD_TYPE_t)FDKreadBits(hBs, 4); /* bs_extension_type */
 	*count -= 4;
 
 	/* For ELD, the SBR signaling is explicit and parsed in
@@ -967,7 +967,7 @@ static AAC_DECODER_ERROR CAacDecoder_ExtPayloadParse(HANDLE_AACDECODER self, HAN
 				len <<= 3;
 				bitCnt = len;
 
-				if((EXT_PAYLOAD_TYPE)FDKreadBits(hBs, 4) == EXT_DATA_LENGTH) {
+				if((EXT_PAYLOAD_TYPE_t)FDKreadBits(hBs, 4) == EXT_DATA_LENGTH) {
 					/* Check NOTE 2: The extension_payload() included here must
 									 not have extension_type == EXT_DATA_LENGTH. */
 					error = AAC_DEC_PARSE_ERROR;
@@ -1009,7 +1009,7 @@ bail:
 }
 
 static AAC_DECODER_ERROR aacDecoder_ParseExplicitMpsAndSbr(HANDLE_AACDECODER self, HANDLE_FDK_BITSTREAM bs,
-														   const MP4_ELEMENT_ID previous_element,
+														   const MP4_ELEMENT_ID_t previous_element,
 														   const int32_t previous_element_index, const int32_t element_index,
 														   const int32_t el_cnt[]) {
 	AAC_DECODER_ERROR ErrorStatus = AAC_DEC_OK;
@@ -1028,7 +1028,7 @@ static AAC_DECODER_ERROR aacDecoder_ParseExplicitMpsAndSbr(HANDLE_AACDECODER sel
 		else { chElIdx = 0; /* ELD case */ }
 
 		for(; chElIdx < numChElements; chElIdx += 1) {
-			MP4_ELEMENT_ID sbrType;
+			MP4_ELEMENT_ID_t sbrType;
 			SBR_ERROR      errTmp;
 			if(self->flags[0] & (AC_USAC)) {
 				assert((self->elements[element_index] == ID_USAC_SCE) ||
@@ -2155,7 +2155,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 	CProgramConfig      *pce;
 	HANDLE_FDK_BITSTREAM bs = transportDec_GetBitstream(self->hInput, 0);
 
-	MP4_ELEMENT_ID type = ID_NONE;  /* Current element type */
+	MP4_ELEMENT_ID_t type = ID_NONE;  /* Current element type */
 	int32_t            aacChannels = 0; /* Channel counter for channels found in the bitstream */
 	const int32_t      streamIndex = 0; /* index of the current substream */
 
@@ -2249,11 +2249,11 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 	int32_t pceRead = 0; /* Flag indicating a PCE in the current raw_data_block() */
 
 	int32_t            hdaacDecoded = 0;
-	MP4_ELEMENT_ID previous_element = ID_END;  /* Last element ID (required for extension payload mapping */
+	MP4_ELEMENT_ID_t previous_element = ID_END;  /* Last element ID (required for extension payload mapping */
 	uint8_t          previous_element_index = 0; /* Canonical index of last element */
 	int32_t            element_count = 0;          /* Element counter for elements found in the bitstream */
 	int32_t            channel_element_count = 0;  /* Channel element counter */
-	MP4_ELEMENT_ID
+	MP4_ELEMENT_ID_t
 	channel_elements[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) + 1)]; /* Channel elements in bit stream order. */
 	int32_t el_cnt[ID_LAST] = {0};                                         /* element counter ( robustness ) */
 	int32_t element_count_prev_streams = 0;                                /* Element count of all previous sub streams. */
@@ -2262,7 +2262,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 		int32_t el_channels;
 
 		if(!(self->flags[0] & (AC_USAC | AC_RSVD50 | AC_RSV603DA | AC_ELD | AC_SCALABLE | AC_ER)))
-			type = (MP4_ELEMENT_ID)FDKreadBits(bs, 3);
+			type = (MP4_ELEMENT_ID_t)FDKreadBits(bs, 3);
 		else {
 			if(element_count >= (3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) + 1)) {
 				self->frameOK = 0;
@@ -2564,7 +2564,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 
 						usacExtBitPos = (int32_t)FDKgetValidBits(bs);
 
-						USAC_EXT_ELEMENT_TYPE usacExtElementType =
+						USAC_EXT_ELEMENT_TYPE_t usacExtElementType =
 							self->pUsacConfig[streamIndex]
 								->element[element_count - element_count_prev_streams]
 								.extElement.usacExtElementType;
@@ -2730,7 +2730,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 		aacChannels = self->aacChannelsPrev;
 		/* Because the downmix could be active, its necessary to restore the channel
 		 * type and indices. */
-		memcpy(self->channelType, self->channelTypePrev, (8) * sizeof(AUDIO_CHANNEL_TYPE)); /* restore */
+		memcpy(self->channelType, self->channelTypePrev, (8) * sizeof(AUDIO_CHANNEL_TYPE_t)); /* restore */
 		memcpy(self->channelIndices, self->channelIndicesPrev, (8) * sizeof(uint8_t));        /* restore */
 		self->sbrEnabled = self->sbrEnabledPrev;
 	}
@@ -2738,7 +2738,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 		/* store or restore the number of channels and the corresponding info */
 		if(self->frameOK && !(flags & AACDEC_CONCEAL)) {
 			self->aacChannelsPrev = aacChannels;                                                   /* store */
-			memcpy(self->channelTypePrev, self->channelType, (8) * sizeof(AUDIO_CHANNEL_TYPE)); /* store */
+			memcpy(self->channelTypePrev, self->channelType, (8) * sizeof(AUDIO_CHANNEL_TYPE_t)); /* store */
 			memcpy(self->channelIndicesPrev, self->channelIndices, (8) * sizeof(uint8_t));        /* store */
 			self->sbrEnabledPrev = self->sbrEnabled;
 		}
@@ -2751,7 +2751,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 					self->aacChannelsPrev = aacChannels; /* store */
 				}
 				else { aacChannels = self->aacChannelsPrev; /* restore */ }
-				memcpy(self->channelType, self->channelTypePrev, (8) * sizeof(AUDIO_CHANNEL_TYPE)); /* restore */
+				memcpy(self->channelType, self->channelTypePrev, (8) * sizeof(AUDIO_CHANNEL_TYPE_t)); /* restore */
 				memcpy(self->channelIndices, self->channelIndicesPrev, (8) * sizeof(uint8_t));        /* restore */
 				self->sbrEnabled = self->sbrEnabledPrev;
 			}
@@ -3060,7 +3060,7 @@ AAC_DECODER_ERROR CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32_t
 
 	/* Reorder channel type information tables.  */
 	if(!(self->flags[0] & AC_RSV603DA)) {
-		AUDIO_CHANNEL_TYPE types[(8)];
+		AUDIO_CHANNEL_TYPE_t types[(8)];
 		uint8_t              idx[(8)];
 		int32_t                c;
 		int32_t                mapValue;

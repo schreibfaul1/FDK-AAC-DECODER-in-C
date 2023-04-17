@@ -305,7 +305,7 @@ some further explanation.
 These two arrays indicate the configuration of channel data within the output
 buffer. Both arrays have CStreamInfo::numChannels number of cells. Each cell of
 pChannelType indicates the channel type, which is described in the enum
-::AUDIO_CHANNEL_TYPE (defined in FDK_audio.h). The cells of pChannelIndices
+::AUDIO_CHANNEL_TYPE_t (defined in FDK_audio.h). The cells of pChannelIndices
 indicate the sub index among the channels starting with 0 among channels of the
 same audio channel type.
 
@@ -665,7 +665,7 @@ typedef enum {
                      1. The channel signaling (CStreamInfo::pChannelType and
                  CStreamInfo::pChannelIndices) will not be modified. Added empty
                  channels will be signaled with channel type
-                        AUDIO_CHANNEL_TYPE::ACT_NONE. \n
+                        AUDIO_CHANNEL_TYPE_t::ACT_NONE. \n
                      2. If the parameter value is greater than that of
                  ::AAC_PCM_MAX_OUTPUT_CHANNELS both will be set to the same
                  value. \n
@@ -804,7 +804,7 @@ typedef struct {
                        768, 1024, 2048 or 4096 for USAC  */
   int32_t numChannels; /*!< The number of output audio channels before the rendering
                       module, i.e. the original channel configuration. */
-  AUDIO_CHANNEL_TYPE
+  AUDIO_CHANNEL_TYPE_t
   *pChannelType; /*!< Audio channel type of each output audio channel. */
   uint8_t *pChannelIndices; /*!< Audio channel index for each output audio
                              channel. See ISO/IEC 13818-7:2005(E), 8.5.3.2

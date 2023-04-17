@@ -254,7 +254,7 @@ typedef struct {
 } CSEldSpecificConfig;
 
 typedef struct {
-  USAC_EXT_ELEMENT_TYPE usacExtElementType;
+  USAC_EXT_ELEMENT_TYPE_t usacExtElementType;
   uint16_t usacExtElementConfigLength;
   uint16_t usacExtElementDefaultLength;
   uint8_t usacExtElementPayloadFrag;
@@ -262,7 +262,7 @@ typedef struct {
 } CSUsacExtElementConfig;
 
 typedef struct {
-  MP4_ELEMENT_ID usacElementType;
+  MP4_ELEMENT_ID_t usacElementType;
   uint8_t m_noiseFilling;
   uint8_t m_harmonicSBR;
   uint8_t m_interTes;
@@ -376,7 +376,7 @@ typedef int32_t (*cbSbr_t)(void *self, HANDLE_FDK_BITSTREAM hBs,
                        const int32_t sampleRateIn, const int32_t sampleRateOut,
                        const int32_t samplesPerFrame,
                        const AUDIO_OBJECT_TYPE_t coreCodec,
-                       const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
+                       const MP4_ELEMENT_ID_t elementID, const int32_t elementIndex,
                        const uint8_t harmonicSbr, const uint8_t stereoConfigIndex,
                        const uint8_t configMode, uint8_t *configChanged,
                        const int32_t downscaleFactor);

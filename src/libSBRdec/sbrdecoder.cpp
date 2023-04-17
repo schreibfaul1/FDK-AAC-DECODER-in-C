@@ -254,7 +254,7 @@ static int32_t compareSbrHeader(const HANDLE_SBR_HEADER_DATA hHdr1, const HANDLE
   \return Error code.
 */
 static SBR_ERROR sbrDecoder_ResetElement(HANDLE_SBRDECODER self, int32_t sampleRateIn, int32_t sampleRateOut,
-										 int32_t samplesPerFrame, const MP4_ELEMENT_ID elementID,
+										 int32_t samplesPerFrame, const MP4_ELEMENT_ID_t elementID,
 										 const int32_t elementIndex, const int32_t overlap) {
 	SBR_ERROR              sbrError = SBRDEC_OK;
 	HANDLE_SBR_HEADER_DATA hSbrHeader;
@@ -480,7 +480,7 @@ static void sbrDecoder_DestroyElement(HANDLE_SBRDECODER self, const int32_t elem
 
 SBR_ERROR sbrDecoder_InitElement(HANDLE_SBRDECODER self, const int32_t sampleRateIn, const int32_t sampleRateOut,
 								 const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE_t coreCodec,
-								 const MP4_ELEMENT_ID elementID, const int32_t elementIndex, const uint8_t harmonicSBR,
+								 const MP4_ELEMENT_ID_t elementID, const int32_t elementIndex, const uint8_t harmonicSBR,
 								 const uint8_t stereoConfigIndex, const uint8_t configMode, uint8_t *configChanged,
 								 const int32_t downscaleFactor) {
 	SBR_ERROR sbrError = SBRDEC_OK;
@@ -716,7 +716,7 @@ static SBR_ERROR sbrDecoder_HeaderUpdate(HANDLE_SBRDECODER self, HANDLE_SBR_HEAD
 
 int32_t sbrDecoder_Header(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs, const int32_t sampleRateIn,
 						  const int32_t sampleRateOut, const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE_t coreCodec,
-						  const MP4_ELEMENT_ID elementID, const int32_t elementIndex, const uint8_t harmonicSBR,
+						  const MP4_ELEMENT_ID_t elementID, const int32_t elementIndex, const uint8_t harmonicSBR,
 						  const uint8_t stereoConfigIndex, const uint8_t configMode, uint8_t *configChanged,
 						  const int32_t downscaleFactor) {
 	SBR_HEADER_STATUS      headerStatus;
@@ -970,7 +970,7 @@ void sbrDecoder_drcDisable(HANDLE_SBRDECODER self, int32_t ch) {
 
 SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs, uint8_t *pDrmBsBuffer,
 						   uint16_t drmBsBufferSize, int32_t *count, int32_t bsPayLen, int32_t crcFlag,
-						   MP4_ELEMENT_ID prevElement, int32_t elementIndex, uint32_t acFlags, uint32_t acElFlags[]) {
+						   MP4_ELEMENT_ID_t prevElement, int32_t elementIndex, uint32_t acFlags, uint32_t acElFlags[]) {
 	SBR_DECODER_ELEMENT   *hSbrElement = NULL;
 	HANDLE_SBR_HEADER_DATA hSbrHeader = NULL;
 	HANDLE_SBR_CHANNEL    *pSbrChannel;

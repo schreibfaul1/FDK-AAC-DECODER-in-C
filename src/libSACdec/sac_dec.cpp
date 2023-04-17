@@ -871,7 +871,7 @@ bail:
 }
 
 void SpatialDecChannelProperties(spatialDec *self,
-                                 AUDIO_CHANNEL_TYPE channelType[],
+                                 AUDIO_CHANNEL_TYPE_t channelType[],
                                  uint8_t channelIndices[],
                                  const FDK_channelMapDescr_t *const mapDescr) {
   if ((self == NULL) || (channelType == NULL) || (channelIndices == NULL) ||

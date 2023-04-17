@@ -1241,7 +1241,7 @@ bail:
 int32_t mpegSurroundDecoder_Apply(CMpegSurroundDecoder *pMpegSurroundDecoder, PCM_MPS *input, PCM_MPS *pTimeData,
                                   const int32_t timeDataSize, int32_t timeDataFrameSize, int32_t *nChannels,
                                   int32_t *frameSize, int32_t sampleRate, AUDIO_OBJECT_TYPE_t coreCodec,
-                                  AUDIO_CHANNEL_TYPE channelType[], uint8_t channelIndices[],
+                                  AUDIO_CHANNEL_TYPE_t channelType[], uint8_t channelIndices[],
                                   const FDK_channelMapDescr_t *const mapDescr, const int32_t inDataHeadroom,
                                   int32_t *outDataHeadroom) {
     SACDEC_ERROR err = MPS_OK;

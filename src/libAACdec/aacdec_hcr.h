@@ -119,10 +119,10 @@ void CarryBitToBranchValue(uint8_t carryBit, uint32_t treeNode, uint32_t *branch
 
 void CHcr_Read(HANDLE_FDK_BITSTREAM bs,
                CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-               const MP4_ELEMENT_ID globalHcrType);
+               const MP4_ELEMENT_ID_t globalHcrType);
 void HcrMuteErroneousLines(H_HCR_INFO hHcr);
 
-void setHcrType(H_HCR_INFO hHcr, MP4_ELEMENT_ID type);
+void setHcrType(H_HCR_INFO hHcr, MP4_ELEMENT_ID_t type);
 int32_t getHcrType(H_HCR_INFO hHcr);
 
 #endif /* AACDEC_HCR_H */

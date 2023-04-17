@@ -323,7 +323,7 @@ SACDEC_ERROR SpatialDecApplyFrame(
  * output channels are stored into.
  */
 void SpatialDecChannelProperties(spatialDec *self,
-                                 AUDIO_CHANNEL_TYPE channelType[],
+                                 AUDIO_CHANNEL_TYPE_t channelType[],
                                  uint8_t channelIndices[],
                                  const FDK_channelMapDescr_t *const mapDescr);
 

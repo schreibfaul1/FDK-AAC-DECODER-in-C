@@ -124,7 +124,7 @@ typedef struct {
                          channel of an element */
   HANDLE_FDK_BITSTREAM hBs;
 
-  MP4_ELEMENT_ID
+  MP4_ELEMENT_ID_t
   elementID;     /* Element ID set during initialization. Can be used for
                     concealment */
   int32_t nChannels; /* Number of elements output channels (=2 in case of PS) */

@@ -435,7 +435,7 @@ PCMDMX_ERROR pcmDmx_Reset(HANDLE_PCM_DOWNMIX self, uint32_t flags);
 PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
                                const int32_t pcmBufSize, uint32_t frameSize,
                                int32_t *nChannels, int32_t fInterleaved,
-                               AUDIO_CHANNEL_TYPE channelType[],
+                               AUDIO_CHANNEL_TYPE_t channelType[],
                                uint8_t channelIndices[],
                                const FDK_channelMapDescr_t *const mapDescr,
                                int32_t *pDmxOutScale);

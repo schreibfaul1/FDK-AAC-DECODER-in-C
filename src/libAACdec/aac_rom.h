@@ -209,7 +209,7 @@ extern const uint8_t channelMappingTablePassthrough[15][8];
 extern const uint8_t channelMappingTableWAV[15][8];
 
 /* Lookup tables for elements in ER bitstream */
-extern const MP4_ELEMENT_ID elementsTab[AACDEC_MAX_CH_CONF]
+extern const MP4_ELEMENT_ID_t elementsTab[AACDEC_MAX_CH_CONF]
                                        [AACDEC_CH_ELEMENTS_TAB_SIZE];
 
 #define SF_FNA_COEFFS \

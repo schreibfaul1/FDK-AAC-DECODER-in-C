@@ -229,7 +229,7 @@ SBR_ERROR sbrDecoder_Open(HANDLE_SBRDECODER *pSelf,
 SBR_ERROR sbrDecoder_InitElement(
     HANDLE_SBRDECODER self, const int32_t sampleRateIn, const int32_t sampleRateOut,
     const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE_t coreCodec,
-    const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
+    const MP4_ELEMENT_ID_t elementID, const int32_t elementIndex,
     const uint8_t harmonicSBR, const uint8_t stereoConfigIndex,
     const uint8_t configMode, uint8_t *configChanged, const int32_t downscaleFactor);
 
@@ -259,7 +259,7 @@ int32_t sbrDecoder_Header(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
                       const int32_t sampleRateIn, const int32_t sampleRateOut,
                       const int32_t samplesPerFrame,
                       const AUDIO_OBJECT_TYPE_t coreCodec,
-                      const MP4_ELEMENT_ID elementID, const int32_t elementIndex,
+                      const MP4_ELEMENT_ID_t elementID, const int32_t elementIndex,
                       const uint8_t harmonicSBR, const uint8_t stereoConfigIndex,
                       const uint8_t configMode, uint8_t *configChanged,
                       const int32_t downscaleFactor);
@@ -334,7 +334,7 @@ void sbrDecoder_drcDisable(HANDLE_SBRDECODER self, int32_t ch);
 SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs,
                            uint8_t *pDrmBsBuffer, uint16_t drmBsBufferSize,
                            int32_t *count, int32_t bsPayLen, int32_t crcFlag,
-                           MP4_ELEMENT_ID prev_element, int32_t element_index,
+                           MP4_ELEMENT_ID_t prev_element, int32_t element_index,
                            uint32_t acFlags, uint32_t acElFlags[]);
 
 /**

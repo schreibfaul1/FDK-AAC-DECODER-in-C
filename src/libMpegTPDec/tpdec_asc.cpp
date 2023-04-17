@@ -111,25 +111,25 @@ amm-info@iis.fraunhofer.de
  * channel configuration. Every channel_configuration has to be finalized with
  * ID_NONE.
  */
-static const MP4_ELEMENT_ID channel_configuration_0[] = {ID_NONE};
-static const MP4_ELEMENT_ID channel_configuration_1[] = {ID_SCE, ID_NONE};
-static const MP4_ELEMENT_ID channel_configuration_2[] = {ID_CPE, ID_NONE};
-static const MP4_ELEMENT_ID channel_configuration_3[] = {ID_SCE, ID_CPE, ID_NONE};
-static const MP4_ELEMENT_ID channel_configuration_4[] = {ID_SCE, ID_CPE, ID_SCE, ID_NONE};
-static const MP4_ELEMENT_ID channel_configuration_5[] = {ID_SCE, ID_CPE, ID_CPE, ID_NONE};
-static const MP4_ELEMENT_ID channel_configuration_6[] = {ID_SCE, ID_CPE, ID_CPE, ID_LFE, ID_NONE};
-static const MP4_ELEMENT_ID channel_configuration_7[] = {ID_SCE, ID_CPE, ID_CPE, ID_CPE, ID_LFE, ID_NONE};
-static const MP4_ELEMENT_ID channel_configuration_8[] = {ID_NONE};  /* reserved */
-static const MP4_ELEMENT_ID channel_configuration_9[] = {ID_NONE};  /* reserved */
-static const MP4_ELEMENT_ID channel_configuration_10[] = {ID_NONE}; /* reserved */
-static const MP4_ELEMENT_ID channel_configuration_11[] = {ID_SCE, ID_CPE, ID_CPE, ID_SCE, ID_LFE, ID_NONE};
-static const MP4_ELEMENT_ID channel_configuration_12[] = {ID_SCE, ID_CPE, ID_CPE, ID_CPE, ID_LFE, ID_NONE};
-static const MP4_ELEMENT_ID channel_configuration_13[] = {ID_SCE, ID_CPE, ID_CPE, ID_CPE, ID_CPE, ID_SCE,
+static const MP4_ELEMENT_ID_t channel_configuration_0[] = {ID_NONE};
+static const MP4_ELEMENT_ID_t channel_configuration_1[] = {ID_SCE, ID_NONE};
+static const MP4_ELEMENT_ID_t channel_configuration_2[] = {ID_CPE, ID_NONE};
+static const MP4_ELEMENT_ID_t channel_configuration_3[] = {ID_SCE, ID_CPE, ID_NONE};
+static const MP4_ELEMENT_ID_t channel_configuration_4[] = {ID_SCE, ID_CPE, ID_SCE, ID_NONE};
+static const MP4_ELEMENT_ID_t channel_configuration_5[] = {ID_SCE, ID_CPE, ID_CPE, ID_NONE};
+static const MP4_ELEMENT_ID_t channel_configuration_6[] = {ID_SCE, ID_CPE, ID_CPE, ID_LFE, ID_NONE};
+static const MP4_ELEMENT_ID_t channel_configuration_7[] = {ID_SCE, ID_CPE, ID_CPE, ID_CPE, ID_LFE, ID_NONE};
+static const MP4_ELEMENT_ID_t channel_configuration_8[] = {ID_NONE};  /* reserved */
+static const MP4_ELEMENT_ID_t channel_configuration_9[] = {ID_NONE};  /* reserved */
+static const MP4_ELEMENT_ID_t channel_configuration_10[] = {ID_NONE}; /* reserved */
+static const MP4_ELEMENT_ID_t channel_configuration_11[] = {ID_SCE, ID_CPE, ID_CPE, ID_SCE, ID_LFE, ID_NONE};
+static const MP4_ELEMENT_ID_t channel_configuration_12[] = {ID_SCE, ID_CPE, ID_CPE, ID_CPE, ID_LFE, ID_NONE};
+static const MP4_ELEMENT_ID_t channel_configuration_13[] = {ID_SCE, ID_CPE, ID_CPE, ID_CPE, ID_CPE, ID_SCE,
                                                           ID_LFE, ID_LFE, ID_SCE, ID_CPE, ID_CPE, ID_SCE,
                                                           ID_CPE, ID_SCE, ID_SCE, ID_CPE, ID_NONE};
-static const MP4_ELEMENT_ID channel_configuration_14[] = {ID_SCE, ID_CPE, ID_CPE, ID_LFE, ID_CPE, ID_NONE};
+static const MP4_ELEMENT_ID_t channel_configuration_14[] = {ID_SCE, ID_CPE, ID_CPE, ID_LFE, ID_CPE, ID_NONE};
 
-static const MP4_ELEMENT_ID *channel_configuration_array[] = {
+static const MP4_ELEMENT_ID_t *channel_configuration_array[] = {
     channel_configuration_0,  channel_configuration_1,  channel_configuration_2,  channel_configuration_3,
     channel_configuration_4,  channel_configuration_5,  channel_configuration_6,  channel_configuration_7,
     channel_configuration_8,  channel_configuration_9,  channel_configuration_10, channel_configuration_11,
@@ -515,7 +515,7 @@ void CProgramConfig_GetDefault(CProgramConfig *pPce, const uint32_t channelConfi
  * \param index MPEG channel order index
  * \return audio channel type.
  */
-static void getImplicitAudioChannelTypeAndIndex(AUDIO_CHANNEL_TYPE *chType, uint8_t *chIndex, uint32_t channelConfig,
+static void getImplicitAudioChannelTypeAndIndex(AUDIO_CHANNEL_TYPE_t *chType, uint8_t *chIndex, uint32_t channelConfig,
                                                 uint32_t index) {
     if(index < 3) {
         *chType = ACT_FRONT;
@@ -602,9 +602,9 @@ static void getImplicitAudioChannelTypeAndIndex(AUDIO_CHANNEL_TYPE *chType, uint
 }
 
 int32_t CProgramConfig_LookupElement(CProgramConfig *pPce, uint32_t channelConfig, const uint32_t tag,
-                                     const uint32_t channelIdx, uint8_t chMapping[], AUDIO_CHANNEL_TYPE chType[],
+                                     const uint32_t channelIdx, uint8_t chMapping[], AUDIO_CHANNEL_TYPE_t chType[],
                                      uint8_t chIndex[], const uint32_t chDescrLen, uint8_t *elMapping,
-                                     MP4_ELEMENT_ID elList[], MP4_ELEMENT_ID elType) {
+                                     MP4_ELEMENT_ID_t elList[], MP4_ELEMENT_ID_t elType) {
     if(channelConfig > 0) {
         /* Constant channel mapping must have
            been set during initialization. */
@@ -679,7 +679,7 @@ int32_t CProgramConfig_LookupElement(CProgramConfig *pPce, uint32_t channelConfi
                         int32_t heightLayer = pPce->FrontElementHeightInfo[i];
                         if(isCpe == pPce->FrontElementIsCpe[i] && pPce->FrontElementTagSelect[i] == tag) {
                             int32_t            h, elIdx = ec[heightLayer], chIdx = cc[heightLayer];
-                            AUDIO_CHANNEL_TYPE aChType = (AUDIO_CHANNEL_TYPE)((heightLayer << 4) | ACT_FRONT);
+                            AUDIO_CHANNEL_TYPE_t aChType = (AUDIO_CHANNEL_TYPE_t)((heightLayer << 4) | ACT_FRONT);
                             for(h = heightLayer - 1; h >= 0; h -= 1) {
                                 int32_t el;
                                 /* Count front channels/elements */
@@ -734,7 +734,7 @@ int32_t CProgramConfig_LookupElement(CProgramConfig *pPce, uint32_t channelConfi
                         int32_t heightLayer = pPce->SideElementHeightInfo[i];
                         if(isCpe == pPce->SideElementIsCpe[i] && pPce->SideElementTagSelect[i] == tag) {
                             int32_t            h, elIdx = ec[heightLayer], chIdx = cc[heightLayer];
-                            AUDIO_CHANNEL_TYPE aChType = (AUDIO_CHANNEL_TYPE)((heightLayer << 4) | ACT_SIDE);
+                            AUDIO_CHANNEL_TYPE_t aChType = (AUDIO_CHANNEL_TYPE_t)((heightLayer << 4) | ACT_SIDE);
                             for(h = heightLayer - 1; h >= 0; h -= 1) {
                                 int32_t el;
                                 /* Count front channels/elements */
@@ -789,7 +789,7 @@ int32_t CProgramConfig_LookupElement(CProgramConfig *pPce, uint32_t channelConfi
                         int32_t heightLayer = pPce->BackElementHeightInfo[i];
                         if(isCpe == pPce->BackElementIsCpe[i] && pPce->BackElementTagSelect[i] == tag) {
                             int32_t            h, elIdx = ec[heightLayer], chIdx = cc[heightLayer];
-                            AUDIO_CHANNEL_TYPE aChType = (AUDIO_CHANNEL_TYPE)((heightLayer << 4) | ACT_BACK);
+                            AUDIO_CHANNEL_TYPE_t aChType = (AUDIO_CHANNEL_TYPE_t)((heightLayer << 4) | ACT_BACK);
                             for(h = heightLayer - 1; h >= 0; h -= 1) {
                                 int32_t el;
                                 /* Count front channels/elements */
@@ -908,7 +908,7 @@ int32_t CProgramConfig_LookupElement(CProgramConfig *pPce, uint32_t channelConfi
 #define SPEAKER_PLANE_BOTTOM 2
 
 void CProgramConfig_GetChannelDescription(const uint32_t chConfig, const CProgramConfig *pPce,
-                                          AUDIO_CHANNEL_TYPE chType[], uint8_t chIndex[]) {
+                                          AUDIO_CHANNEL_TYPE_t chType[], uint8_t chIndex[]) {
     assert(chType != NULL);
     assert(chIndex != NULL);
 
@@ -919,10 +919,10 @@ void CProgramConfig_GetChannelDescription(const uint32_t chConfig, const CProgra
                 int32_t elIdx, grpChIdx = 0;
                 for(elIdx = 0; elIdx < pPce->NumFrontChannelElements; elIdx += 1) {
                     if(pPce->FrontElementHeightInfo[elIdx] == spkPlane) {
-                        chType[chIdx] = (AUDIO_CHANNEL_TYPE)((spkPlane << 4) | ACT_FRONT);
+                        chType[chIdx] = (AUDIO_CHANNEL_TYPE_t)((spkPlane << 4) | ACT_FRONT);
                         chIndex[chIdx++] = grpChIdx++;
                         if(pPce->FrontElementIsCpe[elIdx]) {
-                            chType[chIdx] = (AUDIO_CHANNEL_TYPE)((spkPlane << 4) | ACT_FRONT);
+                            chType[chIdx] = (AUDIO_CHANNEL_TYPE_t)((spkPlane << 4) | ACT_FRONT);
                             chIndex[chIdx++] = grpChIdx++;
                         }
                     }
@@ -930,10 +930,10 @@ void CProgramConfig_GetChannelDescription(const uint32_t chConfig, const CProgra
                 grpChIdx = 0;
                 for(elIdx = 0; elIdx < pPce->NumSideChannelElements; elIdx += 1) {
                     if(pPce->SideElementHeightInfo[elIdx] == spkPlane) {
-                        chType[chIdx] = (AUDIO_CHANNEL_TYPE)((spkPlane << 4) | ACT_SIDE);
+                        chType[chIdx] = (AUDIO_CHANNEL_TYPE_t)((spkPlane << 4) | ACT_SIDE);
                         chIndex[chIdx++] = grpChIdx++;
                         if(pPce->SideElementIsCpe[elIdx]) {
-                            chType[chIdx] = (AUDIO_CHANNEL_TYPE)((spkPlane << 4) | ACT_SIDE);
+                            chType[chIdx] = (AUDIO_CHANNEL_TYPE_t)((spkPlane << 4) | ACT_SIDE);
                             chIndex[chIdx++] = grpChIdx++;
                         }
                     }
@@ -941,10 +941,10 @@ void CProgramConfig_GetChannelDescription(const uint32_t chConfig, const CProgra
                 grpChIdx = 0;
                 for(elIdx = 0; elIdx < pPce->NumBackChannelElements; elIdx += 1) {
                     if(pPce->BackElementHeightInfo[elIdx] == spkPlane) {
-                        chType[chIdx] = (AUDIO_CHANNEL_TYPE)((spkPlane << 4) | ACT_BACK);
+                        chType[chIdx] = (AUDIO_CHANNEL_TYPE_t)((spkPlane << 4) | ACT_BACK);
                         chIndex[chIdx++] = grpChIdx++;
                         if(pPce->BackElementIsCpe[elIdx]) {
-                            chType[chIdx] = (AUDIO_CHANNEL_TYPE)((spkPlane << 4) | ACT_BACK);
+                            chType[chIdx] = (AUDIO_CHANNEL_TYPE_t)((spkPlane << 4) | ACT_BACK);
                             chIndex[chIdx++] = grpChIdx++;
                         }
                     }
@@ -1033,7 +1033,7 @@ int32_t CProgramConfig_GetPceChMap(const CProgramConfig *pPce, uint8_t pceChMap[
     return 0;
 }
 
-int32_t CProgramConfig_GetElementTable(const CProgramConfig *pPce, MP4_ELEMENT_ID elList[], const int32_t elListSize,
+int32_t CProgramConfig_GetElementTable(const CProgramConfig *pPce, MP4_ELEMENT_ID_t elList[], const int32_t elListSize,
                                        uint8_t *pChMapIdx) {
     int32_t i, el = 0;
 
@@ -1203,12 +1203,12 @@ static int32_t ld_sbr_header(CSAudioSpecificConfig *asc, const int32_t dsFactor,
     const int32_t  channelConfiguration = asc->m_channelConfiguration;
     int32_t        i = 0, j = 0;
     int32_t        error = 0;
-    MP4_ELEMENT_ID element = ID_NONE;
+    MP4_ELEMENT_ID_t element = ID_NONE;
 
     /* check whether the channelConfiguration is defined in
      * channel_configuration_array */
     if(channelConfiguration < 0 ||
-       channelConfiguration > (int32_t)(sizeof(channel_configuration_array) / sizeof(MP4_ELEMENT_ID **) - 1)) {
+       channelConfiguration > (int32_t)(sizeof(channel_configuration_array) / sizeof(MP4_ELEMENT_ID_t **) - 1)) {
         return TRANSPORTDEC_PARSE_ERROR;
     }
 
@@ -1439,7 +1439,7 @@ static TRANSPORTDEC_ERROR extElementConfig(CSUsacExtElementConfig *extElement, H
         }
     }
 
-    extElement->usacExtElementType = (USAC_EXT_ELEMENT_TYPE)usacExtElementType;
+    extElement->usacExtElementType = (USAC_EXT_ELEMENT_TYPE_t)usacExtElementType;
     int32_t usacExtElementConfigLength = escapedValue(hBs, 4, 8, 16);
     extElement->usacExtElementConfigLength = (uint16_t)usacExtElementConfigLength;
     int32_t bsAnchor;
@@ -1564,9 +1564,9 @@ static TRANSPORTDEC_ERROR UsacRsv60DecoderConfig_Parse(CSAudioSpecificConfig *as
     }
 
     for(i = 0; i < numberOfElements; i++) {
-        MP4_ELEMENT_ID usacElementType = (MP4_ELEMENT_ID)(FDKreadBits(hBs, 2) | USAC_ID_BIT); /* set USAC_ID_BIT to map
+        MP4_ELEMENT_ID_t usacElementType = (MP4_ELEMENT_ID_t)(FDKreadBits(hBs, 2) | USAC_ID_BIT); /* set USAC_ID_BIT to map
                                                                                                  usacElementType to
-                                                                                                 MP4_ELEMENT_ID enum */
+                                                                                                 MP4_ELEMENT_ID_t enum */
         usc->element[i].usacElementType = usacElementType;
 
         /* sanity check: update element counter */
@@ -1639,7 +1639,7 @@ static TRANSPORTDEC_ERROR UsacRsv60DecoderConfig_Parse(CSAudioSpecificConfig *as
                         FDKpushBack(hBs, bitsToSkip + 2);
                     }
                     {
-                        MP4_ELEMENT_ID el_type =
+                        MP4_ELEMENT_ID_t el_type =
                             (usc->element[i].m_stereoConfigIndex == 1 || usc->element[i].m_stereoConfigIndex == 2)
                                 ? ID_SCE
                                 : ID_CPE;
@@ -2158,7 +2158,7 @@ static TRANSPORTDEC_ERROR Drm_xHEAACDecoderConfig(
                 }
                 if(cb == NULL) { return ErrorStatus; }
                 {
-                    MP4_ELEMENT_ID el_type = (usc->element[elemIdx].m_stereoConfigIndex == 1 ||
+                    MP4_ELEMENT_ID_t el_type = (usc->element[elemIdx].m_stereoConfigIndex == 1 ||
                                               usc->element[elemIdx].m_stereoConfigIndex == 2)
                                                  ? ID_SCE
                                                  : ID_CPE;

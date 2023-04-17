@@ -171,7 +171,7 @@ enum {
 
 typedef struct {
   /* Usac Extension Elements */
-  USAC_EXT_ELEMENT_TYPE usacExtElementType[(3)];
+  USAC_EXT_ELEMENT_TYPE_t usacExtElementType[(3)];
   uint32_t usacExtElementDefaultLength[(3)];
   uint8_t usacExtElementPayloadFrag[(3)];
 } CUsacCoreExtensions;
@@ -205,14 +205,14 @@ struct AAC_DECODER_INSTANCE {
                 1)]; /*!< Flags for internal decoder use (element specific). DO
                         NOT USE self::streaminfo::flags ! */
 
-  MP4_ELEMENT_ID elements[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) +
+  MP4_ELEMENT_ID_t elements[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) +
                            1)]; /*!< Table where the element Id's are listed */
   uint8_t elTags[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) +
                 1)]; /*!< Table where the elements id Tags are listed      */
   uint8_t chMapping[((8) * 2)]; /*!< Table of MPEG canonical order to bitstream
                                  channel order mapping. */
 
-  AUDIO_CHANNEL_TYPE channelType[(8)]; /*!< Audio channel type of each output
+  AUDIO_CHANNEL_TYPE_t channelType[(8)]; /*!< Audio channel type of each output
                                           audio channel (from 0 upto
                                           numChannels).           */
   uint8_t channelIndices[(8)]; /*!< Audio channel index for each output audio
@@ -259,7 +259,7 @@ This structure is allocated once for each CPE. */
 
   int32_t aacChannelsPrev; /*!< The amount of AAC core channels of the last
                           successful decode call.         */
-  AUDIO_CHANNEL_TYPE channelTypePrev[(8)]; /*!< Array holding the channelType
+  AUDIO_CHANNEL_TYPE_t channelTypePrev[(8)]; /*!< Array holding the channelType
                                               values of the last successful
                                               decode call.    */
   uint8_t

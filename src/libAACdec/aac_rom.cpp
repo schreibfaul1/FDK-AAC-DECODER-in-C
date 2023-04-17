@@ -1799,7 +1799,7 @@ const uint8_t FDKaacDec_tnsCoeff4_gain_ld[] = {
 };
 
 /* Lookup tables for elements in ER bitstream */
-const MP4_ELEMENT_ID elementsTab[AACDEC_MAX_CH_CONF][AACDEC_CH_ELEMENTS_TAB_SIZE] = {
+const MP4_ELEMENT_ID_t elementsTab[AACDEC_MAX_CH_CONF][AACDEC_CH_ELEMENTS_TAB_SIZE] = {
     /*  1 */ {ID_SCE, ID_EXT, ID_END, ID_NONE, ID_NONE, ID_NONE, ID_NONE}, /* 1 channel  */
                                                                            /*  2 */
     {ID_CPE, ID_EXT, ID_END, ID_NONE, ID_NONE, ID_NONE, ID_NONE}           /* 2 channels */

@@ -387,14 +387,14 @@ static uint32_t getSpeakerDistance(PCM_DMX_SPEAKER_POSITION posA,
   return ((diff.x * diff.x) + (diff.y * diff.y) + (diff.z * diff.z));
 }
 
-static PCM_DMX_SPEAKER_POSITION getSpeakerPos(AUDIO_CHANNEL_TYPE chType,
+static PCM_DMX_SPEAKER_POSITION getSpeakerPos(AUDIO_CHANNEL_TYPE_t chType,
                                               uint8_t chIndex, uint8_t numChInGrp) {
 #define PCMDMX_SPKR_POS_X_MAX_WIDTH (3)
 #define PCMDMX_SPKR_POS_Y_SPREAD (2)
 #define PCMDMX_SPKR_POS_Z_SPREAD (2)
 
   PCM_DMX_SPEAKER_POSITION spkrPos = {0, 0, 0};
-  AUDIO_CHANNEL_TYPE chGrp = (AUDIO_CHANNEL_TYPE)(chType & 0x0F);
+  AUDIO_CHANNEL_TYPE_t chGrp = (AUDIO_CHANNEL_TYPE_t)(chType & 0x0F);
   unsigned fHasCenter = numChInGrp & 0x1;
   unsigned chGrpWidth = numChInGrp >> 1;
   unsigned fIsCenter = 0;
@@ -510,7 +510,7 @@ static inline uint32_t getIdxSum(uint8_t numCh) {
  **/
 static PCMDMX_ERROR getChannelMode(
     const uint32_t numChannels,                 /* in */
-    const AUDIO_CHANNEL_TYPE channelType[], /* in */
+    const AUDIO_CHANNEL_TYPE_t channelType[], /* in */
     uint8_t channelIndices[],                 /* in */
     uint8_t offsetTable[(8)],                 /* out */
     PCM_DMX_CHANNEL_MODE *chMode            /* out */
@@ -556,7 +556,7 @@ static PCMDMX_ERROR getChannelMode(
           unsigned idxCnt = 0;
           for (ch = 0; ch < numChannels; ch += 1) {
             if (channelType[ch] ==
-                (AUDIO_CHANNEL_TYPE)((plane << 4) | ((chGrp + 1) & 0xF))) {
+                (AUDIO_CHANNEL_TYPE_t)((plane << 4) | ((chGrp + 1) & 0xF))) {
               channelIndices[ch] = idxCnt++;
             }
           }
@@ -688,7 +688,7 @@ static PCMDMX_ERROR getChannelMode(
 static void getChannelDescription(
     const PCM_DMX_CHANNEL_MODE chMode,         /* in */
     const FDK_channelMapDescr_t *const mapDescr, /* in */
-    AUDIO_CHANNEL_TYPE channelType[],          /* out */
+    AUDIO_CHANNEL_TYPE_t channelType[],          /* out */
     uint8_t channelIndices[],                    /* out */
     uint8_t offsetTable[(8)]                     /* out */
 ) {
@@ -701,7 +701,7 @@ static void getChannelDescription(
   assert(offsetTable != NULL);
 
   /* Init output arrays */
-  memset(channelType, 0, (8) * sizeof(AUDIO_CHANNEL_TYPE));
+  memset(channelType, 0, (8) * sizeof(AUDIO_CHANNEL_TYPE_t));
   memset(channelIndices, 0, (8) * sizeof(uint8_t));
   memset(offsetTable, 255, (8) * sizeof(uint8_t));
 
@@ -761,13 +761,13 @@ static void getChannelDescription(
     }
 
     for (grpIdx = 0; grpIdx < (4); grpIdx += 1) {
-      AUDIO_CHANNEL_TYPE type = ACT_NONE;
+      AUDIO_CHANNEL_TYPE_t type = ACT_NONE;
       int32_t chMapPos = 0, maxChannels = 0;
       int32_t chIdx = 0; /* Index of channel within the specific group */
 
       switch (grpIdx) {
         case CH_GROUP_FRONT:
-          type = (AUDIO_CHANNEL_TYPE)((plainIdx << 4) | ACT_FRONT);
+          type = (AUDIO_CHANNEL_TYPE_t)((plainIdx << 4) | ACT_FRONT);
           switch (plainIdx) {
             default:
               chMapPos = LEFT_FRONT_CHANNEL;
@@ -778,7 +778,7 @@ static void getChannelDescription(
           break;
         case CH_GROUP_SIDE:
           /* Always map side channels to the multipurpose group. */
-          type = (AUDIO_CHANNEL_TYPE)((plainIdx << 4) | ACT_SIDE);
+          type = (AUDIO_CHANNEL_TYPE_t)((plainIdx << 4) | ACT_SIDE);
           if (plainIdx == CH_PLAIN_TOP) {
             chMapPos = LEFT_SIDE_CHANNEL_TOP;
             maxChannels = 3;
@@ -788,7 +788,7 @@ static void getChannelDescription(
           }
           break;
         case CH_GROUP_REAR:
-          type = (AUDIO_CHANNEL_TYPE)((plainIdx << 4) | ACT_BACK);
+          type = (AUDIO_CHANNEL_TYPE_t)((plainIdx << 4) | ACT_BACK);
           if (plainIdx == CH_PLAIN_TOP) {
             chMapPos = LEFT_REAR_CHANNEL_TOP;
             maxChannels = 3;
@@ -2025,7 +2025,7 @@ PCMDMX_ERROR pcmDmx_SetMatrixMixdownFromPce(HANDLE_PCM_DOWNMIX self,
 PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
                                const int32_t pcmBufSize, uint32_t frameSize,
                                int32_t *nChannels, int32_t fInterleaved,
-                               AUDIO_CHANNEL_TYPE channelType[],
+                               AUDIO_CHANNEL_TYPE_t channelType[],
                                uint8_t channelIndices[],
                                const FDK_channelMapDescr_t *const mapDescr,
                                int32_t *pDmxOutScale) {
@@ -2156,7 +2156,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
     int32_t bypScale = 0;
 
     if (numInChannels > SIX_CHANNEL) {
-      AUDIO_CHANNEL_TYPE multiPurposeChType[2];
+      AUDIO_CHANNEL_TYPE_t multiPurposeChType[2];
 
       /* Get the type of the multipurpose channels */
       multiPurposeChType[0] =
@@ -2350,7 +2350,7 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
       DMX_PCM *pIn[(8)] = {NULL};
       DMX_PCM *pOut[(8)] = {NULL};
       uint32_t sample;
-      AUDIO_CHANNEL_TYPE inChTypes[(8)];
+      AUDIO_CHANNEL_TYPE_t inChTypes[(8)];
       uint8_t inChIndices[(8)];
       uint8_t numChPerGrp[2][(4)];
       int32_t nContentCh = 0; /* Number of channels with content */
@@ -2360,9 +2360,9 @@ PCMDMX_ERROR pcmDmx_ApplyFrame(HANDLE_PCM_DOWNMIX self, DMX_PCM *pPcmBuf,
       /* Do not change the signalling which is the channel types and indices.
          Just reorder and add channels. So first save the input signalling. */
       memcpy(inChTypes, channelType,
-                numInChannels * sizeof(AUDIO_CHANNEL_TYPE));
+                numInChannels * sizeof(AUDIO_CHANNEL_TYPE_t));
       memset(inChTypes + numInChannels, 0,
-                  ((8) - numInChannels) * sizeof(AUDIO_CHANNEL_TYPE));
+                  ((8) - numInChannels) * sizeof(AUDIO_CHANNEL_TYPE_t));
       memcpy(inChIndices, channelIndices, numInChannels * sizeof(uint8_t));
       memset(inChIndices + numInChannels, 0,
                   ((8) - numInChannels) * sizeof(uint8_t));

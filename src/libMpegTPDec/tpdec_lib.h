@@ -240,10 +240,10 @@ void CProgramConfig_GetDefault(CProgramConfig *pPce, const uint32_t channelConfi
  */
 int32_t CProgramConfig_LookupElement(CProgramConfig *pPce, uint32_t chConfig,
                                  const uint32_t tag, const uint32_t channelIdx,
-                                 uint8_t chMapping[], AUDIO_CHANNEL_TYPE chType[],
+                                 uint8_t chMapping[], AUDIO_CHANNEL_TYPE_t chType[],
                                  uint8_t chIndex[], const uint32_t chDescrLen,
-                                 uint8_t *elMapping, MP4_ELEMENT_ID elList[],
-                                 MP4_ELEMENT_ID elType);
+                                 uint8_t *elMapping, MP4_ELEMENT_ID_t elList[],
+                                 MP4_ELEMENT_ID_t elType);
 
 /**
  * \brief             Get table of channel indices in the order of their
@@ -270,7 +270,7 @@ int32_t CProgramConfig_GetPceChMap(const CProgramConfig *pPce, uint8_t pceChMap[
  * \return            Total element count including all SCE, CPE and LFE.
  */
 int32_t CProgramConfig_GetElementTable(const CProgramConfig *pPce,
-                                   MP4_ELEMENT_ID table[], const int32_t elListSize,
+                                   MP4_ELEMENT_ID_t table[], const int32_t elListSize,
                                    uint8_t *pChMapIdx);
 
 /**
@@ -283,7 +283,7 @@ int32_t CProgramConfig_GetElementTable(const CProgramConfig *pPce,
  */
 void CProgramConfig_GetChannelDescription(const uint32_t chConfig,
                                           const CProgramConfig *pPce,
-                                          AUDIO_CHANNEL_TYPE chType[],
+                                          AUDIO_CHANNEL_TYPE_t chType[],
                                           uint8_t chIndex[]);
 
 /**

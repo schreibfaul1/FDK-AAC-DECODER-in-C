@@ -202,7 +202,7 @@ components: 'reordered_spectral_data_length' and 'longest_codeword_length'
 
 void CHcr_Read(HANDLE_FDK_BITSTREAM bs,
                CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-               const MP4_ELEMENT_ID globalHcrType) {
+               const MP4_ELEMENT_ID_t globalHcrType) {
   int16_t lengOfReorderedSpectralData;
   int8_t lengOfLongestCodeword;
 

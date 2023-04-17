@@ -333,7 +333,7 @@ static int32_t aacDecoder_CtrlCFGChangeCallback(void *handle, const CCtrlCFGChan
 
 static int32_t aacDecoder_SbrCallback(void *handle, HANDLE_FDK_BITSTREAM hBs, const int32_t sampleRateIn,
 								  const int32_t sampleRateOut, const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE_t coreCodec,
-								  const MP4_ELEMENT_ID elementID, const int32_t elementIndex, const uint8_t harmonicSBR,
+								  const MP4_ELEMENT_ID_t elementID, const int32_t elementIndex, const uint8_t harmonicSBR,
 								  const uint8_t stereoConfigIndex, const uint8_t configMode, uint8_t *configChanged,
 								  const int32_t downscaleFactor) {
 	HANDLE_SBRDECODER self = (HANDLE_SBRDECODER)handle;
