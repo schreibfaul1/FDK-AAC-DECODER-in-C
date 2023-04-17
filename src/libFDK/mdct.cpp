@@ -104,23 +104,23 @@ int32_t mdct_block(H_MDCT hMdct, const int16_t * timeData,
     that is segments A and B. The A segment is multiplied by the respective left
     window coefficient and placed in a temporary variable.
 
-    tmp0 = fMultDiv2((FIXP_PCM)timeData[i+nl], pLeftWindowPart[i].v.im);
+    tmp0 = fMultDiv2((int16_t)timeData[i+nl], pLeftWindowPart[i].v.im);
 
     After this the B segment taken in reverse order is multiplied by the left
     window and subtracted from the previously derived temporary variable, so
     that finally we implement the A-Br operation. This output is written to the
     right part of the MDCT output : (-D-Cr,A-Br).
 
-    mdctData[(tl/2)+i+nl] = fMultSubDiv2(tmp0, (FIXP_PCM)timeData[tl-nl-i-1],
+    mdctData[(tl/2)+i+nl] = fMultSubDiv2(tmp0, (int16_t)timeData[tl-nl-i-1],
     pLeftWindowPart[i].v.re);//A*window-Br*window
 
     The (A-Br) data is written to the output buffer (mdctData) without being
     flipped.     */
     for (i = 0; i < fl / 2; i++) {
       int32_t tmp0;
-      tmp0 = fMultDiv2((FIXP_PCM)timeData[i + nl], wls[i].v.im); /* a*window */
+      tmp0 = fMultDiv2((int16_t)timeData[i + nl], wls[i].v.im); /* a*window */
       mdctData[(tl / 2) + i + nl] =
-          fMultSubDiv2(tmp0, (FIXP_PCM)timeData[tl - nl - i - 1],
+          fMultSubDiv2(tmp0, (int16_t)timeData[tl - nl - i - 1],
                        wls[i].v.re); /* A*window-Br*window */
     }
 
@@ -144,7 +144,7 @@ int32_t mdct_block(H_MDCT hMdct, const int16_t * timeData,
     that is, segments C and D. The C segment is multiplied by the respective
     right window coefficient and placed in a temporary variable.
 
-    tmp1 = fMultDiv2((FIXP_PCM)timeData[tl+nr+i], pRightWindowPart[i].v.re);
+    tmp1 = fMultDiv2((int16_t)timeData[tl+nr+i], pRightWindowPart[i].v.re);
 
     After this the D segment taken in reverse order is multiplied by the right
     window and added from the previously derived temporary variable, so that we
@@ -153,13 +153,13 @@ int32_t mdct_block(H_MDCT hMdct, const int16_t * timeData,
     time, so that from (-C-Dr) we get (-D-Cr)=> (-D-Cr,A-Br).
 
     mdctData[(tl/2)-nr-i-1] = -fMultAddDiv2(tmp1,
-    (FIXP_PCM)timeData[(tl*2)-nr-i-1], pRightWindowPart[i].v.im);*/
+    (int16_t)timeData[(tl*2)-nr-i-1], pRightWindowPart[i].v.im);*/
     for (i = 0; i < fr / 2; i++) {
       int32_t tmp1;
-      tmp1 = fMultDiv2((FIXP_PCM)timeData[tl + nr + i],
+      tmp1 = fMultDiv2((int16_t)timeData[tl + nr + i],
                        wrs[i].v.re); /* C*window */
       mdctData[(tl / 2) - nr - i - 1] =
-          -fMultAddDiv2(tmp1, (FIXP_PCM)timeData[(tl * 2) - nr - i - 1],
+          -fMultAddDiv2(tmp1, (int16_t)timeData[(tl * 2) - nr - i - 1],
                         wrs[i].v.im); /* -(C*window+Dr*window) and flip before
                                          placing -> -Cr - D */
     }

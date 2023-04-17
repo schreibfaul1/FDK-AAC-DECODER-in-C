@@ -22,7 +22,7 @@
 #include "FDK_tools_rom.h"
 #include "dct.h"
 
-#define FIXP_QAS FIXP_PCM
+#define FIXP_QAS int16_t
 #define QAS_BITS SAMPLE_BITS
 #define INT_PCM_QMFIN int16_t
 
@@ -86,7 +86,7 @@ struct QMF_FILTER_BANK {
   const FIXP_PFT *p_filter; /*!< Pointer to filter coefficients */
 
   void *FilterStates;    /*!< Pointer to buffer of filter states
-                              FIXP_PCM in analyse and
+                              int16_t in analyse and
                               int32_t in synthesis filter */
   int32_t FilterSize;        /*!< Size of prototype filter. */
   const FIXP_QTW *t_cos; /*!< Modulation tables. */

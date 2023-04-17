@@ -148,7 +148,8 @@
 #define MINVAL_DBL             ((signed)0x80000000) /* this has to be synchronized to DFRACT_BITS */
 
 #define SF_CLD_C1C2 (9)
-
+#define FRACT_FIX_SCALE  ((int64_t(1) << (FRACT_BITS - 1)))
+#define DFRACT_FIX_SCALE ((int64_t(1) << (DFRACT_BITS - 1)))
 #define IS_USAC(aot)     ((aot) == AOT_USAC)
 #define IS_LOWDELAY(aot) ((aot) == AOT_ER_AAC_LD || (aot) == AOT_ER_AAC_ELD)
 #define IS_CHANNEL_ELEMENT(elementId)                                                                         \
@@ -179,6 +180,9 @@
 #define MAX_NUM_ENVELOPE_VALUES   (MAX_ENVELOPES * MAX_FREQ_COEFFS)
 #define MAX_SFB_NRG_HEADROOM      (1)
 #define MAX_VAL_NRG_HEADROOM      ((((int32_t)MAXVAL_DBL) >> MAX_SFB_NRG_HEADROOM))
+#define FRACT_BITS                16 /* single precision */
+#define DFRACT_BITS               32 /* double precision */
+#define ACCU_BITS                 40 /* double precision plus overflow */
 
 // Audio Object Type definitions.
 typedef enum{

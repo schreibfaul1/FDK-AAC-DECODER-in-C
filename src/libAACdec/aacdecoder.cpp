@@ -482,10 +482,10 @@ AAC_DECODER_ERROR CAacDecoder_ApplyCrossFade(int16_t *pTimeData, int16_t **pTime
 		int16_t *pIn = &pTimeData[ch * s1];
 		for(i = 0; i < TIME_DATA_FLUSH_SIZE; i++) {
 			int16_t alpha = (int16_t)i << (FRACT_BITS - 1 - TIME_DATA_FLUSH_SIZE_SF);
-			int32_t time = FX_PCM2FX_DBL(*pIn);
-			int32_t timeFlush = FX_PCM2FX_DBL(pTimeDataFlush[ch][i]);
+			int32_t time = FX_SGL2FX_DBL((int16_t)*pIn);
+			int32_t timeFlush = FX_SGL2FX_DBL((int16_t)pTimeDataFlush[ch][i]);
 
-			*pIn = (int16_t)(FIXP_PCM)FX_DBL2FX_PCM(timeFlush - fMult(timeFlush, alpha) + fMult(time, alpha));
+			*pIn = (int16_t)(int16_t)FX_DBL2FX_SGL(timeFlush - fMult(timeFlush, alpha) + fMult(time, alpha));
 			pIn += s2;
 		}
 	}

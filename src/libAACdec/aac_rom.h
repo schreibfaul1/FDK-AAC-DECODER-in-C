@@ -21,8 +21,8 @@
 #define FIXP_DBL2PCM_DEC(x) (x)
 #define PCM_DEC2FIXP_DBL(x) (x)
 #define PCM_DEC_BITS DFRACT_BITS
-#define PCM_DEC2FX_PCM(x) FX_DBL2FX_PCM(x)
-#define FX_PCM2PCM_DEC(x) FX_PCM2FX_DBL(x)
+#define PCM_DEC2FX_PCM(x) FX_DBL2FX_SGL(x)(x)
+#define FX_PCM2PCM_DEC(x) FX_SGL2FX_DBL((int16_t)(x))(x)
 
 #define AACDEC_MAX_CH_CONF 14
 #define AACDEC_CH_ELEMENTS_TAB_SIZE 7 /*!< Size of element tables */

@@ -27,7 +27,7 @@ void scaleValues(int16_t *vector, int32_t len, int32_t scalefactor);
 void scaleValues(int32_t *vector, int32_t len, int32_t scalefactor);
 void scaleValues(int32_t *dst, const int32_t *src, int32_t len, int32_t scalefactor);
 #if(SAMPLE_BITS == 16)
-void scaleValues(FIXP_PCM *dst, const int32_t *src, int32_t len, int32_t scalefactor);
+void scaleValues(int16_t *dst, const int32_t *src, int32_t len, int32_t scalefactor);
 #endif
 void    scaleValues(int16_t *dst, const int16_t *src, int32_t len, int32_t scalefactor);
 void    scaleCplxValues(int32_t *r_dst, int32_t *i_dst, const int32_t *r_src, const int32_t *i_src, int32_t len,

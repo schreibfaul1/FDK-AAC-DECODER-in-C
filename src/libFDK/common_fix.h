@@ -21,43 +21,10 @@
 
 /* ***** Start of former fix.h ****** */
 
-/* Define bit sizes of integer fixpoint fractional data types */
-#define FRACT_BITS 16  /* single precision */
-#define DFRACT_BITS 32 /* double precision */
-#define ACCU_BITS 40   /* double precision plus overflow */
-
-/* Fixpoint equivalent type fot PCM audio time domain data. */
-#if defined(SAMPLE_BITS)
-#if (SAMPLE_BITS == DFRACT_BITS)
-#define FIXP_PCM int32_t
-#define MAXVAL_FIXP_PCM MAXVAL_DBL__vsclgbu8wtk
-#define MINVAL_FIXP_PCM MINVAL_DBL
-#define FX_PCM2FX_DBL(x) ((int32_t)(x))
-#define FX_DBL2FX_PCM(x) ((int16_t)(x))
-#elif (SAMPLE_BITS == FRACT_BITS)
-#define FIXP_PCM int16_t
-#define MAXVAL_FIXP_PCM MAXVAL_SGL
-#define MINVAL_FIXP_PCM MINVAL_SGL
-#define FX_PCM2FX_DBL(x) FX_SGL2FX_DBL((int16_t)(x))
-#define FX_DBL2FX_PCM(x) FX_DBL2FX_SGL(x)
-#else
-#error SAMPLE_BITS different from FRACT_BITS or DFRACT_BITS not implemented!
-#endif
-#endif
-
-/* ****** End of former fix.h ****** */
-
-#define SGL_MASK ((1UL << FRACT_BITS) - 1) /* 16bit: (2^16)-1 = 0xFFFF */
-
-#define MAX_SHIFT_SGL \
-  (FRACT_BITS - 1) /* maximum possible shift for int16_t values */
-#define MAX_SHIFT_DBL \
-  (DFRACT_BITS - 1) /* maximum possible shift for int32_t values */
 
 /* Scale factor from/to float/fixpoint values. DO NOT USE THESE VALUES AS
  * SATURATION LIMITS !! */
-#define FRACT_FIX_SCALE ((int64_t(1) << (FRACT_BITS - 1)))
-#define DFRACT_FIX_SCALE ((int64_t(1) << (DFRACT_BITS - 1)))
+
 
 /* Max and Min values for saturation purposes. DO NOT USE THESE VALUES AS SCALE
  * VALUES !! */

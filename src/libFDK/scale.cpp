@@ -320,7 +320,7 @@ void scaleValues(int32_t       *dst,        /*!< dst Vector */
          */
         #define FUNCTION_scaleValues_PCMDBL
 SCALE_INLINE
-void scaleValues(FIXP_PCM      *dst,        /*!< dst Vector */
+void scaleValues(int16_t      *dst,        /*!< dst Vector */
                  const int32_t *src,        /*!< src Vector */
                  int32_t        len,        /*!< Length */
                  int32_t        scalefactor /*!< Scalefactor */
@@ -333,22 +333,22 @@ void scaleValues(FIXP_PCM      *dst,        /*!< dst Vector */
     {
         if(scalefactor > 0) {
             scalefactor = fixmin_I(scalefactor, (int32_t)DFRACT_BITS - 1);
-            for(i = len & 3; i--;) { *(dst++) = (FIXP_PCM)(*(src++) << scalefactor); }
+            for(i = len & 3; i--;) { *(dst++) = (int16_t)(*(src++) << scalefactor); }
             for(i = len >> 2; i--;) {
-                *(dst++) = (FIXP_PCM)(*(src++) << scalefactor);
-                *(dst++) = (FIXP_PCM)(*(src++) << scalefactor);
-                *(dst++) = (FIXP_PCM)(*(src++) << scalefactor);
-                *(dst++) = (FIXP_PCM)(*(src++) << scalefactor);
+                *(dst++) = (int16_t)(*(src++) << scalefactor);
+                *(dst++) = (int16_t)(*(src++) << scalefactor);
+                *(dst++) = (int16_t)(*(src++) << scalefactor);
+                *(dst++) = (int16_t)(*(src++) << scalefactor);
             }
         }
         else {
             int32_t negScalefactor = fixmin_I(-scalefactor, (int32_t)DFRACT_BITS - 1);
-            for(i = len & 3; i--;) { *(dst++) = (FIXP_PCM)(*(src++) >> negScalefactor); }
+            for(i = len & 3; i--;) { *(dst++) = (int16_t)(*(src++) >> negScalefactor); }
             for(i = len >> 2; i--;) {
-                *(dst++) = (FIXP_PCM)(*(src++) >> negScalefactor);
-                *(dst++) = (FIXP_PCM)(*(src++) >> negScalefactor);
-                *(dst++) = (FIXP_PCM)(*(src++) >> negScalefactor);
-                *(dst++) = (FIXP_PCM)(*(src++) >> negScalefactor);
+                *(dst++) = (int16_t)(*(src++) >> negScalefactor);
+                *(dst++) = (int16_t)(*(src++) >> negScalefactor);
+                *(dst++) = (int16_t)(*(src++) >> negScalefactor);
+                *(dst++) = (int16_t)(*(src++) >> negScalefactor);
             }
         }
     }
