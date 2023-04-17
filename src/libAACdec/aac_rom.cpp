@@ -1183,7 +1183,7 @@ const int8_t *aQuantTable[] = {aValTab41,
                                aValTab24,                   /* 30            6        */
                                aValTab24};                  /* 31            6        */
 
-/* arrays for HCR_TABLE_INFO structures */
+/* arrays for HCR_TABLE_INFO_t structures */
 /* maximum length of codeword in each codebook */
 /* codebook:                     0,1, 2,3, 4, 5, 6, 7, 8, 9,
  * 10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31 */
@@ -1214,7 +1214,7 @@ const uint8_t aDimCbShift[MAX_CB] = {1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1
 const uint8_t aSignCb[MAX_CB] = {0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0,
                                  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
-/* arrays for HCR_CB_PAIRS structures */
+/* arrays for HCR_CB_PAIRS_t structures */
 const uint8_t aMinOfCbPair[MAX_CB_PAIRS] = {0,  1,  3,  5,  7,  9,  16, 17, 18, 19, 20, 21,
                                             22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 11};
 const uint8_t aMaxOfCbPair[MAX_CB_PAIRS] = {0,  2,  4,  6,  8,  10, 16, 17, 18, 19, 20, 21,

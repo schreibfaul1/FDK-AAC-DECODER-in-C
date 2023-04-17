@@ -567,7 +567,7 @@ static int32_t DecodePitchLag(HANDLE_FDK_BITSTREAM hBs, const uint8_t num_acb_id
 
     return error;
 }
-static void ConcealPitchLag(CAcelpStaticMem *acelp_mem, const int32_t PIT_MAX, int32_t *pT0, int32_t *pT0_frac) {
+static void ConcealPitchLag(CAcelpStaticMem_t *acelp_mem, const int32_t PIT_MAX, int32_t *pT0, int32_t *pT0_frac) {
     uint16_t *pold_T0 = &acelp_mem->old_T0;
     uint8_t  *pold_T0_frac = &acelp_mem->old_T0_frac;
 
@@ -580,8 +580,8 @@ static uint8_t tab_coremode2nbits[8] = {20, 28, 36, 44, 52, 64, 12, 16};
 
 static int32_t MapCoreMode2NBits(int32_t core_mode) { return (int32_t)tab_coremode2nbits[core_mode]; }
 
-void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, int32_t i_offset, const int16_t lsp_old[M_LP_FILTER_ORDER],
-                      const int16_t lsp_new[M_LP_FILTER_ORDER], int16_t stab_fac, CAcelpChannelData *pAcelpData,
+void CLpd_AcelpDecode(CAcelpStaticMem_t *acelp_mem, int32_t i_offset, const int16_t lsp_old[M_LP_FILTER_ORDER],
+                      const int16_t lsp_new[M_LP_FILTER_ORDER], int16_t stab_fac, CAcelpChannelData_t *pAcelpData,
                       int32_t numLostSubframes, int32_t lastLpcLost, int32_t frameCnt, int32_t synth[], int32_t pT[],
                       int32_t *pit_gain, int32_t coreCoderFrameLength) {
     int32_t i_subfr, subfr_nr, l_div, T;
@@ -744,7 +744,7 @@ void CLpd_AcelpDecode(CAcelpStaticMem *acelp_mem, int32_t i_offset, const int16_
     return;
 }
 
-void CLpd_AcelpReset(CAcelpStaticMem *acelp) {
+void CLpd_AcelpReset(CAcelpStaticMem_t *acelp) {
     acelp->gc_threshold = (int32_t)0;
 
     acelp->past_gpit = (int16_t)0;
@@ -758,7 +758,7 @@ void CLpd_AcelpReset(CAcelpStaticMem *acelp) {
 
 /* TCX time domain concealment */
 /*   Compare to figure 13a on page 54 in 3GPP TS 26.290 */
-void CLpd_TcxTDConceal(CAcelpStaticMem *acelp_mem, int16_t *pitch, const int16_t lsp_old[M_LP_FILTER_ORDER],
+void CLpd_TcxTDConceal(CAcelpStaticMem_t *acelp_mem, int16_t *pitch, const int16_t lsp_old[M_LP_FILTER_ORDER],
                        const int16_t lsp_new[M_LP_FILTER_ORDER], const int16_t stab_fac, int32_t nLostSf,
                        int32_t synth[], int32_t coreCoderFrameLength, uint8_t last_tcx_noise_factor) {
     /* repeat past excitation with pitch from previous decoded TCX frame */
@@ -879,7 +879,7 @@ void Acelp_PostProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch
 
 #define L_FAC_ZIR (LFAC)
 
-void CLpd_Acelp_Zir(const int16_t A[], const int32_t A_exp, CAcelpStaticMem *acelp_mem, const int32_t length,
+void CLpd_Acelp_Zir(const int16_t A[], const int32_t A_exp, CAcelpStaticMem_t *acelp_mem, const int32_t length,
                     int32_t zir[], int32_t doDeemph) {
 
     int32_t tmp_buf[LFAC + M_LP_FILTER_ORDER];
@@ -901,7 +901,7 @@ void CLpd_Acelp_Zir(const int16_t A[], const int32_t A_exp, CAcelpStaticMem *ace
 
 void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, uint8_t last_last_lpd_mode,
                                   const int16_t *A_new, const int32_t A_new_exp, const int16_t *A_old,
-                                  const int32_t A_old_exp, CAcelpStaticMem *acelp_mem, int32_t coreCoderFrameLength,
+                                  const int32_t A_old_exp, CAcelpStaticMem_t *acelp_mem, int32_t coreCoderFrameLength,
                                   int32_t clearOldExc, uint8_t lpd_mode) {
     int32_t  l_div = coreCoderFrameLength / NB_DIV; /* length of one ACELP/TCX20 frame */
     int32_t  l_div_partial;
@@ -963,12 +963,12 @@ void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, u
     return;
 }
 
-int32_t *CLpd_ACELP_GetFreeExcMem(CAcelpStaticMem *acelp_mem, int32_t length) {
+int32_t *CLpd_ACELP_GetFreeExcMem(CAcelpStaticMem_t *acelp_mem, int32_t length) {
     assert(length <= PIT_MAX_MAX + L_INTERPOL);
     return acelp_mem->old_exc_mem;
 }
 
-int32_t CLpd_AcelpRead(HANDLE_FDK_BITSTREAM hBs, CAcelpChannelData *acelp, int32_t acelp_core_mode,
+int32_t CLpd_AcelpRead(HANDLE_FDK_BITSTREAM hBs, CAcelpChannelData_t *acelp, int32_t acelp_core_mode,
                        int32_t coreCoderFrameLength, int32_t i_offset) {
     int32_t        nb_subfr = coreCoderFrameLength / L_DIV;
     const uint8_t *num_acb_index_bits = (nb_subfr == 4) ? num_acb_idx_bits_table[0] : num_acb_idx_bits_table[1];

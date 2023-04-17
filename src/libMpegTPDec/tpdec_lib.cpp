@@ -43,7 +43,7 @@ struct TRANSPORTDEC
 
     CSTpCallBacks callbacks; /*!< Struct holding callback and its data */
 
-    FDK_BITSTREAM bitStream[1]; /* Bitstream reader */
+    FDK_BITSTREAM_t bitStream[1]; /* Bitstream reader */
     uint8_t      *bsBuffer;     /* Internal bitstreamd data buffer */
 
     transportdec_parser_t parser; /* Format specific parser structs. */
@@ -166,7 +166,7 @@ TRANSPORTDEC_ERROR transportDec_OutOfBandConfig(HANDLE_TRANSPORTDEC hTp, uint8_t
 
     TRANSPORTDEC_ERROR err = TRANSPORTDEC_OK;
 
-    FDK_BITSTREAM        bs;
+    FDK_BITSTREAM_t        bs;
     HANDLE_FDK_BITSTREAM hBs = &bs;
 
     int32_t fConfigFound = 0;
@@ -243,7 +243,7 @@ TRANSPORTDEC_ERROR transportDec_InBandConfig(HANDLE_TRANSPORTDEC hTp, uint8_t *n
                                              const uint32_t newConfigLength, const uint8_t buildUpStatus,
                                              uint8_t *configChanged, uint32_t layer, uint8_t *implicitExplicitCfgDiff) {
     int32_t              errC;
-    FDK_BITSTREAM        bs;
+    FDK_BITSTREAM_t        bs;
     HANDLE_FDK_BITSTREAM hBs = &bs;
     TRANSPORTDEC_ERROR   err = TRANSPORTDEC_OK;
     int32_t              fConfigFound = 0;
@@ -1481,7 +1481,7 @@ TRANSPORTDEC_ERROR transportDec_CrcCheck(HANDLE_TRANSPORTDEC pTp) {
 
 TRANSPORTDEC_ERROR transportDec_DrmRawSdcAudioConfig_Check(uint8_t *conf, const uint32_t length) {
     CSAudioSpecificConfig asc;
-    FDK_BITSTREAM         bs;
+    FDK_BITSTREAM_t         bs;
     HANDLE_FDK_BITSTREAM  hBs = &bs;
 
     FDKinitBitStream(hBs, conf, BUFSIZE_DUMMY_VALUE, length << 3, BS_READER);

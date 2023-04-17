@@ -18,11 +18,11 @@
 #include "../libFDK/FDK_bitstream.h"
 
 /* PNS (of block) */
-void CPns_Read(CPnsData *pPnsData, HANDLE_FDK_BITSTREAM bs,
+void CPns_Read(CPnsData_t *pPnsData, HANDLE_FDK_BITSTREAM bs,
                const CodeBookDescription *hcb, int16_t *pScaleFactor,
                uint8_t global_gain, int32_t band, int32_t group);
 
-void CPns_Apply(const CPnsData *pPnsData, const CIcsInfo_t *pIcsInfo,
+void CPns_Apply(const CPnsData_t *pPnsData, const CIcsInfo_t *pIcsInfo,
                 int32_t* pSpectrum, const int16_t *pSpecScale,
                 const int16_t *pScaleFactor,
                 const SamplingRateInfo_t *pSamplingRateInfo,
@@ -41,17 +41,17 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
 
   \return  none
 */
-void CTns_ReadDataPresentFlag(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData);
+void CTns_ReadDataPresentFlag(HANDLE_FDK_BITSTREAM bs, CTnsData_t *pTnsData);
 
-void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData *pTnsData0,
-                              CTnsData *pTnsData1, uint8_t *ptns_on_lr,
+void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData_t *pTnsData0,
+                              CTnsData_t *pTnsData1, uint8_t *ptns_on_lr,
                               const CIcsInfo_t *pIcsInfo, const uint32_t flags,
                               const uint32_t elFlags, const int32_t fCommonWindow);
 
-AAC_DECODER_ERROR_t CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData,
+AAC_DECODER_ERROR_t CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData_t *pTnsData,
                             const CIcsInfo_t *pIcsInfo, const uint32_t flags);
 
-void CTns_Apply(CTnsData * pTnsData, /*!< pointer to aac decoder info */
+void CTns_Apply(CTnsData_t * pTnsData, /*!< pointer to aac decoder info */
                 const CIcsInfo_t *pIcsInfo, int32_t* pSpectralCoefficient,
                 const SamplingRateInfo_t *pSamplingRateInfo,
                 const int32_t granuleLength, const uint8_t nbands,

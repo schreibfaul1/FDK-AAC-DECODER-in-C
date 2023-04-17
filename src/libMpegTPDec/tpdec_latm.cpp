@@ -45,9 +45,9 @@ static TRANSPORTDEC_ERROR CLatmDemux_ReadAudioMuxElement(
       uint8_t configChanged = 0;
       uint8_t configMode = 0;
 
-      FDK_BITSTREAM bsAnchor;
+      FDK_BITSTREAM_t bsAnchor;
 
-      FDK_BITSTREAM bsAnchorDummyParse;
+      FDK_BITSTREAM_t bsAnchorDummyParse;
 
       if (!pLatmDemux->applyAsc) {
         bsAnchorDummyParse = *bs;
@@ -276,7 +276,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
                 usacConfigLengthPrev); /* store previous USAC config */
           }
           if (pLatmDemux->m_AudioMuxVersion == 1) {
-            FDK_BITSTREAM tmpBs;
+            FDK_BITSTREAM_t tmpBs;
             int32_t ascLen = 0;
             ascLen = CLatmDemux_GetValue(bs);
             /* The ascLen could be wrong, so check if validBits<=bufBits*/

@@ -24,12 +24,12 @@
  * the bitstream.
  *
  * \param bs bit stream handle data source.
- * \param PulseData pointer to a CPulseData were the decoded data is stored
+ * \param PulseData pointer to a CPulseData_t were the decoded data is stored
  * into.
  * \param MaxSfBands max number of scale factor bands.
  * \return 0 on success, != 0 on parse error.
  */
-int32_t CPulseData_Read(const HANDLE_FDK_BITSTREAM bs, CPulseData *const PulseData,
+int32_t CPulseData_Read(const HANDLE_FDK_BITSTREAM bs, CPulseData_t *const PulseData,
                     const int16_t *sfb_startlines, const void *pIcsInfo,
                     const int16_t frame_length);
 
@@ -45,7 +45,7 @@ int32_t CPulseData_Read(const HANDLE_FDK_BITSTREAM bs, CPulseData *const PulseDa
  * to.
  * \return  none
  */
-void CPulseData_Apply(CPulseData *PulseData,
+void CPulseData_Apply(CPulseData_t *PulseData,
                       const int16_t *pScaleFactorBandOffsets, int32_t *coef);
 
 #endif /* #ifndef PULSEDATA_H */

@@ -34,7 +34,7 @@ energies.
 --------------------------------------------------------------------------------------------
 */
 
-static void calcRefValFwd(CErRvlcInfo *pRvlc,
+static void calcRefValFwd(CErRvlcInfo_t *pRvlc,
                           CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                           int32_t *refIsFwd, int32_t *refNrgFwd, int32_t *refScfFwd) {
   int32_t band, bnds, group, startBand;
@@ -110,7 +110,7 @@ energies.
 --------------------------------------------------------------------------------------------
 */
 
-static void calcRefValBwd(CErRvlcInfo *pRvlc,
+static void calcRefValBwd(CErRvlcInfo_t *pRvlc,
                           CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                           int32_t *refIsBwd, int32_t *refNrgBwd, int32_t *refScfBwd) {
   int32_t band, bnds, group, startBand;
@@ -193,7 +193,7 @@ conceal_min and conceal_max
 
 void BidirectionalEstimation_UseLowerScfOfCurrentFrame(
     CAacDecoderChannelInfo_t *pAacDecoderChannelInfo) {
-  CErRvlcInfo *pRvlc =
+  CErRvlcInfo_t *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
   int32_t band, bnds, startBand, endBand, group;
   int32_t conceal_min, conceal_max;
@@ -340,7 +340,7 @@ conceal_min and conceal_max
 void BidirectionalEstimation_UseScfOfPrevFrameAsReference(
     CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
     CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo) {
-  CErRvlcInfo *pRvlc =
+  CErRvlcInfo_t *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
   int32_t band, bnds, startBand, endBand, group;
   int32_t conceal_min, conceal_max;
@@ -510,7 +510,7 @@ and noise energy seperately.
 */
 
 void StatisticalEstimation(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo) {
-  CErRvlcInfo *pRvlc =
+  CErRvlcInfo_t *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
   int32_t band, bnds, group;
   int32_t sumIsFwd, sumIsBwd;   /* sum of intensity data forward/backward */
@@ -623,7 +623,7 @@ scalefactorband to zero.
 void PredictiveInterpolation(
     CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
     CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo) {
-  CErRvlcInfo *pRvlc =
+  CErRvlcInfo_t *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
   int32_t band, bnds, group;
   int16_t commonMin;

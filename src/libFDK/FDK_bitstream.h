@@ -132,7 +132,7 @@ static inline
 HANDLE_FDK_BITSTREAM FDKcreateBitStream(uint8_t *pBuffer, uint32_t bufSize,
                                         FDK_BS_CFG config = BS_READER) {
   HANDLE_FDK_BITSTREAM hBitStream =
-      (HANDLE_FDK_BITSTREAM)FDKcalloc(1, sizeof(FDK_BITSTREAM));
+      (HANDLE_FDK_BITSTREAM)FDKcalloc(1, sizeof(FDK_BITSTREAM_t));
   if (hBitStream == NULL) return NULL;
   FDK_InitBitBuffer(&hBitStream->hBitBuf, pBuffer, bufSize, 0);
 

@@ -505,7 +505,7 @@ AAC_DECODER_ERROR_t CAacDecoder_ApplyCrossFade(int16_t *pTimeData, int16_t **pTi
 */
 AAC_DECODER_ERROR_t CAacDecoder_PreRollExtensionPayloadParse(HANDLE_AACDECODER self, uint32_t *numPrerollAU,
 														   uint32_t *prerollAUOffset, uint32_t *prerollAULength) {
-	FDK_BITSTREAM        bs;
+	FDK_BITSTREAM_t        bs;
 	HANDLE_FDK_BITSTREAM hBs;
 	AAC_DECODER_ERROR_t    ErrorStatus;
 
@@ -1054,7 +1054,7 @@ static void CStreamInfoInit(CStreamInfo *pStreamInfo) {
 HANDLE_AACDECODER CAacDecoder_Open(TRANSPORT_TYPE_t bsFormat) /*!< bitstream format (adif,adts,loas,...). */
 {
 	HANDLE_AACDECODER self;
-    CWorkBufferCore1* WBC1;
+    CWorkBufferCore1_t* WBC1;
     uint32_t GRMWBC5 = 0; // GetRequiredMemWorkBufferCore5
 
 	self = (struct AAC_DECODER_INSTANCE *)FDKcalloc(1, sizeof(struct AAC_DECODER_INSTANCE));
@@ -1089,7 +1089,7 @@ HANDLE_AACDECODER CAacDecoder_Open(TRANSPORT_TYPE_t bsFormat) /*!< bitstream for
 	/* Set default frame delay */
 	aacDecoder_drcSetParam(self->hDrcInfo, DRC_BS_DELAY, CConcealment_GetDelay(&self->concealCommonData));
 
-    WBC1 = ((CWorkBufferCore1 *)FDKaalloc_L((1) * sizeof(CWorkBufferCore1), 8, SECT_DATA_L1));
+    WBC1 = ((CWorkBufferCore1_t *)FDKaalloc_L((1) * sizeof(CWorkBufferCore1_t), 8, SECT_DATA_L1));
 	self->workBufferCore1 = (int32_t *)WBC1;
 
 	self->workBufferCore2 = (int32_t *) FDKaalloc_L(8 * 1024 * sizeof(int32_t), 8, SECT_DATA_L2);
@@ -1803,19 +1803,19 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, uint8
 
 						{
 							self->pAacDecoderChannelInfo[ch]->pComStaticData =
-								(CAacDecoderCommonStaticData *)FDKcalloc(1, sizeof(CAacDecoderCommonStaticData));
+								(CAacDecoderCommonStaticData_t *)FDKcalloc(1, sizeof(CAacDecoderCommonStaticData_t));
 							if(self->pAacDecoderChannelInfo[ch]->pComStaticData == NULL) { goto bail; }
 							if(ch == aacChannelsOffset) {
-                                uint32_t a = fMax((uint32_t)sizeof(int32_t) * 1024 * 2, (uint32_t)sizeof(CAacDecoderCommonData));
+                                uint32_t a = fMax((uint32_t)sizeof(int32_t) * 1024 * 2, (uint32_t)sizeof(CAacDecoderCommonData_t));
 								self->pAacDecoderChannelInfo[ch]->pComData =
-									(CAacDecoderCommonData *)(int8_t *)FDKaalloc_L(a * sizeof(int8_t), 8, SECT_DATA_L2);
+									(CAacDecoderCommonData_t *)(int8_t *)FDKaalloc_L(a * sizeof(int8_t), 8, SECT_DATA_L2);
 
-                                CWorkBufferCore1* ap = ((CWorkBufferCore1 *)FDKaalloc_L((1) * sizeof(CWorkBufferCore1), 8, SECT_DATA_L1));
+                                CWorkBufferCore1_t* ap = ((CWorkBufferCore1_t *)FDKaalloc_L((1) * sizeof(CWorkBufferCore1_t), 8, SECT_DATA_L1));
 								self->pAacDecoderChannelInfo[ch]->pComStaticData->pWorkBufferCore1 = ap;
 							}
 							else {
-								self->pAacDecoderChannelInfo[ch]->pComData = (CAacDecoderCommonData *)FDKaalloc(
-									sizeof(CAacDecoderCommonData), ALIGNMENT_DEFAULT);
+								self->pAacDecoderChannelInfo[ch]->pComData = (CAacDecoderCommonData_t *)FDKaalloc(
+									sizeof(CAacDecoderCommonData_t), ALIGNMENT_DEFAULT);
 								self->pAacDecoderChannelInfo[ch]->pComStaticData->pWorkBufferCore1 =
 									self->pAacDecoderChannelInfo[aacChannelsOffset]->pComStaticData->pWorkBufferCore1;
 							}
@@ -2314,9 +2314,9 @@ AAC_DECODER_ERROR_t CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32
 				}
 
 				if(self->frameOK) {
-					CAacDecoderCommonData       commonData;
-					CAacDecoderCommonStaticData commonStaticData;
-					CWorkBufferCore1            workBufferCore1;
+					CAacDecoderCommonData_t       commonData;
+					CAacDecoderCommonStaticData_t commonStaticData;
+					CWorkBufferCore1_t            workBufferCore1;
 					commonStaticData.pWorkBufferCore1 = &workBufferCore1;
 					/* memory for spectral lines temporal on scratch */
 					int32_t _mdctSpec[1024 + 8 + sizeof(int32_t) - 1];
@@ -2815,7 +2815,7 @@ AAC_DECODER_ERROR_t CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32
 				 * following concealment method, mark the frame as erroneous */
 				{
 					CIcsInfo_t         *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
-					CConcealmentInfo *hConcealmentInfo = &pAacDecoderStaticChannelInfo->concealmentInfo;
+					CConcealmentInfo_t *hConcealmentInfo = &pAacDecoderStaticChannelInfo->concealmentInfo;
 					const int32_t         mute_release_active = (self->frameOK && !(flags & AACDEC_CONCEAL)) &&
 													((hConcealmentInfo->concealState >= ConcealState_Mute) &&
 													 (hConcealmentInfo->cntValidFrames + 1 <=

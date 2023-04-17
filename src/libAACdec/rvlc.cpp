@@ -37,7 +37,7 @@ previously and set up pointers
 --------------------------------------------------------------------------------------------
 */
 
-static void rvlcInit(CErRvlcInfo *pRvlc,
+static void rvlcInit(CErRvlcInfo_t *pRvlc,
                      CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                      HANDLE_FDK_BITSTREAM bs) {
   /* RVLC common initialization part 2 of 2 */
@@ -120,7 +120,7 @@ static void rvlcInit(CErRvlcInfo *pRvlc,
 */
 
 static void rvlcCheckIntensityCb(
-    CErRvlcInfo *pRvlc, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo) {
+    CErRvlcInfo_t *pRvlc, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo) {
   int32_t group, band, bnds;
 
   pRvlc->intensity_used = 0;
@@ -152,7 +152,7 @@ DPCM value (which has a absolute value of 7)
 --------------------------------------------------------------------------------------------
 */
 
-static int8_t rvlcDecodeEscapeWord(CErRvlcInfo *pRvlc, HANDLE_FDK_BITSTREAM bs) {
+static int8_t rvlcDecodeEscapeWord(CErRvlcInfo_t *pRvlc, HANDLE_FDK_BITSTREAM bs) {
   int32_t i;
   int8_t value;
   uint8_t carryBit;
@@ -227,7 +227,7 @@ escape is needed, then it is just taken out of the array in ascending order.
 --------------------------------------------------------------------------------------------
 */
 
-static void rvlcDecodeEscapes(CErRvlcInfo *pRvlc, int16_t *pEsc,
+static void rvlcDecodeEscapes(CErRvlcInfo_t *pRvlc, int16_t *pEsc,
                               HANDLE_FDK_BITSTREAM bs) {
   int8_t escWord;
   int8_t escCnt = 0;
@@ -267,7 +267,7 @@ value. In case of errors a forbidden codeword is detected --> returning -1
 --------------------------------------------------------------------------------------------
 */
 
-int8_t decodeRVLCodeword(HANDLE_FDK_BITSTREAM bs, CErRvlcInfo *pRvlc) {
+int8_t decodeRVLCodeword(HANDLE_FDK_BITSTREAM bs, CErRvlcInfo_t *pRvlc) {
   int32_t i;
   int8_t value;
   uint8_t carryBit;
@@ -341,7 +341,7 @@ int8_t decodeRVLCodeword(HANDLE_FDK_BITSTREAM bs, CErRvlcInfo *pRvlc) {
 --------------------------------------------------------------------------------------------
 */
 
-static void rvlcDecodeForward(CErRvlcInfo *pRvlc,
+static void rvlcDecodeForward(CErRvlcInfo_t *pRvlc,
                               CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                               HANDLE_FDK_BITSTREAM bs) {
   int32_t band = 0;
@@ -523,7 +523,7 @@ static void rvlcDecodeForward(CErRvlcInfo *pRvlc,
 --------------------------------------------------------------------------------------------
 */
 
-static void rvlcDecodeBackward(CErRvlcInfo *pRvlc,
+static void rvlcDecodeBackward(CErRvlcInfo_t *pRvlc,
                                CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                                HANDLE_FDK_BITSTREAM bs) {
   int16_t band, group, dpcm, offset;
@@ -711,7 +711,7 @@ process
 static void rvlcFinalErrorDetection(
     CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
     CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo) {
-  CErRvlcInfo *pRvlc =
+  CErRvlcInfo_t *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
   uint8_t ErrorStatusComplete = 0;
   uint8_t ErrorStatusLengthFwd = 0;
@@ -967,7 +967,7 @@ static void rvlcFinalErrorDetection(
 
 void CRvlc_Read(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                 HANDLE_FDK_BITSTREAM bs) {
-  CErRvlcInfo *pRvlc =
+  CErRvlcInfo_t *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
 
   int32_t group, band;
@@ -1043,7 +1043,7 @@ the decoder channel info is set to 0 otherwise it is set to 1.
 void CRvlc_Decode(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                   CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
                   HANDLE_FDK_BITSTREAM bs) {
-  CErRvlcInfo *pRvlc =
+  CErRvlcInfo_t *pRvlc =
       &pAacDecoderChannelInfo->pComData->overlay.aac.erRvlcInfo;
   int32_t bitCntOffst;
   int32_t saveBitCnt;

@@ -109,19 +109,19 @@ static void CConcealment_InterpolateBuffer(int32_t *spectrum, int16_t *pSpecScal
                                            int16_t *pSpecScaleOut, int32_t *enPrv, int32_t *enAct, int32_t sfbCnt,
                                            const int16_t *pSfbOffset);
 
-static int32_t CConcealment_ApplyInter(CConcealmentInfo       *pConcealmentInfo,
+static int32_t CConcealment_ApplyInter(CConcealmentInfo_t       *pConcealmentInfo,
                                        CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                                        const SamplingRateInfo_t *pSamplingRateInfo, const int32_t samplesPerFrame,
                                        const int32_t improveTonal, const int32_t frameOk,
                                        const int32_t mute_release_active);
 
-static int32_t CConcealment_ApplyNoise(CConcealmentInfo             *pConcealmentInfo,
+static int32_t CConcealment_ApplyNoise(CConcealmentInfo_t             *pConcealmentInfo,
                                        CAacDecoderChannelInfo_t       *pAacDecoderChannelInfo,
                                        CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
                                        const SamplingRateInfo_t *pSamplingRateInfo, const int32_t samplesPerFrame,
                                        const uint32_t flags);
 
-static void CConcealment_UpdateState(CConcealmentInfo *pConcealmentInfo, int32_t frameOk,
+static void CConcealment_UpdateState(CConcealmentInfo_t *pConcealmentInfo, int32_t frameOk,
                                      CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
                                      const int32_t samplesPerFrame, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo);
 
@@ -131,16 +131,16 @@ static void CConcealment_ApplyRandomSign(int32_t iRandomPhase, int32_t *spec, in
 static void CConcealment_TDFadePcmAtt(int32_t start, int32_t len, int32_t fadeStart, int32_t fadeStop,
                                       int32_t *pcmdata);
 static void CConcealment_TDFadeFillFadingStations(int32_t *fadingStations, int32_t *fadingSteps, int32_t fadeStop,
-                                                  int32_t fadeStart, TDfadingType fadingType);
+                                                  int32_t fadeStart, TDfadingType_t fadingType);
 static void CConcealment_TDFading_doLinearFadingSteps(int32_t *fadingSteps);
 
 /* Streamline the state machine */
-static int32_t CConcealment_ApplyFadeOut(int32_t mode, CConcealmentInfo *pConcealmentInfo,
+static int32_t CConcealment_ApplyFadeOut(int32_t mode, CConcealmentInfo_t *pConcealmentInfo,
                                          CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
                                          const int32_t samplesPerFrame, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo);
 
 static int32_t CConcealment_TDNoise_Random(uint32_t *seed);
-static void    CConcealment_TDNoise_Apply(CConcealmentInfo *const pConcealmentInfo, const int32_t len,
+static void    CConcealment_TDNoise_Apply(CConcealmentInfo_t *const pConcealmentInfo, const int32_t len,
                                           const int32_t aacOutDataHeadroom, int32_t *const pcmdata);
 
 static BLOCK_TYPE_t CConcealment_GetWinSeq(int32_t prevWinSeq) {
@@ -157,7 +157,7 @@ static BLOCK_TYPE_t CConcealment_GetWinSeq(int32_t prevWinSeq) {
 
   \param pConcealCommonData Pointer to the concealment common data structure.
 */
-void CConcealment_InitCommonData(CConcealParams *pConcealCommonData) {
+void CConcealment_InitCommonData(CConcealParams_t *pConcealCommonData) {
     if(pConcealCommonData != NULL) {
         int32_t i;
 
@@ -188,8 +188,8 @@ void CConcealment_InitCommonData(CConcealParams *pConcealCommonData) {
   \param pConcealCommonData Pointer to common concealment data (for all
   channels)
 */
-CConcealmentMethod CConcealment_GetMethod(CConcealParams *pConcealCommonData) {
-    CConcealmentMethod method = ConcealMethodNone;
+CConcealmentMethod_t CConcealment_GetMethod(CConcealParams_t *pConcealCommonData) {
+    CConcealmentMethod_t method = ConcealMethodNone;
 
     if(pConcealCommonData != NULL) { method = pConcealCommonData->method; }
 
@@ -205,7 +205,7 @@ CConcealmentMethod CConcealment_GetMethod(CConcealParams *pConcealCommonData) {
   mode to be set for the current channel. \param samplesPerFrame     The number
   of samples per frame.
 */
-void CConcealment_InitChannelData(CConcealmentInfo *pConcealChannelInfo, CConcealParams *pConcealCommonData,
+void CConcealment_InitChannelData(CConcealmentInfo_t *pConcealChannelInfo, CConcealParams_t *pConcealCommonData,
                                   AACDEC_RENDER_MODE_t initRenderMode, int32_t samplesPerFrame) {
     int32_t i;
     pConcealChannelInfo->TDNoiseSeed = 0;
@@ -253,11 +253,11 @@ void CConcealment_InitChannelData(CConcealmentInfo *pConcealChannelInfo, CConcea
   \param comfNoiseLevel
 */
 AAC_DECODER_ERROR_t
-CConcealment_SetParams(CConcealParams *concealParams, int32_t method, int32_t fadeOutSlope, int32_t fadeInSlope,
+CConcealment_SetParams(CConcealParams_t *concealParams, int32_t method, int32_t fadeOutSlope, int32_t fadeInSlope,
                        int32_t muteRelease, int32_t comfNoiseLevel) {
     /* set concealment technique */
     if(method != AACDEC_CONCEAL_PARAM_NOT_SPECIFIED) {
-        switch((CConcealmentMethod)method) {
+        switch((CConcealmentMethod_t)method) {
             case ConcealMethodMute:
             case ConcealMethodNoise:
             case ConcealMethodInter:
@@ -265,7 +265,7 @@ CConcealment_SetParams(CConcealParams *concealParams, int32_t method, int32_t fa
                 if(concealParams == NULL) { return AAC_DEC_INVALID_HANDLE; }
                 else {
                     /* set param */
-                    concealParams->method = (CConcealmentMethod)method;
+                    concealParams->method = (CConcealmentMethod_t)method;
                 }
                 break;
 
@@ -330,7 +330,7 @@ CConcealment_SetParams(CConcealParams *concealParams, int32_t method, int32_t fa
   \return 0 if OK all other values indicate errors
 */
 AAC_DECODER_ERROR_t
-CConcealment_SetAttenuation(CConcealParams *concealParams, const int16_t *fadeOutAttenuationVector,
+CConcealment_SetAttenuation(CConcealParams_t *concealParams, const int16_t *fadeOutAttenuationVector,
                             const int16_t *fadeInAttenuationVector) {
     if((fadeOutAttenuationVector == NULL) && (fadeInAttenuationVector == NULL)) { return AAC_DEC_SET_PARAM_FAIL; }
 
@@ -387,8 +387,8 @@ CConcealment_SetAttenuation(CConcealParams *concealParams, const int16_t *fadeOu
 
   \return Concealment state.
 */
-CConcealmentState CConcealment_GetState(CConcealmentInfo *pConcealChannelInfo) {
-    CConcealmentState state = ConcealState_Ok;
+CConcealmentState_t CConcealment_GetState(CConcealmentInfo_t *pConcealChannelInfo) {
+    CConcealmentState_t state = ConcealState_Ok;
 
     if(pConcealChannelInfo != NULL) { state = pConcealChannelInfo->concealState; }
 
@@ -400,7 +400,7 @@ CConcealmentState CConcealment_GetState(CConcealmentInfo *pConcealChannelInfo) {
 
   Interface function to store data for different concealment strategies
  */
-void CConcealment_Store(CConcealmentInfo *hConcealmentInfo, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+void CConcealment_Store(CConcealmentInfo_t *hConcealmentInfo, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                         CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo) {
     uint8_t nbDiv = NB_DIV;
 
@@ -466,7 +466,7 @@ void CConcealment_Store(CConcealmentInfo *hConcealmentInfo, CAacDecoderChannelIn
 
   Interface function to different concealment strategies
  */
-int32_t CConcealment_Apply(CConcealmentInfo *hConcealmentInfo, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+int32_t CConcealment_Apply(CConcealmentInfo_t *hConcealmentInfo, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                            CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
                            const SamplingRateInfo_t *pSamplingRateInfo, const int32_t samplesPerFrame,
                            const uint8_t lastLpdMode, const int32_t frameOk, const uint32_t flags) {
@@ -576,11 +576,9 @@ int32_t CConcealment_Apply(CConcealmentInfo *hConcealmentInfo, CAacDecoderChanne
                 memcpy(pSpecScale, hConcealmentInfo->specScale, 8 * sizeof(int16_t));
 
                 /* restore spectral bins */
-#if(CNCL_FRACT_BITS == DFRACT_BITS)
+
                 memcpy(pSpectralCoefficient, hConcealmentInfo->spectralCoefficient, 1024 * sizeof(int32_t));
-#else
-                for(i = 1024; i != 0; i--) { *pSpec-- = FX_CNCL2FX_DBL(*pCncl--); }
-#endif
+
             }
             else {
                 /* clear scale factors */
@@ -604,7 +602,7 @@ int32_t CConcealment_Apply(CConcealmentInfo *hConcealmentInfo, CAacDecoderChanne
   In case of frame lost this function produces a noisy frame with respect to the
   energies values of past frame.
  */
-static int32_t CConcealment_ApplyNoise(CConcealmentInfo             *pConcealmentInfo,
+static int32_t CConcealment_ApplyNoise(CConcealmentInfo_t             *pConcealmentInfo,
                                        CAacDecoderChannelInfo_t       *pAacDecoderChannelInfo,
                                        CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
                                        const SamplingRateInfo_t *pSamplingRateInfo, const int32_t samplesPerFrame,
@@ -669,12 +667,12 @@ static int32_t CConcealment_ApplyNoise(CConcealmentInfo             *pConcealmen
   error has occured, frame interpolation is performed to restore the missing
   frame. In case of multiple faulty frames, fade-in and fade-out is applied.
 */
-static int32_t CConcealment_ApplyInter(CConcealmentInfo       *pConcealmentInfo,
+static int32_t CConcealment_ApplyInter(CConcealmentInfo_t       *pConcealmentInfo,
                                        CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                                        const SamplingRateInfo_t *pSamplingRateInfo, const int32_t samplesPerFrame,
                                        const int32_t improveTonal, const int32_t frameOk,
                                        const int32_t mute_release_active) {
-    CConcealParams *pConcealCommonData = pConcealmentInfo->pConcealParams;
+    CConcealParams_t *pConcealCommonData = pConcealmentInfo->pConcealParams;
 
     int32_t  *pSpectralCoefficient = SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
     CIcsInfo_t *pIcsInfo = &pAacDecoderChannelInfo->icsInfo;
@@ -696,7 +694,7 @@ static int32_t CConcealment_ApplyInter(CConcealmentInfo       *pConcealmentInfo,
 
         /* Restore spectral data */
         for(i = 0; i < samplesPerFrame; i++) {
-            pSpectralCoefficient[i] = FX_CNCL2FX_DBL(pConcealmentInfo->spectralCoefficient[i]);
+            pSpectralCoefficient[i] = (pConcealmentInfo->spectralCoefficient[i]);
         }
 
         /* Restore scale factors */
@@ -1009,7 +1007,7 @@ static void CConcealment_InterpolateBuffer(int32_t *spectrum, int16_t *pSpecScal
   direction to be changed to.
 */
 
-static int32_t findEquiFadeFrame(CConcealParams *pConcealCommonData, int32_t actFadeIndex, int32_t direction) {
+static int32_t findEquiFadeFrame(CConcealParams_t *pConcealCommonData, int32_t actFadeIndex, int32_t direction) {
     int16_t *pFactor;
     int16_t  referenceVal;
     int16_t  minDiff = (int16_t)MAXVAL_SGL;
@@ -1061,10 +1059,10 @@ static int32_t findEquiFadeFrame(CConcealParams *pConcealCommonData, int32_t act
   The function updates the state of the concealment state-machine. The
   states are: mute, fade-in, fade-out, interpolate and frame-ok.
 */
-static void CConcealment_UpdateState(CConcealmentInfo *pConcealmentInfo, int32_t frameOk,
+static void CConcealment_UpdateState(CConcealmentInfo_t *pConcealmentInfo, int32_t frameOk,
                                      CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
                                      const int32_t samplesPerFrame, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo) {
-    CConcealParams *pConcealCommonData = pConcealmentInfo->pConcealParams;
+    CConcealParams_t *pConcealCommonData = pConcealmentInfo->pConcealParams;
 
     switch(pConcealCommonData->method) {
         case ConcealMethodNoise: {
@@ -1361,7 +1359,7 @@ static void CConcealment_ApplyRandomSign(int32_t randomPhase, int32_t *spec, int
 
   \return Frame OK flag of previous frame.
  */
-int32_t CConcealment_GetLastFrameOk(CConcealmentInfo *hConcealmentInfo, const int32_t fBeforeApply) {
+int32_t CConcealment_GetLastFrameOk(CConcealmentInfo_t *hConcealmentInfo, const int32_t fBeforeApply) {
     int32_t prevFrameOk = 1;
 
     if(hConcealmentInfo != NULL) { prevFrameOk = hConcealmentInfo->prevFrameOk[fBeforeApply & 0x1]; }
@@ -1374,7 +1372,7 @@ int32_t CConcealment_GetLastFrameOk(CConcealmentInfo *hConcealmentInfo, const in
 
   \return Number of delay frames.
  */
-uint32_t CConcealment_GetDelay(CConcealParams *pConcealCommonData) {
+uint32_t CConcealment_GetDelay(CConcealParams_t *pConcealCommonData) {
     uint32_t frameDelay = 0;
 
     if(pConcealCommonData != NULL) {
@@ -1391,7 +1389,7 @@ uint32_t CConcealment_GetDelay(CConcealParams *pConcealCommonData) {
     return frameDelay;
 }
 
-static int32_t CConcealment_ApplyFadeOut(int32_t mode, CConcealmentInfo *pConcealmentInfo,
+static int32_t CConcealment_ApplyFadeOut(int32_t mode, CConcealmentInfo_t *pConcealmentInfo,
                                          CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
                                          const int32_t                 samplesPerFrame,
                                          CAacDecoderChannelInfo_t       *pAacDecoderChannelInfo) {
@@ -1567,10 +1565,10 @@ int32_t CConcealment_TDFading(int32_t len, CAacDecoderStaticChannelInfo_t **ppAa
     int32_t                       fadeStop, attMute = (int32_t)0;
     int32_t                       idx = 0, ii;
     CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo = *ppAacDecoderStaticChannelInfo;
-    CConcealmentInfo             *pConcealmentInfo = &pAacDecoderStaticChannelInfo->concealmentInfo;
-    CConcealParams               *pConcealParams = pConcealmentInfo->pConcealParams;
-    const CConcealmentState       concealState = pConcealmentInfo->concealState;
-    TDfadingType                  fadingType;
+    CConcealmentInfo_t             *pConcealmentInfo = &pAacDecoderStaticChannelInfo->concealmentInfo;
+    CConcealParams_t               *pConcealParams = pConcealmentInfo->pConcealParams;
+    const CConcealmentState_t       concealState = pConcealmentInfo->concealState;
+    TDfadingType_t                  fadingType;
     int32_t                       fadingStations[9] = {0};
     int32_t                       fadingSteps[8] = {0};
     const int32_t fadeStart = pConcealmentInfo->fade_old; /* start fading at last end-of-frame attenuation */
@@ -1715,7 +1713,7 @@ to be edited)
 
 */
 static void CConcealment_TDFadeFillFadingStations(int32_t *fadingStations, int32_t *fadingSteps, int32_t fadeStop,
-                                                  int32_t fadeStart, TDfadingType fadingType) {
+                                                  int32_t fadeStart, TDfadingType_t fadingType) {
     int32_t i;
     int32_t fadingSteps_sum = 0;
     int32_t fadeDiff;
@@ -1741,7 +1739,7 @@ static int32_t CConcealment_TDNoise_Random(uint32_t *seed) {
     return (int32_t)(*seed);
 }
 
-static void CConcealment_TDNoise_Apply(CConcealmentInfo *const pConcealmentInfo, const int32_t len,
+static void CConcealment_TDNoise_Apply(CConcealmentInfo_t *const pConcealmentInfo, const int32_t len,
                                        const int32_t aacOutDataHeadroom, int32_t *const pcmdata) {
     int32_t *states = pConcealmentInfo->TDNoiseStates;
     int32_t  noiseVal;

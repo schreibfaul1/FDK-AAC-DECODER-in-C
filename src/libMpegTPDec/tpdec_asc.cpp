@@ -1292,7 +1292,7 @@ static uint32_t StoreConfigAsBitstream(HANDLE_FDK_BITSTREAM hBs, const int32_t c
                                                                                                (after) current bit
                                                                                                stream position. */
                                        uint8_t *configTargetBuffer, const uint16_t configTargetBufferSize_bytes) {
-    FDK_BITSTREAM  usacConf;
+    FDK_BITSTREAM_t  usacConf;
     uint32_t const nBits = fAbs(configSize_bits);
     uint32_t       j, tmp;
 

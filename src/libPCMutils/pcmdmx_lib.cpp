@@ -1863,7 +1863,7 @@ PCMDMX_ERROR pcmDmx_Parse(HANDLE_PCM_DOWNMIX self, HANDLE_FDK_BITSTREAM hBs,
 PCMDMX_ERROR pcmDmx_ReadDvbAncData(HANDLE_PCM_DOWNMIX self, uint8_t *pAncDataBuf,
                                    uint32_t ancDataBytes, int32_t isMpeg2) {
   PCMDMX_ERROR errorStatus = PCMDMX_OK;
-  FDK_BITSTREAM bs;
+  FDK_BITSTREAM_t bs;
   HANDLE_FDK_BITSTREAM hBs = &bs;
 
   if (self == NULL) {

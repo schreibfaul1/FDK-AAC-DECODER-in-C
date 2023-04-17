@@ -151,8 +151,8 @@ struct AAC_DECODER_INSTANCE {
       1)]; /*!< Pointer to persistent data shared by both channels of a CPE.
 This structure is allocated once for each CPE. */
 
-  CConcealParams concealCommonData;
-  CConcealmentMethod concealMethodUser;
+  CConcealParams_t concealCommonData;
+  CConcealmentMethod_t concealMethodUser;
 
   CUsacCoreExtensions usacCoreExt; /*!< Data and handles to extend USAC FD/LPD
                                       core decoder (SBR, MPS, ...) */

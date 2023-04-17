@@ -5,134 +5,123 @@
 #include <stddef.h>
 #include "newAACDecoder.h"
 
-#define WAV_BITS          	   16
-#define SAMPLE_BITS       	   16
-#define SAMPLE_MAX        	   ((int16_t)(((uint32_t)1 << (SAMPLE_BITS - 1)) - 1))
-#define SAMPLE_MIN        	   (~SAMPLE_MAX)
-#define ALIGNMENT_DEFAULT 	   8
-#define M_PI              	   3.14159265358979323846 // Pi. Only used in example projects.
-#define DFLT_CH_MAP_TAB_LEN    15          // Length of the default channel map info table.
-#define USAC_ID_BIT            16 /** USAC element IDs start at USAC_ID_BIT */
-
-/* AAC capability flags */
-#define CAPF_AAC_LC            0x00000001  // Support flag for AAC Low Complexity.
-#define CAPF_ER_AAC_LD         0x00000002  // Support flag for AAC Low Delay with Error Resilience tools.
-#define CAPF_ER_AAC_SCAL       0x00000004  // Support flag for AAC Scalable.
-#define CAPF_ER_AAC_LC         0x00000008  // Support flag for AAC Low Complexity with Error Resilience tools.
-#define CAPF_AAC_480           0x00000010  // Support flag for AAC with 480 framelength.
-#define CAPF_AAC_512           0x00000020  // Support flag for AAC with 512 framelength.
-#define CAPF_AAC_960           0x00000040  // Support flag for AAC with 960 framelength.
-#define CAPF_AAC_1024          0x00000080  // Support flag for AAC with 1024 framelength.
-#define CAPF_AAC_HCR           0x00000100  // Support flag for AAC with Huffman Codeword Reordering.
-#define CAPF_AAC_VCB11         0x00000200  // Support flag for AAC Virtual Codebook 11.
-#define CAPF_AAC_RVLC          0x00000400  // Support flag for AAC Reversible Variable Length Coding.
-#define CAPF_AAC_MPEG4         0x00000800  // Support flag for MPEG file format.
-#define CAPF_AAC_DRC           0x00001000  // Support flag for AAC Dynamic Range Control.
-#define CAPF_AAC_CONCEALMENT   0x00002000  // Support flag for AAC concealment.
-#define CAPF_AAC_DRM_BSFORMAT  0x00004000  // Support flag for AAC DRM bistream format.
-#define CAPF_ER_AAC_ELD        0x00008000  // Support flag for AAC Enhanced Low Delay with Error Resilience tools.
-#define CAPF_ER_AAC_BSAC       0x00010000  // Support flag for AAC BSAC.
-#define CAPF_AAC_ELD_DOWNSCALE 0x00040000  // Support flag for AAC-ELD Downscaling
-#define CAPF_AAC_USAC_LP       0x00100000  // Support flag for USAC low power mode.
-#define CAPF_AAC_USAC          0x00200000  // Support flag for Unified Speech and Audio Coding (USAC).
-#define CAPF_ER_AAC_ELDV2      0x00800000  // Support flag for AAC Enhanced Low Delay with MPS 212.
-#define CAPF_AAC_UNIDRC        0x01000000  // Support flag for MPEG-D Dynamic Range Control (uniDrc).
-/* Transport capability flags */
-#define CAPF_ADTS       0x00000001  // Support flag for ADTS transport format.
-#define CAPF_ADIF       0x00000002  // Support flag for ADIF transport format.
-#define CAPF_LATM       0x00000004  // Support flag for LATM transport format.
-#define CAPF_LOAS       0x00000008  // Support flag for LOAS transport format.
-#define CAPF_RAWPACKETS 0x00000010  // Support flag for RAW PACKETS transport format.
-#define CAPF_DRM        0x00000020  // Support flag for DRM/DRM+ transport format.
-#define CAPF_RSVD50     0x00000040  // Support flag for RSVD50 transport format
-/* SBR capability flags */
-#define CAPF_SBR_LP            0x00000001  // Support flag for SBR Low Power mode.
-#define CAPF_SBR_HQ            0x00000002  // Support flag for SBR High Quality mode.
-#define CAPF_SBR_DRM_BS        0x00000004  // Support flag for
-#define CAPF_SBR_CONCEALMENT   0x00000008  // Support flag for SBR concealment.
-#define CAPF_SBR_DRC           0x00000010  // Support flag for SBR Dynamic Range Control.
-#define CAPF_SBR_PS_MPEG       0x00000020  // Support flag for MPEG Parametric Stereo.
-#define CAPF_SBR_PS_DRM        0x00000040  // Support flag for DRM Parametric Stereo.
-#define CAPF_SBR_ELD_DOWNSCALE 0x00000080  // Support flag for ELD reduced delay mode
-#define CAPF_SBR_HBEHQ         0x00000100  // Support flag for HQ HBE
-/* PCM utils capability flags */
-#define CAPF_DMX_BLIND  0x00000001  // Support flag for blind downmixing.
-#define CAPF_DMX_PCE    0x00000002  // Support flag for guided downmix with data from MPEG-2/4 PCE
-#define CAPF_DMX_ARIB   0x00000004  // PCE guided downmix with slightly different equations to fulfill ARIB standard.
-#define CAPF_DMX_DVB    0x00000008  // Support flag for guided downmix with data from DVB ancillary  data fields.
-#define CAPF_DMX_CH_EXP 0x00000010  // flag for simple upmixing by dublicating channels or  adding zero channels.
-#define CAPF_DMX_6_CH   0x00000020
-#define CAPF_DMX_8_CH   0x00000040
-#define CAPF_DMX_24_CH  0x00000080
-#define CAPF_LIMITER    0x00002000
-/* MPEG Surround capability flags */
-#define CAPF_MPS_STD    0x00000001
-#define CAPF_MPS_LD     0x00000002
-#define CAPF_MPS_USAC   0x00000004
-#define CAPF_MPS_HQ     0x00000010
-#define CAPF_MPS_LP     0x00000020
-#define CAPF_MPS_1CH_IN 0x00001000
-#define CAPF_MPS_2CH_IN 0x00002000
-#define CAPF_MPS_6CH_IN 0x00004000
-
-// Audio Codec flags.
-#define AC_ER_VCB11      0x000001   // aacSectionDataResilienceFlag  flag (from ASC): 1 means use  virtual codebooks
-#define AC_ER_RVLC       0x000002   // aacSpectralDataResilienceFlag (from ASC): 1 means use huffman codeword reordering
-#define AC_ER_HCR        0x000004   // aacSectionDataResilienceFlag flag (from ASC): 1 means use  virtual codebooks
-#define AC_SCALABLE      0x000008   // AAC Scalable
-#define AC_ELD           0x000010   // AAC-ELD
-#define AC_LD            0x000020   // AAC-LD
-#define AC_ER            0x000040   // ER syntax
-#define AC_BSAC          0x000080   // BSAC
-#define AC_USAC          0x000100   // USAC
-#define AC_RSV603DA      0x000200   // RSVD60 3D audio
-#define AC_HDAAC         0x000400   // HD-AAC
-#define AC_RSVD50        0x004000   // Rsvd50
-#define AC_SBR_PRESENT   0x008000   // SBR present flag (from ASC)
-#define AC_SBRCRC        0x010000   // SBR CRC present flag. Only relevant for AAC-ELD for now.
-#define AC_PS_PRESENT    0x020000   // PS present flag (from ASC or implicit)
-#define AC_MPS_PRESENT   0x040000   // MPS present flag (from ASC or implicit)
-#define AC_DRM           0x080000   // DRM bit stream syntax
-#define AC_INDEP         0x100000   // Independency flag
-#define AC_MPEGD_RES     0x200000   // MPEG-D residual individual channel data.
-#define AC_SAOC_PRESENT  0x400000   // SAOC Present Flag
-#define AC_DAB           0x800000   // DAB bit stream syntax
-#define AC_ELD_DOWNSCALE 0x1000000  // ELD Downscaled playout
-#define AC_LD_MPS        0x2000000  // Low Delay MPS.
-#define AC_DRC_PRESENT   0x4000000  // Dynamic Range Control (DRC) data found.
-#define AC_USAC_SCFGI3   0x8000000  // USAC flag: If stereoConfigIndex is 3 the flag is set.
-// Audio Codec flags (reconfiguration).
-#define AC_CM_DET_CFG_CHANGE 0x000001  // Config mode signalizes the callback to work in config change  detection mode
-#define AC_CM_ALLOC_MEM      0x000002  // Config mode signalizes the callback to work in memory allocation mode
-// Audio Codec flags (element specific).
-#define AC_EL_USAC_TW          0x000001  // USAC time warped filter bank is active
-#define AC_EL_USAC_NOISE       0x000002  // USAC noise filling is active
-#define AC_EL_USAC_ITES        0x000004  // USAC SBR inter-TES tool is active
-#define AC_EL_USAC_PVC         0x000008  // USAC SBR predictive vector coding tool is active
-#define AC_EL_USAC_MPS212      0x000010  // USAC MPS212 tool is active
-#define AC_EL_USAC_LFE         0x000020  // USAC element is LFE
-#define AC_EL_USAC_CP_POSSIBLE 0x000040  // USAC may use Complex Stereo Prediction in this channel element
-#define AC_EL_ENHANCED_NOISE   0x000080  // Enhanced noise filling
-#define AC_EL_IGF_AFTER_TNS    0x000100  // IGF after TNS
-#define AC_EL_IGF_INDEP_TILING 0x000200  // IGF independent tiling
-#define AC_EL_IGF_USE_ENF      0x000400  // IGF use enhanced noise filling
-#define AC_EL_FULLBANDLPD      0x000800  // enable fullband LPD tools
-#define AC_EL_LPDSTEREOIDX     0x001000  // LPD-stereo-tool stereo index
-#define AC_EL_LFE              0x002000  // The element is of type LFE.
-// CODER_CONFIG_t::flags
-#define CC_MPEG_ID         0x00100000
-#define CC_IS_BASELAYER    0x00200000
-#define CC_PROTECTION      0x00400000
-#define CC_SBR             0x00800000
-#define CC_SBRCRC          0x00010000
-#define CC_SAC             0x00020000
-#define CC_RVLC            0x01000000
-#define CC_VCB11           0x02000000
-#define CC_HCR             0x04000000
-#define CC_PSEUDO_SURROUND 0x08000000
-#define CC_USAC_NOISE      0x10000000
-#define CC_USAC_TW         0x20000000
-#define CC_USAC_HBE        0x40000000
+#define WAV_BITS               16
+#define SAMPLE_BITS            16
+#define SAMPLE_MAX             ((int16_t)(((uint32_t)1 << (SAMPLE_BITS - 1)) - 1))
+#define SAMPLE_MIN             (~SAMPLE_MAX)
+#define ALIGNMENT_DEFAULT      8
+#define M_PI                   3.14159265358979323846  // Pi. Only used in example projects.
+#define DFLT_CH_MAP_TAB_LEN    15                      // Length of the default channel map info table.
+#define USAC_ID_BIT            16                      /** USAC element IDs start at USAC_ID_BIT */
+#define CAPF_AAC_LC            0x00000001              // Support flag for AAC Low Complexity.
+#define CAPF_ER_AAC_LD         0x00000002              // Support flag for AAC Low Delay with Error Resilience tools.
+#define CAPF_ER_AAC_SCAL       0x00000004              // Support flag for AAC Scalable.
+#define CAPF_ER_AAC_LC         0x00000008              // Support flag for AAC Low Complexity with Error Resilience tools.
+#define CAPF_AAC_480           0x00000010              // Support flag for AAC with 480 framelength.
+#define CAPF_AAC_512           0x00000020              // Support flag for AAC with 512 framelength.
+#define CAPF_AAC_960           0x00000040              // Support flag for AAC with 960 framelength.
+#define CAPF_AAC_1024          0x00000080              // Support flag for AAC with 1024 framelength.
+#define CAPF_AAC_HCR           0x00000100              // Support flag for AAC with Huffman Codeword Reordering.
+#define CAPF_AAC_VCB11         0x00000200              // Support flag for AAC Virtual Codebook 11.
+#define CAPF_AAC_RVLC          0x00000400              // Support flag for AAC Reversible Variable Length Coding.
+#define CAPF_AAC_MPEG4         0x00000800              // Support flag for MPEG file format.
+#define CAPF_AAC_DRC           0x00001000              // Support flag for AAC Dynamic Range Control.
+#define CAPF_AAC_CONCEALMENT   0x00002000              // Support flag for AAC concealment.
+#define CAPF_AAC_DRM_BSFORMAT  0x00004000              // Support flag for AAC DRM bistream format.
+#define CAPF_ER_AAC_ELD        0x00008000              // Support flag for AAC Enhanced Low Delay with Error Resilience tools.
+#define CAPF_ER_AAC_BSAC       0x00010000              // Support flag for AAC BSAC.
+#define CAPF_AAC_ELD_DOWNSCALE 0x00040000              // Support flag for AAC-ELD Downscaling
+#define CAPF_AAC_USAC_LP       0x00100000              // Support flag for USAC low power mode.
+#define CAPF_AAC_USAC          0x00200000              // Support flag for Unified Speech and Audio Coding (USAC).
+#define CAPF_ER_AAC_ELDV2      0x00800000              // Support flag for AAC Enhanced Low Delay with MPS 212.
+#define CAPF_AAC_UNIDRC        0x01000000              // Support flag for MPEG-D Dynamic Range Control (uniDrc).
+#define CAPF_ADTS              0x00000001              // Support flag for ADTS transport format.
+#define CAPF_ADIF              0x00000002              // Support flag for ADIF transport format.
+#define CAPF_LATM              0x00000004              // Support flag for LATM transport format.
+#define CAPF_LOAS              0x00000008              // Support flag for LOAS transport format.
+#define CAPF_RAWPACKETS        0x00000010              // Support flag for RAW PACKETS transport format.
+#define CAPF_DRM               0x00000020              // Support flag for DRM/DRM+ transport format.
+#define CAPF_RSVD50            0x00000040              // Support flag for RSVD50 transport format
+#define CAPF_SBR_LP            0x00000001              // Support flag for SBR Low Power mode.
+#define CAPF_SBR_HQ            0x00000002              // Support flag for SBR High Quality mode.
+#define CAPF_SBR_DRM_BS        0x00000004              // Support flag for
+#define CAPF_SBR_CONCEALMENT   0x00000008              // Support flag for SBR concealment.
+#define CAPF_SBR_DRC           0x00000010              // Support flag for SBR Dynamic Range Control.
+#define CAPF_SBR_PS_MPEG       0x00000020              // Support flag for MPEG Parametric Stereo.
+#define CAPF_SBR_PS_DRM        0x00000040              // Support flag for DRM Parametric Stereo.
+#define CAPF_SBR_ELD_DOWNSCALE 0x00000080              // Support flag for ELD reduced delay mode
+#define CAPF_SBR_HBEHQ         0x00000100              // Support flag for HQ HBE
+#define CAPF_DMX_BLIND         0x00000001              // Support flag for blind downmixing.
+#define CAPF_DMX_PCE           0x00000002              // Support flag for guided downmix with data from MPEG-2/4 PCE
+#define CAPF_DMX_ARIB          0x00000004              // PCE guided downmix with slightly different equations to fulfill ARIB standard.
+#define CAPF_DMX_DVB           0x00000008              // Support flag for guided downmix with data from DVB ancillary  data fields.
+#define CAPF_DMX_CH_EXP        0x00000010              // flag for simple upmixing by dublicating channels or  adding zero channels.
+#define CAPF_DMX_6_CH          0x00000020
+#define CAPF_DMX_8_CH          0x00000040
+#define CAPF_DMX_24_CH         0x00000080
+#define CAPF_LIMITER           0x00002000
+#define CAPF_MPS_STD           0x00000001
+#define CAPF_MPS_LD            0x00000002
+#define CAPF_MPS_USAC          0x00000004
+#define CAPF_MPS_HQ            0x00000010
+#define CAPF_MPS_LP            0x00000020
+#define CAPF_MPS_1CH_IN        0x00001000
+#define CAPF_MPS_2CH_IN        0x00002000
+#define CAPF_MPS_6CH_IN        0x00004000
+#define AC_ER_VCB11            0x000001   // aacSectionDataResilienceFlag  flag (from ASC): 1 means use  virtual codebooks
+#define AC_ER_RVLC             0x000002   // aacSpectralDataResilienceFlag (from ASC): 1 means use huffman codeword reordering
+#define AC_ER_HCR              0x000004   // aacSectionDataResilienceFlag flag (from ASC): 1 means use  virtual codebooks
+#define AC_SCALABLE            0x000008   // AAC Scalable
+#define AC_ELD                 0x000010   // AAC-ELD
+#define AC_LD                  0x000020   // AAC-LD
+#define AC_ER                  0x000040   // ER syntax
+#define AC_BSAC                0x000080   // BSAC
+#define AC_USAC                0x000100   // USAC
+#define AC_RSV603DA            0x000200   // RSVD60 3D audio
+#define AC_HDAAC               0x000400   // HD-AAC
+#define AC_RSVD50              0x004000   // Rsvd50
+#define AC_SBR_PRESENT         0x008000   // SBR present flag (from ASC)
+#define AC_SBRCRC              0x010000   // SBR CRC present flag. Only relevant for AAC-ELD for now.
+#define AC_PS_PRESENT          0x020000   // PS present flag (from ASC or implicit)
+#define AC_MPS_PRESENT         0x040000   // MPS present flag (from ASC or implicit)
+#define AC_DRM                 0x080000   // DRM bit stream syntax
+#define AC_INDEP               0x100000   // Independency flag
+#define AC_MPEGD_RES           0x200000   // MPEG-D residual individual channel data.
+#define AC_SAOC_PRESENT        0x400000   // SAOC Present Flag
+#define AC_DAB                 0x800000   // DAB bit stream syntax
+#define AC_ELD_DOWNSCALE       0x1000000  // ELD Downscaled playout
+#define AC_LD_MPS              0x2000000  // Low Delay MPS.
+#define AC_DRC_PRESENT         0x4000000  // Dynamic Range Control (DRC) data found.
+#define AC_USAC_SCFGI3         0x8000000  // USAC flag: If stereoConfigIndex is 3 the flag is set.
+#define AC_CM_DET_CFG_CHANGE   0x000001   // Config mode signalizes the callback to work in config change  detection mode
+#define AC_CM_ALLOC_MEM        0x000002   // Config mode signalizes the callback to work in memory allocation mode
+#define AC_EL_USAC_TW          0x000001   // USAC time warped filter bank is active
+#define AC_EL_USAC_NOISE       0x000002   // USAC noise filling is active
+#define AC_EL_USAC_ITES        0x000004   // USAC SBR inter-TES tool is active
+#define AC_EL_USAC_PVC         0x000008   // USAC SBR predictive vector coding tool is active
+#define AC_EL_USAC_MPS212      0x000010   // USAC MPS212 tool is active
+#define AC_EL_USAC_LFE         0x000020   // USAC element is LFE
+#define AC_EL_USAC_CP_POSSIBLE 0x000040   // USAC may use Complex Stereo Prediction in this channel element
+#define AC_EL_ENHANCED_NOISE   0x000080   // Enhanced noise filling
+#define AC_EL_IGF_AFTER_TNS    0x000100   // IGF after TNS
+#define AC_EL_IGF_INDEP_TILING 0x000200   // IGF independent tiling
+#define AC_EL_IGF_USE_ENF      0x000400   // IGF use enhanced noise filling
+#define AC_EL_FULLBANDLPD      0x000800   // enable fullband LPD tools
+#define AC_EL_LPDSTEREOIDX     0x001000   // LPD-stereo-tool stereo index
+#define AC_EL_LFE              0x002000   // The element is of type LFE.
+#define CC_MPEG_ID             0x00100000
+#define CC_IS_BASELAYER        0x00200000
+#define CC_PROTECTION          0x00400000
+#define CC_SBR                 0x00800000
+#define CC_SBRCRC              0x00010000
+#define CC_SAC                 0x00020000
+#define CC_RVLC                0x01000000
+#define CC_VCB11               0x02000000
+#define CC_HCR                 0x04000000
+#define CC_PSEUDO_SURROUND     0x08000000
+#define CC_USAC_NOISE          0x10000000
+#define CC_USAC_TW             0x20000000
+#define CC_USAC_HBE            0x40000000
 
 #define FX_CFG2FX_DBL
 #define FX_CFG2FX_SGL    FX_DBL2FX_SGL
@@ -142,23 +131,23 @@
 #define CLIP_PROTECT_GAIN_0(x) FL2FXCONST_CFG(((x) / (float)(1 << 0)))
 #define CLIP_PROTECT_GAIN_1(x) FL2FXCONST_CFG(((x) / (float)(1 << 1)))
 #define CLIP_PROTECT_GAIN_2(x) FL2FXCONST_CFG(((x) / (float)(1 << 2)))
-#define MAXVAL_SGL             ((signed)0x00007FFF) /* this has to be synchronized to FRACT_BITS */
-#define MINVAL_SGL             ((signed)0xFFFF8000) /* this has to be synchronized to FRACT_BITS */
-#define MAXVAL_DBL             ((signed)0x7FFFFFFF) /* this has to be synchronized to DFRACT_BITS */
-#define MINVAL_DBL             ((signed)0x80000000) /* this has to be synchronized to DFRACT_BITS */
+
+#define MAXVAL_SGL ((signed)0x00007FFF) /* this has to be synchronized to FRACT_BITS */
+#define MINVAL_SGL ((signed)0xFFFF8000) /* this has to be synchronized to FRACT_BITS */
+#define MAXVAL_DBL ((signed)0x7FFFFFFF) /* this has to be synchronized to DFRACT_BITS */
+#define MINVAL_DBL ((signed)0x80000000) /* this has to be synchronized to DFRACT_BITS */
 
 #define SF_CLD_C1C2 (9)
 #define FRACT_FIX_SCALE  ((int64_t(1) << (FRACT_BITS - 1)))
 #define DFRACT_FIX_SCALE ((int64_t(1) << (DFRACT_BITS - 1)))
 #define IS_USAC(aot)     ((aot) == AOT_USAC)
 #define IS_LOWDELAY(aot) ((aot) == AOT_ER_AAC_LD || (aot) == AOT_ER_AAC_ELD)
-#define IS_CHANNEL_ELEMENT(elementId)                                                                         \
-    ((elementId) == ID_SCE || (elementId) == ID_CPE || (elementId) == ID_LFE || (elementId) == ID_USAC_SCE || \
-     (elementId) == ID_USAC_CPE || (elementId) == ID_USAC_LFE)
+#define IS_CHANNEL_ELEMENT(elementId)     ((elementId) == ID_SCE || (elementId) == ID_CPE || (elementId) == ID_LFE || (elementId) == ID_USAC_SCE || \
+                                           (elementId) == ID_USAC_CPE || (elementId) == ID_USAC_LFE)
 #define IS_MP4_CHANNEL_ELEMENT(elementId) ((elementId) == ID_SCE || (elementId) == ID_CPE || (elementId) == ID_LFE)
-#define EXT_ID_BITS                       4 /**< Size in bits of extension payload type tags. */
-#define IS_USAC_CHANNEL_ELEMENT(elementId) \
-    ((elementId) == ID_USAC_SCE || (elementId) == ID_USAC_CPE || (elementId) == ID_USAC_LFE)
+#define IS_USAC_CHANNEL_ELEMENT(elementId)((elementId) == ID_USAC_SCE || (elementId) == ID_USAC_CPE || (elementId) == ID_USAC_LFE)
+
+#define EXT_ID_BITS                  4         /**< Size in bits of extension payload type tags. */
 #define MAX_DRC_THREADS              ((8) + 1) /* Heavy compression value is handled just like MPEG DRC data */
 #define MAX_DRC_BANDS                (16)      /* 2^LEN_DRC_BAND_INCR (LEN_DRC_BAND_INCR = 4) */
 #define MAX_NOISE_ENVELOPES          2
@@ -259,8 +248,6 @@
 #define CONCEAL_MAX_NUM_FADE_FACTORS (32)
 #define FIXP_CNCL                    int32_t
 #define FL2FXCONST_CNCL              FL2FXCONST_DBL
-#define FX_DBL2FX_CNCL
-#define FX_CNCL2FX_DBL
 #define CNCL_FRACT_BITS              DFRACT_BITS
 #define TNS_MAXIMUM_ORDER            (20)  // 12 for AAC-LC and AAC-SSR. Set to 20 for AAC-Main (AOT 1).
 #define N_MAX_LINES                  4
@@ -374,7 +361,7 @@ typedef enum{
     MODE_7_1_REAR_SURROUND = 33, // C, L+R, LS+RS, Lrear+Rrear, LFE
     MODE_7_1_FRONT_CENTER = 34,  // C, LC+RC, L+R, LS+RS, LFE
     MODE_212 = 128               // 212 configuration, used in ELDv2
-} CHANNEL_MODE;
+} CHANNEL_MODE_t;
 
  //Speaker description tags. Do not change the enumeration values unless it keeps the following segmentation:
  // - Bit 0-3: Horizontal postion (0: none, 1: front, 2: side, 3: back, 4: lfe)
@@ -491,7 +478,7 @@ typedef enum{
     FDK_TDLIMIT = 35,
     FDK_UNIDRCDEC = 38,
     FDK_MODULE_LAST
-} FDK_MODULE_ID;
+} FDK_MODULE_ID_t;
 
 /* usacConfigExtType q.v. ISO/IEC DIS 23008-3 Table 52  and  ISO/IEC FDIS * 23003-3:2011(E) Table 74*/
 typedef enum {
@@ -558,8 +545,7 @@ typedef enum {
     ConcealMethodNoise = 1,
     ConcealMethodInter = 2,
     ConcealMethodTonal = 3
-
-} CConcealmentMethod;
+} CConcealmentMethod_t;
 
 typedef enum {
     ConcealState_Ok,
@@ -567,13 +553,13 @@ typedef enum {
     ConcealState_FadeIn,
     ConcealState_Mute,
     ConcealState_FadeOut,
-} CConcealmentState;
+} CConcealmentState_t;
 
 typedef enum {
     FADE_TIMEDOMAIN_TOSPECTRALMUTE = 1,
     FADE_TIMEDOMAIN_FROMSPECTRALMUTE,
     FADE_TIMEDOMAIN,
-} TDfadingType;
+} TDfadingType_t;
 
 typedef enum {
     FD_LONG,
@@ -630,18 +616,16 @@ typedef enum {
     aac_dec_init_error_end = 0x2FFF,
     aac_dec_decode_error_start = 0x4000,            /* Decode errors. Output buffer is valid but concealed. */
     AAC_DEC_TRANSPORT_ERROR = 0x4001,               /*!< The transport decoder encountered an unexpected error. */
-    AAC_DEC_PARSE_ERROR = 0x4002,                   /*!< Error while parsing the bitstream. Most  probably it is
-                                                         corrupted, or the system crashed. */
+    AAC_DEC_PARSE_ERROR = 0x4002,                   /*!< Error while parsing the bitstream. Most  probably it is corrupted, or the system crashed. */
     AAC_DEC_UNSUPPORTED_EXTENSION_PAYLOAD = 0x4003, /*!< Error while parsing the extension payload of the bitstream.
-                                                       The extension payload type found is not supported. */
+                                                         The extension payload type found is not supported. */
     AAC_DEC_DECODE_FRAME_ERROR = 0x4004,            /*!< The parsed bitstream value is out of range. Most probably the
                                                          bitstream is corrupt, or the system crashed. */
     AAC_DEC_CRC_ERROR = 0x4005,                     /*!< The embedded CRC did not match. */
     AAC_DEC_INVALID_CODE_BOOK = 0x4006,             /*!< An invalid codebook was signaled. Most probably the bitstream
                                                          is corrupt, or the system  crashed. */
     AAC_DEC_UNSUPPORTED_PREDICTION = 0x4007,        /*!< Predictor found, but not supported in the AAC Low Complexity
-                                                       profile. Most probably the bitstream is corrupt, or has a wrong
-                                                       format. */
+                                                       profile. Most probably the bitstream is corrupt, or has a wrong format. */
     AAC_DEC_UNSUPPORTED_CCE = 0x4008,               /*!< A CCE element was found which is not supported. Most probably
                                                         the bitstream is  corrupt, or has a wrong format. */
     AAC_DEC_UNSUPPORTED_LFE = 0x4009,               /*!< A LFE element was found which is not supported. Most probably
@@ -656,37 +640,34 @@ typedef enum {
     aac_dec_decode_error_end = 0x4FFF,
     aac_dec_anc_data_error_start = 0x8000,  /* Ancillary data errors. Output buffer is valid. */
     AAC_DEC_ANC_DATA_ERROR = 0x8001,        /*!< Non severe error concerning the ancillary data handling. */
-    AAC_DEC_TOO_SMALL_ANC_BUFFER = 0x8002,  /*!< The registered ancillary data buffer is too small to receive the
-                                               parsed data. */
-    AAC_DEC_TOO_MANY_ANC_ELEMENTS = 0x8003, /*!< More than the allowed number of ancillary data elements should be
-                                               written to buffer. */
+    AAC_DEC_TOO_SMALL_ANC_BUFFER = 0x8002,  /*!< The registered ancillary data buffer is too small to receive the parsed data. */
+    AAC_DEC_TOO_MANY_ANC_ELEMENTS = 0x8003, /*!< More than the allowed number of ancillary data elements should be written to buffer. */
     aac_dec_anc_data_error_end = 0x8FFF
-
 } AAC_DECODER_ERROR_t;
 
 //----------------------------------------------------------------------------------------------------------------------
 /** Generic audio coder configuration structure. */
 typedef struct{
-    AUDIO_OBJECT_TYPE_t aot;             /**< Audio Object Type (AOT).           */
-    AUDIO_OBJECT_TYPE_t extAOT;          /**< Extension Audio Object Type (SBR). */
-    CHANNEL_MODE channelMode;            /**< Channel mode.                      */
-    uint8_t channelConfigZero; // Use channel config zero + pce although a standard channel config could be signaled.
-    int32_t samplingRate;                /**< Sampling rate.                     */
-    int32_t extSamplingRate;             /**< Extended samplerate (SBR).         */
-    int32_t downscaleSamplingRate;       /**< Downscale sampling rate (ELD downscaled mode)*/
-    int32_t bitRate;                     /**< Average bitrate.                   */
-    int32_t samplesPerFrame;             /**< Number of PCM samples per codec frame and audio channel. */
-    int32_t noChannels;                  /**< Number of audio channels.          */
+    AUDIO_OBJECT_TYPE_t aot;              /**< Audio Object Type (AOT).           */
+    AUDIO_OBJECT_TYPE_t extAOT;           /**< Extension Audio Object Type (SBR). */
+    CHANNEL_MODE_t channelMode;           /**< Channel mode.                      */
+    uint8_t channelConfigZero;            // Use channel config zero + pce although a standard channel config could be signaled.
+    int32_t samplingRate;                 /**< Sampling rate.                     */
+    int32_t extSamplingRate;              /**< Extended samplerate (SBR).         */
+    int32_t downscaleSamplingRate;        /**< Downscale sampling rate (ELD downscaled mode)*/
+    int32_t bitRate;                      /**< Average bitrate.                   */
+    int32_t samplesPerFrame;              /**< Number of PCM samples per codec frame and audio channel. */
+    int32_t noChannels;                   /**< Number of audio channels.          */
     int32_t bitsFrame;
-    int32_t nSubFrames;        /**< Amount of encoder subframes. 1 means no subframing. */
-    int32_t BSACnumOfSubFrame; /**< The number of the sub-frames which are grouped and
-                              transmitted in a super-frame (BSAC). */
-    int32_t BSAClayerLength;   // The average length of the large-step layers in bytes  (BSAC).
-    uint32_t flags;            // flags
-    uint8_t  matrixMixdownA;   // Matrix mixdown index to put into PCE. Default value
-                               // 0 means no mixdown coefficient, valid values are 1-4
-                               // which correspond to matrix_mixdown_idx 0-3.
-    uint8_t headerPeriod;  // Frame period for sending in band configuration  buffers in the transport layer.
+    int32_t nSubFrames;                   // Amount of encoder subframes. 1 means no subframing. */
+    int32_t BSACnumOfSubFrame;            // The number of the sub-frames which are grouped and
+                                          // transmitted in a super-frame (BSAC). */
+    int32_t BSAClayerLength;              // The average length of the large-step layers in bytes  (BSAC).
+    uint32_t flags;                       // flags
+    uint8_t  matrixMixdownA;              // Matrix mixdown index to put into PCE. Default value
+                                          // 0 means no mixdown coefficient, valid values are 1-4
+                                          // which correspond to matrix_mixdown_idx 0-3.
+    uint8_t headerPeriod;                 // Frame period for sending in band configuration  buffers in the transport layer.
     uint8_t            stereoConfigIndex; // USAC MPS stereo mode
     uint8_t            sbrMode;           // USAC SBR mode
     SBR_PS_SIGNALING_t sbrSignaling;      // 0: implicit signaling,
@@ -702,7 +683,7 @@ typedef struct LIB_INFO{
     const char*   title;
     const char*   build_date;
     const char*   build_time;
-    FDK_MODULE_ID module_id;
+    FDK_MODULE_ID_t module_id;
     int32_t       version;
     uint32_t      flags;
     char          versionStr[32];
@@ -755,8 +736,7 @@ typedef struct {
     uint32_t     prlExpiryCount; /* Counter that can be used to monitor the life time of the program reference level. */
     int8_t       presMode;       /* Presentation mode as defined in ETSI TS 101 154 */
     uint8_t      dvbAncDataAvailable; /* Flag that indicates whether DVB ancillary data is present or not */
-    uint32_t dvbAncDataPosition; /* Used to store the DVB ancillary data payload position in the bitstream (only one per
-                                    frame) */
+    uint32_t dvbAncDataPosition; /* Used to store the DVB ancillary data payload position in the bitstream (only one per frame) */
     uint32_t drcPayloadPosition[MAX_DRC_THREADS]; /* Used to store the DRC payload positions in the bitstream */
     uint8_t  uniDrcPrecedence;   /* Flag for signalling that uniDrc is active and takes precedence over legacy DRC */
     uint8_t  applyExtGain;       /* Flag is 1 if extGain has to be applied, otherwise 0. */
@@ -890,20 +870,16 @@ typedef struct {
         int32_t *freq;
         int32_t *time;
     } overlap; /**< Pointer to overlap memory */
-
     const FIXP_SPK_t *prev_wrs;  /**< pointer to previous right window slope  */
     int32_t           prev_tl;   /**< previous transform length */
     int32_t           prev_nr;   /**< previous right window offset */
     int32_t           prev_fr;   /**< previous right window slope length */
     int32_t           ov_offset; /**< overlap time data fill level */
     int32_t           ov_size;   /**< Overlap buffer size in words */
-
     int32_t prevAliasSymmetry;
     int32_t prevPrevAliasSymmetry;
-
     int32_t *pFacZir;
-    int32_t *pAsymOvlp; /**< pointer to asymmetric overlap (used for stereo LPD
-                            transition) */
+    int32_t *pAsymOvlp; /**< pointer to asymmetric overlap (used for stereo LPD transition) */
 } mdct_t;
 
 typedef mdct_t *H_MDCT;
@@ -927,76 +903,74 @@ typedef struct {
     int32_t  deemph_mem_wsyn;
     int32_t  wsyn_rms;
     int16_t  seed_ace;
-} CAcelpStaticMem;
+} CAcelpStaticMem_t;
 
 typedef struct {
-    int16_t            fadeOutFactor[CONCEAL_MAX_NUM_FADE_FACTORS];
-    int16_t            fadeInFactor[CONCEAL_MAX_NUM_FADE_FACTORS];
-    CConcealmentMethod method;
-    int32_t            numFadeOutFrames;
-    int32_t            numFadeInFrames;
-    int32_t            numMuteReleaseFrames;
-    int32_t            comfortNoiseLevel;
-} CConcealParams;
+    int16_t              fadeOutFactor[CONCEAL_MAX_NUM_FADE_FACTORS];
+    int16_t              fadeInFactor[CONCEAL_MAX_NUM_FADE_FACTORS];
+    CConcealmentMethod_t method;
+    int32_t              numFadeOutFrames;
+    int32_t              numFadeInFrames;
+    int32_t              numMuteReleaseFrames;
+    int32_t              comfortNoiseLevel;
+} CConcealParams_t;
 
 typedef struct {
-    CConcealParams *pConcealParams;
-    FIXP_CNCL spectralCoefficient[1024];
-    int16_t   specScale[8];
-    int32_t iRandomPhase;
-    int32_t prevFrameOk[2];
-    int32_t cntValidFrames;
-    int32_t cntFadeFrames; /* State for signal fade-in/out */
+    CConcealParams_t*   pConcealParams;
+    FIXP_CNCL           spectralCoefficient[1024];
+    int16_t             specScale[8];
+    int32_t             iRandomPhase;
+    int32_t             prevFrameOk[2];
+    int32_t             cntValidFrames;
+    int32_t             cntFadeFrames; /* State for signal fade-in/out */
     /* States for signal fade-out of frames with more than one window/subframe -
-      [0] used by Update CntFadeFrames mode of CConcealment_ApplyFadeOut, [1] used
-      by FadeOut mode */
-    int32_t winGrpOffset[2]; /* State for signal fade-out of frames with more than one window/subframe */
-    int32_t attGrpOffset[2]; /* State for faster signal fade-out of frames with transient signal parts */
-    int8_t lastRenderMode;
-    uint8_t      windowShape;
-    BLOCK_TYPE_t windowSequence;
-    uint8_t      lastWinGrpLen;
-    CConcealmentState concealState;
-    CConcealmentState concealState_old;
-    int32_t           fade_old;       /* last fading factor */
-    TDfadingType      lastFadingType; /* last fading type */
-    int16_t aRvlcPreviousScaleFactor[RVLC_MAX_SFB]; /* needed once per channel */
-    uint8_t aRvlcPreviousCodebook[RVLC_MAX_SFB];    /* needed once per channel */
-    int8_t  rvlcPreviousScaleFactorOK;
-    int8_t  rvlcPreviousBlockType;
-    int16_t  lsf4[M_LP_FILTER_ORDER];
-    int32_t  last_tcx_gain;
-    int32_t  last_tcx_gain_e;
-    uint32_t TDNoiseSeed;
-    int32_t  TDNoiseStates[3];
-    int16_t  TDNoiseCoef[3];
-    int16_t  TDNoiseAtt;
-} CConcealmentInfo;
+      [0] used by Update CntFadeFrames mode of CConcealment_ApplyFadeOut, [1] used by FadeOut mode */
+    int32_t             winGrpOffset[2]; /* State for signal fade-out of frames with more than one window/subframe */
+    int32_t             attGrpOffset[2]; /* State for faster signal fade-out of frames with transient signal parts */
+    int8_t              lastRenderMode;
+    uint8_t             windowShape;
+    BLOCK_TYPE_t        windowSequence;
+    uint8_t             lastWinGrpLen;
+    CConcealmentState_t concealState;
+    CConcealmentState_t concealState_old;
+    int32_t             fade_old;                               /* last fading factor */
+    TDfadingType_t      lastFadingType;                         /* last fading type */
+    int16_t             aRvlcPreviousScaleFactor[RVLC_MAX_SFB]; /* needed once per channel */
+    uint8_t             aRvlcPreviousCodebook[RVLC_MAX_SFB];    /* needed once per channel */
+    int8_t              rvlcPreviousScaleFactorOK;
+    int8_t              rvlcPreviousBlockType;
+    int16_t             lsf4[M_LP_FILTER_ORDER];
+    int32_t             last_tcx_gain;
+    int32_t             last_tcx_gain_e;
+    uint32_t            TDNoiseSeed;
+    int32_t             TDNoiseStates[3];
+    int16_t             TDNoiseCoef[3];
+    int16_t             TDNoiseAtt;
+} CConcealmentInfo_t;
 
-typedef struct { // This struct must be allocated one for every channel and must be persistent.
-    int32_t *pOverlapBuffer;
-    mdct_t   IMdct;
+typedef struct {  // This struct must be allocated one for every channel and must be persistent.
+    int32_t     *pOverlapBuffer;
+    mdct_t       IMdct;
     CArcoData_t *hArCo;
-    int32_t pnsCurrentSeed;
+    int32_t      pnsCurrentSeed;
     /* LPD memory */
-    int32_t old_synth[PIT_MAX_MAX - L_SUBFR];
-    int32_t old_T_pf[SYN_SFD];
-    int32_t old_gain_pf[SYN_SFD];
-    int32_t mem_bpf[L_FILT + L_SUBFR];
-    uint8_t old_bpf_control_info; /* (1: enable, 0: disable) bpf for past superframe  */
-    USAC_COREMODE_t last_core_mode; /* core mode used by the decoder in previous frame. (not signalled by the bitstream, see
-                                     CAacDecoderChannelInfo_t::core_mode_last !! ) */
-    uint8_t last_lpd_mode;        /* LPD mode used by the decoder in last LPD subframe (not signalled by the bitstream, see
-                                     CAacDecoderChannelInfo_t::lpd_mode_last !! ) */
-    uint8_t last_last_lpd_mode;   /* LPD mode used in second last LPD subframe (not signalled by the bitstream) */
-    uint8_t last_lpc_lost;        /* Flag indicating that the previous LPC is lost */
-    int16_t
-    lpc4_lsf[M_LP_FILTER_ORDER];                   /* Last LPC4 coefficients in LSF domain. */
+    int32_t         old_synth[PIT_MAX_MAX - L_SUBFR];
+    int32_t         old_T_pf[SYN_SFD];
+    int32_t         old_gain_pf[SYN_SFD];
+    int32_t         mem_bpf[L_FILT + L_SUBFR];
+    uint8_t         old_bpf_control_info;         /* (1: enable, 0: disable) bpf for past superframe  */
+    USAC_COREMODE_t last_core_mode;               /* core mode used by the decoder in previous frame. (not signalled by the bitstream, see
+                                                     CAacDecoderChannelInfo_t::core_mode_last !! ) */
+    uint8_t last_lpd_mode;                        /* LPD mode used by the decoder in last LPD subframe (not signalled by the bitstream, see
+                                                     CAacDecoderChannelInfo_t::lpd_mode_last !! ) */
+    uint8_t last_last_lpd_mode;                   /* LPD mode used in second last LPD subframe (not signalled by the bitstream) */
+    uint8_t last_lpc_lost;                        /* Flag indicating that the previous LPC is lost */
+    int16_t lpc4_lsf[M_LP_FILTER_ORDER];          /* Last LPC4 coefficients in LSF domain. */
     int16_t lsf_adaptive_mean[M_LP_FILTER_ORDER]; /* Adaptive mean of LPC coefficients in LSF domain for concealment. */
     int16_t lp_coeff_old[2][M_LP_FILTER_ORDER];   /* Last LPC coefficients in LP domain. lp_coeff_old[0] is lpc4 (coeffs for right folding point of
                                                      last tcx frame), lp_coeff_old[1] are coeffs for left folding point of last tcx frame */
-    int32_t lp_coeff_old_exp[2];
-    int16_t oldStability;      /* LPC coeff stability value from last frame (required for TCX concealment). */
+    int32_t  lp_coeff_old_exp[2];
+    int16_t  oldStability;     /* LPC coeff stability value from last frame (required for TCX concealment). */
     uint32_t numLostLpdFrames; /* Number of consecutive lost subframes. */
     /* TCX memory */
     int32_t last_tcx_gain;
@@ -1005,10 +979,10 @@ typedef struct { // This struct must be allocated one for every channel and must
     int16_t last_tcx_pitch;
     uint8_t last_tcx_noise_factor;
     /* ACELP memory */
-    CAcelpStaticMem acelp;
-    uint32_t nfRandomSeed; /* seed value for USAC noise filling random generator */
-    CDrcChannelData_t drcData;
-    CConcealmentInfo  concealmentInfo;
+    CAcelpStaticMem_t    acelp;
+    uint32_t             nfRandomSeed; /* seed value for USAC noise filling random generator */
+    CDrcChannelData_t    drcData;
+    CConcealmentInfo_t   concealmentInfo;
     CpePersistentData_t *pCpeStaticData;
 } CAacDecoderStaticChannelInfo_t;
 
@@ -1019,17 +993,17 @@ typedef struct {
     int8_t  Direction;
     int8_t  Resolution;
     uint8_t Order;
-} CFilter;
+} CFilter_t;
 
 typedef struct {
-    CFilter Filter[TNS_MAX_WINDOWS][TNS_MAXIMUM_FILTERS];
+    CFilter_t Filter[TNS_MAX_WINDOWS][TNS_MAXIMUM_FILTERS];
     uint8_t NumberOfFilters[TNS_MAX_WINDOWS];
     uint8_t DataPresent;
     uint8_t Active;
     uint8_t GainLd;
-} CTnsData;
+} CTnsData_t;
 
-void CTns_Reset(CTnsData *pTnsData);
+void CTns_Reset(CTnsData_t *pTnsData);
 
 typedef struct {
     uint8_t PulseDataPresent;
@@ -1037,26 +1011,26 @@ typedef struct {
     uint8_t PulseStartBand;
     uint8_t PulseOffset[N_MAX_LINES];
     uint8_t PulseAmp[N_MAX_LINES];
-} CPulseData;
+} CPulseData_t;
 
 typedef struct {
     /* Common bit stream data */
-    int16_t      aScaleFactor[(8 * 16)]; /* Spectral scale factors for each sfb in each window. */
-    int16_t      aSfbScale[(8 * 16)];    /* could be free after ApplyTools() */
-    uint8_t      aCodeBook[(8 * 16)];    /* section data: codebook for each window and sfb. */
-    uint8_t      band_is_noise[(8 * 16)];
-    CTnsData     TnsData;
+    int16_t        aScaleFactor[(8 * 16)]; /* Spectral scale factors for each sfb in each window. */
+    int16_t        aSfbScale[(8 * 16)];    /* could be free after ApplyTools() */
+    uint8_t        aCodeBook[(8 * 16)];    /* section data: codebook for each window and sfb. */
+    uint8_t        band_is_noise[(8 * 16)];
+    CTnsData_t     TnsData;
     CRawDataInfo_t RawDataInfo;
     union {
         struct {
-            CPulseData PulseData;
-            int16_t    aNumLineInSec4Hcr[MAX_SFB_HCR]; /* needed once for all channels except for Drm syntax */
-            uint8_t aCodeBooks4Hcr[MAX_SFB_HCR];       /* needed once for all channels except for Drm syntax. Same as "aCodeBook" ? */
-            int16_t lenOfReorderedSpectralData;
-            int8_t  lenOfLongestCodeword;
-            int8_t  numberSection;
-            int8_t  rvlcCurrentScaleFactorOK;
-            int8_t  rvlcIntensityUsed;
+            CPulseData_t PulseData;
+            int16_t      aNumLineInSec4Hcr[MAX_SFB_HCR]; /* needed once for all channels except for Drm syntax */
+            uint8_t      aCodeBooks4Hcr[MAX_SFB_HCR];    /* needed once for all channels except for Drm syntax. Same as "aCodeBook" ? */
+            int16_t      lenOfReorderedSpectralData;
+            int8_t       lenOfLongestCodeword;
+            int8_t       numberSection;
+            int8_t       rvlcCurrentScaleFactorOK;
+            int8_t       rvlcIntensityUsed;
         } aac;
         struct {
             uint8_t fd_noise_level_and_offset;
@@ -1066,7 +1040,7 @@ typedef struct {
             uint8_t tcx_global_gain[4];
         } usac;
     } specificTo;
-} CAacDecoderDynamicData;
+} CAacDecoderDynamicData_t;
 
 typedef union{
     uint8_t DrmBsBuffer[DRM_BS_BUFFER_SIZE];
@@ -1074,20 +1048,20 @@ typedef union{
     int32_t mdctOutTemp[1024];
     int32_t synth_buf[(PIT_MAX_MAX + SYN_DELAY + L_FRAME_PLUS)];
     int32_t workBuffer[WB_SECTION_SIZE];
-} CWorkBufferCore1;
+} CWorkBufferCore1_t;
 
 typedef struct {
     uint8_t correlated[NO_OFBANDS];
-} CPnsInterChannelData;
+} CPnsInterChannelData_t;
 
 typedef struct {
-    CPnsInterChannelData *pPnsInterChannelData;
-    uint8_t               pnsUsed[NO_OFBANDS];
-    int32_t               CurrentEnergy;
-    uint8_t               PnsActive;
-    int32_t              *currentSeed;
-    int32_t              *randomSeed;
-} CPnsData;
+    CPnsInterChannelData_t *pPnsInterChannelData;
+    uint8_t                 pnsUsed[NO_OFBANDS];
+    int32_t                 CurrentEnergy;
+    uint8_t                 PnsActive;
+    int32_t                *currentSeed;
+    int32_t                *randomSeed;
+} CPnsData_t;
 
 typedef struct {
     uint32_t errorLog;
@@ -1099,12 +1073,12 @@ typedef struct {
     int32_t  bitstreamAnchor;
     int8_t   lengthOfLongestCodeword;
     uint8_t *pCodebook;
-} HCR_INPUT_OUTPUT;
+} HCR_INPUT_OUTPUT_t;
 
 typedef struct {
     const uint8_t *pMinOfCbPair;
     const uint8_t *pMaxOfCbPair;
-} HCR_CB_PAIRS;
+} HCR_CB_PAIRS_t;
 
 typedef struct {
     const uint16_t *pLargestAbsVal;
@@ -1113,7 +1087,7 @@ typedef struct {
     const uint8_t  *pCbDimShift;
     const uint8_t  *pCbSign;
     const uint8_t  *pCbPriority;
-} HCR_TABLE_INFO;
+} HCR_TABLE_INFO_t;
 
 typedef struct {
     uint32_t numSegment;
@@ -1126,7 +1100,7 @@ typedef struct {
     uint8_t  readDirection;
     uint8_t  numWordForBitfield;
     uint16_t pNumBitValidInLastWord;
-} HCR_SEGMENT_INFO;
+} HCR_SEGMENT_INFO_t;
 
 typedef struct {
     uint32_t numCodeword;
@@ -1144,7 +1118,7 @@ typedef struct {
     uint8_t pMaxLenOfCbInExtSrtSec[MAX_SFB_HCR + MAX_HCR_SETS];
     int32_t maxLenOfCbInExtSrtSecIdx;
     uint8_t pCodebookSwitch[MAX_SFB_HCR];
-} HCR_SECTION_INFO;
+} HCR_SECTION_INFO_t;
 
 typedef struct {
     uint32_t ValidBits;
@@ -1154,18 +1128,18 @@ typedef struct {
     uint8_t *Buffer;
     uint32_t bufSize;
     uint32_t bufBits;
-} FDK_BITBUF;
+} FDK_BITBUF_t;
 
-typedef FDK_BITBUF *HANDLE_FDK_BITBUF;
+typedef FDK_BITBUF_t *HANDLE_FDK_BITBUF;
 
 typedef struct {
     uint32_t   CacheWord;
     uint32_t   BitsInCache;
-    FDK_BITBUF hBitBuf;
+    FDK_BITBUF_t hBitBuf;
     uint32_t   ConfigCache;
-} FDK_BITSTREAM;
+} FDK_BITSTREAM_t;
 
-typedef FDK_BITSTREAM *HANDLE_FDK_BITSTREAM;
+typedef FDK_BITSTREAM_t *HANDLE_FDK_BITSTREAM;
 
 typedef uint32_t (*STATEFUNC)(HANDLE_FDK_BITSTREAM, void *);
 
@@ -1181,16 +1155,16 @@ typedef struct {
     uint8_t   pCntSign[1024 >> 2];
     /* this array holds the states coded as integer values within the range * [0,1,..,7] */
     int8_t pSta[1024 >> 2];
-} HCR_NON_PCW_SIDEINFO;
+} HCR_NON_PCW_SIDEINFO_t;
 
 typedef struct {
-    HCR_INPUT_OUTPUT     decInOut;
-    HCR_SEGMENT_INFO     segmentInfo;
-    HCR_SECTION_INFO     sectionInfo;
-    HCR_NON_PCW_SIDEINFO nonPcwSideinfo;
-} CErHcrInfo;
+    HCR_INPUT_OUTPUT_t     decInOut;
+    HCR_SEGMENT_INFO_t     segmentInfo;
+    HCR_SECTION_INFO_t     sectionInfo;
+    HCR_NON_PCW_SIDEINFO_t nonPcwSideinfo;
+} CErHcrInfo_t;
 
-typedef CErHcrInfo *H_HCR_INFO;
+typedef CErHcrInfo_t *H_HCR_INFO;
 
 typedef struct {                                /* sideinfo of RVLC */
     /* ------- ESC 1 Data: --------- */         /* order of RVLC-bitstream components in bitstream (RVLC-initialization), every
@@ -1240,33 +1214,33 @@ typedef struct {                                /* sideinfo of RVLC */
     int16_t  conceal_max;     /* is set at forward  decoding  */
     int16_t  conceal_min_esc; /* is set at backward decoding  */
     int16_t  conceal_max_esc; /* is set at forward  decoding  */
-} CErRvlcInfo;
+} CErRvlcInfo_t;
 
-typedef CErRvlcInfo RVLC_INFO; /* temp */
+typedef CErRvlcInfo_t RVLC_INFO; /* temp */
 
 
 
 /* Common data referenced by all channels */
 typedef struct {
-    CAacDecoderDynamicData pAacDecoderDynamicData[2];
-    CPnsInterChannelData pnsInterChannelData;
-    int32_t              pnsRandomSeed[(8 * 16)];
-    CJointStereoData_t jointStereoData; /* One for one element */
+    CAacDecoderDynamicData_t pAacDecoderDynamicData[2];
+    CPnsInterChannelData_t   pnsInterChannelData;
+    int32_t                  pnsRandomSeed[(8 * 16)];
+    CJointStereoData_t       jointStereoData; /* One for one element */
     union {
         struct {
-            CErHcrInfo  erHcrInfo;
-            CErRvlcInfo erRvlcInfo;
-            int16_t     aRvlcScfEsc[RVLC_MAX_SFB]; /* needed once for all channels */
-            int16_t     aRvlcScfFwd[RVLC_MAX_SFB]; /* needed once for all channels */
-            int16_t     aRvlcScfBwd[RVLC_MAX_SFB]; /* needed once for all channels */
+            CErHcrInfo_t  erHcrInfo;
+            CErRvlcInfo_t erRvlcInfo;
+            int16_t       aRvlcScfEsc[RVLC_MAX_SFB]; /* needed once for all channels */
+            int16_t       aRvlcScfFwd[RVLC_MAX_SFB]; /* needed once for all channels */
+            int16_t       aRvlcScfBwd[RVLC_MAX_SFB]; /* needed once for all channels */
         } aac;
     } overlay;
-} CAacDecoderCommonData;
+} CAacDecoderCommonData_t;
 
 typedef struct {
-    CWorkBufferCore1    *pWorkBufferCore1;
+    CWorkBufferCore1_t    *pWorkBufferCore1;
     CCplxPredictionData_t *cplxPredictionData;
-} CAacDecoderCommonStaticData;
+} CAacDecoderCommonStaticData_t;
 
 typedef struct {
     uint8_t  acelp_core_mode; /**< mean excitation energy index for whole ACELP frame */
@@ -1276,7 +1250,7 @@ typedef struct {
     uint8_t  ltp_filtering_flag[NB_SUBFR]; /**< controlls whether LTP postfilter is active for each ACELP subframe */
     int16_t  icb_index[NB_SUBFR][8];       /**< innovative codebook index for each ACELP subframe */
     uint8_t  gains[NB_SUBFR];              /**< gain index for each ACELP subframe */
-} CAcelpChannelData;
+} CAcelpChannelData_t;
 
 /*
  This struct must be allocated one for every channel of every element and must be persistent. Among its members, the following memory areas can be
@@ -1289,45 +1263,41 @@ typedef struct {
 typedef struct {
     union {
         struct {
-            int32_t       fac_data0[LFAC];
-            int8_t        fac_data_e[4];
-            int32_t      *fac_data[4];    /* Pointers to unused parts of pSpectralCoefficient */
-            uint8_t       core_mode;      /* current core mode */
+            int32_t         fac_data0[LFAC];
+            int8_t          fac_data_e[4];
+            int32_t        *fac_data[4];    /* Pointers to unused parts of pSpectralCoefficient */
+            uint8_t         core_mode;      /* current core mode */
             USAC_COREMODE_t core_mode_last; /* previous core mode, signalled in the bitstream (not done by the decoder, see
                                              CAacDecoderStaticChannelInfo::last_core_mode !!)*/
-            uint8_t lpd_mode_last;        /* previous LPD mode, signalled in the bitstream (not done by the decoder, see
-                                             CAacDecoderStaticChannelInfo::last_core_mode !!)*/
-            uint8_t  mod[4];
-            uint8_t  bpf_control_info;                          /* (1: enable, 0: disable) bpf for current superframe */
-            int16_t lsp_coeff[5][M_LP_FILTER_ORDER];           /* linear prediction coefficients in LSP domain */
-            int16_t lp_coeff[5][M_LP_FILTER_ORDER];            /* linear prediction coefficients in LP domain */
-            int32_t  lp_coeff_exp[5];
+            uint8_t lpd_mode_last;          /* previous LPD mode, signalled in the bitstream (not done by the decoder, see
+                                               CAacDecoderStaticChannelInfo::last_core_mode !!)*/
+            uint8_t mod[4];
+            uint8_t bpf_control_info;                /* (1: enable, 0: disable) bpf for current superframe */
+            int16_t lsp_coeff[5][M_LP_FILTER_ORDER]; /* linear prediction coefficients in LSP domain */
+            int16_t lp_coeff[5][M_LP_FILTER_ORDER];  /* linear prediction coefficients in LP domain */
+            int32_t lp_coeff_exp[5];
             int16_t lsf_adaptive_mean_cand[M_LP_FILTER_ORDER]; /* concealment: is copied to CAacDecoderStaticChannelInfo->lsf_adaptive_mean once
                                                                    frame is assumed to be correct*/
-            int16_t           aStability[4];                    /* LPC coeff stability values required for ACELP and TCX (concealment) */
-            CAcelpChannelData acelp[4];
-            int32_t           tcx_gain[4];
-            int8_t            tcx_gain_e[4];
+            int16_t             aStability[4];                 /* LPC coeff stability values required for ACELP and TCX (concealment) */
+            CAcelpChannelData_t acelp[4];
+            int32_t             tcx_gain[4];
+            int8_t              tcx_gain_e[4];
         } usac;
         struct {
-            CPnsData PnsData; /* Not required for USAC */
+            CPnsData_t PnsData; /* Not required for USAC */
         } aac;
     } data;
-    int32_t*                 pSpectralCoefficient; /* Spectral coefficients of each window */
-    int16_t                      specScale[8];         /* Scale shift values of each spectrum window */
+    int32_t                       *pSpectralCoefficient; /* Spectral coefficients of each window */
+    int16_t                        specScale[8];         /* Scale shift values of each spectrum window */
     CIcsInfo_t                     icsInfo;
-    int32_t                      granuleLength; /* Size of smallest spectrum piece */
-    uint8_t                      ElementInstanceTag;
+    int32_t                        granuleLength;        /* Size of smallest spectrum piece */
+    uint8_t                        ElementInstanceTag;
     AACDEC_RENDER_MODE_t           renderMode;           /* Output signal rendering mode */
-    CAacDecoderDynamicData      *pDynData;             /* Data required for one element and discarded after decoding */
-    CAacDecoderCommonData       *pComData;             /* Data required for one channel at a time during decode */
-    CAacDecoderCommonStaticData *pComStaticData;       /* Persistent data required for one channel at a time during decode */
-    int32_t                      currAliasingSymmetry; /* required for RSVD60 MCT */
+    CAacDecoderDynamicData_t      *pDynData;             /* Data required for one element and discarded after decoding */
+    CAacDecoderCommonData_t       *pComData;             /* Data required for one channel at a time during decode */
+    CAacDecoderCommonStaticData_t *pComStaticData;       /* Persistent data required for one channel at a time during decode */
+    int32_t                        currAliasingSymmetry; /* required for RSVD60 MCT */
 } CAacDecoderChannelInfo_t;
-
-
-
-
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1363,11 +1333,12 @@ static void adjustTimeSlotLC(int32_t *ptrReal, ENV_CALC_NRGS_t *nrgs, uint8_t *p
 AAC_DECODER_ERROR_t CLpdChannelStream_Read(HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                                          CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo, const SamplingRateInfo_t *pSamplingRateInfo,
                                          uint32_t flags);
-void              CLpdChannelStream_Decode(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
+void CLpdChannelStream_Decode(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
                                            uint32_t flags);
-AAC_DECODER_ERROR_t CLpd_RenderTimeSignal(CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
-                                        int32_t *pTimeData, int32_t samplesPerFrame, SamplingRateInfo_t *pSamplingRateInfo, uint32_t frameOk,
-                                        const int32_t aacOutDataHeadroom, uint32_t flags, uint32_t strmFlags);
+AAC_DECODER_ERROR_t CLpd_RenderTimeSignal(CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
+                                          CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, int32_t *pTimeData, int32_t samplesPerFrame,
+                                          SamplingRateInfo_t *pSamplingRateInfo, uint32_t frameOk, const int32_t aacOutDataHeadroom, uint32_t flags,
+                                          uint32_t strmFlags);
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S
 //----------------------------------------------------------------------------------------------------------------------
@@ -1378,7 +1349,7 @@ static inline void FDKinitLibInfo(LIB_INFO_t* info) {
 }
 
 /** Aquire supported features of library. */
-static inline uint32_t FDKlibInfo_getCapabilities(const LIB_INFO_t* info, FDK_MODULE_ID module_id) {
+static inline uint32_t FDKlibInfo_getCapabilities(const LIB_INFO_t* info, FDK_MODULE_ID_t module_id) {
     int32_t i;
     for(i = 0; i < FDK_MODULE_LAST; i++) {
         if(info[i].module_id == module_id) { return info[i].flags; }
@@ -1387,7 +1358,7 @@ static inline uint32_t FDKlibInfo_getCapabilities(const LIB_INFO_t* info, FDK_MO
 }
 
 /** Search for next free tab. */
-static inline int32_t FDKlibInfo_lookup(const LIB_INFO_t* info, FDK_MODULE_ID module_id) {
+static inline int32_t FDKlibInfo_lookup(const LIB_INFO_t* info, FDK_MODULE_ID_t module_id) {
     int32_t i = -1;
     for(i = 0; i < FDK_MODULE_LAST; i++) {
         if(info[i].module_id == module_id) return -1;

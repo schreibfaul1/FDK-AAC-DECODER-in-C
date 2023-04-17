@@ -1052,7 +1052,7 @@ int32_t mpegSurroundDecoder_Parse(CMpegSurroundDecoder *pMpegSurroundDecoder, HA
     SPATIAL_SPECIFIC_CONFIG *sscParse;
     SPATIAL_BS_FRAME        *bsFrame;
     HANDLE_FDK_BITSTREAM     hMpsBsData = NULL;
-    FDK_BITSTREAM            mpsBsData;
+    FDK_BITSTREAM_t            mpsBsData;
     int32_t                  mpsDataBits = *pMpsDataBits;
     int32_t                  mpsBsBits;
     MPEGS_ANCTYPE            ancType;

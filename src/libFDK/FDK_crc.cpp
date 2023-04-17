@@ -337,7 +337,7 @@ static void crcCalc(HANDLE_FDK_CRCINFO hCrcInfo, HANDLE_FDK_BITSTREAM hBs,
                     const int32_t reg) {
   uint16_t crc = hCrcInfo->crcValue;
   CCrcRegData *rD = &hCrcInfo->crcRegData[reg];
-  FDK_BITSTREAM bsReader;
+  FDK_BITSTREAM_t bsReader;
 
   if (hBs->ConfigCache == BS_READER) {
     bsReader = *hBs;

@@ -110,9 +110,9 @@ void CJointStereo_ApplyIS(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[2], c
                           const int32_t scaleFactorBandsTransmitted);
 
 /* aacdec_pns.cpp */
-int32_t CPns_IsPnsUsed(const CPnsData *pPnsData, const int32_t group, const int32_t band);
+int32_t CPns_IsPnsUsed(const CPnsData_t *pPnsData, const int32_t group, const int32_t band);
 
-void CPns_SetCorrelation(CPnsData *pPnsData, const int32_t group, const int32_t band, const int32_t outofphase);
+void CPns_SetCorrelation(CPnsData_t *pPnsData, const int32_t group, const int32_t band, const int32_t outofphase);
 
 /****************** inline functions ******************/
 

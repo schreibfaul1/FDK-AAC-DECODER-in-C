@@ -242,7 +242,7 @@ struct spatialDec_struct {
                          */
   uint8_t nrResidualFrame;
   uint8_t nrArbDownmixResidualFrame;
-  FDK_BITSTREAM **hResidualBitstreams;
+  FDK_BITSTREAM_t **hResidualBitstreams;
   int32_t tempShapeConfig; /* */
   int32_t decorrType;      /* Indicates to use PS or none PS decorrelator. */
   int32_t decorrConfig;    /* chosen decorrelator */

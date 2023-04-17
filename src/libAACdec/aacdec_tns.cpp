@@ -25,16 +25,16 @@
 
   \return  none
 */
-void CTns_Reset(CTnsData *pTnsData) {
+void CTns_Reset(CTnsData_t *pTnsData) {
     /* Note: the following memset should not be required. */
-    memset(pTnsData->Filter, 0, TNS_MAX_WINDOWS * TNS_MAXIMUM_FILTERS * sizeof(CFilter));
+    memset(pTnsData->Filter, 0, TNS_MAX_WINDOWS * TNS_MAXIMUM_FILTERS * sizeof(CFilter_t));
     memset(pTnsData->NumberOfFilters, 0, TNS_MAX_WINDOWS * sizeof(uint8_t));
     pTnsData->DataPresent = 0;
     pTnsData->Active = 0;
 }
 
 void CTns_ReadDataPresentFlag(HANDLE_FDK_BITSTREAM bs, /*!< pointer to bitstream */
-                              CTnsData            *pTnsData)      /*!< pointer to aac decoder channel info */
+                              CTnsData_t            *pTnsData)      /*!< pointer to aac decoder channel info */
 {
     pTnsData->DataPresent = (uint8_t)FDKreadBits(bs, 1);
 }
@@ -47,7 +47,7 @@ void CTns_ReadDataPresentFlag(HANDLE_FDK_BITSTREAM bs, /*!< pointer to bitstream
 
   \return  none
 */
-AAC_DECODER_ERROR_t CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData, const CIcsInfo_t *pIcsInfo,
+AAC_DECODER_ERROR_t CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData_t *pTnsData, const CIcsInfo_t *pIcsInfo,
                             const uint32_t flags) {
     uint8_t           n_filt, order;
     uint8_t           length, coef_res, coef_compress;
@@ -79,7 +79,7 @@ AAC_DECODER_ERROR_t CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData, const
             nextstopband = GetScaleFactorBandsTotal(pIcsInfo);
 
             for(index = 0; index < n_filt; index++) {
-                CFilter *filter = &pTnsData->Filter[window][index];
+                CFilter_t *filter = &pTnsData->Filter[window][index];
 
                 length = (uint8_t)FDKreadBits(bs, isLongFlag ? 6 : 4);
 
@@ -135,7 +135,7 @@ AAC_DECODER_ERROR_t CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData *pTnsData, const
     return ErrorStatus;
 }
 
-void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData *pTnsData0, CTnsData *pTnsData1, uint8_t *ptns_on_lr,
+void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData_t *pTnsData0, CTnsData_t *pTnsData1, uint8_t *ptns_on_lr,
                               const CIcsInfo_t *pIcsInfo, const uint32_t flags, const uint32_t elFlags,
                               const int32_t fCommonWindow) {
     int32_t common_tns = 0;
@@ -172,7 +172,7 @@ void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData *pTnsData0, CTn
 
   \return  none
 */
-void CTns_Apply(CTnsData       *pTnsData, /*!< pointer to aac decoder info */
+void CTns_Apply(CTnsData_t       *pTnsData, /*!< pointer to aac decoder info */
                 const CIcsInfo_t *pIcsInfo, int32_t* pSpectralCoefficient, const SamplingRateInfo_t *pSamplingRateInfo,
                 const int32_t granuleLength, const uint8_t nbands, const uint8_t igf_active, const uint32_t flags) {
     int32_t window, index, start, stop, size, start_window, wins_per_frame;
@@ -192,7 +192,7 @@ void CTns_Apply(CTnsData       *pTnsData, /*!< pointer to aac decoder info */
             { pSpectrum = SPEC(pSpectralCoefficient, window, granuleLength); }
 
             for(index = 0; index < pTnsData->NumberOfFilters[window]; index++) {
-                CFilter *filter = &pTnsData->Filter[window][index];
+                CFilter_t *filter = &pTnsData->Filter[window][index];
 
                 if(filter->Order > 0) {
                     FIXP_TCC *pCoeff;

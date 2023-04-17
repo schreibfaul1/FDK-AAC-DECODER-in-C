@@ -290,7 +290,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
                         int32_t *pFac, const int32_t fac_scale,
                         const int32_t fac_length, int32_t noOutSamples, const int32_t tl,
                         const FIXP_SPK_t *wrs, const int32_t fr, int16_t A[16],
-                        int32_t A_exp, CAcelpStaticMem *acelp_mem,
+                        int32_t A_exp, CAcelpStaticMem_t *acelp_mem,
                         const int32_t gain, const int32_t last_frame_lost,
                         const int32_t isFdFac, const uint8_t last_lpd_mode,
                         const int32_t k, int32_t currAliasingSymmetry) {

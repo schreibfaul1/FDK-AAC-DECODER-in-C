@@ -122,7 +122,7 @@ AAC_DECODER_ERROR_t aacDecoder_ConfigRaw(HANDLE_AACDECODER self, uint8_t *conf[]
 }
 
 AAC_DECODER_ERROR_t aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self, uint8_t *buffer, uint32_t length) {
-	FDK_BITSTREAM        bs;
+	FDK_BITSTREAM_t        bs;
 	HANDLE_FDK_BITSTREAM hBs = &bs;
 	AAC_DECODER_ERROR_t    err = AAC_DEC_OK;
 
@@ -405,12 +405,12 @@ static int32_t isSupportedMpsConfig(AUDIO_OBJECT_TYPE_t aot, uint32_t numInChann
 static AAC_DECODER_ERROR_t setConcealMethod(const HANDLE_AACDECODER self, /*!< Handle of the decoder instance */
 										  const int32_t               method) {
 	AAC_DECODER_ERROR_t  errorStatus = AAC_DEC_OK;
-	CConcealParams    *pConcealData = NULL;
+	CConcealParams_t    *pConcealData = NULL;
 	int32_t                method_revert = 0;
 	HANDLE_SBRDECODER  hSbrDec = NULL;
 	HANDLE_AAC_DRC     hDrcInfo = NULL;
 	HANDLE_PCM_DOWNMIX hPcmDmx = NULL;
-	CConcealmentMethod backupMethod = ConcealMethodNone;
+	CConcealmentMethod_t backupMethod = ConcealMethodNone;
 	int32_t                backupDelay = 0;
 	int32_t                bsDelay = 0;
 
@@ -713,7 +713,7 @@ AAC_DECODER_ERROR_t aacDecoder_SetParam(const HANDLE_AACDECODER self,  /*!< Hand
 			   packed into a helper function which keeps all modules and libs in a
 			   consistent state even in the case an error occures. */
 			errorStatus = setConcealMethod(self, value);
-			if(errorStatus == AAC_DEC_OK) { self->concealMethodUser = (CConcealmentMethod)value; }
+			if(errorStatus == AAC_DEC_OK) { self->concealMethodUser = (CConcealmentMethod_t)value; }
 			break;
 
 		default:
@@ -1587,8 +1587,8 @@ AAC_DECODER_ERROR_t aacDecoder_DecodeFrame(HANDLE_AACDECODER self, int16_t *pTim
 					if(self->hDrcInfo->enable && self->hDrcInfo->applyExtGain) {
 						pGainPerSample = self->workBufferCore1;
 
-						uint32_t GRMWBC1 = sizeof(CWorkBufferCore1) + 8 + sizeof(void *);  // GetRequiredMemWorkBufferCore1
-						GRMWBC1 + ((8 - sizeof(CWorkBufferCore1) + 8 + sizeof(void *) & 7) & 7);
+						uint32_t GRMWBC1 = sizeof(CWorkBufferCore1_t) + 8 + sizeof(void *);  // GetRequiredMemWorkBufferCore1
+						GRMWBC1 + ((8 - sizeof(CWorkBufferCore1_t) + 8 + sizeof(void *) & 7) & 7);
 						if((int32_t)GRMWBC1 < (int32_t)(self->streamInfo.frameSize * sizeof(int32_t))) {
 							ErrorStatus = AAC_DEC_UNKNOWN;
 							goto bail;

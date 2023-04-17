@@ -4,7 +4,7 @@
 
 #include "channelinfo.h"
 
-int32_t CPulseData_Read(HANDLE_FDK_BITSTREAM bs, CPulseData *const PulseData,
+int32_t CPulseData_Read(HANDLE_FDK_BITSTREAM bs, CPulseData_t *const PulseData,
                     const int16_t *sfb_startlines, const void *pIcsInfo,
                     const int16_t frame_length) {
   int32_t i, k = 0;
@@ -43,7 +43,7 @@ int32_t CPulseData_Read(HANDLE_FDK_BITSTREAM bs, CPulseData *const PulseData,
 }
 
 void CPulseData_Apply(
-    CPulseData *PulseData, /*!< pointer to pulse data side info */
+    CPulseData_t *PulseData, /*!< pointer to pulse data side info */
     const int16_t
         *pScaleFactorBandOffsets, /*!< pointer to scalefactor band offsets */
     int32_t *coef)               /*!< pointer to spectrum */

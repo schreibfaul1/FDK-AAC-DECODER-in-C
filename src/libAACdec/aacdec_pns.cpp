@@ -23,8 +23,8 @@
 
   The function resets the InterChannel and PNS data
 */
-void CPns_ResetData(CPnsData *pPnsData,
-                    CPnsInterChannelData *pPnsInterChannelData) {
+void CPns_ResetData(CPnsData_t *pPnsData,
+                    CPnsInterChannelData_t *pPnsInterChannelData) {
   assert(pPnsData != NULL);
   assert(pPnsInterChannelData != NULL);
   /* Assign pointer always, since pPnsData is not persistent data */
@@ -42,7 +42,7 @@ void CPns_ResetData(CPnsData *pPnsData,
   The function sets the seed for PNS noise generation.
   It can be used to link two or more channels in terms of PNS.
 */
-void CPns_UpdateNoiseState(CPnsData *pPnsData, int32_t *currentSeed,
+void CPns_UpdateNoiseState(CPnsData_t *pPnsData, int32_t *currentSeed,
                            int32_t *randomSeed) {
   /* use pointer because seed has to be
      same, left and right channel ! */
@@ -58,7 +58,7 @@ void CPns_UpdateNoiseState(CPnsData *pPnsData, int32_t *currentSeed,
 
   \return  PNS used
 */
-int32_t CPns_IsPnsUsed(const CPnsData *pPnsData, const int32_t group, const int32_t band) {
+int32_t CPns_IsPnsUsed(const CPnsData_t *pPnsData, const int32_t group, const int32_t band) {
   unsigned pns_band = group * 16 + band;
 
   return pPnsData->pnsUsed[pns_band] & (uint8_t)1;
@@ -69,9 +69,9 @@ int32_t CPns_IsPnsUsed(const CPnsData *pPnsData, const int32_t group, const int3
 
   The function activates the noise correlation between the channel pair
 */
-void CPns_SetCorrelation(CPnsData *pPnsData, const int32_t group, const int32_t band,
+void CPns_SetCorrelation(CPnsData_t *pPnsData, const int32_t group, const int32_t band,
                          const int32_t outofphase) {
-  CPnsInterChannelData *pInterChannelData = pPnsData->pPnsInterChannelData;
+  CPnsInterChannelData_t *pInterChannelData = pPnsData->pPnsInterChannelData;
   unsigned pns_band = group * 16 + band;
 
   pInterChannelData->correlated[pns_band] = (outofphase) ? 3 : 1;
@@ -85,9 +85,9 @@ void CPns_SetCorrelation(CPnsData *pPnsData, const int32_t group, const int32_t 
 
   \return  PNS is correlated
 */
-static int32_t CPns_IsCorrelated(const CPnsData *pPnsData, const int32_t group,
+static int32_t CPns_IsCorrelated(const CPnsData_t *pPnsData, const int32_t group,
                              const int32_t band) {
-  CPnsInterChannelData *pInterChannelData = pPnsData->pPnsInterChannelData;
+  CPnsInterChannelData_t *pInterChannelData = pPnsData->pPnsInterChannelData;
   unsigned pns_band = group * 16 + band;
 
   return (pInterChannelData->correlated[pns_band] & 0x01) ? 1 : 0;
@@ -101,9 +101,9 @@ static int32_t CPns_IsCorrelated(const CPnsData *pPnsData, const int32_t group,
 
   \return  PNS is out-of-phase
 */
-static int32_t CPns_IsOutOfPhase(const CPnsData *pPnsData, const int32_t group,
+static int32_t CPns_IsOutOfPhase(const CPnsData_t *pPnsData, const int32_t group,
                              const int32_t band) {
-  CPnsInterChannelData *pInterChannelData = pPnsData->pPnsInterChannelData;
+  CPnsInterChannelData_t *pInterChannelData = pPnsData->pPnsInterChannelData;
   unsigned pns_band = group * 16 + band;
 
   return (pInterChannelData->correlated[pns_band] & 0x02) ? 1 : 0;
@@ -114,7 +114,7 @@ static int32_t CPns_IsOutOfPhase(const CPnsData *pPnsData, const int32_t group,
 
   The function reads the PNS information from the bitstream
 */
-void CPns_Read(CPnsData *pPnsData, HANDLE_FDK_BITSTREAM bs,
+void CPns_Read(CPnsData_t *pPnsData, HANDLE_FDK_BITSTREAM bs,
                const CodeBookDescription *hcb, int16_t *pScaleFactor,
                uint8_t global_gain, int32_t band, int32_t group /* = 0 */) {
   int32_t delta;
@@ -217,7 +217,7 @@ static void ScaleBand(int32_t * spec, int32_t size, int32_t scaleFactor,
   flagged as noisy bands
 
 */
-void CPns_Apply(const CPnsData *pPnsData, const CIcsInfo_t *pIcsInfo,
+void CPns_Apply(const CPnsData_t *pPnsData, const CIcsInfo_t *pIcsInfo,
                 int32_t* pSpectrum, const int16_t *pSpecScale,
                 const int16_t *pScaleFactor,
                 const SamplingRateInfo_t *pSamplingRateInfo,

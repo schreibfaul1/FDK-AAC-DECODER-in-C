@@ -901,7 +901,7 @@ SBR_ERROR sbrDecoder_Parse(HANDLE_SBRDECODER self, HANDLE_FDK_BITSTREAM hBs, uin
 	uint32_t    crcLen;
 
 	HANDLE_FDK_BITSTREAM hBsOriginal = hBs;
-	FDK_BITSTREAM        bsBwd;
+	FDK_BITSTREAM_t        bsBwd;
 
 	const int32_t fGlobalIndependencyFlag = acFlags & AC_INDEP;
 	const int32_t bs_pvc = acElFlags[elementIndex] & AC_EL_USAC_PVC;
