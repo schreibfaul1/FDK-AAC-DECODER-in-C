@@ -1173,7 +1173,7 @@ HANDLE_AACDECODER CAacDecoder_Open(TRANSPORT_TYPE_t bsFormat) /*!< bitstream for
 	CConcealment_InitCommonData(&self->concealCommonData);
 	self->concealMethodUser = ConcealMethodNone; /* undefined -> auto mode */
 
-	self->hDrcInfo = (CDrcInfo *)FDKcalloc(1, sizeof(CDrcInfo));
+	self->hDrcInfo = (CDrcInfo_t *)FDKcalloc(1, sizeof(CDrcInfo_t));
 	if(self->hDrcInfo == NULL) { goto bail; }
 	/* Init common DRC structure */
 	aacDecoder_drcInit(self->hDrcInfo);

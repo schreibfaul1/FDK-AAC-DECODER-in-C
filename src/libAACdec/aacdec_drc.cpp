@@ -173,7 +173,7 @@ void aacDecoder_drcReset(HANDLE_AAC_DRC self) {
   \return none
 */
 void aacDecoder_drcInit(HANDLE_AAC_DRC self) {
-  CDrcParams *pParams;
+  CDrcParams_t *pParams;
 
   if (self == NULL) {
     return;
@@ -218,7 +218,7 @@ void aacDecoder_drcInit(HANDLE_AAC_DRC self) {
 
   \return none
 */
-void aacDecoder_drcInitChannelData(CDrcChannelData *pDrcChData) {
+void aacDecoder_drcInitChannelData(CDrcChannelData_t *pDrcChData) {
   if (pDrcChData != NULL) {
     pDrcChData->expiryCount = 0;
     pDrcChData->numBands = 1;
@@ -307,7 +307,7 @@ AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
         return AAC_DEC_INVALID_HANDLE;
       }
       self->params.defaultPresentationMode =
-          (AACDEC_DRC_PARAMETER_HANDLING)value;
+          (AACDEC_DRC_PARAMETER_HANDLING_t)value;
       self->update = 1;
       break;
     case ENCODER_TARGET_LEVEL:
@@ -515,7 +515,7 @@ int32_t aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM bs,
 
   \return Flag telling whether new DRC data has been found or not.
 */
-static int32_t aacDecoder_drcParse(HANDLE_FDK_BITSTREAM bs, CDrcPayload *pDrcBs,
+static int32_t aacDecoder_drcParse(HANDLE_FDK_BITSTREAM bs, CDrcPayload_t *pDrcBs,
                                uint32_t payloadPosition) {
   int32_t i, numBands;
 
@@ -591,7 +591,7 @@ static int32_t aacDecoder_drcParse(HANDLE_FDK_BITSTREAM bs, CDrcPayload *pDrcBs,
 #define DVB_COMPRESSION_SCALE (8) /* 48,164 dB */
 
 static int32_t aacDecoder_drcReadCompression(HANDLE_FDK_BITSTREAM bs,
-                                         CDrcPayload *pDrcBs,
+                                         CDrcPayload_t *pDrcBs,
                                          uint32_t payloadPosition) {
   int32_t foundDrcData = 0;
   int32_t dmxLevelsPresent, compressionPresent;
@@ -684,9 +684,9 @@ static int32_t aacDecoder_drcExtractAndMap(
     uint8_t channelMapping[], /* Channel mapping translating drcChannel index to
                                canonical channel index */
     int32_t validChannels) {
-  CDrcPayload threadBs[MAX_DRC_THREADS];
-  CDrcPayload *validThreadBs[MAX_DRC_THREADS];
-  CDrcParams *pParams;
+  CDrcPayload_t threadBs[MAX_DRC_THREADS];
+  CDrcPayload_t *validThreadBs[MAX_DRC_THREADS];
+  CDrcParams_t *pParams;
   uint32_t backupBsPosition;
   int32_t result = 0;
   int32_t i, thread, validThreads = 0;
@@ -705,7 +705,7 @@ static int32_t aacDecoder_drcExtractAndMap(
     /* Init payload data chunk. The memclear is very important because it
        initializes the most values. Without it the module wouldn't work properly
        or crash. */
-    memset(&threadBs[self->numThreads], 0, sizeof(CDrcPayload));
+    memset(&threadBs[self->numThreads], 0, sizeof(CDrcPayload_t));
     threadBs[self->numThreads].channelData.bandTop[0] =
         DRC_BLOCK_LEN_DIV_BAND_MULT - 1;
 
@@ -722,7 +722,7 @@ static int32_t aacDecoder_drcExtractAndMap(
     /* Init payload data chunk. The memclear is very important because it
        initializes the most values. Without it the module wouldn't work properly
        or crash. */
-    memset(&threadBs[self->numThreads] , 0, sizeof(CDrcPayload));
+    memset(&threadBs[self->numThreads] , 0, sizeof(CDrcPayload_t));
     threadBs[self->numThreads].channelData.bandTop[0] =
         DRC_BLOCK_LEN_DIV_BAND_MULT - 1;
 
@@ -741,7 +741,7 @@ static int32_t aacDecoder_drcExtractAndMap(
 
   /* check for valid threads */
   for (thread = 0; thread < self->numThreads; thread++) {
-    CDrcPayload *pThreadBs = &threadBs[thread];
+    CDrcPayload_t *pThreadBs = &threadBs[thread];
     int32_t numExclChns = 0;
 
     switch ((AACDEC_DRC_PAYLOAD_TYPE)pThreadBs->channelData.drcDataType) {
@@ -775,7 +775,7 @@ static int32_t aacDecoder_drcExtractAndMap(
 
   /* map DRC bitstream information onto DRC channel information */
   for (thread = 0; thread < validThreads; thread++) {
-    CDrcPayload *pThreadBs = validThreadBs[thread];
+    CDrcPayload_t *pThreadBs = validThreadBs[thread];
     int32_t exclMask = pThreadBs->excludedChnsMask;
     AACDEC_DRC_PAYLOAD_TYPE drcPayloadType =
         (AACDEC_DRC_PAYLOAD_TYPE)pThreadBs->channelData.drcDataType;
@@ -838,7 +838,7 @@ static int32_t aacDecoder_drcExtractAndMap(
 
 void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
                          CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                         CDrcChannelData *pDrcChData, int32_t *extGain,
+                         CDrcChannelData_t *pDrcChData, int32_t *extGain,
                          int32_t ch, /* needed only for SBR */
                          int32_t aacFrameSize, int32_t bSbrPresent) {
   int32_t band, bin, numBands;
@@ -854,7 +854,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
   int32_t fact_mantissa[MAX_DRC_BANDS];
   int32_t fact_exponent[MAX_DRC_BANDS];
 
-  CDrcParams *pParams = &self->params;
+  CDrcParams_t *pParams = &self->params;
 
   int32_t *pSpectralCoefficient =
       SPEC_LONG(pAacDecoderChannelInfo->pSpectralCoefficient);
@@ -1082,8 +1082,8 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
                                             int8_t prevDrcPresMode) {
   int32_t isDownmix, isMonoDownmix, isStereoDownmix;
   int32_t dDmx, dHr;
-  AACDEC_DRC_PARAMETER_HANDLING drcParameterHandling;
-  CDrcParams *p;
+  AACDEC_DRC_PARAMETER_HANDLING_t drcParameterHandling;
+  CDrcParams_t *p;
 
   assert(self != NULL);
 
@@ -1108,7 +1108,7 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
   isStereoDownmix = (isDownmix && (self->numOutChannels == 2));
 
   if ((self->presMode == 1) || (self->presMode == 2)) {
-    drcParameterHandling = (AACDEC_DRC_PARAMETER_HANDLING)self->presMode;
+    drcParameterHandling = (AACDEC_DRC_PARAMETER_HANDLING_t)self->presMode;
   } else { /* no presentation mode -> use parameter handling specified by
               AAC_DRC_DEFAULT_PRESENTATION_MODE */
     drcParameterHandling = p->defaultPresentationMode;

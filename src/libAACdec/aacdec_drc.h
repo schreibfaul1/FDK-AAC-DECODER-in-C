@@ -144,7 +144,7 @@ void aacDecoder_drcReset(HANDLE_AAC_DRC self);
 
 void aacDecoder_drcInit(HANDLE_AAC_DRC self);
 
-void aacDecoder_drcInitChannelData(CDrcChannelData *pDrcChannel);
+void aacDecoder_drcInitChannelData(CDrcChannelData_t *pDrcChannel);
 
 AAC_DECODER_ERROR aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
                                          AACDEC_DRC_PARAM param, int32_t value);
@@ -175,7 +175,7 @@ int32_t aacDecoder_drcProlog(
  */
 void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
                          CAacDecoderChannelInfo *pAacDecoderChannelInfo,
-                         CDrcChannelData *pDrcDat, int32_t *extGain, int32_t ch,
+                         CDrcChannelData_t *pDrcDat, int32_t *extGain, int32_t ch,
                          int32_t aacFrameSize, int32_t bSbrPresent);
 
 int32_t aacDecoder_drcEpilog(

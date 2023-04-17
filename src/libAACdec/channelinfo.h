@@ -256,7 +256,7 @@ typedef struct {
 
   uint32_t nfRandomSeed; /* seed value for USAC noise filling random generator */
 
-  CDrcChannelData drcData;
+  CDrcChannelData_t drcData;
   CConcealmentInfo concealmentInfo;
 
   CpePersistentData *pCpeStaticData;

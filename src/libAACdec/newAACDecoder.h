@@ -142,6 +142,8 @@
 #define EXT_ID_BITS             4   /**< Size in bits of extension payload type tags. */
 #define IS_USAC_CHANNEL_ELEMENT(elementId) ((elementId) == ID_USAC_SCE || (elementId) == ID_USAC_CPE || \
                                 (elementId) == ID_USAC_LFE)
+#define MAX_DRC_THREADS   ((8) + 1) /* Heavy compression value is handled just like MPEG DRC data */
+#define MAX_DRC_BANDS     (16) /* 2^LEN_DRC_BAND_INCR (LEN_DRC_BAND_INCR = 4) */
 
 
 typedef struct {                // Contains information needed for a single channel map.
@@ -374,6 +376,13 @@ typedef enum {
     /* > 128 => reserved for use outside of ISO scope */
 } CONFIG_EXT_ID_t;
 
+typedef enum {
+    DISABLED_PARAMETER_HANDLING = -1, /*!< DRC parameter handling disabled, all parameters are applied as requested. */
+    ENABLED_PARAMETER_HANDLING = 0,   /*!< Apply changes to requested DRC parameters to prevent clipping */
+    DRC_PRESENTATION_MODE_1 = 1,      /*!< DRC Presentation mode 1*/
+    DRC_PRESENTATION_MODE_2 = 2       /*!< DRC Presentation mode 2*/
+} AACDEC_DRC_PARAMETER_HANDLING_t;
+
 //----------------------------------------------------------------------------------------------------------------------
 /** Generic audio coder configuration structure. */
 typedef struct{
@@ -417,6 +426,64 @@ typedef struct LIB_INFO{
     uint32_t      flags;
     char          versionStr[32];
 } LIB_INFO_t;
+
+typedef struct{
+    uint32_t expiryCount;
+    uint32_t numBands;
+    uint16_t bandTop[MAX_DRC_BANDS];
+    int16_t  drcInterpolationScheme;
+    uint8_t  drcValue[MAX_DRC_BANDS];
+    int8_t   drcDataType;
+} CDrcChannelData_t;
+
+typedef struct {
+    uint32_t          excludedChnsMask;
+    int8_t            progRefLevel;
+    int8_t            presMode; /* Presentation mode: 0 (not indicated), 1, 2, and 3  (reserved). */
+    int8_t            pceInstanceTag;
+    CDrcChannelData_t channelData;
+} CDrcPayload_t;
+
+typedef struct {
+    /* DRC parameters: Latest user requests */
+    int32_t usrCut;
+    int32_t usrBoost;
+    uint8_t usrApplyHeavyCompression;
+    // DRC parameters: Currently used, possibly changed by aacDecoder_drcParameterHandling
+    int32_t                       cut;                   /* attenuation scale factor */
+    int32_t                       boost;                 /* boost scale factor  */
+    int8_t                        targetRefLevel;        /* target reference level for loudness normalization */
+    uint8_t                       applyHeavyCompression; /* heavy compression (DVB) flag */
+    uint32_t                      expiryFrame;
+    uint8_t                       bsDelayEnable;
+    AACDEC_DRC_PARAMETER_HANDLING_t defaultPresentationMode;
+    uint8_t                       encoderTargetLevel;
+} CDrcParams_t;
+
+typedef struct {
+    CDrcParams_t params;              /* Module parameters that can be set by user (via SetParam API function) */
+    uint8_t      enable;              /* Switch that controls dynamic range processing */
+    uint8_t      digitalNorm;         /* Switch to en-/disable reference level normalization in  digital domain */
+    uint8_t      update;              // Flag indicating the change of a user or bitstream parameter
+    int32_t      numOutChannels;      /* Number of output channels */
+    int32_t      prevAacNumChannels;  /* Previous number of channels of aac bitstream, used for update flag */
+    uint16_t     numPayloads;         /* The number of DRC data payload elements found within frame */
+    uint16_t     numThreads;          /* The number of DRC data threads extracted from the found payload elements */
+    int8_t       progRefLevel;        /* Program reference level for all channels */
+    uint8_t      progRefLevelPresent; /* Program reference level found in bitstream */
+    uint32_t     prlExpiryCount; /* Counter that can be used to monitor the life time of the program reference level. */
+    int8_t       presMode;       /* Presentation mode as defined in ETSI TS 101 154 */
+    uint8_t      dvbAncDataAvailable; /* Flag that indicates whether DVB ancillary data is present or not */
+    uint32_t dvbAncDataPosition; /* Used to store the DVB ancillary data payload position in the bitstream (only one per
+                                    frame) */
+    uint32_t drcPayloadPosition[MAX_DRC_THREADS]; /* Used to store the DRC payload positions in the bitstream */
+    uint8_t  uniDrcPrecedence;   /* Flag for signalling that uniDrc is active and takes precedence over legacy DRC */
+    uint8_t  applyExtGain;       /* Flag is 1 if extGain has to be applied, otherwise 0. */
+    int32_t  additionalGainPrev; /* Gain of previous frame to be applied to the  time data */
+    int32_t  additionalGainFilterState;  /* Filter state for the gain smoothing */
+    int32_t  additionalGainFilterState1; /* Filter state for the gain smoothing */
+} CDrcInfo_t;
+
 
 //----------------------------------------------------------------------------------------------------------------------
 
