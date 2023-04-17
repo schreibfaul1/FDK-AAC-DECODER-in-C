@@ -88,19 +88,20 @@ int32_t main() {
 
     	    exit(1);
     	}
-//        printf("bytesAvail %i,  bytesRead %i\n", bytesAvail, bytesRead);
+        // printf("bytesAvail %i,  bytesRead %i\n", bytesAvail, bytesRead);
 //		pos += bytesRead;
 
     	// Abruf der dekodierten PCM-Daten aus dem Ausgabe-Puffer
     	decoderErr = aacDecoder_DecodeFrame(handle, pcmout, sizeof(pcmout), 0);
     	if (decoderErr == AAC_DEC_NOT_ENOUGH_BITS){
-		//	printf("not enough bits");
+			// printf("not enough bits");
 			continue;
 		}
 		if(decoderErr != AAC_DEC_OK){
     	    printf("Fehler: PCM-Daten konnten nicht abgerufen werden!\n");
 			printf("err %X\n", err);
     	}
+
 
 		if(decoderErr == AAC_DEC_OK){
 			CStreamInfo *info = aacDecoder_GetStreamInfo(handle);
@@ -117,8 +118,8 @@ int32_t main() {
 		}
 
 	}  // end while(true)
-
+	printf("ready");
 	fclose(fptrIn);
 	fclose(fptrOut);
-
+	return 0;
 }
