@@ -189,14 +189,14 @@ static inline int32_t fixp_sin_cos_residual_inline(int32_t x, int32_t scale,
     int32_t sl, cl;
     /* Because of packed table */
     if (s > (1 << (LD - 1))) {
-      FIXP_STP tmp;
+      FIXP_SPK_t tmp;
       /* Cosine/Sine simetry for angles greater than PI/4 */
       s = (1 << LD) - s;
       tmp = SINETAB[s];
       sl = (int32_t)tmp.v.re;
       cl = (int32_t)tmp.v.im;
     } else {
-      FIXP_STP tmp;
+      FIXP_SPK_t tmp;
       tmp = SINETAB[s];
       sl = (int32_t)tmp.v.im;
       cl = (int32_t)tmp.v.re;

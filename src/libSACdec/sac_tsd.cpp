@@ -123,7 +123,7 @@ static const uint8_t nBitsTsdCW_64slots[64] = {
 
 
 
-static const FIXP_DPK phiTsd[8] = {
+static const FIXP_DPK_t phiTsd[8] = {
     {{(int32_t)0x7fffffff, (int32_t)0x00000000}},
     {{(int32_t)0x5a82799a, (int32_t)0x5a82799a}},
     {{(int32_t)0x00000000, (int32_t)0x7fffffff}},
@@ -336,7 +336,7 @@ void TsdApply(const int32_t numHybridBands, const TSD_DATA *pTsdData, int32_t *p
 
   if (isTrSlot(pTsdData, ts)) {
     int32_t k;
-    const FIXP_DPK *phi = &phiTsd[pTsdData->bsTsdTrPhaseData[ts]];
+    const FIXP_DPK_t *phi = &phiTsd[pTsdData->bsTsdTrPhaseData[ts]];
     assert((pTsdData->bsTsdTrPhaseData[ts] >= 0) &&
                (pTsdData->bsTsdTrPhaseData[ts] < 8));
 

@@ -488,10 +488,10 @@ static inline void fft12(int32_t *pInput) {
     pSrc += 2;
     pDst += 6;
 
-    const FIXP_STB *pVecRe = RotVectorReal12;
-    const FIXP_STB *pVecIm = RotVectorImag12;
+    const int16_t *pVecRe = RotVectorReal12;
+    const int16_t *pVecIm = RotVectorImag12;
     int32_t         re, im;
-    FIXP_STB        vre, vim;
+    int16_t        vre, vim;
     for(i = 0; i < 2; i++) {
         /* sample 0,1 are shifted right by 2 before output */
         /* sample 2,3 4,5 are shifted right by 1 and complex multiplied before
@@ -727,7 +727,7 @@ static inline void fft15(int32_t *pInput) {
      * enabled too */
     #define FUNCTION_DATA_fft_16_w16
 
-static const FIXP_STP fft16_w16[2] = {30274, 12540, 12540, 30274};
+static const FIXP_SPK_t fft16_w16[2] = {30274, 12540, 12540, 30274};
 
 inline void fft_16(int32_t *x) {
     int32_t vr, ur;
@@ -989,7 +989,7 @@ inline void fft_16(int32_t *x) {
 #endif /* FUNCTION_fft_16 */
 
 #ifndef FUNCTION_fft_32
-static const FIXP_STP fft32_w32[6] = {30274, 12540, 12540, 30274, 32138, 6393, 27246, 18205, 18205, 27246, 6393, 32138};
+static const FIXP_SPK_t fft32_w32[6] = {30274, 12540, 12540, 30274, 32138, 6393, 27246, 18205, 18205, 27246, 6393, 32138};
     #define W_PiFOURTH 23170
 
 inline void fft_32(int32_t *const _x) {
@@ -1528,10 +1528,10 @@ inline void fft_32(int32_t *const _x) {
 #define noFFT_APPLY_ROT_VECTOR_HQ
 
 
-static inline void fft_apply_rot_vector(int32_t *pData, const int32_t cl, const int32_t l, const FIXP_STB *pVecRe,
-                                        const FIXP_STB *pVecIm) {
+static inline void fft_apply_rot_vector(int32_t *pData, const int32_t cl, const int32_t l, const int16_t *pVecRe,
+                                        const int16_t *pVecIm) {
     int32_t  re, im;
-    FIXP_STB vre, vim;
+    int16_t vre, vim;
 
     int32_t i, c;
 
@@ -1565,7 +1565,7 @@ static inline void fft_apply_rot_vector(int32_t *pData, const int32_t cl, const 
 
 static inline void fftN2_func(int32_t *pInput, const int32_t length, const int32_t dim1, const int32_t dim2,
                               void (*const fft1)(int32_t *), void (*const fft2)(int32_t *),
-                              const FIXP_STB *RotVectorReal, const FIXP_STB *RotVectorImag, int32_t *aDst,
+                              const int16_t *RotVectorReal, const int16_t *RotVectorImag, int32_t *aDst,
                               int32_t *aDst2) {
     /* The real part of the input samples are at the addresses with even indices
     and the imaginary part of the input samples are at the addresses with odd

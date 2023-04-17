@@ -140,15 +140,15 @@ extern const int16_t lsp_interpol_factor[2][NB_SUBFR];
 
 extern const int16_t fdk_dec_filt_lp[1 + L_FILT];
 
-extern const FIXP_WTB FacWindowSynth128[128];
-extern const FIXP_WTB FacWindowZir128[128];
-extern const FIXP_WTB FacWindowSynth64[64];
-extern const FIXP_WTB FacWindowZir64[64];
-extern const FIXP_WTB FacWindowSynth32[32];
-extern const FIXP_WTB FacWindowZir32[32];
-extern const FIXP_WTB FacWindowSynth96[96];
-extern const FIXP_WTB FacWindowZir96[96];
-extern const FIXP_WTB FacWindowSynth48[48];
-extern const FIXP_WTB FacWindowZir48[48];
+extern const int16_t FacWindowSynth128[128];
+extern const int16_t FacWindowZir128[128];
+extern const int16_t FacWindowSynth64[64];
+extern const int16_t FacWindowZir64[64];
+extern const int16_t FacWindowSynth32[32];
+extern const int16_t FacWindowZir32[32];
+extern const int16_t FacWindowSynth96[96];
+extern const int16_t FacWindowZir96[96];
+extern const int16_t FacWindowSynth48[48];
+extern const int16_t FacWindowZir48[48];
 
 #endif /* USACDEC_ROM_H */

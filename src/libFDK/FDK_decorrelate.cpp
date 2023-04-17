@@ -230,7 +230,7 @@ static inline int32_t SpatialDecGetQmfBand(int32_t paramBand, const uint8_t *tab
 #define PS_DUCK_PEAK_DECAY_FACTOR_FDK FL2FXCONST_DUCK(PS_DUCK_PEAK_DECAY_FACTOR)
 #define PS_DUCK_FILTER_COEFF_FDK      FL2FXCONST_DUCK(PS_DUCK_FILTER_COEFF)
 
-const FIXP_STP DecorrPsCoeffsCplx[][4] = {{23913, 22403, -21043, 3587, -17708, 5372, -15893, 2179},
+const FIXP_SPK_t DecorrPsCoeffsCplx[][4] = {{23913, 22403, -21043, 3587, -17708, 5372, -15893, 2179},
                                           {23913, -22403, -21043, -3587, -17708, -5372, -15893, -2179},
                                           {-20798, 25322, -18665, 10357, -11739, 14304, -14719, 6377},
                                           {-20798, -25322, -18665, -10357, -11739, -14304, -14719, -6377},
@@ -717,7 +717,7 @@ static int32_t DecorrFilterApplyCPLX_PS(DECORR_FILTER_INSTANCE const filter[], i
                                         int32_t reverbBandDelayBufferIndex, uint8_t *stateBufferOffset) {
     /* r = real, j = imaginary */
     int32_t  r_data_a, j_data_a, r_data_b, j_data_b, r_stage_mult, j_stage_mult;
-    FIXP_STP rj_coeff;
+    FIXP_SPK_t rj_coeff;
 
     /* get pointer to current position in input delay buffer of filter with
      * starting-index */
@@ -759,7 +759,7 @@ static int32_t DecorrFilterApplyCPLX_PS(DECORR_FILTER_INSTANCE const filter[], i
 
         /* create pointer to coefficient table (real and imaginary coefficients
          * interleaved) */
-        const FIXP_STP *pCoeffs = filter[i].coeffsPacked;
+        const FIXP_SPK_t *pCoeffs = filter[i].coeffsPacked;
 
         /* the first two entries of the coefficient table are the
          * Phi(k)-multiplicants */

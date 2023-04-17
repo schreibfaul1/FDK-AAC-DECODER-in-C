@@ -133,13 +133,13 @@ extern const int8_t ExponentTable[4][14];
 #define WTS0 (1)
 #define WTS1 (0)
 #define WTS2 (-2)
-extern const FIXP_WTB LowDelaySynthesis512[1536];
-extern const FIXP_WTB LowDelaySynthesis480[1440];
-extern const FIXP_WTB LowDelaySynthesis256[768];
-extern const FIXP_WTB LowDelaySynthesis240[720];
-extern const FIXP_WTB LowDelaySynthesis160[480];
-extern const FIXP_WTB LowDelaySynthesis128[384];
-extern const FIXP_WTB LowDelaySynthesis120[360];
+extern const int16_t LowDelaySynthesis512[1536];
+extern const int16_t LowDelaySynthesis480[1440];
+extern const int16_t LowDelaySynthesis256[768];
+extern const int16_t LowDelaySynthesis240[720];
+extern const int16_t LowDelaySynthesis160[480];
+extern const int16_t LowDelaySynthesis128[384];
+extern const int16_t LowDelaySynthesis120[360];
 
 typedef struct {
   const int16_t *sfbOffsetLong;

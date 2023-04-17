@@ -151,7 +151,7 @@ inline void cplxMultDiv2(int16_t *c_Re, int16_t *c_Im, const int16_t a_Re,
 #define FUNCTION_cplxMultDiv2_32x16
 
 inline void cplxMultDiv2(int32_t *c_Re, int32_t *c_Im, const int32_t a_Re,
-                         const int32_t a_Im, const FIXP_SPK w) {
+                         const int32_t a_Im, const FIXP_SPK_t w) {
   cplxMultDiv2(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
 }
 #endif
@@ -160,12 +160,12 @@ inline void cplxMultDiv2(int32_t *c_Re, int32_t *c_Im, const int32_t a_Re,
 #define FUNCTION_cplxMultDiv2_16x16
 
 inline void cplxMultDiv2(int32_t *c_Re, int32_t *c_Im, const int16_t a_Re,
-                         const int16_t a_Im, const FIXP_SPK w) {
+                         const int16_t a_Im, const FIXP_SPK_t w) {
   cplxMultDiv2(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
 }
 
 inline void cplxMultDiv2(int16_t *c_Re, int16_t *c_Im, const int16_t a_Re,
-                         const int16_t a_Im, const FIXP_SPK w) {
+                         const int16_t a_Im, const FIXP_SPK_t w) {
   cplxMultDiv2(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
 }
 #endif
@@ -196,7 +196,7 @@ inline void cplxMultDiv2(int32_t *c_Re, int32_t *c_Im, const int32_t a_Re,
 #define FUNCTION_cplxMultDiv2_32x32
 
 inline void cplxMultDiv2(int32_t *c_Re, int32_t *c_Im, const int32_t a_Re,
-                         const int32_t a_Im, const FIXP_DPK w) {
+                         const int32_t a_Im, const FIXP_DPK_t w) {
   cplxMultDiv2(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
 }
 #endif
@@ -236,7 +236,7 @@ inline void cplxMult(int16_t *c_Re, int16_t *c_Im, const int16_t a_Re,
 #define FUNCTION_cplxMult_32x16
 
 inline void cplxMult(int32_t *c_Re, int32_t *c_Im, const int32_t a_Re,
-                     const int32_t a_Im, const FIXP_SPK w) {
+                     const int32_t a_Im, const FIXP_SPK_t w) {
   cplxMult(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
 }
 #endif
@@ -255,7 +255,7 @@ inline void cplxMult(int32_t *c_Re, int32_t *c_Im, const int32_t a_Re,
 #if !defined(FUNCTION_cplxMult_32x32)
 #define FUNCTION_cplxMult_32x32
 inline void cplxMult(int32_t *c_Re, int32_t *c_Im, const int32_t a_Re,
-                     const int32_t a_Im, const FIXP_DPK w) {
+                     const int32_t a_Im, const FIXP_DPK_t w) {
   cplxMult(c_Re, c_Im, a_Re, a_Im, w.v.re, w.v.im);
 }
 #endif

@@ -126,9 +126,9 @@ amm-info@iis.fraunhofer.de
 #include "fft.h"
 
 
-void dct_getTables(const FIXP_WTP **ptwiddle, const FIXP_STP **sin_twiddle,
+void dct_getTables(const FIXP_SPK_t **ptwiddle, const FIXP_SPK_t **sin_twiddle,
                    int32_t *sin_step, int32_t length) {
-  const FIXP_WTP *twiddle;
+  const FIXP_SPK_t *twiddle;
   int32_t ld2_length;
 
   /* Get ld2 of length - 2 + 1
@@ -178,7 +178,7 @@ void dct_III(int32_t *pDat, /*!< pointer to input/output */
              int32_t *tmp,  /*!< pointer to temporal working buffer */
              int32_t L,          /*!< lenght of transform */
              int32_t *pDat_e) {
-  const FIXP_WTP *sin_twiddle;
+  const FIXP_SPK_t *sin_twiddle;
   int32_t i;
   int32_t xr, accu1, accu2;
   int32_t inc, index;
@@ -293,7 +293,7 @@ void dct_II(
     int32_t L, /*!< lenght of transform (has to be a multiple of 8 (or 4 in case
               DCT_II_L_MULTIPLE_OF_4_SUPPORT is defined) */
     int32_t *pDat_e) {
-  const FIXP_WTP *sin_twiddle;
+  const FIXP_SPK_t *sin_twiddle;
   int32_t accu1, accu2;
   int32_t *pTmp_0, *pTmp_1;
 
@@ -376,8 +376,8 @@ void dct_IV(int32_t *pDat, int32_t L, int32_t *pDat_e) {
   int32_t sin_step = 0;
   int32_t M = L >> 1;
 
-  const FIXP_WTP *twiddle;
-  const FIXP_STP *sin_twiddle;
+  const FIXP_SPK_t *twiddle;
+  const FIXP_SPK_t *sin_twiddle;
 
   assert(L >= 4);
 
@@ -436,7 +436,7 @@ void dct_IV(int32_t *pDat, int32_t L, int32_t *pDat_e) {
 
     /* 28 cycles for ARM926 */
     for (idx = sin_step, i = 1; i<(M + 1)>> 1; i++, idx += sin_step) {
-      FIXP_STP twd = sin_twiddle[idx];
+      FIXP_SPK_t twd = sin_twiddle[idx];
       cplxMult(&accu3, &accu4, accu1, accu2, twd);
       pDat_0[1] = accu3;
       pDat_1[0] = accu4;
@@ -473,8 +473,8 @@ void dst_IV(int32_t *pDat, int32_t L, int32_t *pDat_e) {
   int32_t sin_step = 0;
   int32_t M = L >> 1;
 
-  const FIXP_WTP *twiddle;
-  const FIXP_STP *sin_twiddle;
+  const FIXP_SPK_t *twiddle;
+  const FIXP_SPK_t *sin_twiddle;
 
   assert(L >= 4);
 
@@ -536,7 +536,7 @@ void dst_IV(int32_t *pDat, int32_t L, int32_t *pDat_e) {
     pDat_0[0] = pDat_0[1];
 
     for (idx = sin_step, i = 1; i<(M + 1)>> 1; i++, idx += sin_step) {
-      FIXP_STP twd = sin_twiddle[idx];
+      FIXP_SPK_t twd = sin_twiddle[idx];
 
       cplxMult(&accu3, &accu4, accu1, accu2, twd);
       pDat_1[0] = -accu3;

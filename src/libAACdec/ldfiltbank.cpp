@@ -112,7 +112,7 @@ amm-info@iis.fraunhofer.de
 #if defined(__arm__)
 #endif
 
-static void multE2_DinvF_fdk(int32_t *output, int32_t *x, const FIXP_WTB *fb,
+static void multE2_DinvF_fdk(int32_t *output, int32_t *x, const int16_t *fb,
                              int32_t *z, const int32_t N) {
   int32_t i;
 
@@ -218,7 +218,7 @@ static void multE2_DinvF_fdk(int32_t *output, int32_t *x, const FIXP_WTB *fb,
 int32_t InvMdctTransformLowDelay_fdk(int32_t *mdctData, const int32_t mdctData_e,
                                  int32_t *output, int32_t *fs_buffer,
                                  const int32_t N) {
-  const FIXP_WTB *coef;
+  const int16_t *coef;
   int32_t gain = (int32_t)0;
   int32_t scale = mdctData_e + MDCT_OUT_HEADROOM -
               LDFB_HEADROOM; /* The LDFB_HEADROOM is compensated inside

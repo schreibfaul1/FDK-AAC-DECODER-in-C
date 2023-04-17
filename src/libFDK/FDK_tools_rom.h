@@ -109,84 +109,84 @@ amm-info@iis.fraunhofer.de
 /* sinetables */
 
 /* None radix2 rotation vectors */
-extern const FIXP_STB RotVectorReal60[60];
-extern const FIXP_STB RotVectorImag60[60];
-extern const FIXP_STB RotVectorReal192[192];
-extern const FIXP_STB RotVectorImag192[192];
-extern const FIXP_STB RotVectorReal240[210];
-extern const FIXP_STB RotVectorImag240[210];
-extern const FIXP_STB RotVectorReal480[480];
-extern const FIXP_STB RotVectorImag480[480];
-extern const FIXP_STB RotVectorReal6[6];
-extern const FIXP_STB RotVectorImag6[6];
-extern const FIXP_STB RotVectorReal12[12];
-extern const FIXP_STB RotVectorImag12[12];
-extern const FIXP_STB RotVectorReal24[24];
-extern const FIXP_STB RotVectorImag24[24];
-extern const FIXP_STB RotVectorReal48[48];
-extern const FIXP_STB RotVectorImag48[48];
-extern const FIXP_STB RotVectorReal80[80];
-extern const FIXP_STB RotVectorImag80[80];
-extern const FIXP_STB RotVectorReal96[96];
-extern const FIXP_STB RotVectorImag96[96];
-extern const FIXP_STB RotVectorReal384[384];
-extern const FIXP_STB RotVectorImag384[384];
-extern const FIXP_STB RotVectorReal20[20];
-extern const FIXP_STB RotVectorImag20[20];
-extern const FIXP_STB RotVectorReal120[120];
-extern const FIXP_STB RotVectorImag120[120];
+extern const int16_t RotVectorReal60[60];
+extern const int16_t RotVectorImag60[60];
+extern const int16_t RotVectorReal192[192];
+extern const int16_t RotVectorImag192[192];
+extern const int16_t RotVectorReal240[210];
+extern const int16_t RotVectorImag240[210];
+extern const int16_t RotVectorReal480[480];
+extern const int16_t RotVectorImag480[480];
+extern const int16_t RotVectorReal6[6];
+extern const int16_t RotVectorImag6[6];
+extern const int16_t RotVectorReal12[12];
+extern const int16_t RotVectorImag12[12];
+extern const int16_t RotVectorReal24[24];
+extern const int16_t RotVectorImag24[24];
+extern const int16_t RotVectorReal48[48];
+extern const int16_t RotVectorImag48[48];
+extern const int16_t RotVectorReal80[80];
+extern const int16_t RotVectorImag80[80];
+extern const int16_t RotVectorReal96[96];
+extern const int16_t RotVectorImag96[96];
+extern const int16_t RotVectorReal384[384];
+extern const int16_t RotVectorImag384[384];
+extern const int16_t RotVectorReal20[20];
+extern const int16_t RotVectorImag20[20];
+extern const int16_t RotVectorReal120[120];
+extern const int16_t RotVectorImag120[120];
 
 /* Regular sine tables */
-extern  const FIXP_STP SineTable1024[];
-extern  const FIXP_STP SineTable512[];
-extern  const FIXP_STP SineTable480[];
-extern  const FIXP_STP SineTable384[];
-extern  const FIXP_STP SineTable80[];
+extern  const FIXP_SPK_t SineTable1024[];
+extern  const FIXP_SPK_t SineTable512[];
+extern  const FIXP_SPK_t SineTable480[];
+extern  const FIXP_SPK_t SineTable384[];
+extern  const FIXP_SPK_t SineTable80[];
 #ifdef INCLUDE_SineTable10
-extern  const FIXP_STP SineTable10[];
+extern  const FIXP_SPK_t SineTable10[];
 #endif
 
 /* AAC-LC windows */
-extern  const FIXP_WTP SineWindow1024[];
-extern  const FIXP_WTP KBDWindow1024[];
-extern  const FIXP_WTP SineWindow128[];
-extern  const FIXP_WTP KBDWindow128[];
+extern  const FIXP_SPK_t SineWindow1024[];
+extern  const FIXP_SPK_t KBDWindow1024[];
+extern  const FIXP_SPK_t SineWindow128[];
+extern  const FIXP_SPK_t KBDWindow128[];
 
-extern  const FIXP_WTP SineWindow960[];
-extern  const FIXP_WTP KBDWindow960[];
-extern  const FIXP_WTP SineWindow120[];
-extern  const FIXP_WTP KBDWindow120[];
+extern  const FIXP_SPK_t SineWindow960[];
+extern  const FIXP_SPK_t KBDWindow960[];
+extern  const FIXP_SPK_t SineWindow120[];
+extern  const FIXP_SPK_t KBDWindow120[];
 
 /* AAC-LD windows */
-extern  const FIXP_WTP SineWindow512[];
+extern  const FIXP_SPK_t SineWindow512[];
 #define LowOverlapWindow512 SineWindow128
-extern  const FIXP_WTP SineWindow480[];
+extern  const FIXP_SPK_t SineWindow480[];
 #define LowOverlapWindow480 SineWindow120
 
 /* USAC TCX Window */
-extern  const FIXP_WTP SineWindow256[256];
-extern  const FIXP_WTP SineWindow192[];
+extern  const FIXP_SPK_t SineWindow256[256];
+extern  const FIXP_SPK_t SineWindow192[];
 
 /* USAC 8/3 windows */
-extern  const FIXP_WTP SineWindow768[];
-extern  const FIXP_WTP KBDWindow768[];
-extern  const FIXP_WTP SineWindow96[];
-extern  const FIXP_WTP KBDWindow96[];
+extern  const FIXP_SPK_t SineWindow768[];
+extern  const FIXP_SPK_t KBDWindow768[];
+extern  const FIXP_SPK_t SineWindow96[];
+extern  const FIXP_SPK_t KBDWindow96[];
 
 /* DCT and others */
-extern  const FIXP_WTP SineWindow64[];
-extern  const FIXP_WTP SineWindow48[];
-extern  const FIXP_WTP SineWindow32[];
-extern  const FIXP_WTP SineWindow24[];
-extern  const FIXP_WTP SineWindow16[];
-extern  const FIXP_WTP SineWindow8[];
+extern  const FIXP_SPK_t SineWindow64[];
+extern  const FIXP_SPK_t SineWindow48[];
+extern  const FIXP_SPK_t SineWindow32[];
+extern  const FIXP_SPK_t SineWindow24[];
+extern  const FIXP_SPK_t SineWindow16[];
+extern  const FIXP_SPK_t SineWindow8[];
 
 /**
  * \brief Helper table for window slope mapping. You should prefer the usage of
  * the function FDKgetWindowSlope(), this table is only made public for some
  * optimized access inside dct.cpp.
  */
-extern const FIXP_WTP *const windowSlopes[2][4][9];
+extern const FIXP_SPK_t *const windowSlopes[2][4][9];
 
 /**
  * \brief Window slope access helper. Obtain a window of given length and shape.
@@ -197,9 +197,9 @@ extern const FIXP_WTP *const windowSlopes[2][4][9];
  * \param Pointer to window slope or NULL if the requested window slope is not
  * available.
  */
-const FIXP_WTP *FDKgetWindowSlope(int32_t length, int32_t shape);
+const FIXP_SPK_t *FDKgetWindowSlope(int32_t length, int32_t shape);
 
-extern const FIXP_WTP sin_twiddle_L64[];
+extern const FIXP_SPK_t sin_twiddle_L64[];
 
 /*
  * Filter coefficient type definition

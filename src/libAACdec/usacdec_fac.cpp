@@ -277,7 +277,7 @@ int32_t CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac,
                         const int32_t isFdFac, uint8_t prevWindowShape) {
   int32_t *pOvl;
   int32_t *pOut0;
-  const FIXP_WTP *pWindow;
+  const FIXP_SPK_t *pWindow;
   int32_t i, fl, nrSamples = 0;
 
   assert(fac_length <= 1024 / (4 * 2));
@@ -381,17 +381,17 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
                         const int16_t spec_scale[], const int32_t nSpec,
                         int32_t *pFac, const int32_t fac_scale,
                         const int32_t fac_length, int32_t noOutSamples, const int32_t tl,
-                        const FIXP_WTP *wrs, const int32_t fr, FIXP_LPC A[16],
+                        const FIXP_SPK_t *wrs, const int32_t fr, FIXP_LPC A[16],
                         int32_t A_exp, CAcelpStaticMem *acelp_mem,
                         const int32_t gain, const int32_t last_frame_lost,
                         const int32_t isFdFac, const uint8_t last_lpd_mode,
                         const int32_t k, int32_t currAliasingSymmetry) {
   int32_t *pCurr, *pOvl, *pSpec;
-  const FIXP_WTP *pWindow;
-  const FIXP_WTB *FacWindowZir_conceal;
+  const FIXP_SPK_t *pWindow;
+  const int16_t *FacWindowZir_conceal;
   uint8_t doFacZirConceal = 0;
   int32_t doDeemph = 1;
-  const FIXP_WTB *FacWindowZir, *FacWindowSynth;
+  const int16_t *FacWindowZir, *FacWindowSynth;
   int32_t *pOut0 = output, *pOut1;
   int32_t w, i, fl, nl, nr, f_len, nrSamples = 0, s = 0, scale, total_gain_e;
   int32_t *pF, *pFAC_and_FAC_ZIR = NULL;
@@ -470,7 +470,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
            Dont use FAC, which contains wrong information for concealed frame
            Dont use last ACELP samples, but double ZIR, instead (afterwards) */
         memset(pFAC_and_FAC_ZIR, 0, 2 * fac_length * sizeof(int32_t));
-        FacWindowSynth = (FIXP_WTB *)pFAC_and_FAC_ZIR;
+        FacWindowSynth = (int16_t *)pFAC_and_FAC_ZIR;
         FacWindowZir = FacWindowZir_conceal;
       } else {
         CFac_CalcFacSignal(pFAC_and_FAC_ZIR, pFac, fac_scale + s, fac_length, A,
@@ -600,7 +600,7 @@ int32_t CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *_pSpec,
 
   for (w = 1; w < nSpec; w++) /* for ACELP -> FD int16_t */
   {
-    const FIXP_WTP *pWindow_prev;
+    const FIXP_SPK_t *pWindow_prev;
 
     /* Setup window pointers */
     pWindow_prev = hMdct->prev_wrs;

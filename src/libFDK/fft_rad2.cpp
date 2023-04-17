@@ -127,7 +127,7 @@ amm-info@iis.fraunhofer.de
 *****************************************************************************/
 
 #ifndef FUNCTION_dit_fft
-void dit_fft(int32_t *x, const int32_t ldn, const FIXP_STP *trigdata,
+void dit_fft(int32_t *x, const int32_t ldn, const FIXP_SPK_t *trigdata,
              const int32_t trigDataSize) {
   const int32_t n = 1 << ldn;
   int32_t trigstep, i, ldm;
@@ -215,7 +215,7 @@ void dit_fft(int32_t *x, const int32_t ldn, const FIXP_STP *trigdata,
     } /* end of  block 1 */
 
     for (j = 1; j < mh / 4; ++j) {
-      FIXP_STP cs;
+      FIXP_SPK_t cs;
 
       cs = trigdata[j * trigstep];
 

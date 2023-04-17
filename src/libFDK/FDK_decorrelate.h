@@ -187,7 +187,7 @@ typedef struct DECORR_FILTER_INSTANCE {
   int32_t *DelayBufferCplx;
 
   const FIXP_DECORR *numeratorReal;
-  const FIXP_STP *coeffsPacked;
+  const FIXP_SPK_t *coeffsPacked;
   const FIXP_DECORR *denominatorReal;
 } DECORR_FILTER_INSTANCE;
 

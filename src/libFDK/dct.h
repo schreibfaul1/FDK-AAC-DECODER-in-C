@@ -107,7 +107,7 @@ amm-info@iis.fraunhofer.de
 
 #include "common_fix.h"
 
-void dct_getTables(const FIXP_WTP **ptwiddle, const FIXP_STP **sin_twiddle,
+void dct_getTables(const FIXP_SPK_t **ptwiddle, const FIXP_SPK_t **sin_twiddle,
                    int32_t *sin_step, int32_t length);
 
 /**

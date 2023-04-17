@@ -136,7 +136,7 @@ the DCT IV for processing.
 */
 int32_t mdct_block(H_MDCT hMdct, const int16_t * timeData,
                const int32_t noInSamples, int32_t * mdctData,
-               const int32_t nSpec, const int32_t tl, const FIXP_WTP *pRightWindowPart,
+               const int32_t nSpec, const int32_t tl, const FIXP_SPK_t *pRightWindowPart,
                const int32_t fr, int16_t *pMdctData_e) {
   int32_t i, n;
   /* tl: transform length
@@ -146,7 +146,7 @@ int32_t mdct_block(H_MDCT hMdct, const int16_t * timeData,
      nr: right window slope offset
      See FDK_tools/doc/intern/mdct.tex for more detail. */
   int32_t fl, nl, nr;
-  const FIXP_WTP *wls, *wrs;
+  const FIXP_SPK_t *wls, *wrs;
 
   wrs = pRightWindowPart;
 
@@ -372,7 +372,7 @@ int32_t imdct_copy_ov_and_nr(H_MDCT hMdct, int32_t *pTimeData, int32_t nrSamples
 }
 
 void imdct_adapt_parameters(H_MDCT hMdct, int32_t *pfl, int32_t *pnl, int32_t tl,
-                            const FIXP_WTP *wls, int32_t noOutSamples) {
+                            const FIXP_SPK_t *wls, int32_t noOutSamples) {
   int32_t fl = *pfl, nl = *pnl;
   int32_t window_diff, use_current = 0, use_previous = 0;
   if (hMdct->prev_tl == 0) {
@@ -466,8 +466,8 @@ current buffer is sent in it, so that the E and F segments are available for
 decoding in the next algorithm pass.*/
 int32_t imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
                const int16_t scalefactor[], const int32_t nSpec,
-               const int32_t noOutSamples, const int32_t tl, const FIXP_WTP *wls,
-               int32_t fl, const FIXP_WTP *wrs, const int32_t fr, int32_t gain,
+               const int32_t noOutSamples, const int32_t tl, const FIXP_SPK_t *wls,
+               int32_t fl, const FIXP_SPK_t *wrs, const int32_t fr, int32_t gain,
                int32_t flags) {
   int32_t *pOvl;
   int32_t *pOut0 = output, *pOut1;
@@ -501,7 +501,7 @@ int32_t imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
 
   for (w = 0; w < nSpec; w++) {
     int32_t *pSpec, *pCurr;
-    const FIXP_WTP *pWindow;
+    const FIXP_SPK_t *pWindow;
 
     /* Detect FRprevious / FL mismatches and override parameters accordingly */
     if (hMdct->prev_fr != fl) {

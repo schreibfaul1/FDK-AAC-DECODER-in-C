@@ -408,7 +408,7 @@ inline uint8_t fMin(uint8_t a, uint8_t b) {
 }
 
 /* Complex data types */
-typedef shouldBeUnion {
+typedef union {
   /* vector representation for arithmetic */
   struct {
     int16_t re;
@@ -417,9 +417,9 @@ typedef shouldBeUnion {
   /* word representation for memory move */
   int32_t w;
 }
-FIXP_SPK;
+FIXP_SPK_t;
 
-typedef shouldBeUnion {
+typedef union {
   /* vector representation for arithmetic */
   struct {
     int32_t re;
@@ -428,7 +428,7 @@ typedef shouldBeUnion {
   /* word representation for memory move */
   int64_t w;
 }
-FIXP_DPK;
+FIXP_DPK_t;
 
 #include "fixmul.h"
 #include "fixmadd.h"

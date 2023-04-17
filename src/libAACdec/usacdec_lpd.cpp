@@ -557,7 +557,7 @@ void lpc2mdctAndNoiseShaping(int32_t *r, int16_t *pScale, const int32_t lg,
      * below. */
     int32_t f = FL2FXCONST_DBL(0.92f);
 
-    const FIXP_STP *SinTab;
+    const FIXP_SPK_t *SinTab;
     int32_t k_step;
     /* needed values: sin(phi), cos(phi); phi = i*PI/(2*fdns_npts), i = 0 ...
      * M_LP_FILTER_ORDER */
@@ -578,7 +578,7 @@ void lpc2mdctAndNoiseShaping(int32_t *r, int16_t *pScale, const int32_t lg,
     }
 
     for (i = 0, k = k_step; i < M_LP_FILTER_ORDER; i++, k += k_step) {
-      FIXP_STP cs = SinTab[k];
+      FIXP_SPK_t cs = SinTab[k];
       int32_t wA1, wA2;
 
       wA1 = fMult(A1[i], f);

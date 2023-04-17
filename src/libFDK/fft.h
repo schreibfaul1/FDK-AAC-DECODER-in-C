@@ -169,7 +169,7 @@ static inline void fft_4(int32_t *x) {
 #ifndef FUNCTION_fft_8
 
 static inline void fft_8(int32_t *x) {
-  FIXP_SPK w_PiFOURTH = {{int16_t(0x5A82), int16_t(0x5A82)}};
+  FIXP_SPK_t w_PiFOURTH = {{int16_t(0x5A82), int16_t(0x5A82)}};
 
   int32_t a00, a10, a20, a30;
   int32_t y[16];

@@ -139,7 +139,7 @@ typedef struct {
     int32_t *time;
   } overlap; /**< Pointer to overlap memory */
 
-  const FIXP_WTP *prev_wrs; /**< pointer to previous right window slope  */
+  const FIXP_SPK_t *prev_wrs; /**< pointer to previous right window slope  */
   int32_t prev_tl;              /**< previous transform length */
   int32_t prev_nr;              /**< previous right window offset */
   int32_t prev_fr;              /**< previous right window slope length */
@@ -181,7 +181,7 @@ void mdct_init(H_MDCT hMdct, int32_t *overlap, int32_t overlapBufferSize);
  */
 int32_t mdct_block(H_MDCT hMdct, const int16_t *pTimeData, const int32_t noInSamples,
                int32_t * mdctData, const int32_t nSpec, const int32_t tl,
-               const FIXP_WTP *pRightWindowPart, const int32_t fr,
+               const FIXP_SPK_t *pRightWindowPart, const int32_t fr,
                int16_t *pMdctData_e);
 
 /**
@@ -219,7 +219,7 @@ int32_t imdct_copy_ov_and_nr(H_MDCT hMdct, int32_t *pTimeData, int32_t nrSamples
  * \param noOutSamples desired number of output samples.
  */
 void imdct_adapt_parameters(H_MDCT hMdct, int32_t *pfl, int32_t *pnl, int32_t tl,
-                            const FIXP_WTP *wls, int32_t noOutSamples);
+                            const FIXP_SPK_t *wls, int32_t noOutSamples);
 
 /**
  * \brief perform several inverse MLT transforms (frequency domain to time
@@ -244,8 +244,8 @@ void imdct_adapt_parameters(H_MDCT hMdct, int32_t *pfl, int32_t *pnl, int32_t tl
  */
 int32_t imlt_block(H_MDCT hMdct, int32_t *output, int32_t *spectrum,
                const int16_t scalefactor[], const int32_t nSpec,
-               const int32_t noOutSamples, const int32_t tl, const FIXP_WTP *wls,
-               int32_t fl, const FIXP_WTP *wrs, const int32_t fr, int32_t gain,
+               const int32_t noOutSamples, const int32_t tl, const FIXP_SPK_t *wls,
+               int32_t fl, const FIXP_SPK_t *wrs, const int32_t fr, int32_t gain,
                int32_t flags);
 
 #endif /* MDCT_H */

@@ -126,9 +126,6 @@ amm-info@iis.fraunhofer.de
 
 /*--------------- structure definitions ---------------*/
 
-
-#define FIXP_HTB int16_t              /* SGL data type. */
-#define FIXP_HTP FIXP_SPK              /* Packed SGL data type. */
 #define FL2FXCONST_HTB FL2FXCONST_SGL
 
 
@@ -155,7 +152,7 @@ static const FDK_HYBRID_SETUP setup_3_12 = {
 static const FDK_HYBRID_SETUP setup_3_10 = {
     3, {6, 2, 2}, {3, 2, 2}, {-8, -2, 2}, 13, (13 - 1) / 2, ringbuffIdxTab};
 
-static const FIXP_HTP HybFilterCoef8[] = {
+static const FIXP_SPK_t HybFilterCoef8[] = {
         4096, 0,     3570, -1479,
         -173, 173,     2290, -2290,
         -285, 687,     911, -2200,
@@ -164,11 +161,11 @@ static const FIXP_HTP HybFilterCoef8[] = {
         2290, 2290,     -173, -173,
         3570, 1479};
 
-static const FIXP_HTB HybFilterCoef2[3] = {FL2FXCONST_HTB(0.01899487526049f),
+static const int16_t HybFilterCoef2[3] = {FL2FXCONST_HTB(0.01899487526049f),
                                            FL2FXCONST_HTB(-0.07293139167538f),
                                            FL2FXCONST_HTB(0.30596630545168f)};
 
-static const FIXP_HTB HybFilterCoef4[13] = {FL2FXCONST_HTB(-0.00305151927305f),
+static const int16_t HybFilterCoef4[13] = {FL2FXCONST_HTB(-0.00305151927305f),
                                             FL2FXCONST_HTB(-0.00794862316203f),
                                             FL2FXCONST_HTB(0.0f),
                                             FL2FXCONST_HTB(0.04318924038756f),
@@ -508,9 +505,9 @@ static void dualChannelFiltering(const int32_t *const pQmfReal,
   int32_t r1, r6;
   int32_t i1, i6;
 
-  const FIXP_HTB f0 = HybFilterCoef2[0]; /* corresponds to p1 and p11 */
-  const FIXP_HTB f1 = HybFilterCoef2[1]; /* corresponds to p3 and p9  */
-  const FIXP_HTB f2 = HybFilterCoef2[2]; /* corresponds to p5 and p7  */
+  const int16_t f0 = HybFilterCoef2[0]; /* corresponds to p1 and p11 */
+  const int16_t f1 = HybFilterCoef2[1]; /* corresponds to p3 and p9  */
+  const int16_t f2 = HybFilterCoef2[2]; /* corresponds to p5 and p7  */
 
   /* symmetric filter coefficients */
   r1 = fMultDiv2(f0, pQmfReal[pReadIdx[1]]) +
@@ -543,7 +540,7 @@ static void fourChannelFiltering(const int32_t *const pQmfReal,
                                  int32_t *const mHybridReal,
                                  int32_t *const mHybridImag,
                                  const int32_t invert) {
-  const FIXP_HTB *p = HybFilterCoef4;
+  const int16_t *p = HybFilterCoef4;
 
   int32_t fft[8];
 
@@ -683,7 +680,7 @@ static void eightChannelFiltering(const int32_t *const pQmfReal,
                                   int32_t *const mHybridReal,
                                   int32_t *const mHybridImag,
                                   const int32_t invert) {
-  const FIXP_HTP *p = HybFilterCoef8;
+  const FIXP_SPK_t *p = HybFilterCoef8;
   int32_t k, sc;
 
   int32_t mfft[16 + ALIGNMENT_DEFAULT];
