@@ -106,7 +106,7 @@ amm-info@iis.fraunhofer.de
 #include "../libFDK/common_fix.h"
 
 #include "../libFDK/FDK_bitstream.h"
-#include "../libSYS/FDK_audio.h"
+#include "../libAACdec/newAACDecoder.h"
 
 #include "../libFDK/FDK_qmf_domain.h"
 

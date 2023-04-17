@@ -103,7 +103,8 @@ amm-info@iis.fraunhofer.de
 #ifndef FDK_CORE_H
 #define FDK_CORE_H
 
-#include "../libSYS/FDK_audio.h"
+
+#include "../libAACdec/newAACDecoder.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -104,7 +104,6 @@ amm-info@iis.fraunhofer.de
 #define TP_DATA_H
 
 #include "../libAACdec/newAACDecoder.h"
-#include "../libSYS/FDK_audio.h"
 #include "../libFDK/FDK_bitstream.h"
 
 /*

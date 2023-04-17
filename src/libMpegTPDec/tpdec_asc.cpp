@@ -411,7 +411,7 @@ void CProgramConfig_GetDefault(CProgramConfig *pPce, const uint32_t channelConfi
 
     switch(channelConfig) {
         /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-        case 32: /* 7.1 side channel configuration as defined in FDK_audio.h */
+        case 32: /* 7.1 side channel configuration as defined
             pPce->NumFrontChannelElements = 2;
             pPce->FrontElementIsCpe[0] = 0;
             pPce->FrontElementIsCpe[1] = 1;

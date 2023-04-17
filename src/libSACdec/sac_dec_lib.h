@@ -104,7 +104,7 @@ amm-info@iis.fraunhofer.de
 #define SAC_DEC_LIB_H
 
 #include "../libFDK/common_fix.h"
-#include "../libSYS/FDK_audio.h"
+#include "../libAACdec/newAACDecoder.h"
 #include "sac_dec_errorcodes.h"
 #include "../libFDK/FDK_bitstream.h"
 #include "../libFDK/FDK_qmf_domain.h"

@@ -103,7 +103,7 @@ amm-info@iis.fraunhofer.de
 #ifndef SAC_DEC_SSC_STRUCT_H
 #define SAC_DEC_SSC_STRUCT_H
 
-#include "../libSYS/FDK_audio.h"
+#include "../libAACdec/newAACDecoder.h"
 
 #define MAX_NUM_QMF_BANDS (128)
 #define MAX_TIME_SLOTS 64

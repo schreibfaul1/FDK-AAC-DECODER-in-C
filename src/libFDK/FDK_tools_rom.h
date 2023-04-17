@@ -104,7 +104,7 @@ amm-info@iis.fraunhofer.de
 #define FDK_TOOLS_ROM_H
 
 #include "common_fix.h"
-#include "../libSYS/FDK_audio.h"
+#include "../libAACdec/newAACDecoder.h"
 
 /* sinetables */
 

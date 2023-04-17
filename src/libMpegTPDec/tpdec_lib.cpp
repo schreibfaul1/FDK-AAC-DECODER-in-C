@@ -561,6 +561,10 @@ TRANSPORTDEC_ERROR transportDec_FillData(const HANDLE_TRANSPORTDEC hTp, uint8_t 
     /* set bitbuffer shortcut */
     hBs = &hTp->bitStream[layer];
 
+
+    #define TT_IS_PACKET(x) (((x) == TT_MP4_RAW)       || ((x) == TT_DRM) || \
+                             ((x) == TT_MP4_LATM_MCP0) || ((x) == TT_MP4_LATM_MCP1))
+
     if(TT_IS_PACKET(hTp->transportFmt)) {
         if(hTp->numberOfRawDataBlocks == 0) {
             FDKresetBitbuffer(hBs);

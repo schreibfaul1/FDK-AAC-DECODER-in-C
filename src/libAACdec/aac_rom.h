@@ -105,7 +105,6 @@ amm-info@iis.fraunhofer.de
 
 #include <stdint.h>
 #include "../libFDK/common_fix.h"
-#include "../libSYS/FDK_audio.h"
 #include "aacdec_hcr_types.h"
 #include "aacdec_hcrs.h"
 

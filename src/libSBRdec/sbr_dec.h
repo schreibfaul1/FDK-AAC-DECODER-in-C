@@ -111,7 +111,7 @@ amm-info@iis.fraunhofer.de
 #include "lpp_tran.h"
 #include "../libFDK/qmf.h"
 #include "env_calc.h"
-#include "../libSYS/FDK_audio.h"
+#include "../libAACdec/newAACDecoder.h"
 
 #include "sbrdec_drc.h"
 #include "pvc_dec.h"

@@ -105,7 +105,7 @@ amm-info@iis.fraunhofer.de
 
 #include <stdint.h>
 #include "../libFDK/common_fix.h"
-#include "../libSYS/FDK_audio.h"
+#include "../libAACdec/newAACDecoder.h"
 
 #ifdef __cplusplus
 extern "C" {

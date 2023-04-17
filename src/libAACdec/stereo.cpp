@@ -107,7 +107,6 @@ amm-info@iis.fraunhofer.de
 #include "aac_rom.h"
 #include "../libFDK/FDK_bitstream.h"
 #include "../libAACdec/channelinfo.h"
-#include "../libSYS/FDK_audio.h"
 
 enum { L = 0, R = 1 };
 

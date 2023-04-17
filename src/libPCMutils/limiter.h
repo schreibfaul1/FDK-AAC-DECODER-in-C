@@ -104,7 +104,7 @@ amm-info@iis.fraunhofer.de
 #define LIMITER_H
 
 #include "../libFDK/common_fix.h"
-#include "../libSYS/FDK_audio.h"
+#include "../libAACdec/newAACDecoder.h"
 
 #define TDL_ATTACK_DEFAULT_MS (15)  /* default attack  time in ms */
 #define TDL_RELEASE_DEFAULT_MS (50) /* default release time in ms */

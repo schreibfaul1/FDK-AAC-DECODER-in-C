@@ -110,8 +110,6 @@ amm-info@iis.fraunhofer.de
 #include "channel.h"
 
 #include "../libMpegTPDec/tpdec_lib.h"
-#include "../libSYS/FDK_audio.h"
-
 #include "block.h"
 #include "../libFDK/FDK_qmf_domain.h"
 

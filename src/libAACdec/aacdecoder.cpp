@@ -159,7 +159,6 @@ amm-info@iis.fraunhofer.de
 #include "../libMpegTPDec/tpdec_lib.h"
 #include "../libSACdec/sac_dec_lib.h"
 #include "../libSBRdec/sbrdecoder.h"
-#include "../libSYS/FDK_audio.h"
 #include "aac_rom.h"
 #include "aacdec_hcr.h"
 #include "aacdec_pns.h"
@@ -174,6 +173,9 @@ amm-info@iis.fraunhofer.de
 
 void CAacDecoder_SyncQmfMode(HANDLE_AACDECODER self) {
 	assert(!((self->flags[0] & AC_MPS_PRESENT) && (self->flags[0] & AC_PS_PRESENT)));
+
+	#define CAN_DO_PS(aot)  ((aot) == AOT_AAC_LC || (aot) == AOT_SBR || \
+	                         (aot) == AOT_PS || (aot) == AOT_ER_BSAC || (aot) == AOT_DRM_AAC)
 
 	/* Assign user requested mode */
 	self->qmfModeCurr = self->qmfModeUser;

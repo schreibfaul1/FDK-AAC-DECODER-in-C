@@ -104,7 +104,6 @@ amm-info@iis.fraunhofer.de
 #define FDK_DRCDECLIB_H
 
 #include "../libFDK/FDK_bitstream.h"
-#include "../libSYS/FDK_audio.h"
 #include "../libFDK/common_fix.h"
 
 /* DRC decoder according to ISO/IEC 23003-4 (MPEG-D DRC) */

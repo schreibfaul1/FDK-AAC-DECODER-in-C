@@ -107,8 +107,6 @@ amm-info@iis.fraunhofer.de
 #include "../libFDK/common_fix.h"
 #include "../libFDK/FDK_bitstream.h"
 
-#include "../libSYS/FDK_audio.h"
-
 typedef enum { ARITH_CODER_OK = 0, ARITH_CODER_ERROR = 5 } ARITH_CODING_ERROR;
 
 typedef struct {
