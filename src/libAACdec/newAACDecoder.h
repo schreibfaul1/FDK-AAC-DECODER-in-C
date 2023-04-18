@@ -1823,6 +1823,18 @@ AAC_DECODER_ERROR_t CBlock_InverseQuantizeSpectralData(CAacDecoderChannelInfo_t 
 int32_t CPulseData_Read(const HANDLE_FDK_BITSTREAM bs, CPulseData_t *const PulseData, const int16_t *sfb_startlines, const void *pIcsInfo,
                         const int16_t frame_length);
 void    CPulseData_Apply(CPulseData_t *PulseData, const int16_t *pScaleFactorBandOffsets, int32_t *coef);
+uint8_t             rvlcReadBitFromBitstream(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor, int32_t *pPosition, uint8_t readDirection);
+void BidirectionalEstimation_UseLowerScfOfCurrentFrame(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo);
+void BidirectionalEstimation_UseScfOfPrevFrameAsReference(CAacDecoderChannelInfo_t       *pAacDecoderChannelInfo,
+                                                          CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo);
+void StatisticalEstimation(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo);
+void PredictiveInterpolation(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo);
+int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs, CJointStereoData_t *pJointStereoData, const int32_t windowGroups,
+                          const int32_t scaleFactorBandsTransmitted, const int32_t max_sfb_ste_clear,
+                          CJointStereoPersistentData_t *pJointStereoPersistentData, CCplxPredictionData_t *cplxPredictionData,
+                          int32_t cplxPredictionActiv, int32_t scaleFactorBandsTotal, int32_t windowSequence, const uint32_t flags);
+
+
 
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S
@@ -1851,4 +1863,9 @@ static inline int32_t FDKlibInfo_lookup(const LIB_INFO_t* info, FDK_MODULE_ID_t 
     }
     if(i == FDK_MODULE_LAST) return -1;
     return i;
+}
+
+static inline int32_t CLpd_FAC_getLength(int32_t fNotShortBlock, int32_t fac_length_long) {
+    if(fNotShortBlock) { return (fac_length_long); }
+    else { return fac_length_long / 2; }
 }

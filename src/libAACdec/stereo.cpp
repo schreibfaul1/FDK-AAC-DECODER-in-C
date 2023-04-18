@@ -286,49 +286,49 @@ static void CJointStereo_filterAndAdd(
     */
 
     for (i = 0; i < 3; i++) {
-      out[0] -= (int32_t)fMultDiv2(coeff[i], in[indices_1[i]]) >> SR_FNA_OUT;
+      out[0] -= (int32_t)fMultDiv2(coeff[i], in[indices_1[i]]);
       out[0] +=
-          (int32_t)fMultDiv2(coeff[i], in[indices_1[5 - i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[indices_1[5 - i]]);
     }
 
     for (i = 0; i < 3; i++) {
-      out[1] -= (int32_t)fMultDiv2(coeff[i], in[indices_2[i]]) >> SR_FNA_OUT;
+      out[1] -= (int32_t)fMultDiv2(coeff[i], in[indices_2[i]]);
       out[1] +=
-          (int32_t)fMultDiv2(coeff[i], in[indices_2[5 - i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[indices_2[5 - i]]);
     }
 
     for (i = 0; i < 3; i++) {
-      out[2] -= (int32_t)fMultDiv2(coeff[i], in[indices_3[i]]) >> SR_FNA_OUT;
+      out[2] -= (int32_t)fMultDiv2(coeff[i], in[indices_3[i]]);
       out[2] +=
-          (int32_t)fMultDiv2(coeff[i], in[indices_3[5 - i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[indices_3[5 - i]]);
     }
 
     for (j = 3; j < (len - 3); j++) {
       for (i = 0; i < 3; i++) {
-        out[j] -= (int32_t)fMultDiv2(coeff[i], in[j - 3 + i]) >> SR_FNA_OUT;
-        out[j] += (int32_t)fMultDiv2(coeff[i], in[j + 3 - i]) >> SR_FNA_OUT;
+        out[j] -= (int32_t)fMultDiv2(coeff[i], in[j - 3 + i]);
+        out[j] += (int32_t)fMultDiv2(coeff[i], in[j + 3 - i]);
       }
     }
 
     for (i = 0; i < 3; i++) {
       out[len - 3] -=
-          (int32_t)fMultDiv2(coeff[i], in[len - subtr_1[i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_1[i]]);
       out[len - 3] +=
-          (int32_t)fMultDiv2(coeff[i], in[len - subtr_1[5 - i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_1[5 - i]]);
     }
 
     for (i = 0; i < 3; i++) {
       out[len - 2] -=
-          (int32_t)fMultDiv2(coeff[i], in[len - subtr_2[i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_2[i]]);
       out[len - 2] +=
-          (int32_t)fMultDiv2(coeff[i], in[len - subtr_2[5 - i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_2[5 - i]]);
     }
 
     for (i = 0; i < 3; i++) {
       out[len - 1] -=
-          (int32_t)fMultDiv2(coeff[i], in[len - subtr_3[i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_3[i]]);
       out[len - 1] +=
-          (int32_t)fMultDiv2(coeff[i], in[len - subtr_3[5 - i]]) >> SR_FNA_OUT;
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_3[5 - i]]);
     }
 
   } else {
@@ -338,65 +338,65 @@ static void CJointStereo_filterAndAdd(
     */
 
     for (i = 0; i < 3; i++) {
-      out[0] -= (int32_t)fMultDiv2(coeff[i], in[indices_1[i]] >> SR_FNA_OUT);
+      out[0] -= (int32_t)fMultDiv2(coeff[i], in[indices_1[i]]);
       out[0] -=
-          (int32_t)fMultDiv2(coeff[i], in[indices_1[5 - i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[indices_1[5 - i]]);
     }
-    out[0] -= (int32_t)fMultDiv2(coeff[3], in[0] >> SR_FNA_OUT);
+    out[0] -= (int32_t)fMultDiv2(coeff[3], in[0]);
 
     for (i = 0; i < 3; i++) {
-      out[1] += (int32_t)fMultDiv2(coeff[i], in[indices_2[i]] >> SR_FNA_OUT);
+      out[1] += (int32_t)fMultDiv2(coeff[i], in[indices_2[i]]);
       out[1] +=
-          (int32_t)fMultDiv2(coeff[i], in[indices_2[5 - i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[indices_2[5 - i]]);
     }
-    out[1] += (int32_t)fMultDiv2(coeff[3], in[1] >> SR_FNA_OUT);
+    out[1] += (int32_t)fMultDiv2(coeff[3], in[1]);
 
     for (i = 0; i < 3; i++) {
-      out[2] -= (int32_t)fMultDiv2(coeff[i], in[indices_3[i]] >> SR_FNA_OUT);
+      out[2] -= (int32_t)fMultDiv2(coeff[i], in[indices_3[i]]);
       out[2] -=
-          (int32_t)fMultDiv2(coeff[i], in[indices_3[5 - i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[indices_3[5 - i]]);
     }
-    out[2] -= (int32_t)fMultDiv2(coeff[3], in[2] >> SR_FNA_OUT);
+    out[2] -= (int32_t)fMultDiv2(coeff[3], in[2]);
 
     for (j = 3; j < (len - 4); j++) {
       for (i = 0; i < 3; i++) {
-        out[j] += (int32_t)fMultDiv2(coeff[i], in[j - 3 + i] >> SR_FNA_OUT);
-        out[j] += (int32_t)fMultDiv2(coeff[i], in[j + 3 - i] >> SR_FNA_OUT);
+        out[j] += (int32_t)fMultDiv2(coeff[i], in[j - 3 + i]);
+        out[j] += (int32_t)fMultDiv2(coeff[i], in[j + 3 - i]);
       }
-      out[j] += (int32_t)fMultDiv2(coeff[3], in[j] >> SR_FNA_OUT);
+      out[j] += (int32_t)fMultDiv2(coeff[3], in[j]);
 
       j++;
 
       for (i = 0; i < 3; i++) {
-        out[j] -= (int32_t)fMultDiv2(coeff[i], in[j - 3 + i] >> SR_FNA_OUT);
-        out[j] -= (int32_t)fMultDiv2(coeff[i], in[j + 3 - i] >> SR_FNA_OUT);
+        out[j] -= (int32_t)fMultDiv2(coeff[i], in[j - 3 + i]);
+        out[j] -= (int32_t)fMultDiv2(coeff[i], in[j + 3 - i]);
       }
-      out[j] -= (int32_t)fMultDiv2(coeff[3], in[j] >> SR_FNA_OUT);
+      out[j] -= (int32_t)fMultDiv2(coeff[3], in[j]);
     }
 
     for (i = 0; i < 3; i++) {
       out[len - 3] +=
-          (int32_t)fMultDiv2(coeff[i], in[len - subtr_1[i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_1[i]]);
       out[len - 3] +=
-          (int32_t)fMultDiv2(coeff[i], in[len - subtr_1[5 - i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_1[5 - i]]);
     }
-    out[len - 3] += (int32_t)fMultDiv2(coeff[3], in[len - 3] >> SR_FNA_OUT);
+    out[len - 3] += (int32_t)fMultDiv2(coeff[3], in[len - 3]);
 
     for (i = 0; i < 3; i++) {
       out[len - 2] -=
-          (int32_t)fMultDiv2(coeff[i], in[len - subtr_2[i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_2[i]]);
       out[len - 2] -=
-          (int32_t)fMultDiv2(coeff[i], in[len - subtr_2[5 - i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_2[5 - i]]);
     }
-    out[len - 2] -= (int32_t)fMultDiv2(coeff[3], in[len - 2] >> SR_FNA_OUT);
+    out[len - 2] -= (int32_t)fMultDiv2(coeff[3], in[len - 2]);
 
     for (i = 0; i < 3; i++) {
       out[len - 1] +=
-          (int32_t)fMultDiv2(coeff[i], in[len - subtr_3[i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_3[i]]);
       out[len - 1] +=
-          (int32_t)fMultDiv2(coeff[i], in[len - subtr_3[5 - i]] >> SR_FNA_OUT);
+          (int32_t)fMultDiv2(coeff[i], in[len - subtr_3[5 - i]]);
     }
-    out[len - 1] += (int32_t)fMultDiv2(coeff[3], in[len - 1] >> SR_FNA_OUT);
+    out[len - 1] += (int32_t)fMultDiv2(coeff[3], in[len - 1]);
   }
 }
 

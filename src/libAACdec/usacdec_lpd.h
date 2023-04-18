@@ -16,13 +16,7 @@
 
 
 
-static inline int32_t CLpd_FAC_getLength(int32_t fNotShortBlock, int32_t fac_length_long) {
-  if (fNotShortBlock) {
-    return (fac_length_long);
-  } else {
-    return fac_length_long / 2;
-  }
-}
+
 
 void filtLP(const int32_t *syn, int32_t *syn_out, int32_t *noise,
             const int16_t *filt, const int32_t aacOutDataHeadroom, int32_t stop,
