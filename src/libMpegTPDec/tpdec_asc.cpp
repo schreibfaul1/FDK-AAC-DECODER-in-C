@@ -74,14 +74,14 @@ static const SC_CHANNEL_CONFIG sc_chan_config_tab[SC_CHANNEL_CONFIG_TAB_SIZE] = 
     {24, 6, 8, 2} /* 13 */
 };
 
-void CProgramConfig_Reset(CProgramConfig *pPce) { pPce->elCounter = 0; }
+void CProgramConfig_Reset(CProgramConfig_t *pPce) { pPce->elCounter = 0; }
 
-void CProgramConfig_Init(CProgramConfig *pPce) {
-    memset(pPce, 0, sizeof(CProgramConfig));
+void CProgramConfig_Init(CProgramConfig_t *pPce) {
+    memset(pPce, 0, sizeof(CProgramConfig_t));
     pPce->SamplingFrequencyIndex = 0xf;
 }
 
-int32_t CProgramConfig_IsValid(const CProgramConfig *pPce) { return ((pPce->isValid) ? 1 : 0); }
+int32_t CProgramConfig_IsValid(const CProgramConfig_t *pPce) { return ((pPce->isValid) ? 1 : 0); }
 
 #define PCE_HEIGHT_EXT_SYNC (0xAC)
 
@@ -91,7 +91,7 @@ int32_t CProgramConfig_IsValid(const CProgramConfig *pPce) { return ((pPce->isVa
  *       -1 if the CRC failed,
  *       -2 if invalid HeightInfo.
  */
-static int32_t CProgramConfig_ReadHeightExt(CProgramConfig *pPce, HANDLE_FDK_BITSTREAM bs,
+static int32_t CProgramConfig_ReadHeightExt(CProgramConfig_t *pPce, HANDLE_FDK_BITSTREAM bs,
                                             int32_t *const bytesAvailable, const uint32_t alignmentAnchor) {
     int32_t     err = 0;
     FDK_CRCINFO crcInfo; /* CRC state info */
@@ -149,7 +149,7 @@ static int32_t CProgramConfig_ReadHeightExt(CProgramConfig *pPce, HANDLE_FDK_BIT
     return (err);
 }
 
-void CProgramConfig_Read(CProgramConfig *pPce, HANDLE_FDK_BITSTREAM bs, uint32_t alignmentAnchor) {
+void CProgramConfig_Read(CProgramConfig_t *pPce, HANDLE_FDK_BITSTREAM bs, uint32_t alignmentAnchor) {
     int32_t i, err = 0;
     int32_t commentBytes;
 
@@ -239,10 +239,10 @@ void CProgramConfig_Read(CProgramConfig *pPce, HANDLE_FDK_BITSTREAM bs, uint32_t
  *   1 - different but same channel configuration
  *   2 - different channel configuration but same number of channels
  */
-int32_t CProgramConfig_Compare(const CProgramConfig *const pPce1, const CProgramConfig *const pPce2) {
+int32_t CProgramConfig_Compare(const CProgramConfig_t *const pPce1, const CProgramConfig_t *const pPce2) {
     int32_t result = 0; /* Innocent until proven false. */
 
-    if(memcmp(pPce1, pPce2, sizeof(CProgramConfig)) !=
+    if(memcmp(pPce1, pPce2, sizeof(CProgramConfig_t)) !=
        0) { /* Configurations are not completely equal.
                So look into details and analyse the channel configurations: */
         result = -1;
@@ -311,7 +311,7 @@ int32_t CProgramConfig_Compare(const CProgramConfig *const pPce1, const CProgram
     return result;
 }
 
-void CProgramConfig_GetDefault(CProgramConfig *pPce, const uint32_t channelConfig) {
+void CProgramConfig_GetDefault(CProgramConfig_t *pPce, const uint32_t channelConfig) {
     assert(pPce != NULL);
 
     /* Init PCE */
@@ -510,7 +510,7 @@ static void getImplicitAudioChannelTypeAndIndex(AUDIO_CHANNEL_TYPE_t *chType, ui
     }
 }
 
-int32_t CProgramConfig_LookupElement(CProgramConfig *pPce, uint32_t channelConfig, const uint32_t tag,
+int32_t CProgramConfig_LookupElement(CProgramConfig_t *pPce, uint32_t channelConfig, const uint32_t tag,
                                      const uint32_t channelIdx, uint8_t chMapping[], AUDIO_CHANNEL_TYPE_t chType[],
                                      uint8_t chIndex[], const uint32_t chDescrLen, uint8_t *elMapping,
                                      MP4_ELEMENT_ID_t elList[], MP4_ELEMENT_ID_t elType) {
@@ -816,7 +816,7 @@ int32_t CProgramConfig_LookupElement(CProgramConfig *pPce, uint32_t channelConfi
 #define SPEAKER_PLANE_TOP    1
 #define SPEAKER_PLANE_BOTTOM 2
 
-void CProgramConfig_GetChannelDescription(const uint32_t chConfig, const CProgramConfig *pPce,
+void CProgramConfig_GetChannelDescription(const uint32_t chConfig, const CProgramConfig_t *pPce,
                                           AUDIO_CHANNEL_TYPE_t chType[], uint8_t chIndex[]) {
     assert(chType != NULL);
     assert(chIndex != NULL);
@@ -876,7 +876,7 @@ void CProgramConfig_GetChannelDescription(const uint32_t chConfig, const CProgra
     }
 }
 
-int32_t CProgramConfig_GetPceChMap(const CProgramConfig *pPce, uint8_t pceChMap[], const uint32_t pceChMapLen) {
+int32_t CProgramConfig_GetPceChMap(const CProgramConfig_t *pPce, uint8_t pceChMap[], const uint32_t pceChMapLen) {
     const uint8_t *nElements = &pPce->NumFrontChannelElements;
     const uint8_t *elHeight[3], *elIsCpe[3];
     unsigned       chIdx, plane, grp, offset, totCh[3], numCh[3][4];
@@ -942,7 +942,7 @@ int32_t CProgramConfig_GetPceChMap(const CProgramConfig *pPce, uint8_t pceChMap[
     return 0;
 }
 
-int32_t CProgramConfig_GetElementTable(const CProgramConfig *pPce, MP4_ELEMENT_ID_t elList[], const int32_t elListSize,
+int32_t CProgramConfig_GetElementTable(const CProgramConfig_t *pPce, MP4_ELEMENT_ID_t elList[], const int32_t elListSize,
                                        uint8_t *pChMapIdx) {
     int32_t i, el = 0;
 
@@ -983,7 +983,7 @@ int32_t CProgramConfig_GetElementTable(const CProgramConfig *pPce, MP4_ELEMENT_I
         case 4:
         case 5:
         case 6: { /* Test if the number of channels can be used as channel config:             */
-            CProgramConfig tmpPce[1];
+            CProgramConfig_t tmpPce[1];
             /* Create a PCE for the config to test ... */
             CProgramConfig_GetDefault(tmpPce, pPce->NumChannels);
             /* ... and compare it with the given one. */
@@ -992,7 +992,7 @@ int32_t CProgramConfig_GetElementTable(const CProgramConfig *pPce, MP4_ELEMENT_I
              * config 11. */
         } break;
         case 7: {
-            CProgramConfig tmpPce[1];
+            CProgramConfig_t tmpPce[1];
             /* Create a PCE for the config to test ... */
             CProgramConfig_GetDefault(tmpPce, 11);
             /* ... and compare it with the given one. */
@@ -1003,7 +1003,7 @@ int32_t CProgramConfig_GetElementTable(const CProgramConfig *pPce, MP4_ELEMENT_I
         case 8: { /* Try the four possible 7.1ch configurations. One after the
                      other. */
             uint8_t testCfg[4] = {32, 14, 12, 7};
-            CProgramConfig tmpPce[1];
+            CProgramConfig_t tmpPce[1];
             for(i = 0; i < 4; i += 1) {
                 /* Create a PCE for the config to test ... */
                 CProgramConfig_GetDefault(tmpPce, testCfg[i]);
@@ -1054,9 +1054,9 @@ static int32_t getSampleRate(HANDLE_FDK_BITSTREAM bs, uint8_t *index, int32_t nB
     return sampleRate;
 }
 
-static TRANSPORTDEC_ERROR GaSpecificConfig_Parse(CSGaSpecificConfig *self, CSAudioSpecificConfig *asc,
+static TRANSPORTDEC_ERROR_t GaSpecificConfig_Parse(CSGaSpecificConfig *self, CSAudioSpecificConfig *asc,
                                                  HANDLE_FDK_BITSTREAM bs, uint32_t ascStartAnchor) {
-    TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+    TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
 
     self->m_frameLengthFlag = FDKreadBits(bs, 1);
 
@@ -1139,9 +1139,9 @@ bail:
     return error;
 }
 
-static TRANSPORTDEC_ERROR EldSpecificConfig_Parse(CSAudioSpecificConfig *asc, HANDLE_FDK_BITSTREAM hBs,
+static TRANSPORTDEC_ERROR_t EldSpecificConfig_Parse(CSAudioSpecificConfig *asc, HANDLE_FDK_BITSTREAM hBs,
                                                   CSTpCallBacks *cb) {
-    TRANSPORTDEC_ERROR   ErrorStatus = TRANSPORTDEC_OK;
+    TRANSPORTDEC_ERROR_t   ErrorStatus = TRANSPORTDEC_OK;
     CSEldSpecificConfig *esc = &asc->m_sc.m_eldSpecificConfig;
     uint32_t             eldExtType;
     int32_t              eldExtLen, len, cnt, ldSbrLen = 0, eldExtLenSum, numSbrHeader = 0, sbrIndex, eldExtCnt = 0;
@@ -1220,7 +1220,7 @@ static TRANSPORTDEC_ERROR EldSpecificConfig_Parse(CSAudioSpecificConfig *asc, HA
             case ELDEXT_LDSAC:
                 esc->m_useLdQmfTimeAlign = 1;
                 if(cb->cbSsc != NULL) {
-                    ErrorStatus = (TRANSPORTDEC_ERROR)cb->cbSsc(
+                    ErrorStatus = (TRANSPORTDEC_ERROR_t)cb->cbSsc(
                         cb->cbSscData, hBs, asc->m_aot, asc->m_samplingFrequency << esc->m_sbrSamplingRate,
                         asc->m_samplesPerFrame << esc->m_sbrSamplingRate, 1, /* stereoConfigIndex */
                         -1,                                                  /* nTimeSlots: read from bitstream */
@@ -1325,11 +1325,11 @@ static const uint8_t sbrRatioIndex[8] = {0, 0, 2, 3, 1, 0, 0, 0};
   UsacExtElementConfig() q.v. ISO/IEC FDIS 23003-3:2011(E) Table 14
   rsv603daExtElementConfig() q.v. ISO/IEC DIS 23008-3 Table 13
 */
-static TRANSPORTDEC_ERROR extElementConfig(CSUsacExtElementConfig *extElement, HANDLE_FDK_BITSTREAM hBs,
+static TRANSPORTDEC_ERROR_t extElementConfig(CSUsacExtElementConfig_t *extElement, HANDLE_FDK_BITSTREAM hBs,
                                            const CSTpCallBacks *cb, const uint8_t numSignalsInGroup,
                                            const uint32_t coreFrameLength, const int32_t subStreamIndex,
                                            const AUDIO_OBJECT_TYPE_t aot) {
-    TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+    TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
 
     int32_t usacExtElementType = escapedValue(hBs, 4, 8, 16);
 
@@ -1372,7 +1372,7 @@ static TRANSPORTDEC_ERROR extElementConfig(CSUsacExtElementConfig *extElement, H
             break;
         case ID_EXT_ELE_UNI_DRC: {
             if(cb->cbUniDrc != NULL) {
-                ErrorStatus = (TRANSPORTDEC_ERROR)cb->cbUniDrc(cb->cbUniDrcData, hBs, usacExtElementConfigLength,
+                ErrorStatus = (TRANSPORTDEC_ERROR_t)cb->cbUniDrc(cb->cbUniDrcData, hBs, usacExtElementConfigLength,
                                                                0, /* uniDrcConfig */
                                                                subStreamIndex, 0, aot);
                 if(ErrorStatus != TRANSPORTDEC_OK) { return ErrorStatus; }
@@ -1401,8 +1401,8 @@ static TRANSPORTDEC_ERROR extElementConfig(CSUsacExtElementConfig *extElement, H
   UsacConfigExtension() q.v. ISO/IEC FDIS 23003-3:2011(E) Table 15
   rsv603daConfigExtension() q.v. ISO/IEC DIS 23008-3 Table 14
 */
-static TRANSPORTDEC_ERROR configExtension(CSUsacConfig *usc, HANDLE_FDK_BITSTREAM hBs, const CSTpCallBacks *cb) {
-    TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+static TRANSPORTDEC_ERROR_t configExtension(CSUsacConfig *usc, HANDLE_FDK_BITSTREAM hBs, const CSTpCallBacks *cb) {
+    TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
 
     int32_t numConfigExtensions;
     int32_t usacConfigExtType;
@@ -1429,7 +1429,7 @@ static TRANSPORTDEC_ERROR configExtension(CSUsacConfig *usc, HANDLE_FDK_BITSTREA
                 break;
             case ID_CONFIG_EXT_LOUDNESS_INFO: {
                 if(cb->cbUniDrc != NULL) {
-                    ErrorStatus = (TRANSPORTDEC_ERROR)cb->cbUniDrc(cb->cbUniDrcData, hBs, usacConfigExtLength,
+                    ErrorStatus = (TRANSPORTDEC_ERROR_t)cb->cbUniDrc(cb->cbUniDrcData, hBs, usacConfigExtLength,
                                                                    1, /* loudnessInfoSet */
                                                                    0, loudnessInfoSetConfigExtensionPosition, AOT_USAC);
                     if(ErrorStatus != TRANSPORTDEC_OK) { return ErrorStatus; }
@@ -1452,9 +1452,9 @@ static TRANSPORTDEC_ERROR configExtension(CSUsacConfig *usc, HANDLE_FDK_BITSTREA
    rsv603daDecoderConfig() ISO/IEC DIS 23008-3   Table 8
    UsacDecoderConfig()     ISO/IEC FDIS 23003-3  Table 6
   */
-static TRANSPORTDEC_ERROR UsacRsv60DecoderConfig_Parse(CSAudioSpecificConfig *asc, HANDLE_FDK_BITSTREAM hBs,
+static TRANSPORTDEC_ERROR_t UsacRsv60DecoderConfig_Parse(CSAudioSpecificConfig *asc, HANDLE_FDK_BITSTREAM hBs,
                                                        const CSTpCallBacks *cb) {
-    TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+    TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
     CSUsacConfig      *usc = &asc->m_sc.m_usacConfig;
     int32_t            i, numberOfElements;
     int32_t            channelElementIdx = 0; /* index for elements which contain audio channels (sce, cpe, lfe) */
@@ -1640,7 +1640,7 @@ static TRANSPORTDEC_ERROR UsacRsv60DecoderConfig_Parse(CSAudioSpecificConfig *as
 }
 
 /* Mapping of coreSbrFrameLengthIndex defined by Table 70 in ISO/IEC 23003-3 */
-static TRANSPORTDEC_ERROR UsacConfig_SetCoreSbrFrameLengthIndex(CSAudioSpecificConfig *asc,
+static TRANSPORTDEC_ERROR_t UsacConfig_SetCoreSbrFrameLengthIndex(CSAudioSpecificConfig *asc,
                                                                 int32_t                coreSbrFrameLengthIndex) {
     int32_t sbrRatioIndex_val;
 
@@ -1676,9 +1676,9 @@ static TRANSPORTDEC_ERROR UsacConfig_SetCoreSbrFrameLengthIndex(CSAudioSpecificC
     return TRANSPORTDEC_OK;
 }
 
-static TRANSPORTDEC_ERROR UsacConfig_Parse(CSAudioSpecificConfig *asc, HANDLE_FDK_BITSTREAM hBs, CSTpCallBacks *cb) {
+static TRANSPORTDEC_ERROR_t UsacConfig_Parse(CSAudioSpecificConfig *asc, HANDLE_FDK_BITSTREAM hBs, CSTpCallBacks *cb) {
     int32_t            usacSamplingFrequency, channelConfigurationIndex, coreSbrFrameLengthIndex;
-    TRANSPORTDEC_ERROR err = TRANSPORTDEC_OK;
+    TRANSPORTDEC_ERROR_t err = TRANSPORTDEC_OK;
 
     /* Start bit position of usacConfig */
     int32_t nbits = (int32_t)FDKgetValidBits(hBs);
@@ -1727,7 +1727,7 @@ static TRANSPORTDEC_ERROR UsacConfig_Parse(CSAudioSpecificConfig *asc, HANDLE_FD
     return err;
 }
 
-static TRANSPORTDEC_ERROR AudioSpecificConfig_ExtensionParse(CSAudioSpecificConfig *self, HANDLE_FDK_BITSTREAM bs,
+static TRANSPORTDEC_ERROR_t AudioSpecificConfig_ExtensionParse(CSAudioSpecificConfig *self, HANDLE_FDK_BITSTREAM bs,
                                                              CSTpCallBacks *cb) {
     TP_ASC_EXTENSION_ID lastAscExt, ascExtId = ASCEXT_UNKOWN;
     int32_t             bitsAvailable = (int32_t)FDKgetValidBits(bs);
@@ -1832,10 +1832,10 @@ void AudioSpecificConfig_Init(CSAudioSpecificConfig *asc) {
     CProgramConfig_Init(&asc->m_progrConfigElement);
 }
 
-TRANSPORTDEC_ERROR AudioSpecificConfig_Parse(CSAudioSpecificConfig *self, HANDLE_FDK_BITSTREAM bs,
+TRANSPORTDEC_ERROR_t AudioSpecificConfig_Parse(CSAudioSpecificConfig *self, HANDLE_FDK_BITSTREAM bs,
                                              int32_t fExplicitBackwardCompatible, CSTpCallBacks *cb, uint8_t configMode,
                                              uint8_t configChanged, AUDIO_OBJECT_TYPE_t m_aot) {
-    TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+    TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
     uint32_t           ascStartAnchor = FDKgetValidBits(bs);
     int32_t            frameLengthFlag = -1;
 
@@ -1997,11 +1997,11 @@ TRANSPORTDEC_ERROR AudioSpecificConfig_Parse(CSAudioSpecificConfig *self, HANDLE
     return (ErrorStatus);
 }
 
-static TRANSPORTDEC_ERROR Drm_xHEAACDecoderConfig(
+static TRANSPORTDEC_ERROR_t Drm_xHEAACDecoderConfig(
     CSAudioSpecificConfig *asc, HANDLE_FDK_BITSTREAM hBs, int32_t audioMode,
     CSTpCallBacks *cb /* use cb == NULL to signal config check only mode */
 ) {
-    TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+    TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
     CSUsacConfig      *usc = &asc->m_sc.m_usacConfig;
     int32_t            elemIdx = 0;
 
@@ -2088,7 +2088,7 @@ static TRANSPORTDEC_ERROR Drm_xHEAACDecoderConfig(
                         if(usc->m_sbrRatioIndex == 2) samplesPerFrame = (samplesPerFrame * 8) / 3;
                         if(usc->m_sbrRatioIndex == 3) samplesPerFrame <<= 1;
 
-                        ErrorStatus = (TRANSPORTDEC_ERROR)cb->cbSsc(
+                        ErrorStatus = (TRANSPORTDEC_ERROR_t)cb->cbSsc(
                             cb->cbSscData, hBs, AOT_DRM_USAC, /* syntax differs from MPEG Mps212Config() */
                             asc->m_extensionSamplingFrequency, samplesPerFrame,
                             usc->element[elemIdx].m_stereoConfigIndex, usc->m_coreSbrFrameLengthIndex,
@@ -2106,7 +2106,7 @@ static TRANSPORTDEC_ERROR Drm_xHEAACDecoderConfig(
     return ErrorStatus;
 }
 
-TRANSPORTDEC_ERROR Drm_xHEAACStaticConfig(CSAudioSpecificConfig *asc, HANDLE_FDK_BITSTREAM bs, int32_t audioMode,
+TRANSPORTDEC_ERROR_t Drm_xHEAACStaticConfig(CSAudioSpecificConfig *asc, HANDLE_FDK_BITSTREAM bs, int32_t audioMode,
                                           CSTpCallBacks *cb /* use cb == NULL to signal config check only mode */
 ) {
     int32_t coreSbrFrameLengthIndexDrm = FDKreadBits(bs, 2);
@@ -2134,10 +2134,10 @@ const uint8_t mapSr2MPEGIdx[8] = {
     0x03  /* 48.0 kHz */
 };
 
-TRANSPORTDEC_ERROR DrmRawSdcAudioConfig_Parse(CSAudioSpecificConfig *self, HANDLE_FDK_BITSTREAM bs,
+TRANSPORTDEC_ERROR_t DrmRawSdcAudioConfig_Parse(CSAudioSpecificConfig *self, HANDLE_FDK_BITSTREAM bs,
                                               CSTpCallBacks *cb, /* use cb == NULL to signal config check only mode */
                                               uint8_t configMode, uint8_t configChanged) {
-    TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+    TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
 
     AudioSpecificConfig_Init(self);
 

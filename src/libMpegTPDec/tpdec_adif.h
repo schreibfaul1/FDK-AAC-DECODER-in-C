@@ -26,17 +26,17 @@ typedef struct {
 
 /**
  * \brief Parse a ADIF header at the given bitstream and store the parsed data
- * into a given CAdifHeader and CProgramConfig struct
+ * into a given CAdifHeader and CProgramConfig_t struct
  *
  * \param pAdifHeader pointer to a CAdifHeader structure to hold the parsed ADIF
  * header data.
- * \param pPce pointer to a CProgramConfig structure where the last PCE will
+ * \param pPce pointer to a CProgramConfig_t structure where the last PCE will
  * remain.
  *
- * \return TRANSPORTDEC_ERROR error code
+ * \return TRANSPORTDEC_ERROR_t error code
  */
-TRANSPORTDEC_ERROR adifRead_DecodeHeader(CAdifHeader *pAdifHeader,
-                                         CProgramConfig *pPce,
+TRANSPORTDEC_ERROR_t adifRead_DecodeHeader(CAdifHeader *pAdifHeader,
+                                         CProgramConfig_t *pPce,
                                          HANDLE_FDK_BITSTREAM bs);
 
 #endif /* TPDEC_ADIF_H */

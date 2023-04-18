@@ -42,8 +42,8 @@ void adtsRead_CrcEndReg(
   }
 }
 
-TRANSPORTDEC_ERROR adtsRead_CrcCheck(HANDLE_ADTS pAdts) {
-  TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+TRANSPORTDEC_ERROR_t adtsRead_CrcCheck(HANDLE_ADTS pAdts) {
+  TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
   uint16_t crc;
 
   if (pAdts->bs.protection_absent) return TRANSPORTDEC_OK;
@@ -73,7 +73,7 @@ TRANSPORTDEC_ERROR adtsRead_CrcCheck(HANDLE_ADTS pAdts) {
 #define Adts_Length_NumberOfRawDataBlocksInFrame 2
 #define Adts_Length_CrcCheck 16
 
-TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
+TRANSPORTDEC_ERROR_t adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
                                          CSAudioSpecificConfig *pAsc,
                                          HANDLE_FDK_BITSTREAM hBs,
                                          const int32_t ignoreBufferFullness) {
@@ -85,10 +85,10 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
 
   STRUCT_ADTS_BS bs;
 
-  CProgramConfig oldPce;
+  CProgramConfig_t oldPce;
   /* Store the old PCE temporarily. Maybe we'll need it later if we
      have channelConfig=0 and no PCE in this frame. */
-  memcpy(&oldPce, &pAsc->m_progrConfigElement, sizeof(CProgramConfig));
+  memcpy(&oldPce, &pAsc->m_progrConfigElement, sizeof(CProgramConfig_t));
 
   valBits = FDKgetValidBits(hBs) + ADTS_SYNCLENGTH;
 
@@ -224,7 +224,7 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
   if (bs.channel_config == 0) {
     int32_t pceBits = 0;
     uint32_t alignAnchor = FDKgetValidBits(hBs);
-    CProgramConfig tmpPce;
+    CProgramConfig_t tmpPce;
 
     if (FDKreadBits(hBs, 3) == ID_PCE) {
       /* Got luck! Parse the PCE */
@@ -240,25 +240,25 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
             case 0: /* Nothing to do because PCE matches the old one exactly. */
             case 1: /* Channel configuration not changed. Just new metadata. */
               memcpy(&pAsc->m_progrConfigElement, &tmpPce,
-                        sizeof(CProgramConfig));
+                        sizeof(CProgramConfig_t));
               break;
             case 2:  /* The number of channels are identical but not the config
                       */
             case -1: /* The channel configuration is completely different */
             default:
               memcpy(&pAsc->m_progrConfigElement, &oldPce,
-                        sizeof(CProgramConfig));
+                        sizeof(CProgramConfig_t));
               FDKpushBack(hBs, adtsHeaderLength);
               return TRANSPORTDEC_PARSE_ERROR;
           }
         } else {
           memcpy(&pAsc->m_progrConfigElement, &tmpPce,
-                    sizeof(CProgramConfig));
+                    sizeof(CProgramConfig_t));
         }
       } else {
         if (CProgramConfig_IsValid(&oldPce)) {
           memcpy(&pAsc->m_progrConfigElement, &oldPce,
-                    sizeof(CProgramConfig));
+                    sizeof(CProgramConfig_t));
         } else {
           FDKpushBack(hBs, adtsHeaderLength);
           return TRANSPORTDEC_PARSE_ERROR;
@@ -289,7 +289,7 @@ TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
           &&
           (bs.mpeg_id ==
            pAdts->bs.mpeg_id)) { /* Restore previous PCE which is still valid */
-        memcpy(&pAsc->m_progrConfigElement, &oldPce, sizeof(CProgramConfig));
+        memcpy(&pAsc->m_progrConfigElement, &oldPce, sizeof(CProgramConfig_t));
       } else if (bs.mpeg_id == 0) {
         /* If not it seems that we have a implicit channel configuration.
            This mode is not allowed in the context of ISO/IEC 14496-3.

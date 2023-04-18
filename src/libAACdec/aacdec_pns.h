@@ -15,12 +15,4 @@
 
 
 
-
-
-void CPns_UpdateNoiseState(CPnsData_t *pPnsData, int32_t *currentSeed,
-                           int32_t *randomSeed);
-
-void CPns_ResetData(CPnsData_t *pPnsData,
-                    CPnsInterChannelData_t *pPnsInterChannelData);
-
 #endif /* #ifndef AACDEC_PNS_H */

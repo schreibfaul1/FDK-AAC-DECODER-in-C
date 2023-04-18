@@ -150,10 +150,19 @@
 #define IS_MP4_CHANNEL_ELEMENT(elementId) ((elementId) == ID_SCE || (elementId) == ID_CPE || (elementId) == ID_LFE)
 #define IS_USAC_CHANNEL_ELEMENT(elementId)((elementId) == ID_USAC_SCE || (elementId) == ID_USAC_CPE || (elementId) == ID_USAC_LFE)
 
-
-#define FL2FXCONST_SPC FL2FXCONST_DBL
-#define MINVAL_DBL_CONST MINVAL_DBL
-#define MINVAL_SGL_CONST MINVAL_SGL
+#define FL2FXCONST_SPC               FL2FXCONST_DBL
+#define MINVAL_DBL_CONST             MINVAL_DBL
+#define MINVAL_SGL_CONST             MINVAL_SGL
+#define MSB_31_MASK                  0x80000000 /* masks MSB (= Bit 31) in a 32 bit word */
+#define DIMENSION_OF_ESCAPE_CODEBOOK 2          /* for cb >= 11 is dimension 2 */
+#define ESCAPE_CODEBOOK              11
+#define MASK_ESCAPE_PREFIX_UP        0x000F0000
+#define LSB_ESCAPE_PREFIX_UP         16
+#define MASK_ESCAPE_PREFIX_DOWN      0x0000F000
+#define LSB_ESCAPE_PREFIX_DOWN       12
+#define MASK_ESCAPE_WORD             0x00000FFF
+#define MASK_FLAG_A                  0x00200000
+#define MASK_FLAG_B                  0x00100000
 
 #define FL2FXCONST_DBL(val)                                                                            \
     (int32_t)(((val) >= 0) ? ((((double)(val) * (DFRACT_FIX_SCALE) + 0.5) >= (double)(MAXVAL_DBL))     \
@@ -167,6 +176,30 @@
 #define FL2FX_SPC      FL2FX_DBL
 #define FL2FX_SGL(val) ((val) > 0.0f ? (int16_t)((val) * (float)(FRACT_FIX_SCALE) + 0.5f) : (int16_t)((val) * (float)(FRACT_FIX_SCALE)-0.5f))
 #define FL2FX_DBL(val) ((val) > 0.0f ? (int32_t)((val) * (float)(DFRACT_FIX_SCALE) + 0.5f) : (int32_t)((val) * (float)(DFRACT_FIX_SCALE)-0.5f))
+
+/** Macro to identify decode errors. */
+#define TPDEC_DECODE_ERROR_START   1024
+#define TPDEC_DECODE_ERROR_END     1028
+#define TPDEC_IS_DECODE_ERROR(err) (((err >= TPDEC_DECODE_ERROR_START) && (err <= TPDEC_DECODE_ERROR_END)) ? 1 : 0)
+/** Macro to identify fatal errors. */
+#define TPDEC_FATAL_ERROR_START    512
+#define TPDEC_FATAL_ERROR_END      517
+#define TPDEC_IS_FATAL_ERROR(err) (((err >= TPDEC_FATAL_ERROR_START) && (err <= TPDEC_FATAL_ERROR_END)) ? 1 : 0)
+
+#define AAC_DEC_INIT_ERROR_START   8192
+#define AAC_DEC_INIT_ERROR_END     12287
+#define IS_INIT_ERROR(err)       ((((err) >= AAC_DEC_INIT_ERROR_START) && ((err) <= AAC_DEC_INIT_ERROR_END)) ? 1 : 0)
+
+#define AAC_DEC_DECODE_ERROR_START 16384
+#define AAC_DEC_DECODE_ERROR_END   20479
+#define IS_DECODE_ERROR(err)       ((((err) >= AAC_DEC_DECODE_ERROR_START) && ((err) <= AAC_DEC_DECODE_ERROR_END)) ? 1 : 0)
+#define IS_OUTPUT_VALID(err) (((err) == AAC_DEC_OK) || IS_DECODE_ERROR(err))
+
+#define CAPF_TPDEC_ADIF       0x00001000 /**< Flag indicating support for ADIF transport format.        */
+#define CAPF_TPDEC_ADTS       0x00002000 /**< Flag indicating support for ADTS transport format.        */
+#define CAPF_TPDEC_LOAS       0x00004000 /**< Flag indicating support for LOAS transport format.        */
+#define CAPF_TPDEC_LATM       0x00008000 /**< Flag indicating support for LATM transport format.        */
+#define CAPF_TPDEC_RAWPACKETS 0x00010000 /**< Flag indicating support for raw packets transport format. */
 
 #define EXT_ID_BITS                   4         /**< Size in bits of extension payload type tags. */
 #define MAX_DRC_THREADS               ((8) + 1) /* Heavy compression value is handled just like MPEG DRC data */
@@ -313,7 +346,36 @@
 #define FILT(a)                       ((FL2FXCONST_DBL(a)) >> SF_FNA_COEFFS)
 #define AACDEC_DRC_GAIN_SCALING       (11)                                                    /* Scaling of DRC gains */
 #define AACDEC_DRC_GAIN_INIT_VALUE    (FL2FXCONST_DBL(1.0f / (1 << AACDEC_DRC_GAIN_SCALING))) /* Init value for DRC gains */
-#define AACDEC_DRC_DFLT_EXPIRY_FRAMES (0)                                                     /* Default DRC data expiry time in AAC frames   */
+#define AACDEC_DRC_DFLT_EXPIRY_FRAMES (0)
+#define STOP_THIS_STATE               0
+#define BODY_ONLY                     1
+#define BODY_SIGN__BODY               2 /* [stop if no sign]  */
+#define BODY_SIGN__SIGN               3 /* [stop if sign bits decoded]  */
+#define BODY_SIGN_ESC__BODY           4 /* [stop if no sign] */
+#define BODY_SIGN_ESC__SIGN           5 /* [stop if no escape sequence] */
+#define BODY_SIGN_ESC__ESC_PREFIX     6
+#define BODY_SIGN_ESC__ESC_WORD       7 /* [stop if abs(second qsc) != 16] */ /* Default DRC data expiry time in AAC frames   */
+#define TPDEC_SYNCOK                  1
+#define TPDEC_MINIMIZE_DELAY          2
+#define TPDEC_IGNORE_BUFFERFULLNESS   4
+#define TPDEC_EARLY_CONFIG            8
+#define TPDEC_LOST_FRAMES_PENDING     16
+#define TPDEC_CONFIG_FOUND            32
+#define TPDEC_USE_ELEM_SKIPPING       64
+#define TPDEC_FORCE_CONFIG_CHANGE     1
+#define TPDEC_FORCE_CONTENT_CHANGE          2
+#define TPDEC_SKIP_PACKET                   1
+#define PC_FSB_CHANNELS_MAX                 16 /* Front/Side/Back channels */
+#define PC_LFE_CHANNELS_MAX                 4
+#define PC_ASSOCDATA_MAX                    8
+#define PC_CCEL_MAX                         16 /* CC elements */
+#define PC_COMMENTLENGTH                    256
+#define PC_NUM_HEIGHT_LAYER                 3
+#define TP_USAC_MAX_SPEAKERS                (24)
+#define TP_USAC_MAX_EXT_ELEMENTS            ((24))
+#define TP_USAC_MAX_ELEMENTS                ((24) + TP_USAC_MAX_EXT_ELEMENTS)
+#define TP_USAC_MAX_CONFIG_LEN              512 /* next power of two of maximum of escapedValue(hBs, 4, 4, 8) in  AudioPreRoll() (285) */
+#define TPDEC_USAC_NUM_CONFIG_CHANGE_FRAMES (1) /* Number of frames for config change in USAC */
 
 // Audio Object Type definitions.
 typedef enum{
@@ -704,6 +766,39 @@ typedef enum {
     AAC_DEC_TOO_MANY_ANC_ELEMENTS = 0x8003, /*!< More than the allowed number of ancillary data elements should be written to buffer. */
     aac_dec_anc_data_error_end = 0x8FFF
 } AAC_DECODER_ERROR_t;
+
+typedef enum {
+    TRANSPORTDEC_OK = 0,            /*!< All fine. */
+    tpdec_sync_error_start = 0x100, /* Synchronization errors. Wait for new input data and try again. */
+    TRANSPORTDEC_NOT_ENOUGH_BITS,   /*!< Out of bits. Provide more bits and try again. */
+    TRANSPORTDEC_SYNC_ERROR,        /*!< No sync was found or sync got lost. Keep trying. */
+    tpdec_sync_error_end,
+    /* Decode errors. Mostly caused due to bit errors. */
+    tpdec_decode_error_start = 0x400,
+    TRANSPORTDEC_PARSE_ERROR,        /*!< Bitstream data showed inconsistencies (wrong syntax). */
+    TRANSPORTDEC_UNSUPPORTED_FORMAT, /*!< Unsupported format or feature found in the bitstream data. */
+    TRANSPORTDEC_CRC_ERROR,          /*!< CRC error encountered in bitstream data. */
+    tpdec_decode_error_end,
+    /* Fatal errors. Stop immediately on one of these errors! */
+    tpdec_fatal_error_start = 0x200,
+    TRANSPORTDEC_UNKOWN_ERROR,      /*!< An unknown error occured.      */
+    TRANSPORTDEC_INVALID_PARAMETER, /*!< An invalid parameter was passed to a function. */
+    TRANSPORTDEC_NEED_TO_RESTART,   /*!< The decoder needs to be restarted, since the requiered configuration change cannot be performed. */
+    TRANSPORTDEC_TOO_MANY_BITS,     /*!< In case of packet based formats: Supplied number of bits exceed the size of the internal bit buffer. */
+    tpdec_fatal_error_end
+} TRANSPORTDEC_ERROR_t;
+
+typedef enum {
+    TPDEC_PARAM_MINIMIZE_DELAY = 1,    /** Delay minimization strategy. 0: none, 1: discard as many frames as possible. */
+    TPDEC_PARAM_EARLY_CONFIG,          /** Enable early config discovery. */
+    TPDEC_PARAM_IGNORE_BUFFERFULLNESS, /** Ignore buffer fullness. */
+    TPDEC_PARAM_SET_BITRATE,           /** Set average bit rate for bit stream interruption frame misses estimation. */
+    TPDEC_PARAM_RESET,                 /** Reset transport decoder instance status. */
+    TPDEC_PARAM_BURST_PERIOD,          /** Set data reception burst period in mili seconds. */
+    TPDEC_PARAM_TARGETLAYOUT,          /** Set CICP target layout */
+    TPDEC_PARAM_FORCE_CONFIG_CHANGE,   /** Force config change for next received config */
+    TPDEC_PARAM_USE_ELEM_SKIPPING
+} TPDEC_PARAM;
 
 //----------------------------------------------------------------------------------------------------------------------
 /** Generic audio coder configuration structure. */
@@ -1280,8 +1375,6 @@ typedef struct {                                /* sideinfo of RVLC */
 
 typedef CErRvlcInfo_t RVLC_INFO; /* temp */
 
-
-
 /* Common data referenced by all channels */
 typedef struct {
     CAacDecoderDynamicData_t pAacDecoderDynamicData[2];
@@ -1375,6 +1468,186 @@ typedef struct {
     uint8_t Offset;
 } CodeBookDescription_t;
 
+typedef struct {
+    /* PCE bitstream elements: */
+    uint8_t ElementInstanceTag;
+    uint8_t Profile;
+    uint8_t SamplingFrequencyIndex;
+    uint8_t NumFrontChannelElements;
+    uint8_t NumSideChannelElements;
+    uint8_t NumBackChannelElements;
+    uint8_t NumLfeChannelElements;
+    uint8_t NumAssocDataElements;
+    uint8_t NumValidCcElements;
+    uint8_t MonoMixdownPresent;
+    uint8_t MonoMixdownElementNumber;
+    uint8_t StereoMixdownPresent;
+    uint8_t StereoMixdownElementNumber;
+    uint8_t MatrixMixdownIndexPresent;
+    uint8_t MatrixMixdownIndex;
+    uint8_t PseudoSurroundEnable;
+    uint8_t FrontElementIsCpe[PC_FSB_CHANNELS_MAX];
+    uint8_t FrontElementTagSelect[PC_FSB_CHANNELS_MAX];
+    uint8_t FrontElementHeightInfo[PC_FSB_CHANNELS_MAX];
+    uint8_t SideElementIsCpe[PC_FSB_CHANNELS_MAX];
+    uint8_t SideElementTagSelect[PC_FSB_CHANNELS_MAX];
+    uint8_t SideElementHeightInfo[PC_FSB_CHANNELS_MAX];
+    uint8_t BackElementIsCpe[PC_FSB_CHANNELS_MAX];
+    uint8_t BackElementTagSelect[PC_FSB_CHANNELS_MAX];
+    uint8_t BackElementHeightInfo[PC_FSB_CHANNELS_MAX];
+    uint8_t LfeElementTagSelect[PC_LFE_CHANNELS_MAX];
+    uint8_t AssocDataElementTagSelect[PC_ASSOCDATA_MAX];
+    uint8_t CcElementIsIndSw[PC_CCEL_MAX];
+    uint8_t ValidCcElementTagSelect[PC_CCEL_MAX];
+    uint8_t CommentFieldBytes;
+    uint8_t Comment[PC_COMMENTLENGTH];
+    /* Helper variables for administration: */
+    uint8_t isValid;              /*!< Flag showing if PCE has been read successfully. */
+    uint8_t NumChannels;          /*!< Amount of audio channels summing all channel elements including LFEs */
+    uint8_t NumEffectiveChannels; /*!< Amount of audio channels summing only SCEs and CPEs */
+    uint8_t elCounter;
+} CProgramConfig_t;
+
+typedef struct {
+    USAC_EXT_ELEMENT_TYPE_t usacExtElementType;
+    uint16_t                usacExtElementConfigLength;
+    uint16_t                usacExtElementDefaultLength;
+    uint8_t                 usacExtElementPayloadFrag;
+    uint8_t                 usacExtElementHasAudioPreRoll;
+} CSUsacExtElementConfig_t;
+
+typedef struct {
+    MP4_ELEMENT_ID_t       usacElementType;
+    uint8_t                m_noiseFilling;
+    uint8_t                m_harmonicSBR;
+    uint8_t                m_interTes;
+    uint8_t                m_pvc;
+    uint8_t                m_stereoConfigIndex;
+    CSUsacExtElementConfig_t extElement;
+} CSUsacElementConfig;
+
+typedef struct {
+    uint8_t             m_frameLengthFlag;
+    uint8_t             m_coreSbrFrameLengthIndex;
+    uint8_t             m_sbrRatioIndex;
+    uint8_t             m_nUsacChannels; /* number of audio channels signaled in  UsacDecoderConfig() / rsv603daDecoderConfig() */
+    uint8_t             m_channelConfigurationIndex;
+    uint32_t            m_usacNumElements;
+    CSUsacElementConfig element[TP_USAC_MAX_ELEMENTS];
+    uint8_t             numAudioChannels;
+    uint8_t             m_usacConfigExtensionPresent;
+    uint8_t             elementLengthPresent;
+    uint8_t             UsacConfig[TP_USAC_MAX_CONFIG_LEN];
+    uint16_t            UsacConfigBits;
+} CSUsacConfig;
+
+typedef struct {
+    uint8_t  m_frameLengthFlag;
+    uint8_t  m_sbrPresentFlag;
+    uint8_t  m_useLdQmfTimeAlign; /* Use LD-MPS QMF in SBR to achive time alignment */
+    uint8_t  m_sbrSamplingRate;
+    uint8_t  m_sbrCrcFlag;
+    uint32_t m_downscaledSamplingFrequency;
+} CSEldSpecificConfig;
+
+typedef struct {
+    uint32_t m_frameLengthFlag;
+    uint32_t m_dependsOnCoreCoder;
+    uint32_t m_coreCoderDelay;
+    uint32_t m_extensionFlag;
+    uint32_t m_extensionFlag3;
+    uint32_t m_layer;
+    uint32_t m_numOfSubFrame;
+    uint32_t m_layerLength;
+} CSGaSpecificConfig;
+
+typedef struct {
+    /* XYZ Specific Data */
+    union {
+        CSGaSpecificConfig  m_gaSpecificConfig;  /**< General audio specific configuration. */
+        CSEldSpecificConfig m_eldSpecificConfig; /**< ELD specific configuration. */
+        CSUsacConfig        m_usacConfig;        /**< USAC specific configuration               */
+    } m_sc;
+    /* Common ASC parameters */
+    CProgramConfig_t      m_progrConfigElement;              /**< Program configuration. */
+    AUDIO_OBJECT_TYPE_t m_aot;                             /**< Audio Object Type.  */
+    uint32_t            m_samplingFrequency;               /**< Samplerate. */
+    uint32_t            m_samplesPerFrame;                 /**< Amount of samples per frame.   */
+    uint32_t            m_directMapping;                   /**< Document this please !!                         */
+    AUDIO_OBJECT_TYPE_t m_extensionAudioObjectType;        /**< Audio object type */
+    uint32_t            m_extensionSamplingFrequency;      /**< Samplerate            */
+    int8_t              m_channelConfiguration;            /**< Channel configuration index */
+    int8_t              m_epConfig;                        /**< Error protection index                           */
+    int8_t              m_vcb11Flag;                       /**< aacSectionDataResilienceFlag                     */
+    int8_t              m_rvlcFlag;                        /**< aacScalefactorDataResilienceFlag                 */
+    int8_t              m_hcrFlag;                         /**< aacSpectralDataResilienceFlag                    */
+    int8_t              m_sbrPresentFlag;                  /**< Flag indicating the presence of SBR data in the bitstream */
+    int8_t              m_psPresentFlag;                   /**< Flag indicating the presence of parametric stereo data in the bitstream */
+    uint8_t             m_samplingFrequencyIndex;          /**< Samplerate index          */
+    uint8_t             m_extensionSamplingFrequencyIndex; /**< Samplerate index */
+    int8_t              m_extensionChannelConfiguration;   /**< Channel configuration index   */
+    uint8_t             configMode; /**< The flag indicates if the callback shall work in memory allocation mode or in config change detection mode */
+    uint8_t  AacConfigChanged; /**< The flag will be set if at least one aac config parameter has changed that requires a memory reconfiguration */
+    uint8_t  SbrConfigChanged; /**< The flag will be set if at least one sbr config parameter has changed that requires a memory reconfiguration */
+    uint8_t  SacConfigChanged; /**< The flag will be set if at least one sac config  parameter has changed that requires a memory reconfiguration */
+    uint8_t  config[TP_USAC_MAX_CONFIG_LEN]; /**< Configuration stored as bitstream */
+    uint32_t configBits;                     /**< Configuration length in bits */
+} CSAudioSpecificConfig;
+
+typedef struct {
+    int8_t  flushCnt;       /**< Flush frame counter */
+    uint8_t flushStatus;    /**< Flag indicates flush mode: on|off */
+    int8_t  buildUpCnt;     /**< Build up frame counter */
+    uint8_t buildUpStatus;  /**< Flag indicates build up mode: on|off */
+    uint8_t cfgChanged;     /**< Flag indicates that the config changed and the decoder
+                             needs to be initialized again via callback. Make sure
+                             that memory is freed before initialization. */
+    uint8_t contentChanged; /**< Flag indicates that the content changed i.e. a
+                             right truncation occured before */
+    uint8_t forceCfgChange; /**< Flag indicates if config change has to be forced
+                             even if new config is the same */
+} CCtrlCFGChange;
+
+typedef int32_t (*cbUpdateConfig_t)(void *, const CSAudioSpecificConfig *, const uint8_t configMode, uint8_t *configChanged);
+typedef int32_t (*cbFreeMem_t)(void *, const CSAudioSpecificConfig *);
+typedef int32_t (*cbCtrlCFGChange_t)(void *, const CCtrlCFGChange *);
+typedef int32_t (*cbSsc_t)(void *, HANDLE_FDK_BITSTREAM, const AUDIO_OBJECT_TYPE_t coreCodec, const int32_t samplingRate, const int32_t frameSize,
+                           const int32_t stereoConfigIndex, const int32_t coreSbrFrameLengthIndex, const int32_t configBytes,
+                           const uint8_t configMode, uint8_t *configChanged);
+
+typedef int32_t (*cbSbr_t)(void *self, HANDLE_FDK_BITSTREAM hBs, const int32_t sampleRateIn, const int32_t sampleRateOut,
+                           const int32_t samplesPerFrame, const AUDIO_OBJECT_TYPE_t coreCodec, const MP4_ELEMENT_ID_t elementID,
+                           const int32_t elementIndex, const uint8_t harmonicSbr, const uint8_t stereoConfigIndex, const uint8_t configMode,
+                           uint8_t *configChanged, const int32_t downscaleFactor);
+
+typedef int32_t (*cbUsac_t)(void *self, HANDLE_FDK_BITSTREAM hBs);
+
+typedef int32_t (*cbUniDrc_t)(void *self, HANDLE_FDK_BITSTREAM hBs, const int32_t fullPayloadLength, const int32_t payloadType,
+                              const int32_t subStreamIndex, const int32_t payloadStart, const AUDIO_OBJECT_TYPE_t);
+
+typedef struct {
+    cbUpdateConfig_t cbUpdateConfig;   /*!< Function pointer for Config change
+                                          notify callback.  */
+    void *cbUpdateConfigData;          /*!< User data pointer for Config change notify
+                                          callback. */
+    cbFreeMem_t       cbFreeMem;       /*!< Function pointer for free memory callback.  */
+    void             *cbFreeMemData;   /*!< User data pointer for free memory callback. */
+    cbCtrlCFGChange_t cbCtrlCFGChange; /*!< Function pointer for config change
+                                          control callback. */
+    void *cbCtrlCFGChangeData;         /*!< User data pointer for config change control
+                                          callback. */
+    cbSsc_t    cbSsc;                  /*!< Function pointer for SSC parser callback. */
+    void      *cbSscData;              /*!< User data pointer for SSC parser callback. */
+    cbSbr_t    cbSbr;                  /*!< Function pointer for SBR header parser callback. */
+    void      *cbSbrData;              /*!< User data pointer for SBR header parser callback. */
+    cbUsac_t   cbUsac;
+    void      *cbUsacData;
+    cbUniDrc_t cbUniDrc; /*!< Function pointer for uniDrcConfig and
+                            loudnessInfoSet parser callback. */
+    void *cbUniDrcData;  /*!< User data pointer for uniDrcConfig and
+                            loudnessInfoSet parser callback. */
+} CSTpCallBacks;
+
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
 // prototypes
@@ -1446,6 +1719,32 @@ void aacDecoder_drcGetInfo(HANDLE_AAC_DRC self, int8_t *pPresMode, int8_t *pProg
 int32_t applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn, int32_t *pGain, int32_t *pGainPerSample, const int32_t gain_scale,
                                    const uint32_t gain_delay, const uint32_t nSamples, const uint32_t channels, const uint32_t stride,
                                    const uint32_t limiterEnabled);
+uint32_t Hcr_State_BODY_ONLY(HANDLE_FDK_BITSTREAM, void*);
+uint32_t Hcr_State_BODY_SIGN__BODY(HANDLE_FDK_BITSTREAM, void*);
+uint32_t Hcr_State_BODY_SIGN__SIGN(HANDLE_FDK_BITSTREAM, void*);
+uint32_t Hcr_State_BODY_SIGN_ESC__BODY(HANDLE_FDK_BITSTREAM, void*);
+uint32_t Hcr_State_BODY_SIGN_ESC__SIGN(HANDLE_FDK_BITSTREAM, void*);
+uint32_t Hcr_State_BODY_SIGN_ESC__ESC_PREFIX(HANDLE_FDK_BITSTREAM, void*);
+uint32_t Hcr_State_BODY_SIGN_ESC__ESC_WORD(HANDLE_FDK_BITSTREAM, void*);
+void CPns_UpdateNoiseState(CPnsData_t *pPnsData, int32_t *currentSeed, int32_t *randomSeed);
+void CPns_ResetData(CPnsData_t *pPnsData, CPnsInterChannelData_t *pPnsInterChannelData);
+void CProgramConfig_Reset(CProgramConfig_t *pPce);
+void CProgramConfig_Init(CProgramConfig_t *pPce);
+int32_t CProgramConfig_IsValid(const CProgramConfig_t *pPce);
+void CProgramConfig_Read(CProgramConfig_t *pPce, HANDLE_FDK_BITSTREAM bs, uint32_t alignAnchor);
+int32_t CProgramConfig_Compare(const CProgramConfig_t *const pPce1, const CProgramConfig_t *const pPce2);
+void CProgramConfig_GetDefault(CProgramConfig_t *pPce, const uint32_t channelConfig);
+int32_t CProgramConfig_LookupElement(CProgramConfig_t *pPce, uint32_t chConfig, const uint32_t tag, const uint32_t channelIdx, uint8_t chMapping[],
+                                     AUDIO_CHANNEL_TYPE_t chType[], uint8_t chIndex[], const uint32_t chDescrLen, uint8_t *elMapping,
+                                     MP4_ELEMENT_ID_t elList[], MP4_ELEMENT_ID_t elType);
+int32_t CProgramConfig_GetPceChMap(const CProgramConfig_t *pPce, uint8_t pceChMap[], const uint32_t pceChMapLen);
+int32_t CProgramConfig_GetElementTable(const CProgramConfig_t *pPce, MP4_ELEMENT_ID_t table[], const int32_t elListSize, uint8_t *pChMapIdx);
+void CProgramConfig_GetChannelDescription(const uint32_t chConfig, const CProgramConfig_t *pPce, AUDIO_CHANNEL_TYPE_t chType[], uint8_t chIndex[]);
+void AudioSpecificConfig_Init(CSAudioSpecificConfig *pAsc);
+TRANSPORTDEC_ERROR_t AudioSpecificConfig_Parse(CSAudioSpecificConfig *pAsc, HANDLE_FDK_BITSTREAM hBs, int32_t fExplicitBackwardCompatible,
+                                             CSTpCallBacks *cb, uint8_t configMode, uint8_t configChanged, AUDIO_OBJECT_TYPE_t m_aot);
+
+
 
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S

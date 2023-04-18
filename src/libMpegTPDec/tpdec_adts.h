@@ -106,7 +106,7 @@ void adtsRead_CrcEndReg(HANDLE_ADTS pAdts, HANDLE_FDK_BITSTREAM hBs, int32_t reg
  *
  * \return Returns 0 if they are identical otherwise 1
  */
-TRANSPORTDEC_ERROR adtsRead_CrcCheck(HANDLE_ADTS pAdts);
+TRANSPORTDEC_ERROR_t adtsRead_CrcCheck(HANDLE_ADTS pAdts);
 
 /**
  * \brief Check if we have a valid ADTS frame at the current bitbuffer position
@@ -121,7 +121,7 @@ TRANSPORTDEC_ERROR adtsRead_CrcCheck(HANDLE_ADTS pAdts);
  *
  * \return  error status
  */
-TRANSPORTDEC_ERROR adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
+TRANSPORTDEC_ERROR_t adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
                                          CSAudioSpecificConfig *pAsc,
                                          HANDLE_FDK_BITSTREAM bs,
                                          const int32_t ignoreBufferFullness);

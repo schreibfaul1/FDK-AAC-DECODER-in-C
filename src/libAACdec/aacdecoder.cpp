@@ -371,13 +371,13 @@ static AAC_DECODER_ERROR_t CDataStreamElement_Read(HANDLE_AACDECODER self, HANDL
   \return  PCE status (-1: fail, 0: no new PCE, 1: PCE updated, 2: PCE updated
   need re-config).
 */
-static int32_t CProgramConfigElement_Read(HANDLE_FDK_BITSTREAM bs, HANDLE_TRANSPORTDEC pTp, CProgramConfig *pce,
+static int32_t CProgramConfigElement_Read(HANDLE_FDK_BITSTREAM bs, HANDLE_TRANSPORTDEC pTp, CProgramConfig_t *pce,
 									  const uint32_t channelConfig, const uint32_t alignAnchor) {
 	int32_t pceStatus = 0;
 	int32_t crcReg;
 
 	/* read PCE to temporal buffer first */
-	CProgramConfig tmpPce[1];
+	CProgramConfig_t tmpPce[1];
 	CProgramConfig_Init(tmpPce);
 
 	crcReg = transportDec_CrcStartReg(pTp, 0);
@@ -396,7 +396,7 @@ static int32_t CProgramConfigElement_Read(HANDLE_FDK_BITSTREAM bs, HANDLE_TRANSP
 			/* Compare the new and the old PCE (tags ignored) */
 			switch(CProgramConfig_Compare(pce, tmpPce)) {
 				case 1: /* Channel configuration not changed. Just new metadata. */
-					memcpy(pce, tmpPce, sizeof(CProgramConfig)); /* Store the complete PCE */
+					memcpy(pce, tmpPce, sizeof(CProgramConfig_t)); /* Store the complete PCE */
 					pceStatus = 1;                                  /* New PCE but no change of config */
 					break;
 				case 2:             /* The number of channels are identical but not the config */
@@ -572,7 +572,7 @@ AAC_DECODER_ERROR_t CAacDecoder_PreRollExtensionPayloadParse(HANDLE_AACDECODER s
 			/* DASH IPF USAC Config Change: Read new config and compare with current
 			 * config. Apply reconfiguration if config's are different. */
 			for(i = 0; i < configLength; i++) { config[i] = FDKreadBits(hBs, 8); }
-			TRANSPORTDEC_ERROR terr;
+			TRANSPORTDEC_ERROR_t terr;
 			terr = transportDec_InBandConfig(self->hInput, config, configLength, self->buildUpStatus, &configChanged, 0,
 											 &implicitExplicitCfgDiff);
 			if(terr != TRANSPORTDEC_OK) {
@@ -1348,7 +1348,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, uint8
 		   channel_config (on a temporal buffer) to find out wheter we can keep it
 		   (and its metadata) or not. */
 		int32_t pceCmpResult;
-		CProgramConfig tmpPce[1];
+		CProgramConfig_t tmpPce[1];
 		CProgramConfig_GetDefault(tmpPce, asc->m_channelConfiguration);
 		pceCmpResult = CProgramConfig_Compare(&self->pce, tmpPce);
 		if((pceCmpResult < 0)       /* Reset if PCEs are completely different ... */
@@ -1374,7 +1374,7 @@ CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, uint8
 							int32_t el_tmp;
 							/* valid number of channels -> copy program config element (PCE)
 							 * from ASC */
-							memcpy(&self->pce, &asc->m_progrConfigElement, sizeof(CProgramConfig));
+							memcpy(&self->pce, &asc->m_progrConfigElement, sizeof(CProgramConfig_t));
 							/* Built element table */
 							el_tmp = CProgramConfig_GetElementTable(&asc->m_progrConfigElement, self->elements,
 																	(((8)) + (8)), &self->chMapIndex);
@@ -2063,7 +2063,7 @@ AAC_DECODER_ERROR_t CAacDecoder_DecodeFrame(HANDLE_AACDECODER self, const uint32
 										  const int32_t timeDataSize, const int32_t timeDataChannelOffset) {
 	AAC_DECODER_ERROR_t ErrorStatus = AAC_DEC_OK;
 
-	CProgramConfig      *pce;
+	CProgramConfig_t      *pce;
 	HANDLE_FDK_BITSTREAM bs = transportDec_GetBitstream(self->hInput, 0);
 
 	MP4_ELEMENT_ID_t type = ID_NONE;  /* Current element type */

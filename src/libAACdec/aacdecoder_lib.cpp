@@ -90,7 +90,7 @@ static AAC_DECODER_ERROR_t aacDecoder_Config(HANDLE_AACDECODER self, const CSAud
 
 AAC_DECODER_ERROR_t aacDecoder_ConfigRaw(HANDLE_AACDECODER self, uint8_t *conf[], const uint32_t length[]) {
 	AAC_DECODER_ERROR_t  err = AAC_DEC_OK;
-	TRANSPORTDEC_ERROR errTp;
+	TRANSPORTDEC_ERROR_t errTp;
 	uint32_t               layer, nrOfLayers = self->nrOfLayers;
 
 	for(layer = 0; layer < nrOfLayers; layer++) {
@@ -163,7 +163,7 @@ static int32_t aacDecoder_ConfigCallback(void *handle, const CSAudioSpecificConf
 									 uint8_t *configChanged) {
 	HANDLE_AACDECODER  self = (HANDLE_AACDECODER)handle;
 	AAC_DECODER_ERROR_t  err = AAC_DEC_OK;
-	TRANSPORTDEC_ERROR errTp;
+	TRANSPORTDEC_ERROR_t errTp;
 
 	assert(self != NULL);
 	{
@@ -199,7 +199,7 @@ static int32_t aacDecoder_ConfigCallback(void *handle, const CSAudioSpecificConf
 }
 
 static int32_t aacDecoder_FreeMemCallback(void *handle, const CSAudioSpecificConfig *pAscStruct) {
-	TRANSPORTDEC_ERROR errTp = TRANSPORTDEC_OK;
+	TRANSPORTDEC_ERROR_t errTp = TRANSPORTDEC_OK;
 	HANDLE_AACDECODER  self = (HANDLE_AACDECODER)handle;
 
 	const int32_t subStreamIndex = 0;
@@ -228,7 +228,7 @@ static int32_t aacDecoder_FreeMemCallback(void *handle, const CSAudioSpecificCon
 }
 
 static int32_t aacDecoder_CtrlCFGChangeCallback(void *handle, const CCtrlCFGChange *pCtrlCFGChangeStruct) {
-	TRANSPORTDEC_ERROR errTp = TRANSPORTDEC_OK;
+	TRANSPORTDEC_ERROR_t errTp = TRANSPORTDEC_OK;
 	HANDLE_AACDECODER  self = (HANDLE_AACDECODER)handle;
 
 	if(self != NULL) {
@@ -259,7 +259,7 @@ static int32_t aacDecoder_SscCallback(void *handle, HANDLE_FDK_BITSTREAM hBs, co
 								  const int32_t coreSbrFrameLengthIndex, const int32_t configBytes, const uint8_t configMode,
 								  uint8_t *configChanged) {
 	SACDEC_ERROR       err;
-	TRANSPORTDEC_ERROR errTp;
+	TRANSPORTDEC_ERROR_t errTp;
 	HANDLE_AACDECODER  hAacDecoder = (HANDLE_AACDECODER)handle;
 
 	err = mpegSurroundDecoder_Config((CMpegSurroundDecoder *)hAacDecoder->pMpegSurroundDecoder, hBs, coreCodec,
@@ -300,7 +300,7 @@ static int32_t aacDecoder_UniDrcCallback(void *handle, HANDLE_FDK_BITSTREAM hBs,
 									 const int32_t payloadType, const int32_t subStreamIndex, const int32_t payloadStart,
 									 const AUDIO_OBJECT_TYPE_t aot) {
 	DRC_DEC_ERROR      err = DRC_DEC_OK;
-	TRANSPORTDEC_ERROR errTp;
+	TRANSPORTDEC_ERROR_t errTp;
 	HANDLE_AACDECODER  hAacDecoder = (HANDLE_AACDECODER)handle;
 	DRC_DEC_CODEC_MODE drcDecCodecMode = DRC_DEC_CODEC_MODE_UNDEFINED;
 
@@ -511,7 +511,7 @@ AAC_DECODER_ERROR_t aacDecoder_SetParam(const HANDLE_AACDECODER self,  /*!< Hand
 {
 	AAC_DECODER_ERROR_t   errorStatus = AAC_DEC_OK;
 	HANDLE_TRANSPORTDEC hTpDec = NULL;
-	TRANSPORTDEC_ERROR  errTp = TRANSPORTDEC_OK;
+	TRANSPORTDEC_ERROR_t  errTp = TRANSPORTDEC_OK;
 	HANDLE_AAC_DRC      hDrcInfo = NULL;
 	HANDLE_PCM_DOWNMIX  hPcmDmx = NULL;
 	PCMDMX_ERROR        dmxErr = PCMDMX_OK;
@@ -855,7 +855,7 @@ bail:
 }
 
 AAC_DECODER_ERROR_t aacDecoder_Fill(HANDLE_AACDECODER self, uint8_t *pBuffer, const uint32_t bufferSize, uint32_t *pBytesValid) {
-	TRANSPORTDEC_ERROR tpErr;
+	TRANSPORTDEC_ERROR_t tpErr;
 	/* loop counter for layers; if not TT_MP4_RAWPACKETS used as index for only
 	   available layer */
 	int32_t layer = 0;
@@ -968,7 +968,7 @@ AAC_DECODER_ERROR_t aacDecoder_DecodeFrame(HANDLE_AACDECODER self, int16_t *pTim
 	if(!((flags & (AACDEC_CONCEAL | AACDEC_FLUSH)) || (self->flushStatus == AACDEC_RSV60_DASH_IPF_ATSC_FLUSH_ON) ||
 		 (self->flushStatus == AACDEC_USAC_DASH_IPF_FLUSH_ON) ||
 		 (self->buildUpStatus == AACDEC_RSV60_BUILD_UP_IDLE_IN_BAND))) {
-		TRANSPORTDEC_ERROR err;
+		TRANSPORTDEC_ERROR_t err;
 
 		for(layer = 0; layer < self->nrOfLayers; layer++) {
 			err = transportDec_ReadAccessUnit(self->hInput, layer);
@@ -1117,7 +1117,7 @@ AAC_DECODER_ERROR_t aacDecoder_DecodeFrame(HANDLE_AACDECODER self, int16_t *pTim
 		{
 			if(!((flags & (AACDEC_CONCEAL | AACDEC_FLUSH)) || fTpConceal || self->flushStatus) &&
 			   (!(IS_OUTPUT_VALID(ErrorStatus)) || !(accessUnit < numPrerollAU))) {
-				TRANSPORTDEC_ERROR tpErr;
+				TRANSPORTDEC_ERROR_t tpErr;
 				tpErr = transportDec_EndAccessUnit(self->hInput);
 				if(tpErr != TRANSPORTDEC_OK) { self->frameOK = 0; }
 			}

@@ -59,5 +59,6 @@ extern const uint8_t channelMappingTableWAV[15][8];
 extern const MP4_ELEMENT_ID_t elementsTab[AACDEC_MAX_CH_CONF] [AACDEC_CH_ELEMENTS_TAB_SIZE];
 extern const int32_t mdst_filt_coef_curr[20][3]; /* MDST-filter coefficient tables used for current window  */
 extern const int32_t mdst_filt_coef_prev[6][4];  /* MDST-filter coefficient tables used for previous window */
+extern void DecodeNonPCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO hHcr);
 
 #endif /* #ifndef AAC_ROM_H */

@@ -12,11 +12,11 @@
 #include "../libFDK/FDK_bitstream.h"
 
 
-TRANSPORTDEC_ERROR adifRead_DecodeHeader(CAdifHeader *pAdifHeader,
-                                         CProgramConfig *pPce,
+TRANSPORTDEC_ERROR_t adifRead_DecodeHeader(CAdifHeader *pAdifHeader,
+                                         CProgramConfig_t *pPce,
                                          HANDLE_FDK_BITSTREAM bs) {
   int32_t i;
-  TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+  TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
   uint32_t startAnchor = FDKgetValidBits(bs);
 
   if ((int32_t)startAnchor < MIN_ADIF_HEADERLENGTH) {

@@ -31,11 +31,11 @@ static uint32_t CLatmDemux_GetValue(HANDLE_FDK_BITSTREAM bs) {
   return value;
 }
 
-static TRANSPORTDEC_ERROR CLatmDemux_ReadAudioMuxElement(
+static TRANSPORTDEC_ERROR_t CLatmDemux_ReadAudioMuxElement(
     HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux, int32_t m_muxConfigPresent,
     CSTpCallBacks *pTpDecCallbacks, CSAudioSpecificConfig *pAsc,
     int32_t *pfConfigFound) {
-  TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+  TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
 
   if (m_muxConfigPresent) {
     pLatmDemux->m_useSameStreamMux = FDKreadBits(bs, 1);
@@ -143,7 +143,7 @@ bail:
   return (ErrorStatus);
 }
 
-TRANSPORTDEC_ERROR CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
+TRANSPORTDEC_ERROR_t CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
                                    CLatmDemux *pLatmDemux, TRANSPORT_TYPE_t tt,
                                    CSTpCallBacks *pTpDecCallbacks,
                                    CSAudioSpecificConfig *pAsc,
@@ -152,7 +152,7 @@ TRANSPORTDEC_ERROR CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
   uint32_t cntBits;
   uint32_t cmpBufferFullness;
   uint32_t audioMuxLengthBytesLast = 0;
-  TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+  TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
 
   cntBits = FDKgetValidBits(bs);
 
@@ -190,7 +190,7 @@ TRANSPORTDEC_ERROR CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
   return (ErrorStatus);
 }
 
-TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
+TRANSPORTDEC_ERROR_t CLatmDemux_ReadStreamMuxConfig(
     HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux,
     CSTpCallBacks *pTpDecCallbacks, CSAudioSpecificConfig *pAsc,
     int32_t *pfConfigFound, uint8_t configMode, uint8_t configChanged) {
@@ -200,7 +200,7 @@ TRANSPORTDEC_ERROR CLatmDemux_ReadStreamMuxConfig(
   pAscDummy = &ascDummy;
   pLatmDemux->usacExplicitCfgChanged = 0;
   LATM_LAYER_INFO *p_linfo = NULL;
-  TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+  TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
   uint8_t updateConfig[1 * 1] = {0};
 
   pLatmDemux->m_AudioMuxVersion = FDKreadBits(bs, 1);
@@ -501,9 +501,9 @@ bail:
   return (ErrorStatus);
 }
 
-TRANSPORTDEC_ERROR CLatmDemux_ReadPayloadLengthInfo(HANDLE_FDK_BITSTREAM bs,
+TRANSPORTDEC_ERROR_t CLatmDemux_ReadPayloadLengthInfo(HANDLE_FDK_BITSTREAM bs,
                                                     CLatmDemux *pLatmDemux) {
-  TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+  TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
   int32_t totalPayloadBits = 0;
 
   if (pLatmDemux->m_allStreamsSameTimeFraming == 1) {

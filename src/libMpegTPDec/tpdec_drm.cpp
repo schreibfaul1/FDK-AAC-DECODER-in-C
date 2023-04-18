@@ -43,8 +43,8 @@ void drmRead_CrcEndReg(
   FDKcrcEndReg(&pDrm->crcInfo, hBs, reg);
 }
 
-TRANSPORTDEC_ERROR drmRead_CrcCheck(HANDLE_DRM pDrm) {
-  TRANSPORTDEC_ERROR ErrorStatus = TRANSPORTDEC_OK;
+TRANSPORTDEC_ERROR_t drmRead_CrcCheck(HANDLE_DRM pDrm) {
+  TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
   uint16_t crc;
 
   crc = FDKcrcGetCRC(&pDrm->crcInfo) ^ 0xFF;

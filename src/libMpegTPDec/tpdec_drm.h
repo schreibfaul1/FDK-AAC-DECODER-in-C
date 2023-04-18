@@ -68,7 +68,7 @@ void drmRead_CrcEndReg(HANDLE_DRM pDrm, HANDLE_FDK_BITSTREAM hBs, int32_t reg);
  *
  * \return Returns 0 if they are identical otherwise 1
  */
-TRANSPORTDEC_ERROR drmRead_CrcCheck(HANDLE_DRM pDrm);
+TRANSPORTDEC_ERROR_t drmRead_CrcCheck(HANDLE_DRM pDrm);
 
 /**
  * \brief Check if we have a valid DRM frame at the current bitbuffer position
@@ -83,7 +83,7 @@ TRANSPORTDEC_ERROR drmRead_CrcCheck(HANDLE_DRM pDrm);
  *
  * \return  error status
  */
-TRANSPORTDEC_ERROR drmRead_DecodeHeader(HANDLE_DRM pDrm,
+TRANSPORTDEC_ERROR_t drmRead_DecodeHeader(HANDLE_DRM pDrm,
                                         HANDLE_FDK_BITSTREAM bs);
 
 /**
@@ -101,7 +101,7 @@ TRANSPORTDEC_ERROR drmRead_DecodeHeader(HANDLE_DRM pDrm,
  *
  * \return  Total element count including all SCE, CPE and LFE.
  */
-TRANSPORTDEC_ERROR DrmRawSdcAudioConfig_Parse(CSAudioSpecificConfig *pAsc,
+TRANSPORTDEC_ERROR_t DrmRawSdcAudioConfig_Parse(CSAudioSpecificConfig *pAsc,
                                               HANDLE_FDK_BITSTREAM hBs,
                                               CSTpCallBacks *cb,
                                               const uint8_t configMode,

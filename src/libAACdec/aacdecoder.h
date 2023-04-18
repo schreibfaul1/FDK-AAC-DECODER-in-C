@@ -165,7 +165,7 @@ struct AAC_DECODER_INSTANCE {
   uint8_t              chMapping[((8) * 2)];    /*!< Table of MPEG canonical order to bitstream channel order mapping. */
   uint8_t              elTags[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) + 1)]; /*!< Table where the elements id Tags are listed      */
   uint8_t              usacStereoConfigIndex[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) + 1)];
-  CProgramConfig       pce;
+  CProgramConfig_t       pce;
 };
 
 #define AAC_DEBUG_EXTHLP \
