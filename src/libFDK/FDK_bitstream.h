@@ -105,7 +105,7 @@ amm-info@iis.fraunhofer.de
 #include <stdlib.h>
 #include <assert.h>
 #include "../libAACdec/newAACDecoder.h"
-#include "FDK_bitbuffer.h"
+
 
 
 

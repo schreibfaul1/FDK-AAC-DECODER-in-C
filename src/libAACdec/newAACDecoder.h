@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stddef.h>
-#include "newAACDecoder.h"
+#include "lookup.h"
 
 #define WAV_BITS               16
 #define SAMPLE_BITS            16
@@ -276,6 +276,7 @@
 #define CLR_BIT_10                   0x3FF
 #define TEST_BIT_10                  0x400
 #define LEFT_OFFSET                  12
+#define MAX_BUFSIZE_BYTES            (0x10000000)
 
 // Audio Object Type definitions.
 typedef enum{
@@ -1340,6 +1341,22 @@ AAC_DECODER_ERROR_t CLpd_RenderTimeSignal(CAacDecoderStaticChannelInfo_t *pAacDe
                                           CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, int32_t *pTimeData, int32_t samplesPerFrame,
                                           SamplingRateInfo_t *pSamplingRateInfo, uint32_t frameOk, const int32_t aacOutDataHeadroom, uint32_t flags,
                                           uint32_t strmFlags);
+void FDK_CreateBitBuffer(HANDLE_FDK_BITBUF *hBitBuffer, uint8_t *pBuffer, uint32_t bufSize);
+void FDK_InitBitBuffer(HANDLE_FDK_BITBUF hBitBuffer, uint8_t *pBuffer, uint32_t bufSize, uint32_t validBits);
+void FDK_ResetBitBuffer(HANDLE_FDK_BITBUF hBitBuffer);
+void FDK_DeleteBitBuffer(HANDLE_FDK_BITBUF hBitBuffer);
+int32_t FDK_get(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits);
+int32_t FDK_get32(HANDLE_FDK_BITBUF hBitBuf);
+void FDK_put(HANDLE_FDK_BITBUF hBitBuffer, uint32_t value, const uint32_t numberOfBits);
+int32_t FDK_getBwd(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits);
+void FDK_putBwd(HANDLE_FDK_BITBUF hBitBuffer, uint32_t value, const uint32_t numberOfBits);
+void FDK_pushBack(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits, uint8_t config);
+void FDK_pushForward(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits,  uint8_t config);
+uint32_t FDK_getValidBits(HANDLE_FDK_BITBUF hBitBuffer);
+int32_t FDK_getFreeBits(HANDLE_FDK_BITBUF hBitBuffer);
+void FDK_Feed(HANDLE_FDK_BITBUF hBitBuffer, const uint8_t inputBuffer[], const uint32_t bufferSize, uint32_t *bytesValid);
+void FDK_Copy(HANDLE_FDK_BITBUF hBitBufDst, HANDLE_FDK_BITBUF hBitBufSrc, uint32_t *bytesValid);
+void FDK_Fetch(HANDLE_FDK_BITBUF hBitBuffer, uint8_t outBuf[], uint32_t *writeBytes);
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S
 //----------------------------------------------------------------------------------------------------------------------

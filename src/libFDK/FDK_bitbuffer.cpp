@@ -11,18 +11,11 @@
 #include <memory.h>
 #include "../libAACdec/newAACDecoder.h"
 #include <stdint.h>
-#include "FDK_bitbuffer.h"
+
 
 #include "common_fix.h"
 #include "fixminmax.h"
 
-const uint32_t BitMask[32 + 1] = {
-    0x0,        0x1,        0x3,       0x7,       0xf,       0x1f,
-    0x3f,       0x7f,       0xff,      0x1ff,     0x3ff,     0x7ff,
-    0xfff,      0x1fff,     0x3fff,    0x7fff,    0xffff,    0x1ffff,
-    0x3ffff,    0x7ffff,    0xfffff,   0x1fffff,  0x3fffff,  0x7fffff,
-    0xffffff,   0x1ffffff,  0x3ffffff, 0x7ffffff, 0xfffffff, 0x1fffffff,
-    0x3fffffff, 0x7fffffff, 0xffffffff};
 
 void FDK_CreateBitBuffer(HANDLE_FDK_BITBUF *hBitBuf, uint8_t *pBuffer,
                          uint32_t bufSize) {

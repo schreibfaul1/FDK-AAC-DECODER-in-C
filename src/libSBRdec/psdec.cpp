@@ -16,7 +16,6 @@
 #include <memory.h>
 #include "../libAACdec/newAACDecoder.h"
 #include "psdec.h"
-#include "../libFDK/FDK_bitbuffer.h"
 #include "../libFDK/FDK_tools_rom.h"
 #include "../libFDK/FDK_trigFcts.h"
 
