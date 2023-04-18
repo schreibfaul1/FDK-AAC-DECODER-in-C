@@ -57,7 +57,7 @@ extern const int32_t offsetTab[2][16];
 extern const uint8_t channelMappingTablePassthrough[15][8];
 extern const uint8_t channelMappingTableWAV[15][8];
 extern const MP4_ELEMENT_ID_t elementsTab[AACDEC_MAX_CH_CONF] [AACDEC_CH_ELEMENTS_TAB_SIZE];
-extern const FIXP_FILT mdst_filt_coef_curr[20][3]; /* MDST-filter coefficient tables used for current window  */
-extern const FIXP_FILT mdst_filt_coef_prev[6][4];  /* MDST-filter coefficient tables used for previous window */
+extern const int32_t mdst_filt_coef_curr[20][3]; /* MDST-filter coefficient tables used for current window  */
+extern const int32_t mdst_filt_coef_prev[6][4];  /* MDST-filter coefficient tables used for previous window */
 
 #endif /* #ifndef AAC_ROM_H */

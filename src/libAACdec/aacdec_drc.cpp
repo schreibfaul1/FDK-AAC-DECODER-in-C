@@ -147,7 +147,7 @@ void aacDecoder_drcInitChannelData(CDrcChannelData_t *pDrcChData) {
   \return an error code.
 */
 AAC_DECODER_ERROR_t aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
-                                         AACDEC_DRC_PARAM param, int32_t value) {
+                                         AACDEC_DRC_PARAM_t param, int32_t value) {
   AAC_DECODER_ERROR_t ErrorStatus = AAC_DEC_OK;
 
   switch (param) {
@@ -215,7 +215,7 @@ AAC_DECODER_ERROR_t aacDecoder_drcSetParam(HANDLE_AAC_DRC self,
         return AAC_DEC_INVALID_HANDLE;
       }
       self->params.defaultPresentationMode =
-          (AACDEC_DRC_PARAMETER_HANDLING_t)value;
+          (AACDEC_DRC_PARAM_tETER_HANDLING_t)value;
       self->update = 1;
       break;
     case ENCODER_TARGET_LEVEL:
@@ -300,7 +300,7 @@ static int32_t parseExcludedChannels(uint32_t *excludedChnsMask,
   \return The number of DRC payload bits
 */
 int32_t aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM bs,
-                              AACDEC_DRC_PAYLOAD_TYPE type) {
+                              AACDEC_DRC_PAYLOAD_TYPE_t type) {
   uint32_t bsStartPos;
   int32_t i, numBands = 1, bitCnt = 0;
 
@@ -652,7 +652,7 @@ static int32_t aacDecoder_drcExtractAndMap(
     CDrcPayload_t *pThreadBs = &threadBs[thread];
     int32_t numExclChns = 0;
 
-    switch ((AACDEC_DRC_PAYLOAD_TYPE)pThreadBs->channelData.drcDataType) {
+    switch ((AACDEC_DRC_PAYLOAD_TYPE_t)pThreadBs->channelData.drcDataType) {
       default:
         continue;
       case MPEG_DRC_EXT_DATA:
@@ -685,8 +685,8 @@ static int32_t aacDecoder_drcExtractAndMap(
   for (thread = 0; thread < validThreads; thread++) {
     CDrcPayload_t *pThreadBs = validThreadBs[thread];
     int32_t exclMask = pThreadBs->excludedChnsMask;
-    AACDEC_DRC_PAYLOAD_TYPE drcPayloadType =
-        (AACDEC_DRC_PAYLOAD_TYPE)pThreadBs->channelData.drcDataType;
+    AACDEC_DRC_PAYLOAD_TYPE_t drcPayloadType =
+        (AACDEC_DRC_PAYLOAD_TYPE_t)pThreadBs->channelData.drcDataType;
     int32_t ch;
 
     /* last progRefLevel transmitted is the one that is used
@@ -705,7 +705,7 @@ static int32_t aacDecoder_drcExtractAndMap(
 
     /* SCE, CPE and LFE */
     for (ch = 0; ch < validChannels; ch++) {
-      AACDEC_DRC_PAYLOAD_TYPE prvPayloadType = UNKNOWN_PAYLOAD;
+      AACDEC_DRC_PAYLOAD_TYPE_t prvPayloadType = UNKNOWN_PAYLOAD;
       int32_t mapedChannel = channelMapping[ch];
 
       if ((mapedChannel >= validChannels) ||
@@ -716,7 +716,7 @@ static int32_t aacDecoder_drcExtractAndMap(
           (pAacDecoderStaticChannelInfo[ch]->drcData.expiryCount <
            pParams->expiryFrame)) {
         prvPayloadType =
-            (AACDEC_DRC_PAYLOAD_TYPE)pAacDecoderStaticChannelInfo[ch]
+            (AACDEC_DRC_PAYLOAD_TYPE_t)pAacDecoderStaticChannelInfo[ch]
                 ->drcData.drcDataType;
       }
       if (((drcPayloadType == MPEG_DRC_EXT_DATA) &&
@@ -834,7 +834,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
     fact_exponent[band] = 1;
 
     if ((pParams->applyHeavyCompression == ON) &&
-        ((AACDEC_DRC_PAYLOAD_TYPE)pDrcChData->drcDataType ==
+        ((AACDEC_DRC_PAYLOAD_TYPE_t)pDrcChData->drcDataType ==
          DVB_DRC_ANC_DATA)) {
       int32_t compressionFactorVal_e;
       int32_t valX, valY;
@@ -857,7 +857,7 @@ void aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec,
         fact_exponent[band] =
             DVB_COMPRESSION_SCALE - valX + compressionFactorVal_e;
       }
-    } else if ((AACDEC_DRC_PAYLOAD_TYPE)pDrcChData->drcDataType ==
+    } else if ((AACDEC_DRC_PAYLOAD_TYPE_t)pDrcChData->drcDataType ==
                MPEG_DRC_EXT_DATA) {
       /* apply the scaled dynamic range control words to factor.
        * if scaling drc_cut (or drc_boost), or control word drc_mantissa is 0
@@ -990,7 +990,7 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
                                             int8_t prevDrcPresMode) {
   int32_t isDownmix, isMonoDownmix, isStereoDownmix;
   int32_t dDmx, dHr;
-  AACDEC_DRC_PARAMETER_HANDLING_t drcParameterHandling;
+  AACDEC_DRC_PARAM_tETER_HANDLING_t drcParameterHandling;
   CDrcParams_t *p;
 
   assert(self != NULL);
@@ -1016,7 +1016,7 @@ static void aacDecoder_drcParameterHandling(HANDLE_AAC_DRC self,
   isStereoDownmix = (isDownmix && (self->numOutChannels == 2));
 
   if ((self->presMode == 1) || (self->presMode == 2)) {
-    drcParameterHandling = (AACDEC_DRC_PARAMETER_HANDLING_t)self->presMode;
+    drcParameterHandling = (AACDEC_DRC_PARAM_tETER_HANDLING_t)self->presMode;
   } else { /* no presentation mode -> use parameter handling specified by
               AAC_DRC_DEFAULT_PRESENTATION_MODE */
     drcParameterHandling = p->defaultPresentationMode;

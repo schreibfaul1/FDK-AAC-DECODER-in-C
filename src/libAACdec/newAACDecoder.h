@@ -168,150 +168,152 @@
 #define FL2FX_SGL(val) ((val) > 0.0f ? (int16_t)((val) * (float)(FRACT_FIX_SCALE) + 0.5f) : (int16_t)((val) * (float)(FRACT_FIX_SCALE)-0.5f))
 #define FL2FX_DBL(val) ((val) > 0.0f ? (int32_t)((val) * (float)(DFRACT_FIX_SCALE) + 0.5f) : (int32_t)((val) * (float)(DFRACT_FIX_SCALE)-0.5f))
 
-#define EXT_ID_BITS                  4         /**< Size in bits of extension payload type tags. */
-#define MAX_DRC_THREADS              ((8) + 1) /* Heavy compression value is handled just like MPEG DRC data */
-#define MAX_DRC_BANDS                (16)      /* 2^LEN_DRC_BAND_INCR (LEN_DRC_BAND_INCR = 4) */
-#define MAX_NOISE_ENVELOPES          2
-#define MAX_NOISE_COEFFS             5
-#define MAX_NUM_NOISE_VALUES         (MAX_NOISE_ENVELOPES * MAX_NOISE_COEFFS)
-#define MAX_NUM_LIMITERS             12
-#define MAX_ENVELOPES_LEGACY         5
-#define MAX_ENVELOPES_USAC           8
-#define MAX_ENVELOPES                MAX_ENVELOPES_USAC
-#define MAX_FREQ_COEFFS_DUAL_RATE    48
-#define MAX_FREQ_COEFFS_QUAD_RATE    56
-#define MAX_FREQ_COEFFS              MAX_FREQ_COEFFS_QUAD_RATE
-#define SF_PITCH_TRACK               6
-#define SF_GAIN                      3
-#define MIN_VAL                      FL2FXCONST_DBL(0.0f)
-#define MAX_VAL                      (int32_t) MAXVAL_DBL
-#define MAX_FREQ_COEFFS_FS44100      35
-#define MAX_FREQ_COEFFS_FS48000      32
-#define MAX_NUM_ENVELOPE_VALUES      (MAX_ENVELOPES * MAX_FREQ_COEFFS)
-#define MAX_SFB_NRG_HEADROOM         (1)
-#define MAX_VAL_NRG_HEADROOM         ((((int32_t)MAXVAL_DBL) >> MAX_SFB_NRG_HEADROOM))
-#define ACCU_BITS                    40 /* double precision plus overflow */
-#define AACDECODER_LIB_VL0           3
-#define AACDECODER_LIB_VL1           2
-#define AACDECODER_LIB_VL2           0
-#define PIT_MAX_MAX                  512
-#define UP_SAMP                      4
-#define L_INTERPOL2                  16
-#define L_SUBFR                      64
-#define NB_DIV                       4                             /* number of division (20ms) per 80ms frame */
-#define L_SUBFR                      64                            /* subframe size (5ms) */
-#define BPF_SFD                      1                             /* bass postfilter delay (subframe) */
-#define BPF_DELAY                    (BPF_SFD * L_SUBFR)           /* bass postfilter delay (samples) */
-#define L_FILT                       12                            /* Delay of up-sampling filter (bass post-filter) */
-#define L_EXTRA                      96                            /* for bass post-filter */
-#define L_INTERPOL                   (16 + 1)                      /* Length of filter for interpolation (acelp decoder) */
-#define L_FRAME_PLUS_1024            1024                          /* length of one 80ms superframe */
-#define L_DIV_1024                   (L_FRAME_PLUS_1024 / NB_DIV)  /* length of one acelp or tcx20 frame */
-#define NB_SUBFR_1024                (L_DIV_1024 / L_SUBFR)        /* number of 5ms subframe per division */
-#define NB_SUBFR_SUPERFR_1024        (L_FRAME_PLUS_1024 / L_SUBFR) /* number of 5ms subframe per 80ms frame */
-#define AAC_SFD_1024                 (NB_SUBFR_SUPERFR_1024 / 2)   /* AAC delay (subframe) */
-#define AAC_DELAY_1024               (AAC_SFD_1024 * L_SUBFR)      /* AAC delay (samples) */
-#define SYN_SFD_1024                 (AAC_SFD_1024 - BPF_SFD)      /* synthesis delay (subframe) */
-#define SYN_DELAY_1024               (SYN_SFD_1024 * L_SUBFR)      /* synthesis delay (samples) */
-#define LFAC_1024                    (L_DIV_1024 / 2)              /* FAC frame length */
-#define LFAC_SHORT_1024              (L_DIV_1024 / 4)              /* for transitions EIGHT_SHORT FD->LPD and vv. */
-#define FDNS_NPTS_1024               64                            /* FD noise shaping resolution (64=100Hz/point) */
-#define L_FRAME_PLUS                 L_FRAME_PLUS_1024
-#define L_DIV                        L_DIV_1024
-#define NB_SUBFR                     NB_SUBFR_1024
-#define NB_SUBFR_SUPERFR             NB_SUBFR_SUPERFR_1024
-#define AAC_SFD                      AAC_SFD_1024
-#define AAC_DELAY                    AAC_DELAY_1024
-#define SYN_SFD                      SYN_SFD_1024
-#define SYN_DELAY                    SYN_DELAY_1024
-#define LFAC                         LFAC_1024
-#define LFAC_SHORT                   LFAC_SHORT_1024
-#define FDNS_NPTS                    FDNS_NPTS_1024
-#define SF_CODE                      6               /* exponent of code[], fixed codebook vector */
-#define SF_GAIN_C                    16              /* exponent of gain code and smoothed gain code */
-#define SF_EXC                       16              /* exponent of exc[] and exc2[], excitation buffer */
-#define SF_GAIN_P                    1               /* exponent of gain_pit */
-#define SF_PFAC                      0               /* exponent of period/voicing factor */
-#define SF_SYNTH                     SF_EXC          /* exponent of synthesis buffer */
-#define SF_A_COEFFS                  3               /* exponent of LP domain synthesis filter coefficient */
-#define SF_STAB                      1               /* exponent of stability factor */
-#define M_LP_FILTER_ORDER            16              /* LP filter order */
-#define LP_FILTER_SCALE              4               /* LP filter scale */
-#define PIT_MIN_12k8                 34              /* Minimum pitch lag with resolution 1/4 */
-#define PIT_MAX_12k8                 231             /* Maximum pitch lag for fs=12.8kHz */
-#define FSCALE_DENOM                 12800           /* Frequency scale denominator */
-#define FAC_FSCALE_MIN               6000            /* Minimum allowed frequency scale for acelp decoder */
-#define LPD_MAX_CORE_SR              24000           /* Default value from ref soft */
-#define FAC_FSCALE_MAX               LPD_MAX_CORE_SR /* Maximum allowed frequency scale for acelp decoder */
-#define A2                           FL2FX_SGL(2 * 0.18f)
-#define B                            FL2FX_SGL(0.64f)
-#define FWD                          0  /* bitstream decoding direction forward (RVL coded part) */
-#define BWD                          1  /* bitstream decoding direction backward (RVL coded part) */
-#define MAX_RVL                      7  /* positive RVLC escape */
-#define MIN_RVL                      -7 /* negative RVLC escape */
-#define MAX_ALLOWED_DPCM_INDEX       14 /* the maximum allowed index of a decoded dpcm value (offset 'TABLE_OFFSET' incl --> must be subtracted) */
-#define TABLE_OFFSET                 7  /* dpcm offset of valid output values of rvl table decoding */
-#define MAX_LEN_RVLC_CODE_WORD       9  /* max length of a RVL codeword in bits */
-#define MAX_LEN_RVLC_ESCAPE_WORD     20 /* max length of huffman coded RVLC escape word in bits */
-#define DPCM_NOISE_NRG_BITS          9
-#define SF_OFFSET                    100   /* offset for correcting scf value */
-#define CONCEAL_MAX_INIT             1311  /* arbitrary value */
-#define CONCEAL_MIN_INIT             -1311 /* arbitrary value */
-#define RVLC_MAX_SFB                 ((8) * (16))
-#define LINES_PER_UNIT               4
-#define MAX_SFB_HCR                  (((1024 / 8) / LINES_PER_UNIT) * 8) /* (8 * 16) is not enough because sfbs are split in units for blocktype int16_t */
-#define NUMBER_OF_UNIT_GROUPS        (LINES_PER_UNIT * 8)
-#define LINES_PER_UNIT_GROUP         (1024 / NUMBER_OF_UNIT_GROUPS) /* 15 16 30 32 */
-#define WB_SECTION_SIZE              (1024 * 2)
-#define DRM_BS_BUFFER_SIZE           (512) /* size of the dynamic buffer which is used to reverse the bits of  the DRM SBR payload */
-#define CONCEAL_MAX_NUM_FADE_FACTORS (32)
-#define FIXP_CNCL                    int32_t
-#define FL2FXCONST_CNCL              FL2FXCONST_DBL
-#define CNCL_FRACT_BITS              DFRACT_BITS
-#define TNS_MAXIMUM_ORDER            (20)  // 12 for AAC-LC and AAC-SSR. Set to 20 for AAC-Main (AOT 1).
-#define N_MAX_LINES                  4
-#define NO_OFBANDS                   ((8 * 16))
-#define FROM_LEFT_TO_RIGHT           0
-#define FROM_RIGHT_TO_LEFT           1
-#define MAX_CB_PAIRS                 23
-#define MAX_HCR_SETS                 14
-#define ESCAPE_VALUE                 16
-#define POSITION_OF_FLAG_A           21
-#define POSITION_OF_FLAG_B           20
-#define MAX_CB                       32 /* last used CB is cb #31 when VCB11 is used */
-#define MAX_CB_CHECK                 32 /* support for VCB11 available -- is more general, could therefore used in both cases */
-#define NUMBER_OF_BIT_IN_WORD        32
-#define THIRTYTWO_LOG_DIV_TWO_LOG    5
-#define EIGHT_LOG_DIV_TWO_LOG        3
-#define FOUR_LOG_DIV_TWO_LOG         2
-#define CPE_TOP_LENGTH               12288
-#define SCE_TOP_LENGTH               6144
-#define LEN_OF_LONGEST_CW_TOP_LENGTH 49
-#define Q_VALUE_INVALID              8192 /* mark a invalid line with this value (to be concealed later on) */
-#define HCR_DIRAC                    500  /* a line of high level */
-#define MASK_LEFT                    0xFFF000
-#define MASK_RIGHT                   0xFFF
-#define CLR_BIT_10                   0x3FF
-#define TEST_BIT_10                  0x400
-#define LEFT_OFFSET                  12
-#define MAX_BUFSIZE_BYTES            (0x10000000)
-#define FIXP_DBL2PCM_DEC(x)          (x)
-#define PCM_DEC2FIXP_DBL(x)          (x)
-#define PCM_DEC_BITS                 DFRACT_BITS
-#define PCM_DEC2FX_PCM(x)            FX_DBL2FX_SGL(x)(x)
-#define FX_PCM2PCM_DEC(x)            FX_SGL2FX_DBL((int16_t)(x))(x)
-#define AACDEC_MAX_CH_CONF           14
-#define AACDEC_CH_ELEMENTS_TAB_SIZE  7   /*!< Size of element tables */
-#define AAC_NF_NO_RANDOM_VAL         512 /*!< Size of random number array for noise floor */
-#define INV_QUANT_TABLESIZE          256
-#define NUM_LD_COEF_512              1536
-#define NUM_LD_COEF_480              1440
-#define WTS0                         (1)
-#define WTS1                         (0)
-#define WTS2                         (-2)
-#define SF_FNA_COEFFS                1 /* Compile-time prescaler for MDST-filter coefficients. */
-#define FIXP_FILT                    int32_t
-#define FILT(a)                      ((FL2FXCONST_DBL(a)) >> SF_FNA_COEFFS)
+#define EXT_ID_BITS                   4         /**< Size in bits of extension payload type tags. */
+#define MAX_DRC_THREADS               ((8) + 1) /* Heavy compression value is handled just like MPEG DRC data */
+#define MAX_DRC_BANDS                 (16)      /* 2^LEN_DRC_BAND_INCR (LEN_DRC_BAND_INCR = 4) */
+#define MAX_NOISE_ENVELOPES           2
+#define MAX_NOISE_COEFFS              5
+#define MAX_NUM_NOISE_VALUES          (MAX_NOISE_ENVELOPES * MAX_NOISE_COEFFS)
+#define MAX_NUM_LIMITERS              12
+#define MAX_ENVELOPES_LEGACY          5
+#define MAX_ENVELOPES_USAC            8
+#define MAX_ENVELOPES                 MAX_ENVELOPES_USAC
+#define MAX_FREQ_COEFFS_DUAL_RATE     48
+#define MAX_FREQ_COEFFS_QUAD_RATE     56
+#define MAX_FREQ_COEFFS               MAX_FREQ_COEFFS_QUAD_RATE
+#define SF_PITCH_TRACK                6
+#define SF_GAIN                       3
+#define MIN_VAL                       FL2FXCONST_DBL(0.0f)
+#define MAX_VAL                       (int32_t) MAXVAL_DBL
+#define MAX_FREQ_COEFFS_FS44100       35
+#define MAX_FREQ_COEFFS_FS48000       32
+#define MAX_NUM_ENVELOPE_VALUES       (MAX_ENVELOPES * MAX_FREQ_COEFFS)
+#define MAX_SFB_NRG_HEADROOM          (1)
+#define MAX_VAL_NRG_HEADROOM          ((((int32_t)MAXVAL_DBL) >> MAX_SFB_NRG_HEADROOM))
+#define ACCU_BITS                     40 /* double precision plus overflow */
+#define AACDECODER_LIB_VL0            3
+#define AACDECODER_LIB_VL1            2
+#define AACDECODER_LIB_VL2            0
+#define PIT_MAX_MAX                   512
+#define UP_SAMP                       4
+#define L_INTERPOL2                   16
+#define L_SUBFR                       64
+#define NB_DIV                        4                             /* number of division (20ms) per 80ms frame */
+#define L_SUBFR                       64                            /* subframe size (5ms) */
+#define BPF_SFD                       1                             /* bass postfilter delay (subframe) */
+#define BPF_DELAY                     (BPF_SFD * L_SUBFR)           /* bass postfilter delay (samples) */
+#define L_FILT                        12                            /* Delay of up-sampling filter (bass post-filter) */
+#define L_EXTRA                       96                            /* for bass post-filter */
+#define L_INTERPOL                    (16 + 1)                      /* Length of filter for interpolation (acelp decoder) */
+#define L_FRAME_PLUS_1024             1024                          /* length of one 80ms superframe */
+#define L_DIV_1024                    (L_FRAME_PLUS_1024 / NB_DIV)  /* length of one acelp or tcx20 frame */
+#define NB_SUBFR_1024                 (L_DIV_1024 / L_SUBFR)        /* number of 5ms subframe per division */
+#define NB_SUBFR_SUPERFR_1024         (L_FRAME_PLUS_1024 / L_SUBFR) /* number of 5ms subframe per 80ms frame */
+#define AAC_SFD_1024                  (NB_SUBFR_SUPERFR_1024 / 2)   /* AAC delay (subframe) */
+#define AAC_DELAY_1024                (AAC_SFD_1024 * L_SUBFR)      /* AAC delay (samples) */
+#define SYN_SFD_1024                  (AAC_SFD_1024 - BPF_SFD)      /* synthesis delay (subframe) */
+#define SYN_DELAY_1024                (SYN_SFD_1024 * L_SUBFR)      /* synthesis delay (samples) */
+#define LFAC_1024                     (L_DIV_1024 / 2)              /* FAC frame length */
+#define LFAC_SHORT_1024               (L_DIV_1024 / 4)              /* for transitions EIGHT_SHORT FD->LPD and vv. */
+#define FDNS_NPTS_1024                64                            /* FD noise shaping resolution (64=100Hz/point) */
+#define L_FRAME_PLUS                  L_FRAME_PLUS_1024
+#define L_DIV                         L_DIV_1024
+#define NB_SUBFR                      NB_SUBFR_1024
+#define NB_SUBFR_SUPERFR              NB_SUBFR_SUPERFR_1024
+#define AAC_SFD                       AAC_SFD_1024
+#define AAC_DELAY                     AAC_DELAY_1024
+#define SYN_SFD                       SYN_SFD_1024
+#define SYN_DELAY                     SYN_DELAY_1024
+#define LFAC                          LFAC_1024
+#define LFAC_SHORT                    LFAC_SHORT_1024
+#define FDNS_NPTS                     FDNS_NPTS_1024
+#define SF_CODE                       6               /* exponent of code[], fixed codebook vector */
+#define SF_GAIN_C                     16              /* exponent of gain code and smoothed gain code */
+#define SF_EXC                        16              /* exponent of exc[] and exc2[], excitation buffer */
+#define SF_GAIN_P                     1               /* exponent of gain_pit */
+#define SF_PFAC                       0               /* exponent of period/voicing factor */
+#define SF_SYNTH                      SF_EXC          /* exponent of synthesis buffer */
+#define SF_A_COEFFS                   3               /* exponent of LP domain synthesis filter coefficient */
+#define SF_STAB                       1               /* exponent of stability factor */
+#define M_LP_FILTER_ORDER             16              /* LP filter order */
+#define LP_FILTER_SCALE               4               /* LP filter scale */
+#define PIT_MIN_12k8                  34              /* Minimum pitch lag with resolution 1/4 */
+#define PIT_MAX_12k8                  231             /* Maximum pitch lag for fs=12.8kHz */
+#define FSCALE_DENOM                  12800           /* Frequency scale denominator */
+#define FAC_FSCALE_MIN                6000            /* Minimum allowed frequency scale for acelp decoder */
+#define LPD_MAX_CORE_SR               24000           /* Default value from ref soft */
+#define FAC_FSCALE_MAX                LPD_MAX_CORE_SR /* Maximum allowed frequency scale for acelp decoder */
+#define A2                            FL2FX_SGL(2 * 0.18f)
+#define B                             FL2FX_SGL(0.64f)
+#define FWD                           0  /* bitstream decoding direction forward (RVL coded part) */
+#define BWD                           1  /* bitstream decoding direction backward (RVL coded part) */
+#define MAX_RVL                       7  /* positive RVLC escape */
+#define MIN_RVL                       -7 /* negative RVLC escape */
+#define MAX_ALLOWED_DPCM_INDEX        14 /* the maximum allowed index of a decoded dpcm value (offset 'TABLE_OFFSET' incl --> must be subtracted) */
+#define TABLE_OFFSET                  7  /* dpcm offset of valid output values of rvl table decoding */
+#define MAX_LEN_RVLC_CODE_WORD        9  /* max length of a RVL codeword in bits */
+#define MAX_LEN_RVLC_ESCAPE_WORD      20 /* max length of huffman coded RVLC escape word in bits */
+#define DPCM_NOISE_NRG_BITS           9
+#define SF_OFFSET                     100   /* offset for correcting scf value */
+#define CONCEAL_MAX_INIT              1311  /* arbitrary value */
+#define CONCEAL_MIN_INIT              -1311 /* arbitrary value */
+#define RVLC_MAX_SFB                  ((8) * (16))
+#define LINES_PER_UNIT                4
+#define MAX_SFB_HCR                   (((1024 / 8) / LINES_PER_UNIT) * 8) /* (8 * 16) is not enough because sfbs are split in units for blocktype int16_t */
+#define NUMBER_OF_UNIT_GROUPS         (LINES_PER_UNIT * 8)
+#define LINES_PER_UNIT_GROUP          (1024 / NUMBER_OF_UNIT_GROUPS) /* 15 16 30 32 */
+#define WB_SECTION_SIZE               (1024 * 2)
+#define DRM_BS_BUFFER_SIZE            (512) /* size of the dynamic buffer which is used to reverse the bits of  the DRM SBR payload */
+#define CONCEAL_MAX_NUM_FADE_FACTORS  (32)
+#define FIXP_CNCL                     int32_t
+#define FL2FXCONST_CNCL               FL2FXCONST_DBL
+#define CNCL_FRACT_BITS               DFRACT_BITS
+#define TNS_MAXIMUM_ORDER             (20)  // 12 for AAC-LC and AAC-SSR. Set to 20 for AAC-Main (AOT 1).
+#define N_MAX_LINES                   4
+#define NO_OFBANDS                    ((8 * 16))
+#define FROM_LEFT_TO_RIGHT            0
+#define FROM_RIGHT_TO_LEFT            1
+#define MAX_CB_PAIRS                  23
+#define MAX_HCR_SETS                  14
+#define ESCAPE_VALUE                  16
+#define POSITION_OF_FLAG_A            21
+#define POSITION_OF_FLAG_B            20
+#define MAX_CB                        32 /* last used CB is cb #31 when VCB11 is used */
+#define MAX_CB_CHECK                  32 /* support for VCB11 available -- is more general, could therefore used in both cases */
+#define NUMBER_OF_BIT_IN_WORD         32
+#define THIRTYTWO_LOG_DIV_TWO_LOG     5
+#define EIGHT_LOG_DIV_TWO_LOG         3
+#define FOUR_LOG_DIV_TWO_LOG          2
+#define CPE_TOP_LENGTH                12288
+#define SCE_TOP_LENGTH                6144
+#define LEN_OF_LONGEST_CW_TOP_LENGTH  49
+#define Q_VALUE_INVALID               8192 /* mark a invalid line with this value (to be concealed later on) */
+#define HCR_DIRAC                     500  /* a line of high level */
+#define MASK_LEFT                     0xFFF000
+#define MASK_RIGHT                    0xFFF
+#define CLR_BIT_10                    0x3FF
+#define TEST_BIT_10                   0x400
+#define LEFT_OFFSET                   12
+#define MAX_BUFSIZE_BYTES             (0x10000000)
+#define FIXP_DBL2PCM_DEC(x)           (x)
+#define PCM_DEC2FIXP_DBL(x)           (x)
+#define PCM_DEC_BITS                  DFRACT_BITS
+#define PCM_DEC2FX_PCM(x)             FX_DBL2FX_SGL(x)(x)
+#define FX_PCM2PCM_DEC(x)             FX_SGL2FX_DBL((int16_t)(x))(x)
+#define AACDEC_MAX_CH_CONF            14
+#define AACDEC_CH_ELEMENTS_TAB_SIZE   7   /*!< Size of element tables */
+#define AAC_NF_NO_RANDOM_VAL          512 /*!< Size of random number array for noise floor */
+#define INV_QUANT_TABLESIZE           256
+#define NUM_LD_COEF_512               1536
+#define NUM_LD_COEF_480               1440
+#define WTS0                          (1)
+#define WTS1                          (0)
+#define WTS2                          (-2)
+#define SF_FNA_COEFFS                 1 /* Compile-time prescaler for MDST-filter coefficients. */
+#define FILT(a)                       ((FL2FXCONST_DBL(a)) >> SF_FNA_COEFFS)
+#define AACDEC_DRC_GAIN_SCALING       (11)                                                    /* Scaling of DRC gains */
+#define AACDEC_DRC_GAIN_INIT_VALUE    (FL2FXCONST_DBL(1.0f / (1 << AACDEC_DRC_GAIN_SCALING))) /* Init value for DRC gains */
+#define AACDEC_DRC_DFLT_EXPIRY_FRAMES (0)                                                     /* Default DRC data expiry time in AAC frames   */
 
 // Audio Object Type definitions.
 typedef enum{
@@ -536,7 +538,7 @@ typedef enum {
     ENABLED_PARAMETER_HANDLING = 0,   /*!< Apply changes to requested DRC parameters to prevent clipping */
     DRC_PRESENTATION_MODE_1 = 1,      /*!< DRC Presentation mode 1*/
     DRC_PRESENTATION_MODE_2 = 2       /*!< DRC Presentation mode 2*/
-} AACDEC_DRC_PARAMETER_HANDLING_t;
+} AACDEC_DRC_PARAM_tETER_HANDLING_t;
 
 typedef enum {
     EB_NIGHT = 0x0001,
@@ -625,6 +627,25 @@ enum {
     TNS_MAX_WINDOWS = 8, /* 8 */
     TNS_MAXIMUM_FILTERS = 3
 };
+
+typedef enum {
+    UNKNOWN_PAYLOAD = 0,
+    MPEG_DRC_EXT_DATA = 1,
+    DVB_DRC_ANC_DATA = 2,
+} AACDEC_DRC_PAYLOAD_TYPE_t;
+
+typedef enum {
+    DRC_CUT_SCALE = 0,
+    DRC_BOOST_SCALE,
+    TARGET_REF_LEVEL,
+    DRC_BS_DELAY,
+    DRC_DATA_EXPIRY_FRAME,
+    APPLY_HEAVY_COMPRESSION,
+    DEFAULT_PRESENTATION_MODE,
+    ENCODER_TARGET_LEVEL,
+    MAX_OUTPUT_CHANNELS,
+    UNIDRC_PRECEDENCE
+} AACDEC_DRC_PARAM_t;
 
 typedef enum {
     AAC_DEC_OK = 0x0000,                   /*!< No error occurred. Output buffer is valid and error free. */
@@ -757,7 +778,7 @@ typedef struct {
     uint8_t                       applyHeavyCompression; /* heavy compression (DVB) flag */
     uint32_t                      expiryFrame;
     uint8_t                       bsDelayEnable;
-    AACDEC_DRC_PARAMETER_HANDLING_t defaultPresentationMode;
+    AACDEC_DRC_PARAM_tETER_HANDLING_t defaultPresentationMode;
     uint8_t                       encoderTargetLevel;
 } CDrcParams_t;
 
@@ -783,6 +804,8 @@ typedef struct {
     int32_t  additionalGainFilterState;  /* Filter state for the gain smoothing */
     int32_t  additionalGainFilterState1; /* Filter state for the gain smoothing */
 } CDrcInfo_t;
+
+typedef CDrcInfo_t *HANDLE_AAC_DRC;
 
 typedef struct{
     int32_t nrgRef[MAX_FREQ_COEFFS];
@@ -1408,6 +1431,22 @@ int32_t FDK_getFreeBits(HANDLE_FDK_BITBUF hBitBuffer);
 void FDK_Feed(HANDLE_FDK_BITBUF hBitBuffer, const uint8_t inputBuffer[], const uint32_t bufferSize, uint32_t *bytesValid);
 void FDK_Copy(HANDLE_FDK_BITBUF hBitBufDst, HANDLE_FDK_BITBUF hBitBufSrc, uint32_t *bytesValid);
 void FDK_Fetch(HANDLE_FDK_BITBUF hBitBuffer, uint8_t outBuf[], uint32_t *writeBytes);
+void                aacDecoder_drcReset(HANDLE_AAC_DRC self);
+void                aacDecoder_drcInit(HANDLE_AAC_DRC self);
+void                aacDecoder_drcInitChannelData(CDrcChannelData_t *pDrcChannel);
+AAC_DECODER_ERROR_t aacDecoder_drcSetParam(HANDLE_AAC_DRC self, AACDEC_DRC_PARAM_t param, int32_t value);
+int32_t             aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs, AACDEC_DRC_PAYLOAD_TYPE_t type);
+int32_t aacDecoder_drcProlog(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs, CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
+                             uint8_t pceInstanceTag, uint8_t channelMapping[], int32_t validChannels);
+void    aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, CDrcChannelData_t *pDrcDat,
+                            int32_t *extGain, int32_t ch, int32_t aacFrameSize, int32_t bSbrPresent);
+int32_t aacDecoder_drcEpilog(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs, CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
+                             uint8_t pceInstanceTag, uint8_t channelMapping[], int32_t validChannels);
+void aacDecoder_drcGetInfo(HANDLE_AAC_DRC self, int8_t *pPresMode, int8_t *pProgRefLevel);
+int32_t applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn, int32_t *pGain, int32_t *pGainPerSample, const int32_t gain_scale,
+                                   const uint32_t gain_delay, const uint32_t nSamples, const uint32_t channels, const uint32_t stride,
+                                   const uint32_t limiterEnabled);
+
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S
 //----------------------------------------------------------------------------------------------------------------------

@@ -263,7 +263,7 @@ int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
 }
 
 static void CJointStereo_filterAndAdd(
-    int32_t *in, int32_t len, int32_t windowLen, const FIXP_FILT *coeff, int32_t *out,
+    int32_t *in, int32_t len, int32_t windowLen, const int32_t *coeff, int32_t *out,
     uint8_t isCurrent /* output values with even index get a
                        positve addon (=1) or a negative addon
                        (=0) */
@@ -504,8 +504,8 @@ void CJointStereo_ApplyMS(
      * (for the tiles) it uses the assigned value */
     int16_t dmx_re_prev_e = *store_dmx_re_prev_e;
 
-    const FIXP_FILT *pCoeff;
-    const FIXP_FILT *pCoeffPrev;
+    const int32_t *pCoeff;
+    const int32_t *pCoeffPrev;
     int32_t coeffPointerOffset;
 
     int32_t previousShape = (int32_t)pJointStereoPersistentData->winShapePrev;
