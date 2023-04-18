@@ -700,7 +700,7 @@ AAC_DECODER_ERROR_t CChannelElement_Read(
       } break;
 
       case gain_element_lists: {
-        const CodeBookDescription *hcb;
+        const CodeBookDescription_t *hcb;
         uint8_t *pCodeBook;
         int32_t c;
 

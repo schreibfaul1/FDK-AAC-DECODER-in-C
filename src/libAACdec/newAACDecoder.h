@@ -150,6 +150,24 @@
 #define IS_MP4_CHANNEL_ELEMENT(elementId) ((elementId) == ID_SCE || (elementId) == ID_CPE || (elementId) == ID_LFE)
 #define IS_USAC_CHANNEL_ELEMENT(elementId)((elementId) == ID_USAC_SCE || (elementId) == ID_USAC_CPE || (elementId) == ID_USAC_LFE)
 
+
+#define FL2FXCONST_SPC FL2FXCONST_DBL
+#define MINVAL_DBL_CONST MINVAL_DBL
+#define MINVAL_SGL_CONST MINVAL_SGL
+
+#define FL2FXCONST_DBL(val)                                                                            \
+    (int32_t)(((val) >= 0) ? ((((double)(val) * (DFRACT_FIX_SCALE) + 0.5) >= (double)(MAXVAL_DBL))     \
+                                  ? (int32_t)(MAXVAL_DBL)                                              \
+                                  : (int32_t)((double)(val) * (double)(DFRACT_FIX_SCALE) + 0.5))       \
+                           : ((((double)(val) * (DFRACT_FIX_SCALE)-0.5) <= (double)(MINVAL_DBL_CONST)) \
+                                  ? (int32_t)(MINVAL_DBL_CONST)                                        \
+                                  : (int32_t)((double)(val) * (double)(DFRACT_FIX_SCALE)-0.5)))
+
+/* macros for runtime conversion of float values to integer fixedpoint. NO * OVERFLOW CHECK!!! */
+#define FL2FX_SPC      FL2FX_DBL
+#define FL2FX_SGL(val) ((val) > 0.0f ? (int16_t)((val) * (float)(FRACT_FIX_SCALE) + 0.5f) : (int16_t)((val) * (float)(FRACT_FIX_SCALE)-0.5f))
+#define FL2FX_DBL(val) ((val) > 0.0f ? (int32_t)((val) * (float)(DFRACT_FIX_SCALE) + 0.5f) : (int32_t)((val) * (float)(DFRACT_FIX_SCALE)-0.5f))
+
 #define EXT_ID_BITS                  4         /**< Size in bits of extension payload type tags. */
 #define MAX_DRC_THREADS              ((8) + 1) /* Heavy compression value is handled just like MPEG DRC data */
 #define MAX_DRC_BANDS                (16)      /* 2^LEN_DRC_BAND_INCR (LEN_DRC_BAND_INCR = 4) */
@@ -277,6 +295,23 @@
 #define TEST_BIT_10                  0x400
 #define LEFT_OFFSET                  12
 #define MAX_BUFSIZE_BYTES            (0x10000000)
+#define FIXP_DBL2PCM_DEC(x)          (x)
+#define PCM_DEC2FIXP_DBL(x)          (x)
+#define PCM_DEC_BITS                 DFRACT_BITS
+#define PCM_DEC2FX_PCM(x)            FX_DBL2FX_SGL(x)(x)
+#define FX_PCM2PCM_DEC(x)            FX_SGL2FX_DBL((int16_t)(x))(x)
+#define AACDEC_MAX_CH_CONF           14
+#define AACDEC_CH_ELEMENTS_TAB_SIZE  7   /*!< Size of element tables */
+#define AAC_NF_NO_RANDOM_VAL         512 /*!< Size of random number array for noise floor */
+#define INV_QUANT_TABLESIZE          256
+#define NUM_LD_COEF_512              1536
+#define NUM_LD_COEF_480              1440
+#define WTS0                         (1)
+#define WTS1                         (0)
+#define WTS2                         (-2)
+#define SF_FNA_COEFFS                1 /* Compile-time prescaler for MDST-filter coefficients. */
+#define FIXP_FILT                    int32_t
+#define FILT(a)                      ((FL2FXCONST_DBL(a)) >> SF_FNA_COEFFS)
 
 // Audio Object Type definitions.
 typedef enum{
@@ -572,6 +607,8 @@ typedef enum {
 enum { MAX_QUANTIZED_VALUE = 8191 };
 
 enum { JointStereoMaximumGroups = 8, JointStereoMaximumBands = 64 };
+
+enum { HuffmanBits = 2, HuffmanEntries = (1 << HuffmanBits) };
 
 enum {
     ZERO_HCB = 0,
@@ -1300,6 +1337,20 @@ typedef struct {
     CAacDecoderCommonStaticData_t *pComStaticData;       /* Persistent data required for one channel at a time during decode */
     int32_t                        currAliasingSymmetry; /* required for RSVD60 MCT */
 } CAacDecoderChannelInfo_t;
+
+typedef struct {
+    const int16_t *sfbOffsetLong;
+    const int16_t *sfbOffsetShort;
+    uint8_t        numberOfSfbLong;
+    uint8_t        numberOfSfbShort;
+} SFB_INFO_t;
+
+typedef struct {
+    const uint16_t (*CodeBook)[HuffmanEntries];
+    uint8_t Dimension;
+    uint8_t numBits;
+    uint8_t Offset;
+} CodeBookDescription_t;
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 

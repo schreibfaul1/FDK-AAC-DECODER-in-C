@@ -19,7 +19,7 @@
 
 /* PNS (of block) */
 void CPns_Read(CPnsData_t *pPnsData, HANDLE_FDK_BITSTREAM bs,
-               const CodeBookDescription *hcb, int16_t *pScaleFactor,
+               const CodeBookDescription_t *hcb, int16_t *pScaleFactor,
                uint8_t global_gain, int32_t band, int32_t group);
 
 void CPns_Apply(const CPnsData_t *pPnsData, const CIcsInfo_t *pIcsInfo,
@@ -208,7 +208,7 @@ static inline int32_t GetScaleFromValue(int32_t value, uint32_t lsb) {
 */
 inline int32_t CBlock_DecodeHuffmanWord(
     HANDLE_FDK_BITSTREAM bs,        /*!< pointer to bitstream */
-    const CodeBookDescription *hcb) /*!< pointer to codebook description */
+    const CodeBookDescription_t *hcb) /*!< pointer to codebook description */
 {
   uint32_t val;
   uint32_t index = 0;

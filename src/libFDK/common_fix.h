@@ -35,10 +35,7 @@
 
 
 /* macros for compile-time conversion of constant float values to fixedpoint */
-#define FL2FXCONST_SPC FL2FXCONST_DBL
 
-#define MINVAL_DBL_CONST MINVAL_DBL
-#define MINVAL_SGL_CONST MINVAL_SGL
 
 #define FL2FXCONST_SGL(val)                                                  \
   (int16_t)(                                                                \
@@ -52,27 +49,9 @@
                  ? (int16_t)(MINVAL_SGL_CONST)                                 \
                  : (int16_t)((double)(val) * (double)(FRACT_FIX_SCALE)-0.5)))
 
-#define FL2FXCONST_DBL(val)                                                  \
-  (int32_t)(                                                                \
-      ((val) >= 0)                                                           \
-          ? ((((double)(val) * (DFRACT_FIX_SCALE) + 0.5) >=                  \
-              (double)(MAXVAL_DBL))                                          \
-                 ? (int32_t)(MAXVAL_DBL)                                        \
-                 : (int32_t)((double)(val) * (double)(DFRACT_FIX_SCALE) + 0.5)) \
-          : ((((double)(val) * (DFRACT_FIX_SCALE)-0.5) <=                    \
-              (double)(MINVAL_DBL_CONST))                                    \
-                 ? (int32_t)(MINVAL_DBL_CONST)                                  \
-                 : (int32_t)((double)(val) * (double)(DFRACT_FIX_SCALE)-0.5)))
 
-/* macros for runtime conversion of float values to integer fixedpoint. NO
- * OVERFLOW CHECK!!! */
-#define FL2FX_SPC FL2FX_DBL
-#define FL2FX_SGL(val)                                             \
-  ((val) > 0.0f ? (int16_t)((val) * (float)(FRACT_FIX_SCALE) + 0.5f) \
-                : (int16_t)((val) * (float)(FRACT_FIX_SCALE)-0.5f))
-#define FL2FX_DBL(val)                                             \
-  ((val) > 0.0f ? (int32_t)((val) * (float)(DFRACT_FIX_SCALE) + 0.5f) \
-                : (int32_t)((val) * (float)(DFRACT_FIX_SCALE)-0.5f))
+
+
 
 /* macros for runtime conversion of fixedpoint values to other fixedpoint. NO
  * ROUNDING!!! */

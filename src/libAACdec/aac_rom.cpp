@@ -194,7 +194,7 @@ static const int16_t sfb_32_480[38] = {0,  4,  8,   12,  16,  20,  24,  28,  32,
 static const int16_t sfb_24_480[31] = {0,  4,   8,   12,  16,  20,  24,  28,  32,  36,  40,  44,  52,  60,  68, 80,
                                        92, 104, 120, 140, 164, 192, 224, 256, 288, 320, 352, 384, 416, 448, 480}; /* 30 scfbands */
 
-const SFB_INFO sfbOffsetTables[5][16] = {{
+const SFB_INFO_t sfbOffsetTables[5][16] = {{
                                              {sfb_96_1024, sfb_96_128, 41, 12},
                                              {sfb_96_1024, sfb_96_128, 41, 12},
                                              {sfb_64_1024, sfb_64_128, 47, 12},
@@ -481,7 +481,7 @@ const uint16_t HuffmanCodeBook_SCL[65][4] = {
     {0x003b, 0x003b, 0x0037, 0x0037}};
 
 /* .CodeBook = HuffmanCodeBook_x, .Dimension = 4, .numBits = 2, .Offset =  0  */
-const CodeBookDescription AACcodeBookDescriptionTable[13] = {{NULL, 0, 0, 0},
+const CodeBookDescription_t AACcodeBookDescriptionTable[13] = {{NULL, 0, 0, 0},
                                                              {HuffmanCodeBook_1, 4, 2, 1},
                                                              {HuffmanCodeBook_2, 4, 2, 1},
                                                              {HuffmanCodeBook_3, 4, 2, 0},
@@ -495,7 +495,7 @@ const CodeBookDescription AACcodeBookDescriptionTable[13] = {{NULL, 0, 0, 0},
                                                              {HuffmanCodeBook_11, 2, 5, 0},
                                                              {HuffmanCodeBook_SCL, 1, 8, 60}};
 
-const CodeBookDescription AACcodeBookDescriptionSCL = {HuffmanCodeBook_SCL, 1, 8, 60};
+const CodeBookDescription_t AACcodeBookDescriptionSCL = {HuffmanCodeBook_SCL, 1, 8, 60};
 
 /* *********************************************************************************************
  */
@@ -1532,9 +1532,9 @@ const uint8_t tns_max_bands_tbl_512[13] = {
 
 #define TCC(x) (int32_t(x))
 
-const FIXP_TCC FDKaacDec_tnsCoeff3[8] = {TCC(0x81f1d1d4), TCC(0x9126146c), TCC(0xadb922c4), TCC(0xd438af1f),
+const int32_t FDKaacDec_tnsCoeff3[8] = {TCC(0x81f1d1d4), TCC(0x9126146c), TCC(0xadb922c4), TCC(0xd438af1f),
                                          TCC(0x00000000), TCC(0x3789809b), TCC(0x64130dd4), TCC(0x7cca7016)};
-const FIXP_TCC FDKaacDec_tnsCoeff4[16] = {TCC(0x808bc842), TCC(0x84e2e58c), TCC(0x8d6b49d1), TCC(0x99da920a), TCC(0xa9c45713), TCC(0xbc9ddeb9),
+const int32_t FDKaacDec_tnsCoeff4[16] = {TCC(0x808bc842), TCC(0x84e2e58c), TCC(0x8d6b49d1), TCC(0x99da920a), TCC(0xa9c45713), TCC(0xbc9ddeb9),
                                           TCC(0xd1c2d51b), TCC(0xe87ae53d), TCC(0x00000000), TCC(0x1a9cd9b6), TCC(0x340ff254), TCC(0x4b3c8c29),
                                           TCC(0x5f1f5ebb), TCC(0x6ed9ebba), TCC(0x79bc385f), TCC(0x7f4c7e5b)};
 

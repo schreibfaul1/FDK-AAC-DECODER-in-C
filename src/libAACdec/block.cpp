@@ -78,7 +78,7 @@ AAC_DECODER_ERROR_t CBlock_ReadScaleFactorData(
                    .GlobalGain; /* accu for scale factor delta coding */
   uint8_t *pCodeBook = pAacDecoderChannelInfo->pDynData->aCodeBook;
   int16_t *pScaleFactor = pAacDecoderChannelInfo->pDynData->aScaleFactor;
-  const CodeBookDescription *hcb = &AACcodeBookDescriptionTable[BOOKSCL];
+  const CodeBookDescription_t *hcb = &AACcodeBookDescriptionTable[BOOKSCL];
 
   const uint16_t(*CodeBook)[HuffmanEntries] = hcb->CodeBook;
 
@@ -574,7 +574,7 @@ AAC_DECODER_ERROR_t CBlock_ReadSpectralData(
         }
         if (((currentCB != ZERO_HCB) && (currentCB != NOISE_HCB) &&
              (currentCB != INTENSITY_HCB) && (currentCB != INTENSITY_HCB2))) {
-          const CodeBookDescription *hcb =
+          const CodeBookDescription_t *hcb =
               &AACcodeBookDescriptionTable[currentCB];
           int32_t step = hcb->Dimension;
           int32_t offset = hcb->Offset;

@@ -195,7 +195,7 @@ void CTns_Apply(CTnsData_t       *pTnsData, /*!< pointer to aac decoder info */
                 CFilter_t *filter = &pTnsData->Filter[window][index];
 
                 if(filter->Order > 0) {
-                    FIXP_TCC *pCoeff;
+                    int32_t *pCoeff;
                     uint8_t   tns_max_bands;
 
                     pCoeff = coeff;

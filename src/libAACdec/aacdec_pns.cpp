@@ -115,7 +115,7 @@ static int32_t CPns_IsOutOfPhase(const CPnsData_t *pPnsData, const int32_t group
   The function reads the PNS information from the bitstream
 */
 void CPns_Read(CPnsData_t *pPnsData, HANDLE_FDK_BITSTREAM bs,
-               const CodeBookDescription *hcb, int16_t *pScaleFactor,
+               const CodeBookDescription_t *hcb, int16_t *pScaleFactor,
                uint8_t global_gain, int32_t band, int32_t group /* = 0 */) {
   int32_t delta;
   uint32_t pns_band = group * 16 + band;

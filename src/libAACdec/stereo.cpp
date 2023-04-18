@@ -109,7 +109,7 @@ int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs,
         int32_t delta_code_time = 0;
 
         /* set pointer to Huffman codebooks */
-        const CodeBookDescription *hcb = &AACcodeBookDescriptionTable[BOOKSCL];
+        const CodeBookDescription_t *hcb = &AACcodeBookDescriptionTable[BOOKSCL];
         /* set predictors to zero in case of a transition from int32_t to int16_t
          * window sequences and vice versa */
         if (((windowSequence == BLOCK_SHORT) &&
