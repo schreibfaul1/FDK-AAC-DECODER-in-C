@@ -132,6 +132,9 @@
 #define CLIP_PROTECT_GAIN_1(x) FL2FXCONST_CFG(((x) / (float)(1 << 1)))
 #define CLIP_PROTECT_GAIN_2(x) FL2FXCONST_CFG(((x) / (float)(1 << 2)))
 
+#define FRACT_BITS                   16 /* single precision */
+#define DFRACT_BITS                  32 /* double precision */
+
 #define MAXVAL_SGL ((signed)0x00007FFF) /* this has to be synchronized to FRACT_BITS */
 #define MINVAL_SGL ((signed)0xFFFF8000) /* this has to be synchronized to FRACT_BITS */
 #define MAXVAL_DBL ((signed)0x7FFFFFFF) /* this has to be synchronized to DFRACT_BITS */
@@ -169,8 +172,6 @@
 #define MAX_NUM_ENVELOPE_VALUES      (MAX_ENVELOPES * MAX_FREQ_COEFFS)
 #define MAX_SFB_NRG_HEADROOM         (1)
 #define MAX_VAL_NRG_HEADROOM         ((((int32_t)MAXVAL_DBL) >> MAX_SFB_NRG_HEADROOM))
-#define FRACT_BITS                   16 /* single precision */
-#define DFRACT_BITS                  32 /* double precision */
 #define ACCU_BITS                    40 /* double precision plus overflow */
 #define AACDECODER_LIB_VL0           3
 #define AACDECODER_LIB_VL1           2
