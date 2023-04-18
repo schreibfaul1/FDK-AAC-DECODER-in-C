@@ -537,7 +537,8 @@ AAC_DECODER_ERROR_t CBlock_ReadSpectralData(
       pAacDecoderChannelInfo->pSpectralCoefficient;
 
   assert(BandOffsets != NULL);
-
+  
+  typedef int32_t SPECTRUM[1024];
   memset(pSpectralCoefficient, 0, sizeof(SPECTRUM));
 
   if ((flags & AC_ER_HCR) == 0) {

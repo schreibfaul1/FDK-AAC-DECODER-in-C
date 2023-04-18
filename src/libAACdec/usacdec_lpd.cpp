@@ -17,7 +17,6 @@
 #include "block.h"
 #include "conceal.h"
 #include "newAACDecoder.h"
-#include "overlapadd.h"
 #include "usacdec_acelp.h"
 #include "usacdec_fac.h"
 #include "usacdec_lpc.h"

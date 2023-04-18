@@ -13,7 +13,7 @@
 #define AACDEC_HCR_TYPES_H
 #include "newAACDecoder.h"
 #include "../libFDK/FDK_bitstream.h"
-#include "overlapadd.h"
+
 
 /* ------------------------------------------------ */
 /* ------------------------------------------------ */

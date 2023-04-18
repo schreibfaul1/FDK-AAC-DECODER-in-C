@@ -177,6 +177,11 @@
 #define FL2FX_SGL(val) ((val) > 0.0f ? (int16_t)((val) * (float)(FRACT_FIX_SCALE) + 0.5f) : (int16_t)((val) * (float)(FRACT_FIX_SCALE)-0.5f))
 #define FL2FX_DBL(val) ((val) > 0.0f ? (int32_t)((val) * (float)(DFRACT_FIX_SCALE) + 0.5f) : (int32_t)((val) * (float)(DFRACT_FIX_SCALE)-0.5f))
 
+#define OverlapBufferSize        (768)
+#define SPEC_LONG(ptr)           (ptr)
+#define SPEC(ptr, w, gl)         ((ptr) + ((w) * (gl)))
+#define SPEC_TCX(ptr, f, gl, fb) ((ptr) + ((f) * (gl * 2) * (((fb) == 0) ? 1 : 2)))
+
 /** Macro to identify decode errors. */
 #define TPDEC_DECODE_ERROR_START   1024
 #define TPDEC_DECODE_ERROR_END     1028
@@ -1781,7 +1786,43 @@ TRANSPORTDEC_ERROR_t AudioSpecificConfig_Parse(CSAudioSpecificConfig_t *pAsc, HA
 uint8_t ToggleReadDirection(uint8_t readDirection);
 uint32_t HcrGetABitFromBitstream(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor, int32_t *pLeftStartOfSegment, int32_t *pRightStartOfSegment,
                                  uint8_t readDirection);
+int32_t InvMdctTransformLowDelay_fdk(int32_t *mdctdata_m, const int32_t mdctdata_e, int32_t *mdctOut, int32_t *fs_buffer, const int32_t frameLength);
+void CPns_Read(CPnsData_t *pPnsData, HANDLE_FDK_BITSTREAM bs, const CodeBookDescription_t *hcb, int16_t *pScaleFactor, uint8_t global_gain,
+               int32_t band, int32_t group);
+void CPns_Apply(const CPnsData_t *pPnsData, const CIcsInfo_t *pIcsInfo, int32_t *pSpectrum, const int16_t *pSpecScale, const int16_t *pScaleFactor,
+                const SamplingRateInfo_t *pSamplingRateInfo, const int32_t granuleLength, const int32_t channel);
+void CBlock_ApplyNoise(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, SamplingRateInfo_t *pSamplingRateInfo, uint32_t *nfRandomSeed,
+                       uint8_t *band_is_noise);
+void CTns_ReadDataPresentFlag(HANDLE_FDK_BITSTREAM bs, CTnsData_t *pTnsData);
 
+void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData_t *pTnsData0, CTnsData_t *pTnsData1, uint8_t *ptns_on_lr, const CIcsInfo_t *pIcsInfo,
+                              const uint32_t flags, const uint32_t elFlags, const int32_t fCommonWindow);
+AAC_DECODER_ERROR_t CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData_t *pTnsData, const CIcsInfo_t *pIcsInfo, const uint32_t flags);
+void                CTns_Apply(CTnsData_t       *pTnsData, /*!< pointer to aac decoder info */
+                               const CIcsInfo_t *pIcsInfo, int32_t *pSpectralCoefficient, const SamplingRateInfo_t *pSamplingRateInfo, const int32_t granuleLength,
+                               const uint8_t nbands, const uint8_t igf_active, const uint32_t flags);
+int32_t             CBlock_GetEscape(HANDLE_FDK_BITSTREAM bs, const int32_t q);
+AAC_DECODER_ERROR_t CBlock_ReadScaleFactorData(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, HANDLE_FDK_BITSTREAM bs, const uint32_t flags);
+AAC_DECODER_ERROR_t CBlock_ReadSpectralData(HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+                                            const SamplingRateInfo_t *pSamplingRateInfo, const uint32_t flags);
+AAC_DECODER_ERROR_t CBlock_ReadAcSpectralData(HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+                                              CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
+                                              const SamplingRateInfo_t *pSamplingRateInfo, const uint32_t frame_length, const uint32_t flags);
+AAC_DECODER_ERROR_t CBlock_ReadSectionData(HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+                                           const SamplingRateInfo_t *pSamplingRateInfo, const uint32_t flags);
+void CBlock_ScaleSpectralData(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, uint8_t maxSfbs, SamplingRateInfo_t *pSamplingRateInfo);
+void ApplyTools(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[], const SamplingRateInfo_t *pSamplingRateInfo, const uint32_t flags,
+                const uint32_t elFlags, const int32_t channel, const int32_t maybe_jstereo);
+void CBlock_FrequencyToTime(CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+                            int32_t outSamples[], const int16_t frameLen, const int32_t frameOk, int32_t *pWorkBuffer1,
+                            const int32_t aacOutDataHeadroom, uint32_t elFlags, int32_t elCh);
+void CBlock_FrequencyToTimeLowDelay(CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+                                    int32_t outSamples[], const int16_t frameLen);
+AAC_DECODER_ERROR_t CBlock_InverseQuantizeSpectralData(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, SamplingRateInfo_t *pSamplingRateInfo,
+                                                       uint8_t *band_is_noise, uint8_t active_band_search);
+int32_t CPulseData_Read(const HANDLE_FDK_BITSTREAM bs, CPulseData_t *const PulseData, const int16_t *sfb_startlines, const void *pIcsInfo,
+                        const int16_t frame_length);
+void    CPulseData_Apply(CPulseData_t *PulseData, const int16_t *pScaleFactorBandOffsets, int32_t *coef);
 
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S

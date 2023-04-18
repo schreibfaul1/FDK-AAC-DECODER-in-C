@@ -21,8 +21,7 @@
 #include "aacdecoder_lib.h"
 #include "conceal_types.h"
 #include "newAACDecoder.h"
-#include "overlapadd.h"
-#include "pulsedata.h"
+
 #include "rvlc_info.h"
 #include "stereo.h"
 #include "usacdec_acelp.h"

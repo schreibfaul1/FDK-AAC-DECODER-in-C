@@ -1,7 +1,5 @@
 
 #include "newAACDecoder.h"
-#include "pulsedata.h"
-
 #include "channelinfo.h"
 
 int32_t CPulseData_Read(HANDLE_FDK_BITSTREAM bs, CPulseData_t *const PulseData,
