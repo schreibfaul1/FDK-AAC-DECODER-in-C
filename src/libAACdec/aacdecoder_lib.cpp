@@ -1588,7 +1588,8 @@ AAC_DECODER_ERROR_t aacDecoder_DecodeFrame(HANDLE_AACDECODER self, int16_t *pTim
 						pGainPerSample = self->workBufferCore1;
 
 						uint32_t GRMWBC1 = sizeof(CWorkBufferCore1_t) + 8 + sizeof(void *);  // GetRequiredMemWorkBufferCore1
-						GRMWBC1 + ((8 - sizeof(CWorkBufferCore1_t) + 8 + sizeof(void *) & 7) & 7);
+						GRMWBC1 += ((8 - sizeof(CWorkBufferCore1_t) + 8 + sizeof(void *) & 7) & 7);
+						(void) GRMWBC1;
 						if((int32_t)GRMWBC1 < (int32_t)(self->streamInfo.frameSize * sizeof(int32_t))) {
 							ErrorStatus = AAC_DEC_UNKNOWN;
 							goto bail;

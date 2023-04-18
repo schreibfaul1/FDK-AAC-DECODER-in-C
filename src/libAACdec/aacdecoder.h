@@ -84,172 +84,88 @@ typedef struct {
 
 /* AAC decoder (opaque toward userland) struct declaration */
 struct AAC_DECODER_INSTANCE {
-  int32_t aacChannels; /*!< Amount of AAC decoder channels allocated.        */
-  int32_t ascChannels[(1 *
-                   1)]; /*!< Amount of AAC decoder channels signalled in ASC. */
-  int32_t blockNumber;      /*!< frame counter                                    */
-
-  int32_t nrOfLayers;
-
-  int32_t outputInterleaved; /*!< PCM output format (interleaved/none interleaved).
-                          */
-
-  int32_t aacOutDataHeadroom; /*!< Headroom of the output time signal to prevent
-                             clipping */
-
   HANDLE_TRANSPORTDEC hInput; /*!< Transport layer handle. */
-
-  SamplingRateInfo_t
-      SamplingRateInfo[(1 * 1)]; /*!< Sampling Rate information table */
-
-  uint8_t
-  frameOK; /*!< Will be unset if a consistency check, e.g. CRC etc. fails */
-
-  uint32_t flags[(1 * 1)]; /*!< Flags for internal decoder use. DO NOT USE
-                          self::streaminfo::flags ! */
-  uint32_t elFlags[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) +
-                1)]; /*!< Flags for internal decoder use (element specific). DO
-                        NOT USE self::streaminfo::flags ! */
-
-  MP4_ELEMENT_ID_t elements[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) +
-                           1)]; /*!< Table where the element Id's are listed */
-  uint8_t elTags[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) +
-                1)]; /*!< Table where the elements id Tags are listed      */
-  uint8_t chMapping[((8) * 2)]; /*!< Table of MPEG canonical order to bitstream
-                                 channel order mapping. */
-
-  AUDIO_CHANNEL_TYPE_t channelType[(8)]; /*!< Audio channel type of each output
-                                          audio channel (from 0 upto
-                                          numChannels).           */
-  uint8_t channelIndices[(8)]; /*!< Audio channel index for each output audio
-                                channel (from 0 upto numChannels).         */
-  /* See ISO/IEC 13818-7:2005(E), 8.5.3.2 Explicit channel mapping using a
-   * program_config_element() */
-
-  FDK_channelMapDescr_t mapDescr; /*!< Describes the output channel mapping. */
-  uint8_t chMapIndex; /*!< Index to access one line of the channelOutputMapping
-                       table. This is required because not all 8 channel
-                       configurations have the same output mapping. */
-  int32_t sbrDataLen;   /*!< Expected length of the SBR remaining in bitbuffer after
-                         the AAC payload has been pared.   */
-
-  CProgramConfig pce;
-  CStreamInfo
-      streamInfo; /*!< Pointer to StreamInfo data (read from the bitstream) */
-  CAacDecoderChannelInfo_t
-      *pAacDecoderChannelInfo[(8)]; /*!< Temporal channel memory */
-  CAacDecoderStaticChannelInfo_t
-      *pAacDecoderStaticChannelInfo[(8)]; /*!< Persistent channel memory */
-
-  int32_t *workBufferCore1;
-  int32_t *workBufferCore2;
-  int32_t *pTimeData2;
-  int32_t timeData2Size;
-
-  CpePersistentData_t *cpeStaticData[(
-      3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) +
-      1)]; /*!< Pointer to persistent data shared by both channels of a CPE.
-This structure is allocated once for each CPE. */
-
-  CConcealParams_t concealCommonData;
-  CConcealmentMethod_t concealMethodUser;
-
-  CUsacCoreExtensions usacCoreExt; /*!< Data and handles to extend USAC FD/LPD
-                                      core decoder (SBR, MPS, ...) */
-  uint32_t numUsacElements[(1 * 1)];
-  uint8_t usacStereoConfigIndex[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) + 1)];
+  int32_t            *workBufferCore1;
+  int32_t            *workBufferCore2;
+  int32_t            *pTimeData2;
   const CSUsacConfig *pUsacConfig[(1 * 1)];
-  int32_t nbDiv; /*!< number of frame divisions in LPD-domain */
-
-  uint8_t useLdQmfTimeAlign;
-
-  int32_t aacChannelsPrev; /*!< The amount of AAC core channels of the last
-                          successful decode call.         */
-  AUDIO_CHANNEL_TYPE_t channelTypePrev[(8)]; /*!< Array holding the channelType
-                                              values of the last successful
-                                              decode call.    */
-  uint8_t
-  channelIndicesPrev[(8)]; /*!< Array holding the channelIndices values of
-                              the last successful decode call. */
-
-  uint8_t
-  downscaleFactor; /*!< Variable to store a supported ELD downscale factor
-                      of 1, 2, 3 or 4 */
-  uint8_t downscaleFactorInBS; /*!< Variable to store the (not necessarily
-                                supported) ELD downscale factor discovered in
-                                the bitstream */
-
-  HANDLE_SBRDECODER hSbrDecoder; /*!< SBR decoder handle. */
-  uint8_t sbrEnabled;     /*!< flag to store if SBR has been detected     */
-  uint8_t sbrEnabledPrev; /*!< flag to store if SBR has been detected from
-                           previous frame */
-  uint8_t psPossible;     /*!< flag to store if PS is possible            */
-  SBR_PARAMS sbrParams; /*!< struct to store all sbr parameters         */
-
-  uint8_t *pDrmBsBuffer; /*!< Pointer to dynamic buffer which is used to reverse
-                          the bits of the DRM SBR payload */
-  uint16_t drmBsBufferSize; /*!< Size of the dynamic buffer which is used to
-                             reverse the bits of the DRM SBR payload */
-  FDK_QMF_DOMAIN
-  qmfDomain; /*!< Instance of module for QMF domain data handling */
-
-  QMF_MODE qmfModeCurr; /*!< The current QMF mode                       */
-  QMF_MODE qmfModeUser; /*!< The QMF mode requested by the library user */
-
-  HANDLE_AAC_DRC hDrcInfo; /*!< handle to DRC data structure               */
-  int32_t metadataExpiry;      /*!< Metadata expiry time in milli-seconds.     */
-
+  HANDLE_SBRDECODER   hSbrDecoder;  /*!< SBR decoder handle. */
+  uint8_t            *pDrmBsBuffer; /*!< Pointer to dynamic buffer which is used to reverse the bits of the DRM SBR payload */
+  HANDLE_AAC_DRC      hDrcInfo;     /*!< handle to DRC data structure */
   void *pMpegSurroundDecoder; /*!< pointer to mpeg surround decoder structure */
-  uint8_t mpsEnableUser;        /*!< MPS enable user flag                       */
-  uint8_t mpsEnableCurr;        /*!< MPS enable decoder state                   */
-  uint8_t mpsApplicable;        /*!< MPS applicable                             */
-  int8_t mpsOutputMode; /*!< setting: normal = 0, binaural = 1, stereo = 2, 5.1ch
-                          = 3 */
-  int32_t mpsOutChannelsLast; /*!< The amount of channels returned by the last
-                             successful MPS decoder call. */
-  int32_t mpsFrameSizeLast;   /*!< The frame length returned by the last successful
-                             MPS decoder call. */
-
-  CAncData ancData; /*!< structure to handle ancillary data         */
-
-  HANDLE_PCM_DOWNMIX hPcmUtils; /*!< privat data for the PCM utils. */
-
-  TDLimiterPtr hLimiter;   /*!< Handle of time domain limiter.             */
-  uint8_t limiterEnableUser; /*!< The limiter configuration requested by the
-                              library user */
-  uint8_t limiterEnableCurr; /*!< The current limiter configuration.         */
-
-  int32_t extGain[1]; /*!< Gain that must be applied to the output signal. */
-  uint32_t extGainDelay;   /*!< Delay that must be accounted for extGain. */
-
-  HANDLE_DRC_DECODER hUniDrcDecoder;
-  uint8_t multibandDrcPresent;
-  uint8_t numTimeSlots;
-  uint32_t loudnessInfoSetPosition[3];
-  int8_t defaultTargetLoudness;
-
-  int16_t
-  *pTimeDataFlush[((8) * 2)]; /*!< Pointer to the flushed time data which
-                                 will be used for the crossfade in case of
-                                 an USAC DASH IPF config change */
-
-  uint8_t flushStatus;     /*!< Indicates flush status: on|off */
-  int8_t flushCnt;        /*!< Flush frame counter */
-  uint8_t buildUpStatus;   /*!< Indicates build up status: on|off */
-  int8_t buildUpCnt;      /*!< Build up frame counter */
-  uint8_t hasAudioPreRoll; /*!< Indicates preRoll status: on|off */
-  uint32_t prerollAULength[AACDEC_MAX_NUM_PREROLL_AU + 1]; /*!< Relative offset of
-                                                          the prerollAU end
-                                                          position to the AU
-                                                          start position in the
-                                                          bitstream */
-  int32_t accessUnit; /*!< Number of the actual processed preroll accessUnit */
-  uint8_t applyCrossfade; /*!< if set crossfade for seamless stream switching is
-                           applied */
-
-  FDK_SignalDelay usacResidualDelay; /*!< Delay residual signal to compensate
-                                        for eSBR delay of DMX signal in case of
-                                        stereoConfigIndex==2. */
+  HANDLE_PCM_DOWNMIX    hPcmUtils;  /*!< privat data for the PCM utils. */
+  TDLimiterPtr          hLimiter;   /*!< Handle of time domain limiter.             */
+  HANDLE_DRC_DECODER    hUniDrcDecoder;
+  FDK_channelMapDescr_t mapDescr;          /*!< Describes the output channel mapping. */
+  FDK_SignalDelay       usacResidualDelay; /*!< Delay residual signal to compensate for eSBR delay of DMX signal in case of stereoConfigIndex==2. */
+  SamplingRateInfo_t    SamplingRateInfo[(1 * 1)];                   /*!< Sampling Rate information table */
+  CAncData              ancData;                                     /*!< structure to handle ancillary data         */
+  CAacDecoderChannelInfo_t       *pAacDecoderChannelInfo[(8)];       /*!< Temporal channel memory */
+  CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[(8)]; /*!< Persistent channel memory */
+  CStreamInfo                     streamInfo;                        /*!< Pointer to StreamInfo data (read from the bitstream) */
+  int16_t                        *pTimeDataFlush[((8) * 2)]; /*!< Pointer to the flushed time data which will be used for the crossfade */
+  CpePersistentData_t                *cpeStaticData[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) + 1)]; /*!< Pointer to persistent data */
+  FDK_QMF_DOMAIN qmfDomain;                                                      /*!< Instance of module for QMF domain data handling */
+  int32_t        aacChannels;                                                    /*!< Amount of AAC decoder channels allocated.        */
+  int32_t        ascChannels[(1 * 1)];                                           /*!< Amount of AAC decoder channels signalled in ASC. */
+  int32_t        blockNumber;                                                    /*!< frame counter    */
+  int32_t        nrOfLayers;
+  int32_t        outputInterleaved;  /*!< PCM output format (interleaved/none interleaved). */
+  int32_t        aacOutDataHeadroom; /*!< Headroom of the output time signal to prevent clipping */
+  uint32_t       flags[(1 * 1)];     /*!< Flags for internal decoder use. DO NOT USE self::streaminfo::flags ! */
+  int32_t        sbrDataLen;         /*!< Expected length of the SBR remaining in bitbuffer after the AAC payload has been pared.   */
+  int32_t        timeData2Size;
+  CConcealmentMethod_t concealMethodUser;
+  uint32_t             numUsacElements[(1 * 1)];
+  int32_t              nbDiv;              /*!< number of frame divisions in LPD-domain */
+  int32_t              aacChannelsPrev;    /*!< The amount of AAC core channels of the last successful decode call. */
+  SBR_PARAMS           sbrParams;          /*!< struct to store all sbr parameters */
+  QMF_MODE             qmfModeCurr;        /*!< The current QMF mode                       */
+  QMF_MODE             qmfModeUser;        /*!< The QMF mode requested by the library user */
+  int32_t              metadataExpiry;     /*!< Metadata expiry time in milli-seconds.     */
+  int32_t              mpsOutChannelsLast; /*!< The amount of channels returned by the last successful MPS decoder call. */
+  int32_t              mpsFrameSizeLast;   /*!< The frame length returned by the last successful MPS decoder call. */
+  int32_t              extGain[1];         /*!< Gain that must be applied to the output signal. */
+  uint32_t             extGainDelay;       /*!< Delay that must be accounted for extGain. */
+  int32_t              accessUnit;         /*!< Number of the actual processed preroll accessUnit */
+  uint32_t             loudnessInfoSetPosition[3];
+  uint32_t      prerollAULength[AACDEC_MAX_NUM_PREROLL_AU + 1]; /*!< Relative offset of the prerollAU end position to the AU start position*/
+  CUsacCoreExtensions  usacCoreExt;                   /*!< Data and handles to extend USAC FD/LPD core decoder (SBR, MPS, ...) */
+  AUDIO_CHANNEL_TYPE_t channelType[(8)];              /*!< Audio channel type of each output audio channel (from 0 upto numChannels). */
+  AUDIO_CHANNEL_TYPE_t channelTypePrev[(8)];          /*!< Array holding the channelType values of the last successful decode call.    */
+  CConcealParams_t     concealCommonData;
+  uint32_t             elFlags[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) + 1)]; /*!< Flags for internal decoder use (element specific). */
+  MP4_ELEMENT_ID_t     elements[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) + 1)]; /*!< Table where the element Id's are listed */
+  uint16_t             drmBsBufferSize; /*!< Size of the dynamic buffer which is used to reverse the bits of the DRM SBR payload */
+  uint8_t              frameOK;         /*!< Will be unset if a consistency check, e.g. CRC etc. fails */
+  uint8_t              chMapIndex;      /*!< Index to access one line of the channelOutputMapping table. */
+  uint8_t              useLdQmfTimeAlign;
+  uint8_t              downscaleFactor;     /*!< Variable to store a supported ELD downscale factor  of 1, 2, 3 or 4 */
+  uint8_t              downscaleFactorInBS; /*!< Variable to store the (not necessarily supported) ELD downscale factor discovered in the bitstream */
+  uint8_t              sbrEnabled;          /*!< flag to store if SBR has been detected     */
+  uint8_t              sbrEnabledPrev;      /*!< flag to store if SBR has been detected from previous frame */
+  uint8_t              psPossible;          /*!< flag to store if PS is possible  */
+  uint8_t              mpsEnableUser;       /*!< MPS enable user flag                       */
+  uint8_t              mpsEnableCurr;       /*!< MPS enable decoder state                   */
+  uint8_t              mpsApplicable;       /*!< MPS applicable                             */
+  int8_t               mpsOutputMode;       /*!< setting: normal = 0, binaural = 1, stereo = 2, 5.1ch = 3 */
+  uint8_t              limiterEnableUser;   /*!< The limiter configuration requested by the library user */
+  uint8_t              limiterEnableCurr;   /*!< The current limiter configuration.         */
+  uint8_t              multibandDrcPresent;
+  uint8_t              numTimeSlots;
+  int8_t               defaultTargetLoudness;
+  uint8_t              flushStatus;             /*!< Indicates flush status: on|off */
+  int8_t               flushCnt;                /*!< Flush frame counter */
+  uint8_t              buildUpStatus;           /*!< Indicates build up status: on|off */
+  int8_t               buildUpCnt;              /*!< Build up frame counter */
+  uint8_t              hasAudioPreRoll;         /*!< Indicates preRoll status: on|off */
+  uint8_t              applyCrossfade;          /*!< if set crossfade for seamless stream switching is applied */
+  uint8_t              channelIndices[(8)];     /*!< Audio channel index for each output audio channel (from 0 upto numChannels).         */
+  uint8_t              channelIndicesPrev[(8)]; /*!< Array holding the channelIndices values of the last successful decode call. */
+  uint8_t              chMapping[((8) * 2)];    /*!< Table of MPEG canonical order to bitstream channel order mapping. */
+  uint8_t              elTags[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) + 1)]; /*!< Table where the elements id Tags are listed      */
+  uint8_t              usacStereoConfigIndex[(3 * ((8) * 2) + (((8) * 2)) / 2 + 4 * (1) + 1)];
+  CProgramConfig       pce;
 };
 
 #define AAC_DEBUG_EXTHLP \
