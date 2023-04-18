@@ -15,7 +15,6 @@
 
 #include "aacdec_hcr.h"
 
-#include "aacdec_hcr_bit.h"
 #include "aac_rom.h"
 
 

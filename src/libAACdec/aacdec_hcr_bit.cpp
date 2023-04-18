@@ -8,7 +8,7 @@
 
 *******************************************************************************/
 #include "newAACDecoder.h"
-#include "aacdec_hcr_bit.h"
+#include "../libFDK/FDK_bitstream.h"
 
 /*---------------------------------------------------------------------------------------------
         description:  This function toggles the read direction.

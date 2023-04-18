@@ -23,8 +23,6 @@
 
 #include "../libSBRdec/sbrdecoder.h"
 
-#include "../libAACdec/aacdec_drc.h"
-
 #include "../libPCMutils/pcmdmx_lib.h"
 
 #include "../libDRCdec/FDK_drcDecLib.h"

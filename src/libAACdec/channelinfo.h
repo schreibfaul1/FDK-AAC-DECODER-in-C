@@ -15,7 +15,6 @@
 #include "../libFDK/common_fix.h"
 #include "../libFDK/mdct.h"
 #include "aac_rom.h"
-#include "aacdec_drc_types.h"
 #include "aacdec_hcr_types.h"
 #include "aacdec_pns.h"
 #include "aacdec_tns.h"

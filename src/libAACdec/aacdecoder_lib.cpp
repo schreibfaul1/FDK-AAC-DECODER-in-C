@@ -19,7 +19,7 @@
 #include "../libPCMutils/pcm_utils.h"
 #include "../libSACdec/sac_dec_lib.h"
 #include "../libSBRdec/sbrdecoder.h"
-#include "aacdec_drc.h"
+
 #include "aacdecoder.h"
 #include "conceal.h"
 
