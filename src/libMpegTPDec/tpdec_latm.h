@@ -62,8 +62,8 @@ int32_t CLatmDemux_ReadAuChunkLengthInfo(HANDLE_FDK_BITSTREAM bs);
 
 TRANSPORTDEC_ERROR_t CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
                                    CLatmDemux *pLatmDemux, TRANSPORT_TYPE_t tt,
-                                   CSTpCallBacks *pTpDecCallbacks,
-                                   CSAudioSpecificConfig *pAsc,
+                                   CSTpCallBacks_t *pTpDecCallbacks,
+                                   CSAudioSpecificConfig_t *pAsc,
                                    int32_t *pfConfigFound,
                                    const int32_t ignoreBufferFullness);
 
@@ -82,7 +82,7 @@ TRANSPORTDEC_ERROR_t CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
  */
 TRANSPORTDEC_ERROR_t CLatmDemux_ReadStreamMuxConfig(
     HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux,
-    CSTpCallBacks *pTpDecCallbacks, CSAudioSpecificConfig *pAsc,
+    CSTpCallBacks_t *pTpDecCallbacks, CSAudioSpecificConfig_t *pAsc,
     int32_t *pfConfigFound, uint8_t configMode, uint8_t configChanged);
 
 TRANSPORTDEC_ERROR_t CLatmDemux_ReadPayloadLengthInfo(HANDLE_FDK_BITSTREAM bs,

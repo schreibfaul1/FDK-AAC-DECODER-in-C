@@ -1295,7 +1295,7 @@ void CAacDecoder_Close(HANDLE_AACDECODER self) {
 */
 
 AAC_DECODER_ERROR_t
-CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig *asc, uint8_t configMode, uint8_t *configChanged) {
+CAacDecoder_Init(HANDLE_AACDECODER self, const CSAudioSpecificConfig_t *asc, uint8_t configMode, uint8_t *configChanged) {
 	AAC_DECODER_ERROR_t  err = AAC_DEC_OK;
 	int32_t                ascChannels, ascChanged = 0;
 	AACDEC_RENDER_MODE_t initRenderMode = AACDEC_RENDER_INVALID;

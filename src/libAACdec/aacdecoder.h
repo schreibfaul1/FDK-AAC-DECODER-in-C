@@ -88,7 +88,7 @@ struct AAC_DECODER_INSTANCE {
   int32_t            *workBufferCore1;
   int32_t            *workBufferCore2;
   int32_t            *pTimeData2;
-  const CSUsacConfig *pUsacConfig[(1 * 1)];
+  const CSUsacConfig_t *pUsacConfig[(1 * 1)];
   HANDLE_SBRDECODER   hSbrDecoder;  /*!< SBR decoder handle. */
   uint8_t            *pDrmBsBuffer; /*!< Pointer to dynamic buffer which is used to reverse the bits of the DRM SBR payload */
   HANDLE_AAC_DRC      hDrcInfo;     /*!< handle to DRC data structure */
@@ -232,7 +232,7 @@ HANDLE_AACDECODER CAacDecoder_Open(TRANSPORT_TYPE_t bsFormat);
 
 /* Initialization of channel elements */
 AAC_DECODER_ERROR_t CAacDecoder_Init(HANDLE_AACDECODER self,
-                                              const CSAudioSpecificConfig *asc,
+                                              const CSAudioSpecificConfig_t *asc,
                                               uint8_t configMode,
                                               uint8_t *configChanged);
 /*!

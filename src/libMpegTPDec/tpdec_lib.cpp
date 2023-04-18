@@ -39,12 +39,12 @@ typedef union
 
 struct TRANSPORTDEC {
     TRANSPORT_TYPE_t transportFmt; /*!< MPEG4 transportDec type. */
-    CSTpCallBacks callbacks; /*!< Struct holding callback and its data */
+    CSTpCallBacks_t callbacks; /*!< Struct holding callback and its data */
     FDK_BITSTREAM_t bitStream[1]; /* Bitstream reader */
     uint8_t        *bsBuffer;     /* Internal bitstreamd data buffer */
     transportdec_parser_t parser; /* Format specific parser structs. */
-    CSAudioSpecificConfig asc[(1 * 1) + 1]; /* Audio specific config from the last config found. */
-    CCtrlCFGChange ctrlCFGChange[(1 * 1)];  /* Controls config change */
+    CSAudioSpecificConfig_t asc[(1 * 1) + 1]; /* Audio specific config from the last config found. */
+    CCtrlCFGChange_t ctrlCFGChange[(1 * 1)];  /* Controls config change */
     uint32_t globalFramePos;            /* Global transport frame reference bit position. */
     uint32_t accessUnitAnchor[1];       /* Current access unit start bit position. */
     int32_t  auLength[1];               /* Length of current access unit. */
@@ -1231,7 +1231,7 @@ bail:
 }
 
 TRANSPORTDEC_ERROR_t transportDec_GetAsc(const HANDLE_TRANSPORTDEC hTp, const uint32_t layer,
-                                       CSAudioSpecificConfig *asc) {
+                                       CSAudioSpecificConfig_t *asc) {
     TRANSPORTDEC_ERROR_t err = TRANSPORTDEC_OK;
 
     if(hTp != NULL) {
@@ -1443,7 +1443,7 @@ TRANSPORTDEC_ERROR_t transportDec_CrcCheck(HANDLE_TRANSPORTDEC pTp) {
 }
 
 TRANSPORTDEC_ERROR_t transportDec_DrmRawSdcAudioConfig_Check(uint8_t *conf, const uint32_t length) {
-    CSAudioSpecificConfig asc;
+    CSAudioSpecificConfig_t asc;
     FDK_BITSTREAM_t         bs;
     HANDLE_FDK_BITSTREAM  hBs = &bs;
 

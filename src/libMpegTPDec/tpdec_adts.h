@@ -122,7 +122,7 @@ TRANSPORTDEC_ERROR_t adtsRead_CrcCheck(HANDLE_ADTS pAdts);
  * \return  error status
  */
 TRANSPORTDEC_ERROR_t adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
-                                         CSAudioSpecificConfig *pAsc,
+                                         CSAudioSpecificConfig_t *pAsc,
                                          HANDLE_FDK_BITSTREAM bs,
                                          const int32_t ignoreBufferFullness);
 

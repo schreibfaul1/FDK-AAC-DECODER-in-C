@@ -74,7 +74,7 @@ TRANSPORTDEC_ERROR_t adtsRead_CrcCheck(HANDLE_ADTS pAdts) {
 #define Adts_Length_CrcCheck 16
 
 TRANSPORTDEC_ERROR_t adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
-                                         CSAudioSpecificConfig *pAsc,
+                                         CSAudioSpecificConfig_t *pAsc,
                                          HANDLE_FDK_BITSTREAM hBs,
                                          const int32_t ignoreBufferFullness) {
   int32_t crcReg;

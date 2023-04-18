@@ -49,7 +49,7 @@ TRANSPORT_TYPE_t transportDec_GetFormat(const HANDLE_TRANSPORTDEC hTp);
 int32_t transportDec_GetBufferFullness(const HANDLE_TRANSPORTDEC hTp);
 void transportDec_Close(HANDLE_TRANSPORTDEC *phTp);
 TRANSPORTDEC_ERROR_t transportDec_ReadAccessUnit(const HANDLE_TRANSPORTDEC hTp, const uint32_t layer);
-TRANSPORTDEC_ERROR_t transportDec_GetAsc(const HANDLE_TRANSPORTDEC hTp, const uint32_t layer, CSAudioSpecificConfig *asc);
+TRANSPORTDEC_ERROR_t transportDec_GetAsc(const HANDLE_TRANSPORTDEC hTp, const uint32_t layer, CSAudioSpecificConfig_t *asc);
 int32_t transportDec_GetAuBitsRemaining(const HANDLE_TRANSPORTDEC hTp, const uint32_t layer);
 int32_t transportDec_GetAuBitsTotal(const HANDLE_TRANSPORTDEC hTp, const uint32_t layer);
 TRANSPORTDEC_ERROR_t transportDec_EndAccessUnit(const HANDLE_TRANSPORTDEC hTp);

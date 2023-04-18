@@ -1517,12 +1517,12 @@ typedef struct {
 } CSUsacExtElementConfig_t;
 
 typedef struct {
-    MP4_ELEMENT_ID_t       usacElementType;
-    uint8_t                m_noiseFilling;
-    uint8_t                m_harmonicSBR;
-    uint8_t                m_interTes;
-    uint8_t                m_pvc;
-    uint8_t                m_stereoConfigIndex;
+    MP4_ELEMENT_ID_t         usacElementType;
+    uint8_t                  m_noiseFilling;
+    uint8_t                  m_harmonicSBR;
+    uint8_t                  m_interTes;
+    uint8_t                  m_pvc;
+    uint8_t                  m_stereoConfigIndex;
     CSUsacExtElementConfig_t extElement;
 } CSUsacElementConfig;
 
@@ -1539,7 +1539,7 @@ typedef struct {
     uint8_t             elementLengthPresent;
     uint8_t             UsacConfig[TP_USAC_MAX_CONFIG_LEN];
     uint16_t            UsacConfigBits;
-} CSUsacConfig;
+} CSUsacConfig_t;
 
 typedef struct {
     uint8_t  m_frameLengthFlag;
@@ -1548,7 +1548,7 @@ typedef struct {
     uint8_t  m_sbrSamplingRate;
     uint8_t  m_sbrCrcFlag;
     uint32_t m_downscaledSamplingFrequency;
-} CSEldSpecificConfig;
+} CSEldSpecificConfig_t;
 
 typedef struct {
     uint32_t m_frameLengthFlag;
@@ -1559,14 +1559,14 @@ typedef struct {
     uint32_t m_layer;
     uint32_t m_numOfSubFrame;
     uint32_t m_layerLength;
-} CSGaSpecificConfig;
+} CSGaSpecificConfig_t;
 
 typedef struct {
     /* XYZ Specific Data */
     union {
-        CSGaSpecificConfig  m_gaSpecificConfig;  /**< General audio specific configuration. */
-        CSEldSpecificConfig m_eldSpecificConfig; /**< ELD specific configuration. */
-        CSUsacConfig        m_usacConfig;        /**< USAC specific configuration               */
+        CSGaSpecificConfig_t  m_gaSpecificConfig;  /**< General audio specific configuration. */
+        CSEldSpecificConfig_t m_eldSpecificConfig; /**< ELD specific configuration. */
+        CSUsacConfig_t        m_usacConfig;        /**< USAC specific configuration               */
     } m_sc;
     /* Common ASC parameters */
     CProgramConfig_t      m_progrConfigElement;              /**< Program configuration. */
@@ -1592,7 +1592,7 @@ typedef struct {
     uint8_t  SacConfigChanged; /**< The flag will be set if at least one sac config  parameter has changed that requires a memory reconfiguration */
     uint8_t  config[TP_USAC_MAX_CONFIG_LEN]; /**< Configuration stored as bitstream */
     uint32_t configBits;                     /**< Configuration length in bits */
-} CSAudioSpecificConfig;
+} CSAudioSpecificConfig_t;
 
 typedef struct {
     int8_t  flushCnt;       /**< Flush frame counter */
@@ -1606,11 +1606,11 @@ typedef struct {
                              right truncation occured before */
     uint8_t forceCfgChange; /**< Flag indicates if config change has to be forced
                              even if new config is the same */
-} CCtrlCFGChange;
+} CCtrlCFGChange_t;
 
-typedef int32_t (*cbUpdateConfig_t)(void *, const CSAudioSpecificConfig *, const uint8_t configMode, uint8_t *configChanged);
-typedef int32_t (*cbFreeMem_t)(void *, const CSAudioSpecificConfig *);
-typedef int32_t (*cbCtrlCFGChange_t)(void *, const CCtrlCFGChange *);
+typedef int32_t (*cbUpdateConfig_t)(void *, const CSAudioSpecificConfig_t *, const uint8_t configMode, uint8_t *configChanged);
+typedef int32_t (*cbFreeMem_t)(void *, const CSAudioSpecificConfig_t *);
+typedef int32_t (*cbCtrlCFGChange_t)(void *, const CCtrlCFGChange_t *);
 typedef int32_t (*cbSsc_t)(void *, HANDLE_FDK_BITSTREAM, const AUDIO_OBJECT_TYPE_t coreCodec, const int32_t samplingRate, const int32_t frameSize,
                            const int32_t stereoConfigIndex, const int32_t coreSbrFrameLengthIndex, const int32_t configBytes,
                            const uint8_t configMode, uint8_t *configChanged);
@@ -1646,7 +1646,7 @@ typedef struct {
                             loudnessInfoSet parser callback. */
     void *cbUniDrcData;  /*!< User data pointer for uniDrcConfig and
                             loudnessInfoSet parser callback. */
-} CSTpCallBacks;
+} CSTpCallBacks_t;
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1740,9 +1740,9 @@ int32_t CProgramConfig_LookupElement(CProgramConfig_t *pPce, uint32_t chConfig, 
 int32_t CProgramConfig_GetPceChMap(const CProgramConfig_t *pPce, uint8_t pceChMap[], const uint32_t pceChMapLen);
 int32_t CProgramConfig_GetElementTable(const CProgramConfig_t *pPce, MP4_ELEMENT_ID_t table[], const int32_t elListSize, uint8_t *pChMapIdx);
 void CProgramConfig_GetChannelDescription(const uint32_t chConfig, const CProgramConfig_t *pPce, AUDIO_CHANNEL_TYPE_t chType[], uint8_t chIndex[]);
-void AudioSpecificConfig_Init(CSAudioSpecificConfig *pAsc);
-TRANSPORTDEC_ERROR_t AudioSpecificConfig_Parse(CSAudioSpecificConfig *pAsc, HANDLE_FDK_BITSTREAM hBs, int32_t fExplicitBackwardCompatible,
-                                             CSTpCallBacks *cb, uint8_t configMode, uint8_t configChanged, AUDIO_OBJECT_TYPE_t m_aot);
+void AudioSpecificConfig_Init(CSAudioSpecificConfig_t *pAsc);
+TRANSPORTDEC_ERROR_t AudioSpecificConfig_Parse(CSAudioSpecificConfig_t *pAsc, HANDLE_FDK_BITSTREAM hBs, int32_t fExplicitBackwardCompatible,
+                                             CSTpCallBacks_t *cb, uint8_t configMode, uint8_t configChanged, AUDIO_OBJECT_TYPE_t m_aot);
 
 
 

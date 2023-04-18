@@ -90,7 +90,7 @@ TRANSPORTDEC_ERROR_t drmRead_DecodeHeader(HANDLE_DRM pDrm,
  * \brief   Parse a Drm specific SDC audio config from a given bitstream handle.
  *
  * \param pAsc                         A pointer to an allocated
- * CSAudioSpecificConfig struct.
+ * CSAudioSpecificConfig_t struct.
  * \param hBs                          Bitstream handle.
  * \param cb                           A pointer to structure holding callback
  * information Note: A NULL pointer for cb can be used to signal a "Check Config
@@ -101,9 +101,9 @@ TRANSPORTDEC_ERROR_t drmRead_DecodeHeader(HANDLE_DRM pDrm,
  *
  * \return  Total element count including all SCE, CPE and LFE.
  */
-TRANSPORTDEC_ERROR_t DrmRawSdcAudioConfig_Parse(CSAudioSpecificConfig *pAsc,
+TRANSPORTDEC_ERROR_t DrmRawSdcAudioConfig_Parse(CSAudioSpecificConfig_t *pAsc,
                                               HANDLE_FDK_BITSTREAM hBs,
-                                              CSTpCallBacks *cb,
+                                              CSTpCallBacks_t *cb,
                                               const uint8_t configMode,
                                               const uint8_t configChanged);
 

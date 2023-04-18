@@ -33,7 +33,7 @@ static uint32_t CLatmDemux_GetValue(HANDLE_FDK_BITSTREAM bs) {
 
 static TRANSPORTDEC_ERROR_t CLatmDemux_ReadAudioMuxElement(
     HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux, int32_t m_muxConfigPresent,
-    CSTpCallBacks *pTpDecCallbacks, CSAudioSpecificConfig *pAsc,
+    CSTpCallBacks_t *pTpDecCallbacks, CSAudioSpecificConfig_t *pAsc,
     int32_t *pfConfigFound) {
   TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
 
@@ -145,8 +145,8 @@ bail:
 
 TRANSPORTDEC_ERROR_t CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
                                    CLatmDemux *pLatmDemux, TRANSPORT_TYPE_t tt,
-                                   CSTpCallBacks *pTpDecCallbacks,
-                                   CSAudioSpecificConfig *pAsc,
+                                   CSTpCallBacks_t *pTpDecCallbacks,
+                                   CSAudioSpecificConfig_t *pAsc,
                                    int32_t *pfConfigFound,
                                    const int32_t ignoreBufferFullness) {
   uint32_t cntBits;
@@ -192,11 +192,11 @@ TRANSPORTDEC_ERROR_t CLatmDemux_Read(HANDLE_FDK_BITSTREAM bs,
 
 TRANSPORTDEC_ERROR_t CLatmDemux_ReadStreamMuxConfig(
     HANDLE_FDK_BITSTREAM bs, CLatmDemux *pLatmDemux,
-    CSTpCallBacks *pTpDecCallbacks, CSAudioSpecificConfig *pAsc,
+    CSTpCallBacks_t *pTpDecCallbacks, CSAudioSpecificConfig_t *pAsc,
     int32_t *pfConfigFound, uint8_t configMode, uint8_t configChanged) {
-  CSAudioSpecificConfig ascDummy; /* the actual config is needed for flushing,
+  CSAudioSpecificConfig_t ascDummy; /* the actual config is needed for flushing,
                                      after that new config can be parsed */
-  CSAudioSpecificConfig *pAscDummy;
+  CSAudioSpecificConfig_t *pAscDummy;
   pAscDummy = &ascDummy;
   pLatmDemux->usacExplicitCfgChanged = 0;
   LATM_LAYER_INFO *p_linfo = NULL;
@@ -249,7 +249,7 @@ TRANSPORTDEC_ERROR_t CLatmDemux_ReadStreamMuxConfig(
           if (lay > 0) {
             memcpy(&pAsc[TPDEC_TRACKINDEX(prog, lay)],
                       &pAsc[TPDEC_TRACKINDEX(prog, lay - 1)],
-                      sizeof(CSAudioSpecificConfig));
+                      sizeof(CSAudioSpecificConfig_t));
           } else {
             ErrorStatus = TRANSPORTDEC_PARSE_ERROR;
             goto bail;

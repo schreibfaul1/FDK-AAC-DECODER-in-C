@@ -1054,7 +1054,7 @@ static int32_t getSampleRate(HANDLE_FDK_BITSTREAM bs, uint8_t *index, int32_t nB
     return sampleRate;
 }
 
-static TRANSPORTDEC_ERROR_t GaSpecificConfig_Parse(CSGaSpecificConfig *self, CSAudioSpecificConfig *asc,
+static TRANSPORTDEC_ERROR_t GaSpecificConfig_Parse(CSGaSpecificConfig_t *self, CSAudioSpecificConfig_t *asc,
                                                  HANDLE_FDK_BITSTREAM bs, uint32_t ascStartAnchor) {
     TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
 
@@ -1107,8 +1107,8 @@ static int32_t skipSbrHeader(HANDLE_FDK_BITSTREAM hBs, int32_t isUsac) {
     return bitsToSkip;
 }
 
-static int32_t ld_sbr_header(CSAudioSpecificConfig *asc, const int32_t dsFactor, HANDLE_FDK_BITSTREAM hBs,
-                             CSTpCallBacks *cb) {
+static int32_t ld_sbr_header(CSAudioSpecificConfig_t *asc, const int32_t dsFactor, HANDLE_FDK_BITSTREAM hBs,
+                             CSTpCallBacks_t *cb) {
     const int32_t  channelConfiguration = asc->m_channelConfiguration;
     int32_t        i = 0, j = 0;
     int32_t        error = 0;
@@ -1139,16 +1139,16 @@ bail:
     return error;
 }
 
-static TRANSPORTDEC_ERROR_t EldSpecificConfig_Parse(CSAudioSpecificConfig *asc, HANDLE_FDK_BITSTREAM hBs,
-                                                  CSTpCallBacks *cb) {
+static TRANSPORTDEC_ERROR_t EldSpecificConfig_Parse(CSAudioSpecificConfig_t *asc, HANDLE_FDK_BITSTREAM hBs,
+                                                  CSTpCallBacks_t *cb) {
     TRANSPORTDEC_ERROR_t   ErrorStatus = TRANSPORTDEC_OK;
-    CSEldSpecificConfig *esc = &asc->m_sc.m_eldSpecificConfig;
+    CSEldSpecificConfig_t *esc = &asc->m_sc.m_eldSpecificConfig;
     uint32_t             eldExtType;
     int32_t              eldExtLen, len, cnt, ldSbrLen = 0, eldExtLenSum, numSbrHeader = 0, sbrIndex, eldExtCnt = 0;
 
     unsigned char downscale_fill_nibble;
 
-    memset(esc, 0, sizeof(CSEldSpecificConfig));
+    memset(esc, 0, sizeof(CSEldSpecificConfig_t));
 
     esc->m_frameLengthFlag = FDKreadBits(hBs, 1);
     if(esc->m_frameLengthFlag) { asc->m_samplesPerFrame = 480; }
@@ -1326,7 +1326,7 @@ static const uint8_t sbrRatioIndex[8] = {0, 0, 2, 3, 1, 0, 0, 0};
   rsv603daExtElementConfig() q.v. ISO/IEC DIS 23008-3 Table 13
 */
 static TRANSPORTDEC_ERROR_t extElementConfig(CSUsacExtElementConfig_t *extElement, HANDLE_FDK_BITSTREAM hBs,
-                                           const CSTpCallBacks *cb, const uint8_t numSignalsInGroup,
+                                           const CSTpCallBacks_t *cb, const uint8_t numSignalsInGroup,
                                            const uint32_t coreFrameLength, const int32_t subStreamIndex,
                                            const AUDIO_OBJECT_TYPE_t aot) {
     TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
@@ -1401,7 +1401,7 @@ static TRANSPORTDEC_ERROR_t extElementConfig(CSUsacExtElementConfig_t *extElemen
   UsacConfigExtension() q.v. ISO/IEC FDIS 23003-3:2011(E) Table 15
   rsv603daConfigExtension() q.v. ISO/IEC DIS 23008-3 Table 14
 */
-static TRANSPORTDEC_ERROR_t configExtension(CSUsacConfig *usc, HANDLE_FDK_BITSTREAM hBs, const CSTpCallBacks *cb) {
+static TRANSPORTDEC_ERROR_t configExtension(CSUsacConfig_t *usc, HANDLE_FDK_BITSTREAM hBs, const CSTpCallBacks_t *cb) {
     TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
 
     int32_t numConfigExtensions;
@@ -1452,10 +1452,10 @@ static TRANSPORTDEC_ERROR_t configExtension(CSUsacConfig *usc, HANDLE_FDK_BITSTR
    rsv603daDecoderConfig() ISO/IEC DIS 23008-3   Table 8
    UsacDecoderConfig()     ISO/IEC FDIS 23003-3  Table 6
   */
-static TRANSPORTDEC_ERROR_t UsacRsv60DecoderConfig_Parse(CSAudioSpecificConfig *asc, HANDLE_FDK_BITSTREAM hBs,
-                                                       const CSTpCallBacks *cb) {
+static TRANSPORTDEC_ERROR_t UsacRsv60DecoderConfig_Parse(CSAudioSpecificConfig_t *asc, HANDLE_FDK_BITSTREAM hBs,
+                                                       const CSTpCallBacks_t *cb) {
     TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
-    CSUsacConfig      *usc = &asc->m_sc.m_usacConfig;
+    CSUsacConfig_t      *usc = &asc->m_sc.m_usacConfig;
     int32_t            i, numberOfElements;
     int32_t            channelElementIdx = 0; /* index for elements which contain audio channels (sce, cpe, lfe) */
     SC_CHANNEL_CONFIG  sc_chan_config = {0, 0, 0, 0};
@@ -1640,7 +1640,7 @@ static TRANSPORTDEC_ERROR_t UsacRsv60DecoderConfig_Parse(CSAudioSpecificConfig *
 }
 
 /* Mapping of coreSbrFrameLengthIndex defined by Table 70 in ISO/IEC 23003-3 */
-static TRANSPORTDEC_ERROR_t UsacConfig_SetCoreSbrFrameLengthIndex(CSAudioSpecificConfig *asc,
+static TRANSPORTDEC_ERROR_t UsacConfig_SetCoreSbrFrameLengthIndex(CSAudioSpecificConfig_t *asc,
                                                                 int32_t                coreSbrFrameLengthIndex) {
     int32_t sbrRatioIndex_val;
 
@@ -1676,7 +1676,7 @@ static TRANSPORTDEC_ERROR_t UsacConfig_SetCoreSbrFrameLengthIndex(CSAudioSpecifi
     return TRANSPORTDEC_OK;
 }
 
-static TRANSPORTDEC_ERROR_t UsacConfig_Parse(CSAudioSpecificConfig *asc, HANDLE_FDK_BITSTREAM hBs, CSTpCallBacks *cb) {
+static TRANSPORTDEC_ERROR_t UsacConfig_Parse(CSAudioSpecificConfig_t *asc, HANDLE_FDK_BITSTREAM hBs, CSTpCallBacks_t *cb) {
     int32_t            usacSamplingFrequency, channelConfigurationIndex, coreSbrFrameLengthIndex;
     TRANSPORTDEC_ERROR_t err = TRANSPORTDEC_OK;
 
@@ -1727,8 +1727,8 @@ static TRANSPORTDEC_ERROR_t UsacConfig_Parse(CSAudioSpecificConfig *asc, HANDLE_
     return err;
 }
 
-static TRANSPORTDEC_ERROR_t AudioSpecificConfig_ExtensionParse(CSAudioSpecificConfig *self, HANDLE_FDK_BITSTREAM bs,
-                                                             CSTpCallBacks *cb) {
+static TRANSPORTDEC_ERROR_t AudioSpecificConfig_ExtensionParse(CSAudioSpecificConfig_t *self, HANDLE_FDK_BITSTREAM bs,
+                                                             CSTpCallBacks_t *cb) {
     TP_ASC_EXTENSION_ID lastAscExt, ascExtId = ASCEXT_UNKOWN;
     int32_t             bitsAvailable = (int32_t)FDKgetValidBits(bs);
 
@@ -1821,8 +1821,8 @@ static TRANSPORTDEC_ERROR_t AudioSpecificConfig_ExtensionParse(CSAudioSpecificCo
  * API Functions
  */
 
-void AudioSpecificConfig_Init(CSAudioSpecificConfig *asc) {
-    memset(asc, 0, sizeof(CSAudioSpecificConfig));
+void AudioSpecificConfig_Init(CSAudioSpecificConfig_t *asc) {
+    memset(asc, 0, sizeof(CSAudioSpecificConfig_t));
 
     /* Init all values that should not be zero. */
     asc->m_aot = AOT_NONE;
@@ -1832,8 +1832,8 @@ void AudioSpecificConfig_Init(CSAudioSpecificConfig *asc) {
     CProgramConfig_Init(&asc->m_progrConfigElement);
 }
 
-TRANSPORTDEC_ERROR_t AudioSpecificConfig_Parse(CSAudioSpecificConfig *self, HANDLE_FDK_BITSTREAM bs,
-                                             int32_t fExplicitBackwardCompatible, CSTpCallBacks *cb, uint8_t configMode,
+TRANSPORTDEC_ERROR_t AudioSpecificConfig_Parse(CSAudioSpecificConfig_t *self, HANDLE_FDK_BITSTREAM bs,
+                                             int32_t fExplicitBackwardCompatible, CSTpCallBacks_t *cb, uint8_t configMode,
                                              uint8_t configChanged, AUDIO_OBJECT_TYPE_t m_aot) {
     TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
     uint32_t           ascStartAnchor = FDKgetValidBits(bs);
@@ -1998,11 +1998,11 @@ TRANSPORTDEC_ERROR_t AudioSpecificConfig_Parse(CSAudioSpecificConfig *self, HAND
 }
 
 static TRANSPORTDEC_ERROR_t Drm_xHEAACDecoderConfig(
-    CSAudioSpecificConfig *asc, HANDLE_FDK_BITSTREAM hBs, int32_t audioMode,
-    CSTpCallBacks *cb /* use cb == NULL to signal config check only mode */
+    CSAudioSpecificConfig_t *asc, HANDLE_FDK_BITSTREAM hBs, int32_t audioMode,
+    CSTpCallBacks_t *cb /* use cb == NULL to signal config check only mode */
 ) {
     TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
-    CSUsacConfig      *usc = &asc->m_sc.m_usacConfig;
+    CSUsacConfig_t      *usc = &asc->m_sc.m_usacConfig;
     int32_t            elemIdx = 0;
 
     usc->element[elemIdx].m_stereoConfigIndex = 0;
@@ -2106,8 +2106,8 @@ static TRANSPORTDEC_ERROR_t Drm_xHEAACDecoderConfig(
     return ErrorStatus;
 }
 
-TRANSPORTDEC_ERROR_t Drm_xHEAACStaticConfig(CSAudioSpecificConfig *asc, HANDLE_FDK_BITSTREAM bs, int32_t audioMode,
-                                          CSTpCallBacks *cb /* use cb == NULL to signal config check only mode */
+TRANSPORTDEC_ERROR_t Drm_xHEAACStaticConfig(CSAudioSpecificConfig_t *asc, HANDLE_FDK_BITSTREAM bs, int32_t audioMode,
+                                          CSTpCallBacks_t *cb /* use cb == NULL to signal config check only mode */
 ) {
     int32_t coreSbrFrameLengthIndexDrm = FDKreadBits(bs, 2);
     if(UsacConfig_SetCoreSbrFrameLengthIndex(asc, coreSbrFrameLengthIndexDrm + 1) != TRANSPORTDEC_OK) {
@@ -2134,8 +2134,8 @@ const uint8_t mapSr2MPEGIdx[8] = {
     0x03  /* 48.0 kHz */
 };
 
-TRANSPORTDEC_ERROR_t DrmRawSdcAudioConfig_Parse(CSAudioSpecificConfig *self, HANDLE_FDK_BITSTREAM bs,
-                                              CSTpCallBacks *cb, /* use cb == NULL to signal config check only mode */
+TRANSPORTDEC_ERROR_t DrmRawSdcAudioConfig_Parse(CSAudioSpecificConfig_t *self, HANDLE_FDK_BITSTREAM bs,
+                                              CSTpCallBacks_t *cb, /* use cb == NULL to signal config check only mode */
                                               uint8_t configMode, uint8_t configChanged) {
     TRANSPORTDEC_ERROR_t ErrorStatus = TRANSPORTDEC_OK;
 

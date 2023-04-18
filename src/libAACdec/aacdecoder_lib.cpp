@@ -74,9 +74,9 @@ aacDecoder_GetFreeBytes(const HANDLE_AACDECODER self, uint32_t *pFreeBytes) {
 }
 
 /**
- * Config Decoder using a CSAudioSpecificConfig struct.
+ * Config Decoder using a CSAudioSpecificConfig_t struct.
  */
-static AAC_DECODER_ERROR_t aacDecoder_Config(HANDLE_AACDECODER self, const CSAudioSpecificConfig *pAscStruct,
+static AAC_DECODER_ERROR_t aacDecoder_Config(HANDLE_AACDECODER self, const CSAudioSpecificConfig_t *pAscStruct,
 										   uint8_t configMode, uint8_t *configChanged) {
 	AAC_DECODER_ERROR_t err;
 
@@ -159,7 +159,7 @@ AAC_DECODER_ERROR_t aacDecoder_RawISOBMFFData(HANDLE_AACDECODER self, uint8_t *b
 	return err;
 }
 
-static int32_t aacDecoder_ConfigCallback(void *handle, const CSAudioSpecificConfig *pAscStruct, uint8_t configMode,
+static int32_t aacDecoder_ConfigCallback(void *handle, const CSAudioSpecificConfig_t *pAscStruct, uint8_t configMode,
 									 uint8_t *configChanged) {
 	HANDLE_AACDECODER  self = (HANDLE_AACDECODER)handle;
 	AAC_DECODER_ERROR_t  err = AAC_DEC_OK;
@@ -198,7 +198,7 @@ static int32_t aacDecoder_ConfigCallback(void *handle, const CSAudioSpecificConf
 	return errTp;
 }
 
-static int32_t aacDecoder_FreeMemCallback(void *handle, const CSAudioSpecificConfig *pAscStruct) {
+static int32_t aacDecoder_FreeMemCallback(void *handle, const CSAudioSpecificConfig_t *pAscStruct) {
 	TRANSPORTDEC_ERROR_t errTp = TRANSPORTDEC_OK;
 	HANDLE_AACDECODER  self = (HANDLE_AACDECODER)handle;
 
@@ -227,7 +227,7 @@ static int32_t aacDecoder_FreeMemCallback(void *handle, const CSAudioSpecificCon
 	return errTp;
 }
 
-static int32_t aacDecoder_CtrlCFGChangeCallback(void *handle, const CCtrlCFGChange *pCtrlCFGChangeStruct) {
+static int32_t aacDecoder_CtrlCFGChangeCallback(void *handle, const CCtrlCFGChange_t *pCtrlCFGChangeStruct) {
 	TRANSPORTDEC_ERROR_t errTp = TRANSPORTDEC_OK;
 	HANDLE_AACDECODER  self = (HANDLE_AACDECODER)handle;
 
@@ -956,7 +956,7 @@ AAC_DECODER_ERROR_t aacDecoder_DecodeFrame(HANDLE_AACDECODER self, int16_t *pTim
 		if(self->flags[0] & AC_USAC) {
 			/* 1) store AudioSpecificConfig always in AudioSpecificConfig_Parse() */
 			/* 2) free memory of dynamic allocated data */
-			CSAudioSpecificConfig asc;
+			CSAudioSpecificConfig_t asc;
 			transportDec_GetAsc(self->hInput, 0, &asc);
 			aacDecoder_FreeMemCallback(self, &asc);
 			self->streamInfo.numChannels = 0;
