@@ -20,7 +20,7 @@
 #include "usacdec_acelp.h"
 #include "usacdec_fac.h"
 #include "usacdec_lpc.h"
-#include "usacdec_rom.h"
+
 //----------------------------------------------------------------------------------------------------------------------
 void filtLP(const int32_t *syn, int32_t *syn_out, int32_t *noise, const int16_t *filt, const int32_t aacOutDataHeadroom,
             int32_t stop, int32_t len) {

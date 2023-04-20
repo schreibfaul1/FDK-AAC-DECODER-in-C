@@ -14,7 +14,7 @@
 #include "channelinfo.h"
 #include "../libFDK/common_fix.h"
 #include "../libFDK/FDK_bitstream.h"
-#include "usacdec_rom.h"
+
 
 #define LSPARG_SCALE 10
 

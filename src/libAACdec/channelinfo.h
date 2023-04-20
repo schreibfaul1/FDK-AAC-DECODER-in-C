@@ -26,7 +26,7 @@
 #include "stereo.h"
 #include "usacdec_acelp.h"
 #include "usacdec_const.h"
-#include "usacdec_rom.h"
+
 
 
 

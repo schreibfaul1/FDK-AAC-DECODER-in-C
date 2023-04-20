@@ -60,5 +60,27 @@ extern const MP4_ELEMENT_ID_t elementsTab[AACDEC_MAX_CH_CONF] [AACDEC_CH_ELEMENT
 extern const int32_t mdst_filt_coef_curr[20][3]; /* MDST-filter coefficient tables used for current window  */
 extern const int32_t mdst_filt_coef_prev[6][4];  /* MDST-filter coefficient tables used for previous window */
 extern void DecodeNonPCWs(HANDLE_FDK_BITSTREAM bs, H_HCR_INFO hHcr);
+extern const uint32_t fdk_dec_tab_factorial[8];
+extern const uint8_t fdk_dec_Ia[NB_LEADER];
+extern const uint8_t fdk_dec_Ds[NB_LDSIGN];
+extern const uint16_t fdk_dec_Is[NB_LDSIGN];
+extern const uint8_t fdk_dec_Ns[], fdk_dec_A3[], fdk_dec_A4[];
+extern const uint8_t fdk_dec_Da[][8];
+extern const uint16_t fdk_dec_I3[], fdk_dec_I4[];
+extern const int16_t fdk_dec_lsf_init[16];
+extern const int16_t fdk_dec_dico_lsf_abs_8b[16 * 256];
+extern const int16_t fdk_t_qua_gain7b[128 * 2];
+extern const int16_t lsp_interpol_factor[2][NB_SUBFR];
+extern const int16_t fdk_dec_filt_lp[1 + L_FILT];
+extern const int16_t FacWindowSynth128[128];
+extern const int16_t FacWindowZir128[128];
+extern const int16_t FacWindowSynth64[64];
+extern const int16_t FacWindowZir64[64];
+extern const int16_t FacWindowSynth32[32];
+extern const int16_t FacWindowZir32[32];
+extern const int16_t FacWindowSynth96[96];
+extern const int16_t FacWindowZir96[96];
+extern const int16_t FacWindowSynth48[48];
+extern const int16_t FacWindowZir48[48];
 
 #endif /* #ifndef AAC_ROM_H */

@@ -392,6 +392,7 @@
 #define ERROR_PCW_BODY_SIGN_ESC_TOO_LONG        0 /* set a positive values to trigger the error */
 #define MODULO_DIVISOR_HCR                      30
 #define HCR_ERROR_CONCEALMENT                   1 /* if set to '1', HCR _mutes_ the erred quantized spectral coefficients */
+
 #define SEGMENT_OVERRIDE_ERR_PCW_BODY           0x80000000
 #define SEGMENT_OVERRIDE_ERR_PCW_BODY_SIGN      0x40000000
 #define SEGMENT_OVERRIDE_ERR_PCW_BODY_SIGN_ESC  0x20000000
@@ -416,6 +417,20 @@
 #define LAV_VIOLATION                           0x00000002
 #define BIT_IN_SEGMENTATION_ERROR               0x00000001
 #define HCR_FATAL_PCW_ERROR_MASK                0x100E01FC
+
+#define NB_SPHERE     32
+#define NB_LEADER     37
+#define NB_LDSIGN     226
+#define NB_LDQ3       9
+#define NB_LDQ4       28
+#define LSF_SCALE     13
+#define L_FILT        12 /* Delay of up-sampling filter                */
+#define SF_QUA_GAIN7B 4
+#define NB_SPHERE     32
+#define NB_LEADER     37
+#define NB_LDSIGN     226
+#define NB_LDQ3       9
+#define NB_LDQ4       28
 
 // Audio Object Type definitions.
 typedef enum{

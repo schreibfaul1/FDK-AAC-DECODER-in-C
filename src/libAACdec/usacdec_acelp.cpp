@@ -15,7 +15,8 @@
 #include "usacdec_ace_d4t64.h"
 #include "usacdec_ace_ltp.h"
 #include "usacdec_lpc.h"
-#include "usacdec_rom.h"
+#include "../libFDK/FDK_lpc.h"
+
 
 #define PIT_FR2_12k8 128   /* Minimum pitch lag with resolution 1/2      */
 #define PIT_FR1_12k8 160   /* Minimum pitch lag with resolution 1        */

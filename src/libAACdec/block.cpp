@@ -18,6 +18,7 @@
 #include "../libFDK/FDK_bitstream.h"
 #include "../libFDK/scale.h"
 #include "../libFDK/FDK_tools_rom.h"
+#include "../libFDK/FDK_lpc.h"
 
 #include "usacdec_fac.h"
 #include "usacdec_lpd.h"
@@ -537,7 +538,7 @@ AAC_DECODER_ERROR_t CBlock_ReadSpectralData(
       pAacDecoderChannelInfo->pSpectralCoefficient;
 
   assert(BandOffsets != NULL);
-  
+
   typedef int32_t SPECTRUM[1024];
   memset(pSpectralCoefficient, 0, sizeof(SPECTRUM));
 

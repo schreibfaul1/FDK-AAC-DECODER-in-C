@@ -15,7 +15,7 @@
 #include "usacdec_const.h"
 #include "usacdec_lpc.h"
 #include "usacdec_acelp.h"
-#include "usacdec_rom.h"
+
 #include "../libFDK/dct.h"
 #include "../libFDK/FDK_tools_rom.h"
 #include "../libFDK/mdct.h"
