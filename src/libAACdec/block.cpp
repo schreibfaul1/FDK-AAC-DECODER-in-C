@@ -21,7 +21,7 @@
 #include "../libFDK/FDK_lpc.h"
 
 #include "usacdec_fac.h"
-#include "usacdec_lpd.h"
+
 #include "usacdec_lpc.h"
 #include "../libFDK/FDK_trigFcts.h"
 
@@ -773,7 +773,7 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
             for (int32_t bin = bin_start; bin < bin_stop; bin++) {
               seed = (uint32_t)(
                   (uint64_t)seed * 69069 +
-                  5); /* Inlined: UsacRandomSign - origin in usacdec_lpd.h */
+                  5); 
               pSpec[bin] =
                   (seed & 0x10000) ? scaled_noiseVal_neg : scaled_noiseVal_pos;
             } /* for (bin...) */
@@ -784,7 +784,7 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
               if (pSpec[bin] == (int32_t)0) {
                 seed = (uint32_t)(
                     (uint64_t)seed * 69069 +
-                    5); /* Inlined: UsacRandomSign - origin in usacdec_lpd.h */
+                    5);
                 pSpec[bin] = (seed & 0x10000) ? scaled_noiseVal_neg
                                               : scaled_noiseVal_pos;
               }

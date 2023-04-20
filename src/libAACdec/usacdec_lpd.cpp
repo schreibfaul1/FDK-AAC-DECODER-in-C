@@ -8,7 +8,6 @@
 
 *******************************************************************************/
 
-#include "usacdec_lpd.h"
 #include <memory.h>
 #include "../libArithCoding/ac_arith_coder.h"
 #include "../libFDK/FDK_tools_rom.h"

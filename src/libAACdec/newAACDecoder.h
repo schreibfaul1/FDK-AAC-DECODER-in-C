@@ -1848,7 +1848,10 @@ int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs, CJointStereoData_t *pJointSte
                           const int32_t scaleFactorBandsTransmitted, const int32_t max_sfb_ste_clear,
                           CJointStereoPersistentData_t *pJointStereoPersistentData, CCplxPredictionData_t *cplxPredictionData,
                           int32_t cplxPredictionActiv, int32_t scaleFactorBandsTotal, int32_t windowSequence, const uint32_t flags);
-
+void filtLP(const int32_t *syn, int32_t *syn_out, int32_t *noise, const int16_t *filt, const int32_t aacOutDataHeadroom, int32_t stop, int32_t len);
+void bass_pf_1sf_delay(int32_t syn[], const int32_t T_sf[], int32_t *pit_gain, const int32_t frame_length, const int32_t l_frame,
+                       const int32_t l_next, int32_t *synth_out, const int32_t aacOutDataHeadroom, int32_t mem_bpf[]);
+void CFdp_Reset(CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo);
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -1883,4 +1886,10 @@ static inline int32_t FDKlibInfo_lookup(const LIB_INFO_t* info, FDK_MODULE_ID_t 
 static inline int32_t CLpd_FAC_getLength(int32_t fNotShortBlock, int32_t fac_length_long) {
     if(fNotShortBlock) { return (fac_length_long); }
     else { return fac_length_long / 2; }
+}
+
+static inline int32_t UsacRandomSign(uint32_t *seed) {
+    *seed = (uint32_t)((uint64_t)(*seed) * 69069 + 5);
+
+    return (int32_t)((*seed) & 0x10000);
 }

@@ -23,7 +23,7 @@
 
 #include "aacdec_hcr.h"
 
-#include "usacdec_lpd.h"
+
 #include "usacdec_fac.h"
 
 static void MapMidSideMaskToPnsCorrelation(

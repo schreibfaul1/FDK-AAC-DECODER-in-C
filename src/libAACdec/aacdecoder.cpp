@@ -74,7 +74,7 @@
 #include "channel.h"
 #include "conceal.h"
 #include "rvlc.h"
-#include "usacdec_lpd.h"
+
 #define PS_IS_EXPLICITLY_DISABLED(aot, flags) (((aot) == AOT_DRM_AAC) && !(flags & AC_PS_PRESENT))
 
 #define IS_STEREO_SBR(el_id, stereoConfigIndex) \
