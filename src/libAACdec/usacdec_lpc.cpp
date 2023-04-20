@@ -9,8 +9,9 @@
 
 #include <memory.h>
 #include "newAACDecoder.h"
-#include "usacdec_lpc.h"
+
 #include "../libFDK/FDK_lpc.h"
+#include "../libAACdec/aac_rom.h"
 
 
 #include "../libFDK/FDK_trigFcts.h"

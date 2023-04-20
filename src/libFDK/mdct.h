@@ -13,21 +13,6 @@
 #include "../libAACdec/newAACDecoder.h"
 #include "common_fix.h"
 
-#define MDCT_OUT_HEADROOM 2 /* Output additional headroom */
-
-#define PCM_OUT_BITS DFRACT_BITS
-#define PCM_OUT_HEADROOM 8 /* Must have the same values as DMXH_HEADROOM */
-
-#define MDCT_OUTPUT_SCALE (-MDCT_OUT_HEADROOM + (DFRACT_BITS - PCM_OUT_BITS))
-/* Refer to "Output word length" in ISO/IEC 14496-3:2008(E) 23.2.3.6 */
-#define MDCT_OUTPUT_GAIN 16
-
-#define IMDCT_SCALE(x, s) \
-  SATURATE_RIGHT_SHIFT((x), ((s) + MDCT_OUTPUT_SCALE), PCM_OUT_BITS)
-#define IMDCT_SCALE_DBL(x) (int32_t)(x)
-#define IMDCT_SCALE_DBL_LSH1(x) SATURATE_LEFT_SHIFT_ALT((x), 1, DFRACT_BITS)
-
-#define MLT_FLAG_CURR_ALIAS_SYMMETRY 1
 
 
 

@@ -13,7 +13,7 @@
 #include "usacdec_fac.h"
 
 #include "usacdec_const.h"
-#include "usacdec_lpc.h"
+
 #include "usacdec_acelp.h"
 
 #include "../libFDK/dct.h"

@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "lookup.h"
+#include <assert.h>
 
 #define WAV_BITS               16
 #define SAMPLE_BITS            16
@@ -171,6 +172,28 @@
                            : ((((double)(val) * (DFRACT_FIX_SCALE)-0.5) <= (double)(MINVAL_DBL_CONST)) \
                                   ? (int32_t)(MINVAL_DBL_CONST)                                        \
                                   : (int32_t)((double)(val) * (double)(DFRACT_FIX_SCALE)-0.5)))
+
+#define SATURATE_RIGHT_SHIFT(src, scale, dBits)                                                                          \
+    ((((int32_t)(src) >> (scale)) > (int32_t)(((1U) << ((dBits)-1)) - 1))      ? (int32_t)(((1U) << ((dBits)-1)) - 1)    \
+     : (((int32_t)(src) >> (scale)) < ~((int32_t)(((1U) << ((dBits)-1)) - 1))) ? ~((int32_t)(((1U) << ((dBits)-1)) - 1)) \
+                                                                               : ((int32_t)(src) >> (scale)))
+#define SATURATE_LEFT_SHIFT(src, scale, dBits)                                                                         \
+    (((int32_t)(src) > ((int32_t)(((1U) << ((dBits)-1)) - 1) >> (scale)))    ? (int32_t)(((1U) << ((dBits)-1)) - 1)    \
+     : ((int32_t)(src) < ~((int32_t)(((1U) << ((dBits)-1)) - 1) >> (scale))) ? ~((int32_t)(((1U) << ((dBits)-1)) - 1)) \
+                                                                             : ((int32_t)(src) << (scale)))
+#define SATURATE_SHIFT(src, scale, dBits) \
+    (((scale) < 0) ? SATURATE_LEFT_SHIFT((src), -(scale), (dBits)) : SATURATE_RIGHT_SHIFT((src), (scale), (dBits)))
+
+#define SATURATE_LEFT_SHIFT_ALT(src, scale, dBits)                                                                      \
+    (((int32_t)(src) > ((int32_t)(((1U) << ((dBits)-1)) - 1) >> (scale)))     ? (int32_t)(((1U) << ((dBits)-1)) - 1)    \
+     : ((int32_t)(src) <= ~((int32_t)(((1U) << ((dBits)-1)) - 1) >> (scale))) ? ~((int32_t)(((1U) << ((dBits)-1)) - 2)) \
+                                                                              : ((int32_t)(src) << (scale)))
+#define SATURATE_RIGHT_SHIFT_ALT(src, scale, dBits)                                                                      \
+    ((((int32_t)(src) >> (scale)) > (int32_t)(((1U) << ((dBits)-1)) - 1))      ? (int32_t)(((1U) << ((dBits)-1)) - 1)    \
+     : (((int32_t)(src) >> (scale)) < ~((int32_t)(((1U) << ((dBits)-1)) - 2))) ? ~((int32_t)(((1U) << ((dBits)-1)) - 2)) \
+                                                                               : ((int32_t)(src) >> (scale)))
+#define SATURATE_INT_PCM_RIGHT_SHIFT(src, scale) SATURATE_RIGHT_SHIFT(src, scale, SAMPLE_BITS)
+#define SATURATE_INT_PCM_LEFT_SHIFT(src, scale) SATURATE_LEFT_SHIFT(src, scale, SAMPLE_BITS)
 
 /* macros for runtime conversion of float values to integer fixedpoint. NO * OVERFLOW CHECK!!! */
 #define FL2FX_SPC      FL2FX_DBL
@@ -391,7 +414,30 @@
 #define ERROR_PCW_BODY_SIGN_TOO_LONG            0 /* set a positive values to trigger the error */
 #define ERROR_PCW_BODY_SIGN_ESC_TOO_LONG        0 /* set a positive values to trigger the error */
 #define MODULO_DIVISOR_HCR                      30
-#define HCR_ERROR_CONCEALMENT                   1 /* if set to '1', HCR _mutes_ the erred quantized spectral coefficients */
+#define HCR_ERROR_CONCEALMENT                   1     /* if set to '1', HCR _mutes_ the erred quantized spectral coefficients */
+#define MDCT_OUT_HEADROOM                       2     /* Output additional headroom */
+#define PIT_FR2_12k8                            128   /* Minimum pitch lag with resolution 1/2      */
+#define PIT_FR1_12k8                            160   /* Minimum pitch lag with resolution 1        */
+#define TILT_CODE2                              19661 /* ACELP code pre-emphasis factor ( *2 )      */
+#define PIT_SHARP                               27853 /* pitch sharpening factor                    */
+#define PREEMPH_FAC                             22282 /* ACELP synth pre-emphasis factor            */
+#define ACELP_HEADROOM                          1
+#define ACELP_OUTSCALE                          (MDCT_OUT_HEADROOM - ACELP_HEADROOM)
+
+#define PCM_OUT_BITS DFRACT_BITS
+#define PCM_OUT_HEADROOM 8 /* Must have the same values as DMXH_HEADROOM */
+
+#define MDCT_OUTPUT_SCALE (-MDCT_OUT_HEADROOM + (DFRACT_BITS - PCM_OUT_BITS))
+/* Refer to "Output word length" in ISO/IEC 14496-3:2008(E) 23.2.3.6 */
+#define MDCT_OUTPUT_GAIN 16
+
+#define IMDCT_SCALE(x, s)  SATURATE_RIGHT_SHIFT((x), ((s) + MDCT_OUTPUT_SCALE), PCM_OUT_BITS)
+#define IMDCT_SCALE_DBL(x) (int32_t)(x)
+#define IMDCT_SCALE_DBL_LSH1(x) SATURATE_LEFT_SHIFT_ALT((x), 1, DFRACT_BITS)
+
+#define MLT_FLAG_CURR_ALIAS_SYMMETRY 1
+
+
 
 #define SEGMENT_OVERRIDE_ERR_PCW_BODY           0x80000000
 #define SEGMENT_OVERRIDE_ERR_PCW_BODY_SIGN      0x40000000
@@ -431,6 +477,10 @@
 #define NB_LDSIGN     226
 #define NB_LDQ3       9
 #define NB_LDQ4       28
+#define LSPARG_SCALE  10
+#define CACHE_BITS    32
+
+#define BUFSIZE_DUMMY_VALUE MAX_BUFSIZE_BYTES
 
 // Audio Object Type definitions.
 typedef enum{
@@ -739,6 +789,8 @@ enum {
     INTENSITY_HCB = 15,
     LAST_HCB
 };
+
+typedef enum { BS_READER, BS_WRITER } FDK_BS_CFG;
 
 enum {
     TNS_MAX_WINDOWS = 8, /* 8 */
@@ -1852,7 +1904,15 @@ void filtLP(const int32_t *syn, int32_t *syn_out, int32_t *noise, const int16_t 
 void bass_pf_1sf_delay(int32_t syn[], const int32_t T_sf[], int32_t *pit_gain, const int32_t frame_length, const int32_t l_frame,
                        const int32_t l_next, int32_t *synth_out, const int32_t aacOutDataHeadroom, int32_t mem_bpf[]);
 void CFdp_Reset(CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo);
-
+int32_t CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *lsfq, int32_t nk_mode, int32_t nqn, int32_t length);
+int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, int16_t lsp[][M_LP_FILTER_ORDER], int16_t lpc4_lsf[M_LP_FILTER_ORDER],
+                  int16_t lsf_adaptive_mean_cand[M_LP_FILTER_ORDER], int16_t pStability[], uint8_t *mod, int32_t first_lpd_flag,
+                  int32_t last_lpc_lost, int32_t last_frame_ok);
+void CLpc_Conceal(int16_t lsp[][M_LP_FILTER_ORDER], int16_t lpc4_lsf[M_LP_FILTER_ORDER], int16_t isf_adaptive_mean[M_LP_FILTER_ORDER],
+                  const int32_t first_lpd_flag);
+void E_LPC_a_weight(int16_t *wA, const int16_t *A, const int32_t m);
+void CLpd_DecodeGain(int32_t *gain, int32_t *gain_e, int32_t gain_code);
+void E_LPC_f_lsp_a_conversion(int16_t *lsp, int16_t *a, int32_t *a_exp);
 
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S
@@ -1892,4 +1952,263 @@ static inline int32_t UsacRandomSign(uint32_t *seed) {
     *seed = (uint32_t)((uint64_t)(*seed) * 69069 + 5);
 
     return (int32_t)((*seed) & 0x10000);
+}
+
+static inline HANDLE_FDK_BITSTREAM FDKcreateBitStream(uint8_t *pBuffer, uint32_t bufSize, FDK_BS_CFG config = BS_READER) {
+    HANDLE_FDK_BITSTREAM hBitStream = (HANDLE_FDK_BITSTREAM)FDKcalloc(1, sizeof(FDK_BITSTREAM_t));
+    if(hBitStream == NULL) return NULL;
+    FDK_InitBitBuffer(&hBitStream->hBitBuf, pBuffer, bufSize, 0);
+
+    /* init cache */
+    hBitStream->CacheWord = hBitStream->BitsInCache = 0;
+    hBitStream->ConfigCache = config;
+
+    return hBitStream;
+}
+
+static inline void FDKinitBitStream(HANDLE_FDK_BITSTREAM hBitStream, uint8_t *pBuffer, uint32_t bufSize, uint32_t validBits,
+                                    FDK_BS_CFG config = BS_READER) {
+    FDK_InitBitBuffer(&hBitStream->hBitBuf, pBuffer, bufSize, validBits);
+
+    /* init cache */
+    hBitStream->CacheWord = hBitStream->BitsInCache = 0;
+    hBitStream->ConfigCache = config;
+}
+
+static inline void FDKresetBitbuffer(HANDLE_FDK_BITSTREAM hBitStream, FDK_BS_CFG config = BS_READER) {
+    FDK_ResetBitBuffer(&hBitStream->hBitBuf);
+
+    /* init cache */
+    hBitStream->CacheWord = hBitStream->BitsInCache = 0;
+    hBitStream->ConfigCache = config;
+}
+
+static inline void FDKdeleteBitStream(HANDLE_FDK_BITSTREAM hBitStream) {
+    FDK_DeleteBitBuffer(&hBitStream->hBitBuf);
+    free(hBitStream);
+}
+
+static inline uint32_t FDKreadBits(HANDLE_FDK_BITSTREAM hBitStream, const uint32_t numberOfBits) {
+    uint32_t bits = 0;
+    int32_t  missingBits = (int32_t)numberOfBits - (int32_t)hBitStream->BitsInCache;
+
+    assert(numberOfBits <= 32);
+    if(missingBits > 0) {
+        if(missingBits != 32) bits = hBitStream->CacheWord << missingBits;
+        hBitStream->CacheWord = FDK_get32(&hBitStream->hBitBuf);
+        hBitStream->BitsInCache += CACHE_BITS;
+    }
+
+    hBitStream->BitsInCache -= numberOfBits;
+
+    return (bits | (hBitStream->CacheWord >> hBitStream->BitsInCache)) & BitMask[numberOfBits];
+}
+
+static inline uint32_t FDKreadBit(HANDLE_FDK_BITSTREAM hBitStream) {
+    if(!hBitStream->BitsInCache) {
+        hBitStream->CacheWord = FDK_get32(&hBitStream->hBitBuf);
+        hBitStream->BitsInCache = CACHE_BITS - 1;
+        return hBitStream->CacheWord >> 31;
+    }
+    hBitStream->BitsInCache--;
+
+    return (hBitStream->CacheWord >> hBitStream->BitsInCache) & 1;
+}
+
+static inline uint32_t FDKread2Bits(HANDLE_FDK_BITSTREAM hBitStream) {
+    /*
+    ** Version corresponds to optimized FDKreadBits implementation
+    ** calling FDK_get32, that keeps read pointer aligned.
+    */
+    uint32_t bits = 0;
+    int32_t  missingBits = 2 - (int32_t)hBitStream->BitsInCache;
+    if(missingBits > 0) {
+        bits = hBitStream->CacheWord << missingBits;
+        hBitStream->CacheWord = FDK_get32(&hBitStream->hBitBuf);
+        hBitStream->BitsInCache += CACHE_BITS;
+    }
+
+    hBitStream->BitsInCache -= 2;
+
+    return (bits | (hBitStream->CacheWord >> hBitStream->BitsInCache)) & 0x3;
+}
+
+static inline uint32_t FDKreadBitsBwd(HANDLE_FDK_BITSTREAM hBitStream, const uint32_t numberOfBits) {
+    const uint32_t validMask = BitMask[numberOfBits];
+
+    if(hBitStream->BitsInCache <= numberOfBits) {
+        const int32_t freeBits = (CACHE_BITS - 1) - hBitStream->BitsInCache;
+
+        hBitStream->CacheWord = (hBitStream->CacheWord << freeBits) | FDK_getBwd(&hBitStream->hBitBuf, freeBits);
+        hBitStream->BitsInCache += freeBits;
+    }
+
+    hBitStream->BitsInCache -= numberOfBits;
+
+    return (hBitStream->CacheWord >> hBitStream->BitsInCache) & validMask;
+}
+
+static inline uint32_t escapedValue(HANDLE_FDK_BITSTREAM hBitStream, int32_t nBits1, int32_t nBits2, int32_t nBits3) {
+    uint32_t value = FDKreadBits(hBitStream, nBits1);
+
+    if(value == (uint32_t)(1 << nBits1) - 1) {
+        uint32_t valueAdd = FDKreadBits(hBitStream, nBits2);
+        value += valueAdd;
+        if(valueAdd == (uint32_t)(1 << nBits2) - 1) { value += FDKreadBits(hBitStream, nBits3); }
+    }
+
+    return value;
+}
+
+static inline uint32_t FDKgetBits(HANDLE_FDK_BITSTREAM hBitStream, uint32_t numBits) { return FDK_get(&hBitStream->hBitBuf, numBits); }
+
+static inline uint8_t FDKwriteBits(HANDLE_FDK_BITSTREAM hBitStream, uint32_t value, const uint32_t numberOfBits) {
+    const uint32_t validMask = BitMask[numberOfBits];
+
+    if(hBitStream == NULL) { return numberOfBits; }
+
+    if((hBitStream->BitsInCache + numberOfBits) < CACHE_BITS) {
+        hBitStream->BitsInCache += numberOfBits;
+        hBitStream->CacheWord = (hBitStream->CacheWord << numberOfBits) | (value & validMask);
+    }
+    else {
+        /* Put always 32 bits into memory             */
+        /* - fill cache's LSBits with MSBits of value */
+        /* - store 32 bits in memory using subroutine */
+        /* - fill remaining bits into cache's LSBits  */
+        /* - upper bits in cache are don't care       */
+
+        /* Compute number of bits to be filled into cache */
+        int32_t missing_bits = CACHE_BITS - hBitStream->BitsInCache;
+        int32_t remaining_bits = numberOfBits - missing_bits;
+        value = value & validMask;
+        /* Avoid shift left by 32 positions */
+        uint32_t CacheWord = (missing_bits == 32) ? 0 : (hBitStream->CacheWord << missing_bits);
+        CacheWord |= (value >> (remaining_bits));
+        FDK_put(&hBitStream->hBitBuf, CacheWord, 32);
+
+        hBitStream->CacheWord = value;
+        hBitStream->BitsInCache = remaining_bits;
+    }
+
+    return numberOfBits;
+}
+
+static inline uint8_t FDKwriteBitsBwd(HANDLE_FDK_BITSTREAM hBitStream, uint32_t value, const uint32_t numberOfBits) {
+    const uint32_t validMask = BitMask[numberOfBits];
+
+    if((hBitStream->BitsInCache + numberOfBits) <= CACHE_BITS) {
+        hBitStream->BitsInCache += numberOfBits;
+        hBitStream->CacheWord = (hBitStream->CacheWord << numberOfBits) | (value & validMask);
+    }
+    else {
+        FDK_putBwd(&hBitStream->hBitBuf, hBitStream->CacheWord, hBitStream->BitsInCache);
+        hBitStream->BitsInCache = numberOfBits;
+        hBitStream->CacheWord = (value & validMask);
+    }
+
+    return numberOfBits;
+}
+
+static inline uint8_t FDKwriteEscapedValue(HANDLE_FDK_BITSTREAM hBitStream, uint32_t value, uint32_t nBits1, uint32_t nBits2, uint32_t nBits3) {
+    uint8_t  nbits = 0;
+    uint32_t tmp = (1 << nBits1) - 1;
+
+    if(value < tmp) { nbits += FDKwriteBits(hBitStream, value, nBits1); }
+    else {
+        nbits += FDKwriteBits(hBitStream, tmp, nBits1);
+        value -= tmp;
+        tmp = (1 << nBits2) - 1;
+
+        if(value < tmp) { nbits += FDKwriteBits(hBitStream, value, nBits2); }
+        else {
+            nbits += FDKwriteBits(hBitStream, tmp, nBits2);
+            value -= tmp;
+
+            nbits += FDKwriteBits(hBitStream, value, nBits3);
+        }
+    }
+
+    return nbits;
+}
+
+static inline void FDKsyncCache(HANDLE_FDK_BITSTREAM hBitStream) {
+    if(hBitStream->ConfigCache == BS_READER) FDK_pushBack(&hBitStream->hBitBuf, hBitStream->BitsInCache, hBitStream->ConfigCache);
+    else if(hBitStream->BitsInCache) /* BS_WRITER */
+        FDK_put(&hBitStream->hBitBuf, hBitStream->CacheWord, hBitStream->BitsInCache);
+
+    hBitStream->BitsInCache = 0;
+    hBitStream->CacheWord = 0;
+}
+
+static inline void FDKsyncCacheBwd(HANDLE_FDK_BITSTREAM hBitStream) {
+    if(hBitStream->ConfigCache == BS_READER) { FDK_pushForward(&hBitStream->hBitBuf, hBitStream->BitsInCache, hBitStream->ConfigCache); }
+    else { /* BS_WRITER */
+        FDK_putBwd(&hBitStream->hBitBuf, hBitStream->CacheWord, hBitStream->BitsInCache);
+    }
+
+    hBitStream->BitsInCache = 0;
+    hBitStream->CacheWord = 0;
+}
+
+static inline void FDKbyteAlign(HANDLE_FDK_BITSTREAM hBitStream, uint32_t alignmentAnchor) {
+    FDKsyncCache(hBitStream);
+    if(hBitStream->ConfigCache == BS_READER) {
+        FDK_pushForward(&hBitStream->hBitBuf,
+                        (uint32_t)((int32_t)8 - (((int32_t)alignmentAnchor - (int32_t)FDK_getValidBits(&hBitStream->hBitBuf)) & 0x07)) & 0x07,
+                        hBitStream->ConfigCache);
+    }
+    else { FDK_put(&hBitStream->hBitBuf, 0, (8 - ((FDK_getValidBits(&hBitStream->hBitBuf) - alignmentAnchor) & 0x07)) & 0x07); }
+}
+
+static inline void FDKpushBackCache(HANDLE_FDK_BITSTREAM hBitStream, const uint32_t numberOfBits) {
+    assert((hBitStream->BitsInCache + numberOfBits) <= CACHE_BITS);
+    hBitStream->BitsInCache += numberOfBits;
+}
+
+static inline void FDKpushBack(HANDLE_FDK_BITSTREAM hBitStream, const uint32_t numberOfBits) {
+    if((hBitStream->BitsInCache + numberOfBits) < CACHE_BITS && (hBitStream->ConfigCache == BS_READER)) {
+        hBitStream->BitsInCache += numberOfBits;
+        FDKsyncCache(hBitStream); /* sync cache to avoid invalid cache */
+    }
+    else {
+        FDKsyncCache(hBitStream);
+        FDK_pushBack(&hBitStream->hBitBuf, numberOfBits, hBitStream->ConfigCache);
+    }
+}
+
+static inline void FDKpushFor(HANDLE_FDK_BITSTREAM hBitStream, const uint32_t numberOfBits) {
+    if((hBitStream->BitsInCache > numberOfBits) && (hBitStream->ConfigCache == BS_READER)) { hBitStream->BitsInCache -= numberOfBits; }
+    else {
+        FDKsyncCache(hBitStream);
+        FDK_pushForward(&hBitStream->hBitBuf, numberOfBits, hBitStream->ConfigCache);
+    }
+}
+
+static inline void FDKpushBiDirectional(HANDLE_FDK_BITSTREAM hBitStream, const int32_t numberOfBits) {
+    if(numberOfBits >= 0) FDKpushFor(hBitStream, numberOfBits);
+    else
+        FDKpushBack(hBitStream, -numberOfBits);
+}
+
+static inline uint32_t FDKgetValidBits(HANDLE_FDK_BITSTREAM hBitStream) {
+    FDKsyncCache(hBitStream);
+    return FDK_getValidBits(&hBitStream->hBitBuf);
+}
+
+static inline int32_t FDKgetFreeBits(HANDLE_FDK_BITSTREAM hBitStream) { return FDK_getFreeBits(&hBitStream->hBitBuf); }
+
+static inline void FDKfeedBuffer(HANDLE_FDK_BITSTREAM hBitStream, const uint8_t inputBuffer[], const uint32_t bufferSize, uint32_t *bytesValid) {
+    FDKsyncCache(hBitStream);
+    FDK_Feed(&hBitStream->hBitBuf, inputBuffer, bufferSize, bytesValid);
+}
+
+static inline void FDKcopyBuffer(HANDLE_FDK_BITSTREAM hBSDst, HANDLE_FDK_BITSTREAM hBSSrc, uint32_t *bytesValid) {
+    FDKsyncCache(hBSSrc);
+    FDK_Copy(&hBSDst->hBitBuf, &hBSSrc->hBitBuf, bytesValid);
+}
+
+static inline void FDKfetchBuffer(HANDLE_FDK_BITSTREAM hBitStream, uint8_t *outputBuffer, uint32_t *writeBytes) {
+    FDKsyncCache(hBitStream);
+    FDK_Fetch(&hBitStream->hBitBuf, outputBuffer, writeBytes);
 }

@@ -16,7 +16,6 @@
 
 #include "rvlc_info.h"
 
-#include "usacdec_lpc.h"
 
 
 

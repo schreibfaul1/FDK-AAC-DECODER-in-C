@@ -14,18 +14,11 @@
 #include "usacdec_acelp.h"
 #include "usacdec_ace_d4t64.h"
 #include "usacdec_ace_ltp.h"
-#include "usacdec_lpc.h"
+#include "aac_rom.h"
 #include "../libFDK/FDK_lpc.h"
 
 
-#define PIT_FR2_12k8 128   /* Minimum pitch lag with resolution 1/2      */
-#define PIT_FR1_12k8 160   /* Minimum pitch lag with resolution 1        */
-#define TILT_CODE2   19661 /* ACELP code pre-emphasis factor ( *2 )      */
-#define PIT_SHARP    27853 /* pitch sharpening factor                    */
-#define PREEMPH_FAC  22282 /* ACELP synth pre-emphasis factor            */
 
-#define ACELP_HEADROOM 1
-#define ACELP_OUTSCALE (MDCT_OUT_HEADROOM - ACELP_HEADROOM)
 
 /**
  * \brief Calculate pre-emphasis (1 - mu z^-1) on input signal.

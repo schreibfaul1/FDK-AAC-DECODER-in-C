@@ -22,7 +22,6 @@
 
 #include "usacdec_fac.h"
 
-#include "usacdec_lpc.h"
 #include "../libFDK/FDK_trigFcts.h"
 
 #include "../libArithCoding/ac_arith_coder.h"
@@ -773,7 +772,7 @@ void CBlock_ApplyNoise(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
             for (int32_t bin = bin_start; bin < bin_stop; bin++) {
               seed = (uint32_t)(
                   (uint64_t)seed * 69069 +
-                  5); 
+                  5);
               pSpec[bin] =
                   (seed & 0x10000) ? scaled_noiseVal_neg : scaled_noiseVal_pos;
             } /* for (bin...) */
