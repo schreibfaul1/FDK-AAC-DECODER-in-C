@@ -10,7 +10,8 @@
                 "${workspaceFolder}/src/main.cpp",
                 "${workspaceFolder}/src/*/*.cpp",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "${fileDirname}/${fileBasenameNoExtension}",
+                //"-Wconversion"
             ],
             "options": {
                 "cwd": "${fileDirname}"

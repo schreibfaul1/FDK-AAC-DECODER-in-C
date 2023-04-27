@@ -118,7 +118,7 @@ int32_t main() {
 		}
 
 	}  // end while(true)
-	printf("ready");
+	printf("ready\n");
 	fclose(fptrIn);
 	fclose(fptrOut);
 	return 0;

@@ -1865,7 +1865,7 @@ void CTns_ReadDataPresentFlag(HANDLE_FDK_BITSTREAM bs, CTnsData_t *pTnsData);
 void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData_t *pTnsData0, CTnsData_t *pTnsData1, uint8_t *ptns_on_lr, const CIcsInfo_t *pIcsInfo,
                               const uint32_t flags, const uint32_t elFlags, const int32_t fCommonWindow);
 AAC_DECODER_ERROR_t CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData_t *pTnsData, const CIcsInfo_t *pIcsInfo, const uint32_t flags);
-void                CTns_Apply(CTnsData_t       *pTnsData, /*!< pointer to aac decoder info */
+void                CTns_Apply(CTnsData_t       *pTnsData,
                                const CIcsInfo_t *pIcsInfo, int32_t *pSpectralCoefficient, const SamplingRateInfo_t *pSamplingRateInfo, const int32_t granuleLength,
                                const uint8_t nbands, const uint8_t igf_active, const uint32_t flags);
 int32_t             CBlock_GetEscape(HANDLE_FDK_BITSTREAM bs, const int32_t q);
@@ -1913,7 +1913,16 @@ void CLpc_Conceal(int16_t lsp[][M_LP_FILTER_ORDER], int16_t lpc4_lsf[M_LP_FILTER
 void E_LPC_a_weight(int16_t *wA, const int16_t *A, const int32_t m);
 void CLpd_DecodeGain(int32_t *gain, int32_t *gain_e, int32_t gain_code);
 void E_LPC_f_lsp_a_conversion(int16_t *lsp, int16_t *a, int32_t *a_exp);
-
+int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, uint8_t mod[NB_SUBFR], int32_t *pState);
+int32_t  CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, int32_t *pFac, int8_t *pFacScale, int32_t length, int32_t use_gain, int32_t frame);
+void     CFac_ApplyGains(int32_t fac_data[LFAC], const int32_t fac_length, const int32_t tcx_gain, const int32_t alfd_gains[], const int32_t mod);
+int32_t  CLpd_FAC_Mdct2Acelp(H_MDCT hMdct, int32_t *output, int32_t *pFac_data, const int32_t fac_data_e, int16_t *A, int32_t A_exp,
+                             int32_t nrOutSamples, const int32_t fac_length, const int32_t isFdFac, uint8_t prevWindowShape);
+int32_t  CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *pSpec, const int16_t spec_scale[], const int32_t nSpec, int32_t *pFac_data,
+                             const int32_t fac_data_e, const int32_t fac_length, int32_t nrSamples, const int32_t tl, const FIXP_SPK_t *wrs,
+                             const int32_t fr, int16_t A[16], int32_t A_exp, CAcelpStaticMem_t *acelp_mem, const int32_t gain,
+                             const int32_t last_frame_lost, const int32_t isFdFac, const uint8_t last_lpd, const int32_t k,
+                             int32_t currAliasingSymmetry);
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S
 //----------------------------------------------------------------------------------------------------------------------
