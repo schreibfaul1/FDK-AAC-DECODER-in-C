@@ -7,6 +7,8 @@
 #include "lookup.h"
 #include <assert.h>
 
+
+
 #define ARCH_PREFER_MULT_16x16
 #define SINETABLE_16BIT
 #define WINDOWTABLE_16BIT
@@ -438,6 +440,7 @@
 #define ACELP_HEADROOM                          1
 #define ACELP_OUTSCALE                          (MDCT_OUT_HEADROOM - ACELP_HEADROOM)
 #define MAX_CRC_REGS                            3
+#define AACDEC_CONCEAL_PARAM_NOT_SPECIFIED      (0xFFFE)
 
 #define TIME_DATA_FLUSH_SIZE           (128)
 #define TIME_DATA_FLUSH_SIZE_SF        (7)
@@ -1969,6 +1972,9 @@ typedef struct {
 } FDK_CRCINFO;
 
 typedef FDK_CRCINFO* HANDLE_FDK_CRCINFO;
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+
+#include "aac_rom.h"
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 

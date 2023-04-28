@@ -17,7 +17,6 @@
 #include "aacdec_tns.h"
 #include "../libFDK/FDK_bitstream.h"
 
-#include "conceal.h"
 
 static void MapMidSideMaskToPnsCorrelation(
     CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[2]) {

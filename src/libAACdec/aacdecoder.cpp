@@ -70,7 +70,7 @@
 #include "aac_rom.h"
 #include "aacdec_pns.h"
 #include "channel.h"
-#include "conceal.h"
+
 
 #define PS_IS_EXPLICITLY_DISABLED(aot, flags) (((aot) == AOT_DRM_AAC) && !(flags & AC_PS_PRESENT))
 

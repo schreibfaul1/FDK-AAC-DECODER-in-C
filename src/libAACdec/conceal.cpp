@@ -52,7 +52,7 @@
   indicate such packet loss by inserting an empty frame with frameOK=0.
 */
 
-#include "conceal.h"
+
 #include <assert.h>
 #include <memory.h>
 #include <stdint.h>

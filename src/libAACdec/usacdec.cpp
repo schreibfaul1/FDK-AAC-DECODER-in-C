@@ -5,7 +5,7 @@
 #include "../libFDK/fft.h"
 #include "../libFDK/mdct.h"
 #include "block.h"
-#include "conceal.h"
+
 #include "newAACDecoder.h"
 
 #include "../libAACdec/aac_rom.h"

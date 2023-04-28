@@ -21,7 +21,7 @@
 #include "../libSBRdec/sbrdecoder.h"
 
 #include "aacdecoder.h"
-#include "conceal.h"
+
 
 /* Decoder library info */
 #define AACDECODER_LIB_VL0   3
