@@ -14,7 +14,6 @@
   \author Robert Weidner
 */
 #include "newAACDecoder.h"
-#include "rvlcbit.h"
 
 /*---------------------------------------------------------------------------------------------
      function:     rvlcReadBitFromBitstream

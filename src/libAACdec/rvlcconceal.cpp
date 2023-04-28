@@ -14,8 +14,6 @@
   \author Josef Hoepfl
 */
 #include "newAACDecoder.h"
-#include "rvlcconceal.h"
-
 #include "block.h"
 #include "rvlc.h"
 

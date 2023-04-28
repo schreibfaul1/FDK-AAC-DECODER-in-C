@@ -12,25 +12,10 @@
 
 #ifndef AACDEC_HCR_H
 #define AACDEC_HCR_H
-#include "newAACDecoder.h"
-#include "channelinfo.h"
 #include "../libFDK/FDK_bitstream.h"
+#include "channelinfo.h"
+#include "newAACDecoder.h"
 
-uint32_t HcrInit(H_HCR_INFO pHcr, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
-             const SamplingRateInfo_t *pSamplingRateInfo,
-             HANDLE_FDK_BITSTREAM bs);
-uint32_t HcrDecoder(H_HCR_INFO hHcr, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
-                const SamplingRateInfo_t *pSamplingRateInfo,
-                HANDLE_FDK_BITSTREAM bs);
-void CarryBitToBranchValue(uint8_t carryBit, uint32_t treeNode, uint32_t *branchValue,
-                           uint32_t *branchNode);
 
-void CHcr_Read(HANDLE_FDK_BITSTREAM bs,
-               CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
-               const MP4_ELEMENT_ID_t globalHcrType);
-void HcrMuteErroneousLines(H_HCR_INFO hHcr);
-
-void setHcrType(H_HCR_INFO hHcr, MP4_ELEMENT_ID_t type);
-int32_t getHcrType(H_HCR_INFO hHcr);
 
 #endif /* AACDEC_HCR_H */

@@ -12,8 +12,6 @@
 #include <memory.h>
 #include "newAACDecoder.h"
 #include <stdint.h>
-#include "aacdec_hcr.h"
-
 #include "aacdec_hcr_types.h"
 
 #include "aacdec_hcrs.h"

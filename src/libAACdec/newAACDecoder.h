@@ -1990,6 +1990,15 @@ void     CLpd_TcxTDConceal(CAcelpStaticMem_t *acelp_mem, int16_t *pitch, const i
 void Pred_lt4(int32_t exc[], int32_t T0, int32_t frac);
 void Pred_lt4_postfilter(int32_t exc[]);
 void D_ACELP_decode_4t64(int16_t index[], int32_t nbits, FIXP_COD code[]);
+uint32_t HcrInit(H_HCR_INFO pHcr, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, const SamplingRateInfo_t *pSamplingRateInfo,
+                 HANDLE_FDK_BITSTREAM bs);
+uint32_t HcrDecoder(H_HCR_INFO hHcr, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, const SamplingRateInfo_t *pSamplingRateInfo,
+                    HANDLE_FDK_BITSTREAM bs);
+void     CarryBitToBranchValue(uint8_t carryBit, uint32_t treeNode, uint32_t *branchValue, uint32_t *branchNode);
+void CHcr_Read(HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, const MP4_ELEMENT_ID_t globalHcrType);
+void HcrMuteErroneousLines(H_HCR_INFO hHcr);
+void    setHcrType(H_HCR_INFO hHcr, MP4_ELEMENT_ID_t type);
+int32_t getHcrType(H_HCR_INFO hHcr);
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S
 //----------------------------------------------------------------------------------------------------------------------

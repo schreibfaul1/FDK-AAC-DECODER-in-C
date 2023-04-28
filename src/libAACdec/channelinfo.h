@@ -23,7 +23,7 @@
 #include "newAACDecoder.h"
 
 #include "rvlc_info.h"
-#include "stereo.h"
+
 
 
 

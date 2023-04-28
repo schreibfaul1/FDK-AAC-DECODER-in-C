@@ -19,9 +19,7 @@
 #include "block.h"
 
 #include "aac_rom.h"
-#include "rvlcbit.h"
-#include "rvlcconceal.h"
-#include "aacdec_hcr.h"
+
 
 /*---------------------------------------------------------------------------------------------
      function:     rvlcInit

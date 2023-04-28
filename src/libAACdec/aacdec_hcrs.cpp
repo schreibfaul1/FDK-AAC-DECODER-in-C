@@ -12,9 +12,6 @@
 #include <stdint.h>
 #include "newAACDecoder.h"
 #include "aacdec_hcrs.h"
-
-#include "aacdec_hcr.h"
-
 #include "aac_rom.h"
 
 

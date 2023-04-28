@@ -69,7 +69,6 @@
 #include "../libSACdec/sac_dec_lib.h"
 #include "../libSBRdec/sbrdecoder.h"
 #include "aac_rom.h"
-#include "aacdec_hcr.h"
 #include "aacdec_pns.h"
 #include "channel.h"
 #include "conceal.h"

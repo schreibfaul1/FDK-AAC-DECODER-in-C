@@ -22,8 +22,6 @@
 #include "../libFDK/FDK_trigFcts.h"
 
 #include "../libArithCoding/ac_arith_coder.h"
-
-#include "aacdec_hcr.h"
 #include "rvlc.h"
 
 // #if defined(__arm__)

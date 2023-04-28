@@ -21,8 +21,6 @@
 
 #include "rvlc.h"
 
-#include "aacdec_hcr.h"
-
 static void MapMidSideMaskToPnsCorrelation(
     CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[2]) {
   int32_t group;
