@@ -1004,9 +1004,9 @@ AAC_DECODER_ERROR_t aacDecoder_DecodeFrame(HANDLE_AACDECODER self, int16_t *pTim
 
 	self->frameOK = 1;
 
-	uint32_t prerollAUOffset[AACDEC_MAX_NUM_PREROLL_AU];
-	uint32_t prerollAULength[AACDEC_MAX_NUM_PREROLL_AU];
-	for(int32_t i = 0; i < AACDEC_MAX_NUM_PREROLL_AU + 1; i++) self->prerollAULength[i] = 0;
+	uint32_t prerollAUOffset[AACDEC_MAX_NUM_PREROLL_AU_USAC];
+	uint32_t prerollAULength[AACDEC_MAX_NUM_PREROLL_AU_USAC];
+	for(int32_t i = 0; i < AACDEC_MAX_NUM_PREROLL_AU_USAC + 1; i++) self->prerollAULength[i] = 0;
 
 	int32_t                  auStartAnchor;
 	HANDLE_FDK_BITSTREAM hBsAu;

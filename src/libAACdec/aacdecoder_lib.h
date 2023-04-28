@@ -23,13 +23,8 @@
 
 #include "../libAACdec/newAACDecoder.h"
 
-/*! \enum  AAC_MD_PROFILE_t
- *  \brief The available metadata profiles which are mostly related to downmixing. The values define the arguments
- *         for the use with parameter ::AAC_METADATA_PROFILE.
- */
 
 typedef struct AAC_DECODER_INSTANCE *HANDLE_AACDECODER; /*!< Pointer to a AAC decoder instance. */
-
 #ifdef __cplusplus
 extern "C" {
 #endif

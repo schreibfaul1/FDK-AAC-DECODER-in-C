@@ -434,22 +434,21 @@
 #define ACELP_HEADROOM                          1
 #define ACELP_OUTSCALE                          (MDCT_OUT_HEADROOM - ACELP_HEADROOM)
 
-#define DRC_PARAMETER_BITS (7)
-#define DRC_MAX_QUANT_STEPS (1 << DRC_PARAMETER_BITS)
-#define DRC_MAX_QUANT_FACTOR (DRC_MAX_QUANT_STEPS - 1)
-#define DRC_PARAM_QUANT_STEP  (FL2FXCONST_DBL(1.0f / (float)DRC_MAX_QUANT_FACTOR))
-#define DRC_PARAM_SCALE (1)
-#define DRC_SCALING_MAX ((int32_t)((int32_t)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (int32_t)127))
-
-#define DRC_BLOCK_LEN (1024)
-#define DRC_BAND_MULT (4)
-#define DRC_BLOCK_LEN_DIV_BAND_MULT (DRC_BLOCK_LEN / DRC_BAND_MULT)
-
-#define MAX_REFERENCE_LEVEL (127)
-
-#define DRC_HEAVY_THRESHOLD_DB (10)
-
-#define DVB_ANC_DATA_SYNC_BYTE (0xBC) /* DVB ancillary data sync byte. */
+#define TIME_DATA_FLUSH_SIZE           (128)
+#define TIME_DATA_FLUSH_SIZE_SF        (7)
+#define AACDEC_MAX_NUM_PREROLL_AU_USAC (3)
+#define DRC_PARAMETER_BITS             (7)
+#define DRC_MAX_QUANT_STEPS            (1 << DRC_PARAMETER_BITS)
+#define DRC_MAX_QUANT_FACTOR           (DRC_MAX_QUANT_STEPS - 1)
+#define DRC_PARAM_QUANT_STEP           (FL2FXCONST_DBL(1.0f / (float)DRC_MAX_QUANT_FACTOR))
+#define DRC_PARAM_SCALE                (1)
+#define DRC_SCALING_MAX                ((int32_t)((int32_t)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (int32_t)127))
+#define DRC_BLOCK_LEN                  (1024)
+#define DRC_BAND_MULT                  (4)
+#define DRC_BLOCK_LEN_DIV_BAND_MULT    (DRC_BLOCK_LEN / DRC_BAND_MULT)
+#define MAX_REFERENCE_LEVEL            (127)
+#define DRC_HEAVY_THRESHOLD_DB         (10)
+#define DVB_ANC_DATA_SYNC_BYTE         (0xBC) /* DVB ancillary data sync byte. */
 
 #define OFF 0
 #define ON 1
@@ -1942,6 +1941,7 @@ typedef struct {
         with ::AAC_DRC_REFERENCE_LEVEL.\n  If loudness normalization is not active, the output loudness value corresponds to the loudness metadata
         given in the bitstream. Loudness metadata can originate from MPEG-4 DRC or MPEG-D DRC. */
 } CStreamInfo;
+
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
