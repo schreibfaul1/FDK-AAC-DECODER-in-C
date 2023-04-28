@@ -12,6 +12,7 @@
 #include "../libFDK/FDK_lpc.h"
 #include "aac_rom.h"
 #include "newAACDecoder.h"
+#include "../libFDK/common_fix.h"
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 void E_UTIL_preemph(const int32_t *in, int32_t *out, int32_t L) {
@@ -27,7 +28,7 @@ static void Preemph_code(FIXP_COD x[] ) {/* (i/o)   : input signal overwritten b
     for(i = L_SUBFR - 1; i > 0; i--) {
         L_tmp = FX_COD2FX_DBL(x[i]);
         L_tmp -= fMultDiv2(x[i - 1], TILT_CODE2);
-        x[i] = FX_DBL2FX_COD(L_tmp);
+        x[i] = FX_DBL2FX_SGL(L_tmp) + 0x8000;
     }
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -38,7 +39,7 @@ static void Pit_shrp(FIXP_COD x[], int32_t  pit_lag) {
     for(i = pit_lag; i < L_SUBFR; i++) {
         L_tmp = FX_COD2FX_DBL(x[i]);
         L_tmp += fMult(x[i - pit_lag], PIT_SHARP);
-        x[i] = FX_DBL2FX_COD(L_tmp);
+        x[i] = FX_DBL2FX_SGL(L_tmp) + 0x8000;
     }
     return;
 }
@@ -297,7 +298,7 @@ void int_lpc_acelp(const int16_t lsp_old[],                         /* input : L
     fac_old = lsp_interpol_factor[nb_subfr & 0x1][(nb_subfr - 1) - subfr_nr];
     fac_new = lsp_interpol_factor[nb_subfr & 0x1][subfr_nr];
     for(i = 0; i < M_LP_FILTER_ORDER; i++) {
-        lsp_interpol[i] = FX_DBL2FX_LPC((fMultDiv2(lsp_old[i], fac_old) + fMultDiv2(lsp_new[i], fac_new)) << 1);
+        lsp_interpol[i] = FX_DBL2FX_SGL((fMultDiv2(lsp_old[i], fac_old) + fMultDiv2(lsp_new[i], fac_new)) << 1);
     }
 
     E_LPC_f_lsp_a_conversion(lsp_interpol, A, A_exp);
@@ -539,7 +540,7 @@ void CLpd_AcelpDecode(CAcelpStaticMem_t *acelp_mem, int32_t i_offset, const int1
          * - Add the fixed-gain pitch contribution to code[].    *
          *-------------------------------------------------------*/
         if(bfi) {
-            for(n = 0; n < L_SUBFR; n++) { code[n] = FX_SGL2FX_COD((int16_t)E_UTIL_random(&acelp_mem->seed_ace)) >> 4; }
+            for(n = 0; n < L_SUBFR; n++) { code[n] = (FX_DBL2FX_SGL((int16_t)E_UTIL_random(&acelp_mem->seed_ace)) + 0x8000) >> 4; }
         }
         else {
             int32_t nbits = MapCoreMode2NBits((int32_t)pAcelpData->acelp_core_mode);

@@ -1016,7 +1016,7 @@ void CBlock_FrequencyToTime(
         int32_t A_exp; /* linear prediction coefficients exponent */
         {
           for (int32_t i = 0; i < M_LP_FILTER_ORDER; i++) {
-            A[i] = FX_DBL2FX_LPC(fixp_cos(
+            A[i] = FX_DBL2FX_SGL(fixp_cos(
                 fMult(pAacDecoderStaticChannelInfo->lpc4_lsf[i],
                       FL2FXCONST_SGL((1 << 10) * M_PI / 6400.0)),
                 LSF_SCALE - LSPARG_SCALE));

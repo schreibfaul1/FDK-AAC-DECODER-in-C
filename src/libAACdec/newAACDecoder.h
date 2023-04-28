@@ -125,7 +125,6 @@
 #define CC_USAC_HBE            0x40000000
 
 #define FX_CFG2FX_DBL
-#define FX_CFG2FX_SGL    FX_DBL2FX_SGL
 #define FL2FXCONST_CFG   FL2FXCONST_DBL
 #define FX_DBL2FX_CFG(x) ((int32_t)(x))
 
@@ -514,8 +513,7 @@
 
 #define FIXP_COD         int16_t
 #define FX_COD2FX_DBL(x) (FX_SGL2FX_DBL(x))
-#define FX_DBL2FX_COD(x) FX_DBL2FX_SGL((x) + (int32_t)0x8000)
-#define FX_SGL2FX_COD(x) (x)
+
 #define COD_BITS         FRACT_BITS
 
 // Audio Object Type definitions.

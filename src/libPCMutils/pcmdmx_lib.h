@@ -203,7 +203,6 @@ typedef enum {
 #define DMX_PCM int32_t
 #define DMX_PCMF int32_t
 #define DMX_PCM_BITS DFRACT_BITS
-#define FX_DMX2FX_PCM(x) FX_DBL2FX_SGL(x)((int32_t)(x))
 
 /* ------------------------ *
  *     MODULES INTERFACE:   *

@@ -331,7 +331,7 @@ int32_t CLpc_ParcorToLpc(const int16_t reflCoeff[], int16_t LpcCoeff[],
   shiftval = fMin(fNorm(maxVal), par2LpcShiftVal);
 
   for (i = 0; i < numOfCoeff; i++) {
-    LpcCoeff[i] = FX_DBL2FX_LPC(workBuffer[i] << shiftval);
+    LpcCoeff[i] = FX_DBL2FX_SGL(workBuffer[i] << shiftval);
   }
 
   return (par2LpcShiftVal - shiftval);
@@ -369,7 +369,7 @@ void CLpc_AutoToParcor(int32_t acorr[], const int32_t acorr_e,
     /* tmp = div(num, denum, 16) */
     tmp = (int32_t)((int32_t)schur_div(tmp, acorr[0], FRACT_BITS) ^ (~sign));
 
-    reflCoeff[i] = FX_DBL2FX_LPC(tmp);
+    reflCoeff[i] = FX_DBL2FX_SGL(tmp);
 
     for (j = numOfCoeff - i - 1; j >= 0; j--) {
       int32_t accu1 = fMult(tmp, acorr[j]);

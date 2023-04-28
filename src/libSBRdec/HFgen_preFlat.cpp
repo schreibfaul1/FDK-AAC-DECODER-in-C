@@ -21,7 +21,7 @@
 #define LOG10FAC_INV 0.664385618977472f /* == log2(10)/20 * 2^2  */
 
 #define FIXP_CHB         int16_t /* STB sinus Tab used in transformation */
-#define FX_CHB2FX_DBL(a) FX_SGL2FX_DBL(a)
+
 
 typedef struct backsubst_data
 {
@@ -458,7 +458,7 @@ static void backsubst_fw(const int32_t numBands, const int32_t *const b, int32_t
 		int32_t sum_sf = x_sf[i];
 		for(k = i - 1; k > 0; --k, ++m) {
 			int32_t e;
-			int32_t mult = fMultNorm(FX_CHB2FX_DBL(pLnorm1d[m]), x[k], &e);
+			int32_t mult = fMultNorm(FX_SGL2FX_DBL(pLnorm1d[m]), x[k], &e);
 			int32_t mult_sf = pLnorm1d_sf[m] + x_sf[k] + e;
 
 			/* check if the new summand mult has a different sf than the sum currently
@@ -486,7 +486,7 @@ static void backsubst_fw(const int32_t numBands, const int32_t *const b, int32_t
 
 		/* instead of the division /L[i][i], we multiply by the inverse */
 		int32_t e;
-		x[i] = fMultNorm(sum, FX_CHB2FX_DBL(pLnormii[i - 1]), &e);
+		x[i] = fMultNorm(sum, FX_SGL2FX_DBL(pLnormii[i - 1]), &e);
 		x_sf[i] = sum_sf + pLnormii_sf[i - 1] + e + SUM_SAFETY;
 	}
 }
@@ -521,7 +521,7 @@ static void backsubst_bw(const int32_t numBands, const int32_t *const b, int32_t
 
 		for(k = i + 1; k <= POLY_ORDER; ++k, ++m) {
 			int32_t e;
-			int32_t mult = fMultNorm(FX_CHB2FX_DBL(pLnormInv1d[m]), x[k], &e);
+			int32_t mult = fMultNorm(FX_SGL2FX_DBL(pLnormInv1d[m]), x[k], &e);
 			int32_t mult_sf = pLnormInv1d_sf[m] + x_sf[k] + e;
 
 			/* check if the new summand mult has a different sf than sum currently has
@@ -569,7 +569,7 @@ static void choleskySolve(const int32_t numBands, int32_t *b, int32_t *b_sf) {
 	/* normalize b */
 	int32_t bnormed[POLY_ORDER + 1];
 	for(i = 0; i <= POLY_ORDER; ++i) {
-		bnormed[i] = fMultNorm(b[i], FX_CHB2FX_DBL(pBmul0[i]), &e);
+		bnormed[i] = fMultNorm(b[i], FX_SGL2FX_DBL(pBmul0[i]), &e);
 		b_sf[i] += pBmul0_sf[i] + e;
 	}
 
@@ -577,7 +577,7 @@ static void choleskySolve(const int32_t numBands, int32_t *b, int32_t *b_sf) {
 
 	/* normalize b again */
 	for(i = 0; i <= POLY_ORDER; ++i) {
-		bnormed[i] = fMultNorm(b[i], FX_CHB2FX_DBL(pBmul1[i]), &e);
+		bnormed[i] = fMultNorm(b[i], FX_SGL2FX_DBL(pBmul1[i]), &e);
 		b_sf[i] += pBmul1_sf[i] + e;
 	}
 

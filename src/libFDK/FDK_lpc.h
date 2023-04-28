@@ -33,8 +33,6 @@ typedef int32_t FIXP_LPC_TNS;
 #define FL2FXCONST_LPC_TNS(val) FL2FXCONST_DBL(val)
 #define MAXVAL_LPC_TNS MAXVAL_DBL
 
-
-#define FX_DBL2FX_LPC(x) FX_DBL2FX_SGL((int32_t)(x))
 #define FX_LPC2FX_DBL(x) FX_SGL2FX_DBL(x)
 #define FL2FXCONST_LPC(val) FL2FXCONST_SGL(val)
 #define MAXVAL_LPC MAXVAL_SGL

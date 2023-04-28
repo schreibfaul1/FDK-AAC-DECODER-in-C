@@ -389,7 +389,7 @@ static void lsf_weight_2st(int16_t *lsfq, int32_t *xq, int32_t nk_mode) {
     /* add non-weighted residual LSF vector to LSF1st */
     for(i = 0; i < M_LP_FILTER_ORDER; i++) {
         w = (int32_t)fMultDiv2(factor, sqrtFixp(fMult(d[i], d[i + 1])));
-        lsfq[i] = fAddSaturate(lsfq[i], FX_DBL2FX_LPC((int32_t)((int64_t)w * (int32_t)xq[i])));
+        lsfq[i] = fAddSaturate(lsfq[i], FX_DBL2FX_SGL((int32_t)((int64_t)w * (int32_t)xq[i])));
     }
 
     return;
@@ -680,7 +680,7 @@ int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, int16_t lsp[][M_LP_FILTER_ORDER], in
                 const double LSF_INIT_TILT = 0.25;
                 for(i = 0; i < M_LP_FILTER_ORDER; i++) {
                     if(mod[0] > 0) {
-                        lsp[0][i] = FX_DBL2FX_LPC(fMult(lsp[k][i], FL2FXCONST_SGL(1.0f - LSF_INIT_TILT)) +
+                        lsp[0][i] = FX_DBL2FX_SGL(fMult(lsp[k][i], FL2FXCONST_SGL(1.0f - LSF_INIT_TILT)) +
                                                   fMult(fdk_dec_lsf_init[i], FL2FXCONST_SGL(LSF_INIT_TILT)));
                     }
                     else { lsp[0][i] = lsp[k][i]; }
@@ -717,7 +717,7 @@ int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, int16_t lsp[][M_LP_FILTER_ORDER], in
             for(i = nbDiv; i > last; i--) {
                 if(lpc_present[i]) { tmp = fMultAdd(tmp >> 1, lsp[i][k], divFac); }
             }
-            lsf_adaptive_mean_cand[k] = FX_DBL2FX_LPC(tmp);
+            lsf_adaptive_mean_cand[k] = FX_DBL2FX_SGL(tmp);
         }
     }
 
@@ -759,7 +759,7 @@ int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, int16_t lsp[][M_LP_FILTER_ORDER], in
     for(i = 0; i < (nbDiv + 1); i++) {
         if(lpc_present[i]) {
             for(k = 0; k < M_LP_FILTER_ORDER; k++) {
-                lsp[i][k] = FX_DBL2FX_LPC(fixp_cos(fMult(lsp[i][k], FL2FXCONST_SGL((1 << LSPARG_SCALE) * M_PI / 6400.0)), LSF_SCALE - LSPARG_SCALE));
+                lsp[i][k] = FX_DBL2FX_SGL(fixp_cos(fMult(lsp[i][k], FL2FXCONST_SGL((1 << LSPARG_SCALE) * M_PI / 6400.0)), LSF_SCALE - LSPARG_SCALE));
             }
         }
     }
@@ -789,23 +789,23 @@ void CLpc_Conceal(int16_t lsp[][M_LP_FILTER_ORDER], int16_t lpc4_lsf[M_LP_FILTER
 
     /* LPC1 */
     for(i = 0; i < M_LP_FILTER_ORDER; i++) {
-        int16_t lsf_mean = FX_DBL2FX_LPC(fMult(BETA, fdk_dec_lsf_init[i]) + fMult(ONE_BETA, lsf_adaptive_mean[i]));
+        int16_t lsf_mean = FX_DBL2FX_SGL(fMult(BETA, fdk_dec_lsf_init[i]) + fMult(ONE_BETA, lsf_adaptive_mean[i]));
 
-        lsp[1][i] = FX_DBL2FX_LPC(fMult(BFI_FAC, lpc4_lsf[i]) + fMult(ONE_BFI_FAC, lsf_mean));
+        lsp[1][i] = FX_DBL2FX_SGL(fMult(BFI_FAC, lpc4_lsf[i]) + fMult(ONE_BFI_FAC, lsf_mean));
     }
 
     /* LPC2 - LPC4 */
     for(j = 2; j <= 4; j++) {
         for(i = 0; i < M_LP_FILTER_ORDER; i++) {
-            /* lsf_mean[i] =  FX_DBL2FX_LPC(fMult((int16_t)(BETA + j *
+            /* lsf_mean[i] =  FX_DBL2FX_SGL(fMult((int16_t)(BETA + j *
                FL2FXCONST_LPC(0.1f)), fdk_dec_lsf_init[i])
                                           + fMult((int16_t)(ONE_BETA - j *
                FL2FXCONST_LPC(0.1f)), lsf_adaptive_mean[i])); */
 
-            int16_t lsf_mean = FX_DBL2FX_LPC(fMult((int16_t)(BETA + (int16_t)(j * (int32_t)3277)), (int16_t)fdk_dec_lsf_init[i]) +
+            int16_t lsf_mean = FX_DBL2FX_SGL(fMult((int16_t)(BETA + (int16_t)(j * (int32_t)3277)), (int16_t)fdk_dec_lsf_init[i]) +
                                              fMult((int16_t)(ONE_BETA - (int16_t)(j * (int32_t)3277)), lsf_adaptive_mean[i]));
 
-            lsp[j][i] = FX_DBL2FX_LPC(fMult(BFI_FAC, lsp[j - 1][i]) + fMult(ONE_BFI_FAC, lsf_mean));
+            lsp[j][i] = FX_DBL2FX_SGL(fMult(BFI_FAC, lsp[j - 1][i]) + fMult(ONE_BFI_FAC, lsf_mean));
         }
     }
 
@@ -815,7 +815,7 @@ void CLpc_Conceal(int16_t lsp[][M_LP_FILTER_ORDER], int16_t lpc4_lsf[M_LP_FILTER
     /* convert into LSP domain */
     for(j = 0; j < 5; j++) {
         for(i = 0; i < M_LP_FILTER_ORDER; i++) {
-            lsp[j][i] = FX_DBL2FX_LPC(fixp_cos(fMult(lsp[j][i], FL2FXCONST_SGL((1 << LSPARG_SCALE) * M_PI / 6400.0)), LSF_SCALE - LSPARG_SCALE));
+            lsp[j][i] = FX_DBL2FX_SGL(fixp_cos(fMult(lsp[j][i], FL2FXCONST_SGL((1 << LSPARG_SCALE) * M_PI / 6400.0)), LSF_SCALE - LSPARG_SCALE));
         }
     }
 }
@@ -826,7 +826,7 @@ void E_LPC_a_weight(int16_t *wA, const int16_t *A, int32_t m) {
 
     f = FL2FXCONST_DBL(0.92f);
     for(i = 0; i < m; i++) {
-        wA[i] = FX_DBL2FX_LPC(fMult(A[i], f));
+        wA[i] = FX_DBL2FX_SGL(fMult(A[i], f));
         f = fMult(f, FL2FXCONST_DBL(0.92f));
     }
 }
@@ -911,7 +911,7 @@ void E_LPC_f_lsp_a_conversion(int16_t *lsp, int16_t *a, int32_t *a_exp) {
 
     int32_t headroom_a = getScalefactor(aDBL, M_LP_FILTER_ORDER);
 
-    for(i = 0; i < M_LP_FILTER_ORDER; i++) { a[i] = FX_DBL2FX_LPC(aDBL[i] << headroom_a); }
+    for(i = 0; i < M_LP_FILTER_ORDER; i++) { a[i] = FX_DBL2FX_SGL(aDBL[i] << headroom_a); }
 
     *a_exp = SF_F + (2 - 1) - headroom_a;
 }

@@ -150,6 +150,5 @@
 
 #endif /* Architecture switches */
 
-#define FX_DBL2FX_WTB(x) FX_DBL2FX_SGL(x)
 
 #endif /* FDK_ARCHDEF_H */
