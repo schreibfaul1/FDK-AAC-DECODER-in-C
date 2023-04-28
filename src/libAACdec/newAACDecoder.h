@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <memory.h>
 #include "lookup.h"
 #include <assert.h>
 
