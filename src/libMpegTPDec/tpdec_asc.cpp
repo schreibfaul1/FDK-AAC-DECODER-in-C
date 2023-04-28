@@ -10,7 +10,6 @@
 
 #include <memory.h>
 #include "../libAACdec/newAACDecoder.h"
-#include "../libFDK/FDK_crc.h"
 #include "../libFDK/common_fix.h"
 #include "tp_data.h"
 #include "tpdec_lib.h"

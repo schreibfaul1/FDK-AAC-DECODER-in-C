@@ -12,7 +12,6 @@
 #include <memory.h>
 
 /* library version */
-#include "../libFDK/FDK_crc.h"
 #include "tp_data.h"
 #include "tp_version.h"
 #include "tpdec_adif.h"
@@ -22,16 +21,11 @@
 
 #define MODULE_NAME "transportDec"
 
-typedef union
-{
+typedef union{
     STRUCT_ADTS adts;
-
     CAdifHeader adif;
-
     CLatmDemux latm;
-
     STRUCT_DRM drm;
-
 } transportdec_parser_t;
 
 #define MHAS_CONFIG_PRESENT 0x001

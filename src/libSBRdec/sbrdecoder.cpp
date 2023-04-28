@@ -47,7 +47,6 @@
 #include "../libAACdec/newAACDecoder.h"
 #include "sbrdecoder.h"
 #include "../libFDK/FDK_bitstream.h"
-#include "../libFDK/FDK_crc.h"
 #include "env_dec.h"
 #include "env_extr.h"
 #include "lpp_tran.h"

@@ -754,8 +754,6 @@ bail:
 	return (errorStatus);
 }
 
-int32_t myfunction() { return 3; }
-
 HANDLE_AACDECODER aacDecoder_Open(TRANSPORT_TYPE_t transportFmt, uint32_t nrOfLayers) {
 	AAC_DECODER_INSTANCE *aacDec = NULL;
 	HANDLE_TRANSPORTDEC   pIn;

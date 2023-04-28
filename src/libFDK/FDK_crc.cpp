@@ -10,7 +10,6 @@
 
 #include <stdint.h>
 #include "../libAACdec/newAACDecoder.h"
-#include "FDK_crc.h"
 
 /*---------------- constants -----------------------*/
 

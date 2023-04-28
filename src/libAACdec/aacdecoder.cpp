@@ -64,7 +64,6 @@
 #include "newAACDecoder.h"
 #include "aacdecoder.h"
 #include "../libArithCoding/ac_arith_coder.h"
-#include "../libFDK/FDK_crc.h"
 #include "../libMpegTPDec/tpdec_lib.h"
 #include "../libSACdec/sac_dec_lib.h"
 #include "../libSBRdec/sbrdecoder.h"

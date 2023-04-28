@@ -13,49 +13,48 @@
 #include "../libAACdec/newAACDecoder.h"
 #include "tpdec_lib.h"
 
-#define ADTS_SYNCWORD (0xfff)
-#define ADTS_SYNCLENGTH (12)         /* in bits */
-#define ADTS_HEADERLENGTH (56)       /* minimum header size in bits */
-#define ADTS_FIXED_HEADERLENGTH (28) /* in bits */
+#define ADTS_SYNCWORD              (0xfff)
+#define ADTS_SYNCLENGTH            (12) /* in bits */
+#define ADTS_HEADERLENGTH          (56) /* minimum header size in bits */
+#define ADTS_FIXED_HEADERLENGTH    (28) /* in bits */
 #define ADTS_VARIABLE_HEADERLENGTH (ADTS_HEADERLENGTH - ADTS_FIXED_HEADERLENGTH)
 
 #ifdef CHECK_TWO_SYNCS
-#define ADTS_MIN_TP_BUF_SIZE (8191 + 2)
+    #define ADTS_MIN_TP_BUF_SIZE (8191 + 2)
 #else
-#define ADTS_MIN_TP_BUF_SIZE (8191)
+    #define ADTS_MIN_TP_BUF_SIZE (8191)
 #endif
 
-#include "../libFDK/FDK_crc.h"
 
 typedef struct {
-  /* ADTS header fields */
-  uint8_t mpeg_id;
-  uint8_t layer;
-  uint8_t protection_absent;
-  uint8_t profile;
-  uint8_t sample_freq_index;
-  uint8_t private_bit;
-  uint8_t channel_config;
-  uint8_t original;
-  uint8_t home;
-  uint8_t copyright_id;
-  uint8_t copyright_start;
-  uint16_t frame_length;
-  uint16_t adts_fullness;
-  uint8_t num_raw_blocks;
-  uint8_t num_pce_bits;
+    /* ADTS header fields */
+    uint8_t  mpeg_id;
+    uint8_t  layer;
+    uint8_t  protection_absent;
+    uint8_t  profile;
+    uint8_t  sample_freq_index;
+    uint8_t  private_bit;
+    uint8_t  channel_config;
+    uint8_t  original;
+    uint8_t  home;
+    uint8_t  copyright_id;
+    uint8_t  copyright_start;
+    uint16_t frame_length;
+    uint16_t adts_fullness;
+    uint8_t  num_raw_blocks;
+    uint8_t  num_pce_bits;
 } STRUCT_ADTS_BS;
 
 struct STRUCT_ADTS {
-  STRUCT_ADTS_BS bs;
+    STRUCT_ADTS_BS bs;
 
-  uint8_t decoderCanDoMpeg4;
-  uint8_t BufferFullnesStartFlag;
+    uint8_t decoderCanDoMpeg4;
+    uint8_t BufferFullnesStartFlag;
 
-  FDK_CRCINFO crcInfo;        /* CRC state info */
-  uint16_t crcReadValue;        /* CRC value read from bitstream data */
-  uint16_t rawDataBlockDist[4]; /* distance between each raw data block. Not the
-                                 same as found in the bitstream */
+    FDK_CRCINFO crcInfo;             /* CRC state info */
+    uint16_t    crcReadValue;        /* CRC value read from bitstream data */
+    uint16_t    rawDataBlockDist[4]; /* distance between each raw data block. Not the
+                                      same as found in the bitstream */
 };
 
 typedef struct STRUCT_ADTS *HANDLE_ADTS;
@@ -82,8 +81,7 @@ void adtsRead_CrcInit(HANDLE_ADTS pAdts);
  *
  * \return  ID for the created region, -1 in case of an error
  */
-int32_t adtsRead_CrcStartReg(HANDLE_ADTS pAdts, HANDLE_FDK_BITSTREAM hBs,
-                         int32_t mBits);
+int32_t adtsRead_CrcStartReg(HANDLE_ADTS pAdts, HANDLE_FDK_BITSTREAM hBs, int32_t mBits);
 
 /**
  * \brief Ends CRC region identified by reg
@@ -121,10 +119,8 @@ TRANSPORTDEC_ERROR_t adtsRead_CrcCheck(HANDLE_ADTS pAdts);
  *
  * \return  error status
  */
-TRANSPORTDEC_ERROR_t adtsRead_DecodeHeader(HANDLE_ADTS pAdts,
-                                         CSAudioSpecificConfig_t *pAsc,
-                                         HANDLE_FDK_BITSTREAM bs,
-                                         const int32_t ignoreBufferFullness);
+TRANSPORTDEC_ERROR_t adtsRead_DecodeHeader(HANDLE_ADTS pAdts, CSAudioSpecificConfig_t *pAsc, HANDLE_FDK_BITSTREAM bs,
+                                           const int32_t ignoreBufferFullness);
 
 /**
  * \brief Get the raw data block length of the given block number.

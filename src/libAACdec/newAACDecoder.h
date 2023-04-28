@@ -19,6 +19,10 @@
 #define RVLC_ERROR_FORBIDDEN_CW_DETECTED_FWD          0x08000000
 #define RVLC_ERROR_FORBIDDEN_CW_DETECTED_BWD          0x04000000
 
+#define AACDEC_CONCEAL         1
+#define AACDEC_FLUSH           2
+#define AACDEC_INTR            4
+#define AACDEC_CLRHIST         8
 #define WAV_BITS               16
 #define SAMPLE_BITS            16
 #define SAMPLE_MAX             ((int16_t)(((uint32_t)1 << (SAMPLE_BITS - 1)) - 1))
@@ -433,6 +437,7 @@
 #define PREEMPH_FAC                             22282 /* ACELP synth pre-emphasis factor            */
 #define ACELP_HEADROOM                          1
 #define ACELP_OUTSCALE                          (MDCT_OUT_HEADROOM - ACELP_HEADROOM)
+#define MAX_CRC_REGS                            3
 
 #define TIME_DATA_FLUSH_SIZE           (128)
 #define TIME_DATA_FLUSH_SIZE_SF        (7)
@@ -835,6 +840,8 @@ enum {
 };
 
 typedef enum { BS_READER, BS_WRITER } FDK_BS_CFG;
+typedef enum { ARITH_CODER_OK = 0, ARITH_CODER_ERROR = 5 } ARITH_CODING_ERROR;
+typedef enum { NOT_DEFINED = -1, MODE_HQ = 0, MODE_LP = 1 } QMF_MODE;
 
 enum {
     TNS_MAX_WINDOWS = 8, /* 8 */
@@ -1942,7 +1949,26 @@ typedef struct {
         given in the bitstream. Loudness metadata can originate from MPEG-4 DRC or MPEG-D DRC. */
 } CStreamInfo;
 
+typedef struct {
+    uint8_t isActive;
+    int32_t maxBits;
+    int32_t bitBufCntBits;
+    int32_t validBits;
+} CCrcRegData;
 
+typedef struct {
+    CCrcRegData     crcRegData[MAX_CRC_REGS]; /*!< Multiple crc region description. */
+    const uint16_t* pCrcLookup;               /*!< Pointer to lookup table filled in FDK_crcInit(). */
+    uint16_t crcPoly;    /*!< CRC generator polynom. */
+    uint16_t crcMask;    /*!< CRC mask. */
+    uint16_t startValue; /*!< CRC start value. */
+    uint8_t  crcLen;     /*!< CRC length. */
+    uint32_t regStart; /*!< Start region marker for synchronization. */
+    uint32_t regStop;  /*!< Stop region marker for synchronization. */
+    uint16_t crcValue; /*!< Crc value to be calculated. */
+} FDK_CRCINFO;
+
+typedef FDK_CRCINFO* HANDLE_FDK_CRCINFO;
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -2170,6 +2196,20 @@ AAC_DECODER_ERROR_t IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo_t *pIcsInfo, const
 int32_t FDK_Delay_Create(FDK_SignalDelay_t* data, const uint16_t delay, const uint8_t num_channels);
 void FDK_Delay_Apply(FDK_SignalDelay_t* data, int32_t* time_buffer, const uint32_t frame_length, const uint8_t channel);
 void FDK_Delay_Destroy(FDK_SignalDelay_t* data);
+void CJointStereo_ApplyMS(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[2], CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[2],
+                          int32_t *spectrumL, int32_t *spectrumR, int16_t *SFBleftScale, int16_t *SFBrightScale, int16_t *specScaleL,
+                          int16_t *specScaleR, const int16_t *pScaleFactorBandOffsets, const uint8_t *pWindowGroupLength, const int32_t windowGroups,
+                          const int32_t max_sfb_ste_outside, const int32_t scaleFactorBandsTransmittedL, const int32_t scaleFactorBandsTransmittedR,
+                          int32_t *store_dmx_re_prev, int16_t *store_dmx_re_prev_e, const int32_t mainband_flag);
+void CJointStereo_ApplyIS(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[2], const int16_t *pScaleFactorBandOffsets,
+                          const uint8_t *pWindowGroupLength, const int32_t windowGroups, const int32_t scaleFactorBandsTransmitted);
+int32_t CPns_IsPnsUsed(const CPnsData_t *pPnsData, const int32_t group, const int32_t band);
+void CPns_SetCorrelation(CPnsData_t *pPnsData, const int32_t group, const int32_t band, const int32_t outofphase);
+void FDKcrcInit(HANDLE_FDK_CRCINFO hCrcInfo, const uint32_t crcPoly, const uint32_t crcStartValue, const uint32_t crcLen);
+void FDKcrcReset(HANDLE_FDK_CRCINFO hCrcInfo);
+int32_t FDKcrcStartReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs, const int32_t mBits);
+int32_t FDKcrcEndReg(HANDLE_FDK_CRCINFO hCrcInfo, const HANDLE_FDK_BITSTREAM hBs, const int32_t reg);
+uint16_t FDKcrcGetCRC(const HANDLE_FDK_CRCINFO hCrcInfo);
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S
 //----------------------------------------------------------------------------------------------------------------------
@@ -2473,3 +2513,4 @@ inline int16_t E_UTIL_random(int16_t *seed) {
     *seed = (int16_t)((((int32_t)*seed * (int32_t)31821) >> 1) + (int32_t)13849);
     return (*seed);
 }
+

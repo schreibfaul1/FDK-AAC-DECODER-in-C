@@ -13,8 +13,6 @@
 #include "../libAACdec/newAACDecoder.h"
 #include "tpdec_lib.h"
 
-#include "../libFDK/FDK_crc.h"
-
 typedef struct {
   FDK_CRCINFO crcInfo; /* CRC state info */
   uint16_t crcReadValue; /* CRC value read from bitstream data */

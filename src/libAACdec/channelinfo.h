@@ -23,15 +23,7 @@
 #include "newAACDecoder.h"
 
 
-void CJointStereo_ApplyMS(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[2], CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[2],
-                          int32_t *spectrumL, int32_t *spectrumR, int16_t *SFBleftScale, int16_t *SFBrightScale, int16_t *specScaleL,
-                          int16_t *specScaleR, const int16_t *pScaleFactorBandOffsets, const uint8_t *pWindowGroupLength, const int32_t windowGroups,
-                          const int32_t max_sfb_ste_outside, const int32_t scaleFactorBandsTransmittedL, const int32_t scaleFactorBandsTransmittedR,
-                          int32_t *store_dmx_re_prev, int16_t *store_dmx_re_prev_e, const int32_t mainband_flag);
-void CJointStereo_ApplyIS(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[2], const int16_t *pScaleFactorBandOffsets,
-                          const uint8_t *pWindowGroupLength, const int32_t windowGroups, const int32_t scaleFactorBandsTransmitted);
-int32_t CPns_IsPnsUsed(const CPnsData_t *pPnsData, const int32_t group, const int32_t band);
-void CPns_SetCorrelation(CPnsData_t *pPnsData, const int32_t group, const int32_t band, const int32_t outofphase);
+
 
 /****************** inline functions ******************/
 

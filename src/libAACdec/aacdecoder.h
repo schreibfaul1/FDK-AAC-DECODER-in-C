@@ -35,7 +35,7 @@ typedef struct {
     int32_t        nrElements;
 } CAncData;
 
-typedef enum { NOT_DEFINED = -1, MODE_HQ = 0, MODE_LP = 1 } QMF_MODE;
+
 
 typedef struct {
     int32_t bsDelay;
