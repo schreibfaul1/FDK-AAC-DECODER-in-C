@@ -8,40 +8,21 @@
 
 *******************************************************************************/
 
-
 #include <memory.h>
-#include "newAACDecoder.h"
-#include "aac_rom.h"
 #include "../libFDK/FDK_lpc.h"
+#include "aac_rom.h"
+#include "newAACDecoder.h"
 
-
-
-
-/**
- * \brief Calculate pre-emphasis (1 - mu z^-1) on input signal.
- * \param[in] in pointer to input signal; in[-1] is also needed.
- * \param[out] out pointer to output signal.
- * \param[in] L length of filtering.
- */
-/* static */
+//----------------------------------------------------------------------------------------------------------------------------------------------------
 void E_UTIL_preemph(const int32_t *in, int32_t *out, int32_t L) {
     int32_t i;
-
     for(i = 0; i < L; i++) { out[i] = fAddSaturate(in[i], -fMult(PREEMPH_FAC, in[i - 1])); }
-
     return;
 }
-
-/**
- * \brief Calculate de-emphasis 1/(1 - TILT_CODE z^-1) on innovative codebook
- * vector.
- * \param[in,out] x innovative codebook vector.
- */
-static void Preemph_code(FIXP_COD x[] /* (i/o)   : input signal overwritten by the output */
-) {
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+static void Preemph_code(FIXP_COD x[] ) {/* (i/o)   : input signal overwritten by the output */
     int32_t i;
     int32_t L_tmp;
-
     /* ARM926: 12 cycles per sample */
     for(i = L_SUBFR - 1; i > 0; i--) {
         L_tmp = FX_COD2FX_DBL(x[i]);
@@ -49,15 +30,8 @@ static void Preemph_code(FIXP_COD x[] /* (i/o)   : input signal overwritten by t
         x[i] = FX_DBL2FX_COD(L_tmp);
     }
 }
-
-/**
- * \brief Apply pitch sharpener to the innovative codebook vector.
- * \param[in,out] x innovative codebook vector.
- * \param[in] pit_lag decoded pitch lag.
- */
-static void Pit_shrp(FIXP_COD x[],    /* in/out: impulse response (or algebraic code) */
-                     int32_t  pit_lag /* input : pitch lag                            */
-) {
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+static void Pit_shrp(FIXP_COD x[], int32_t  pit_lag) {
     int32_t i;
     int32_t L_tmp;
 
@@ -66,30 +40,13 @@ static void Pit_shrp(FIXP_COD x[],    /* in/out: impulse response (or algebraic 
         L_tmp += fMult(x[i - pit_lag], PIT_SHARP);
         x[i] = FX_DBL2FX_COD(L_tmp);
     }
-
     return;
 }
-
-/**
- * \brief Calculate Quantized codebook gain, Quantized pitch gain and unbiased
- *        Innovative code vector energy.
- * \param[in] index index of quantizer.
- * \param[in] code innovative code vector with exponent = SF_CODE.
- * \param[out] gain_pit Quantized pitch gain g_p with exponent = SF_GAIN_P.
- * \param[out] gain_code Quantized codebook gain g_c.
- * \param[in] mean_ener mean_ener defined in open-loop (2 bits), exponent = 7.
- * \param[out] E_code unbiased innovative code vector energy.
- * \param[out] E_code_e exponent of unbiased innovative code vector energy.
- */
-
-#define SF_MEAN_ENER_LG10 9
-
-/* pow(10.0, {18, 30, 42, 54}/20.0) /(float)(1<<SF_MEAN_ENER_LG10) */
-static const int32_t pow_10_mean_energy[4] = {0x01fc5ebd, 0x07e7db92, 0x1f791f65, 0x7d4bfba3};
-
-static void D_gain2_plus(int32_t index, FIXP_COD code[], int16_t *gain_pit, int32_t *gain_code, int32_t mean_ener_bits,
-                         int32_t bfi, int16_t *past_gpit, int32_t *past_gcode, int32_t *pEner_code,
-                         int32_t *pEner_code_e) {
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+static void D_gain2_plus(int32_t index, FIXP_COD code[], int16_t *gain_pit, int32_t *gain_code, int32_t mean_ener_bits, int32_t bfi,
+                         int16_t *past_gpit, int32_t *past_gcode, int32_t *pEner_code, int32_t *pEner_code_e) {
+    const uint8_t SF_MEAN_ENER_LG10 = 9; /* pow(10.0, {18, 30, 42, 54}/20.0) /(float)(1<<SF_MEAN_ENER_LG10) */
+    const int32_t pow_10_mean_energy[4] = {0x01fc5ebd, 0x07e7db92, 0x1f791f65, 0x7d4bfba3};
     int32_t Ltmp;
     int32_t gcode0, gcode_inov;
     int32_t gcode0_e, gcode_inov_e;
@@ -101,17 +58,13 @@ static void D_gain2_plus(int32_t index, FIXP_COD code[], int16_t *gain_pit, int3
     /* ener_code = sum(code[]^2) */
     ener_code = int32_t(0);
     for(i = 0; i < L_SUBFR; i++) { ener_code += fPow2Div2(code[i]); }
-
     ener_code_e = fMax(fNorm(ener_code) - 1, 0);
     ener_code <<= ener_code_e;
     ener_code_e = 2 * SF_CODE + 1 - ener_code_e;
-
     /* export energy of code for calc_period_factor() */
     *pEner_code = ener_code;
     *pEner_code_e = ener_code_e;
-
     ener_code += scaleValue(FL2FXCONST_DBL(0.01f), -ener_code_e);
-
     /* ener_code *= 1/L_SUBFR, and make exponent even (because of square root
      * below). */
     if(ener_code_e & 1) {
@@ -125,23 +78,18 @@ static void D_gain2_plus(int32_t index, FIXP_COD code[], int16_t *gain_pit, int3
     if(bfi) {
         int32_t tgcode;
         int16_t tgpit;
-
         tgpit = *past_gpit;
-
         if(tgpit > FL2FXCONST_SGL(0.95f / (1 << SF_GAIN_P))) { tgpit = FL2FXCONST_SGL(0.95f / (1 << SF_GAIN_P)); }
         else if(tgpit < FL2FXCONST_SGL(0.5f / (1 << SF_GAIN_P))) { tgpit = FL2FXCONST_SGL(0.5f / (1 << SF_GAIN_P)); }
         *gain_pit = tgpit;
         tgpit = FX_DBL2FX_SGL(fMult(tgpit, FL2FXCONST_DBL(0.95f)));
         *past_gpit = tgpit;
-
         tgpit = FL2FXCONST_SGL(1.4f / (1 << SF_GAIN_P)) - tgpit;
         tgcode = fMult(*past_gcode, tgpit) << SF_GAIN_P;
         *gain_code = scaleValue(fMult(tgcode, gcode_inov), gcode_inov_e);
         *past_gcode = tgcode;
-
         return;
     }
-
     /*-------------- Decode gains ---------------*/
     /*
      gcode0 = pow(10.0, (float)mean_ener/20.0);
@@ -172,23 +120,11 @@ static void D_gain2_plus(int32_t index, FIXP_COD code[], int16_t *gain_pit, int3
         *past_gcode = scaleValue(gcode_m, gcode_e);
     }
 }
-
-/**
- * \brief Calculate period/voicing factor r_v
- * \param[in] exc pitch excitation.
- * \param[in] gain_pit gain of pitch g_p.
- * \param[in] gain_code gain of code g_c.
- * \param[in] gain_code_e exponent of gain of code.
- * \param[in] ener_code unbiased innovative code vector energy.
- * \param[in] ener_code_e exponent of unbiased innovative code vector energy.
- * \return period/voice factor r_v (-1=unvoiced to 1=voiced), exponent SF_PFAC.
- */
-static int32_t calc_period_factor(int32_t exc[], int16_t gain_pit, int32_t gain_code, int32_t ener_code,
-                                  int32_t ener_code_e) {
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+static int32_t calc_period_factor(int32_t exc[], int16_t gain_pit, int32_t gain_code, int32_t ener_code, int32_t ener_code_e) {
     int32_t ener_exc_e, L_tmp_e, s = 0;
     int32_t ener_exc, L_tmp;
     int32_t period_fac;
-
     /* energy of pitch excitation */
     ener_exc = (int32_t)0;
     for(int32_t i = 0; i < L_SUBFR; i++) {
@@ -198,19 +134,16 @@ static int32_t calc_period_factor(int32_t exc[], int16_t gain_pit, int32_t gain_
             s++;
         }
     }
-
     ener_exc_e = fNorm(ener_exc);
     ener_exc = fMult(ener_exc << ener_exc_e, fPow2(gain_pit));
     if(ener_exc != (int32_t)0) { ener_exc_e = 2 * SF_EXC + 1 + 2 * SF_GAIN_P - ener_exc_e + s; }
     else { ener_exc_e = 0; }
-
     /* energy of innovative code excitation */
     /* L_tmp = ener_code * gain_code*gain_code; */
     L_tmp_e = fNorm(gain_code);
     L_tmp = fPow2(gain_code << L_tmp_e);
     L_tmp = fMult(ener_code, L_tmp);
     L_tmp_e = 2 * SF_GAIN_C + ener_code_e - 2 * L_tmp_e;
-
     /* Find common exponent */
     {
         int32_t num, den;
@@ -240,39 +173,14 @@ static int32_t calc_period_factor(int32_t exc[], int16_t gain_pit, int32_t gain_
         }
         else { period_fac = (int32_t)MAXVAL_DBL; }
     }
-
     /* exponent = SF_PFAC */
     return period_fac;
 }
-
-/*------------------------------------------------------------*
- * noise enhancer                                             *
- * ~~~~~~~~~~~~~~                                             *
- * - Enhance excitation on noise. (modify gain of code)       *
- *   If signal is noisy and LPC filter is stable, move gain   *
- *   of code 1.5 dB toward gain of code threshold.            *
- *   This decrease by 3 dB noise energy variation.            *
- *------------------------------------------------------------*/
-/**
- * \brief Enhance excitation on noise. (modify gain of code)
- * \param[in] gain_code Quantized codebook gain g_c, exponent = SF_GAIN_C.
- * \param[in] period_fac periodicity factor, exponent = SF_PFAC.
- * \param[in] stab_fac stability factor, exponent = SF_STAB.
- * \param[in,out] p_gc_threshold modified gain of previous subframe.
- * \return gain_code smoothed gain of code g_sc, exponent = SF_GAIN_C.
- */
-static int32_t noise_enhancer(                         /* (o) : smoothed gain g_sc                     SF_GAIN_C */
-                              int32_t gain_code,       /* (i) : Quantized codebook gain SF_GAIN_C */
-                              int32_t period_fac,      /* (i) : periodicity factor (-1=unvoiced to
-                                                           1=voiced), SF_PFAC */
-                              int16_t stab_fac,        /* (i) : stability factor (0 <= ... < 1.0)
-                                                           SF_STAB   */
-                              int32_t *p_gc_threshold) /* (io): gain of code threshold SF_GAIN_C */
-{
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+static int32_t noise_enhancer(int32_t gain_code, int32_t period_fac, int16_t stab_fac, int32_t *p_gc_threshold) {
     int32_t fac, L_tmp, gc_thres;
 
     gc_thres = *p_gc_threshold;
-
     L_tmp = gain_code;
     if(L_tmp < gc_thres) {
         L_tmp += fMultDiv2(gain_code, FL2FXCONST_SGL(2.0 * 0.19f)); /* +1.5dB => *(1.0+0.19) */
@@ -290,26 +198,14 @@ static int32_t noise_enhancer(                         /* (o) : smoothed gain g_
     fac = (FX_SGL2FX_DBL(stab_fac) >> (SF_PFAC + 1)) - fMultDiv2(stab_fac, period_fac);
     /* fac_e = SF_PFAC + SF_STAB */
     assert(fac >= (int32_t)0);
-
     /* gain_code = (float)((fac*tmp) + ((1.0-fac)*gain_code)); */
     gain_code = fMult(fac, L_tmp) - fMult(FL2FXCONST_DBL(-1.0f / (1 << (SF_PFAC + SF_STAB))) + fac, gain_code);
     gain_code <<= (SF_PFAC + SF_STAB);
 
     return gain_code;
 }
+//----------------------------------------------------------------------------------------------------------------------------------------------------
 
-/**
- * \brief Update adaptive codebook u'(n) (exc)
- *        Enhance pitch of c(n) and build post-processed excitation u(n) (exc2)
- * \param[in] code innovative codevector c(n), exponent = SF_CODE.
- * \param[in,out] exc filtered adaptive codebook v(n), exponent = SF_EXC.
- * \param[in] gain_pit adaptive codebook gain, exponent = SF_GAIN_P.
- * \param[in] gain_code innovative codebook gain g_c, exponent = SF_GAIN_C.
- * \param[in] gain_code_smoothed smoothed innov. codebook gain g_sc, exponent =
- * SF_GAIN_C.
- * \param[in] period_fac periodicity factor r_v, exponent = SF_PFAC.
- * \param[out] exc2 post-processed excitation u(n), exponent = SF_EXC.
- */
 void BuildAdaptiveExcitation(FIXP_COD code[],             /* (i) : algebraic codevector c(n)             Q9  */
                              int32_t  exc[],              /* (io): filtered adaptive codebook v(n)       Q15 */
                              int16_t  gain_pit,           /* (i) : adaptive codebook gain g_p            Q14 */
@@ -388,14 +284,13 @@ void BuildAdaptiveExcitation(FIXP_COD code[],             /* (i) : algebraic cod
  * SF_A_COEFFS.
  */
 /* static */
-void int_lpc_acelp(const int16_t lsp_old[], /* input : LSPs from past frame              */
-                   const int16_t lsp_new[], /* input : LSPs from present frame           */
-                   int32_t subfr_nr, int32_t nb_subfr,
-                   int16_t A[], /* output: interpolated LP coefficients for current subframe */
+void int_lpc_acelp(const int16_t lsp_old[],                         /* input : LSPs from past frame              */
+                   const int16_t lsp_new[],                         /* input : LSPs from present frame           */
+                   int32_t subfr_nr, int32_t nb_subfr, int16_t A[], /* output: interpolated LP coefficients for current subframe */
                    int32_t *A_exp) {
-    int32_t  i;
+    int32_t i;
     int16_t lsp_interpol[M_LP_FILTER_ORDER];
-    int16_t  fac_old, fac_new;
+    int16_t fac_old, fac_new;
 
     assert((nb_subfr == 3) || (nb_subfr == 4));
 
@@ -421,7 +316,7 @@ void int_lpc_acelp(const int16_t lsp_old[], /* input : LSPs from past frame     
  */
 
 /* static */
-void Syn_filt(const int16_t a[],                  /* (i) : a[m] prediction coefficients Q12 */
+void Syn_filt(const int16_t a[],                   /* (i) : a[m] prediction coefficients Q12 */
               const int32_t a_exp, int32_t length, /* (i) : length of input/output signal (64|128)   */
               int32_t x[],                         /* (i) : input signal Qx  */
               int32_t y[]                          /* (i/o) : filter states / output signal  Qx-s*/
@@ -496,11 +391,10 @@ static const uint8_t num_acb_idx_bits_table[2][NB_SUBFR] = {
     {9, 6, 6, 0}  /* coreCoderFrameLength == 768  */
 };
 
-static int32_t DecodePitchLag(HANDLE_FDK_BITSTREAM hBs, const uint8_t num_acb_idx_bits,
-                              const int32_t PIT_MIN, /* TMIN */
-                              const int32_t PIT_FR2, /* TFR2 */
-                              const int32_t PIT_FR1, /* TFR1 */
-                              const int32_t PIT_MAX, /* TMAX */
+static int32_t DecodePitchLag(HANDLE_FDK_BITSTREAM hBs, const uint8_t num_acb_idx_bits, const int32_t PIT_MIN, /* TMIN */
+                              const int32_t PIT_FR2,                                                           /* TFR2 */
+                              const int32_t PIT_FR1,                                                           /* TFR1 */
+                              const int32_t PIT_MAX,                                                           /* TMAX */
                               int32_t *pT0, int32_t *pT0_frac, int32_t *pT0_min, int32_t *pT0_max) {
     int32_t acb_idx;
     int32_t error = 0;
@@ -572,9 +466,8 @@ static uint8_t tab_coremode2nbits[8] = {20, 28, 36, 44, 52, 64, 12, 16};
 static int32_t MapCoreMode2NBits(int32_t core_mode) { return (int32_t)tab_coremode2nbits[core_mode]; }
 
 void CLpd_AcelpDecode(CAcelpStaticMem_t *acelp_mem, int32_t i_offset, const int16_t lsp_old[M_LP_FILTER_ORDER],
-                      const int16_t lsp_new[M_LP_FILTER_ORDER], int16_t stab_fac, CAcelpChannelData_t *pAcelpData,
-                      int32_t numLostSubframes, int32_t lastLpcLost, int32_t frameCnt, int32_t synth[], int32_t pT[],
-                      int32_t *pit_gain, int32_t coreCoderFrameLength) {
+                      const int16_t lsp_new[M_LP_FILTER_ORDER], int16_t stab_fac, CAcelpChannelData_t *pAcelpData, int32_t numLostSubframes,
+                      int32_t lastLpcLost, int32_t frameCnt, int32_t synth[], int32_t pT[], int32_t *pit_gain, int32_t coreCoderFrameLength) {
     int32_t i_subfr, subfr_nr, l_div, T;
     int32_t T0 = -1, T0_frac = -1; /* mark invalid */
 
@@ -586,7 +479,7 @@ void CLpd_AcelpDecode(CAcelpStaticMem_t *acelp_mem, int32_t i_offset, const int1
     int32_t  *exc2;
     int32_t  *syn;
     int32_t  *exc;
-    int16_t  A[M_LP_FILTER_ORDER];
+    int16_t   A[M_LP_FILTER_ORDER];
     int32_t   A_exp;
 
     int32_t period_fac;
@@ -596,9 +489,8 @@ void CLpd_AcelpDecode(CAcelpStaticMem_t *acelp_mem, int32_t i_offset, const int1
     int32_t n;
     int32_t bfi = (numLostSubframes > 0) ? 1 : 0;
 
-
-    int32_t exc_buf[PIT_MAX_MAX + L_INTERPOL + L_DIV_1024 + 1];  /* 411 + 17 + 256 + 1 = 685 */
-    int32_t syn_buf[M_LP_FILTER_ORDER + L_DIV_1024];  /* 16 + 256 = 272 */
+    int32_t exc_buf[PIT_MAX_MAX + L_INTERPOL + L_DIV_1024 + 1]; /* 411 + 17 + 256 + 1 = 685 */
+    int32_t syn_buf[M_LP_FILTER_ORDER + L_DIV_1024];            /* 16 + 256 = 272 */
 
     /* use same memory for code[L_SUBFR] and exc2[L_SUBFR] */
     int32_t tmp_buf[L_SUBFR]; /* 64 */
@@ -637,8 +529,7 @@ void CLpd_AcelpDecode(CAcelpStaticMem_t *acelp_mem, int32_t i_offset, const int1
          *-------------------------------------------------*/
         Pred_lt4(&exc[i_subfr], T0, T0_frac);
 
-        if((!bfi && pAcelpData->ltp_filtering_flag[subfr_nr] == 0) ||
-           (bfi && numLostSubframes == 1 && stab_fac < FL2FXCONST_SGL(0.25f))) {
+        if((!bfi && pAcelpData->ltp_filtering_flag[subfr_nr] == 0) || (bfi && numLostSubframes == 1 && stab_fac < FL2FXCONST_SGL(0.25f))) {
             /* find pitch excitation with lp filter: v'(n) => v(n) */
             Pred_lt4_postfilter(&exc[i_subfr]);
         }
@@ -664,13 +555,12 @@ void CLpd_AcelpDecode(CAcelpStaticMem_t *acelp_mem, int32_t i_offset, const int1
         /* Output pitch lag for bass post-filter */
         if(T > PIT_MAX) { pT[subfr_nr] = PIT_MAX; }
         else { pT[subfr_nr] = T; }
-        D_gain2_plus(pAcelpData->gains[subfr_nr], code, /* (i)  : Innovative code vector, exponent = SF_CODE */
-                     &gain_pit,                         /* (o)  : Quantized pitch gain, exponent = SF_GAIN_P */
-                     &gain_code,                        /* (o)  : Quantized codebook gain                    */
-                     pAcelpData->mean_energy,           /* (i)  : mean_ener defined in open-loop (2 bits) */
-                     bfi, &acelp_mem->past_gpit, &acelp_mem->past_gcode,
-                     &Ener_code,    /* (o)  : Innovative code vector energy              */
-                     &Ener_code_e); /* (o)  : Innovative code vector energy exponent     */
+        D_gain2_plus(pAcelpData->gains[subfr_nr], code,                              /* (i)  : Innovative code vector, exponent = SF_CODE */
+                     &gain_pit,                                                      /* (o)  : Quantized pitch gain, exponent = SF_GAIN_P */
+                     &gain_code,                                                     /* (o)  : Quantized codebook gain                    */
+                     pAcelpData->mean_energy,                                        /* (i)  : mean_ener defined in open-loop (2 bits) */
+                     bfi, &acelp_mem->past_gpit, &acelp_mem->past_gcode, &Ener_code, /* (o)  : Innovative code vector energy              */
+                     &Ener_code_e);                                                  /* (o)  : Innovative code vector energy exponent     */
 
         pit_gain[pit_gain_index++] = FX_SGL2FX_DBL(gain_pit);
 
@@ -686,9 +576,7 @@ void CLpd_AcelpDecode(CAcelpStaticMem_t *acelp_mem, int32_t i_offset, const int1
                                                         */
 
         if(lastLpcLost && frameCnt == 0) {
-            if(gain_pit > FL2FXCONST_SGL(1.0f / (1 << SF_GAIN_P))) {
-                gain_pit = FL2FXCONST_SGL(1.0f / (1 << SF_GAIN_P));
-            }
+            if(gain_pit > FL2FXCONST_SGL(1.0f / (1 << SF_GAIN_P))) { gain_pit = FL2FXCONST_SGL(1.0f / (1 << SF_GAIN_P)); }
         }
 
         gain_code_smooth = noise_enhancer(            /* (o) : smoothed gain g_sc exponent = SF_GAIN_C */
@@ -724,8 +612,7 @@ void CLpd_AcelpDecode(CAcelpStaticMem_t *acelp_mem, int32_t i_offset, const int1
     acelp_mem->old_T0 = T0;
 
     /* save old excitation and old synthesis memory for next ACELP frame */
-    memcpy(acelp_mem->old_exc_mem, exc + l_div - (PIT_MAX_MAX + L_INTERPOL),
-              sizeof(int32_t) * (PIT_MAX_MAX + L_INTERPOL));
+    memcpy(acelp_mem->old_exc_mem, exc + l_div - (PIT_MAX_MAX + L_INTERPOL), sizeof(int32_t) * (PIT_MAX_MAX + L_INTERPOL));
     memcpy(acelp_mem->old_syn_mem, syn_buf + l_div, sizeof(int32_t) * M_LP_FILTER_ORDER);
 
     Deemph(syn, synth, l_div, &acelp_mem->de_emph_mem); /* ref soft: mem = synth[-1] */
@@ -750,11 +637,11 @@ void CLpd_AcelpReset(CAcelpStaticMem_t *acelp) {
 /* TCX time domain concealment */
 /*   Compare to figure 13a on page 54 in 3GPP TS 26.290 */
 void CLpd_TcxTDConceal(CAcelpStaticMem_t *acelp_mem, int16_t *pitch, const int16_t lsp_old[M_LP_FILTER_ORDER],
-                       const int16_t lsp_new[M_LP_FILTER_ORDER], const int16_t stab_fac, int32_t nLostSf,
-                       int32_t synth[], int32_t coreCoderFrameLength, uint8_t last_tcx_noise_factor) {
+                       const int16_t lsp_new[M_LP_FILTER_ORDER], const int16_t stab_fac, int32_t nLostSf, int32_t synth[],
+                       int32_t coreCoderFrameLength, uint8_t last_tcx_noise_factor) {
     /* repeat past excitation with pitch from previous decoded TCX frame */
-    int32_t exc_buf[PIT_MAX_MAX + L_INTERPOL + L_DIV_1024]; /* 411 +  17 + 256 + 1 =  */
-    int32_t syn_buf[M_LP_FILTER_ORDER + L_DIV_1024];        /* 256 +  16           =  */
+    int32_t  exc_buf[PIT_MAX_MAX + L_INTERPOL + L_DIV_1024]; /* 411 +  17 + 256 + 1 =  */
+    int32_t  syn_buf[M_LP_FILTER_ORDER + L_DIV_1024];        /* 256 +  16           =  */
     int32_t  ns_buf[L_DIV + 1];
     int32_t *syn = syn_buf + M_LP_FILTER_ORDER;
     int32_t *exc = exc_buf + PIT_MAX_MAX + L_INTERPOL;
@@ -790,9 +677,9 @@ void CLpd_TcxTDConceal(CAcelpStaticMem_t *acelp_mem, int16_t *pitch, const int16
     ns[-1] = acelp_mem->deemph_mem_wsyn;
 
     for(i_subfr = 0, subfr_nr = 0; i_subfr < lDiv; i_subfr += L_SUBFR, subfr_nr++) {
-        int32_t  tRes[L_SUBFR];
+        int32_t tRes[L_SUBFR];
         int16_t A[M_LP_FILTER_ORDER];
-        int32_t  A_exp;
+        int32_t A_exp;
 
         /* interpolate LPC coefficients */
         int_lpc_acelp(lsp_old, lsp_new, subfr_nr, lDiv / L_SUBFR, A, &A_exp);
@@ -828,15 +715,13 @@ void CLpd_TcxTDConceal(CAcelpStaticMem_t *acelp_mem, int16_t *pitch, const int16
     }
 
     /* save old excitation and old synthesis memory for next ACELP frame */
-    memcpy(acelp_mem->old_exc_mem, exc + lDiv - (PIT_MAX_MAX + L_INTERPOL),
-              sizeof(int32_t) * (PIT_MAX_MAX + L_INTERPOL));
+    memcpy(acelp_mem->old_exc_mem, exc + lDiv - (PIT_MAX_MAX + L_INTERPOL), sizeof(int32_t) * (PIT_MAX_MAX + L_INTERPOL));
     memcpy(acelp_mem->old_syn_mem, syn_buf + lDiv, sizeof(int32_t) * M_LP_FILTER_ORDER);
     acelp_mem->de_emph_mem = acelp_mem->deemph_mem_wsyn;
 }
 
-void Acelp_PreProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch, int32_t *old_T_pf, int32_t *pit_gain,
-                         int32_t *old_gain_pf, int32_t samplingRate, int32_t *i_offset, int32_t coreCoderFrameLength,
-                         int32_t synSfd, int32_t nbSubfrSuperfr) {
+void Acelp_PreProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch, int32_t *old_T_pf, int32_t *pit_gain, int32_t *old_gain_pf,
+                         int32_t samplingRate, int32_t *i_offset, int32_t coreCoderFrameLength, int32_t synSfd, int32_t nbSubfrSuperfr) {
     int32_t n;
 
     /* init beginning of synth_buf with old synthesis from previous frame */
@@ -856,8 +741,8 @@ void Acelp_PreProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch,
     }
 }
 
-void Acelp_PostProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch, int32_t *old_T_pf,
-                          int32_t coreCoderFrameLength, int32_t synSfd, int32_t nbSubfrSuperfr) {
+void Acelp_PostProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch, int32_t *old_T_pf, int32_t coreCoderFrameLength, int32_t synSfd,
+                          int32_t nbSubfrSuperfr) {
     int32_t n;
 
     /* store last part of synth_buf (which is not handled by the IMDCT overlap)
@@ -870,9 +755,7 @@ void Acelp_PostProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch
 
 #define L_FAC_ZIR (LFAC)
 
-void CLpd_Acelp_Zir(const int16_t A[], const int32_t A_exp, CAcelpStaticMem_t *acelp_mem, const int32_t length,
-                    int32_t zir[], int32_t doDeemph) {
-
+void CLpd_Acelp_Zir(const int16_t A[], const int32_t A_exp, CAcelpStaticMem_t *acelp_mem, const int32_t length, int32_t zir[], int32_t doDeemph) {
     int32_t tmp_buf[LFAC + M_LP_FILTER_ORDER];
     assert(length <= L_FAC_ZIR);
 
@@ -890,10 +773,9 @@ void CLpd_Acelp_Zir(const int16_t A[], const int32_t A_exp, CAcelpStaticMem_t *a
     }
 }
 
-void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, uint8_t last_last_lpd_mode,
-                                  const int16_t *A_new, const int32_t A_new_exp, const int16_t *A_old,
-                                  const int32_t A_old_exp, CAcelpStaticMem_t *acelp_mem, int32_t coreCoderFrameLength,
-                                  int32_t clearOldExc, uint8_t lpd_mode) {
+void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, uint8_t last_last_lpd_mode, const int16_t *A_new,
+                                  const int32_t A_new_exp, const int16_t *A_old, const int32_t A_old_exp, CAcelpStaticMem_t *acelp_mem,
+                                  int32_t coreCoderFrameLength, int32_t clearOldExc, uint8_t lpd_mode) {
     int32_t  l_div = coreCoderFrameLength / NB_DIV; /* length of one ACELP/TCX20 frame */
     int32_t  l_div_partial;
     int32_t *syn, *old_exc_mem;
@@ -907,16 +789,14 @@ void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, u
     if(lpd_mode == 4) {
         /* Bypass Domain conversion. TCXTD Concealment does no deemphasis in the
          * end. */
-        memcpy(synth_buf, &synth[-(PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER)],
-                  (PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER) * sizeof(int32_t));
+        memcpy(synth_buf, &synth[-(PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER)], (PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER) * sizeof(int32_t));
         /* Set deemphasis memory state for TD concealment */
         acelp_mem->deemph_mem_wsyn = scaleValueSaturate(synth[-1], ACELP_OUTSCALE);
     }
     else {
         /* convert past [PIT_MAX_MAX+L_INTERPOL+M_LP_FILTER_ORDER] synthesis to
          * preemph domain */
-        E_UTIL_preemph(&synth[-(PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER)], synth_buf,
-                       PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER);
+        E_UTIL_preemph(&synth[-(PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER)], synth_buf, PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER);
         scaleValuesSaturate(synth_buf, PIT_MAX_MAX + L_INTERPOL + M_LP_FILTER_ORDER, ACELP_OUTSCALE);
     }
 
@@ -924,8 +804,7 @@ void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, u
     acelp_mem->de_emph_mem = scaleValueSaturate(synth[-1], ACELP_OUTSCALE);
 
     /* update acelp synth filter memory */
-    memcpy(acelp_mem->old_syn_mem, &syn[PIT_MAX_MAX + L_INTERPOL - M_LP_FILTER_ORDER],
-              M_LP_FILTER_ORDER * sizeof(int32_t));
+    memcpy(acelp_mem->old_syn_mem, &syn[PIT_MAX_MAX + L_INTERPOL - M_LP_FILTER_ORDER], M_LP_FILTER_ORDER * sizeof(int32_t));
 
     if(clearOldExc) {
         memset(old_exc_mem, 0, (PIT_MAX_MAX + L_INTERPOL) * sizeof(int32_t));
@@ -945,8 +824,7 @@ void CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, u
         E_UTIL_residu(A_new, A_new_exp, syn + l_div_partial, old_exc_mem + l_div_partial, l_div);
     }
     else { /* prev frame was FD, TCX40 or TCX80 */
-        int32_t exc_A_new_length =
-            (coreCoderFrameLength / 2 > PIT_MAX_MAX + L_INTERPOL) ? PIT_MAX_MAX + L_INTERPOL : coreCoderFrameLength / 2;
+        int32_t exc_A_new_length = (coreCoderFrameLength / 2 > PIT_MAX_MAX + L_INTERPOL) ? PIT_MAX_MAX + L_INTERPOL : coreCoderFrameLength / 2;
         int32_t exc_A_old_length = PIT_MAX_MAX + L_INTERPOL - exc_A_new_length;
         E_UTIL_residu(A_old, A_old_exp, syn, old_exc_mem, exc_A_old_length);
         E_UTIL_residu(A_new, A_new_exp, &syn[exc_A_old_length], &old_exc_mem[exc_A_old_length], exc_A_new_length);
@@ -959,8 +837,8 @@ int32_t *CLpd_ACELP_GetFreeExcMem(CAcelpStaticMem_t *acelp_mem, int32_t length) 
     return acelp_mem->old_exc_mem;
 }
 
-int32_t CLpd_AcelpRead(HANDLE_FDK_BITSTREAM hBs, CAcelpChannelData_t *acelp, int32_t acelp_core_mode,
-                       int32_t coreCoderFrameLength, int32_t i_offset) {
+int32_t CLpd_AcelpRead(HANDLE_FDK_BITSTREAM hBs, CAcelpChannelData_t *acelp, int32_t acelp_core_mode, int32_t coreCoderFrameLength,
+                       int32_t i_offset) {
     int32_t        nb_subfr = coreCoderFrameLength / L_DIV;
     const uint8_t *num_acb_index_bits = (nb_subfr == 4) ? num_acb_idx_bits_table[0] : num_acb_idx_bits_table[1];
     int32_t        nbits;
@@ -986,8 +864,7 @@ int32_t CLpd_AcelpRead(HANDLE_FDK_BITSTREAM hBs, CAcelpChannelData_t *acelp, int
 
     for(int32_t sfr = 0; sfr < nb_subfr; sfr++) {
         /* read ACB index and store T0 and T0_frac for each ACELP subframe. */
-        error = DecodePitchLag(hBs, num_acb_index_bits[sfr], PIT_MIN, PIT_FR2, PIT_FR1, PIT_MAX, &T0, &T0_frac, &T0_min,
-                               &T0_max);
+        error = DecodePitchLag(hBs, num_acb_index_bits[sfr], PIT_MIN, PIT_FR2, PIT_FR1, PIT_MAX, &T0, &T0_frac, &T0_min, &T0_max);
         if(error) { goto bail; }
         acelp->T0[sfr] = (uint16_t)T0;
         acelp->T0_frac[sfr] = (uint8_t)T0_frac;

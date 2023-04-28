@@ -2014,3 +2014,16 @@ const int16_t FacWindowZir48[] = {
     15922, 15011, 14120, 13248, 12397, 11569, 10762, 9980,  9222,  8489,  7782,  7101,  6448,  5824,  5228,  4662,
     4126,  3620,  3146,  2704,  2293,  1915,  1571,  1260,  982,   739,   529,   355,   215,   110,   39,    4,
 };
+const int32_t Pred_lt4_inter4_2[UP_SAMP][L_INTERPOL2] = {
+    {(int32_t)0x0000FFFC, (int32_t)0x0008FFFC, (int32_t)0xFFEB004C, (int32_t)0xFF50014A, (int32_t)0xFDD90351, (int32_t)0xFB2A06CD,
+     (int32_t)0xF6920D46, (int32_t)0xEBB42B35, (int32_t)0x6D9EEF39, (int32_t)0x0618FE0F, (int32_t)0xFFE00131, (int32_t)0xFE5501C5,
+     (int32_t)0xFE5E015D, (int32_t)0xFEF700B6, (int32_t)0xFF920037, (int32_t)0xFFEC0003},
+    {(int32_t)0x0002FFF2, (int32_t)0x0026FFBD, (int32_t)0x005DFF98, (int32_t)0x0055FFEF, (int32_t)0xFF89015F, (int32_t)0xFD3A04E5,
+     (int32_t)0xF7D90DAA, (int32_t)0xE67A50EE, (int32_t)0x50EEE67A, (int32_t)0x0DAAF7D9, (int32_t)0x04E5FD3A, (int32_t)0x015FFF89,
+     (int32_t)0xFFEF0055, (int32_t)0xFF98005D, (int32_t)0xFFBD0026, (int32_t)0xFFF20002},
+    {(int32_t)0x0003FFEC, (int32_t)0x0037FF92, (int32_t)0x00B6FEF7, (int32_t)0x015DFE5E, (int32_t)0x01C5FE55, (int32_t)0x0131FFE0,
+     (int32_t)0xFE0F0618, (int32_t)0xEF396D9E, (int32_t)0x2B35EBB4, (int32_t)0x0D46F692, (int32_t)0x06CDFB2A, (int32_t)0x0351FDD9,
+     (int32_t)0x014AFF50, (int32_t)0x004CFFEB, (int32_t)0xFFFC0008, (int32_t)0xFFFC0000},
+    {(int32_t)0x0002FFF2, (int32_t)0x002BFF9E, (int32_t)0x00B9FECE, (int32_t)0x01CFFD75, (int32_t)0x035EFBC1, (int32_t)0x0521FA0C,
+     (int32_t)0x06AAF8C9, (int32_t)0x07907852, (int32_t)0x0790F8C9, (int32_t)0x06AAFA0C, (int32_t)0x0521FBC1, (int32_t)0x035EFD75,
+     (int32_t)0x01CFFECE, (int32_t)0x00B9FF9E, (int32_t)0x002BFFF2, (int32_t)0x00020000}};

@@ -525,10 +525,6 @@ static int32_t vlpc_2st_dec(HANDLE_FDK_BITSTREAM hBs, int16_t *lsfq, /* i/o:    
     return 0;
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------
-/*
- * Externally visible functions
- */
-
 int32_t CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *pOutput, int32_t nk_mode, int32_t no_qn, int32_t length) {
     int32_t i, l;
 
@@ -548,16 +544,13 @@ int32_t CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *pOutput, int32_t nk_mo
                 nk = (qn[l] - 3) >> 1;
                 n = qn[l] - nk * 2;
             }
-
             /* Base codebook index, in reverse bit group order (!) */
             I = FDKreadBits(hBs, 4 * n);
-
             if(nk > 0) {
                 int32_t j;
 
                 for(j = 0; j < 8; j++) { kv[j] = FDKreadBits(hBs, nk); }
             }
-
             if(RE8_dec(qn[l], I, kv, &pOutput[i + l * 8]) != 0) { return -1; }
         }
     }
@@ -684,8 +677,8 @@ int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, int16_t lsp[][M_LP_FILTER_ORDER], in
         /* LPC(0) was lost. Use next available LPC(k) instead */
         for(k = 1; k < (nbDiv + 1); k++) {
             if(lpc_present[k]) {
+                const double LSF_INIT_TILT = 0.25;
                 for(i = 0; i < M_LP_FILTER_ORDER; i++) {
-#define LSF_INIT_TILT (0.25f)
                     if(mod[0] > 0) {
                         lsp[0][i] = FX_DBL2FX_LPC(fMult(lsp[k][i], FL2FXCONST_SGL(1.0f - LSF_INIT_TILT)) +
                                                   fMult(fdk_dec_lsf_init[i], FL2FXCONST_SGL(LSF_INIT_TILT)));
@@ -696,9 +689,7 @@ int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, int16_t lsp[][M_LP_FILTER_ORDER], in
             }
         }
     }
-
     for(i = 0; i < M_LP_FILTER_ORDER; i++) { lpc4_lsf[i] = lsp[4 >> s][i]; }
-
     {
         int32_t divFac;
         int32_t last, numLpc = 0;
@@ -780,10 +771,10 @@ void CLpc_Conceal(int16_t lsp[][M_LP_FILTER_ORDER], int16_t lpc4_lsf[M_LP_FILTER
                   const int32_t first_lpd_flag) {
     int32_t i, j;
 
-#define BETA        (8192)
-#define ONE_BETA    (24576)
-#define BFI_FAC     (29491)
-#define ONE_BFI_FAC (3277)
+    const uint16_t BETA        = 8192;
+    const uint16_t ONE_BETA    = 24576;
+    const uint16_t BFI_FAC     = 29491;
+    const uint16_t ONE_BFI_FAC = 3277;
 
     /* Frame loss concealment (could be improved) */
 

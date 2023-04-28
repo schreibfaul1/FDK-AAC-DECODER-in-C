@@ -82,5 +82,6 @@ extern const int16_t FacWindowSynth96[96];
 extern const int16_t FacWindowZir96[96];
 extern const int16_t FacWindowSynth48[48];
 extern const int16_t FacWindowZir48[48];
+extern const int32_t Pred_lt4_inter4_2[UP_SAMP][L_INTERPOL2];
 
 #endif /* #ifndef AAC_ROM_H */
