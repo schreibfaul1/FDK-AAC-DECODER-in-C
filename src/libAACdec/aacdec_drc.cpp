@@ -10,7 +10,6 @@
 #include <memory.h>
 #include <stdint.h>
 #include "newAACDecoder.h"
-
 #include "channelinfo.h"
 #include "aac_rom.h"
 
