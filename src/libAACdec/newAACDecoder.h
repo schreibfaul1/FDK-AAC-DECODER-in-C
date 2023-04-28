@@ -1833,75 +1833,75 @@ static void adjustTimeSlot_EldGrid(int32_t *ptrReal, ENV_CALC_NRGS_t *nrgs, uint
 static void adjustTimeSlotLC(int32_t *ptrReal, ENV_CALC_NRGS_t *nrgs, uint8_t *ptrHarmIndex, int32_t lowSubbands, int32_t noSubbands,
                              int32_t scale_change, int32_t noNoiseFlag, int32_t *ptrPhaseIndex);
 AAC_DECODER_ERROR_t CLpdChannelStream_Read(HANDLE_FDK_BITSTREAM hBs, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
-                                         CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo, const SamplingRateInfo_t *pSamplingRateInfo,
-                                         uint32_t flags);
-void CLpdChannelStream_Decode(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
+                                           CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo, const SamplingRateInfo_t *pSamplingRateInfo,
                                            uint32_t flags);
+void CLpdChannelStream_Decode(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
+                              uint32_t flags);
 AAC_DECODER_ERROR_t CLpd_RenderTimeSignal(CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
                                           CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, int32_t *pTimeData, int32_t samplesPerFrame,
                                           SamplingRateInfo_t *pSamplingRateInfo, uint32_t frameOk, const int32_t aacOutDataHeadroom, uint32_t flags,
                                           uint32_t strmFlags);
-void FDK_CreateBitBuffer(HANDLE_FDK_BITBUF *hBitBuffer, uint8_t *pBuffer, uint32_t bufSize);
-void FDK_InitBitBuffer(HANDLE_FDK_BITBUF hBitBuffer, uint8_t *pBuffer, uint32_t bufSize, uint32_t validBits);
-void FDK_ResetBitBuffer(HANDLE_FDK_BITBUF hBitBuffer);
-void FDK_DeleteBitBuffer(HANDLE_FDK_BITBUF hBitBuffer);
-int32_t FDK_get(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits);
-int32_t FDK_get32(HANDLE_FDK_BITBUF hBitBuf);
-void FDK_put(HANDLE_FDK_BITBUF hBitBuffer, uint32_t value, const uint32_t numberOfBits);
-int32_t FDK_getBwd(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits);
-void FDK_putBwd(HANDLE_FDK_BITBUF hBitBuffer, uint32_t value, const uint32_t numberOfBits);
-void FDK_pushBack(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits, uint8_t config);
-void FDK_pushForward(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits,  uint8_t config);
-uint32_t FDK_getValidBits(HANDLE_FDK_BITBUF hBitBuffer);
-int32_t FDK_getFreeBits(HANDLE_FDK_BITBUF hBitBuffer);
-void FDK_Feed(HANDLE_FDK_BITBUF hBitBuffer, const uint8_t inputBuffer[], const uint32_t bufferSize, uint32_t *bytesValid);
-void FDK_Copy(HANDLE_FDK_BITBUF hBitBufDst, HANDLE_FDK_BITBUF hBitBufSrc, uint32_t *bytesValid);
-void FDK_Fetch(HANDLE_FDK_BITBUF hBitBuffer, uint8_t outBuf[], uint32_t *writeBytes);
+void                FDK_CreateBitBuffer(HANDLE_FDK_BITBUF *hBitBuffer, uint8_t *pBuffer, uint32_t bufSize);
+void                FDK_InitBitBuffer(HANDLE_FDK_BITBUF hBitBuffer, uint8_t *pBuffer, uint32_t bufSize, uint32_t validBits);
+void                FDK_ResetBitBuffer(HANDLE_FDK_BITBUF hBitBuffer);
+void                FDK_DeleteBitBuffer(HANDLE_FDK_BITBUF hBitBuffer);
+int32_t             FDK_get(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits);
+int32_t             FDK_get32(HANDLE_FDK_BITBUF hBitBuf);
+void                FDK_put(HANDLE_FDK_BITBUF hBitBuffer, uint32_t value, const uint32_t numberOfBits);
+int32_t             FDK_getBwd(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits);
+void                FDK_putBwd(HANDLE_FDK_BITBUF hBitBuffer, uint32_t value, const uint32_t numberOfBits);
+void                FDK_pushBack(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits, uint8_t config);
+void                FDK_pushForward(HANDLE_FDK_BITBUF hBitBuffer, const uint32_t numberOfBits, uint8_t config);
+uint32_t            FDK_getValidBits(HANDLE_FDK_BITBUF hBitBuffer);
+int32_t             FDK_getFreeBits(HANDLE_FDK_BITBUF hBitBuffer);
+void                FDK_Feed(HANDLE_FDK_BITBUF hBitBuffer, const uint8_t inputBuffer[], const uint32_t bufferSize, uint32_t *bytesValid);
+void                FDK_Copy(HANDLE_FDK_BITBUF hBitBufDst, HANDLE_FDK_BITBUF hBitBufSrc, uint32_t *bytesValid);
+void                FDK_Fetch(HANDLE_FDK_BITBUF hBitBuffer, uint8_t outBuf[], uint32_t *writeBytes);
 void                aacDecoder_drcReset(HANDLE_AAC_DRC self);
 void                aacDecoder_drcInit(HANDLE_AAC_DRC self);
 void                aacDecoder_drcInitChannelData(CDrcChannelData_t *pDrcChannel);
 AAC_DECODER_ERROR_t aacDecoder_drcSetParam(HANDLE_AAC_DRC self, AACDEC_DRC_PARAM_t param, int32_t value);
 int32_t             aacDecoder_drcMarkPayload(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs, AACDEC_DRC_PAYLOAD_TYPE_t type);
-int32_t aacDecoder_drcProlog(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs, CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
-                             uint8_t pceInstanceTag, uint8_t channelMapping[], int32_t validChannels);
-void    aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, CDrcChannelData_t *pDrcDat,
-                            int32_t *extGain, int32_t ch, int32_t aacFrameSize, int32_t bSbrPresent);
-int32_t aacDecoder_drcEpilog(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs, CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
-                             uint8_t pceInstanceTag, uint8_t channelMapping[], int32_t validChannels);
-void aacDecoder_drcGetInfo(HANDLE_AAC_DRC self, int8_t *pPresMode, int8_t *pProgRefLevel);
-int32_t applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn, int32_t *pGain, int32_t *pGainPerSample, const int32_t gain_scale,
-                                   const uint32_t gain_delay, const uint32_t nSamples, const uint32_t channels, const uint32_t stride,
-                                   const uint32_t limiterEnabled);
-uint32_t Hcr_State_BODY_ONLY(HANDLE_FDK_BITSTREAM, void*);
-uint32_t Hcr_State_BODY_SIGN__BODY(HANDLE_FDK_BITSTREAM, void*);
-uint32_t Hcr_State_BODY_SIGN__SIGN(HANDLE_FDK_BITSTREAM, void*);
-uint32_t Hcr_State_BODY_SIGN_ESC__BODY(HANDLE_FDK_BITSTREAM, void*);
-uint32_t Hcr_State_BODY_SIGN_ESC__SIGN(HANDLE_FDK_BITSTREAM, void*);
-uint32_t Hcr_State_BODY_SIGN_ESC__ESC_PREFIX(HANDLE_FDK_BITSTREAM, void*);
-uint32_t Hcr_State_BODY_SIGN_ESC__ESC_WORD(HANDLE_FDK_BITSTREAM, void*);
-void CPns_UpdateNoiseState(CPnsData_t *pPnsData, int32_t *currentSeed, int32_t *randomSeed);
-void CPns_ResetData(CPnsData_t *pPnsData, CPnsInterChannelData_t *pPnsInterChannelData);
-void CProgramConfig_Reset(CProgramConfig_t *pPce);
-void CProgramConfig_Init(CProgramConfig_t *pPce);
-int32_t CProgramConfig_IsValid(const CProgramConfig_t *pPce);
-void CProgramConfig_Read(CProgramConfig_t *pPce, HANDLE_FDK_BITSTREAM bs, uint32_t alignAnchor);
-int32_t CProgramConfig_Compare(const CProgramConfig_t *const pPce1, const CProgramConfig_t *const pPce2);
-void CProgramConfig_GetDefault(CProgramConfig_t *pPce, const uint32_t channelConfig);
-int32_t CProgramConfig_LookupElement(CProgramConfig_t *pPce, uint32_t chConfig, const uint32_t tag, const uint32_t channelIdx, uint8_t chMapping[],
-                                     AUDIO_CHANNEL_TYPE_t chType[], uint8_t chIndex[], const uint32_t chDescrLen, uint8_t *elMapping,
-                                     MP4_ELEMENT_ID_t elList[], MP4_ELEMENT_ID_t elType);
-int32_t CProgramConfig_GetPceChMap(const CProgramConfig_t *pPce, uint8_t pceChMap[], const uint32_t pceChMapLen);
-int32_t CProgramConfig_GetElementTable(const CProgramConfig_t *pPce, MP4_ELEMENT_ID_t table[], const int32_t elListSize, uint8_t *pChMapIdx);
+int32_t  aacDecoder_drcProlog(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs, CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
+                              uint8_t pceInstanceTag, uint8_t channelMapping[], int32_t validChannels);
+void     aacDecoder_drcApply(HANDLE_AAC_DRC self, void *pSbrDec, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, CDrcChannelData_t *pDrcDat,
+                             int32_t *extGain, int32_t ch, int32_t aacFrameSize, int32_t bSbrPresent);
+int32_t  aacDecoder_drcEpilog(HANDLE_AAC_DRC self, HANDLE_FDK_BITSTREAM hBs, CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
+                              uint8_t pceInstanceTag, uint8_t channelMapping[], int32_t validChannels);
+void     aacDecoder_drcGetInfo(HANDLE_AAC_DRC self, int8_t *pPresMode, int8_t *pProgRefLevel);
+int32_t  applyDrcLevelNormalization(HANDLE_AAC_DRC hDrcInfo, int32_t *samplesIn, int32_t *pGain, int32_t *pGainPerSample, const int32_t gain_scale,
+                                    const uint32_t gain_delay, const uint32_t nSamples, const uint32_t channels, const uint32_t stride,
+                                    const uint32_t limiterEnabled);
+uint32_t Hcr_State_BODY_ONLY(HANDLE_FDK_BITSTREAM, void *);
+uint32_t Hcr_State_BODY_SIGN__BODY(HANDLE_FDK_BITSTREAM, void *);
+uint32_t Hcr_State_BODY_SIGN__SIGN(HANDLE_FDK_BITSTREAM, void *);
+uint32_t Hcr_State_BODY_SIGN_ESC__BODY(HANDLE_FDK_BITSTREAM, void *);
+uint32_t Hcr_State_BODY_SIGN_ESC__SIGN(HANDLE_FDK_BITSTREAM, void *);
+uint32_t Hcr_State_BODY_SIGN_ESC__ESC_PREFIX(HANDLE_FDK_BITSTREAM, void *);
+uint32_t Hcr_State_BODY_SIGN_ESC__ESC_WORD(HANDLE_FDK_BITSTREAM, void *);
+void     CPns_UpdateNoiseState(CPnsData_t *pPnsData, int32_t *currentSeed, int32_t *randomSeed);
+void     CPns_ResetData(CPnsData_t *pPnsData, CPnsInterChannelData_t *pPnsInterChannelData);
+void     CProgramConfig_Reset(CProgramConfig_t *pPce);
+void     CProgramConfig_Init(CProgramConfig_t *pPce);
+int32_t  CProgramConfig_IsValid(const CProgramConfig_t *pPce);
+void     CProgramConfig_Read(CProgramConfig_t *pPce, HANDLE_FDK_BITSTREAM bs, uint32_t alignAnchor);
+int32_t  CProgramConfig_Compare(const CProgramConfig_t *const pPce1, const CProgramConfig_t *const pPce2);
+void     CProgramConfig_GetDefault(CProgramConfig_t *pPce, const uint32_t channelConfig);
+int32_t  CProgramConfig_LookupElement(CProgramConfig_t *pPce, uint32_t chConfig, const uint32_t tag, const uint32_t channelIdx, uint8_t chMapping[],
+                                      AUDIO_CHANNEL_TYPE_t chType[], uint8_t chIndex[], const uint32_t chDescrLen, uint8_t *elMapping,
+                                      MP4_ELEMENT_ID_t elList[], MP4_ELEMENT_ID_t elType);
+int32_t  CProgramConfig_GetPceChMap(const CProgramConfig_t *pPce, uint8_t pceChMap[], const uint32_t pceChMapLen);
+int32_t  CProgramConfig_GetElementTable(const CProgramConfig_t *pPce, MP4_ELEMENT_ID_t table[], const int32_t elListSize, uint8_t *pChMapIdx);
 void CProgramConfig_GetChannelDescription(const uint32_t chConfig, const CProgramConfig_t *pPce, AUDIO_CHANNEL_TYPE_t chType[], uint8_t chIndex[]);
 void AudioSpecificConfig_Init(CSAudioSpecificConfig_t *pAsc);
 TRANSPORTDEC_ERROR_t AudioSpecificConfig_Parse(CSAudioSpecificConfig_t *pAsc, HANDLE_FDK_BITSTREAM hBs, int32_t fExplicitBackwardCompatible,
-                                             CSTpCallBacks_t *cb, uint8_t configMode, uint8_t configChanged, AUDIO_OBJECT_TYPE_t m_aot);
-uint8_t ToggleReadDirection(uint8_t readDirection);
+                                               CSTpCallBacks_t *cb, uint8_t configMode, uint8_t configChanged, AUDIO_OBJECT_TYPE_t m_aot);
+uint8_t              ToggleReadDirection(uint8_t readDirection);
 uint32_t HcrGetABitFromBitstream(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor, int32_t *pLeftStartOfSegment, int32_t *pRightStartOfSegment,
                                  uint8_t readDirection);
-int32_t InvMdctTransformLowDelay_fdk(int32_t *mdctdata_m, const int32_t mdctdata_e, int32_t *mdctOut, int32_t *fs_buffer, const int32_t frameLength);
-void CPns_Read(CPnsData_t *pPnsData, HANDLE_FDK_BITSTREAM bs, const CodeBookDescription_t *hcb, int16_t *pScaleFactor, uint8_t global_gain,
-               int32_t band, int32_t group);
+int32_t  InvMdctTransformLowDelay_fdk(int32_t *mdctdata_m, const int32_t mdctdata_e, int32_t *mdctOut, int32_t *fs_buffer, const int32_t frameLength);
+void     CPns_Read(CPnsData_t *pPnsData, HANDLE_FDK_BITSTREAM bs, const CodeBookDescription_t *hcb, int16_t *pScaleFactor, uint8_t global_gain,
+                   int32_t band, int32_t group);
 void CPns_Apply(const CPnsData_t *pPnsData, const CIcsInfo_t *pIcsInfo, int32_t *pSpectrum, const int16_t *pSpecScale, const int16_t *pScaleFactor,
                 const SamplingRateInfo_t *pSamplingRateInfo, const int32_t granuleLength, const int32_t channel);
 void CBlock_ApplyNoise(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, SamplingRateInfo_t *pSamplingRateInfo, uint32_t *nfRandomSeed,
@@ -1911,10 +1911,9 @@ void CTns_ReadDataPresentFlag(HANDLE_FDK_BITSTREAM bs, CTnsData_t *pTnsData);
 void CTns_ReadDataPresentUsac(HANDLE_FDK_BITSTREAM hBs, CTnsData_t *pTnsData0, CTnsData_t *pTnsData1, uint8_t *ptns_on_lr, const CIcsInfo_t *pIcsInfo,
                               const uint32_t flags, const uint32_t elFlags, const int32_t fCommonWindow);
 AAC_DECODER_ERROR_t CTns_Read(HANDLE_FDK_BITSTREAM bs, CTnsData_t *pTnsData, const CIcsInfo_t *pIcsInfo, const uint32_t flags);
-void                CTns_Apply(CTnsData_t       *pTnsData,
-                               const CIcsInfo_t *pIcsInfo, int32_t *pSpectralCoefficient, const SamplingRateInfo_t *pSamplingRateInfo, const int32_t granuleLength,
-                               const uint8_t nbands, const uint8_t igf_active, const uint32_t flags);
-int32_t             CBlock_GetEscape(HANDLE_FDK_BITSTREAM bs, const int32_t q);
+void    CTns_Apply(CTnsData_t *pTnsData, const CIcsInfo_t *pIcsInfo, int32_t *pSpectralCoefficient, const SamplingRateInfo_t *pSamplingRateInfo,
+                   const int32_t granuleLength, const uint8_t nbands, const uint8_t igf_active, const uint32_t flags);
+int32_t CBlock_GetEscape(HANDLE_FDK_BITSTREAM bs, const int32_t q);
 AAC_DECODER_ERROR_t CBlock_ReadScaleFactorData(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, HANDLE_FDK_BITSTREAM bs, const uint32_t flags);
 AAC_DECODER_ERROR_t CBlock_ReadSpectralData(HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
                                             const SamplingRateInfo_t *pSamplingRateInfo, const uint32_t flags);
@@ -1933,15 +1932,15 @@ void CBlock_FrequencyToTimeLowDelay(CAacDecoderStaticChannelInfo_t *pAacDecoderS
                                     int32_t outSamples[], const int16_t frameLen);
 AAC_DECODER_ERROR_t CBlock_InverseQuantizeSpectralData(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, SamplingRateInfo_t *pSamplingRateInfo,
                                                        uint8_t *band_is_noise, uint8_t active_band_search);
-int32_t CPulseData_Read(const HANDLE_FDK_BITSTREAM bs, CPulseData_t *const PulseData, const int16_t *sfb_startlines, const void *pIcsInfo,
-                        const int16_t frame_length);
-void    CPulseData_Apply(CPulseData_t *PulseData, const int16_t *pScaleFactorBandOffsets, int32_t *coef);
+int32_t             CPulseData_Read(const HANDLE_FDK_BITSTREAM bs, CPulseData_t *const PulseData, const int16_t *sfb_startlines, const void *pIcsInfo,
+                                    const int16_t frame_length);
+void                CPulseData_Apply(CPulseData_t *PulseData, const int16_t *pScaleFactorBandOffsets, int32_t *coef);
 uint8_t             rvlcReadBitFromBitstream(HANDLE_FDK_BITSTREAM bs, const int32_t bsAnchor, int32_t *pPosition, uint8_t readDirection);
-void BidirectionalEstimation_UseLowerScfOfCurrentFrame(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo);
-void BidirectionalEstimation_UseScfOfPrevFrameAsReference(CAacDecoderChannelInfo_t       *pAacDecoderChannelInfo,
-                                                          CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo);
-void StatisticalEstimation(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo);
-void PredictiveInterpolation(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo);
+void                BidirectionalEstimation_UseLowerScfOfCurrentFrame(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo);
+void                BidirectionalEstimation_UseScfOfPrevFrameAsReference(CAacDecoderChannelInfo_t       *pAacDecoderChannelInfo,
+                                                                         CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo);
+void                StatisticalEstimation(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo);
+void    PredictiveInterpolation(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo);
 int32_t CJointStereo_Read(HANDLE_FDK_BITSTREAM bs, CJointStereoData_t *pJointStereoData, const int32_t windowGroups,
                           const int32_t scaleFactorBandsTransmitted, const int32_t max_sfb_ste_clear,
                           CJointStereoPersistentData_t *pJointStereoPersistentData, CCplxPredictionData_t *cplxPredictionData,
@@ -1950,15 +1949,15 @@ void filtLP(const int32_t *syn, int32_t *syn_out, int32_t *noise, const int16_t 
 void bass_pf_1sf_delay(int32_t syn[], const int32_t T_sf[], int32_t *pit_gain, const int32_t frame_length, const int32_t l_frame,
                        const int32_t l_next, int32_t *synth_out, const int32_t aacOutDataHeadroom, int32_t mem_bpf[]);
 void CFdp_Reset(CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo);
-int32_t CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *lsfq, int32_t nk_mode, int32_t nqn, int32_t length);
-int32_t CLpc_Read(HANDLE_FDK_BITSTREAM hBs, int16_t lsp[][M_LP_FILTER_ORDER], int16_t lpc4_lsf[M_LP_FILTER_ORDER],
-                  int16_t lsf_adaptive_mean_cand[M_LP_FILTER_ORDER], int16_t pStability[], uint8_t *mod, int32_t first_lpd_flag,
-                  int32_t last_lpc_lost, int32_t last_frame_ok);
-void CLpc_Conceal(int16_t lsp[][M_LP_FILTER_ORDER], int16_t lpc4_lsf[M_LP_FILTER_ORDER], int16_t isf_adaptive_mean[M_LP_FILTER_ORDER],
-                  const int32_t first_lpd_flag);
-void E_LPC_a_weight(int16_t *wA, const int16_t *A, const int32_t m);
-void CLpd_DecodeGain(int32_t *gain, int32_t *gain_e, int32_t gain_code);
-void E_LPC_f_lsp_a_conversion(int16_t *lsp, int16_t *a, int32_t *a_exp);
+int32_t  CLpc_DecodeAVQ(HANDLE_FDK_BITSTREAM hBs, int32_t *lsfq, int32_t nk_mode, int32_t nqn, int32_t length);
+int32_t  CLpc_Read(HANDLE_FDK_BITSTREAM hBs, int16_t lsp[][M_LP_FILTER_ORDER], int16_t lpc4_lsf[M_LP_FILTER_ORDER],
+                   int16_t lsf_adaptive_mean_cand[M_LP_FILTER_ORDER], int16_t pStability[], uint8_t *mod, int32_t first_lpd_flag,
+                   int32_t last_lpc_lost, int32_t last_frame_ok);
+void     CLpc_Conceal(int16_t lsp[][M_LP_FILTER_ORDER], int16_t lpc4_lsf[M_LP_FILTER_ORDER], int16_t isf_adaptive_mean[M_LP_FILTER_ORDER],
+                      const int32_t first_lpd_flag);
+void     E_LPC_a_weight(int16_t *wA, const int16_t *A, const int32_t m);
+void     CLpd_DecodeGain(int32_t *gain, int32_t *gain_e, int32_t gain_code);
+void     E_LPC_f_lsp_a_conversion(int16_t *lsp, int16_t *a, int32_t *a_exp);
 int32_t *CLpd_FAC_GetMemory(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, uint8_t mod[NB_SUBFR], int32_t *pState);
 int32_t  CLpd_FAC_Read(HANDLE_FDK_BITSTREAM hBs, int32_t *pFac, int8_t *pFacScale, int32_t length, int32_t use_gain, int32_t frame);
 void     CFac_ApplyGains(int32_t fac_data[LFAC], const int32_t fac_length, const int32_t tcx_gain, const int32_t alfd_gains[], const int32_t mod);
@@ -1987,18 +1986,36 @@ int32_t *CLpd_ACELP_GetFreeExcMem(CAcelpStaticMem_t *acelp_mem, int32_t length);
 void     CLpd_TcxTDConceal(CAcelpStaticMem_t *acelp_mem, int16_t *pitch, const int16_t lsp_old[M_LP_FILTER_ORDER],
                            const int16_t lsp_new[M_LP_FILTER_ORDER], const int16_t stab_fac, int32_t numLostSubframes, int32_t synth[],
                            int32_t coreCoderFrameLength, uint8_t last_tcx_noise_factor);
-void Pred_lt4(int32_t exc[], int32_t T0, int32_t frac);
-void Pred_lt4_postfilter(int32_t exc[]);
-void D_ACELP_decode_4t64(int16_t index[], int32_t nbits, FIXP_COD code[]);
+void     Pred_lt4(int32_t exc[], int32_t T0, int32_t frac);
+void     Pred_lt4_postfilter(int32_t exc[]);
+void     D_ACELP_decode_4t64(int16_t index[], int32_t nbits, FIXP_COD code[]);
 uint32_t HcrInit(H_HCR_INFO pHcr, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, const SamplingRateInfo_t *pSamplingRateInfo,
                  HANDLE_FDK_BITSTREAM bs);
 uint32_t HcrDecoder(H_HCR_INFO hHcr, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, const SamplingRateInfo_t *pSamplingRateInfo,
                     HANDLE_FDK_BITSTREAM bs);
 void     CarryBitToBranchValue(uint8_t carryBit, uint32_t treeNode, uint32_t *branchValue, uint32_t *branchNode);
-void CHcr_Read(HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, const MP4_ELEMENT_ID_t globalHcrType);
-void HcrMuteErroneousLines(H_HCR_INFO hHcr);
-void    setHcrType(H_HCR_INFO hHcr, MP4_ELEMENT_ID_t type);
-int32_t getHcrType(H_HCR_INFO hHcr);
+void     CHcr_Read(HANDLE_FDK_BITSTREAM bs, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, const MP4_ELEMENT_ID_t globalHcrType);
+void     HcrMuteErroneousLines(H_HCR_INFO hHcr);
+void     setHcrType(H_HCR_INFO hHcr, MP4_ELEMENT_ID_t type);
+int32_t  getHcrType(H_HCR_INFO hHcr);
+void     CConcealment_InitCommonData(CConcealParams_t *pConcealCommonData);
+void     CConcealment_InitChannelData(CConcealmentInfo_t *hConcealmentInfo, CConcealParams_t *pConcealCommonData, AACDEC_RENDER_MODE_t initRenderMode,
+                                      int32_t samplesPerFrame);
+CConcealmentMethod_t CConcealment_GetMethod(CConcealParams_t *pConcealCommonData);
+uint32_t             CConcealment_GetDelay(CConcealParams_t *pConcealCommonData);
+AAC_DECODER_ERROR_t  CConcealment_SetParams(CConcealParams_t *concealParams, int32_t method, int32_t fadeOutSlope, int32_t fadeInSlope,
+                                            int32_t muteRelease, int32_t comfNoiseLevel);
+CConcealmentState_t  CConcealment_GetState(CConcealmentInfo_t *hConcealmentInfo);
+AAC_DECODER_ERROR_t  CConcealment_SetAttenuation(CConcealParams_t *concealParams, const int16_t *fadeOutAttenuationVector,
+                                                 const int16_t *fadeInAttenuationVector);
+void                 CConcealment_Store(CConcealmentInfo_t *hConcealmentInfo, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+                                        CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo);
+int32_t              CConcealment_Apply(CConcealmentInfo_t *hConcealmentInfo, CAacDecoderChannelInfo_t *pAacDecoderChannelInfo,
+                                        CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo, const SamplingRateInfo_t *pSamplingRateInfo,
+                                        const int32_t samplesPerFrame, const uint8_t lastLpdMode, const int32_t FrameOk, const uint32_t flags);
+int32_t              CConcealment_GetLastFrameOk(CConcealmentInfo_t *hConcealmentInfo, const int32_t fBeforeApply);
+int32_t CConcealment_TDFading(int32_t len, CAacDecoderStaticChannelInfo_t **ppAacDecoderStaticChannelInfo, const int32_t aacOutDataHeadroom,
+                              int32_t *pcmdata, int32_t *pcmdata_1);
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S
 //----------------------------------------------------------------------------------------------------------------------
