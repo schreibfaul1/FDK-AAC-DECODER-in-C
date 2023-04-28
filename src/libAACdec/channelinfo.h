@@ -45,19 +45,7 @@
 
 /* channelinfo.cpp */
 
-AAC_DECODER_ERROR_t getSamplingRateInfo(SamplingRateInfo_t *t, uint32_t samplesPerFrame, uint32_t samplingRateIndex, uint32_t samplingRate);
 
-/**
- * \brief Read max SFB from bit stream and assign TotalSfBands according
- *        to the window sequence and sample rate.
- * \param hBs bit stream handle as data source
- * \param pIcsInfo IcsInfo structure to read the window sequence and store
- * MaxSfBands and TotalSfBands
- * \param pSamplingRateInfo read only
- */
-AAC_DECODER_ERROR_t IcsReadMaxSfb(HANDLE_FDK_BITSTREAM hBs, CIcsInfo_t *pIcsInfo, const SamplingRateInfo_t *pSamplingRateInfo);
-
-AAC_DECODER_ERROR_t IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo_t *pIcsInfo, const SamplingRateInfo_t *SamplingRateInfoTable, const uint32_t flags);
 
 /* stereo.cpp, only called from this file */
 

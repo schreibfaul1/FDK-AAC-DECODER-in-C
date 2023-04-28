@@ -29,7 +29,6 @@
 
 #include "../libPCMutils/limiter.h"
 
-#include "../libAACdec/FDK_delay.h"
 
 #define TIME_DATA_FLUSH_SIZE (128)
 #define TIME_DATA_FLUSH_SIZE_SF (7)
@@ -95,7 +94,7 @@ struct AAC_DECODER_INSTANCE {
   TDLimiterPtr          hLimiter;   /*!< Handle of time domain limiter.             */
   HANDLE_DRC_DECODER    hUniDrcDecoder;
   FDK_channelMapDescr_t mapDescr;          /*!< Describes the output channel mapping. */
-  FDK_SignalDelay       usacResidualDelay; /*!< Delay residual signal to compensate for eSBR delay of DMX signal in case of stereoConfigIndex==2. */
+  FDK_SignalDelay_t       usacResidualDelay; /*!< Delay residual signal to compensate for eSBR delay of DMX signal in case of stereoConfigIndex==2. */
   SamplingRateInfo_t    SamplingRateInfo[(1 * 1)];                   /*!< Sampling Rate information table */
   CAncData              ancData;                                     /*!< structure to handle ancillary data         */
   CAacDecoderChannelInfo_t       *pAacDecoderChannelInfo[(8)];       /*!< Temporal channel memory */

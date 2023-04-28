@@ -1138,7 +1138,7 @@ void CBlock_FrequencyToTime(
   pAacDecoderStaticChannelInfo->last_lpd_mode = 255;
 }
 
-#include "ldfiltbank.h"
+
 void CBlock_FrequencyToTimeLowDelay(
     CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
     CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, int32_t outSamples[],

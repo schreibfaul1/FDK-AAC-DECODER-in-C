@@ -1807,6 +1807,12 @@ typedef struct {
                             loudnessInfoSet parser callback. */
 } CSTpCallBacks_t;
 
+typedef struct {
+    int32_t* delay_line;   /*!< Pointer which stores allocated delay line. */
+    uint16_t delay;        /*!< Delay required in samples (per channel). */
+    uint8_t  num_channels; /*!< Number of channels to delay. */
+} FDK_SignalDelay_t;
+
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
 // prototypes
@@ -2027,6 +2033,12 @@ void CRvlc_Decode(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, CAacDecoderS
                   HANDLE_FDK_BITSTREAM bs);
 void CRvlc_ElementCheck(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[], CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
                         const uint32_t flags, const int32_t elChannels);
+AAC_DECODER_ERROR_t getSamplingRateInfo(SamplingRateInfo_t *t, uint32_t samplesPerFrame, uint32_t samplingRateIndex, uint32_t samplingRate);
+AAC_DECODER_ERROR_t IcsReadMaxSfb(HANDLE_FDK_BITSTREAM hBs, CIcsInfo_t *pIcsInfo, const SamplingRateInfo_t *pSamplingRateInfo);
+AAC_DECODER_ERROR_t IcsRead(HANDLE_FDK_BITSTREAM bs, CIcsInfo_t *pIcsInfo, const SamplingRateInfo_t *SamplingRateInfoTable, const uint32_t flags);
+int32_t FDK_Delay_Create(FDK_SignalDelay_t* data, const uint16_t delay, const uint8_t num_channels);
+void FDK_Delay_Apply(FDK_SignalDelay_t* data, int32_t* time_buffer, const uint32_t frame_length, const uint8_t channel);
+void FDK_Delay_Destroy(FDK_SignalDelay_t* data);
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S
 //----------------------------------------------------------------------------------------------------------------------

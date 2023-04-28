@@ -8,7 +8,7 @@
 
 *******************************************************************************/
 #include "newAACDecoder.h"
-#include "ldfiltbank.h"
+
 
 #include "aac_rom.h"
 #include "../libFDK/dct.h"

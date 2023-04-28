@@ -10,12 +10,10 @@
 #include <memory.h>
 
 #include "newAACDecoder.h"
-#include "FDK_delay.h"
-
 
 #define MAX_FRAME_LENGTH (1024)
 
-int32_t FDK_Delay_Create(FDK_SignalDelay* data, const uint16_t delay, const uint8_t num_channels) {
+int32_t FDK_Delay_Create(FDK_SignalDelay_t* data, const uint16_t delay, const uint8_t num_channels) {
     assert(data != NULL);
     assert(num_channels > 0);
 
@@ -30,7 +28,7 @@ int32_t FDK_Delay_Create(FDK_SignalDelay* data, const uint16_t delay, const uint
     return 0;
 }
 
-void FDK_Delay_Apply(FDK_SignalDelay* data, int32_t* time_buffer, const uint32_t frame_length, const uint8_t channel) {
+void FDK_Delay_Apply(FDK_SignalDelay_t* data, int32_t* time_buffer, const uint32_t frame_length, const uint8_t channel) {
     assert(data != NULL);
 
     if(data->delay > 0) {
@@ -58,7 +56,7 @@ void FDK_Delay_Apply(FDK_SignalDelay* data, int32_t* time_buffer, const uint32_t
     return;
 }
 
-void FDK_Delay_Destroy(FDK_SignalDelay* data) {
+void FDK_Delay_Destroy(FDK_SignalDelay_t* data) {
     if(data->delay_line != NULL) { free(data->delay_line); }
     data->delay_line = NULL;
     data->delay = 0;
