@@ -8,7 +8,6 @@
 
 *******************************************************************************/
 #include "newAACDecoder.h"
-#include "usacdec_ace_ltp.h"
 #include "../libFDK/common_fix.h"
 
 

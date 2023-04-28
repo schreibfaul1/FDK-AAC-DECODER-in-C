@@ -10,7 +10,6 @@
 
 #include <memory.h>
 #include "newAACDecoder.h"
-#include "usacdec_ace_d4t64.h"
 
 #define L_SUBFR 64 /* Subframe size              */
 

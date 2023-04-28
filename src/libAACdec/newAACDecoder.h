@@ -512,6 +512,12 @@
 
 #define BUFSIZE_DUMMY_VALUE MAX_BUFSIZE_BYTES
 
+#define FIXP_COD         int16_t
+#define FX_COD2FX_DBL(x) (FX_SGL2FX_DBL(x))
+#define FX_DBL2FX_COD(x) FX_DBL2FX_SGL((x) + (int32_t)0x8000)
+#define FX_SGL2FX_COD(x) (x)
+#define COD_BITS         FRACT_BITS
+
 // Audio Object Type definitions.
 typedef enum{
     AOT_NONE = -1,
@@ -1978,6 +1984,9 @@ int32_t *CLpd_ACELP_GetFreeExcMem(CAcelpStaticMem_t *acelp_mem, int32_t length);
 void     CLpd_TcxTDConceal(CAcelpStaticMem_t *acelp_mem, int16_t *pitch, const int16_t lsp_old[M_LP_FILTER_ORDER],
                            const int16_t lsp_new[M_LP_FILTER_ORDER], const int16_t stab_fac, int32_t numLostSubframes, int32_t synth[],
                            int32_t coreCoderFrameLength, uint8_t last_tcx_noise_factor);
+void Pred_lt4(int32_t exc[], int32_t T0, int32_t frac);
+void Pred_lt4_postfilter(int32_t exc[]);
+void D_ACELP_decode_4t64(int16_t index[], int32_t nbits, FIXP_COD code[]);
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S
 //----------------------------------------------------------------------------------------------------------------------

@@ -11,8 +11,6 @@
 
 #include <memory.h>
 #include "newAACDecoder.h"
-#include "usacdec_ace_d4t64.h"
-#include "usacdec_ace_ltp.h"
 #include "aac_rom.h"
 #include "../libFDK/FDK_lpc.h"
 
