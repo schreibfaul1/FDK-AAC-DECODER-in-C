@@ -14,8 +14,6 @@
   \author Robert Weidner
 */
 #include "newAACDecoder.h"
-#include "rvlc.h"
-
 #include "block.h"
 
 #include "aac_rom.h"

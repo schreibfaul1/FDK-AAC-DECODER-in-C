@@ -14,10 +14,8 @@
   \author Josef Hoepfl
 */
 #include "newAACDecoder.h"
-
-
 #include "block.h"
-#include "rvlc.h"
+
 
 /*---------------------------------------------------------------------------------------------
   function:      calcRefValFwd

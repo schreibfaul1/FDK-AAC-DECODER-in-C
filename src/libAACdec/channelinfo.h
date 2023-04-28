@@ -22,7 +22,6 @@
 #include "conceal_types.h"
 #include "newAACDecoder.h"
 
-#include "rvlc_info.h"
 
 
 

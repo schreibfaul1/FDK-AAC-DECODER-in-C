@@ -13,6 +13,12 @@
 #define POW2COEFF_16BIT
 #define LDCOEFF_16BIT
 
+#define RVLC_ERROR_ALL_ESCAPE_WORDS_INVALID           0x80000000
+#define RVLC_ERROR_RVL_SUM_BIT_COUNTER_BELOW_ZERO_FWD 0x40000000
+#define RVLC_ERROR_RVL_SUM_BIT_COUNTER_BELOW_ZERO_BWD 0x20000000
+#define RVLC_ERROR_FORBIDDEN_CW_DETECTED_FWD          0x08000000
+#define RVLC_ERROR_FORBIDDEN_CW_DETECTED_BWD          0x04000000
+
 #define WAV_BITS               16
 #define SAMPLE_BITS            16
 #define SAMPLE_MAX             ((int16_t)(((uint32_t)1 << (SAMPLE_BITS - 1)) - 1))
@@ -2016,6 +2022,11 @@ int32_t              CConcealment_Apply(CConcealmentInfo_t *hConcealmentInfo, CA
 int32_t              CConcealment_GetLastFrameOk(CConcealmentInfo_t *hConcealmentInfo, const int32_t fBeforeApply);
 int32_t CConcealment_TDFading(int32_t len, CAacDecoderStaticChannelInfo_t **ppAacDecoderStaticChannelInfo, const int32_t aacOutDataHeadroom,
                               int32_t *pcmdata, int32_t *pcmdata_1);
+void CRvlc_Read(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, HANDLE_FDK_BITSTREAM bs);
+void CRvlc_Decode(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo, CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo,
+                  HANDLE_FDK_BITSTREAM bs);
+void CRvlc_ElementCheck(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[], CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[],
+                        const uint32_t flags, const int32_t elChannels);
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S
 //----------------------------------------------------------------------------------------------------------------------

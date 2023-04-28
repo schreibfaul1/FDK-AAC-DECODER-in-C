@@ -19,8 +19,6 @@
 
 #include "conceal.h"
 
-#include "rvlc.h"
-
 static void MapMidSideMaskToPnsCorrelation(
     CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[2]) {
   int32_t group;
