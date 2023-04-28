@@ -6,6 +6,12 @@
 #include "lookup.h"
 #include <assert.h>
 
+#define ARCH_PREFER_MULT_16x16
+#define SINETABLE_16BIT
+#define WINDOWTABLE_16BIT
+#define POW2COEFF_16BIT
+#define LDCOEFF_16BIT
+
 #define WAV_BITS               16
 #define SAMPLE_BITS            16
 #define SAMPLE_MAX             ((int16_t)(((uint32_t)1 << (SAMPLE_BITS - 1)) - 1))

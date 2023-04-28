@@ -13,7 +13,6 @@
 
 #include <stdint.h>
 #include "../libAACdec/newAACDecoder.h"
-#include "FDK_archdef.h"
 
 /* ***** Start of former fix.h ****** */
 

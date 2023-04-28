@@ -103,7 +103,6 @@ amm-info@iis.fraunhofer.de
 #ifndef SAC_ROM_H
 #define SAC_ROM_H
 #include "../libAACdec/newAACDecoder.h"
-#include "../libFDK/FDK_archdef.h"
 #include "sac_dec_interface.h"
 
 #include "../libFDK/huff_nodes.h"

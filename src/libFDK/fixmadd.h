@@ -10,8 +10,6 @@
 #if !defined(FIXMADD_H)
 #define FIXMADD_H
 #include "../libAACdec/newAACDecoder.h"
-#include "FDK_archdef.h"
-
 #include "fixmul.h"
 
 // #if defined(__arm__)

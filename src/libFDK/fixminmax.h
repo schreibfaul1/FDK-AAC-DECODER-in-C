@@ -11,8 +11,6 @@
 #ifndef FIXMINMAX_H
 #define FIXMINMAX_H
 #include "../libAACdec/newAACDecoder.h"
-#include "FDK_archdef.h"
-
 
 /* Inline Function to determine the smaller/bigger value of two values with same
  * type. */

@@ -11,7 +11,6 @@
 #if !defined(CLZ_H)
 #define CLZ_H
 #include "../libAACdec/newAACDecoder.h"
-#include "FDK_archdef.h"
 
 
 // #if defined(__arm__)
