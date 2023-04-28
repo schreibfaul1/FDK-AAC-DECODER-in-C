@@ -18,7 +18,7 @@
 #define FX_DECORR2FX_DBL FX_SGL2FX_DBL
 #define FX_DECORR2FX_SGL
 #define FX_SGL2FX_DECORR
-#define FL2FXCONST_DECORR FL2FXCONST_SGL
+
 
 
 /*--------------- enums -------------------------------*/

@@ -369,7 +369,7 @@ static void lsf_weight_2st(int16_t *lsfq, int32_t *xq, int32_t nk_mode) {
 
     /* compute lsf distance */
     d[0] = lsfq[0];
-    d[M_LP_FILTER_ORDER] = FL2FXCONST_LPC((double)FREQ_MAX / (1 << LSF_SCALE)) - lsfq[M_LP_FILTER_ORDER - 1];
+    d[M_LP_FILTER_ORDER] = FL2FXCONST_SGL((double)FREQ_MAX / (1 << LSF_SCALE)) - lsfq[M_LP_FILTER_ORDER - 1];
     for(i = 1; i < M_LP_FILTER_ORDER; i++) { d[i] = lsfq[i] - lsfq[i - 1]; }
 
     switch(nk_mode) {
@@ -471,7 +471,7 @@ static void reorder_lsf(int16_t *lsf, int16_t min_dist, int32_t n) {
     }
 
     /* reverse */
-    lsf_min = FL2FXCONST_LPC((double)FREQ_MAX / (1 << LSF_SCALE)) - min_dist;
+    lsf_min = FL2FXCONST_SGL((double)FREQ_MAX / (1 << LSF_SCALE)) - min_dist;
     for(i = n - 1; i >= 0; i--) {
         if(lsf[i] > lsf_min) { lsf[i] = lsf_min; }
 
@@ -520,7 +520,7 @@ static int32_t vlpc_2st_dec(HANDLE_FDK_BITSTREAM hBs, int16_t *lsfq, /* i/o:    
     lsf_weight_2st(lsfq, xq, nk_mode);
 
     /* reorder */
-    reorder_lsf(lsfq, FL2FXCONST_LPC((double)LSF_GAP / (1 << LSF_SCALE)), M_LP_FILTER_ORDER);
+    reorder_lsf(lsfq, FL2FXCONST_SGL((double)LSF_GAP / (1 << LSF_SCALE)), M_LP_FILTER_ORDER);
 
     return 0;
 }
@@ -798,9 +798,9 @@ void CLpc_Conceal(int16_t lsp[][M_LP_FILTER_ORDER], int16_t lpc4_lsf[M_LP_FILTER
     for(j = 2; j <= 4; j++) {
         for(i = 0; i < M_LP_FILTER_ORDER; i++) {
             /* lsf_mean[i] =  FX_DBL2FX_SGL(fMult((int16_t)(BETA + j *
-               FL2FXCONST_LPC(0.1f)), fdk_dec_lsf_init[i])
+               FL2FXCONST_SGL(0.1f)), fdk_dec_lsf_init[i])
                                           + fMult((int16_t)(ONE_BETA - j *
-               FL2FXCONST_LPC(0.1f)), lsf_adaptive_mean[i])); */
+               FL2FXCONST_SGL(0.1f)), lsf_adaptive_mean[i])); */
 
             int16_t lsf_mean = FX_DBL2FX_SGL(fMult((int16_t)(BETA + (int16_t)(j * (int32_t)3277)), (int16_t)fdk_dec_lsf_init[i]) +
                                              fMult((int16_t)(ONE_BETA - (int16_t)(j * (int32_t)3277)), lsf_adaptive_mean[i]));

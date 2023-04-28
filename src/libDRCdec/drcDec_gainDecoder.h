@@ -15,6 +15,7 @@
 #include "../libAACdec/newAACDecoder.h"
 
 #include "drcDecoder.h"
+#include "drcDec_types.h"
 
 /* Definitions common to gainDecoder submodule */
 

@@ -35,8 +35,6 @@
 
 /*--------------- structure definitions ---------------*/
 
-#define FL2FXCONST_HTB FL2FXCONST_SGL
-
 
 struct FDK_HYBRID_SETUP {
   uint8_t nrQmfBands;     /*!< Number of QMF bands to be converted to hybrid. */
@@ -70,23 +68,23 @@ static const FIXP_SPK_t HybFilterCoef8[] = {
         2290, 2290,     -173, -173,
         3570, 1479};
 
-static const int16_t HybFilterCoef2[3] = {FL2FXCONST_HTB(0.01899487526049f),
-                                           FL2FXCONST_HTB(-0.07293139167538f),
-                                           FL2FXCONST_HTB(0.30596630545168f)};
+static const int16_t HybFilterCoef2[3] = {FL2FXCONST_SGL(0.01899487526049f),
+                                           FL2FXCONST_SGL(-0.07293139167538f),
+                                           FL2FXCONST_SGL(0.30596630545168f)};
 
-static const int16_t HybFilterCoef4[13] = {FL2FXCONST_HTB(-0.00305151927305f),
-                                            FL2FXCONST_HTB(-0.00794862316203f),
-                                            FL2FXCONST_HTB(0.0f),
-                                            FL2FXCONST_HTB(0.04318924038756f),
-                                            FL2FXCONST_HTB(0.12542448210445f),
-                                            FL2FXCONST_HTB(0.21227807049160f),
-                                            FL2FXCONST_HTB(0.25f),
-                                            FL2FXCONST_HTB(0.21227807049160f),
-                                            FL2FXCONST_HTB(0.12542448210445f),
-                                            FL2FXCONST_HTB(0.04318924038756f),
-                                            FL2FXCONST_HTB(0.0f),
-                                            FL2FXCONST_HTB(-0.00794862316203f),
-                                            FL2FXCONST_HTB(-0.00305151927305f)};
+static const int16_t HybFilterCoef4[13] = {FL2FXCONST_SGL(-0.00305151927305f),
+                                            FL2FXCONST_SGL(-0.00794862316203f),
+                                            FL2FXCONST_SGL(0.0f),
+                                            FL2FXCONST_SGL(0.04318924038756f),
+                                            FL2FXCONST_SGL(0.12542448210445f),
+                                            FL2FXCONST_SGL(0.21227807049160f),
+                                            FL2FXCONST_SGL(0.25f),
+                                            FL2FXCONST_SGL(0.21227807049160f),
+                                            FL2FXCONST_SGL(0.12542448210445f),
+                                            FL2FXCONST_SGL(0.04318924038756f),
+                                            FL2FXCONST_SGL(0.0f),
+                                            FL2FXCONST_SGL(-0.00794862316203f),
+                                            FL2FXCONST_SGL(-0.00305151927305f)};
 
 /*--------------- function declarations ---------------*/
 static int32_t kChannelFiltering(const int32_t *const pQmfReal,

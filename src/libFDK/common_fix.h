@@ -25,27 +25,32 @@
 
 /* macros for compile-time conversion of constant float values to fixedpoint */
 
-#define FL2FXCONST_SGL(val)                                                                                                                      \
-    (int16_t)(                                                                                                                                   \
-        ((val) >= 0)                                                                                                                             \
-            ? ((((double)(val) * (FRACT_FIX_SCALE) + 0.5) >= (double)(MAXVAL_SGL)) ? (int16_t)(MAXVAL_SGL)                                       \
-                                                                                   : (int16_t)((double)(val) * (double)(FRACT_FIX_SCALE) + 0.5)) \
-            : ((((double)(val) * (FRACT_FIX_SCALE)-0.5) <= (double)(MINVAL_SGL_CONST)) ? (int16_t)(MINVAL_SGL_CONST)                             \
-                                                                                       : (int16_t)((double)(val) * (double)(FRACT_FIX_SCALE)-0.5)))
+// #define FL2FXCONST_SGL(val)                                                                                                                      \
+//     (int16_t)(                                                                                                                                   \
+//         ((val) >= 0)                                                                                                                             \
+//             ? ((((double)(val) * (FRACT_FIX_SCALE) + 0.5) >= (double)(MAXVAL_SGL)) ? (int16_t)(MAXVAL_SGL)                                       \
+//                                                                                    : (int16_t)((double)(val) * (double)(FRACT_FIX_SCALE) + 0.5)) \
+//             : ((((double)(val) * (FRACT_FIX_SCALE)-0.5) <= (double)(MINVAL_SGL_CONST)) ? (int16_t)(MINVAL_SGL_CONST)                             \
+//                                                                                        : (int16_t)((double)(val) * (double)(FRACT_FIX_SCALE)-0.5)))
 
 
+inline int16_t FL2FXCONST_SGL(double val){
+    int16_t ret = 0;
+    if(val >= 0){
+        if((val * FRACT_FIX_SCALE + 0.5) >= MAXVAL_SGL)  ret =  MAXVAL_SGL;
+        else ret = val * (double)FRACT_FIX_SCALE + 0.5;
+    }
+    else{
+        if((val * FRACT_FIX_SCALE - 0.5) <= MINVAL_SGL_CONST) ret = MINVAL_SGL_CONST;
+        else ret = val * (double)FRACT_FIX_SCALE - 0.5;
+
+    }
+    return ret;
+}
 
 
-
-/* macros for runtime conversion of fixedpoint values to other fixedpoint. NO
- * ROUNDING!!! */
-
-//#define FX_SGL2FX_DBL(val) ((int32_t)((int32_t)(val) << (DFRACT_BITS - FRACT_BITS)))
 
 inline int32_t FX_SGL2FX_DBL(int16_t val){return (val << (DFRACT_BITS - FRACT_BITS));}
-
-//#define FX_DBL2FX_SGL(val) ((int16_t)((val) >> (DFRACT_BITS - FRACT_BITS)))
-
 inline int16_t FX_DBL2FX_SGL(int32_t val){return (val >> (DFRACT_BITS - FRACT_BITS));}
 
 /* ############################################################# */

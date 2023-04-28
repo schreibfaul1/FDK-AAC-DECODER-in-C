@@ -123,15 +123,14 @@ static inline int32_t SpatialDecGetQmfBand(int32_t paramBand, const uint8_t *tab
 #define FILTER_SF (2)
 
 #define FIXP_DUCK_GAIN      int16_t
-#define FL2FXCONST_DUCK     FL2FXCONST_SGL
 
 #define PS_DUCK_PEAK_DECAY_FACTOR     (0.765928338364649f)
 #define PS_DUCK_FILTER_COEFF          (0.25f)
-#define DUCK_ALPHA_FDK                FL2FXCONST_DUCK(DUCK_ALPHA)
-#define DUCK_ONE_MINUS_ALPHA_X4_FDK   FL2FXCONST_DUCK(4.0f * (1.0f - DUCK_ALPHA))
-#define DUCK_GAMMA_FDK                FL2FXCONST_DUCK(DUCK_GAMMA / 2)
-#define PS_DUCK_PEAK_DECAY_FACTOR_FDK FL2FXCONST_DUCK(PS_DUCK_PEAK_DECAY_FACTOR)
-#define PS_DUCK_FILTER_COEFF_FDK      FL2FXCONST_DUCK(PS_DUCK_FILTER_COEFF)
+#define DUCK_ALPHA_FDK                FL2FXCONST_SGL(DUCK_ALPHA)
+#define DUCK_ONE_MINUS_ALPHA_X4_FDK   FL2FXCONST_SGL(4.0f * (1.0f - DUCK_ALPHA))
+#define DUCK_GAMMA_FDK                FL2FXCONST_SGL(DUCK_GAMMA / 2)
+#define PS_DUCK_PEAK_DECAY_FACTOR_FDK FL2FXCONST_SGL(PS_DUCK_PEAK_DECAY_FACTOR)
+#define PS_DUCK_FILTER_COEFF_FDK      FL2FXCONST_SGL(PS_DUCK_FILTER_COEFF)
 
 const FIXP_SPK_t DecorrPsCoeffsCplx[][4] = {{23913, 22403, -21043, 3587, -17708, 5372, -15893, 2179},
                                           {23913, -22403, -21043, -3587, -17708, -5372, -15893, -2179},
@@ -1126,7 +1125,7 @@ static int32_t DuckerApplyPS(DUCKER_INSTANCE *const self, int32_t const directNr
             }
         }
         else if(self->peakDiff[pb] != FL2FXCONST_DBL(0)) {
-            int32_t multiplication = fMult(FL2FXCONST_DUCK(0.75f), self->peakDiff[pb]);
+            int32_t multiplication = fMult(FL2FXCONST_SGL(0.75f), self->peakDiff[pb]);
             if(multiplication > (self->SmoothDirRevNrg[pb] >> 1)) {
                 int32_t num, denom, duckGain;
                 int32_t scale, qs_next;
@@ -1142,7 +1141,7 @@ static int32_t DuckerApplyPS(DUCKER_INSTANCE *const self, int32_t const directNr
 
                 duckGain = fMult(num, denom);
                 duckGain = fPow2Div2(duckGain << scale);
-                duckGain = fMultDiv2(FL2FXCONST_DUCK(2.f / 3.f), duckGain) << 3;
+                duckGain = fMultDiv2(FL2FXCONST_SGL(2.f / 3.f), duckGain) << 3;
 
                 int32_t *pOutputReal = &outputReal[qs];
                 int32_t *pOutputImag = &outputImag[qs];

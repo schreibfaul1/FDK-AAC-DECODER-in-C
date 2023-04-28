@@ -1333,12 +1333,6 @@ const FIXP_SPK_t *FDKgetWindowSlope(int32_t length, int32_t shape) {
     return w;
 }
 
-/*
- * QMF filter and twiddle tables
- */
-
-#define QTCFL(x) FL2FXCONST_SGL(x)
-
 /*!
   \name QMF
   \brief  QMF-Table
