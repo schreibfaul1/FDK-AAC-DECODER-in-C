@@ -23,9 +23,6 @@
 
 #include "aacdec_hcr.h"
 
-
-#include "usacdec_fac.h"
-
 static void MapMidSideMaskToPnsCorrelation(
     CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[2]) {
   int32_t group;

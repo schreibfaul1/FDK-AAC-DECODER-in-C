@@ -19,9 +19,6 @@
 #include "../libFDK/scale.h"
 #include "../libFDK/FDK_tools_rom.h"
 #include "../libFDK/FDK_lpc.h"
-
-#include "usacdec_fac.h"
-
 #include "../libFDK/FDK_trigFcts.h"
 
 #include "../libArithCoding/ac_arith_coder.h"

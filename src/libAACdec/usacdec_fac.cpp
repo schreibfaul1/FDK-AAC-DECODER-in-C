@@ -7,7 +7,6 @@
 
 *******************************************************************************/
 
-#include "usacdec_fac.h"
 #include <memory.h>
 #include <stdio.h>
 #include "../libFDK/FDK_tools_rom.h"
@@ -15,6 +14,7 @@
 #include "../libFDK/mdct.h"
 #include "newAACDecoder.h"
 #include "usacdec_acelp.h"
+#include "aac_rom.h"
 
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
