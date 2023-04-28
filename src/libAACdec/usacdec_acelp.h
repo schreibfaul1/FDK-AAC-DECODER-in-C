@@ -13,8 +13,6 @@
 #include "newAACDecoder.h"
 #include "../libFDK/common_fix.h"
 #include "../libFDK/FDK_bitstream.h"
-#include "usacdec_const.h"
-
 
 //#define ENHANCED_TCX_TD_CONCEAL_ENABLE
 

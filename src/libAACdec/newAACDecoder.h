@@ -457,7 +457,17 @@
 
 #define MLT_FLAG_CURR_ALIAS_SYMMETRY 1
 
-
+#define PIT_MAX_TMP          (PIT_MAX_12k8 + (6 * ((((FAC_FSCALE_MAX * PIT_MIN_12k8) + (FSCALE_DENOM / 2)) / FSCALE_DENOM) - PIT_MIN_12k8)))
+#define L_FRAME_PLUS_768     768                          /* definitions for coreCoderFrameLength = 768 */
+#define L_DIV_768            (L_FRAME_PLUS_768 / NB_DIV)  /* length of one acelp or tcx20 frame */
+#define NB_SUBFR_768         (L_DIV_768 / L_SUBFR)        /* number of 5ms subframe per division */
+#define NB_SUBFR_SUPERFR_768 (L_FRAME_PLUS_768 / L_SUBFR) /* number of 5ms subframe per 80ms frame */
+#define AAC_SFD_768          (NB_SUBFR_SUPERFR_768 / 2)   /* AAC delay (subframe) */
+#define AAC_DELAY_768        (AAC_SFD_768 * L_SUBFR)      /* AAC delay (samples) */
+#define SYN_SFD_768          (AAC_SFD_768 - BPF_SFD)      /* synthesis delay (subframe) */
+#define SYN_DELAY_768        (SYN_SFD_768 * L_SUBFR)      /* synthesis delay (samples) */
+#define LFAC_768             (L_DIV_768 / 2)              /* FAC frame length */
+#define LFAC_SHORT_768       (L_DIV_768 / 4)              /* for transitions EIGHT_SHORT FD->LPD and vv. */
 
 #define SEGMENT_OVERRIDE_ERR_PCW_BODY           0x80000000
 #define SEGMENT_OVERRIDE_ERR_PCW_BODY_SIGN      0x40000000
@@ -934,7 +944,7 @@ typedef enum {
     AAC_DRC_PRESENTATION_MODE_2_DEFAULT = 2   /*!< Use DRC presentation mode 2 as default (e.g. for DTG DBook) */
 } AAC_DRC_DEFAULT_PRESENTATION_MODE_OPTIONS;
 
-//----------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------------------------------------
 /** Generic audio coder configuration structure. */
 typedef struct{
     AUDIO_OBJECT_TYPE_t aot;              /**< Audio Object Type (AOT).           */
