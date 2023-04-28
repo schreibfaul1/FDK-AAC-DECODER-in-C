@@ -506,7 +506,7 @@ bail:
 }
 
 AAC_DECODER_ERROR_t aacDecoder_SetParam(const HANDLE_AACDECODER self,  /*!< Handle of the decoder instance */
-									  const AACDEC_PARAM      param, /*!< Parameter to set               */
+									  const AACDEC_PARAM_t      param, /*!< Parameter to set               */
 									  const int32_t               value)               /*!< Parameter valued               */
 {
 	AAC_DECODER_ERROR_t   errorStatus = AAC_DEC_OK;
@@ -592,7 +592,7 @@ AAC_DECODER_ERROR_t aacDecoder_SetParam(const HANDLE_AACDECODER self,  /*!< Hand
 			DMX_PROFILE_TYPE dmxProfile;
 			int32_t              mdExpiry = -1; /* in ms (-1: don't change) */
 
-			switch((AAC_MD_PROFILE)value) {
+			switch((AAC_MD_PROFILE_t)value) {
 				case AAC_MD_PROFILE_MPEG_STANDARD:
 					dmxProfile = DMX_PRFL_STANDARD;
 					break;

@@ -19,74 +19,18 @@
 #include "aacdec_pns.h"
 #include "aacdec_tns.h"
 #include "aacdecoder_lib.h"
-#include "conceal_types.h"
+
 #include "newAACDecoder.h"
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
- * This union must be allocated for every element (up to 2 channels).
- */
-
-/* channelinfo.cpp */
-
-
-
-/* stereo.cpp, only called from this file */
-
-/*!
-  \brief Applies MS stereo.
-
-  The function applies MS stereo.
-
-  \param pAacDecoderChannelInfo aac channel info.
-  \param pScaleFactorBandOffsets pointer to scalefactor band offsets.
-  \param pWindowGroupLength pointer to window group length array.
-  \param windowGroups number of window groups.
-  \param scaleFactorBandsTransmittedL number of transmitted scalefactor bands in
-  left channel. \param scaleFactorBandsTransmittedR number of transmitted
-  scalefactor bands in right channel. May differ from
-  scaleFactorBandsTransmittedL only for USAC. \return  none
-*/
 void CJointStereo_ApplyMS(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[2], CAacDecoderStaticChannelInfo_t *pAacDecoderStaticChannelInfo[2],
                           int32_t *spectrumL, int32_t *spectrumR, int16_t *SFBleftScale, int16_t *SFBrightScale, int16_t *specScaleL,
                           int16_t *specScaleR, const int16_t *pScaleFactorBandOffsets, const uint8_t *pWindowGroupLength, const int32_t windowGroups,
                           const int32_t max_sfb_ste_outside, const int32_t scaleFactorBandsTransmittedL, const int32_t scaleFactorBandsTransmittedR,
                           int32_t *store_dmx_re_prev, int16_t *store_dmx_re_prev_e, const int32_t mainband_flag);
-
-/*!
-  \brief Applies intensity stereo
-
-  The function applies intensity stereo.
-
-  \param pAacDecoderChannelInfo aac channel info.
-  \param pScaleFactorBandOffsets pointer to scalefactor band offsets.
-  \param pWindowGroupLength pointer to window group length array.
-  \param windowGroups number of window groups.
-  \param scaleFactorBandsTransmitted number of transmitted scalefactor bands.
-  \return  none
-*/
 void CJointStereo_ApplyIS(CAacDecoderChannelInfo_t *pAacDecoderChannelInfo[2], const int16_t *pScaleFactorBandOffsets,
                           const uint8_t *pWindowGroupLength, const int32_t windowGroups, const int32_t scaleFactorBandsTransmitted);
-
-/* aacdec_pns.cpp */
 int32_t CPns_IsPnsUsed(const CPnsData_t *pPnsData, const int32_t group, const int32_t band);
-
 void CPns_SetCorrelation(CPnsData_t *pPnsData, const int32_t group, const int32_t band, const int32_t outofphase);
 
 /****************** inline functions ******************/
