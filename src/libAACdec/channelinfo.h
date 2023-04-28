@@ -24,7 +24,6 @@
 
 #include "rvlc_info.h"
 #include "stereo.h"
-#include "usacdec_acelp.h"
 
 
 

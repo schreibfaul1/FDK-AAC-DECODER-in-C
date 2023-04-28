@@ -1960,6 +1960,24 @@ int32_t  CLpd_FAC_Acelp2Mdct(H_MDCT hMdct, int32_t *output, int32_t *pSpec, cons
                              const int32_t fr, int16_t A[16], int32_t A_exp, CAcelpStaticMem_t *acelp_mem, const int32_t gain,
                              const int32_t last_frame_lost, const int32_t isFdFac, const uint8_t last_lpd, const int32_t k,
                              int32_t currAliasingSymmetry);
+int32_t  CLpd_AcelpRead(HANDLE_FDK_BITSTREAM hBs, CAcelpChannelData_t *acelpData, int32_t acelp_core_mode, int32_t i_offset,
+                        int32_t coreCoderFrameLength);
+void     Acelp_PreProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch, int32_t *old_T_pf, int32_t *pit_gain, int32_t *old_gain_pf,
+                             int32_t samplingRate, int32_t *i_offset, int32_t coreCoderFrameLength, int32_t synSfd, int32_t nbSubfrSuperfr);
+void     Acelp_PostProcessing(int32_t *synth_buf, int32_t *old_synth, int32_t *pitch, int32_t *old_T_pf, int32_t coreCoderFrameLength, int32_t synSfd,
+                              int32_t nbSubfrSuperfr);
+void     CLpd_AcelpDecode(CAcelpStaticMem_t *acelp_mem, int32_t i_offset, const int16_t lsp_old[M_LP_FILTER_ORDER],
+                          const int16_t lsp_new[M_LP_FILTER_ORDER], int16_t stab_fac, CAcelpChannelData_t *acelpData, int32_t numLostSubframes,
+                          int32_t lastLpcLost, int32_t frameCnt, int32_t synth[], int32_t pT[], int32_t *pit_gain, int32_t coreCoderFrameLength);
+void     CLpd_AcelpReset(CAcelpStaticMem_t *acelp_mem);
+void     CLpd_AcelpPrepareInternalMem(const int32_t *synth, uint8_t last_lpd_mode, uint8_t last_last_lpd_mode, const int16_t *A_new,
+                                      const int32_t A_new_exp, const int16_t *A_old, const int32_t A_old_exp, CAcelpStaticMem_t *acelp_mem,
+                                      int32_t coreCoderFrameLength, int32_t clearOldExc, uint8_t lpd_mode);
+void     CLpd_Acelp_Zir(const int16_t A[], const int32_t A_exp, CAcelpStaticMem_t *acelp_mem, const int32_t length, int32_t zir[], int32_t doDeemph);
+int32_t *CLpd_ACELP_GetFreeExcMem(CAcelpStaticMem_t *acelp_mem, int32_t length);
+void     CLpd_TcxTDConceal(CAcelpStaticMem_t *acelp_mem, int16_t *pitch, const int16_t lsp_old[M_LP_FILTER_ORDER],
+                           const int16_t lsp_new[M_LP_FILTER_ORDER], const int16_t stab_fac, int32_t numLostSubframes, int32_t synth[],
+                           int32_t coreCoderFrameLength, uint8_t last_tcx_noise_factor);
 //----------------------------------------------------------------------------------------------------------------------
 //          I N L I N E S
 //----------------------------------------------------------------------------------------------------------------------
@@ -2257,4 +2275,9 @@ static inline void FDKcopyBuffer(HANDLE_FDK_BITSTREAM hBSDst, HANDLE_FDK_BITSTRE
 static inline void FDKfetchBuffer(HANDLE_FDK_BITSTREAM hBitStream, uint8_t *outputBuffer, uint32_t *writeBytes) {
     FDKsyncCache(hBitStream);
     FDK_Fetch(&hBitStream->hBitBuf, outputBuffer, writeBytes);
+}
+
+inline int16_t E_UTIL_random(int16_t *seed) {
+    *seed = (int16_t)((((int32_t)*seed * (int32_t)31821) >> 1) + (int32_t)13849);
+    return (*seed);
 }
