@@ -424,6 +424,26 @@
 #define ACELP_HEADROOM                          1
 #define ACELP_OUTSCALE                          (MDCT_OUT_HEADROOM - ACELP_HEADROOM)
 
+#define DRC_PARAMETER_BITS (7)
+#define DRC_MAX_QUANT_STEPS (1 << DRC_PARAMETER_BITS)
+#define DRC_MAX_QUANT_FACTOR (DRC_MAX_QUANT_STEPS - 1)
+#define DRC_PARAM_QUANT_STEP  (FL2FXCONST_DBL(1.0f / (float)DRC_MAX_QUANT_FACTOR))
+#define DRC_PARAM_SCALE (1)
+#define DRC_SCALING_MAX ((int32_t)((int32_t)(DRC_PARAM_QUANT_STEP >> DRC_PARAM_SCALE) * (int32_t)127))
+
+#define DRC_BLOCK_LEN (1024)
+#define DRC_BAND_MULT (4)
+#define DRC_BLOCK_LEN_DIV_BAND_MULT (DRC_BLOCK_LEN / DRC_BAND_MULT)
+
+#define MAX_REFERENCE_LEVEL (127)
+
+#define DRC_HEAVY_THRESHOLD_DB (10)
+
+#define DVB_ANC_DATA_SYNC_BYTE (0xBC) /* DVB ancillary data sync byte. */
+
+#define OFF 0
+#define ON 1
+
 #define PCM_OUT_BITS DFRACT_BITS
 #define PCM_OUT_HEADROOM 8 /* Must have the same values as DMXH_HEADROOM */
 
@@ -906,6 +926,13 @@ typedef enum {
     TPDEC_PARAM_FORCE_CONFIG_CHANGE,   /** Force config change for next received config */
     TPDEC_PARAM_USE_ELEM_SKIPPING
 } TPDEC_PARAM;
+
+typedef enum {
+    AAC_DRC_PARAMETER_HANDLING_DISABLED = -1, /*!< DRC parameter handling disabled, all parameters are applied as requested. */
+    AAC_DRC_PARAMETER_HANDLING_ENABLED = 0,   /*!< Apply changes to requested DRC parameters to prevent clipping. */
+    AAC_DRC_PRESENTATION_MODE_1_DEFAULT = 1,  /*!< Use DRC presentation mode 1 as default (e.g. for Nordig) */
+    AAC_DRC_PRESENTATION_MODE_2_DEFAULT = 2   /*!< Use DRC presentation mode 2 as default (e.g. for DTG DBook) */
+} AAC_DRC_DEFAULT_PRESENTATION_MODE_OPTIONS;
 
 //----------------------------------------------------------------------------------------------------------------------
 /** Generic audio coder configuration structure. */
