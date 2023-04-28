@@ -398,7 +398,7 @@ static const int32_t twiddle[121] = {1073741824,
 #if FIXP_QTW == int16_t
 #define HTW(x) (x)
 #else
-#define HTW(x) FX_DBL2FX_QTW(FX_SGL2FX_DBL((const int16_t)x))
+#define HTW(x) FX_DBL2FX_SGL(FX_SGL2FX_DBL((const int16_t)x))
 #endif
 
 static const FIXP_QTW post_twiddle_cos_8[8] = {

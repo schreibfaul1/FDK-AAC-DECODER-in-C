@@ -120,17 +120,10 @@ extern const FIXP_SPK_t sin_twiddle_L64[];
 #define QMF_FILTER_PROTOTYPE_SIZE 640
 #define QMF_NO_POLY 5
 
-#ifdef QMF_COEFF_16BIT
+
 #define FIXP_PFT int16_t
 #define FIXP_QTW int16_t
-#define FX_DBL2FX_QTW(x) FX_DBL2FX_SGL(x)
-#else
-#define FIXP_PFT int32_t
-#define FIXP_QTW int32_t
 
-#define FX_DBL2FX_QTW(x) (x)
-
-#endif
 
 #define QMF640_PFT_TABLE_SIZE (640 / 2 + QMF_NO_POLY)
 

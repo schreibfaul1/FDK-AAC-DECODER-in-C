@@ -122,15 +122,9 @@ static inline int32_t SpatialDecGetQmfBand(int32_t paramBand, const uint8_t *tab
 
 #define FILTER_SF (2)
 
-#ifdef ARCH_PREFER_MULT_32x32
-    #define FIXP_DUCK_GAIN int32_t
-    #define FX_DBL2FX_DUCK_GAIN
-    #define FL2FXCONST_DUCK FL2FXCONST_DBL
-#else
-    #define FIXP_DUCK_GAIN      int16_t
-    #define FX_DBL2FX_DUCK_GAIN FX_DBL2FX_SGL
-    #define FL2FXCONST_DUCK     FL2FXCONST_SGL
-#endif
+#define FIXP_DUCK_GAIN      int16_t
+#define FL2FXCONST_DUCK     FL2FXCONST_SGL
+
 #define PS_DUCK_PEAK_DECAY_FACTOR     (0.765928338364649f)
 #define PS_DUCK_FILTER_COEFF          (0.25f)
 #define DUCK_ALPHA_FDK                FL2FXCONST_DUCK(DUCK_ALPHA)
@@ -1013,7 +1007,7 @@ static int32_t DuckerApply(DUCKER_INSTANCE *const self, int32_t const directNrg[
             /* gain smaller than 1.0 */
             tmp1 = sqrtFixp(tmp1);
             tmp2 = invSqrtNorm2(tmp2, &s);
-            duckGain = FX_DBL2FX_DUCK_GAIN(fMultDiv2(tmp1, tmp2) << s);
+            duckGain = FX_DBL2FX_SGL(fMultDiv2(tmp1, tmp2) << s);
         }
         else { /* true for about 80 % */
             tmp2 = smoothDirRevNrg[2 * pb] >> 1;
@@ -1037,7 +1031,7 @@ static int32_t DuckerApply(DUCKER_INSTANCE *const self, int32_t const directNrg[
                     /* gain from 1.0 to 2.0 */
                     tmp2 = sqrtFixp(tmp2 >> 2);
                     tmp1 = invSqrtNorm2(tmp1, &s);
-                    duckGain = FX_DBL2FX_DUCK_GAIN(fMult(tmp1, tmp2) << s);
+                    duckGain = FX_DBL2FX_SGL(fMult(tmp1, tmp2) << s);
                 }
             }
             else { /* true for about 60% */

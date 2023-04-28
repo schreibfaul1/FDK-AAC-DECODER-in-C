@@ -40,13 +40,13 @@
 /* macros for runtime conversion of fixedpoint values to other fixedpoint. NO
  * ROUNDING!!! */
 
-#define FX_SGL2FX_DBL(val) ((int32_t)((int32_t)(val) << (DFRACT_BITS - FRACT_BITS)))
+//#define FX_SGL2FX_DBL(val) ((int32_t)((int32_t)(val) << (DFRACT_BITS - FRACT_BITS)))
 
-//inline int32_t FX_SGL2FX_DBL(int16_t val){return (val << (DFRACT_BITS - FRACT_BITS));}
+inline int32_t FX_SGL2FX_DBL(int16_t val){return (val << (DFRACT_BITS - FRACT_BITS));}
 
-#define FX_DBL2FX_SGL(val) ((int16_t)((val) >> (DFRACT_BITS - FRACT_BITS)))
+//#define FX_DBL2FX_SGL(val) ((int16_t)((val) >> (DFRACT_BITS - FRACT_BITS)))
 
-//inline int16_t FX_DBL2FX_SGL(int16_t val){return (val >> (DFRACT_BITS - FRACT_BITS));}
+inline int16_t FX_DBL2FX_SGL(int32_t val){return (val >> (DFRACT_BITS - FRACT_BITS));}
 
 /* ############################################################# */
 
